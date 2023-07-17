@@ -223,10 +223,10 @@ if (!isset($_SESSION['nombre'])) {
 <script src="assets/js/libs/highcharts/modules/drilldown.js"></script>
 <script src="assets/js/libs/highcharts/highchartsgithub.js"></script> -->
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="assets/js/libs/highcharts/highcharts.js"></script>
+<script src="assets/js/libs/highcharts/exporting.js"></script>
+<script src="assets/js/libs/highcharts/export-data.js"></script>
+<script src="assets/js/libs/highcharts/accessibility.js"></script>
 
 <!-- <script src="https://highcharts.github.io/export-csv/export-csv.js"></script> -->
 <script src="js/jquery-ui.js"></script>
