@@ -1,0 +1,1583 @@
+<div class="newdesing" style="position:relative">
+  <!-- header de la app -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content:
+      space-between;align-items: center;">
+      <li id="inicio1">
+        <h5>Control de Gestión de riesgos</h5>
+      </li>
+      <li>
+        <div ng-switch="menu">
+          <div ng-switch-when="tabla-riesgos">
+            <button ng-show="permisosValidos.includes(permisosModulo['guardar'])" class="btn waves-effect waves-light"
+              ng-click="mostrarVista('formularioRiesgo');formularioRiesgo(0);"
+              style="background: #f1f3f4;border: 1px solid #1a2e63;color: #1a2e63;">
+              <i class="icon-pencil"></i> Crear riesgo </button>
+          </div>
+          <div ng-switch-default>
+            <button class="btn waves-effect waves-light" ng-click="mostrarVista('tablaRiesgo')"
+              style="background: #f1f3f4;border: 1px solid #1a2e63;color: #1a2e63;">
+              <i class="icon-list-alt" style="margin-right: 10px;"></i>Listado riesgo </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <!-- fin del heder  -->
+
+  <!-- logica de la app  -->
+  <div ng-switch="menu">
+    <div ng-switch-when="tabla-riesgos">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card contentcard" style="min-height: 600px;">
+                  <div class="col s12">
+                    <div class="row">
+                      <div class="col s12 m6">
+                        <h5>
+                          <small>
+                            <i class="icon-list-alt"></i>
+                            Listado de riesgos
+                          </small>
+                        </h5>
+                      </div>
+                      <div class="col s12 m6">
+                        <input type="text" ng-model="searchText" ng-change="search()" placeholder="Buscar riesgos"
+                          style=" background-color:  #f1f3f4;      margin: 0.82rem 0 0.656rem 0;">
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="col s12 mt-20">
+                    <div class="row">
+                      <div class="col s12">
+                        <div class="row overflow" style="height: 540px; overflow: auto;">
+                          <table id="table" class="table-bordered
+                            table-striped">
+                            <thead>
+                              <tr>
+                                <th style="border: 1px solid #fff; " colspan="5"></th>
+                                <th style="border: 1px solid #fff; " colspan="3">Impacto inherente</th>
+                                <th style="border: 1px solid #fff; " colspan="4"></th>
+                              </tr>
+                              <th style="border: 1px solid #fff;">Proceso</th>
+                              <th style="border: 1px solid #fff;">Estado</th>
+                              <th style="border: 1px solid #fff;">Descripción</th>
+                              <th style="border: 1px solid #fff;">Tipo</th>
+                              <th style="border: 1px solid #fff;">Probabilidad inherente</th>
+                              <th style="border: 1px solid #fff;">Afectación reputacional</th>
+                              <th style="border: 1px solid #fff;">Afectación económica</th>
+                              <th style="border: 1px solid #fff;">Afectación salud afilidados</th>
+                              <th style="border: 1px solid#fff;">Control</th>
+                              <th ng-show="permisosValidos.includes(permisosModulo['editar'])"
+                                style="border: 1px solid #fff; "> Editar</th>
+
+                              <th style="border: 1px solid #fff; " colspan="2"> Gestión</th>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="dato in listadosRiesgos | filter:searchText"
+                                ng-show="permisosValidos.includes(permisosModulo['listar'])">
+                                <td>{{dato.Codigo}}</td>
+                                <td>{{EstadoNombre(dato.EstadoRiesgo)}}</td>
+                                <td>{{dato.DescripcionRiesgo.length>100?dato.DescripcionRiesgo.slice(0, 100) + "...":dato.DescripcionRiesgo}}  <a style="cursor: pointer;" ng-if="dato.DescripcionRiesgo.length>100" ng-click="mostrar(dato.DescripcionRiesgo);"> Leer más</a></td>
+                                <td>{{elegirTipoRiesgoXTabla(dato.TipoRiesgo)}}</td>
+                                <td>{{dato.ProbalidadInherente }}</td>
+                                <td>{{dato.AfectuacionReputacional}}</td>
+                                <td>{{dato.AfectuacionEconomica}}</td>
+                                <td>{{dato.AfectuacionSaludAfilidados}}</td>
+                                <td style="text-align: center;
+                                 font-size: 21px;">
+                                  <a class="icon-tasks" ng-click="consultaConstrol(dato);"></a>
+                                </td>
+                                <td ng-show="permisosValidos.includes(permisosModulo['editar'])" style="text-align: center;
+                                font-size: 21px;"
+                                  ng-click="mostrarVista('formularioRiesgo');formularioRiesgo(dato.Codigo);">
+                                  <a class="icon-pencil"></a>
+                                </td>
+                                <td ng-show="permisosValidos.includes(permisosModulo['editar'])" ng-if="dato.EstadoRiesgo=='PE'"
+                                  ng-click="AbrirModalGestion(dato.Codigo)" style="text-align: center;
+                                font-size: 21px; color:red; cursor: pointer;">
+                                  <i class="fa fa-times" aria-hidden="true"></i>
+                                </td>
+                                <td ng-show="permisosValidos.includes(permisosModulo['editar'])" ng-if="dato.EstadoRiesgo=='PE'"
+                                  ng-click="sp_rc_post_guardar_estado(dato.Codigo,'AP','Aprobado')" style="text-align: center;
+                              font-size: 21px; color:green;cursor:pointer">
+                                  <i class="fa fa-check" aria-hidden="true"></i>
+                                </td>
+                              </tr>
+                              <tr ng-if="dato.length==0">
+                                <td colspan="5">
+                                  <h5>No se ha encontrado Registros</h5>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div ng-switch-when="tabla-controles">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card contentcard" style="min-height: 560px;">
+                  <div class="col s12">
+                    <div style="display: flex;
+                    justify-content: space-between;
+                    margin-left: 0.5em;
+                    margin-right: 0.5em;">
+                      <h5><small> <i class="icon-tasks"></i>Listado de controles</small></h5>
+                      <button ng-disabled="botonDesactivado"
+                        ng-show="permisosValidos.includes(permisosModulo['guardar'])" class="waves-effect waves- btn"
+                        ng-click="mostrarVista('controlform');formualarioControl(0)" style="background: #f1f3f4;border: 1px solid
+                          #1a2e63;color: #1a2e63; margin: 8px;">
+                        <i class="icon-pencil"></i> Crear control </button>
+                    </div>
+                  </div>
+                  <div class="col s12 mt-20">
+                    <div class="row">
+                      <div class="col s12">
+                        <div class="row overflow" style="height: 520px;     overflow: auto;">
+                          <div class="table-responsive overflow" style="height:
+                            400px; overflow: auto;">
+                            <table id="table2" class="table-bordered
+                              table-striped">
+                              <thead>
+                                <tr>
+                                  <th style="border: 1px solid #fff;">Número de riesgo</th>
+                                  <th style="border: 1px solid #fff;">Descripción de Control</th>
+                                  <th style="border: 1px solid #fff;">Responsable</th>
+                                  <th style="border: 1px solid #fff">Tipo</th>
+                                  <th style="border: 1px solid #fff">Implementación</th>
+                                  <th style="border: 1px solid #fff">Documentación</th>
+                                  <th style="border: 1px solid #fff">Frecuencia</th>
+                                  <th style="border: 1px solid #fff">Evidencia</th>
+                                  <th style="border: 1px solid #fff">valoración de control</th>
+                                  <th ng-show="permisosValidos.includes(permisosModulo['editar'])"
+                                    style="border: 1px solid #fff">Editar</th>
+
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr ng-repeat="dato in listadosControl" ng-init="checkCantidadRegistros()"
+                                  ng-show="permisosValidos.includes(permisosModulo['listar'])">
+                                  <td>{{dato.NumeroRiesgo }}</td>
+                                  <td>{{dato.DescripcionControl }}</td>
+                                  <td>{{dato.Responsable }}</td>
+                                  <td>{{dato.Tipo }}</td>
+                                  <td>{{dato.Implementacion}}</td>
+                                  <td>{{dato.Documentacion}}</td>
+                                  <td>{{dato.Frecuendia}}</td>
+                                  <td>{{dato.Evidencia}}</td>
+                                  <td>{{dato.ValoracionControl}}%</td>
+                                  <td ng-show="permisosValidos.includes(permisosModulo['editar'])" style="text-align: center;
+                                  font-size: 21px;" ng-click="mostrarVista('controlform');edicion(dato);">
+                                    <a class="icon-pencil"></a>
+
+                                </tr>
+                                <tr ng-if="dato.length==0">
+                                  <td colspan="5">
+                                    <h5>No se ha encontrado Registros</h5>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-switch-when="formulario-riesgos">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card" style="padding-bottom: 4px;">
+                  <div class="row bb">
+                    <div class="col s12">
+                      <h5><small> <i class="icon-tasks"></i>Creación de riesgos</small></h5>
+                    </div>
+                  </div>
+                  <div class="m-l m-r row">
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Proceso</p>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <label for="proceso"> Proceso principal encargado de la
+                          gestión del
+                          riesgo</label>
+                        <select class="gray-input select-chosen-eps select-input-new
+                          select-new" ng-model="riesgos.proceso">
+                          <option value="" disabled>Seleccionar</option>
+                          <option ng-repeat="x in listados.procesos" value="{{x.codigo}}"
+                            ng-selected="riesgos.proceso==x.codigo">
+                            {{x.nombre}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Descripción del riesgo</p>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <label>Impacto del riesgo</label>
+                        <textarea ng-model="riesgos.impactoRiesgo" maxlength="1000"  ng-change="updateFields()" style="color: #558a2f;"
+                          class="border-none gray-input input-w-p margin w-100
+                          white"></textarea>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <label>Causa Inmediata</label>
+                        <textarea id="causaInmediata" ng-model="riesgos.causaInmediata" ng-change="updateFields()" maxlength="1000" 
+                          style="color: #f0a42f; " class="border-none gray-input input-w-p margin w-100
+                          white"></textarea>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <label>Causa Raíz</label>
+                        <textarea id="causaRaiz" ng-model="riesgos.causaRaiz" ng-change="updateFields()" maxlength="1000" 
+                          style="color: #000000;" class="border-none gray-input input-w-p margin w-100 
+                          white"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="col s12">
+                      <div>
+                        <label>Detalle</label>
+                        <textarea id="detalle" disabled style="color: #000000;"
+                          class="border-none gray-input input-w-p margin w-100
+                          white"> {{riesgos.impactoRiesgo + ' ' + riesgos.causaInmediata + ', ' +riesgos.causaRaiz}}</textarea>
+                      </div> 
+                    </div>
+
+
+
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Tipo del riesgo</p>
+                    </div>
+                    <div class="col s12">
+                      <div class="row">
+                        <div class="col s12">
+                          <label>Seleccione una opción, máxima 3</label>
+                        </div>
+                        <div class="col s12" style="max-height: 45vh;overflow-y:
+                          auto;">
+                          <table class="table table-bordered table-striped
+                            striped">
+                            <thead>
+                              <tr>
+                                <th style="text-align:center;">CÓDIGO</th>
+                                <th>DESCRIPCIÓN</th>
+                                <th style="z-index: 999;">SELECCIONAR</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="data in listados.tipoRiesgo" ng-init="data.Estado=false"
+                                ng-class="data.estado==true?'selecionar_tr':''">
+                                <td style="text-align:center;">{{data.Codigo}}</td>
+                                <td style="text-align:center;">
+                                  {{data.Nombre}}</td>
+                                <td class="center">
+                                  <div class="col s12">
+                                    <input type="checkbox" class="filled-in" ng-model="data.Estado"
+                                      id="ID{{data.Codigo}}" ng-change="elegirTipoRiesgo($index)" />
+                                    <label for="ID{{data.Codigo}}"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Probabilidad
+                        inherente</p>
+                    </div>
+                    <div class="col s12">
+                      <div class="row">
+                        <div class="col s12">
+
+                        </div>
+                        <div class="col s12" style="max-height:45vh;overflow-y:
+                          auto;">
+                          <table class="table table-bordered table-striped
+                            striped">
+                            <thead>
+                              <tr>
+                                <th style="z-index: 999;">CALIFICACIÓN </th>
+                                <th>FRECUENCIA DE LA ACTIVIDAD</th>
+                                <th style="z-index: 999;">SELECCIONAR</th>
+                                <th style="z-index: 999;"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="data in
+                              listados.probabilidadInherente" ng-init="data.Estado=false">
+                                <td ng-style="{ 'text-align': 'center',
+                                'background-color': data.Color,
+                                'text-transform': 'capitalize' }" style="  color: #32364c;
+                                font-weight: bold;
+                                font-size: 15px;">
+                                  {{ data.Calificacion }}</td>
+                                <td style="text-align:center;">
+                                  {{data.Nombre}}</td>
+                                <td class="center">
+                                  <div class="col s12">
+                                    <input type="checkbox" class="filled-in" ng-model="data.Estado"
+                                      id="probabilidadInherente{{data.Codigo}}"
+                                      ng-change="elegirprobalidadInherente(data.Codigo)" />
+                                    <label for="probabilidadInherente{{data.Codigo}}"></label>
+                                  </div>
+                                </td>
+                                <td style="text-align:center;">{{data.Probabilidad}}%
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Impacto inherente
+                      </p>
+                    </div>
+                    <div class="col s12">
+                      <div class="row">
+                        <div class="col s12">
+
+                        </div>
+                        <div class="col s12" style="max-height:
+                          45vh;overflow-y: auto;">
+                          <table class="table table-bordered table-striped
+                            striped">
+                            <thead>
+                              <tr>
+                                <th style="text-align:center;">IMPACTO</th>
+                                <th style="z-index: 999;"> AFECTACION REPUTACIONAL</th>
+                                <th style="z-index: 999;">SELECCIONAR</th>
+                                <th style="z-index: 999;"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="data in
+                                listados.afectuacionReputacional" ng-init="data.Estado=false">
+                                <td ng-style="{ 'text-align': 'center',
+                                  'background-color': data.Color,
+                                  'text-transform': 'capitalize' }" style="    color: #32364c;
+                                  font-weight: bold;
+                                  font-size: 15px;">
+                                  {{ data.Impacto }}</td>
+                                <td style="text-align:center;">
+                                  {{data.Nombre}}</td>
+                                <td class="center">
+                                  <div class="col s12">
+                                    <input type="checkbox" class="filled-in" ng-model="data.Estado"
+                                      id="afectuacionReputacional{{data.Codigo}}"
+                                      ng-change="elegirAfectacionReputacional(data.Codigo)" />
+                                    <label for="afectuacionReputacional{{data.Codigo}}"></label>
+                                  </div>
+                                </td>
+                                <td style="text-align:center;">{{data.Probabilidad}}%
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div class="row">
+                        <div class="col s12">
+
+                        </div>
+                        <div class="col s12" style="max-height:
+                          45vh;overflow-y: auto;">
+                          <table class="table table-bordered table-striped
+                            striped">
+                            <thead>
+                              <tr>
+                                <th style="text-align:center;"> IMPACTO</th>
+                                <th style="z-index: 999;">AFECTACION ECONOMICA </th>
+                                <th style="z-index: 999;">SELECCIONAR</th>
+                                <th style="z-index: 999;"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="data in
+                                listados.afectuacionEconomica" ng-init="data.Estado=false">
+                                <td ng-style="{ 'text-align': 'center',
+                                  'background-color': data.Color,
+                                  'text-transform': 'capitalize' }" style="    color: #32364c;
+                                  font-weight: bold;
+                                  font-size: 15px;">
+                                  {{data.Impacto}} </td>
+                                <td style="text-align:center; text-transform:
+                                  capitalize;">
+                                  {{data.Nombre}}</td>
+                                <td class="center">
+                                  <div class="col s12">
+                                    <input type="checkbox" class="filled-in" ng-model="data.Estado"
+                                      id="afectuacionEconomica{{data.Codigo}}"
+                                      ng-change="elegirafectuacionEconomica(data.Codigo)" />
+                                    <label for="afectuacionEconomica{{data.Codigo}}"></label>
+                                  </div>
+                                </td>
+                                <td style="text-align:center;">{{data.Probabilidad}}%
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div class="row">
+                        <div class="col s12">
+
+                        </div>
+                        <div class="col s12" style="max-height:
+                          45vh;overflow-y: auto;">
+                          <table class="table table-bordered table-striped
+                            striped">
+                            <thead>
+                              <tr>
+                                <th style="text-align:center;">IMPACTO</th>
+                                <th style="z-index: 999;">AFECTACION SALUD AFILIADO</th>
+                                <th style="z-index: 999;">SELECCIONAR</th>
+                                <th style="z-index: 999;"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="data in
+                                listados.afectuacionSaludAfiliado" ng-init="data.Estado=false">
+                                <td ng-style="{ 'text-align': 'center',
+                                  'background-color': data.Color,
+                                  'text-transform': 'capitalize' }" style="    color: #32364c;
+                                  font-weight: bold;
+                                  font-size: 15px;">
+                                  {{ data.Impacto }}
+                                </td>
+                                <td style="text-align:center;">
+                                  {{data.Nombre}}</td>
+                                <td class="center">
+                                  <div class="col s12">
+                                    <input type="checkbox" class="filled-in" ng-model="data.Estado"
+                                      id="ID{{data.Codigo}}" ng-change="elegirAfectuacionSaludAfiliado(data.Codigo)" />
+                                    <label for="ID{{data.Codigo}}"></label>
+                                  </div>
+                                </td>
+                                <td style="text-align:center;">{{data.Probabilidad}}%
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                    padding-left:0px;">
+                      <p class="title-1 foot4 white-text text-align:center;">Zona del riesgo inherente </p>
+                    </div>
+
+
+                    <div class="col s12" style="max-height:
+                  45vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                    </div>
+                    <div class="col s12" style="max-height:
+                  45vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th style="text-align: left;" rowspan="2">Probabilidad</th>
+                            <th colspan="5" style="text-align:center;">Impacto</th>
+
+                          <tr>
+                            <th style="text-align:center; ">1 Leve</th>
+                            <th style="z-index: 999;">2 Menor</th>
+                            <th style="z-index: 999;">3 Moderado</th>
+                            <th style="z-index: 999;">4 Mayor</th>
+                            <th style="z-index: 999;">5 Catastrófico</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <tbody>
+                          <tr>
+                            <td>5 Muy alta</td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='51'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='52'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='53'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='54'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='55'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>4 Alta</td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='41'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='42'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='43'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='44'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='45'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>3 Media</td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='31'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='32'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='33'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='34'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='35'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>2 Baja</td>
+                            <td style="background: #43A047;  opacity: 0.5;"
+                              ng-class="campana=='21'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='22'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='23'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='24'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='25'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>1 Muy baja</td>
+                            <td style="background: #43A047;  opacity: 0.5;"
+                              ng-class="campana=='11'?'border-seleccionado':''"></td>
+                            <td style="background: #43A047;  opacity: 0.5;"
+                              ng-class="campana=='12'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='13'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='14'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='15'?'border-seleccionado':''"></td>
+                          </tr>
+                        </tbody>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                    padding-left:0px;">
+                      <p class="title-1 foot4 white-text text-align:center;">Informativo </p>
+                    </div>
+
+                    <div class="col s12" style="max-height:
+                    45vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th style="text-align: left;
+                            white-space: nowrap;
+                          ">Zona de Riesgo</th>
+                            <th style="font-weight: bold; font-size: 15px; background: #43A047; color: #32364c">BAJA
+                            </th>
+                            <th style="font-weight: bold; font-size: 15px; background: #FFEB3B; color: #32364c">MODERADA
+                            </th>
+
+                            <th style="font-weight: bold; font-size: 15px; background: #FF9800;color: #32364c">ALTA</th>
+                            <th style="font-weight: bold; font-size: 15px; background: #F44336; color: #32364c">
+                              CATASTRÓFICA
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+
+                          </tr>
+                          <tr>
+
+                          </tr>
+                          <tr>
+
+                          </tr>
+                        </tbody>
+                      </table>
+
+                    </div>
+
+
+
+
+
+
+
+                    <div>
+                      <div class="col m-l s12 mt-10">
+                        <div
+                          style="justify-content: space-evenly;   display: flex;  flex-direction: row;   align-content: center; flex-wrap: wrap;align-items: center; ">
+                          <button class="btn waves-effect waves-light" ng-click="guardado()"
+                            style="background: #f1f3f4;border: 1px solid #2c631a;color: #2c631a;">
+                            <i class="fa fa-floppy-o mr-3" style="    padding-right: 10px"
+                              aria-hidden="true"></i></i>Guardar</button>
+
+                          <button class="btn waves-effect waves-light" ng-click="siguiente()"
+                            style="background: #f1f3f4;border: 1px solid #1a2e63;color: #1a2e63;">
+                            <i class="fa fa-caret-right" aria-hidden="true"
+                              style="    padding-right: 10px"></i>Siguiente</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="div">
+                      <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                        <p class="title-1 foot4 white-text">Historico de observación</p>
+                        <table id="table" class="table-bordered table-striped">
+                          <thead>
+                            <tr>
+                              <th style="border: 1px solid #fff; text-align: center;">Usuario</th>
+                              <th style="border: 1px solid #fff; text-align: center;">Fecha</th>
+                              <th style="border: 1px solid #fff; text-align: center;">Observación</th>
+                              <th style="border: 1px solid #fff; text-align: center;">Estado</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="dato in riesgoElegido.historicoObservacion">
+                              <td style=" text-align: center;">{{dato.Usuario}}</td>
+                              <td style=" text-align: center;">{{dato.Fecha}} {{dato.Hora}}</td>
+                              <td style=" text-align: center;">{{dato.Observacion}}</td>
+                              <td style=" text-align: center;">{{dato.EstadoNombre}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-switch-when="formulario-Control">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card" style="padding-bottom: 4px;">
+                  <div class="row bb">
+                    <div style="display: flex;
+                    justify-content: space-between;
+                    margin-left: 0.5em;
+                    margin-right: 0.5em;">
+                      <h5><small> <i class="icon-tasks"></i>Crear control</small></h5>
+                      <button class="waves-effect waves- btn" ng-click="mostrarVista('control')" style="background: #f1f3f4;border: 1px solid
+                          #1a2e63;color: #1a2e63; margin: 8px;">
+                        <i class="icon-list-alt"></i> Listado controles </button>
+                    </div>
+                  </div>
+                  <div class="m-l m-r row">
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Descripción del control</p>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <label for="proceso"> Responsable+Acción+Complemento (frecuencia y evidencia)</label>
+                        <textarea ng-model="control.descripcionControl"
+                          class="border-none gray-input input-w-p margin w-100" type="text">
+                       </textarea>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Responsable</p>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <label for="proceso">Elige una opción</label>
+                        <select ng-model="control.responsableId" class="gray-input select-chosen-eps select-input-new
+                        select-new" ng-change="mostrarSeleccion2(control.responsableId)">
+                          <option value="">Seleccionar</option>
+                          <option ng-repeat=" x in listados.responsables" ng-selected="control.responsableId==x.Codigo"
+                            value="{{x.Codigo}}">
+                            {{x.Nombre}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                    </div>
+                    <div class="col s12">
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Atributos control</p>
+                    </div>
+                    <div class="col s6">
+                      <div>
+                        <label>Tipo</label>
+
+                        <select class="gray-input select-chosen-eps select-input-new select-new"
+                          ng-model="control.tipoId" ng-change="mostrarSeleccion(control.tipoId)">
+                          <option value="">Seleccionar</option>
+                          <option ng-repeat="x in listados.atributoscontroltipo" ng-selected="control.tipoId==x.Codigo"
+                            value="{{x.Codigo}}" ng-attr-title="{{getTooltip(x.Codigo)}}">
+                            {{x.Nombre}} </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s6">
+                      <div>
+                        <label for="proceso">Implementación</label>
+                        <select class="gray-input select-chosen-eps select-input-new
+                        select-new" ng-model="control.implementacionId"
+                          ng-change="mostrarSeleccion1(control.implementacionId)">
+                          <option value="">Seleccionar</option>
+                          <option ng-repeat="x in listados.implementacion"
+                            ng-selected="control.implementacionId==x.Codigo" value="{{x.Codigo}}" value2="{{x.Nombre}}">
+                            {{x.Nombre}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s6">
+                      <div>
+                        <label for="proceso">Documentación</label>
+                        <select class="gray-input select-chosen-eps select-input-new
+                        select-new" ng-model="control.documentacionId">
+                          <option value="">Seleccionar</option>
+                          <option ng-repeat="x in listados.documentacion"
+                            ng-selected="control.documentacionId==x.Codigo" value="{{x.Codigo}}">
+                            {{x.Nombre}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s6">
+                      <div>
+                        <label for="proceso">Frecuencia</label>
+                        <select ng-model="control.frecuenciaId" class="gray-input select-chosen-eps select-input-new
+                        select-new">
+                          <option value="">Seleccionar</option>
+                          <option ng-repeat="x in listados.frecuencia" ng-selected="control.frecuenciaId==x.Codigo"
+                            value="{{x.Codigo}}">
+                            {{x.Nombre}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s6">
+                      <div>
+                        <label for="proceso">Evidencia</label>
+                        <select ng-model="control.evidenciaId" class="gray-input select-chosen-eps select-input-new
+                        select-new">
+                          <option value="">Seleccionar</option>
+                          <option ng-repeat="x in listados.evidencias" ng-selected="control.evidenciaId==x.Codigo"
+                            value="{{x.Codigo}}">
+                            {{x.Nombre}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                    padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Valoración del control</p>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <!-- <label for="proceso">Porcentaje de acuerdo al atributo tipo de control seleccionado.+Porcentaje
+                          de acuerdo al atributo implementación seleccionado.</label> -->
+                        <input ng-model="control.valoracionControl" readonly
+                          class=" gray-input select-chosen-eps select-input-new select-new " type="text">
+                      </div>
+                    </div>
+                    <div class="col m-l s12 mt-10">
+                      <div
+                        style="justify-content: end;   display: flex;  flex-direction: row;   align-content: center; flex-wrap: wrap;align-items: center; ">
+                        <button class="btn waves-effect waves-light" ng-click="guardadoClick()"
+                          style="background: #f1f3f4;border: 1px solid #1a2e63;color: #1a2e63;">
+                          <i class="fa fa-floppy-o mr-3" aria-hidden="true"
+                            style="    padding-right: 10px"></i>Guardar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- fin de la logica de la app -->
+
+  <!-- stilo de la app  -->
+  <style>
+    .activo_tab {
+      background: #1a2e63;
+      color: #fff;
+    }
+
+
+
+
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+
+
+
+    }
+
+    td {
+      text-align: justify;
+    }
+
+
+
+
+    table {
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 10px;
+    }
+
+
+    th {
+      position: sticky;
+      top: 0;
+      background-color: white;
+
+    }
+
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background-color: #1a2e63;
+      z-index: 1;
+      color: #fff;
+
+    }
+
+    th {
+      text-align: center;
+      text-transform: uppercase;
+      background: #ddd;
+    }
+
+    i.right {
+      color: #1a2e63b8;
+      font-size: 1.5em;
+      position: absolute;
+      top: -0.4em;
+      right: -0.3em;
+      transform: rotate(44deg);
+    }
+
+    .card_departamentos {
+      background: #F1F3F4;
+      padding: 1em;
+      height: 5em;
+      font-size: 9px;
+    }
+
+    .card_ips {
+      background: #F1F3F4;
+      padding: 1em;
+      height: 8em;
+      font-size: 9px;
+    }
+
+    p.card_total {
+      margin: 1px;
+      cursor: pointer;
+    }
+
+    .card_departamentos:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    .card_ips:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    h5.titulo_card {
+      padding: 0.3em 1.2em;
+      margin: 0px;
+      background: #e5e6e6;
+      border: 1px solid #c4c4c4;
+      color: #818282;
+    }
+
+
+    .dataTables_filter {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 10px;
+    }
+
+    li.active_list {
+      color: #3f475e;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .bt {
+      padding: 1em !important;
+      border-top: 1px solid #d2d2d2;
+    }
+
+
+
+
+
+
+
+    .icono_etiqueta {
+      right: 1em;
+      position: absolute;
+    }
+
+    .etiquita {
+      background: #e5e6e6;
+      border-radius: 1em;
+      padding-left: 1em;
+      position: relative;
+      margin: 1px;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 680px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    div.columnas {
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 25%;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    }
+
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input.input-text-new {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .tab-color {
+      background: #1565c033;
+    }
+
+    .tab-no-color {
+      background: #c5c7c7a6;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    div.columnas {
+      /* border-bottom: 1px solid #e5e6e6; */
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::before,
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::after {
+      right: -77px;
+      border-top-left-radius: .25rem !important;
+      border-bottom-left-radius: .25rem !important;
+    }
+
+    .content-box {
+      background-color: #f7f7f7;
+      border-bottom-right-radius: .50rem !important;
+      border-bottom-left-radius:
+        .50rem !important;
+      border-bottom: 30px solid #ebecec !important;
+      padding-top: 37px !important;
+      box-shadow:
+        none !important;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height:
+        43px;
+      background: #4daf7c;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* disabled */
+    .file-upload-wrapper2 {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper2:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper2:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height: 43px;
+      background: #919292;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper2:hover:before {
+      background: #919292;
+    }
+
+    .file-upload-wrapper2 input {
+      opacity: 0;
+      position:
+        absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: not-allowed !important;
+      width: 100%;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+      color: #fff !important;
+      border: 1px solid #dddddd;
+      border-radius: 3px;
+      padding: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      background: #32364c;
+      border: 1px solid transparent;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #1a2e6385;
+      border: 1px solid transparent;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border-right: 1px solid #1a2e63;
+    }
+
+
+    .tooltip {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      z-index: 1;
+      padding: 5px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+    }
+
+    tfoot:hover {
+      box-shadow: -9px -5px 6px rgb(0 0 0 / 30%);
+    }
+
+    select.gray-input.select-chosen-eps.select-input-new.select-new {
+      padding: 0;
+    }
+
+    .border-seleccionado {
+      border: 4px solid #1a2e63 !important;
+      opacity: 1 !important;
+
+
+      /* text-decoration: none; */
+      /* background: transparent url('http://2.bp.blogspot.com/_ANAc3M1UV3E/S4_5lr0yxhI/AAAAAAAAAiw/Tvu3O5UQq5k/s1600-h/mediana.png') */
+    }
+  </style>
+
+
+  <!-- fin de estilo de la app -->
+</div>

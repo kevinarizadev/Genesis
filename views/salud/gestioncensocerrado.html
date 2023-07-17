@@ -1,0 +1,199 @@
+<div class="white newdesing" id="pantalla">
+    <!-- Titulo -->
+    <div class="row section-header margin">
+        <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5 class="cursor-pointer"
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+                    onclick="location.reload();">
+                    <strong>Gestión Censo Cerrado</strong>
+                </h5>
+            </li>
+            <div class="col offset-s3 right" style="margin-top: 2.5vh; cursor: pointer;" ng-click="atras()" ng-if="!sw">
+                <i class=" icon-reply" style="margin-top: 10px;font-size: 3vh;"> Atras</i>
+            </div>
+        </ul>
+    </div>
+
+    <div class="card-content clearfix card" style="width: 95%;margin: 1rem auto auto auto;border-radius: 15px;">
+        <!-- //////////////////////////////////////////////////Seleccionar TAB //////////////////////////////// -->
+        <div class="Hoja_2">
+            <div class="row" style="width: 25%; margin-bottom: unset;">
+                <ul class="tabs nav" style="background-color: transparent;margin: .5vh;width: 99%;overflow: hidden;">
+                    <li class="tab col w-auto active"><a class="active"><strong style=" font-weight: bold;">{{sw ?
+                                'CONSULTAR CENSO' : 'DATOS BASICOS'}}</strong></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <div ng-if="sw">
+            <div class="row" style="margin-bottom: 13;width: 98%;margin-top: 1rem;">
+                <div style="padding:0px">
+                    <div class="card-content clearfix" style="padding-bottom:0px">
+                        <div class="col s12">
+                            <div class="row">
+                                <!-- <div ng-show="verbusqueda" class="row"> -->
+                                <div class="col l4 m4 s4" style="padding-left: 20px; padding-right: 0px;">
+                                    <label style="padding-left: 25%;">Seleccione Tipo Documento </label>
+                                    <spam style="color:red">*</spam>
+                                    <select ng-model="formSearch.Tipo_Doc"
+                                        style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                                        <option value="" ng-disabled="true">Seleccionar Tipo Documento</option>
+                                        <option ng-repeat="tipodocumento in Tipos_Documentos | orderBy:'NOMBRE'"
+                                            value="{{tipodocumento.CODIGO}}">{{tipodocumento.NOMBRE}} -
+                                            [{{tipodocumento.CODIGO}}]</option>
+                                    </select>
+                                </div>
+                                <div class="col l4 m4 s4">
+                                    <label style="padding-left: 35%;">Numero Documento</label>
+                                    <div class="col s12 ">
+                                        <input ng-model="formSearch.Num_Doc" id="buscar_numero" type="text"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                            style="border: 1px solid #dee2e6;
+                                            border-radius: 0.25rem;background-color: #fff;background-clip: padding-box;padding: 0 1em;"
+                                            class="ng-pristine ng-valid ng-animate ng-valid-max-add ng-valid-max ng-valid-max-add-active ng-touched">
+                                    </div>
+                                </div>
+                                <div class="col l4 m4 s4">
+                                    <div class="col s12">
+                                        <button class="btn white-text blue buscarafi"
+                                            ng-click="BuscarCenso()">Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Informacion Basica y Gestion -->
+        <div ng-if="!sw">
+            <div class="row" style="margin: unset;">
+                <div style="padding:0px">
+                    <div class="card-content clearfix" style="padding-bottom:0px">
+                        <div class="col s12 center">
+                            <div class="row">
+                                <div class="col l3 m3 s3" style="padding-left: 20px; padding-right: 0px;">
+                                    <label>NOMBRE</label>
+                                    <h6 style="font-weight: bold;">{{ArrCensoCerrado[0].nombre_afi}}</h6>
+                                </div>
+                                <div class="col l3 m3 s3">
+                                    <label>IDENTIFICACIÓN</label>
+                                    <h6 style="font-weight: bold;">{{ArrCensoCerrado[0].tipo_doc}} - {{ArrCensoCerrado[0].documento_afi}}</h6>
+                                </div>
+                                <div class="col l3 m3 s3">
+                                    <label>NACIMIENTO</label>
+                                    <h6 style="font-weight: bold;">{{ArrCensoCerrado[0].Fecha}}</h6>
+                                </div>
+                                <div class="col l3 m3 s3">
+                                    <label>REGIMEN</label>
+                                    <h6 style="font-weight: bold;">{{ArrCensoCerrado[0].regimen}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-content clearfix card" style="width: 95%;margin: 1rem auto auto auto;border-radius: 15px;"
+        ng-show="ArrCensoCerrado.length > 0 && !sw">
+        <div class="charts" style="margin-bottom: 0px;width: 99%;">
+            <div class="col s12">
+                <div class="row">
+                    <div class="col l8 m8 s8" style="margin-left: 4vh">
+                        Un resultado de <strong> {{ArrCensoCerrado.length}} Censo, por el filtro
+                            Anterior</strong>
+                    </div>
+                    <div class="col l3 m3 s3" style="margin-left: 4vh">
+                        <input id="buscarpro" type="text" style="height: 3vh;margin: unset;" ng-model="filtro"
+                            ng-change="filter(filtro)" placeholder="FILTRAR" required>
+                    </div>
+                </div>
+            </div>
+            <!-- Resultados -->
+            <div style="max-height: 44vh;overflow-y: auto;">
+                <div class="card-action" style="padding: unset"
+                    ng-repeat="d in arrCensoCerradoTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+                    <div class="row" style="margin-bottom: 0">
+                        <div class="col s12" style="padding: 0">
+                            <div class="row">
+                                <div class="col s12 default-background">
+                                    <span class="white-text"> <b> No. CENSO {{d.numero_cen}} - UBICACION
+                                            {{d.Ubicacion}}
+                                        </b></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tabla -->
+                        <div class="row">
+                            <div class="col s12">
+                                <table class="striped table-bordered">
+                                    <thead>
+                                        <th class="text-center">DIAGNOSTICO</th>
+                                        <th class="text-center">IPS</th>
+                                        <th class="text-center">FECHA DE INGRESO</th>
+                                        <th class="text-center">FECHA DE EGRESO</th>
+                                        <th class="text-center">DIAS DE ESTANCIA</th>
+                                        <th class="text-center">ESTADO</th>
+                                        <th class="text-center">EVOLUCIONES</th>
+                                        <th class="text-center">VALOR FACTURA</th>
+                                        <th class="text-center">AGREGAR FACTURA</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center"> {{d.nom_diagnostico}}</td>
+                                            <td class="text-center">{{d.pretador}}</td>
+                                            <td class="text-center">{{d.f_ingreso}}</td>
+                                            <td class="text-center">{{d.f_egreso}}</td>
+                                            <td class="text-center">{{d.dias_estancia}}</td>
+                                            <td class="text-center">{{d.estado}}</td>
+                                            <td class="text-center">{{d.cant_evolucion}}</td>
+                                            <td class="text-center">{{d.vr_factura}}</td>
+                                            <td class="text-center">
+                                                <button class="blue btn-floating waves-effect waves-light"
+                                                    ng-click="actualizaFacturaCensoCerrado(d)"><i
+                                                        class="material-icons">mode_edit</i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="arrCensoCerradoTemp.length==0" class="text-center" style="border: 1px solid #ddd">
+                <h5 class="default-color"> No hay coincidencias encontradas</h5>
+            </div>
+            <ul ng-hide="inactivepro" style="text-align: center;" class="pagination">
+                <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                        ng-click="paso('back')">&laquo;</button></li>
+                <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                        class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                <li><button ng-disabled='currentPage >= arrCensoCerradoTemp.length/pageSize - 1'
+                        class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <!-- Estilos -->
+    <style>
+        .newdesing .content-container {
+            min-height: 0;
+        }
+
+        .buscarafi {
+            background: linear-gradient(to bottom left, #5870ae, #1a2e63, #5870ae);
+            width: 100%;
+            margin-top: 23px;
+            height: 45px;
+            border-radius: 10px;
+        }
+    </style>
+
+</div>

@@ -1,0 +1,341 @@
+<div class="row">
+    <div ng-class="(soportes === null || muestraSoporte === false) ? 'col l12 m12 s12' : 'col l6 m6 s6'">
+        <div class="card">
+            <div class="card-content" style="display: flex; justify-content: space-between;">
+                <h5 style="display: flex;">Estado de Afiliado</h5>
+                <a href="javascript: void(0)" ng-hide="muestraSoporte === true" ng-click="muestraSoporte = true">MOSTRAR SOPORTES</a>
+            </div>
+            <div class="card-action">
+                <div class="row">
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l2 m2 s2 margin">
+                            <input id="ant_hta" name="ant_hta" type="checkbox" ng-model="informacion.ant_hta" />
+                            <label for="ant_hta">HTA</label>
+                        </div>
+                        <div class="input-field col l2 m2 s2 margin">
+                            <input id="ant_dm" name="ant_dm" type="checkbox" ng-model="informacion.ant_dm" />
+                            <label for="ant_dm">DM</label>
+                        </div>
+                        <div class="input-field col l2 m2 s2 margin">
+                            <input id="ant_cancer" name="ant_cancer" type="checkbox"
+                                ng-model="informacion.ant_cancer" />
+                            <label for="ant_cancer">CÁNCER</label>
+                        </div>
+                        <div class="input-field col l2 m2 s2 margin">
+                            <input id="ant_vih" name="ant_vih" type="checkbox" ng-model="informacion.ant_vih" />
+                            <label for="ant_vih">VIH</label>
+                        </div>
+                        <div class="input-field col l2 m2 s2 margin">
+                            <input id="ant_erc" name="ant_erc" type="checkbox" ng-model="informacion.ant_erc" />
+                            <label for="ant_erc">ERC</label>
+                        </div>
+                        <div class="input-field col l2 m2 s2 margin">
+                            <input id="ant_epoc" name="ant_epoc" type="checkbox" ng-model="informacion.ant_epoc" />
+                            <label for="ant_epoc">EPOC</label>
+                        </div>
+                        <div class="input-field col l1 m1 s1 margin">
+                            <input id="ant_asma" name="ant_asma" type="checkbox" ng-model="informacion.ant_asma" />
+                            <label for="ant_asma">ASMA</label>
+                        </div>
+                    </div>
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;">
+                            <label for="simple-select" class="active">Fecha Seguimiento</label>
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_inicial"
+                                placeholder="dd/mm/yyyy" ng-model="informacion.fecha_inicial"
+                                class="datepicker_inicio picker__input" style=" background-color: white;">
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Discapacidad</label>
+                            <select id="discapacidad" name="discapacidad" class="select-chosen-eps"
+                                ng-model="informacion.discapacidad">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="dis in discapacidadData" value="{{dis.codigo}}">{{dis.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l4 m12 s12 margin">
+                            <label class="labelper">Fuente de Reporte</label>
+                            <select id="fuente_m" name="fuente" class="select-chosen-eps" ng-model="informacion.fuente">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="fue in FuenteData" value="{{fue.codigo}}">
+                                    {{fue.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Estado</label>
+                            <select id="estado" name="estado" class="select-chosen-eps" ng-model="informacion.estado"
+                                ng-change="changeProceso(informacion.estado);">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="es in estadoData" value="{{es.codigo}}">
+                                    {{es.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l2 m2 s2 margin" style="padding: 8px !important;"
+                            ng-hide="hde.FechaInicioSintomas">
+                            <label for="simple-select" class="active">Fecha Inicio Sintomas</label>
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_inicio_sintomas"
+                                placeholder="dd/mm/yyyy" ng-disabled="dsb.FechaInicioSintomas"
+                                ng-model="informacion.fecha_inicio_sintomas" class="datepicker_inicio picker__input"
+                                style=" background-color: white;">
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                            ng-hide="hde.FechaConsultaInicial">
+                            <label for="simple-select" class="active">Fecha Consulta Inicial</label>
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_consulta_inicial"
+                                placeholder="dd/mm/yyyy" ng-disabled="dsb.FechaConsultaInicial"
+                                ng-model="informacion.fecha_consulta_inicial" class="datepicker_inicio picker__input"
+                                style=" background-color: white;">
+                        </div>
+                    </div>
+
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                            ng-hide="hde.FechaTomaMuestra">
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_toma_muestra"
+                                placeholder="dd/mm/yyyy" ng-disabled="dsb.FechaTomaMuestra"
+                                ng-model="informacion.fecha_toma_muestra" 7 class="datepicker_inicio picker__input"
+                                style=" background-color: white;">
+                            <label for="simple-select" class="active">Fecha Toma Muestra</label>
+                        </div>
+
+
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                            ng-hide="hde.FechaInformeResultado">
+                            <label for="simple-select" class="active">Fecha Informe Resultado</label>
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_informe_resultado"
+                                placeholder="dd/mm/yyyy" ng-disabled="dsb.FechaInformeResultado"
+                                ng-model="informacion.fecha_informe_resultado" class="datepicker_inicio picker__input"
+                                style=" background-color: white;">
+                        </div>
+
+                        <div class="input-field col l2 m12 s12 margin" ng-hide="hde.Resultado">
+                            <label class="labelper">Resultado</label>
+                            <select id="resultado" name="resultado" class="select-chosen-eps"
+                                ng-disabled="dsb.Resultado" ng-model="informacion.resultado">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="res in resultadoData" value="{{res.codigo}}">
+                                    {{res.nombre}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                            ng-show="informacion.fecha_toma_muestra_2 !== '' && informacion.fecha_informe_resultado_2 !== ''">
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_toma_muestra"
+                                placeholder="dd/mm/yyyy" readonly ng-model="informacion.fecha_toma_muestra_2" 7
+                                class="datepicker_inicio picker__input" style=" background-color: white;">
+                            <label for="simple-select" class="active">Fecha Toma Muestra 2</label>
+                        </div>
+
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                            ng-show="informacion.fecha_informe_resultado_2 !== ''">
+                            <label for="simple-select" class="active">Fecha Informe Resultado 2</label>
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_informe_resultado"
+                                placeholder="dd/mm/yyyy" readonly ng-model="informacion.fecha_informe_resultado_2"
+                                class="datepicker_inicio picker__input" style=" background-color: white;">
+                        </div>
+                    </div>
+
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l4 m12 s12 margin">
+                            <label class="labelper">Ente Reportante</label>
+                            <select id="ente_reporta" name="ente_reporta" class="select-chosen-eps"
+                                ng-disabled="dsb.EnteReporta" ng-model="informacion.ente_reporta">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="er in entidadReportaData" value="{{er.codigo}}">
+                                    {{er.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper" for="periodo">Días Toma Muestra</label>
+                            <input id="periodo" type="text" ng-disabled="dsb.Periodo" ng-model="informacion.periodo">
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Tipo de Caso</label>
+                            <select id="tipo_caso" name="tipo_caso" class="select-chosen-eps" ng-disabled="dsb.TipoCaso"
+                                ng-model="informacion.tipo_caso" ng-change="chgTipoCaso(informacion.tipo_caso);">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="tc in tipoCasoData" value="{{tc.codigo}}">
+                                    {{tc.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l3 m12 s12 margin">
+                            <label class="labelper" for="pais_procedencia">País de Procedencia</label>
+                            <input id="pais_procedencia" type="text" ng-disabled="dsb.Procedencia"
+                                ng-model="informacion.pais_procedencia" style="text-transform:uppercase;"
+                                onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        </div>
+                    </div>
+
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l3 m12 s12 margin">
+                            <label class="labelper">Tipo Atención</label>
+                            <select id="tipo_atencion" name="tipo_atencion" class="select-chosen-eps"
+                                ng-disabled="dsb.TipoAtencion" ng-model="informacion.tipo_atencion"
+                                ng-change="chgTipoAtencion(informacion.tipo_atencion);">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="ta in tipoAtencionData" value="{{ta.codigo}}">
+                                    {{ta.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l3 m12 s12 margin">
+                            <label class="labelper" for="ips_atencion">IPS Atención</label>
+                            <input id="ips_atencion" type="text" ng-disabled="dsb.IpsAtencion"
+                                ng-model="informacion.ips_atencion" style="text-transform:uppercase;"
+                                onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Estado Vital</label>
+                            <select id="estado_vital" name="estado_vital" class="select-chosen-eps"
+                                ng-disabled="dsb.EstadoVital" ng-model="informacion.estado_vital"
+                                ng-change="chgEstadoVital(informacion.estado_vital);">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="esvi in estadoVitalData" value="{{esvi.codigo}}">
+                                    {{esvi.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                            ng-hide="hde.FechaMuerte">
+                            <label for="simple-select" class="active">Fecha de Muerte</label>
+                            <input class="datepicker picker__input calendario uppercase" id="fecha_muerte"
+                                placeholder="dd/mm/yyyy" ng-disabled="dsb.FechaMuerte"
+                                ng-model="informacion.fecha_muerte" class="datepicker_inicio picker__input"
+                                style=" background-color: white;">
+                        </div>
+                    </div>
+
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Terminó Tratamiento</label>
+                            <select id="termina_tratamiento" name="termina_tratamiento" class="select-chosen-eps"
+                                ng-disabled="dsb.TerminoTratamiento" ng-model="informacion.termina_tratamiento">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="tertr in terminaTratamientoData" value="{{tertr.codigo}}">
+                                    {{tertr.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                            ng-hide="hde.FechaTerminacionTratamiento">
+                            <label for="simple-select" class="active">Fecha Terminación Tratamiento</label>
+                            <input class="datepicker picker__input calendario uppercase"
+                                id="fecha_terminacion_tratamiento" placeholder="dd/mm/yyyy"
+                                ng-disabled="dsb.FechaTerminacionTratamiento"
+                                ng-model="informacion.fecha_terminacion_tratamiento"
+                                class="datepicker_inicio picker__input" style=" background-color: white;">
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Resultado Tratamiento</label>
+                            <select id="resultado_tratamiento" name="resultado_tratamiento" class="select-chosen-eps"
+                                ng-disabled="dsb.ResultadoTratamiento" ng-model="informacion.resultado_tratamiento">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="restr in resultadoTratamientoData" value="{{restr.codigo}}">
+                                    {{restr.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Condición Final</label>
+                            <select id="condicion_final" name="condicion_final" class="select-chosen-eps"
+                                ng-disabled="dsb.CondicionFinal" ng-model="informacion.condicion_final">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="cf in condicionFinalData" value="{{cf.codigo}}">
+                                    {{cf.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-field col l2 m12 s12 margin">
+                            <label class="labelper">Zona del Afiliado</label>
+                            <select id="zona_afiliado" name="zona_afiliado" class="select-chosen-eps"
+                                ng-model="informacion.zona_afiliado">
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option value="R">RURAL</option>
+                                <option value="U">URBANO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                        <div class="input-field col l12 m12 s12">
+                            <textarea id="tratamiento_medico" class="materialize-textarea  upperfont" maxlength="4000"
+                                ng-disabled="dsb.TratamientoMedico" ng-model="informacion.tratamiento_medico"
+                                style="text-transform:uppercase;"
+                                onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
+                            <label for="tratamiento_medico">Tratamiento Médico</label>
+                        </div>
+                    </div>
+
+                    <div class="input-field col s12">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <i class="icon-file-pdf"></i>
+                                <input type="file" accept=".pdf" id="archivoHistoriaClinica" ng-disabled="enProgreso">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input id="inputFilePlaceHolderMasive" class="file-path" type="text"
+                                    placeholder="Adjuntar historia clinica" ng-disabled="enProgreso">
+                                <span ng-if="dataFile"
+                                    ng-class="{'red-text': filePqrs==null, 'green-text': filePqrs!=null }">{{dataFile}}</span>
+                            </div>
+                        </div>
+
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <i class="icon-file-pdf"></i>
+                                <input type="file" accept=".pdf" id="archivoSismuestras" ng-disabled="enProgreso">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input id="inputFilePlaceHolderMasive" class="file-path" type="text"
+                                    placeholder="Adjuntar archivo SISMUESTRAS" ng-disabled="enProgreso">
+                                <span ng-if="dataFile"
+                                    ng-class="{'red-text': filePqrs==null, 'green-text': filePqrs!=null }">{{dataFile}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-button">
+                        <center>
+                            <a ng-click="Registrar(informacion)" class="btn btn-small"
+                                style="background-color: rgba(238, 64, 53, 0.8);">Registrar</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col l6 m6 s6" ng-show="(soportes !== null && muestraSoporte === true)">
+        <div class="card">
+            <div class="card-content" style="display: flex; justify-content: space-between;">
+                <h5 style="display: flex;">Soportes</h5>
+                <span style="font-size: 24px; cursor: pointer;" ng-click="muestraSoporte = false">&times;</span>
+            </div>
+            <div class="card-action">
+                <div class="row">
+                    <div class="col s12 m12 l12">
+                        <select id="discapacidad" name="discapacidad" class="select-chosen-eps" ng-model="datos.soporte"
+                            ng-change="mostrarSoporte()">
+                            <option value="" disabled>SELECCIONAR</option>
+                            <option ng-repeat="dis in soportes" value="{{dis.RUTA}}">{{dis.NOMBRE_SOPORTE}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" ng-show="datos.url !== null">
+                    <iframe src="{{datos.url}}" frameborder="0" style="width: 100%; height: 70vh;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

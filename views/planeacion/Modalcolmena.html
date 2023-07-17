@@ -1,0 +1,627 @@
+<div id="calendarioModal" class="close-none newdesing_modal">
+  <style>
+    .newdesing_modal input[type="date"]::-webkit-inner-spin-button,
+    .newdesing_modal input[type="date"]::-webkit-calendar-picker-indicator {
+      /* display: none; */
+      -webkit-appearance: none;
+    }
+
+    .newdesing_modal ::-webkit-input-placeholder {
+      color: #80868b;
+    }
+
+    #calendarioModal {
+      width: 60%;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      margin: auto;
+    }
+
+    #calendarioModal>.card {
+      background-color: #e5e6e6;
+      width: 100%;
+      overflow: auto;
+      max-height: 95%;
+    }
+
+    .input-w-p {
+      width: 100% !important;
+      padding: 0 0.5rem !important;
+    }
+
+    .newdesing_modal .ngdialog-add>.icon-plus {
+      cursor: url(assets/cursor/abeja1.png), pointer;
+    }
+
+    .w-100 {
+      width: 100% !important;
+    }
+
+    .select-w-50 {
+      width: 150%;
+    }
+
+    /* .btn-inactivo {
+              background-color: #DFDFDF !important;
+              box-shadow: none;
+              color: #9F9F9F !important;
+              cursor: pointer;
+              opacity: .65;
+            } */
+
+    html.ngdialog-open,
+    body.ngdialog-open {
+      overflow: hidden !important;
+      height: auto !important;
+    }
+
+    #calendarioModal .w-30vw>.dropdown-content {
+      width: 30vw !important;
+    }
+
+    #calendarioModal .red {
+      background-color: #ff4350 !important;
+    }
+
+    .h-auto {
+      height: auto !important;
+    }
+
+    .newdesing [data-file]:before,
+    .newdesing_modal [data-file]:before {
+      font-size: 11px;
+    }
+
+    @media only screen and (max-width: 992px) {
+      #calendarioModal {
+        width: 95% !important;
+      }
+    }
+  </style>
+  <div class="col s12 m6 l6 card">
+    <div class="card-content" style="border-bottom: 5px solid #f8c400">
+      <div ng-if="panel.select == 0 && fechaActual3() && admin == true"
+        ng-click="cambiarVista(1, false, '');panel.select = 1" title="Crear Nuevo Reporte" class="ngdialog-add">
+        <i class="icon-plus"></i>
+      </div>
+      <h5 style="max-width: 85%;">{{titulo}}</h5>
+      <div title="Cerrar" class="ngdialog-close" style="margin-left: auto;"></div>
+    </div>
+    <div class="card-action border-none">
+      <!-- ---------------------------------------------------------------------------Vista previa del reporte------------------------------------------------------------------------------ -->
+      <div ng-if="panel.select == 0" class="row margin">
+        <div class="col l12 m12 s12" style="overflow: auto;max-height: 70vh;">
+          <div class="row margin" style="position:relative;height: 100%;">
+            <ul class="margin last-child-not-border" style="margin-right: 8px!important;">
+              <li class="detalles" ng-repeat="des in detalleFecha"
+                style="display: flex;padding: 8px 0;border-bottom: 1px solid #26a69a8c;">
+                <div ng-click="panel.select = 2;panel.botonera = 2;cambiarVista(2,false);verReporte(des.numero);"
+                  title="Ver Reporte" ng-class="{'w-100':admin == false}" class="details"
+                  style="display: flex;width: 82%;padding: 8px;border-radius: 15px;">
+                  <div
+                    style="justify-content: start;margin: auto 0;margin-right: 25px;margin-left: 15px;min-width: 15px;min-height: 15px;">
+                    <div class="active day-btn desable {{des.estado}}"></div>
+                  </div>
+                  <div style="margin-right: auto;line-height: 2;">
+                    {{des.nombre_reporte}}
+                  </div>
+                </div>
+                <div ng-if="admin == true"
+                  style="display: flex;align-items: center;justify-content: space-around;width: 18%;">
+                  <i ng-click="panel.select = 1;cambiarVista(1,true);verReporte(des.numero);" title="Editar"
+                    class="icon-edit grey-text margin"></i>
+                  <i ng-click="borrarReporte(des.numero)" title="Eliminar" class="icon-trash-empty red-text"></i>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------Editar y crear reportes------------------------------------------------------------------------------ -->
+      <div ng-if="panel.select == 1" class="row margin">
+        <div class="col l12 m12 s12">
+          <div class="row margin">
+            <div class="col s12 no-padding label-new m-b">
+              <select ng-model="reporte.codigo_reporte" class="select-new white" material-select watch
+                convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option ng-repeat="repo in codigo_reporte" value="{{repo.NUMERO}}">{{repo.NOMBRE}}</option>
+              </select>
+              <label title="Título del reporte">Contenido del Requerimiento *</label>
+            </div>
+            <div class="col s4 no-padding m-b label-new">
+              <input ng-model="fecha_reporteOri" ng-change="actualizarFechaNotifica(fecha_reporteOri);"
+                id="fecha_reporte" type="date"
+                onkeydown="return false" class="datepicker border-none input-date-new white m-r">
+                <!-- <input ng-model="fecha_reporteOri" ng-change="actualizarFechaNotifica(fecha_reporteOri);"
+                id="fecha_reporte"
+                min="{{(fechaActual() == true)?formatDate(CurrentDate, 3):formatDate(CurrentDate, 3)}}" type="date"
+                onkeydown="return false" class="datepicker border-none input-date-new white m-r"> -->
+              <label title="Fecha en que se debe entregar el reporte" for="fecha_reporte">Fecha Límite de entrega
+                *</label>
+            </div>
+            <div class="col s4 no-padding m-b label-new">
+              <select ng-model="reporte.hora" class="select-new white" material-select watch convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option value="7:00">7:00 a.m.</option>
+                <option value="8:00">8:00 a.m.</option>
+                <option value="9:00">9:00 a.m.</option>
+                <option value="10:00">10:00 a.m.</option>
+                <option value="11:00">11:00 a.m.</option>
+                <option value="12:00">12:00 p.m.</option>
+                <option value="13:00">1:00 p.m.</option>
+                <option value="14:00">2:00 p.m.</option>
+                <option value="15:00">3:00 p.m.</option>
+                <option value="16:00">4:00 p.m.</option>
+                <option value="17:00">5:00 p.m.</option>
+                <option value="18:00">6:00 p.m.</option>
+                <option value="19:00">7:00 p.m.</option>
+                <option value="20:00">8:00 p.m.</option>
+                <option value="21:00">9:00 p.m.</option>
+                <option value="22:00">10:00 p.m.</option>
+                <option value="23:00">11:00 p.m.</option>
+                <option value="24:00">12:00 a.m.</option>
+                <option value="1:00">1:00 a.m.</option>
+                <option value="2:00">2:00 a.m.</option>
+                <option value="3:00">3:00 a.m.</option>
+                <option value="4:00">4:00 a.m.</option>
+                <option value="5:00">5:00 a.m.</option>
+                <option value="6:00">6:00 a.m.</option>
+              </select>
+              <label title="Hora en que se debe entregar el reporte">Hora de Entrega *</label>
+            </div>
+            <div class="col s4 no-padding m-b label-new">
+              <select ng-model="reporte.frecuencia" class="select-new white m-l" material-select watch
+                convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option value="J">Diario</option>
+                <option value="A">Una vez</option>
+                <option value="B">Semanal</option>
+                <option value="C">Quincenal</option>
+                <option value="D">Mensual</option>
+                <option value="H">Bimensual</option>
+                <option value="E">Trimestral</option>
+                <option value="I">Cuatrimestral</option>
+                <option value="F">Semestral</option>
+                <option value="G">Anual</option>
+              </select>
+              <label title="Frecuencia con la que se va a generar el reporte">Frecuencia del Reporte *</label>
+            </div>
+            <div class="col s12 no-padding m-b">
+              <div class="col s8 no-padding label-new" style="height: auto;">
+                <textarea ng-model="reporte.objetivo" id="Objetivo" rows="5" cols="5"
+                  class="materialize-textarea input-w-p border-none textarea-new white"
+                  style="max-height: 6rem;min-height: 6rem;overflow: auto;"></textarea>
+                <label title="Objetivo o Descripción del reporte" for="Objetivo">Objetivo del Reporte *</label>
+              </div>
+              <div class="col s4 no-padding m-b label-new">
+                <input type="date" onkeydown="return false" id="fecha_notifica" name="fecha_notifica"
+                  ng-model="fecha_notifica" ng-change="calculaDias(fecha_reporteOri,fecha_notifica)"
+                  class="datepicker border-none input-date-new white m-l" 
+                  max="{{(fechaActual2() == true)?formatDate(fecha_reporteOri, 3):formatDate(fecha_reporteOri, 2)}}">
+                  <!-- <input type="date" onkeydown="return false" id="fecha_notifica" name="fecha_notifica"
+                  ng-model="fecha_notifica" ng-change="calculaDias(fecha_reporteOri,fecha_notifica)"
+                  class="datepicker border-none input-date-new white m-l" min="{{formatDate(CurrentDate, 3)}}"
+                  max="{{(fechaActual2() == true)?formatDate(fecha_reporteOri, 3):formatDate(fecha_reporteOri, 2)}}"> -->
+                <label title="Fecha en la cual se le empezara a notificar hasta el dia del reporte">Fecha de
+                  Notificación ({{diasAntes}} dia{{diasAntes>1?'s':''}}) *</label>
+              </div>
+              <div class="col s4 no-padding m-b label-new">
+                <select ng-model="reporte.entes" class="select-new white m-l" material-select watch convert-to-number>
+                  <option value="" ng-selected>Seleccionar</option>
+                  <option ng-repeat="en in entes" value="{{en.NUMERO}}">{{en.NOMBRE}}</option>
+                </select>
+                <label for="Ente">Ente de Control y vigilancia *</label>
+              </div>
+              <div class="col s4 no-padding m-b label-new select-w-50">
+                <select ng-model="reporte.revisa" class="select-new white m-r w-30vw" material-select watch
+                  convert-to-number>
+                  <option value="" ng-selected>Seleccionar</option>
+                  <option ng-repeat="rev in revisa | filter:{nombre:objetivo_Modal} track by rev.codigo"
+                    value="{{rev.codigo}}">{{rev.nombre}}</option>
+                </select>
+                <label>Revisa *</label>
+              </div>
+              <div class="col s4 no-padding m-b label-new">
+                <select ng-model="reporte.elabora" class="select-new white m-r" material-select watch convert-to-number>
+                  <option value="" ng-selected>Seleccionar</option>
+                  <option ng-repeat="ela in elabora" value="{{ela.codigo}}">{{ela.nombre}}</option>
+                </select>
+                <label title="Solo el que revisa puede seleccionar el que Elabora">Elabora</label>
+              </div>
+              <div class="col s4 no-padding m-b label-new">
+                <select ng-model="reporte.reporta" class="select-new white m-l" material-select watch convert-to-number>
+                  <option value="" ng-selected>Seleccionar</option>
+                  <option ng-repeat="rep in reporta track by rep.codigo" value="{{rep.codigo}}">{{rep.nombre}}</option>
+                </select>
+                <label title="Solo el que revisa puede seleccionar el que Reporta">Reporta</label>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <label for="file">Tipo Norma *</label>
+                <select ng-model="reporte.tipo_norma" class="select-new white m-r" material-select watch
+                  convert-to-number>
+                  <option value="" ng-selected>Seleccionar</option>
+                  <option ng-repeat="tipn in tipo_norma" value="{{tipn.NUMERO}}">{{tipn.NOMBRE}}</option>
+                </select>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <input ng-model="reporte.norma" id="Norma" type="text"
+                  class="margin border-none white input-text-new input-w-p">
+                <label for="Norma">Norma</label>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <input ng-model="reporte.anno_norma" id="año_norma" type="number" max="{{CurrentDate.getFullYear()}}"
+                  class="margin border-none white input-text-new input-w-p m-l">
+                <label for="año_norma">Año Norma</label>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <label for="file">Adjunto Norma <i ng-if="reporte.link_norma!=''"
+                    ng-click="getRutaTemp(reporte.link_norma)" class="icon-attach-5"></i></label>
+                <div data-file="{{(filesArray[0].name=='')?'RAR, ZIP, PDF, Excel, Word':filesArray[0].name}}"
+                  class="input-file-new white m-l">
+                  <i class="icon-folder-open-1"></i>
+                  <input ng-model="reporte.link_norma" select-ng-filel title="{{filesArray[0].name}}" id="0"
+                    ng-change="loadFile(0);" ng-init="reporte.link_norma=''" type="file" class="margin border-none"
+                    accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/x-rar-compressed, application/octet-stream,application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip">
+                </div>
+              </div>
+              <div ng-class="{'s4':reporte.tipo_archivo!=1}" class="col s3 no-padding label-new m-b">
+                <label for="file">Adjunto Anexo <i ng-if="reporte.link_anexo!=''"
+                    ng-click="getRutaTemp(reporte.link_anexo)" class="icon-attach-5"></i></label>
+                <div data-file="{{(filesArray[1].name=='')?'RAR, ZIP, PDF, Excel, Word':filesArray[1].name}}"
+                  class="input-file-new white m-r">
+                  <i class="icon-folder-open-1"></i>
+                  <input ng-model="reporte.link_anexo" select-ng-filel title="{{filesArray[1].name}}" id="1"
+                    ng-change="loadFile(1);" ng-init="reporte.link_anexo=''" type="file" class="margin border-none"
+                    accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/x-rar-compressed, application/octet-stream,application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip">
+                </div>
+              </div>
+              <div ng-class="{'s4':reporte.tipo_archivo!=1}" class="col s3 no-padding label-new m-b">
+                <label for="file">Tipo Archivo *</label>
+                <select ng-model="reporte.tipo_archivo" class="select-new white" material-select watch
+                  convert-to-number>
+                  <option value="" ng-selected>Seleccionar</option>
+                  <option ng-repeat="tip in tipo_archivo" value="{{tip.NUMERO}}">{{tip.NOMBRE}}</option>
+                </select>
+              </div>
+              <div ng-if="reporte.tipo_archivo==1" class="col s3 no-padding label-new m-b">
+                <input ng-model="reporte.delimitado" id="delimitado" type="text" maxlength="1"
+                  class="margin border-none white input-text-new input-w-p m-l">
+                <label for="delimitado">Delimitado</label>
+              </div>
+              <div ng-class="{'s4':reporte.tipo_archivo!=1}" class="col s3 no-padding label-new m-b">
+                <input ng-model="reporte.cant_archivo" id="cant_archivo" type="number" min="1"
+                  class="margin border-none white input-text-new input-w-p m-l">
+                <label for="cant_archivo">Cantidad de archivos</label>
+              </div>
+            </div>
+          </div>
+          <input ng-if="tipo" class="waves-effect waves-light btn white-text red left-align" type="button"
+            ng-click="modalClose()" value="Cerrar">
+          <input ng-if="!tipo && detalles.length!=0" ng-click="panel.select = 0;cambiarVista(0,false);"
+            class="waves-effect waves-light btn white-text grey  left-align" type="button" value="Atras">
+          <input ng-if="!btn_update" ng-click="guardarReporte(fecha_reporteOri)"
+            class="btn white-text default-background right" type="submit" value="Agendar Reporte">
+          <input ng-if="btn_update" ng-click="editarReporte(fecha_reporteOri)"
+            class="btn white-text default-background right" type="submit" value="Guardar Cambios">
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------Ver detalles del reporte / reportar------------------------------------------------------------------------------ -->
+      <div ng-if="panel.select == 2" class="row margin">
+        <div class="col l12 m12 s12">
+          <div class="row margin">
+            <div class="col l12 m12 s12">
+              <div class="col s8 no-padding label-new m-b h-auto">
+                <label>Contenido del Requerimiento:</label>
+                <p class="margin m-l">{{detalleReporte[0].nombre_reporte}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label for="fecha_reporte">Fecha de creación del reporte:</label>
+                <p class="margin m-l">{{detalleReporte[0].fecha_registro}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label for="fecha_reporte">Fecha Límite de entrega:</label>
+                <p class="margin m-l">{{detalleReporte[0].fecha}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Hora de Entrega:</label>
+                <p class="margin m-l">{{horaText(detalleReporte[0].hora)}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Frecuencia del Reporte:</label>
+                <p class="margin m-l">{{frecuenciaText(detalleReporte[0].frecuencia)}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s8 no-padding label-new" style="height: 6rem;">
+                <label for="Objetivo">Objetivo del Reporte:</label>
+                <p class="margin m-l" style="overflow: auto;">{{detalleReporte[0].objetivo}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Fecha de Notificación:</label>
+                <p class="margin m-l">{{detalleReporte[0].notifica}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label for="Ente">Ente de Control y vigilancia:</label>
+                <p class="margin m-l">{{detalleReporte[0].nombre_ente}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Revisa:</label>
+                <p class="margin m-l">{{detalleReporte[0].revisa}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Elabora:</label>
+                <p class="margin m-l">{{detalleReporte[0].elabora}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Reporta:</label>
+                <p class="margin m-l">{{detalleReporte[0].reporta}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Tipo Norma:</label>
+                <p class="margin m-l">{{detalleReporte[0].tipo_norma}}</p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="Norma">Norma:</label>
+                <p class="margin m-l">{{detalleReporte[0].norma}}</p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="año_norma">Año Norma:</label>
+                <p class="margin m-l">{{detalleReporte[0].anno_norma}}</p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Adjunto Norma:</label>
+                <p class="margin m-l">
+                  <a ng-if="detalleReporte[0].link_norma!='' && detalleReporte[0].link_norma!=null"
+                    ng-click="getRutaTemp(detalleReporte[0].link_norma)" style="cursor: pointer;">Ver Norma</a>
+                </p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Adjunto Anexo:</label>
+                <p class="margin m-l">
+                  <a ng-if="detalleReporte[0].link_anexo!='' && detalleReporte[0].link_anexo!=null"
+                    ng-click="getRutaTemp(detalleReporte[0].link_anexo)" style="cursor: pointer;">Ver Anexo</a>
+                </p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Tipo Archivo:</label>
+                <p class="margin m-l">{{detalleReporte[0].nom_tipo_archivo}}</p>
+              </div>
+              <div ng-if="detalleReporte[0].delimitado!='' && detalleReporte[0].delimitado!=null"
+                class="col s3 no-padding label-new m-b h-auto">
+                <label for="delimitado">Delimitado:</label>
+                <p class="margin m-l">{{detalleReporte[0].delimitado}}</p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="cant_archivo">Cantidad de archivos:</label>
+                <p class="margin m-l">{{detalleReporte[0].cant_archivo}}</p>
+              </div>
+            </div>
+          </div>
+          <div
+            ng-if="detalleReporte[0].archivo_cargado==null && admin == true || detalleReporte[0].archivo_cargado==null && cedula == detalleReporte[0].cedula_reporta"
+            style="display: flex;justify-content: space-between;margin-top: 1em;">
+            <div class="label-new margin" style="width: 200px;">
+              <input 
+                type="date" onkeydown="return false" id="fecha_cargueOri" name="fecha_cargueOri"
+                ng-model="fecha_cargueOri" class="datepicker border-none input-date-new white {{fecha_cargueOri}}"
+                style="border-radius: 2px;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);cursor: pointer;margin: 0;height: 2.4rem;">
+                <!-- <input
+                min="{{detalleReporte[0].fecha_registro.substring(6)+'-'+detalleReporte[0].fecha_registro.substring(3,5)+'-'+detalleReporte[0].fecha_registro.substring(0,2)}}"
+                type="date" onkeydown="return false" id="fecha_cargueOri" name="fecha_cargueOri"
+                ng-model="fecha_cargueOri" class="datepicker border-none input-date-new white {{fecha_cargueOri}}"
+                style="border-radius: 2px;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);cursor: pointer;margin: 0;height: 2.4rem;"> -->
+              <label>Fecha de cargue *</label>
+            </div>
+            <div class="label-new margin">
+              <label for="file">Adjunto Reporte *</label>
+              <div data-file="{{(filesArray[2].name=='')?'Seleccionar .rar, .zip':filesArray[2].name}}"
+                class="input-file-new white"
+                style="width: 200px;height: 2.4rem;border-radius: 2px;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);cursor: pointer;">
+                <i class="icon-folder-open-1"></i>
+                <input ng-model="reporte.link_cargue" type="file"
+                  accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  select-ng-filel title="{{filesArray[2].name}}" id="2" ng-change="loadFile(2);"
+                  ng-init="reporte.link_cargue=''" ng-model="reporte.link_cargue" class="margin border-none"
+                  style="cursor: pointer;">
+              </div>
+            </div>
+            <input ng-click="cargarReporte(fecha_cargueOri,detalleReporte[0].numero)" ng-if="panel.select == 2"
+              class="btn white-text default-background right" type="submit" value="Cargar reporte">
+          </div>
+          <div
+            ng-if="admin == true && detalleReporte[0].archivo_cargado!=null || cedula == detalleReporte[0].cedula_revisa && detalleReporte[0].archivo_cargado!=null || cedula == detalleReporte[0].cedula_elabora && detalleReporte[0].archivo_cargado!=null || cedula == detalleReporte[0].cedula_reporta && detalleReporte[0].archivo_cargado!=null"
+            style="display: flex;justify-content: space-between;margin-top: 1em;">
+            <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+              value="Cerrar">
+            <!-- <input ng-if="detalles.length==0" ng-click="panel.select = 3;cambiarVista(3,false);" class="waves-effect waves-light btn white-text grey  left-align"
+                type="button" value="Atras"> -->
+            <input ng-click="getRutaTemp(detalleReporte[0].archivo_cargado)"
+              class="btn white-text default-background right" type="submit" value="Ver reporte">
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------Gestionar Reportes------------------------------------------------------------------------------ -->
+      <div ng-if="panel.select == 3" class="row margin">
+        <div class="col l12 m12 s12">
+          <div class="row margin">
+            <ul class="margin last-child-not-border" style="margin-right: 8px!important;">
+              <li ng-repeat="ges in gestion" style="display: flex;padding: 8px 0;border-bottom: 1px solid #26a69a8c;">
+                <div style="width: 24%;padding: 8px;">
+                  <span
+                    style="color: #3c4043;cursor: pointer;display: inline-block;font-family: 'Google Sans',Roboto,Arial,sans-serif;font-size: 18px;width: 36px;">{{formatDateArray(ges.fecha,1)}}</span>
+                  <span style="text-transform: capitalize;">{{formatDateArray(ges.fecha,2)}},
+                    {{formatDateArray(ges.fecha,0).substring(0,3)}}</span>
+                </div>
+                <div
+                  ng-click="panel.select = 2;cambiarVista(2,false,formatDateArray(ges.fecha,1),formatDateArray(ges.fecha,2),formatDateArray(ges.fecha,4),formatDateArray(ges.fecha,0));panel.botonera = 2;verReporte(ges.numero,formatDateArray(ges.fecha,1),formatDateArray(ges.fecha,0),formatDateArray(ges.fecha,2),formatDateArray(ges.fecha,3),formatDateArray(ges.fecha,4))"
+                  class="details"
+                  style="display: flex;width: 63%;padding: 8px;border-top-left-radius: 15px;border-bottom-left-radius: 15px;align-items: center;">
+                  <div
+                    style="justify-content: start;margin: auto 0;margin-right: 25px;margin-left: 15px;min-width: 15px;min-height: 15px;">
+                    <div class="active day-btn desable {{ges.estado}}"></div>
+                  </div>
+                  <div style="margin-right: auto;line-height: 2;">
+                    {{ges.nombre_reporte}}
+                  </div>
+                </div>
+                <div class="btn-panel"
+                  style="display: flex;align-items: center;justify-content: space-around;width: 13%;">
+                  <i ng-if="misRevisa.length > 0 || admin == true"
+                    ng-click="panel.select = 4;cambiarVista(4,true);verReporte(ges.numero);" title="Asignar"
+                    class="icon-users-1 margin {{ges.asignado}}"></i>
+                  <i ng-click="(ges.archivo_cargado!='' && ges.archivo_cargado!=null)?getRutaTemp(ges.archivo_cargado):''"
+                    title="Ver Reporte"
+                    class="icon-file-archive margin {{(ges.archivo_cargado!='' && ges.archivo_cargado!=null)?'blue-text':''}}"
+                    style="font-size: 15px;"></i>
+                  <i ng-click="gestionarReportes(ges.numero,'A',ges.archivo_cargado)" title="No Aprobado"
+                    class="icon-thumbs-down-alt margin red-text" style="font-size: 15px;"></i>
+                  <i ng-click="gestionarReportes(ges.numero,'P',ges.archivo_cargado)" title="Aprobado"
+                    class="icon-thumbs-up-alt margin green-text" style="font-size: 15px;"></i>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------Vista previa del reporte------------------------------------------------------------------------------ -->
+      <div ng-if="panel.select == 4" class="row margin">
+        <div class="col l12 m12 s12">
+          <div class="row" style="margin-bottom: 1em;">
+            <div class="col s3 no-padding m-b label-new" title="{{reporte.elabora}}">
+              <select ng-model="reporte.elabora" ng-change="listarCargo(reporte.elabora,0)"
+                class="select-new white m-r w-30vw" material-select watch convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option ng-repeat="ela in elabora" value="{{ela.codigo}}">{{ela.nombre}}</option>
+              </select>
+              <label>Cargo Elabora *</label>
+            </div>
+            <div class="col s3 no-padding m-b label-new" title="{{reporte.cedula_elabora}}">
+              <select ng-model="reporte.cedula_elabora" class="select-new white w-30vw" material-select watch
+                convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option ng-repeat="usuela in usuelabora" value="{{usuela.documento}}">{{usuela.nombre}}</option>
+              </select>
+              <label>Usuario Elabora *</label>
+            </div>
+            <div class="col s3 no-padding m-b label-new" title="{{reporte.reporta}}">
+              <select ng-model="reporte.reporta" ng-change="listarCargo(reporte.reporta,1)"
+                class="select-new white m-l m-r w-30vw" material-select watch convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option ng-repeat="rep in reporta" value="{{rep.codigo}}">{{rep.nombre}}</option>
+              </select>
+              <label>Cargo Reporta *</label>
+            </div>
+            <div class="col s3 no-padding m-b label-new" title="{{reporte.cedula_reporta}}">
+              <select ng-model="reporte.cedula_reporta" class="select-new white w-30vw" material-select watch
+                convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option ng-repeat="usurep in usureporta" value="{{usurep.documento}}">{{usurep.nombre}}</option>
+              </select>
+              <label>Usuario Reporta *</label>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s4 no-padding label-new m-b h-auto">
+                <label>Contenido del Requerimiento:</label>
+                <p class="margin m-l">{{detalleReporte[0].nombre_reporte}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Revisa:</label>
+                <p class="margin m-l">{{detalleReporte[0].revisa}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label for="fecha_reporte">Fecha del reporte:</label>
+                <p class="margin m-l">{{detalleReporte[0].fecha_registro}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label for="fecha_reporte">Fecha Límite de entrega:</label>
+                <p class="margin m-l">{{detalleReporte[0].fecha}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Hora de Entrega:</label>
+                <p class="margin m-l">{{horaText(detalleReporte[0].hora)}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Frecuencia del Reporte:</label>
+                <p class="margin m-l">{{frecuenciaText(detalleReporte[0].frecuencia)}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s8 no-padding label-new" style="height: 6rem;">
+                <label for="Objetivo">Objetivo del Reporte:</label>
+                <p class="margin m-l" style="overflow:auto">{{detalleReporte[0].objetivo}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Fecha de Notificación:</label>
+                <p class="margin m-l">{{detalleReporte[0].notifica}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label for="Ente">Ente de Control y vigilancia:</label>
+                <p class="margin m-l">{{detalleReporte[0].nombre_ente}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Tipo Norma:</label>
+                <p class="margin m-l">{{detalleReporte[0].tipo_norma}}</p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="Norma">Norma:</label>
+                <p class="margin m-l">{{detalleReporte[0].norma}}</p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="año_norma">Año Norma:</label>
+                <p class="margin m-l">{{detalleReporte[0].anno_norma}}</p>
+              </div>
+              <div class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Adjunto Norma:</label>
+                <p class="margin m-l">
+                  <a ng-if="detalleReporte[0].link_norma!='' && detalleReporte[0].link_norma!=null"
+                    ng-click="getRutaTemp(detalleReporte[0].link_norma)" style="cursor: pointer;">Ver Norma</a>
+                </p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12">
+              <div ng-class="{'s4':detalleReporte[0].tipo_archivo!=1}" class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Adjunto Anexo:</label>
+                <p class="margin m-l">
+                  <a ng-if="detalleReporte[0].link_anexo!='' && detalleReporte[0].link_anexo!=null"
+                    ng-click="getRutaTemp(detalleReporte[0].link_anexo)" style="cursor: pointer;">Ver Anexo</a>
+                </p>
+              </div>
+              <div ng-class="{'s4':detalleReporte[0].tipo_archivo!=1}" class="col s3 no-padding label-new m-b h-auto">
+                <label for="file">Tipo Archivo:</label>
+                <p class="margin m-l">{{detalleReporte[0].nom_tipo_archivo}}</p>
+              </div>
+              <div ng-if="detalleReporte[0].delimitado!='' && detalleReporte[0].delimitado!=null"
+                class="col s3 no-padding label-new m-b h-auto">
+                <label for="delimitado">Delimitado:</label>
+                <p class="margin m-l">{{detalleReporte[0].delimitado}}</p>
+              </div>
+              <div ng-class="{'s4':detalleReporte[0].tipo_archivo!=1}" class="col s3 no-padding label-new m-b h-auto">
+                <label for="cant_archivo">Cantidad de archivos:</label>
+                <p class="margin m-l">{{detalleReporte[0].cant_archivo}}</p>
+              </div>
+            </div>
+          </div>
+          <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+            value="Cerrar">
+          <input ng-click="asignarReporte(reporte.cedula_elabora,reporte.cedula_reporta)"
+            class="btn white-text default-background right" type="submit" value="Asignar Reporte">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1765 @@
+<div ng-init="validador_De_fecha()">
+	<div id="TourStep" ng-show="TourInit.active" class="card margin" style="margin: 1em!important;">
+		<div id="StepTriangle">
+			<div></div>
+		</div>
+		<div class="card-content">
+			<span class="card-title transparent"
+				style="font-size: 1.5em;line-height: normal;font-weight: 600;">{{tituloStep}}</span>
+			<p>{{descripcionStep}}</p>
+		</div>
+		<div class="card-action" style="display: flex;justify-content: flex-end;">
+			<small>{{Now+1}}/{{steps.length}}</small>
+			<a href="javascript:void(0)" ng-click="backStep()">{{btnBack}}</a>
+			<a href="javascript:void(0)" ng-click="nextStep();">{{btnNext}}</a>
+		</div>
+	</div>
+
+	<ul tabs="" reload="allTabContentLoaded"
+		class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content" style="overflow: hidden;">
+		<li ng-show="permisosNacional" class="tab col s4" style="cursor: pointer;">
+			<a ng-class="{ active: isSet(1) }" ng-click="setTab(1)"
+				class="col s2 large  waves-pink tabI">Parametrización</a>
+		</li>
+		<li class="tab col s4" style="cursor: pointer;">
+			<a ng-class="{ active: isSet(2) }" ng-click="setTab(2)" class="col s2 large waves-pink tabII">Gestión
+				de Empresas</a>
+		</li>
+		<li class="tab col s5" style="cursor: pointer;" ng-show="permisosRegionales || permisosNacional">
+			<a ng-class="{ active: isSet(3) }" ng-click="setTab(3)" class="col s2 large  waves-pink tabIII">Gestión
+				por Empresa</a>
+		</li>
+		<li class="tab col s5" style="cursor: pointer;" ng-show="permisosRegionales || permisosNacional">
+			<a ng-class="{ active: isSet(4) }" ng-click="setTab(4)" class="col s2 large  waves-pink tabIV">Gestión
+				por Afiliaciones</a>
+		</li>
+	</ul>
+	<div class="col s12 m10 l0 offset-m1 offset-l1">
+		<div class="card" style="padding: 20px">
+			<blockquote class="derecha" style="border-left: 5px solid #000000 !important">
+				<h4>{{Title}}
+				</h4>
+
+				<div class="tooltip" data-position="left" ng-show="isSet(3)"
+					style="border: 0px;border-radius: 25px;box-shadow: rgba(0, 0, 0, 0.3) 5px 0px 6px;padding: 3px;position: absolute;top: 36px;left: 26.5em;">
+					<i ng-click="gestion_diaria()" class="fo fontello-icon icon-calendar-3"
+						style="font-size: 28px;"></i>
+					<span class="tooltiptext" style="    background-color: #9095a254;
+			color: #131313;
+			border-radius: 9px;
+			bottom: 10px;
+			width: 330px;
+			left: 8em;
+			border-left: 1px solid;">
+						Consolidado Diario de Registro de Empresa</span>
+				</div>
+				<div class="tooltip" data-position="left" ng-show="isSet(4)"
+					style="border: 0px;border-radius: 25px;box-shadow: rgba(0, 0, 0, 0.3) 5px 0px 6px;padding: 3px;position: absolute;top: 36px;left: 28.5em;">
+					<i ng-click="gestion_diaria_afiliaciones()" class="fo fontello-icon  icon-chart-2"
+						style="font-size: 28px;"></i>
+					<span class="tooltiptext" style="   background-color: #9095a254;
+	color: #131313;
+	border-radius: 9px;
+	bottom: 10px;
+	width: 330px;
+	left: 8em;
+	border-left: 1px solid;">
+						Consolidado Diario de afiliaciones de Empresa</span>
+				</div>
+
+			</blockquote>
+		</div>
+		<div class="container" style="width: 90% ;    background: #fff;    margin-bottom: -77px;">
+			<div class="row">
+				<div ng-show="isSet(1)">
+					<div class="col s12">
+						<ul tabs="" reload="allTabContentLoaded"
+							class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content"
+							style="overflow: hidden;">
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet2(1) }" ng-click="setTab2(1)"
+									class="col s12 large  waves-pink taI">ASESORES</a>
+							</li>
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet2(2) }" ng-click="setTab2(2)"
+									class="col s12 large  waves-pink taII">MOTIVOS
+									DE RECHAZO</a>
+							</li>
+						</ul>
+						<div class="col s12 m10 l0 ">
+							<div class="row">
+								<div ng-show="isSet2(1)">
+									<div class="col s12">
+										<div>
+											<blockquote style="border-left: 5px solid #000000 !important">
+												<strong>Agregar asesor </strong><a style="cursor: pointer !important;"
+													ng-click="AgregarAsesor()">Click
+													aqui</a>
+											</blockquote>
+											<div style="height:390px;overflow:auto;width: 120%;">
+												<table class="highlight responsive-table bordered" align="center"
+													style="zoom:.9">
+													<thead align="center">
+														<tr>
+															<td><strong>NOMBRE</strong></td>
+															<td><strong>DOCUMENTO</strong></td>
+															<td><strong>CORREO</strong></td>
+															<td><strong>CANTIDAD</strong></td>
+															<td><strong>OPCIÓN</strong></td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="asesor in Asesores">
+															<td>{{asesor.NOMBRE}}</td>
+															<td>{{asesor.CODIGO}}</td>
+															<td>{{asesor.EMAIL}}</td>
+															<td>{{asesor.CANTIDAD}}</td>
+															<td>
+																<div class="tooltip">
+																	<i style="cursor: pointer !important;"
+																		ng-click="EliminarAsesor(asesor.CODIGO)"
+																		class="Medium material-icons">delete</i>
+																	<span class="tooltiptext">Eliminar Asesor</span>
+																</div>
+																<div class="tooltip" style="margin-left: 20px;">
+																	<i style="cursor: pointer !important;"
+																		ng-click="actualizaAsesor(asesor.CODIGO,asesor.ESTADO)"
+																		class="Medium material-icons">{{asesor.ESTADO ==
+																		'S' ? 'done': 'not_interested'}}</i>
+																	<span class="tooltiptext">{{asesor.ESTADO == 'S' ?
+																		'Asignacion Activa': 'Asignacion
+																		Inactiva'}}</span>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div ng-show="isSet2(2)">
+									<div class="col s12" style="margin-top: 12px;">
+										<blockquote style="border-left: 5px solid #000000 !important">
+											<strong>Agregar motivo </strong><a style="cursor: pointer !important;"
+												ng-click="AgregarMotivo()">Click Aqui</a>
+										</blockquote>
+										<div style="height:390px;overflow:auto;width: 120%;">
+											<table class="highlight responsive-table bordered" align="center"
+												style="cursor: pointer !important;">
+												<thead align="center">
+													<tr>
+														<td><strong>CONCEPTO</strong></td>
+														<td><strong>OPCIÓN</strong></td>
+													</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat="concepto in Conceptos">
+														<td>{{concepto.NOMBRE}}</td>
+														<td>
+															<div class="tooltip">
+																<i ng-click="EditarMotivo(concepto.CODIGO,concepto.NOMBRE)"
+																	class="Medium material-icons">mode_edit</i>
+																<span class="tooltiptext">Editar Motivo</span>
+															</div>
+															<div class="tooltip" style="margin-left: 10px;">
+																<i ng-click="EliminarMotivo(concepto.CODIGO,concepto.NOMBRE)"
+																	class="Medium material-icons">delete</i>
+																<span class="tooltiptext">Eliminar Motivo</span>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div ng-show="isSet(2)">
+					<div class="col s12 m12 l12">
+						<ul tabs="" reload="allTabContentLoaded"
+							class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content"
+							style="overflow: hidden;">
+							<li ng-show="permisosNacional" class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet31(1) }" ng-click="setTab31(1)"
+									class="col s12 large  waves-pink taI">BUSCAR
+									POR ASESOR</a>
+							</li>
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet31(2) }" ng-click="setTab31(2)"
+									class="col s12 large  waves-pink taII">BUSCAR
+									POR EMPRESAS </a>
+							</li>
+						</ul>
+						<div class="col s12 m12 l12 ">
+							<div class="row">
+								<div ng-show="isSet31(1)" id="buscarporasesores">
+
+									<form id="datosform2" ng-submit="BuscarEmpresaxasesor()"
+										style="    border: 1px solid  rgb(229, 229, 229);    padding-bottom: 170px;    margin: 10px -10px;">
+
+										<div class="col l6 m6 s6" id="divestado_solicitud">
+											<div class="input-field">
+												<label for="estadosolicitud" class="active">Estado de Solicitud
+													(*)</label>
+												<select class="select-chosen-eps" ng-model="estado_solicitud"
+													id=estadosolicitud required>
+													<option value="" disabled>SELECCIONAR</option>
+													<option value="A">ACTIVAS</option>
+													<option value="P">PROCESADAS</option>
+													<option value="T">TODAS</option>
+												</select>
+											</div>
+										</div>
+										<div class="input-field col l4 m6 s6" id="divporasesor"
+											style="padding: 10px; margin: 0px">
+											<button class="btn" type="submit" ng-click="BuscarEmpresaxasesor()"
+												style="margin-top: -10px; "><i class="icon-search-7"></i>
+												Buscar</button>
+											<i id="PORASESOR" ng-click="guideTour('PORASESOR','#PORASESOR')"
+												class="icon-help"
+												style="bottom: -5px;z-index: 100000;justify-content: center;align-items: center;font-size: 1.5em;"></i>
+										</div>
+
+									</form>
+									<div style="" id="divtablaasesores">
+										<table class="highlight responsive-table bordered" align="center"
+											style="cursor: pointer !important;">
+											<thead align="center">
+												<tr>
+
+													<td><strong>DOCUMENTO</strong></td>
+													<td><strong>RAZÓN SOCIAL</strong></td>
+													<td><strong>CLASIFICACIÓN</strong></td>
+													<td><strong>ESTADO</strong></td>
+													<td ng-hide="admon_movilidad"><strong>OPCION</strong></td>
+												</tr>
+											</thead>
+											<tbody ng-hide="asesorEmpresa==undefined">
+												<tr ng-repeat="empresasxa in asesorEmpresa ">
+													<td>{{empresasxa.tipo_documento}}-{{empresasxa.documento}}</td>
+													<td>{{empresasxa.razon_social}}</td>
+													<td>{{empresasxa.clasificacion}}</td>
+													<td>{{empresasxa.estado}}</td>
+													<td>
+														<div ng-click="gestionar_empresa(empresasxa.tipo_documento,empresasxa.documento);tipo_documento=empresasxa.tipo_documento"
+															class="tooltip" style="margin-left: 10px;">
+															<i class="icon-pencil-1" style="zoom:1.5"></i>
+															<span class="tooltiptext">Gestionar Empresa </span>
+
+														</div>
+													</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr ng-show="asesorEmpresa==undefined" style="text-align: center;
+	background: #1a2e632b;
+	font-weight: bold;
+	box-shadow: 2px 3px 9px rgba(0, 0, 0, 0.32);">
+													<td colspan='4' style="text-align:center">NO SE ENCONTRARON
+														REGISTROS</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+								<div ng-show="isSet31(2)">
+									<div class="row">
+										<form id="datosform2" ng-submit="BuscarEmpresa()"
+											style="    border: 1px solid  rgb(229, 229, 229);    padding-bottom: 170px;    margin: 10px -10px;">
+											<blockquote style="border-left: 5px solid #000000 !important">
+												<h6>Digite informacion de Empresa
+												</h6>
+											</blockquote>
+											<div class="col l6 m6 s6">
+												<div class="input-field"
+													ng-init="chgBusquedaListado('apoc_tipo_documento')">
+													<label for="tipodocumento" class="active">Tipo de Documento
+														(*)</label>
+													<select class="select-chosen-eps" ng-model="tipo_documento"
+														id=tipodocumento>
+														<option value="">SELECCIONAR</option>
+														<option ng-repeat="t_do in tdocuemnto" value="{{t_do.codigo}}">
+															{{t_do.nombre}}</option>
+													</select>
+												</div>
+											</div>
+											<div class="col l6 m6 s6">
+												<div class="input-field ">
+													<input id="id" type="text" autocomplete=off class="validate"
+														ng-model="nitempresa">
+													<label for="id" class="">Número </label>
+												</div>
+											</div>
+											<div class="col l12 m12 s12">
+												<div class=" col l6 m1 s1">
+												</div>
+												<div class=" col l3 m5 s5">
+													<button class="btn" type="button"
+														ng-click="tipo_documento='';nitempresa='' "
+														style="margin-top: 10px;"><i
+															class="icon-eraser"></i>Borrar</button>
+												</div>
+												<div class=" col l3 m5 s5">
+													<button class="btn" type="submit" style="margin-top: 10px;"><i
+															class="icon-search-7"></i>
+														Buscar</button>
+												</div>
+											</div>
+										</form>
+										<br>
+										<div ng-hide="OcultarBase">
+											<div ng-show="OcultarActivacion" class="divider"
+												style="   margin: 9px -10px;    border: 1px solid #e5e5e5;"></div>
+											<div ng-show="OcultarActivacion" style="  margin: -20px -10px 0px -10px">
+												<div class="input-field col l12 m12 s12" style="margin-bottom: 10px">
+													<i class="material-icons left"
+														style=" margin-top: 30px; ">more_vert</i>
+													<div class="input-field col l4 m12 s12">
+														<h5>Aprobación de Registro</h5>
+													</div>
+													<div class="input-field col l3 m12 s12">
+														<div class="tooltip">
+															<button class="btn" type="submit"
+																ng-click="enviarRespuesta()"
+																style="margin-top: 10px;"><i
+																	class="icon-check-1"></i>Aprobar</button>
+															<span class="tooltiptext"
+																style="width: 400px;    margin-left: -14vw;    background: rgb(224, 224, 224);    color: #111;    border-bottom: 1px solid #000;">Al
+																dar click,se le informara a la empresa que queda activa
+																para realizar solicitudes de afiliaciones a sus
+																empleados.</span>
+														</div>
+													</div>
+													<div class="input-field col l3 m10 s10">
+														<div class="tooltip">
+															<button class="btn" type="submit"
+																ng-click="modalAprovaReguistro()"
+																style="margin-top: 10px;"><i
+																	class="icon-chat"></i>Enviar
+																Comentario.</button>
+															<span class="tooltiptext"
+																style="width: 400px;    margin-left: -14vw;    background: rgb(224, 224, 224);    color: #111;    border-bottom: 1px solid #000;">Cuando
+																la Empresa carezca de documentación, notificarle la
+																documentación faltante.</span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="divider"
+												style="   margin: 9px -10px -10px;    border: 1px solid #e5e5e5;"></div>
+											<div ng-hide="OcultarBase" style="  margin: -20px -10px 0px -10px">
+												<div class="input-field col l12 m12 s12">
+													<div>
+														<i class="material-icons left"
+															style="/* margin-top: 14px; */">more_vert</i>
+														<h5>Datos de la Empresa
+															<i ng-click="Ocultarform=(Ocultarform==true ? false : true) "
+																class="icon-down-open" ng-show="Ocultarform"
+																style="font-size: 16px;" data-toggle="collapse"
+																data-target="#collapseOne"> </i>
+															<i ng-click="Ocultarform=(Ocultarform==true ? false : true) "
+																class=" icon-up-open" ng-show="!Ocultarform"
+																style="font-size: 16px;" data-toggle="collapse"
+																data-target="#collapseOne"> </i>
+														</h5>
+														<!-- <div class="divider" style="   margin: 0px -10px;    border: 1px solid #e5e5e5;"></div> -->
+													</div>
+												</div>
+												<div ng-hide="Ocultarform" style="">
+													<div class="input-field col l12">
+														<div class="switch"
+															style="text-align: center; margin-bottom: 50px"
+															ng-mouseover="mostrarayuda=true"
+															ng-mouseleave="mostrarayuda=false">
+															<div ng-show="editar_novedad=='S'">
+																<label for="medida" class="labelper"> </label>
+																<label style="z-index: 10">
+																	Observar<input type="checkbox"
+																		ng-change="editarinfor()"
+																		ng-model="editar_informacion"><span
+																		class="lever"></span>Editar
+																</label>
+															</div>
+															<div ng-show="mostrarayuda">
+																<div class="triangulo" style="width: 13vw;height: 0;margin-top: 20px;
+				border-top: 5px solid transparent;border-right: 5px solid #000;
+				border-bottom: 5px solid transparent; position: absolute;">
+																</div>
+																<span style="
+			position: absolute;
+			left: 13.8vw;
+			top: 4px;
+			background: rgb(224, 224, 224);
+			color: #585858;
+			padding: 10px;
+			border-radius: 10px;
+			border-left: 1px solid;
+			">Active
+																	el boton para editar la razon social y el
+																	representante legal.</span>
+															</div>
+														</div>
+													</div>
+													<ul tabs="" reload="allTabContentLoaded"
+														class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content"
+														style="overflow: hidden;">
+														<li class="tab col l12" style="cursor: pointer;"><a
+																ng-class="{ active: isSet3(1) }" ng-click="setTab3(1)"
+																class="col l12 large  waves-pink tabI">Información
+																Basica</a></li>
+														<li class="tab col l12" style="cursor: pointer;"><a
+																ng-class="{ active: isSet3(2) }" ng-click="setTab3(2)"
+																class="col l12 large  waves-pink tabII">Información
+																de Contacto</a></li>
+														<li class="tab col l12" style="cursor: pointer;"><a
+																ng-class="{ active: isSet3(3) }" ng-click="setTab3(3)"
+																class="col l12 large  waves-pink tabIII">Información
+																de Sucursales</a></li>
+													</ul>
+													<div ng-show="isSet3(1)">
+														<form id=formuempresa>
+															<br>
+															<div class=" col l12 m12 s12">
+																<div class="input-field col l5 m12 s12">
+																	<input id="asesor" type="text"
+																		ng-model="infoempresa.asesor"
+																		class="upper editar">
+																	<label for="asesor" class="">Nombre del
+																		Asesor</label>
+																</div>
+																<div class="input-field col l3 m12 s12">
+																	<input id="fecha" type="text"
+																		ng-model="infoempresa.fecha"
+																		class="upper editar">
+																	<label for="fecha" class="">Fecha de
+																		Registro</label>
+																</div>
+																<div class="input-field col l3 m12 s12">
+																	<input id="origen" type="text"
+																		ng-model="infoempresa.origen"
+																		class="upper editar">
+																	<label for="origen" class="">Origen</label>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l3 m12 s12">
+																		<input id="numeroformulario" type="text"
+																			ng-model="infoempresa.numeroformulario"
+																			class="upper editar">
+																		<label for="numeroformulario" class="">Número de
+																			formulario</label>
+																	</div>
+																	<div class="input-field col l4 m12 s12">
+																		<input id="codigoubicacion" type="text"
+																			ng-model="infoempresa.ubicacion"
+																			class="upper editar">
+																		<label for="codigoubicacion"
+																			class="">Ubicación</label>
+																	</div>
+																	<div class="input-field col l4 m12 s12">
+																		<input id="nreguistro" type="text"
+																			ng-model="infoempresa.nreguistro"
+																			class="upper editar">
+																		<label for="nreguistro" class="">Número de
+																			Reguistro</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l5 m12 s12">
+																		<input id="nidentificacion" type="number"
+																			ng-model="infoempresa.nidentificacion"
+																			class="upper ">
+																		<label for="nidentificacion"
+																			class="">Usuario</label>
+																	</div>
+																	<div class="input-field col l6 m12 s12">
+																		<input id="codigoubicacion" type="text"
+																			ng-model="infoempresa.contra"
+																			class="upper editar">
+																		<label for="codigoubicacion"
+																			class="">Contraseña</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l4 m12 s12">
+																		<select class="select-chosen-eps"
+																			ng-model="infoempresa.codigo_tipo_documento"
+																			id="tidentificacion">
+																			<option value="">SELECCIONAR</option>
+																			<option value="C">CEDULA</option>
+																			<option value="X">CEDULA EXTRANJERIA
+																			</option>
+																			<option value="N">NIT</option>
+																			<option value="P">PASAPORTE</option>
+																			<option value="B">PERMISO ESPECIAL DE
+																				PERMANENCIA</option>
+
+
+																		</select>
+																		<label for="tidentificacion" class="active">Tipo
+																			de
+																			Identificación</label>
+
+																	</div>
+																	<div class="input-field col l4 m12 s12">
+																		<input id="nidentificacion" type="number"
+																			ng-model="infoempresa.nidentificacion"
+																			class="upper ">
+																		<label for="nidentificacion" class="">Número de
+																			Identificación</label>
+																	</div>
+																	<div class="input-field col l3 m12 s12">
+																		<input id="apo_estado" type="text"
+																			ng-model="infoempresa.estado_apo"
+																			class="upper editar">
+																		<label for="apo_estado" class="">Estado</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row"
+																ng-show="infoempresa.tidentificacionn=='NIT'">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l6 m12 s12">
+																		<input id="razonsocial" type="text"
+																			ng-model="infoempresa.razonsocial"
+																			class="upper">
+																		<label for="razonsocial" class="">Razón
+																			Social</label>
+																	</div>
+																	<div class="input-field col l5 m12 s12">
+																		<input id="siglas" type="text"
+																			ng-model="infoempresa.siglas" class="upper">
+																		<label for="siglas" class="">Siglas</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row"
+																ng-show="infoempresa.tidentificacionn!='NIT'">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l3 m12 s12">
+																		<input id="primerapellido" type="text"
+																			ng-model="infoempresa.primerapellido"
+																			class="upper">
+																		<label for="primerapellido" class="">Primer
+																			Apellido</label>
+																	</div>
+																	<div class="input-field col l3 m12 s12">
+																		<input id="segundoapellido" type="text"
+																			ng-model="infoempresa.segundoapellido"
+																			class="upper">
+																		<label for="segundoapellido" class="">Segundo
+																			Apellido</label>
+																	</div>
+																	<div class="input-field col l3 m12 s12">
+																		<input id="primernombre" type="text"
+																			ng-model="infoempresa.primernombre"
+																			class="upper">
+																		<label for="primernombre" class="">Primer Nombre
+																		</label>
+																	</div>
+																	<div class="input-field col l2 m12 s12">
+																		<input id="segundonombre" type="text"
+																			ng-model="infoempresa.segundonombre"
+																			class="upper">
+																		<label for="segundonombre" class="">Segundo
+																			Nombre</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12"
+																	ng-init="chgBusquedaListado('apon_tipo_empleador');">
+																	<div class="input-field col l3 m12 s12">
+																		<!-- <input id="templador" type="text" ng-model="infoempresa.templador" class="upper" style="display:none "> -->
+																		<label for="templador" class="active">Tipo de
+																			Empleador</label>
+																		<select class="select-chosen-eps" id="templador"
+																			ng-model="infoempresa.templador">
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.templador"
+																				ng-repeat="t_em in tipoemplador "
+																				ng-show="infoempresa.tidentificacionn=='CEDULA' && (t_em.codigo=='2'||t_em.codigo=='3')"
+																				ng-value="{{t_em.codigo}}">
+																				{{t_em.nombre}}</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.templador"
+																				ng-repeat="t_em in tipoemplador "
+																				ng-show="infoempresa.tidentificacionn!='CEDULA'"
+																				value="{{t_em.codigo}}">{{t_em.nombre}}
+																			</option>
+																		</select>
+																	</div>
+																	<div class="input-field col l4 m12 s12"
+																		ng-init="chgBusquedaListado('apon_tipo_persona');">
+																		<!-- <input id="tipoempresas" type="text" ng-model="infoempresa.tipoempresas" class="upper"> -->
+																		<label for="tipoempresas" class="active">Tipo de
+																			Empresa</label>
+																		<select class="select-chosen-eps"
+																			id="tipoempresas"
+																			ng-model="infoempresa.tipoempresas">
+																			<option value="" disabled>SELECCIONAR
+																			</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.tipoempresas"
+																				ng-repeat="t_em in tipopersona "
+																				ng-show="infoempresa.tidentificacionn=='CEDULA' && (t_em.codigo=='2'||t_em.codigo=='3')"
+																				ng-value="{{t_em.codigo}}">
+																				{{t_em.nombre}}</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.tipoempresas"
+																				ng-repeat="t_em in tipopersona "
+																				ng-show="infoempresa.tidentificacionn!='CEDULA'"
+																				value="{{t_em.codigo}}">{{t_em.nombre}}
+																			</option>
+																		</select>
+																	</div>
+																	<div class="input-field col l4 m12 s12"
+																		ng-init="chgBusquedaListado('apon_clase_empleador');">
+																		<!-- <input id="claseaportante" type="text" ng-model="infoempresa.claseaportante" class="upper"> -->
+																		<label for="claseaportante" class="active">Clase
+																			aportante</label>
+																		<select class="select-chosen-eps"
+																			id="claseaportante"
+																			ng-model="infoempresa.claseaportante">
+																			<option value="" disabled>SELECCIONAR
+																			</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.claseaportante"
+																				ng-repeat="t_em in claseempleador "
+																				ng-show="infoempresa.tidentificacionn=='CEDULA' && (t_em.codigo=='2'||t_em.codigo=='3')"
+																				ng-value="{{t_em.codigo}}">
+																				{{t_em.nombre}}</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.claseaportante"
+																				ng-repeat="t_em in claseempleador "
+																				ng-show="infoempresa.tidentificacionn!='CEDULA'"
+																				value="{{t_em.codigo}}">{{t_em.nombre}}
+																			</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l6 m12 s12"
+																		ng-init="chgBusquedaListado('apon_forma_pago');">
+																		<!-- <input id="pago" type="text" ng-model="infoempresa.pago" class="upper"> -->
+																		<label for="pago" class="active">Forma de
+																			Pago</label>
+																		<select class="select-chosen-eps" id="pago"
+																			ng-model="infoempresa.pago">
+																			<option value="" disabled>SELECCIONAR
+																			</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.pago"
+																				ng-repeat="t_em in tipopago "
+																				ng-show="infoempresa.tidentificacionn=='CEDULA' && (t_em.codigo=='2'||t_em.codigo=='3')"
+																				ng-value="{{t_em.codigo}}">
+																				{{t_em.nombre}}</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.pago"
+																				ng-repeat="t_em in tipopago "
+																				ng-show="infoempresa.tidentificacionn!='CEDULA'"
+																				value="{{t_em.codigo}}">{{t_em.nombre}}
+																			</option>
+																		</select>
+																	</div>
+																	<div class="input-field col l5 m12 s12"
+																		ng-init="chgBusquedaListado('apoc_clasificacion');">
+																		<!-- <input id="clasificacion" type="text" ng-model="infoempresa.clasificacion" class="upper"> -->
+																		<label for="clasificacion"
+																			class="active">Clasificación del
+																			Empleador</label>
+																		<select class="select-chosen-eps"
+																			id="clasificacion"
+																			ng-model="infoempresa.clasificacion">
+																			<option value="" disabled>SELECCIONAR
+																			</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.clasificacion"
+																				ng-repeat="t_em in clasi "
+																				ng-show="infoempresa.tidentificacionn=='CEDULA' && (t_em.codigo=='2'||t_em.codigo=='3')"
+																				ng-value="{{t_em.codigo}}">
+																				{{t_em.nombre}}</option>
+																			<option
+																				ng-selected="t_em.codigo == infoempresa.clasificacion"
+																				ng-repeat="t_em in clasi "
+																				ng-show="infoempresa.tidentificacionn!='CEDULA'"
+																				value="{{t_em.codigo}}">{{t_em.nombre}}
+																			</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l11 m12 s12">
+																		<input id="actividad" type="text"
+																			ng-model="infoempresa.actividad"
+																			class="upper">
+																		<label for="actividad" class="">Actividad
+																			Economica</label>
+																		<!-- <input class="mayus" ng-focus="error.actividad=false" ng-keyup="mostrarmodalbusqueda(actividad)"  ng-click="mostrarmodalbusqueda(formulario.actividad)" id="actividad"   type="text" ng-model="nombreactividad" disabled style="background-color: rgba(255, 255, 255, 0.9);width: 100%;padding: 5px;border: 1px solid #f2f2f2;border-radius: 2px;border-color: #a3a3b182;height: 3rem;border-bottom-right-radius: 0px;border-top-right-radius: 0px;"> -->
+																		<i ng-show="OcultarActivacion"
+																			class="icon-pencil-1 material-icons ng-pristine ng-untouched ng-valid"
+																			ng-model="abrirmodaldeactividad"
+																			ng-click="error.actividad=false; mostrarmodalbusqueda(formulario.actividad)"
+																			style="position: absolute;
+			right: 1px;
+			top: 11px;
+			color: #ad1457;"></i>
+
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l6 m12 s12">
+																		<!-- <input id="vigencia" type="text" ng-model="infoempresa.vigencia" class="upper"> -->
+																		<label for="vigencia" class="active">Vigencia de
+																			la Empresa</label>
+																		<select class="select-chosen-eps"
+																			id="tdrepresentante"
+																			ng-model="infoempresa.vigencia">
+																			<option value="" disabled>SELECCIONAR
+																			</option>
+																			<option value="I">INDEFINIDO</option>
+																			<option value="D">DEFINIDO</option>
+																		</select>
+																	</div>
+																	<div class="input-field col l5 m12 s12"
+																		ng-show="infoempresa.vigencia=='D'">
+																		<input id="fvigencia" type="date"
+																			ng-model="infoempresa.fvigencia"
+																			class="upper">
+																		<label for="fvigencia" class="active">Fecha de
+																			vigencia</label>
+																	</div>
+
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+
+																	<center>
+																		<button id="actualizar"
+																			ng-hide="OcultarActivacion" class="btn"
+																			type="submit" ng-click="actualizarinfor1()"
+																			style="margin-top: 10px;"><i
+																				class="icon-paper-plane"></i>Actualizar
+																			Información</button>
+																		<button id="anular"
+																			ng-show="infoempresa.anular_registro_permiso=='S'"
+																			class="btn red"
+																			ng-click="anula_formulario()"
+																			style="margin-top: 10px;"><i
+																				class="icon-cancel-outline"></i>Anular
+																		</button>
+																		<button id="guardar" ng-show="OcultarActivacion"
+																			class="btn" type="submit"
+																			ng-click="guardarActualizacion()"
+																			style="margin-top: 10px;"><i
+																				class="icon-paper-plane"></i>Guardar
+																			Actualizacion</button>
+
+																		<button id="confirmar" ng-if="ocultar_icono"
+																			class="btn" ng-click="confirmar_aportante()"
+																			style="margin-top: 10px;"><i
+																				class="icon-paper-plane"></i>Confirmar
+																			Aportante</button>
+
+																		<button id="imprimir" class="btn"
+																			ng-click="Imprimirinfor()"
+																			style="margin-top: 10px;"><i
+																				class="icon-print-3"></i>Imprimir
+																			Formulario</button>
+
+
+																	</center>
+
+
+
+																</div>
+															</div>
+														</form>
+													</div>
+													<div ng-show="isSet3(2)">
+														<form id=formuempresa2>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<h6 class="" style="
+				background: #1a2e631a;
+				color: #000;
+				padding: 10px;
+				text-transform: uppercase;
+				">Información
+																		del representante legal</h6>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l11 m11 s11">
+																		<input id="nomrepresentante" type="text"
+																			ng-model="infoempresa.nomrepresentante"
+																			class="upper">
+																		<label for="nomrepresentante"
+																			class="">Representante Legal</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l6 m6 s6">
+																		<!--  <input id="siglas" type="text" ng-model="infoempresa.tdrepresentante" class="upper" > -->
+																		<label for="tdrepresentante" class="active">Tipo
+																			de Documento </label>
+																		<select class="select-chosen-eps"
+																			name="tdrepresentante" id="tdrepresentante"
+																			ng-model="infoempresa.tdrepresentante">
+																			<option value="">SELECCIONAR
+																			</option>
+																			<option value="C">CEDULA</option>
+																			<option value="X">CEDULA EXTRANJERA</option>
+																			<option value="N">NIT</option>
+																			<option value="P">PASAPORTE</option>
+																			<option value="B">PERMISO ESPECIAL DE
+																				PERMANENCIA</option>
+																			<option value="T">PERMISO POR PROTECCIÓN TEMPORAL</option>
+																		</select>
+																	</div>
+																	<div class="input-field col l5 m12 s12">
+																		<input id="drepresentante" type="text"
+																			ng-model="infoempresa.drepresentante"
+																			class="upper" pattern="[0-9]+">
+																		<label for="drepresentante"
+																			class="">Documento</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l6 m12 s12">
+																		<label for="fnrepresentante"
+																			class="active">Fecha de Nacimiento del
+																			Representante Legal</label>
+																		<!-- <input id="fnrepresentante" type="date" ng-model="infoempresa.fnrepresentante" class="upper" > -->
+																		<input id="fnrepresentante"
+																			ng-model="infoempresa.fnrepresentante"
+																			class="datepicker picker__input uppercase"
+																			type="date">
+																	</div>
+																	<div class="input-field col l5 m12 s12">
+																		<input id="correorepresentante" type="email"
+																			ng-model="infoempresa.correorepresentante"
+																			class="upper">
+																		<label for="correorepresentante" class="">Correo
+																			Electronico</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<h6 class="" style="
+		background: #1a2e631a;
+		color: #000;
+		padding: 10px;
+		text-transform: uppercase;
+		">Información
+																		de la persona contacto de la empresa</h6>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l11 m6 s6">
+																		<input id="nomcargo" type="text"
+																			ng-model="infoempresa.nomcargo"
+																			class="upper">
+																		<label for="nomcargo" class="">Nombre de la
+																			persona contacto de la empresa</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l4 m6 s6">
+																		<input id="telcargo" type="text"
+																			ng-model="infoempresa.telcargo"
+																			class="upper">
+																		<label for="telcargo" class="">Telefono</label>
+																	</div>
+																	<div class="input-field col l3 m12 s12">
+																		<input id="celcargo" type="text"
+																			ng-model="infoempresa.celcargo"
+																			class="upper">
+																		<label for="celcargo" class="">Celular</label>
+																	</div>
+																	<div class="input-field col l4 m12 s12">
+																		<input id="telcargo" type="date"
+																			ng-model="infoempresa.fncargo"
+																			class="upper">
+																		<label for="fncargo" class="active">Fecha de
+																			Nacimiento</label>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class=" col l12 m12 s12">
+
+																	<div class="input-field col l11 m12 s12">
+																		<input id="tipoempresas" type="email"
+																			ng-model="infoempresa.emailcargo"
+																			class="upper">
+																		<label for="emailcargo" class="">Correo
+																			Electronico</label>
+																	</div>
+																</div>
+															</div>
+
+															<div class="row">
+																<div class=" col l12 m12 s12">
+																	<div class="input-field col l6 m6 s6">
+																		<center>
+																			<button id="actualizar2"
+																				ng-hide="OcultarActivacion" class="btn"
+																				type="submit"
+																				ng-click="actualizarinfor2()"
+																				style="margin-top: -10px;"><i
+																					class="icon-paper-plane"></i>Actualizar
+																				Información</button>
+																			<button id="guardar2"
+																				ng-show="OcultarActivacion" class="btn"
+																				type="submit"
+																				ng-click="guardarActualizacion()"
+																				style="margin-top: -10px;"><i
+																					class="icon-paper-plane"></i>Guardar
+																				Actualizacion</button>
+																		</center>
+																	</div>
+																	<div class="input-field col l5 m5 s5">
+																		<center>
+																			<button id="imprimir2" class="btn"
+																				ng-click="Imprimirinfor()"
+																				style="margin-top: -10px;"><i
+																					class="icon-print-3"></i>Imprimir
+																				Formulario</button>
+																		</center>
+																	</div>
+																</div>
+															</div>
+
+														</form>
+													</div>
+													<div ng-show="isSet3(3)">
+														<div class="row">
+															<div class="input-field col l3 m12 s12">
+																<blockquote
+																	style="border-left: 5px solid #000000 !important">
+																	<strong>Agregar Nueva Sucursal </strong>
+																</blockquote>
+															</div>
+															<div class="input-field col l3 m12 s12">
+																<a class="btn-floating btn-large  waves-light primary-button"
+																	ng-click="AgregarSede(nreguistro,codigoUbicacion)"><i
+																		class="material-icons dp48">library_add</i></a>
+															</div>
+														</div>
+														<div
+															style="height: 550px;    overflow-y: scroll;    overflow-x: scroll;    margin-bottom: 10px;">
+															<table class="highlight responsive-table bordered"
+																align="center" style="cursor: pointer !important;">
+																<thead align="center">
+																	<tr>
+																		<td><strong>SEDE</strong></td>
+																		<td><strong>NOMBRE</strong></td>
+																		<td><strong>EMPLEADOS</strong></td>
+																		<td><strong>DEPARTAMENTO</strong></td>
+																		<td><strong>MUNICIPIO</strong></td>
+																		<td><strong>BARRIO</strong></td>
+																		<td><strong>DIRECCIÓN</strong></td>
+																		<td><strong>CORREO</strong></td>
+																		<td><strong>TELÉFONO</strong></td>
+																		<!-- <td><strong>OPCIÓN</strong></td> -->
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="sedes_empresas in Sedes">
+																		<td>{{sedes_empresas.sede}}</td>
+																		<td>{{sedes_empresas.nombre}}</td>
+																		<td>{{sedes_empresas.empleados}}</td>
+																		<td>{{sedes_empresas.departamento}}</td>
+																		<td>{{sedes_empresas.municipio}}</td>
+																		<td>{{sedes_empresas.barrio}}</td>
+																		<td>{{sedes_empresas.direccion}}</td>
+																		<td>{{sedes_empresas.correo}}</td>
+																		<td>{{sedes_empresas.telefono}}</td>
+																		<td>
+																			<div class="tooltip">
+																				<i ng-click="EditarSede(sedes_empresas.sede,sedes_empresas.nombre,sedes_empresas.empleados,sedes_empresas.direccion,sedes_empresas.barrio,sedes_empresas.correo,sedes_empresas.telefono,sedes_empresas.renglon)"
+																					class="fontello-icon icon-pencil-1"
+																					style="font-size: 17px"></i></span></i>
+																				<span class="tooltiptext">Editar
+																					Información</span>
+																			</div>
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+												<div class="espac col l12 m12 s12">
+													<div ng-show="Ocultarform"
+														ng-click="Ocultarform=(Ocultarform==true ? false : true) "
+														style="width: 100%; ">
+														<center>
+															<i ng-show="Ocultarform" style="font-size: 12px;"
+																data-toggle="collapse" data-target="#collapseOne"
+																aria-expanded="true"
+																aria-controls="collapseOne">DESPLEGAR INFORMACIÓN</i>
+														</center>
+													</div>
+													<div ng-show="!Ocultarform"
+														ng-click="Ocultarform=(Ocultarform==true ? false : true) "
+														style="background: #11111108;width: 100%;">
+														<center>
+															<i style="font-size: 12px;" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne">OCULTAR INFORMACIÓN</i>
+														</center>
+													</div>
+												</div>
+											</div>
+											<div class="divider"
+												style="   margin: 0px -10px -10px;    border: 1px solid #e5e5e5;"></div>
+											<div ng-hide="OcultarBase" style="  margin: -10px -10px;">
+												<div class="input-field col l12 m12 s12">
+													<div>
+														<i class="material-icons left"
+															style="/* margin-top: 14px; */">more_vert</i>
+														<h5>Archivos Subidos por la Empresa
+
+															<i ng-click="OcultarArchivo=(OcultarArchivo==true ? false : true) "
+																class="icon-down-open" ng-show="OcultarArchivo"
+																style="font-size: 16px" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne"> </i>
+															<i ng-click="OcultarArchivo=(OcultarArchivo==true ? false : true) "
+																class=" icon-up-open" ng-show="!OcultarArchivo"
+																style="font-size: 16px" ; margin-top: -35px;"
+																data-toggle="collapse" data-target="#collapseOne"
+																aria-expanded="true" aria-controls="collapseOne"> </i>
+
+														</h5>
+													</div>
+												</div>
+												<div ng-hide="OcultarArchivo" class="col l12 m12 s12"
+													style="position: relative;">
+													<div style="height: 300px; margin-bottom: 20px;   overflow: auto;">
+														<table class="highlight responsive-table bordered"
+															align="center" style="cursor: pointer !important;">
+															<thead align="center">
+																<tr>
+																	<td><strong>TIPO DE ARCHIVO</strong></td>
+																	<td><strong>FECHA</strong></td>
+																	<td><strong>OPCIÓN</strong></td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr ng-repeat="archivos in ArchivoEmpresa">
+																	<td>{{archivos.archivo}}</td>
+																	<td>{{archivos.fecha}}</td>
+																	<td ng-click="descargafile(archivos.ruta)">
+																		<div class="tooltip" style="margin-left: 10px;">
+																			<i class="icon-download-4"
+																				style="zoom:1.5"></i>
+																			<span class="tooltiptext">Descargar
+																				Archivo</span>
+																		</div>
+																	<td ng-show="editar_novedad=='S'"
+																		ng-click="elimina_soporte_empresa(archivos.id,archivos.archivo,archivos.fecha) ">
+																		<div class="tooltip "
+																			style="margin-left: 10px; ">
+																			<i class="icon-trash-2 "
+																				style="zoom:1.5 "></i>
+																			<span class="tooltiptext ">Eliminar
+																				Archivo</span>
+																		</div>
+																	</td>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+												<div class="espac col l12 m12 s12">
+													<div class="espac" ng-show="OcultarArchivo"
+														ng-click="OcultarArchivo=(OcultarArchivo==true ? false : true) "
+														style="width: 100%; ">
+														<center>
+															<i ng-show="OcultarArchivo" style="font-size: 12px;"
+																data-toggle="collapse" data-target="#collapseOne"
+																aria-expanded="true"
+																aria-controls="collapseOne">DESPLEGAR INFORMACIÓN</i>
+														</center>
+													</div>
+													<div class="espac" ng-show="!OcultarArchivo"
+														ng-click="OcultarArchivo=(OcultarArchivo==true ? false : true) "
+														style="width: 100%;">
+														<center>
+															<i style="font-size: 12px;" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne">OCULTAR INFORMACIÓN</i>
+														</center>
+													</div>
+												</div>
+											</div>
+											<div ng-hide="OcultarBase" style="   margin: -10px -10px;">
+												<div>
+													<div class="input-field col l12 m12 s12">
+														<div
+															ng-click="Ocultarcontra=(Ocultarcontra==true ? false : true) ">
+															<i class="material-icons left"
+																style="/* margin-top: 14px; */">more_vert</i>
+															<h5>Cambio de Contraseña de la Empresa
+																<i class="icon-down-open" ng-show="Ocultarcontra"
+																	style="font-size: 16px" data-toggle="collapse"
+																	data-target="#collapseOne"> </i>
+																<i class=" icon-up-open" ng-show="!Ocultarcontra"
+																	style="font-size: 16px" data-toggle="collapse"
+																	data-target="#collapseOne" aria-expanded="true"
+																	aria-controls="collapseOne"> </i>
+															</h5>
+														</div>
+													</div>
+													<div ng-hide="OcultarContraAsesor">
+														<div class="input-field col l10 m12 s12">
+															<input id="id" type="text" class="validate"
+																ng-model="generarpassword">
+															<label for="id" class="">Contraseña</label>
+														</div>
+														<div class="col l1 m12 s12">
+															<div class="tooltip">
+																<label ng-click="GenerarPass()"><i
+																		class="material-icons"
+																		style="margin-top:30px;">lock_open</i></label>
+																<span class="tooltiptext">Generar Contraseña</span>
+															</div>
+														</div>
+														<div class="col l4 m12 s12">
+															<button class="btn" type="submit" ng-click="CambiarPass()"
+																style="margin-top: 10px;"><i class="icon-key-4"></i>
+																Cambiar Contraseña</button>
+															<br>
+															<br>
+															<br>
+															<br>
+														</div>
+													</div>
+												</div>
+												<div class="espac col l12 m12 s12">
+													<div ng-show="Ocultarcontra"
+														ng-click="Ocultarcontra=(Ocultarcontra==true ? false : true) "
+														style="width: 100%; ">
+														<center>
+															<i ng-show="Ocultarcontra" style="font-size: 12px;"
+																data-toggle="collapse" data-target="#collapseOne"
+																aria-expanded="true"
+																aria-controls="collapseOne">DESPLEGAR INFORMACIÓN</i>
+														</center>
+													</div>
+													<div ng-show="!Ocultarcontra"
+														ng-click="Ocultarcontra=(Ocultarcontra==true ? false : true) "
+														style="width: 100%;">
+														<center>
+															<i style="font-size: 12px;" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne">OCULTAR INFORMACIÓN</i>
+														</center>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 divider"
+												style="   margin: 0px -10px -10px;    border: 1px solid #e5e5e5;"></div>
+											<div ng-hide="OcultarTabla" style="margin: -10px -10px;">
+												<div class="input-field col l12 m12 s12">
+													<div
+														ng-click="OcultarTablaEmpleados=(OcultarTablaEmpleados==true ? false : true) ">
+														<i class="material-icons left"
+															style="/* margin-top: 14px; */">more_vert</i>
+														<h5>Responsables de Empresa
+															<i class="icon-down-open" ng-show="OcultarTablaEmpleados"
+																style="font-size: 16px" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne"> </i>
+															<i class=" icon-up-open" ng-show="!OcultarTablaEmpleados"
+																style="font-size: 16px" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne"> </i>
+														</h5>
+													</div>
+												</div>
+												<div class="row col s12" ng-hide="OcultarTablaEmpleados">
+													<blockquote style="border-left: 5px solid #000000 !important"
+														ng-hide="admon_movilidad">
+														<strong>Agregar empleado </strong><a
+															style="cursor: pointer !important;"
+															ng-click="AgregarEmpleadoEmp(nitempresa)">Click
+															Aqui</a>
+													</blockquote>
+													<div>
+														<table class="highlight responsive-table bordered"
+															align="center" style="cursor: pointer !important;">
+															<thead align="center">
+																<tr>
+																	<td><strong>IDENTIFICACIÓN</strong></td>
+																	<td><strong>NOMBRE</strong></td>
+																	<td><strong>CORREO</strong></td>
+																	<td><strong>TELÉFONO</strong></td>
+																	<td ng-hide="admon_movilidad">
+																		<strong>OPCIÓN</strong>
+																	</td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr ng-repeat="empleados in EmpleadosEmpresa">
+																	<td>{{empleados.tipo_documento}}-{{empleados.documento}}
+																	</td>
+																	<td>{{empleados.nombre}}</td>
+																	<td>{{empleados.correo}}</td>
+																	<td>{{empleados.telefono}}</td>
+																	<td ng-hide="admon_movilidad">
+																		<div class="tooltip">
+																			<i ng-click="EditarInformacion(nitempresa,empleados.tipo_documento,empleados.documento,empleados.nombre,empleados.telefono,empleados.correo,empleados.cod_estado)"
+																				class="Medium material-icons">check_circle</i>
+																			<span class="tooltiptext">Editar
+																				Información</span>
+																		</div>
+																		<div class="tooltip" style="margin-left: 10px;">
+																			<i ng-click="EliminarEmpleado(empleados.tipo_documento,empleados.doc,empleados.nombre,empleados.correo,empleados.telefono,empleados.cod_estado)"
+																				class="Medium material-icons">delete</i>
+																			<span class="tooltiptext">Eliminar
+																				Empleado</span>
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+												<div class=" espac col l12 m12 s12">
+													<div ng-show="OcultarTablaEmpleados"
+														ng-click="OcultarTablaEmpleados=(OcultarTablaEmpleados==true ? false : true) "
+														style="width: 100%; ">
+														<center>
+															<i ng-show="OcultarTablaEmpleados" style="font-size: 12px;"
+																data-toggle="collapse" data-target="#collapseOne"
+																aria-expanded="true"
+																aria-controls="collapseOne">DESPLEGAR INFORMACIÓN</i>
+														</center>
+													</div>
+													<div ng-show="!OcultarTablaEmpleados"
+														ng-click="OcultarTablaEmpleados=(OcultarTablaEmpleados==true ? false : true) "
+														style="width: 100%;">
+														<center>
+															<i style="font-size: 12px;" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne">OCULTAR INFORMACIÓN</i>
+														</center>
+													</div>
+												</div>
+											</div>
+											<div class="divider col l12"
+												style="   margin: 0px -10px -10px;    border: 1px solid #e5e5e5;"></div>
+											<div id="tablanovedades" ng-hide="OcultarTabla"
+												style="margin: -10px -10px;">
+												<div class="input-field col l12 m12 s12">
+													<div
+														ng-click="OcultarTablaNovedades=(OcultarTablaNovedades==true ? false : true) ">
+														<i class="material-icons left"
+															style="/* margin-top: 14px; */">more_vert</i>
+														<h5>Tabla de Novedades
+															<i class="icon-down-open" ng-show="OcultarTablaNovedades"
+																style="font-size: 16px" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne"> </i>
+															<i class=" icon-up-open" ng-show="!OcultarTablaNovedades"
+																style="font-size: 16px" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne"> </i>
+
+														</h5>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide=" OcultarTablaNovedades"
+													style="position: relative;">
+													<div
+														style="height: 300px;    overflow-y: scroll;    overflow-x: hidden;    margin-bottom: 10px;">
+														<table class="highlight responsive-table bordered"
+															align="center" style="cursor: pointer !important;">
+															<thead align="center">
+																<tr>
+																	<td><strong>FECHA</strong></td>
+																	<td><strong>CONCEPTO</strong></td>
+																	<td><strong>OBSERVACIÓN</strong></td>
+																	<td><strong>ESTADO</strong></td>
+																	<td><strong>RESPONSABLE</strong></td>
+																	<td><strong>OPCIÓN</strong></td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr ng-repeat="novedad in Novedades">
+																	<td>{{novedad.fecha}}</td>
+																	<td>{{novedad.concepto}}</td>
+																	<td>{{novedad.observacion}}</td>
+																	<td>{{novedad.estado}}</td>
+																	<td>{{novedad.responsable}}</td>
+																	<td>
+																		<div ng-click="aprobarnovedad(novedad.ubicacion,novedad.codigo,'P')"
+																			class="tooltip" style="margin-left: 10px;"
+																			ng-show="novedad.estado=='Pendiente'">
+																			<i class=" icon-ok-6" style="zoom:1.5"></i>
+																			<span class="tooltiptext">Aprobar
+																				Novedad</span>
+																		</div>
+																		<div ng-click="aprobarnovedad(novedad.ubicacion,novedad.codigo,'X')"
+																			class="tooltip" style="margin-left: 10px;"
+																			ng-show="novedad.estado=='Pendiente'">
+																			<i class=" icon-cancel-5"
+																				style="zoom:1.5"></i>
+																			<span class="tooltiptext">Rechazar
+																				Novedad</span>
+																		</div>
+																		<div ng-show="novedad.estado=='Pendiente'"
+																			ng-click="modalVerAdjuntos(novedad.ruta)"
+																			class="tooltip" style="margin-left: 10px;">
+																			<i class="icon-download-4"
+																				style="zoom:1.5"></i>
+																			<span class="tooltiptext">Descargar
+																				Archivo</span>
+																		</div>
+																		<div ng-click="gestion_novedad_ver(novedad.observacion,novedad.codigo,novedad.ubicacion)"
+																			class="tooltip" style="margin-left: 10px;">
+																			<i class=" icon-eye-1" style="zoom:1.5"></i>
+																			<span class="tooltiptext">Ver
+																				Detalles</span>
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+												<div class="col l12 m12 s12 espac">
+													<div ng-show="OcultarTablaNovedades"
+														ng-click="OcultarTablaNovedades=(OcultarTablaNovedades==true ? false : true) "
+														style="width: 100%; ">
+														<center>
+															<i ng-show="OcultarTablaNovedades" style="font-size: 12px;"
+																data-toggle="collapse" data-target="#collapseOne"
+																aria-expanded="true"
+																aria-controls="collapseOne">DESPLEGAR INFORMACIÓN</i>
+														</center>
+													</div>
+													<div ng-show="!OcultarTablaNovedades"
+														ng-click="OcultarTablaNovedades=(OcultarTablaNovedades==true ? false : true) "
+														style="width: 100%;">
+														<center>
+															<i style="font-size: 12px;" data-toggle="collapse"
+																data-target="#collapseOne" aria-expanded="true"
+																aria-controls="collapseOne">OCULTAR INFORMACIÓN</i>
+														</center>
+													</div>
+												</div>
+											</div>
+											<div class="divider col l12"
+												style="   margin: 0px -10px -10px;    border: 1px solid #e5e5e5;"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div ng-show="isSet(3)">
+					<div class="col s12 m12 l12">
+						<ul tabs="" reload="allTabContentLoaded"
+							class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content"
+							style="overflow: hidden;">
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet5(1) }" ng-click="setTab5(1);"
+									class="col s12 large  waves-pink taI">
+									ACTIVOS ({{acas_activo}})</a>
+							</li>
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet5(2) }" ng-click="setTab5(2);"
+									class="col s12 large  waves-pink taII">
+									PROCESADOS ({{acas_procesado}})</a>
+							</li>
+						</ul>
+					</div>
+					<div class="row">
+						<div class="col s12 m12 l12 ">
+							<div>
+								<div class="row"
+									style="margin-top: 2em;border: 1px solid rgb(229, 229, 229);padding: 10px;">
+									<div class="col s12 m12 l12 ">
+										<i class="material-icons left" style=" margin-top: 14px; ">more_vert</i>
+										<h5>Solicitudes {{estado}} por Asesor
+											<i ng-click="Solicitud_Activas_xAsesor=(Solicitud_Activas_xAsesor==true ? false : true);"
+												class="icon-down-open" ng-show="Solicitud_Activas_xAsesor"
+												style="font-size: 16px" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+											<i ng-click="Solicitud_Activas_xAsesor=(Solicitud_Activas_xAsesor==true ? false : true) ; "
+												class=" icon-up-open" ng-show="!Solicitud_Activas_xAsesor"
+												style="font-size: 16px ; margin-top: -35px;" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+
+											<i ng-click="descargar_empresa_asesores_activos(estado)"
+												class="icon-file-excel m-l" style="font-size: 16px"> </i>
+
+										</h5>
+									</div>
+									<div class="col s12 m12 l12" ng-hide="Solicitud_Activas_xAsesor">
+										<div class="card-action">
+											<table id="resultDemandas" class="highlight responsive-table"
+												style="width:100%; cursor:pointer;">
+												<thead>
+													<tr>
+														<th style="  background : none; ">Código</th>
+														<th style="  background : none; ">Estado</th>
+														<th style="  background : none; ">Cantidad</th>
+														<th style="  background : none; ">Opciones</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div ng-hide="aparecer_detalles_gestion">
+						<div class="row">
+							<div class="col s12 m12 l12 " style="margin-top: -70px;">
+								<div class="row"
+									style="margin-top: 2em;border: 1px solid rgb(229, 229, 229);padding: 10px;">
+									<div class="col s8 m8 l8">
+										<i class="material-icons left" style=" margin-top: 14px; ">more_vert</i>
+										<h5>Detalles de Solicitudes {{estado}} por Asesor
+											<i ng-click="Solicitud_Activas_xAsesor_detalle=(Solicitud_Activas_xAsesor_detalle==true ? false : true);"
+												class="icon-down-open" ng-show="Solicitud_Activas_xAsesor_detalle"
+												style="font-size: 16px" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+											<i ng-click="Solicitud_Activas_xAsesor_detalle=(Solicitud_Activas_xAsesor_detalle==true ? false : true) ; "
+												class=" icon-up-open" ng-show="!Solicitud_Activas_xAsesor_detalle"
+												style="font-size: 16px ; margin-top: -35px;" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+										</h5>
+										<h6>Asesor: {{funcionario_detelles | uppercase }} Estado: {{estado | uppercase}}
+											Cantidad
+											{{cantidad_detelles}}</h6>
+									</div>
+									<!-- CNVU -- AGREGAR BOTON MODAL-->
+									<div class="col s4 m4 l4" style="margin-top: 25px;"
+										ng-if="cedulaLogin==22655600 || cedulaLogin==1045747968 || cedulaLogin==1045739217">
+										<div class="tooltip">
+											<button class="btn" type="submit"
+												ng-click="abrirModal('A');listadoAsesores()">
+												<i class="fontello-icon icon-retweet"></i>
+											</button>
+											<span class="tooltiptext">Reasignar Solicitudes</span>
+										</div>
+									</div>
+									<div class="col s12 m12 l12" ng-hide="Solicitud_Activas_xAsesor_detalle">
+										<div class="card-action">
+											<table id="resultDetalles" class="highlight responsive-table"
+												style="width:100%; cursor:pointer;">
+												<thead>
+													<tr>
+														<th style="  background : none; ">Formulario</th>
+														<th style="  background : none; ">Tipo Documento</th>
+														<th style="  background : none; ">Documento</th>
+														<th style="  background : none; ">Razon Social</th>
+														<th style="  background : none; ">Fecha Registro</th>
+														<th style="  background : none; ">Fecha Modificada</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div ng-show="isSet(4)">
+					<div class="col s12 m12 l12">
+						<ul tabs="" reload="allTabContentLoaded"
+							class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content"
+							style="overflow: hidden;">
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet6(1) }" ng-click="setTab6(1);"
+									class="col s12 large  waves-pink ta6I">
+									ACTIVOS ({{solicitud_activo}})</a>
+							</li>
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet6(2) }" ng-click="setTab6(2);"
+									class="col s12 large  waves-pink ta6II">
+									PROCESADOS ({{solicitud_procesado}})</a>
+							</li>
+							<li class="tab col s6" style="cursor: pointer;">
+								<a ng-class="{ active: isSet6(3) }" ng-click="setTab6(3);"
+									class="col s12 large  waves-pink ta6III">
+									RECHAZADA ({{solicitud_rechazada}})</a>
+							</li>
+						</ul>
+					</div>
+					<div class="row">
+						<div class="col s12 m12 l12 ">
+							<div>
+								<div class="row"
+									style="margin-top: 2em;border: 1px solid rgb(229, 229, 229);padding: 10px;">
+									<div class="col s12 m12 l12 ">
+										<i class="material-icons left" style=" margin-top: 14px; ">more_vert</i>
+										<h5>Solicitudes de afiliaciones {{estado}} por Asesor
+											<i ng-click="Solicitud_Activas_xAsesor=(Solicitud_Activas_xAsesor==true ? false : true);"
+												class="icon-down-open" ng-show="Solicitud_Activas_xAsesor"
+												style="font-size: 16px" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+											<i ng-click="Solicitud_Activas_xAsesor=(Solicitud_Activas_xAsesor==true ? false : true) ; "
+												class=" icon-up-open" ng-show="!Solicitud_Activas_xAsesor"
+												style="font-size: 16px ; margin-top: -35px;" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+
+											<i ng-click="descargar_afiliaciones_asesores_activos(estado)"
+												class="icon-file-excel m-l" style="font-size: 16px"> </i>
+
+										</h5>
+									</div>
+									<div class="col s12 m12 l12" ng-hide="Solicitud_Activas_xAsesor">
+										<div class="card-action">
+											<table id="resultDemandas2" class="highlight responsive-table"
+												style="width:100%; cursor:pointer;">
+												<thead>
+													<tr>
+														<th style="  background : none; ">Asesor</th>
+														<th style="  background : none; ">Estado</th>
+														<th style="  background : none; ">Cantidad</th>
+														<th style="  background : none; ">Opciones</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div ng-hide="aparecer_detalles_gestion">
+						<div class="row">
+							<div class="col s12 m12 l12 " style="margin-top: -70px;">
+								<div class="row"
+									style="margin-top: 2em;border: 1px solid rgb(229, 229, 229);padding: 10px;">
+									<div class="col s8 m8 l8 ">
+										<i class="material-icons left" style=" margin-top: 14px; ">more_vert</i>
+										<h5>Detalles de Solicitudes {{estado}} por Asesor
+											<i ng-click="Solicitud_Activas_xAsesor_detalle=(Solicitud_Activas_xAsesor_detalle==true ? false : true);"
+												class="icon-down-open" ng-show="Solicitud_Activas_xAsesor_detalle"
+												style="font-size: 16px" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+											<i ng-click="Solicitud_Activas_xAsesor_detalle=(Solicitud_Activas_xAsesor_detalle==true ? false : true) ; "
+												class=" icon-up-open" ng-show="!Solicitud_Activas_xAsesor_detalle"
+												style="font-size: 16px ; margin-top: -35px;" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne"> </i>
+										</h5>
+										<h6>Asesor: {{funcionario_detelles | uppercase }} Estado: {{estado | uppercase}}
+											Cantidad
+											{{cantidad_detelles}}</h6>
+									</div>
+									<!-- CNVU -- AGREGAR BOTON MODAL-->
+									<div class="col s4 m4 l4" style="margin-top: 25px;"
+										ng-if="cedulaLogin==22655600 || cedulaLogin==1045747968 || cedulaLogin==1045739217">
+										<div class="tooltip">
+											<button class="btn" type="submit"
+												ng-click="abrirModal('S');listadoAsesores()">
+												<i class="fontello-icon icon-retweet"></i>
+											</button>
+											<span class="tooltiptext">Reasignar Solicitudes</span>
+										</div>
+									</div>
+									<div class="col s12 m12 l12" ng-hide="Solicitud_Activas_xAsesor_detalle">
+										<div class="card-action">
+											<table id="resultDetalles2" class="highlight responsive-table"
+												style="width:100%; cursor:pointer;">
+												<thead>
+													<tr>
+														<th style="  background : none; ">Codigo</th>
+														<th style="  background : none; ">Documento</th>
+														<th style="  background : none; ">Nombre del Afiliado</th>
+														<th style="  background : none; ">Empresa</th>
+														<th style="  background : none; ">Fecha Registro</th>
+														<th style="  background : none; ">Fecha Modificada</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- CNVU - MODAL TRANSFERIR -->
+	<div id="modalTransferir" class="newdesing_modal modal" style="width: 550px;">
+		<div class="col s12 m12 l12 card" style="margin: 0;">
+			<div class="card-content">
+				<h5 id="ngdialog1-aria-labelledby">Usuarios a Transferir</h5>
+				<div class="ngdialog-close" ng-click="cerrarModal()"></div>
+			</div>
+			<div class="card-action">
+				<div class="row">
+					<div class="col s12 m12 l12">
+						<div class="row margin">
+							<div class="col l12 md12 m12">
+								<!-- style="height: 40vh;overflow: auto;" -->
+								<table class="responsive-table striped table-bordered">
+									<thead>
+										<tr class="default-background white-text">
+											<th class="border-none" data-field="Numero">Nombre</th>
+											<!-- <th class="border-none" data-field="Cargo"># de Solicitudes</th> -->
+											<th class="border-none" data-field="Accion">Accion</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="listaAsesores in listado">
+											<td>{{listaAsesores.nombre}}</td>
+											<!-- <td>{{listaAsesores.cantidad}}</td> -->
+											<td class="center-aling"
+												ng-show="(listaAsesores.codigo != docFuncionarioSel)">
+												<div class="tooltip">
+													<i ng-click="transferirSolicitudes(listaAsesores.codigo)"
+														class="icon-retweet"
+														style="cursor:pointer;font-size: 20px;"></i>
+													<span class="tooltiptext">Reasignar a este Usuario</span>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<!-- <div class="col s12 m12 l12" style="margin-top: 25px;">
+								<center>
+									<div class="tooltip">
+										<button class="btn" type="submit" ng-click="openTransferir()">
+											<i class="icon-shuffle-4"></i>
+										</button>
+										<span class="tooltiptext">Reasignar Masivamente</span>
+									</div>
+								</center>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- CNVU - FIN MODAL TRANSFERIR -->
+
+	<style type="text/css">
+		.tabs .tab a:hover,
+		.tabs .tab a.active {
+			border-bottom: 2px solid;
+		}
+
+		.espac {
+			cursor: pointer;
+			padding-left: 0px !important;
+			padding-right: 0px !important;
+		}
+
+		i {
+			cursor: pointer;
+		}
+
+		.espac {
+			background: #1A2E63;
+			color: #fff;
+		}
+
+		html body.cyan-scheme .espac {
+			background: #00abc0;
+			color: #fff;
+		}
+
+		html body.blue-scheme .espac {
+			background: #1565c0;
+			color: #fff;
+		}
+
+		html body.green-scheme .espac {
+			background: #558A2F;
+			color: #fff;
+		}
+
+		html body.purple-scheme .espac {
+			background: #6A1B99;
+			color: #fff;
+		}
+
+		html body.yellow-scheme .espac {
+			background: #FDA626;
+			color: #fff;
+		}
+
+		html body.dark-scheme .espac {
+			background: #111;
+			color: #fff;
+		}
+
+		input[disabled] {
+			color: rgba(0, 0, 0, 0.6) !important;
+
+		}
+
+		input {
+			text-transform: uppercase;
+		}
+
+		::-webkit-scrollbar {
+			width: 5px !important;
+			height: 5px !important;
+		}
+
+		.derecha .tooltip .tooltiptext::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: -6px;
+			margin-top: -5px;
+			border-width: 5px;
+			border-style: solid;
+			border-color: transparent black rgba(0, 0, 0, 0) transparent;
+		}
+	</style>
+</div>

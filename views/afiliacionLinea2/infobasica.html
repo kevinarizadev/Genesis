@@ -1,0 +1,397 @@
+<div class="row">
+<div class="col l6 m6 s12">
+   <div class="card">
+      <div class="card-title">
+         <div class="text-al switch" style="display:flex;">
+            <strong> Datos de la Registraduria</strong>
+            <label>
+            <input type="checkbox" checked="pistola" ng-model="pistola" ng-click="ipctrl.active()">
+            <span class="lever"></span>
+            </label>
+            <div class="tooltip"><a class="btn-floating btn waves-effect waves-light red" ng-click="ipctrl.clear()"><i class="icon-eraser"></i></a>
+               <span class="tooltiptext">Limpiar</span>
+            </div>
+            <div class="codigobarra">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrcedula" id="qrcedula">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrnumero">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrprimer_apellido">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrsegundo_apellido">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrprimer_nombre">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrsegundo_nombre">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrsexo">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrfecha">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrtipo_sangre">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="qrnit">
+               <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox" ng-model="caso" ng-change="obtenerdatos()">
+            </div>
+         </div>
+      </div>
+      <div class="input-field">
+         <input ng-disabled="true" id="normal" ng-model="radicado" type="text" class="validate">
+         <label for="normal" class="">Radicado</label>
+         <div class="input-label">
+            <label for="normal" class="">Fecha</label>
+         </div>
+         <div class="input-list">
+            <input type="date"  id="datepicker" ng-model="fechaprocesado" class="datepicker picker__input" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="datepicker_root" ng-disabled="dsb_fecha_afiliacion" >
+         </div>
+		 <div class="input-list input-view-column" ng-init="obtenerTramite()">
+            <label class="active">Tipo de Tramite</label>
+            <select  ng-disabled="pistola" class="select-chosen-eps" ng-model="filtro.selecttramite" ng-change="changeTramite()">
+               <option ng-repeat="tramite in Tramites.Tramite" ng-value="tramite.Codigo">{{tramite.Nombre}}</option>
+            </select>
+         </div>
+      </div>
+   </div>
+   <div class="card">
+      <div class="card-title">
+         <div class="text-al switch"><strong>1. Datos basicos de identificacion</strong>
+         </div>
+      </div>
+      <div class="input-field">
+         <div class="input-list input-form" ng-hide="iptDigitInfoBasica">
+            <div class="input-list input-view-column input-padding">
+               <input ng-disabled="pistola" id="normal1" type="text" ng-change="form()" ng-model="primer_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+               <label for="normal1" class="">1er Nombre</label>
+            </div>
+            <div class="input-list input-view-column">
+               <input ng-disabled="pistola" id="normal3" type="text" ng-change="form()" ng-model="segundo_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+               <label for="normal3" class="">2do Nombre</label>
+            </div>
+         </div>
+         <div class="input-list input-form" ng-hide="iptDigitInfoBasica">
+            <div class="input-list input-view-column input-padding">
+               <input ng-disabled="pistola" id="normal2" type="text" ng-change="form()" ng-model="primer_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+               <label for="normal2" class="">1er Apellido</label>
+            </div>
+            <div class="input-list input-view-column">
+               <input ng-disabled="pistola" id="normal4" ng-change="form()" ng-model="segundo_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+               <label for="normal4" class="">2do Apellido</label>
+            </div>
+         </div>
+         <div class="input-list input-form">
+            <div class="input-list input-view-column input-padding" ng-init="obtenerDocumento()">
+               <label class="active">Tipo de Documento</label>
+               <select ng-disabled="pistola" class="select-chosen-eps" ng-change="form()" id="tipo_doc" ng-model="filtro.selectdocumento">
+                  <option ng-repeat="documento in Documentos.Documento" ng-value="documento.Codigo">{{documento.Nombre}}</option>
+               </select>
+            </div>
+            <div class="input-list input-view-column">
+               <input ng-disabled="pistola" id="normal8" ng-change="form()" ng-model="documento" type="text" class="validate">
+               <label for="normal8">Numero</label>
+            </div>
+         </div>
+         <div class="input-list input-form" ng-hide="iptDigitInfoBasica">
+            <div class="input-list input-view-column input-padding" ng-init="obtenerRegimen()">
+               <label for="simple-select" style="margin-top: -20px;">Regimen</label>
+               <select disabled="true" class="select-chosen-eps" id="simple-select" ng-model="filtro.selectregimen">
+                  <option ng-repeat="reg in Regimenes.Regimen" ng-value="reg.Codigo">{{reg.Nombre}}</option>
+               </select>
+            </div>
+            <div class="input-list input-view-column" ng-init="obtenerSexo()">
+               <label style="margin-top: -20px;">Sexo</label>
+               <select ng-disabled="pistola" class="select-chosen-eps" ng-change="form()" id="sexoCabeza" ng-model="filtro.selectsexo">
+                  <option ng-repeat="sexo in Sexos.Sexo" ng-value="sexo.Codigo">{{sexo.Nombre}}</option>
+               </select>
+            </div>
+         </div>
+         <div class="input-label" ng-hide="iptDigitInfoBasica">
+            <label for="normal" class="">Fecha de Nacimiento</label>
+         </div>
+         <div class="input-list" ng-hide="iptDigitInfoBasica">
+            <input ng-disabled="pistola" type="date" id="datepicker" ng-change="form()" ng-model="nacimiento" class="datepicker picker__input" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="datepicker_root">
+         </div>
+         <div class="input-button">
+			<button  class="btn btn-primary" ng-click="ipctrl.MostrarFosyga()" ng-model="validabtn" ng-disabled="btnFosyga">
+         <span ng-show="fosygaButtonText == 'Cargando'"><i class="zmdi zmdi-refresh-sync fa-spin"></i></span>{{ fosygaButtonText }}</button>
+
+			<button type="submit" class="btn btn-primary"  ng-click="ipctrl.validaform()" ng-model="validabtn" ng-disabled="btnValidar">
+				<span ng-show="validaButtonText == 'Validando'"><i class="zmdi zmdi-refresh-sync fa-spin"></i></span>{{ validaButtonText }}
+            </button>
+         </div>
+      </div>
+   </div>
+   <!--                           ..................................                       -->
+   <!--                           .DATOS COMPLEMENTARIOS PERSONALES.                       -->
+   <!--                           ..................................                       -->
+   <div class="card">
+      <div class="card-title">
+         <div class="text-al switch"><strong>2. Datos complementarios personales</strong>
+         </div>
+      </div>
+      <div class="input-field" ng-hide="inactive2" >
+         <div class="input-list input-form" >
+            <div class="input-list input-view-column input-padding" ng-init="obtenerEtnia()">
+               <label for="simple-select" style="margin-top: -20px;">Etnia</label>
+               <select class="select-chosen-eps" id="simple-select" ng-model="filtro.selectetnia" ng-disabled="saved">
+                  <option ng-repeat="etnia in Etnias.Etnia" ng-value="etnia.Codigo">{{etnia.Nombre}}</option>
+               </select>
+            </div>
+            <div class="input-list input-view-column" ng-init="obtenerDiscapacidad()">
+               <label for="simple-select" style="margin-top: -20px;">Discapacidad</label>
+               <select ng-change="valorCondicion()" class="select-chosen-eps" id="simple-select" ng-model="filtro.selectdiscapacidad" ng-disabled="saved" >
+                  <option ng-repeat="discapacidad in Discapacidades.Discapacidad" ng-value="discapacidad.Codigo">{{discapacidad.Nombre}}</option>
+               </select>
+            </div>
+         </div>
+         <div class="input-list input-form">
+            <div class="input-list input-view-column input-padding" ng-init="obtenerCondicion()">
+               <label for="simple-select" style="margin-top: -20px;">Condicion</label>
+               <select class="select-chosen-eps" id="simple-select" ng-disabled="disDiscapacidad" ng-model="filtro.selectcondicion">
+                  <option ng-repeat="condicion in Condiciones.Condicion" ng-value="condicion.Codigo">{{condicion.Nombre}}</option>
+               </select>
+            </div>
+            <div class="input-list input-view-column">
+               <label for="simple-select" style="margin-top: -20px;">Nivel de SISBEN</label>
+               <input ng-disabled="disSisben" id="normal" class="validate" type="number" mask='9' ng-model="sisben" ng-change="validaSisben()">
+			   </div>
+         </div>
+		  <div class="input-list input-view-column input-padding"  ng-init="obtenerGrupoPoblacional()">
+            <label for="simple-select" style="margin-top: -20px;">G.Poblacional</label>
+            <select ng-disabled="saved" ng-change="poblacionSisben()" class="select-chosen-eps" id="poblacion" ng-model="filtro.selectpoblacional">
+               <option ng-repeat="pobla in Gpoblacional" ng-value="pobla.CODIGO">{{pobla.NOMBRE}}</option>
+            </select>
+         </div>
+         <div class="input-list input-form">
+            <div class="input-list input-view-column input-padding">
+               <label for="simple-select" style="margin-top: -20px;">Puntaje de SISBEN</label>
+               <input id="normal" ng-disabled="disPuntaje" class="validate" type="text" ng-model="puntajesisben">
+            </div>
+            <div class="input-list input-view-column">
+               <label for="simple-select" style="margin-top: -20px;">Ficha de SISBEN</label>
+               <input id="normal" ng-disabled="disFicha" class="validate" type="number" mask='999999999999999' ng-model="fichasisben">
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!--                           .....................................                  -->
+<!--                           .DATOS COMPLEMENTARIOS DE RESIDENCIA.                  -->
+<!--                           .....................................                  -->
+<div class="col l6 m6 s12">
+<div class="card">
+   <div class="card-title">
+      <div class="text-al switch"><strong>3. Datos complementarios Residencia</strong>
+      </div>
+   </div>
+   <div class="input-field" ng-hide="inactive3">
+      <!--viaPrincipal y Numero/nombre-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column" ng-init="obtenerViaPrincipal()">
+            <label for="simple-select" style="margin-top: -20px;">Via Principal</label>
+            <select ng-disabled="saved" class="select-chosen-eps" ng-change="mostrar4()" ng-model="filtro.selectViap">
+               <option ng-repeat="viap in viaprincipal.Viaprincipal" ng-value="viap.Codigo">{{viap.Nombre}}</option>
+            </select>
+         </div>
+         <div class="input-list input-view-column">
+            <input ng-disabled="saved" id="normal" ng-change="mostrar4()" type="text" class="validate" ng-model="filtro.numeroN">
+            <label for="normal" class="">Numero/Nombre</label>
+         </div>
+      </div>
+      <!--Letra y Numero-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column" ng-init="obtenerLetra()">
+            <label for="simple-selecty" style=" margin-top: -20px;" class="">Letra</label>
+            <select ng-disabled="saved" class="select-chosen-eps format-list" id="simple-select"   ng-model="filtro.selectLetra"  >
+               <option ng-repeat="letra in letras.Letra" ng-value="letra.Codigo">{{letra.Nombre}}</option>
+            </select>
+         </div>
+         <div class="input-list input-view-column" ng-init="obtenerNumero()">
+            <input ng-disabled="saved" id="number" type="text" class="validate" ng-model="filtro.selectnumero"   min= "1" max="9" maxlength="1">
+            <label for="normal" class="">Numero</label>
+         </div>
+      </div>
+      <!--Bis y Cuadrante-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column input-padding">
+            <input ng-disabled="saved" type="checkbox" id="checkboxBIS" ng-model="filtro.bis" />
+            <label for="checkboxBIS">Bis</label>
+         </div>
+         <div class="input-list input-view-column" ng-init="obtenerCuadrante()">
+            <label for="simple-selecty" style="margin-top: -20px;" class="">Cuadrante</label>
+            <select ng-disabled="saved" class="select-chosen-eps format-list" id="simple-select" ng-model="filtro.selectcuadrante"  >
+               <option ng-repeat="cuadrante in Cuadrantes.Cuadrante" ng-value="cuadrante.Codigo">{{cuadrante.Nombre}}</option>
+            </select>
+         </div>
+      </div>
+      <!--NumeroVG y letraVG-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column input-padding">
+            <input ng-disabled="saved" id="normal" type="text" class="validate" ng-model="filtro.numeroNVG">
+            <label for="normal" class=""> Numero VG</label>
+         </div>
+         <div class="input-list input-view-column" ng-init="obtenerLetra()">
+            <label for="simple-selecty" style="
+               margin-top: -20px;" class="">Letra VG</label>
+            <select ng-disabled="saved" class="select-chosen-eps" id="simple-select" ng-model="filtro.selectLetraVG"  >
+               <option ng-repeat="letravg in letras.Letra" ng-value="letravg.Codigo">{{letravg.Nombre}}</option>
+            </select>
+         </div>
+      </div>
+      <!--Numero de placa y CuadranteVG-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column input-padding">
+            <input ng-disabled="saved" id="normal" type="text" class="validate" ng-model="filtro.numeroplaca"  >
+            <label for="normal" class="">Numero Placa</label>
+         </div>
+         <div class="input-list input-view-column" ng-init="obtenerCuadrante()">
+            <label for="simple-selecty" style="margin-top: -20px;" class="">Cuadrante VG</label>
+            <select ng-disabled="saved" class="select-chosen-eps" ng-model="filtro.selectcuadranteVG"  >
+               <option ng-repeat="cuadrantevg in Cuadrantes.Cuadrante" ng-value="cuadrantevg.Codigo">{{cuadrantevg.Nombre}}</option>
+            </select>
+         </div>
+      </div>
+      <!--Complemento-->
+      <div class="input-list">
+         <input ng-disabled="saved" id="normal" type="text" class="validate" ng-model="filtro.complemento"   style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+         <label for="normal" class="">Complemento</label>
+      </div>
+      <!--Direccion concatenada-->
+      <div class="input-list">
+         <div ng-if="filtro.bis==true">
+            <input ng-disabled="true" id="direccion"  type="text"  value="{{filtro.selectViap}}  {{filtro.numeroN}} {{filtro.selectLetra}} {{filtro.selectnumero}} BIS {{filtro.selectcuadrante}} {{filtro.numeroNVG}} {{filtro.selectLetraVG}} {{filtro.numeroplaca}} {{filtro.selectcuadranteVG}} {{filtro.complemento}}" class="requerido" name="direccion">
+         </div>
+         <div ng-if="filtro.bis==false">
+            <input ng-disabled="true" id="direccion"  type="text"  value="{{filtro.selectViap}}  {{filtro.numeroN}} {{filtro.selectLetra}} {{filtro.selectnumero}} {{filtro.selectcuadrante}} {{filtro.numeroNVG}} {{filtro.selectLetraVG}} {{filtro.numeroplaca}} {{filtro.selectcuadranteVG}} {{filtro.complemento}}" class="requerido" name="direccion">
+         </div>
+         <label style="margin-top: -20px;">Direccion</label>
+      </div>
+      <!--telefono y celular-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column input-padding">
+            <input numbers-only ng-disabled="saved" id="tel" name="tel" ng-change="mostrar4()" type="text" class="validate requerido" ng-model="telfijo" mask='9999999'>
+            <label for="normal" class="">Telefono Fijo </label>
+         </div>
+         <div class="input-list input-view-column">
+            <input numbers-only ng-disabled="saved" id="cel" name="cel" ng-change="mostrar4()" type="text" class="validate requerido" ng-model="celular" mask='9999999999'>
+            <label for="normal" class="">Telefono Celular</label>
+         </div>
+      </div>
+      <!--Correo y municipio-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column input-padding">
+            <input ng-disabled="saved" id="email" name="email" type="email" class="validate requerido" ng-model="correo">
+            <label for="normal" class="">Correo Electronico</label>
+         </div>
+        <div class="input-list input-view-column" ng-init="obtenerMunicipio()">
+            <label for="simple-select" style="margin-top: -20px;">Mun. Residencia</label>
+            <select ng-disabled="saved" id="municipio" ng-change="obtenerEscenario()" ng-model="filtro.municipio" class="select-chosen-eps">
+               <option ng-value="0">SELECCIONAR</option>
+              <option ng-selected = "mun.CODIGO == filtro.municipio" ng-repeat="mun in Municipio" ng-value="mun.CODIGO">{{mun.NOMBRE}}</option>
+            </select>
+         </div>
+      </div>
+      <!--Zona y localidad-->
+      <div class="input-list input-form">
+         <div class="input-list input-view-column input-padding" ng-init="obtenerZona()">
+            <label for="simple-selecty" style="margin-top: -20px;" class="">Zona</label>
+            <select ng-disabled="saved" class="select-chosen-eps" id="simple-select"   ng-model="filtro.selectZona" >
+               <option ng-repeat="zona in Zonas.Zona" ng-value="zona.Codigo">{{zona.Nombre}}</option>
+            </select>
+         </div>
+      <div class="input-list input-view-column input-padding">
+            <input ng-disabled="saved" id="normal" type="text" name="localidad" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+			class="validate requerido" ng-model="localidad"  >
+            <label for="normal" class="">Localidad/Barrio</label>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="card">
+   <div class="card-title">
+      <div class="text-al switch"><strong>4. Datos Escenarios IPS y Anexo de Documentos del Cabeza de Familia</strong>
+      </div>
+   </div>
+   <div class="input-field" ng-hide="inactive4">
+      <div class="input-list input-view-column" ng-init="obtenerEscenario()">
+         <label for="simple-select" style="margin-top: -20px;">IPS</label>
+         <select class="select-chosen-eps" ng-disabled="ips" ng-model="filtro.escenario" ng-change="ObtenerDetalle()">
+            <option ng-value="">SELECCIONAR</option>
+            <option ng-repeat="ips in Escenarios" ng-value="ips.CODIGO">{{ips.NOMBRE}}</option>
+         </select>
+         <div class="input-button">
+            <a class="waves-effect waves-light btn white-text primary-button" ng-click="ipctrl.MostrarDetalle()">Detalle</a>
+         </div>
+         <span class="input-group-btn"></span>
+      </div>
+      <form class="panel panel-warning" id="formulario" method="post" enctype="multipart/form-data" ng-submit="submit()">
+         <div class="input-list input-view-column input-padding" ng-init="obtenerAnexo()">
+            <label for="simple-select" style="margin-top: -20px;">Anexo documento</label>
+            <select ng-disabled="anexo" class="select-chosen-eps" id="simple-select" ng-model="filtro.anexo" ng-change="stateAttach()">
+               <option ng-value="">SELECCIONAR</option>
+               <option ng-repeat="ane in Anexos" ng-value="ane.CODIGO">{{ane.NOMBRE}}</option>
+            </select>
+         </div>
+         <div class="input-button" style="padding-bottom: 80px;">
+            <div style="width: 70%; overflow: hidden; float: left; margin: 0 auto;">
+               <div class="file-field input-field">
+                  <div class="btn">
+                     <span class="white-text" ng-disabled="infoadjuntar">Adjuntar</span>
+                     <input class="adjuntar" id="adjuntoAfiliado" name="archivo" accept=".png,.jpg,.jpeg,.pdf,.doc" type="file" ng-disabled="infoadjuntar">
+                  </div>
+                  <div class="file-path-wrapper">
+                     <input class="file-path validate" type="text" id="nombreadjunto" placeholder="Seleccione un archivo">
+                  </div>
+               </div>
+            </div>
+            <div style="width: 30%; overflow: hidden; float: right; margin: 0 auto; padding-top: 20px;">
+                <button class="btn btn-primary" type="submit" ng-disabled="infoadjuntar">Subir
+                <i class="zmdi zmdi-refresh-sync fa-spin" id="subirl">
+                <span ng-show="validaButtonImgText == 'Cargando'">
+               </span></i>
+               </button>
+            </div>
+         </div>
+      </form>
+   </div>
+   <div class="fixed-action-btn horizontal">
+      <div class="tooltip">
+         <a class="btn-floating btn-large" data-toggle="modal" ng-click="ipctrl.MostrarBeneficiario()">
+         <i class="zmdi zmdi-eye zmdi-hc-fw"></i>
+         </a>
+         <span class="tooltiptext">Beneficiario</span>
+      </div>
+   </div>
+</div>
+<div class="card">
+	<div class="card-title">
+      <div class="text-al switch"><strong>5. Opciones </strong>
+      </div>
+	</div>
+	<div class="input-field" ng-hide="inactive5">
+      <div class="input-list input-form">
+         <div class="input-button">
+            <div class="tooltip"><button type="submit" class="btn-floating btn-large waves-effect waves-light"  ng-click="ProcesarBeneficiario()" ng-model="validabtn" ng-disabled="isAttachButton" >
+               <i class="icon-floppy"><span ng-show="validaButtonGuardar == 'Guardando...'"><i class="zmdi zmdi-refresh-sync fa-spin"></i></span></i>
+               </button>
+               <span class="tooltiptext">Guardar</span>
+            </div>
+         </div>
+         <div class="input-button">
+            <div class="tooltip">
+               <a class="btn-floating btn-large waves-effect waves-light" ng-click="ipctrl.AgregarBeneficiario()" ng-disabled="isbeneficiario" ><i class="icon-plus-squared-alt"></i></a>
+               <span class="tooltiptext">Agregar beneficiario</span>
+            </div>
+         </div>
+         <div class="input-button">
+            <div class="tooltip">
+               <button class="btn-floating btn-large waves-effect waves-light" ng-disabled="reporte" ng-click="generaDeclaracion()" >
+                  <i class="icon-doc-text-inv"></i>
+               </button>
+               <span class="tooltiptext">Generar declaración</span>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<style>
+   .readOnly {color:#808080;}
+   .adjuntar{
+   position:absolute;
+   z-index: 1;
+   opacity: 0;
+   float: left;
+   text-align: center;
+   overflow: hidden;
+   }
+</style>

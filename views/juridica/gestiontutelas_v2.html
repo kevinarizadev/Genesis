@@ -1,0 +1,3459 @@
+<div class="row margin" id="pantalla">
+	<div class="row section-header" style="padding-bottom: 0px;" id="panelListado">
+		<div class="col s12">
+			<div class="col s6 prod-title-div no-padding">
+				<h4 class="page-title" ng-click="nohe()">Gestión de Tutelas e Incidentes</h4>
+			</div>
+			<div class="col s6 search-top-bar hide-on-med-and-down">
+				<i class="material-icons" style="color: #3e3e3e; font-size: 3rem;" ng-click="busqueda()"
+					title="Buscar">search</i>
+				<i class="material-icons" style="color: #3e3e3e; font-size: 3rem; right: 225px;" ng-click="crear()"
+					title="Registrar">note_add</i>
+				<i class="material-icons" style="color: #3e3e3e; font-size: 3rem; right: 285px;" ng-click="dwinforme('T')"
+					title="Informe Tutelas" ng-show="btnDwnInformes">file_download</i>
+				<i class="material-icons" style="color: #3e3e3e; font-size: 3rem; right: 350px;" ng-click="dwinforme_inc()"
+					title="Informe Incidentes">open_in_new</i>
+				<i class="material-icons" style="color: #3e3e3e; font-size: 3rem; right: 415px;" ng-click="descargaInformeGeneral()"
+					title="Informe Tutelas General" ng-show="btnInformesGeneral">format_list_bulleted</i>
+				<!-- <input type="search" id="search" ng-model="keywordtutelas" class="autocomplete search-top-bar-input z-depth-2" style="background-color: gray !important;" autocomplete="off" placeholder="Buscar Tutela"> -->
+			</div>
+			<div class="card-action" ng-hide="hdeTablaResultados">
+				<table id="resultTutelas" class="highlight responsive-table" style="width:100%; cursor:pointer;">
+					<thead> 
+						<tr>
+							<th>Código</th>
+							<th>Radicado</th>
+							<th>Ubicación</th>
+							<th>Accionante</th>
+							<th>Accionado</th>
+							<th>Afiliado</th>
+							<th>Juzgado</th>
+							<th>Causa</th>
+							<th>Motivo</th>
+							<th>Fecha Vencimiento</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+
+	<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;" ng-hide="hdeRegistro">
+		<div class="col s12 m12 l12">
+			<div class="card">
+				<div class="card-content">
+					<div class="row section-header margin white">
+						<ul id="tabs-list" class="align-items-center d-flex justify-content-between left list-inline w-100">
+							<li style="margin: auto">
+								<ul class="tabs transparent">
+								<li class="tab col w-auto">
+									<a id="tab_1" ng-click="seleccionar(1)"
+										href="javascript:void(0)">Tutela <i class="icon-briefcase-1"></i></a>
+								</li>
+								<li class="tab col w-auto" ng-repeat="nul in cant_nulidades">
+									<a id="tab_2" ng-click="seleccionar(2);obtenerNulidad(nul.consecutivo)"
+										href="javascript:void(0)">Novedad {{nul.consecutivo}}<i class="icon-doc-text-inv"></i></a>
+								</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<div ng-show="tabs.select==1" id="tab_tutela">
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-disabled="dsbRegistro" ng-hide="hdeRegistro">
+								<div class="card">
+									<form ng-submit="registraTutela()">
+										<div class="card-content" id="panelRegistro" ng-init="despl1=true">
+											<h5 style="display: flex;">Registro de Tutela {{registro.consecutivojuzgado}}
+												<!-- <div ng-hide="!hdeAdjuntarfile">| Documento de Admisión de Tutela<i class="fontello-icon icon-download-cloud" style="cursor: pointer;" title="Descargar" ng-click="descargafile(registro.rutaadmision)"></i></div> -->
+												<a href="" ng-click="despl1=true;" ng-show="despl1==false" class="zmdi zmdi-chevron-down"
+													data-toggle="Desplegar información" title="Desplegar información"
+													style="padding-left: 5px"></a>
+												<a href="" ng-click="despl1=false" ng-show="despl1==true" class="zmdi zmdi-chevron-up"
+													style="padding-left: 5px"></a>
+												<div class="input-field col l3 m4 s4" style="margin-top: 0px;" ng-show="despl1==true">
+													<div class="switch"
+														ng-show="registro.usuariotraeps=='S' || labelotraepsAdmisionTut==true">
+														<label for="diferenteepsAdmisionTut" class="labelper">Tutela Proveniente de otra EPS</label>
+														<label>
+															No<input id="diferenteepsAdmisionTut" type="checkbox"
+																ng-model="registro.diferenteepsAdmisionTut"><span class="lever"></span>Si
+														</label>
+													</div>
+												</div>
+												<!-- ng-disabled="registro.estadoTutela" -->
+												<div class="input-field col l3 m4 s4" style="margin-top: 0px;" ng-hide="hdeModalEstadoTutela">
+													<input type="checkbox" class="filled-in" 
+															ng-model="ModalEstadoTutela" id="estadoTutela"
+															ng-click="abrirModal(ModalEstadoTutela,'1')"
+															 ng-disabled="registro.estadoTutela == true">
+													<label for="estadoTutela">Estado Tutela</label>
+												</div>
+												<!-- <a class="btn-floating btn waves-effect waves-light blue" style="float: right;" ng-click="eliminartutela()" ng-hide="(sesdata.cedula == '1045739217' || sesdata.cedula == '1096211358') && registro.numerotutela != undefined ? false : true">
+													<i class="material-icons dp48">delete</i>
+												</a> -->
+												<div style="margin-right: 25px;" ng-hide="(sesdata.cedula == '1045250310' || sesdata.cedula == '1045739217' || sesdata.cedula == '1096211358') && registro.numerotutela != undefined ? false : true">
+													<div class="tooltip">
+														<a class="btn-floating btn waves-effect waves-light blue" ng-click="eliminartutela()">
+															<i class="material-icons dp48">delete</i>
+														</a>
+														<span class="tooltiptext" style="font-size: 15px;" >Anular Tutela</span>
+													</div>
+												</div>
+											</h5>
+											<!-- <div class="col l2 m2 s2" ng-hide="btnActualizarTutela" title="Habilitar para modificar datos" style="margin: .82rem 0 .656rem 0;">
+												<div class="switch">
+													<label>
+														Habilitar
+														<input type="checkbox">
+														<span class="lever"></span>
+													</label>
+												</div>
+											</div> -->
+										</div>
+										<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+											ng-show="despl1==false">Despliegue información</p>
+										<div class="card-action" ng-show="despl1==true">
+											<div class="row">
+												<!-- <div class="divider"></div> -->
+												<div class="col l12 m12 s12">
+													<div class="input-field col l2 m12 s12">
+														<input id="cons_juzgado" type="text" ng-model="registro.consecutivo"
+															ng-blur="validaCons()" mask="9" repeat="5" required
+															class="ng-valid-required ng-touched ng-dirty ng-valid-mask ng-valid-parse ng-valid">
+														<label for="cons_juzgado">Radicado</label>
+													</div>
+													<div class="input-field col l1 m12 s12" style="width: 0px !important;">
+														<p><b>-</b></p>
+													</div>
+													<div class="input-field col l1 m12 s12">
+														<input id="aniocons_juzgado" type="text" ng-model="registro.anioconsecutivo"
+															minlength="4" maxlength="4">
+														<label for="cons_juzgado">Año</label>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeAdjuntarfile">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="admisiontutela" type="file" accept=".pdf" name="registro.admisiontutela">
+															</div>
+															<div class="file-path-wrapper">
+																<input id="inputAdmisionTutela" class="file-path validate" type="text"
+																	placeholder="Adjuntar admisión" ng-model="archivoadminision" readonly ng-required="registro.diferenteepsAdmisionTut==false || registro.anioconsecutivo > '2018'">
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION ADMISIÓN CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 15px;margin-top: 15px;" ng-show="archivoadminision != '' || registro.rutaadmision != null">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 30px;">
+														<div class="switch">
+															<label for="medioRecepcionAdmisionTut" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionAdmisionTut" type="checkbox"
+																	ng-model="registro.medioRecepcionAdmisionTut"
+																	ng-change="changeMedida('15')" ng-disabled="registro.rutaadmision != null"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeAdjuntarfile">
+														<div class="file-field input-field" ng-hide="hdeMedioRecepcionAdmisionTut">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionAdmisionTutAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="Medioarchivoadminision"
+																	ng-model="Medioarchivoadminision" ng-change="loadFile('archivoAdmisionTut','archivoAdmisionTutext', 'medioRecepcionAdmisionTutAdjunto', 'Medioarchivoadminision')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="hdeInfoAccionante">
+													<div class="col s12"
+														style="padding-left: 0px; padding-right: 0px; padding-bottom: 15px;">
+														<blockquote>Información del Accionante</blockquote>
+														<div class="input-field col l3 m6 s12">
+															<label class="labelper">Accionante</label>
+															<select id="accionante" name="accionante" class="select-chosen-eps"
+																ng-model="registro.accionante" ng-change="chgAccionante()" required>
+																<option value="" disabled>SELECCIONAR</option>
+																<option ng-selected="registro.accionante == reg.CODIGO"
+																	ng-repeat="reg in Accionantes" ng-value="{{reg.CODIGO}}">{{reg.NOMBRE}}
+																</option>
+															</select>
+														</div>
+														<div class="col l3 m5 s12" ng-show="hdeIdafiliado==false && (labelotraepsAdmisionTut==true || registro.usuariotraeps=='S')">
+															<!-- <label id="labelotraepsAdmisionTut" style="font-size: 1.1rem;">Afiliado Proveniente de Otra EPS</label> -->
+															<span id="labelotraepsAdmisionTut" class="status green ng-binding" style="margin-top: 20px;">Afiliado Proveniente
+																de EPS {{nombre_otraeps}}</span>
+														</div>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeIdafiliado">
+														<label class="labelper">Tipo de Documento</label>
+														<select id="tipoidafiliado" class="select-chosen-eps"
+															ng-model="registro.tipoidafiliado" ng-blur="setNombreAfil()"
+															ng-required="!hdeIdafiliado">
+															<option value="" disabled>SELECCIONAR</option>
+															<option value="{{x.CODIGO}}" ng-selected="x.CODIGO == registro.tipoidafiliado" 
+															ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+															<!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+															<option value="TI">TARJETA DE IDENTIDAD</option>
+															<option value="RC">REGISTRO CIVIL</option>
+															<option value="CE">CEDULA DE EXTRANJERÍA</option>
+															<option value="CN">CERTIFICADO NACIDO VIVO</option>
+															<option value="PA">PASAPORTE</option>
+															<option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+															<option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+															<option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+															<option value="CD">CARNET DIPLOMÁTICO</option>
+															<option value="SC">SALVO CONDUCTO</option> -->
+														</select>
+													</div>
+													<div class="input-field col l2 m12 s12" ng-hide="hdeIdafiliado">
+														<input id="documento" type="text" ng-model="registro.idafiliado" mainlength="6"
+															maxlength="20" ng-blur="setNombreAfil()" ng-required="!hdeIdafiliado"
+															minlength="6">
+														<label for="documento">Número Identificación</label>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeIdafiliado">
+														<input id="nombreafil" type="text" ng-model="registro.nombreafiliado" readonly
+															disabled title="{{registro.nombreafiliado}}">
+														<label for="nombreafil">Nombre Afiliado</label>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeInfoempresa">
+														<input id="nit" type="text" ng-model="registro.nitips" ng-required="!hdeInfoempresa"
+															ng-blur="setNombreIps()">
+														<label for="nit">Nit IPS</label>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeInfoempresa">
+														<input id="nombreips" type="text" ng-model="registro.nombreips"
+															ng-required="!hdeInfoempresa" ng-disabled="dsbNombreIps"
+															title="{{registro.nombreips}}">
+														<label for="nombreips">Nombre IPS</label>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeNombreAO">
+														<input id="nombreagente" type="text" ng-model="registro.nombreagente"
+															ng-required="!hdeNombreAO">
+														<label for="nombreagente">Nombre Agente Oficioso</label>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeNombreAccionado">
+														<input id="nombreaccionado" type="text" ng-model="registro.nombreaccionado"
+															ng-required="!hdeNombreAccionado">
+														<label for="nombreaccionado">Nombre Accionado</label>
+													</div>
+													<div class="input-field col l5 m12 s12" ng-hide="hdeOtro">
+														<input id="otroaccionante" type="text" ng-model="registro.otroaccionante"
+															ng-required="!hdeOtro" minlength="5">
+														<label for="otroaccionante">Información</label>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<blockquote>Datos del Juzgado</blockquote>
+													<div class="input-field col l3 m12 s12" ng-init="nomJuzgado();">
+														<input id="juzgado" style="cursor: pointer;" type="text"
+															ng-model="juzgado.seleccion" ng-click="modalJuzgados()"
+															title="{{juzgado.seleccion}}" readonly>
+														<label for="juzgado" class="active">Juzgado</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<input id="dteFechaRecepcion" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" ng-blur="setFechaVencimiento()">
+														<label for="dteFechaRecepcion" class="labelper" style="margin-top: -30px;">Fecha de
+															Recepción</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<input id="plazo" type="text" ng-model="registro.plazo"
+															ng-blur="setFechaVencimiento()" minlength="1" maxlength="2">
+														<label for="plazo">Plazo (Días)</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<input id="dteFechaVencimiento" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" disabled>
+														<label for="dteFechaVencimiento" class="labelper">Fecha de Vencimiento</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<div class="switch">
+															<label for="medida" class="labelper">Medida Provisional</label>
+															<label>
+																No<input id="medidaprovisional" type="checkbox"
+																	ng-model="registro.medidaprovisional"
+																	ng-change="changeMedida('1')"><span class="lever"></span>Si
+															</label>
+														</div>
+													</div>
+												</div>
+												<!-- FECHAS DE MEDIDAS PROVISIONALES CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" ng-hide="hdeFechaMedida" style="margin-top: 15px;">
+													<div class="input-field col l3 m12 s12">
+														<input id="dteFechaRecepcionMedida" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" ng-blur="setFechaVencimientoMedida()">
+														<label for="dteFechaRecepcionMedida" class="labelper"
+															style="margin-top: -30px;">Fecha de Recepción Medida Provisional</label>
+													</div>
+													<div class="input-field col l3 m12 s12">
+														<input id="plazoMedida" type="text" ng-model="registro.plazo_medida_prov"
+															ng-blur="setFechaVencimientoMedida()" minlength="1" maxlength="2">
+														<label for="plazo">Plazo (Días) Medida Provisional</label>
+													</div>
+													<div class="input-field col l3 m12 s12">
+														<input id="dteFechaVencimientoMedida" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" disabled>
+														<label for="dteFechaVencimientoMedida" class="labelper">Fecha de Vencimiento Medida
+															Provisional</label>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l3 m12 s12">
+														<label for="causa" class="labelper">Causas</label>
+														<select id="causa" name="causa" class="select-chosen-eps" ng-model="registro.causa"
+															ng-change="lstMotivos()" required>
+															<option value="" disabled>SELECCIONAR</option>
+															<option ng-selected="reg.CODIGO == registro.causa"
+																ng-repeat="reg in Causas track by $index" ng-value="reg.CODIGO">
+																{{reg.NOMBRE}}</option>
+														</select>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeMotivo">
+														<label for="motivo" class="labelper">Motivo</label>
+														<select id="motivo" name="motivo" class="select-chosen-eps"
+															ng-model="registro.motivo">
+															<option ng-value="">SELECCIONAR</option>
+															<option ng-selected="reg.CODIGO == registro.motivolbl"
+																ng-repeat="reg in Motivos" ng-value="reg.CODIGO">{{reg.NOMBRE}}</option>
+														</select>
+													</div>
+													<div class="input-field col l3 m12 s12" ng-hide="hdeMotivoLbl">
+														<label for="motivo" class="labelper">Motivo</label>
+														<p>{{registro.motivolbl}}</p>
+													</div>
+													<div class="input-field col l4 m12 s12" ng-hide="hdeDiagnostico">
+														<input id="diagnostico" style="cursor: pointer;" type="text"
+															ng-value="diagnostico.seleccion" ng-click="modalDiagnosticos()"
+															title="{{diagnostico.seleccion}}" readonly>
+														<label for="diagnostico" class="active">Diagnostico</label>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-show="registro.status>2">
+													<blockquote>Fecha Fallo de Tutela</blockquote>
+													<div class="input-field col l3 m12 s12">
+														<input id="dteFechaFalloAc" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" ng-blur="setFechaVencimientoFalloAc()" requerid>
+														<label for="dteFechaFalloAc" class="labelper" style="margin-top: -30px;">Fecha de
+															Fallo de Tutela</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<input id="plazofalloac" type="text" ng-model="registro.plazofalloac"
+															ng-blur="setFechaVencimientoFalloAc()" minlength="1" maxlength="2"
+															ng-keyup="formatNumberFalloAc()" requerid>
+														<label for="plazofalloac">Plazo (Días)</label>
+													</div>
+													<div class="input-field col l3 m12 s12">
+														<input id="dteFechaVencimientoFalloAc" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" disabled requerid>
+														<label for="dteFechaVencimientoFalloAc" class="labelper"
+															style="margin-top: -30px;">Fecha de Cumplimiento Fallo
+															de Tutela</label>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="hdeGuardaTut"
+													style="margin-top: 15px;margin-bottom: 15px;">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit"
+																ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="btnActualizarTutela">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button id="btnActualizaTutela" class="btn btn-primary" type="button"
+																ng-click="ActualizarTutela()">Actualizar</button>
+															<button class="btn btn-primary" type="button" ng-show="hdebtnOmitirEtapas"
+																ng-click="OmitirEtapasTut()">Omitir
+																Etapas</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+						</fieldset>
+
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-hide="hdeVBrespuestatutela" id="panelListado2">
+							<div class="card">
+								<form id="frmArchivoRespuestaTutela"
+									ng-submit="adjuntaRecibidoTutela();validaFechas('dteFechaRecepcionRespuesta','Respuesta')"
+									ng-init="despl2=false">
+									<div class="card-content">
+										<h5 style="display: flex;">Respuesta de Tutela
+											<a href="" ng-click="despl2=true" ng-show="despl2==false" class="zmdi zmdi-chevron-down"
+												data-toggle="Desplegar información" title="Desplegar información"
+												style="padding-left: 5px"></a>
+											<a href="" ng-click="despl2=false" ng-show="despl2==true" class="zmdi zmdi-chevron-up"
+												style="padding-left: 5px"></a>
+										</h5>
+									</div>
+									<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+										ng-show="despl2==false">Despliegue información</p>
+
+									<div class="card-action" ng-show="despl2==true">
+										<div class="row">
+											<blockquote style="margin-top: -10px;">Radicación respuesta tutela</blockquote>
+											<div class="input-field col l2 m12 s12">
+												<input id="dteFechaRecepcionRespuesta" class="datepicker picker__input uppercase"
+													type="text" placeholder="dd/mm/aaaa">
+												<label for="dteFechaRecepcionRespuesta" class="labelper">Fecha de Radicación</label>
+											</div>
+											<div class="col l5 m12 s12">
+												<div class="input-field col l12 m12 s12" style="margin-top: 0px;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="recibidorespuestatutela" accept=".pdf" type="file" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text"
+																placeholder="Adjuntar archivo">
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- FRONTEND RECEPCION RESPUESTA CNVU 12/12/2019-->
+											<div class="col l12 m12 s12" style="margin-top: 15px;margin-bottom: 17px;">
+												<div class="input-field col l2 m12 s12">
+													<div class="switch">
+														<label for="medioRecepcionRespuesta" class="labelper">Medio de Recepción</label>
+														<label>
+															Físico<input id="medioRecepcionRespuesta" type="checkbox"
+																ng-model="registro.medioRecepcionRespuesta"
+																ng-change="changeMedida('2')"><span class="lever"></span>Correo
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeMedioRecepcionRespuesta">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="medioRecepcionRespuestaAdjunto" accept=".pdf" type="file">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text"
+																placeholder="Adjuntar archivo">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeAdjuntarRespuesta">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+													</center>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</fieldset>
+						
+						<!-- ng-disabled="dsbDetalles"  -->
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-hide="hdeDetallesAccion" id="panelListado3">
+							<div class="card">
+								<form ng-submit="registraDetalles()" ng-init="despl3=false">
+									<div class="card-content">
+										<h5 style="display: flex;">Detalles de Acción de Tutela (Fallo de Tutela)
+											<a href="" ng-click="despl3=true" ng-show="despl3==false" class="zmdi zmdi-chevron-down"
+												data-toggle="Desplegar información" title="Desplegar información"
+												style="padding-left: 5px"></a>
+											<a href="" ng-click="despl3=false" ng-show="despl3==true" class="zmdi zmdi-chevron-up"
+												style="padding-left: 5px"></a>
+										</h5>
+									</div>
+									<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+										ng-show="despl3==false">Despliegue información</p>
+									<div class="card-action" ng-show="despl3==true">
+										<div class="row">
+											<div class="col l12 m12 s12">
+												<div class="input-field col l4 m12 s12" style="padding-bottom: 55px;">
+													<div class="switch">
+														<label for="medida" class="labelper">Fallo de Tutela</label>
+														<label>
+															En Contra<input type="checkbox" id="checkfallotutela" ng-model="detalles.fallotutela"
+																ng-change="changeFallo()"><span class="lever"></span>A
+															Favor
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeAdjuntarFallo">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="fallotutela" accept=".pdf" type="file" name="detalles.archivofallo" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivodetalletut"
+																ng-model="archivodetalletut" ng-change="loadFile('archivofallotutela','archivofallotutelaext', 'fallotutela', 'archivodetalletut')" required>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeFechaFallo">
+												<blockquote>Fecha Fallo de Tutela</blockquote>
+												<div class="input-field col l3 m12 s12">
+													<input id="dteFechaFallo" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="date" placeholder="dd/mm/aaaa"
+														ng-blur="setFechaVencimientoFallo()">
+													<label for="dteFechaFallo" class="labelper" style="margin-top: -30px;">Fecha de
+														Recepción Fallo de
+														Tutela</label>
+												</div>
+												<div class="input-field col l2 m12 s12">
+													<input id="plazofallo" type="text" ng-model="detalles.plazofallo"
+														ng-blur="setFechaVencimientoFallo()" minlength="1" maxlength="2"
+														ng-keyup="formatNumberFallo()">
+													<label for="plazofallo">Plazo (Días)</label>
+												</div>
+												<div class="input-field col l3 m12 s12">
+													<input id="dteFechaVencimientoFallo" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="date" placeholder="dd/mm/aaaa" disabled>
+													<label for="dteFechaVencimientoFallo" class="labelper"
+														style="margin-top: -30px;">Fecha de Cumplimiento Fallo de
+														Tutela</label>
+												</div>
+											</div>
+											<!-- FRONTEND RECEPCION FALLO CNVU 12/12/2019-->
+											<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+												<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+													<div class="switch">
+														<label for="medioRecepcionFallo" class="labelper">Medio de Recepción</label>
+														<label>
+															Físico<input id="medioRecepcionFallo" type="checkbox"
+																ng-model="registro.medioRecepcionFallo"
+																ng-change="changeMedida('3')"><span class="lever"></span>Correo
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeAdjuntarFallo">
+													<div class="file-field input-field" ng-hide="hdeMedioRecepcionFallo">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="medioRecepcionFalloAdjunto" accept=".pdf" type="file">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text"
+																placeholder="Adjuntar archivo">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 md12 m12" ng-show="registro.status > 2 && registro.fallo.observacion_fallo == null">
+												<div class="input-field col m12 s12 margin no-padding">
+													<div class="default-background file-field input-field"
+														style="display: flex;margin: 0;color: white;">
+														<div>
+															<i class="material-icons dp48" style="margin-top: 10px;">attach_file</i>
+															<input type="file" id="archivoObservacionFallo" accept=".pdf">
+														</div>
+														<div class="file-path-wrapper" style="width: 100%;">
+															<input class="file-path validate valid" type="text" id="archivoObservacionFalloNom"
+																placeholder="Seleccionar un adjunto" ng-model="archivoObservacionFalloNom"
+																style="margin: 0;border: none;" ng-change="loadFile('archivoObservacionFallo','archivoObservacionFalloExt', 'archivoObservacionFallo', 'archivoObservacionFalloNom')">
+														</div>
+													</div>
+												</div>
+												<div class="col l12 md12 m12 no-padding">
+													<textarea class="border-radius-none"
+														placeholder="Observación..." id="observacion_fallo" ng-model="detalles.observacion_fallo" rows="4" cols="50"
+														style="margin: 0px 0px 10px;border-radius: 3px;padding: 1em;max-width: 100%;width: 100%;height: 90px;outline: none; text-transform: uppercase;">
+													</textarea>
+												</div>
+											</div>
+											<div class="col l12 m12 s12">
+												<div class="divider"></div>
+											</div>
+											<div class="col l12 m12 s12" style="padding-bottom: 55px;" ng-hide="detalles.fallotutela">
+												<div class="input-field col l4 m12 s12">
+													<div class="switch">
+														<label for="medida" class="labelper">Tratamiento Integral</label>
+														<label>
+															No<input id="tratamientointegral" type="checkbox" ng-model="detalles.tratamientointegral"><span
+																class="lever"></span>Si
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" style="margin-bottom: 55px;" ng-hide="detalles.fallotutela">
+												<div class="input-field col l6 m12 s12">
+													<div class="switch">
+														<label for="medida" class="labelper">Seguimiento</label>
+														<label>
+															No<input id="seguimiento" type="checkbox" ng-model="detalles.seguimiento"><span
+																class="lever"></span>Si
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12">
+												<div class="divider"></div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeAdjuntarFallo">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+													</center>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-show="registro.status > 2 && registro.fallo.observacion_fallo == null">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button id="btnRegistraObs" class="btn btn-primary" type="button"
+															ng-click="registraObs('F')" ng-disabled="btn.GuardaRegistro">Actualizar</button>
+													</center>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-show="shwBtnOmitirDetalle">
+												<div class="input-field col l12 m12 s12 center">
+													<i class="btn btn-primary" type="button" style="font-style: inherit;" ng-click="OmitirEtapa_SaltarEtapa(2)">Omitir Etapa</i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</fieldset>
+
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-disabled="dsbDetallesSegInst" ng-hide="hdeDetallesAccionSeg" id="panelListado7">
+							<div class="col s12 m12 l12">
+								<div class="card">
+									<form ng-submit="registraDetallesInstDos()" ng-init="despl7=false">
+										<div class="card-content">
+											<h5 style="display: flex;">Acción de Tutela - Segunda Instancia
+												<a href="" ng-click="despl7=true" ng-show="despl7==false" class="zmdi zmdi-chevron-down"
+													data-toggle="Desplegar información" title="Desplegar información"
+													style="padding-left: 5px"></a>
+												<a href="" ng-click="despl7=false" ng-show="despl7==true" class="zmdi zmdi-chevron-up"
+													style="padding-left: 5px"></a>
+											</h5>
+										</div>
+										<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+											ng-show="despl7==false">Despliegue información</p>
+										&nbsp;
+										<div class="card-action" ng-show="despl7==true">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<div class="input-field col l4 m12 s12" style="padding-bottom: 55px;">
+														<div class="switch">
+															<label for="medida" class="labelper">Fallo de Tutela - Segunda Instancia</label>
+															<label>En Contra<input type="checkbox"
+																	ng-model="detallesetpdos.fallotutelainstdos">
+																<span class="lever"></span>A Favor
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeAdjuntarFalloSegInst">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="filefallotutelainstdos" type="file"
+																accept=".pdf" name="detallesetpdos.archivofalloinstdos" required>
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																	ng-model="filefallotutelainstdos">
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION SEGUNDA INSTANCIA CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionSegunda" class="labelper">Medio de Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionSegunda" type="checkbox"
+																	ng-model="registro.medioRecepcionSegunda"
+																	ng-change="changeMedida('4')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionSegunda">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionSegundaAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo">
+															</div>
+														</div>
+													</div>
+												</div>
+												&nbsp;
+												<div class="col l12 m12 s12">
+													<div class="divider"></div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="hdeAdjuntarFalloSegInst">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-show="shwBtnOmitirFalloSegInst">
+													<div class="input-field col l12 m12 s12 center">
+														<i class="btn btn-primary" type="button" style="font-style: inherit;" ng-click="OmitirEtapa_SaltarEtapa(14)">Omitir Etapa</i>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</fieldset>
+						
+						<!-- ng-disabled="dsbImpugnacion"  -->
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-hide="hdeImpugnacion" id="panelListado4">
+							<div class="card">
+								<form ng-submit="registraImpugnacion();validaFechas('dteMedioRecepcionImpugnacion','Impugnación')"
+									ng-init="despl4=false">
+									<div class="card-content">
+										<h5 style="display: flex;">Impugnación de Tutela
+											<a href="" ng-click="despl4=true" ng-show="despl4==false" class="zmdi zmdi-chevron-down"
+												data-toggle="Desplegar información" title="Desplegar información"
+												style="padding-left: 5px"></a>
+											<a href="" ng-click="despl4=false" ng-show="despl4==true" class="zmdi zmdi-chevron-up"
+												style="padding-left: 5px"></a></h5>
+									</div>
+									<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+										ng-show="despl4==false">Despliegue información</p>
+									<div class="card-action" ng-show="despl4==true">
+										<div class="row">
+											<div class="col l12 m12 s12">
+												<div class="input-field col l4 m12 s12" style="margin-bottom: 60px;">
+													<div class="switch">
+														<label for="medida" class="labelper">Impugnado</label>
+														<label>
+															No<input id="checkimpugnado" type="checkbox" ng-model="detalles.impugnado"><span
+																class="lever"></span>Si
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;" ng-hide="!detalles.impugnado">
+													<div class="file-field input-field" ng-hide="hdeAdjuntarImpugnacion">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivoimpugnacion" accept=".pdf" type="file"
+																name="detalles.archivoimpugnacion" ng-required="detalles.impugnado">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text"
+																placeholder="Adjuntar archivo">
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- FRONTEND RECEPCION IMPUGNACION CNVU 12/12/2019-->
+											<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+												<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+													<div class="switch">
+														<label for="medioRecepcionImpugnacion" class="labelper">Medio de
+															Recepción</label>
+														<label>
+															Físico<input id="medioRecepcionImpugnacion" type="checkbox"
+																ng-model="registro.medioRecepcionImpugnacion"
+																ng-change="changeMedida('5')"><span class="lever"></span>Correo
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l2 m12 s12" ng-hide="hdeMedioRecepcionImpugnacion">
+													<input id="dteMedioRecepcionImpugnacion" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="date" placeholder="dd/mm/aaaa">
+													<label for="dteMedioRecepcionImpugnacion" class="labelper"
+														style="margin-top: -30px;">Fecha de
+														Recepción</label>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeAdjuntarImpugnacion">
+													<div class="file-field input-field" ng-hide="hdeMedioRecepcionImpugnacion">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="medioRecepcionImpugnacionAdjunto" accept=".pdf" type="file">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text"
+																placeholder="Adjuntar archivo">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 md12 m12" ng-show="registro.status > 3 && registro.observacion_impugnado == null">
+												<div class="input-field col m12 s12 margin no-padding">
+													<div class="default-background file-field input-field"
+														style="display: flex;margin: 0;color: white;">
+														<div>
+															<i class="material-icons dp48" style="margin-top: 10px;">attach_file</i>
+															<input type="file" id="archivoObservacionImpugnacion" accept=".pdf">
+														</div>
+														<div class="file-path-wrapper" style="width: 100%;">
+															<input class="file-path validate valid" type="text" id="archivoObservacionImpugnacionNom"
+																placeholder="Seleccionar un adjunto" ng-model="archivoObservacionImpugnacionNom"
+																style="margin: 0;border: none;" ng-change="loadFile('archivoObsImpugnacion','archivoObsImpugnacionExt', 'archivoObservacionImpugnacion', 'archivoObservacionImpugnacionNom')">
+														</div>
+													</div>
+												</div>
+												<div class="col l12 md12 m12 no-padding">
+													<textarea class="border-radius-none" id="observacion_impugnado"
+														placeholder="Observación..." ng-model="detalles.observacion_impugnado" rows="4" cols="50"
+														style="margin: 0px 0px 10px;border-radius: 3px;padding: 1em;max-width: 100%;width: 100%;height: 90px;outline: none; text-transform: uppercase;">
+													</textarea>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeAdjuntarImpugnacion">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+													</center>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-show="registro.status > 3 && registro.observacion_impugnado == null">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button id="btnRegistraObs" class="btn btn-primary" type="button"
+															ng-click="registraObs('I')" ng-disabled="btn.GuardaRegistro">Actualizar</button>
+													</center>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-show="shwBtnOmitirImpugnacion">
+												<div class="input-field col l12 m12 s12 center">
+													<i class="btn btn-primary" type="button" style="font-style: inherit;" ng-click="OmitirEtapa_SaltarEtapa(4)">Omitir Etapa</i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</fieldset>
+						
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-hide="hdeCumplimiento" id="panelListado5">
+							<div class="card">
+								<div class="card-content" ng-init="despl5=false">
+									<h5 style="display: flex;">Cumplimiento
+										<a href="" ng-click="despl5=true" ng-show="despl5==false" class="zmdi zmdi-chevron-down"
+											data-toggle="Desplegar información" title="Desplegar información"
+											style="padding-left: 5px"></a>
+										<a href="" ng-click="despl5=false" ng-show="despl5==true" class="zmdi zmdi-chevron-up"
+											style="padding-left: 5px"></a></h5>
+									<br ng-hide="!hdecumpli">
+								</div>
+								<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+									ng-show="despl5==false">Despliegue información</p>
+								<div ng-show="despl5==true" style="padding-top: 5px">
+									<form ng-submit="registraCumplimientoMensual();validaFechas('FechaSegMen','Cumplimiento')"
+										ng-hide="hdecumpli">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Cumplimiento Mensual y Seguimiento Continuo
+													</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaSegMen" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaSegMen" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivocumplimensual" accept=".pdf" type="file"
+																name="detalles.archivocumplimensual" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text"
+																placeholder="Adjuntar archivo">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION CUMPLIMIENTO CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionCumplimiento" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionCumplimiento" type="checkbox"
+																	ng-model="registro.medioRecepcionCumplimiento"
+																	ng-change="changeMedida('6')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionCumplimiento">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionCumplimientoAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+
+									<div class="card-content" ng-hide="hdefallo">
+										<h5 style="display: flex;">
+											<div></div>
+										</h5>
+									</div>
+									<form
+										ng-submit="registrafechafalloimpugnacion();validaFechas('FechaFallImp','Fallo de Impugnación')"
+										style="margin-top: -60px;" ng-hide="hdefallo">
+										<div class="card-content" ng-show="hdefallo">
+											<h5 style="display: flex;">
+												<div></div>
+											</h5>
+										</div>
+										<div class="card-action" ng-hide="hdefallo">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Fallo de Impugnación</blockquote>
+												</div>
+												<div class="input-field col l3 m12 s12"
+													style="padding-bottom: 55px;margin-right: -40px;">
+													<div class="switch">
+														<label for="fimpug" class="labelper">Fallo de Impugnación</label>
+														<label>En Contra<input type="checkbox" ng-model="detalles.falloimpugnacionfc">
+															<span class="lever"></span>A Favor
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaFallImp" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaFallImp" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="falloimpugnacion" accept=".pdf" type="file" name="detalles.falloimpugnacion"
+																required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text"
+																placeholder="Adjuntar archivo">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION FALLO DE IMPUGNACION CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionFImpugnacion" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionFImpugnacion" type="checkbox"
+																	ng-model="registro.medioRecepcionFImpugnacion"
+																	ng-change="changeMedida('7')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionFImpugnacion">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionFImpugnacionAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="hdeAdjuntarFalloImpugnacion">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-show="shwBtnOmitirFalloImpugnacion">
+													<div class="input-field col l12 m12 s12 center">
+														<i class="btn btn-primary" type="button" style="font-style: inherit;" ng-click="OmitirEtapa_SaltarEtapa(6)">Omitir Etapa</i>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</fieldset>
+
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;" 
+							ng-hide="hdeIncidentes" id="panelListado6">
+							<div class="card">
+								<div class="card-content" ng-init="despl6=false">
+									<h5 style="display: flex;">Proceso de incidentes {{registro.desacato}}
+										<a href="" ng-click=" despl6=true" ng-show=" despl6==false" class="zmdi zmdi-chevron-down"
+											data-toggle="Desplegar información" title="Desplegar información"
+											style="padding-left: 5px"></a>
+										<a href="" ng-click=" despl6=false" ng-show=" despl6==true" class="zmdi zmdi-chevron-up"
+											style="padding-left: 5px"></a></h5>
+									<!-- <br ng-show="hderequerimiento==false || hderequerimientores==false || hdeproincdes==false || hderesincdes==false || hdefalincdes==false || hdeautcieinc==false"> -->
+								</div>
+								<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+									ng-show=" despl6==false">Despliegue información</p>
+								<div ng-show=" despl6==true" style="padding-top: 5px">
+									<form ng-submit="registrarequerimientopre();validaFechas('FechaReqPre','Requerimiento Previo')"
+										style="border-color: black">
+										<div class="card-action" ng-show="tabselect==1">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Requerimiento Previo</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqPre" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqPre" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechareqpre" accept=".pdf" type="file"
+																name="detalles.archivofechareqpre" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivorequepre"
+																ng-model="archivorequepre" ng-change="loadFile('archivorequerimientopre','archivorequerimientopreext', 'archivofechareqpre', 'archivorequepre')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES RQ PREVIO CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionRqPrevio" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionRqPrevio" type="checkbox"
+																	ng-model="registro.medioRecepcionRqPrevio"
+																	ng-change="changeMedida('8')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionRqPrevio">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionRqPrevioAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivorequepre" id="Medioarchivorequepre"
+																	ng-change="loadFile('archivoRqPrevio','archivoRqPrevioext', 'medioRecepcionRqPrevioAdjunto', 'Medioarchivorequepre')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form
+										ng-submit="registrarequerimientopreres();validaFechas('FechaReqPreRes','Respuesta de Requerimiento')"
+										ng-show="tabselect==2">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Respuesta de Requerimiento Previo
+													</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqPreRes" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqPreRes" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechareqpreres" accept=".pdf" type="file"
+																name="detalles.archivofechareqpreres" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivorequepreres"
+																ng-model="archivorequepreres" ng-change="loadFile('archivorequerimientopreres','archivorequerimientopreresext', 'archivofechareqpreres', 'archivorequepreres')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES RESPUESTA RQ CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionRespuestaRq" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionRespuestaRq" type="checkbox"
+																	ng-model="registro.medioRecepcionRespuestaRq"
+																	ng-change="changeMedida('9')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionRespuestaRq">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionRespuestaRqAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivorequepreres" id="Medioarchivorequepreres"
+																	ng-change="loadFile('archivoRespuestaRq','archivoRespuestaRqext', 'medioRecepcionRespuestaRqAdjunto', 'Medioarchivoadminision')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+
+
+									<form ng-submit="registraprocesoincidente();validaFechas('FechaReqPro','Admisión de Incidente')"
+										ng-show="tabselect==3">
+										<div class="card-action" ng-show=" despl6==true">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Admisión de Incidente de Desacato
+													</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqPro" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqPro" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechreqpro" accept=".pdf" type="file" name="detalles.archivofechreqpro"
+																required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivoproincdes"
+																ng-model="archivoproincdes" ng-change="loadFile('archivoprocesoincidentes','archivoprocesoincidentesext', 'archivofechreqpro', 'archivoproincdes')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES ADMISION CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionAdmision" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionAdmision" type="checkbox"
+																	ng-model="registro.medioRecepcionAdmision"
+																	ng-change="changeMedida('10')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionAdmision">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionAdmisionAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivoproincdes" id="Medioarchivoproincdes"
+																	ng-change="loadFile('archivoAdmision','archivoAdmisionext', 'medioRecepcionAdmisionAdjunto', 'Medioarchivoproincdes')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+
+									<form
+										ng-submit="registraprocesoincidenteres();validaFechas('FechaReqProRes','Respuesta de Incidente')"
+										ng-show="tabselect==4">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Respuesta de Incidente de Desacato
+													</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqProRes" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqProRes" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechreqprores" accept=".pdf" type="file"
+																name="detalles.archivofechreqprores" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivoproincdesres"
+																ng-model="archivoproincdesres" ng-change="loadFile('archivoprocesoincidentesres','archivoprocesoincidentesresext', 'archivofechreqprores', 'archivoproincdesres')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES RESPUESTA CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionRespuestaInc" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionRespuestaInc" type="checkbox"
+																	ng-model="registro.medioRecepcionRespuestaInc"
+																	ng-change="changeMedida('11')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionRespuestaInc">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionRespuestaIncAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivoproincdesres" id="Medioarchivoproincdesres"
+																	ng-change="loadFile('archivoRespuestaInc','archivoRespuestaIncext', 'medioRecepcionRespuestaIncAdjunto', 'Medioarchivoproincdesres')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</form>
+
+									<form ng-submit="registrafalloincidente();validaFechas('FechaFalInc','Decisión de Incidente')"
+										ng-show="tabselect==5">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Decisión de Incidente de Desacato
+													</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaFalInc" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaFalInc" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofalinc" accept=".pdf" type="file" name="detalles.archivofalinc"
+																required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivofallincdes"
+																ng-model="archivofallincdes" ng-change="loadFile('archivofalincdes','archivofalincdesext', 'archivofalinc', 'archivofallincdes')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES DECISION CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionDecisionInc" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionDecisionInc" type="checkbox"
+																	ng-model="registro.medioRecepcionDecisionInc"
+																	ng-change="changeMedida('12')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionDecisionInc">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionDecisionIncAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivofallincdes" id="Medioarchivofallincdes"
+																	ng-change="loadFile('archivoDecisionInc','archivoDecisionIncext', 'medioRecepcionDecisionIncAdjunto', 'Medioarchivofallincdes')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+
+									<form ng-submit="registraconsultaincidente();validaFechas('FechaConInc','Consulta de Incidente')"
+										ng-show="tabselect==6">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Consulta de Incidente</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaConInc" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaConInc" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechaconinc" accept=".pdf" type="file"
+																name="detalles.archivofechaconinc" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivoconincdes"
+																ng-model="archivoconincdes" ng-change="loadFile('archivoconincdes','archivoconincdesext', 'archivofechaconinc', 'archivoconincdes')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES CONSULTA CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionConsultaInc" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionConsultaInc" type="checkbox"
+																	ng-model="registro.medioRecepcionConsultaInc"
+																	ng-change="changeMedida('13')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionConsultaInc">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionConsultaIncAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivoconincdes" id="Medioarchivoconincdes"
+																	ng-change="loadFile('archivoConsultaInc','archivoConsultaIncext', 'medioRecepcionConsultaIncAdjunto', 'Medioarchivoconincdes')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+
+									<form ng-submit="registracierreincidente();validaFechas('FechaAutInc','Cierre de Incidente')"
+										ng-show="tabselect==7">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Cierre de Incidente</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaAutInc" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaAutInc" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechaautinc" accept=".pdf" type="file"
+																name="detalles.archivofechaautinc" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo" id="archivocieincdes"
+																ng-model="archivocieincdes" ng-change="loadFile('archivocieincdes','archivocieincdesext', 'archivofechaautinc', 'archivocieincdes')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES CIERRE CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionCierreInc" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionCierreInc" type="checkbox"
+																	ng-model="registro.medioRecepcionCierreInc"
+																	ng-change="changeMedida('14')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionCierreInc">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionCierreIncAdjunto" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivocieincdes" id="Medioarchivocieincdes"
+																	ng-change="loadFile('archivoCierreInc','archivoCierreIncext', 'medioRecepcionCierreIncAdjunto', 'Medioarchivocieincdes')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<div class='steps-container'>
+										<div class='steps' id="paso1" ng-click="vertab(1)">
+											<span>Requerimiento Previo</span>
+										</div>
+										<div class='steps' id="paso2" ng-click="vertab(2)">
+											<span>Respuesta Requerimiento</span>
+										</div>
+										<div class='steps' id="paso3" ng-click="vertab(3)">
+											<span>Admisión Incidente</span>
+										</div>
+										<div class='steps' id="paso4" ng-click="vertab(4)">
+											<span>Respuesta Incidente</span>
+										</div>
+										<div class='steps' id="paso5" ng-click="vertab(5)">
+											<span>Decisión Incidente</span>
+										</div>
+										<div class='steps' id="paso6" ng-click="vertab(6)">
+											<span>Consulta Incidente</span>
+										</div>
+										<div class='steps' id="paso7" ng-click="vertab(7)">
+											<span>Cierre Incidente</span>
+										</div>
+									</div><br><br><br>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div ng-show="tabs.select==2" id="tab_novedad">
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-disabled="dsbRegistro_nul" ng-hide="hdeRegistro_nul">
+								<div class="card">
+									<form ng-submit="registraTutela_nul()">
+										<div class="card-content" id="panelRegistro_nul" ng-init="despl1_nul=true">
+											<h5 style="display: flex;">Registro de Tutela {{registro_nul.consecutivojuzgado}}
+												<!-- <div ng-hide="!hdeAdjuntarfile">| Documento de Admisión de Tutela<i class="fontello-icon icon-download-cloud" style="cursor: pointer;" title="Descargar" ng-click="descargafile(registro.rutaadmision)"></i></div> -->
+												<a href="" ng-click="despl1_nul=true;" ng-show="despl1_nul==false" class="zmdi zmdi-chevron-down"
+													data-toggle="Desplegar información" title="Desplegar información"
+													style="padding-left: 5px"></a>
+												<a href="" ng-click="despl1_nul=false" ng-show="despl1_nul==true" class="zmdi zmdi-chevron-up"
+													style="padding-left: 5px"></a>
+											</h5>
+										</div>
+										<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+											ng-show="despl1_nul==false">Despliegue información</p>
+										<div class="card-action" ng-show="despl1_nul==true">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote>Datos del Juzgado</blockquote>
+													<div class="input-field col l2 m12 s12">
+														<input id="dteFechaRecepcion_nul" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" ng-blur="setFechaVencimiento_nul()">
+														<label for="dteFechaRecepcion_nul" class="labelper" style="margin-top: -30px;">Fecha de
+															Recepción</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<input id="plazo_nul" type="text" ng-model="registro_nul.plazo"
+															ng-blur="setFechaVencimiento_nul()" minlength="1" maxlength="2">
+														<label for="plazo_nul">Plazo (Días)</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<input id="dteFechaVencimiento_nul" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" disabled>
+														<label for="dteFechaVencimiento_nul" class="labelper">Fecha de Vencimiento</label>
+													</div>
+													<div class="input-field col l2 m12 s12">
+														<div class="switch">
+															<label for="medidaprovisional_nul" class="labelper">Medida Provisional</label>
+															<label>
+																No<input id="medidaprovisional_nul" type="checkbox"
+																	ng-model="registro_nul.medidaprovisional"
+																	ng-change="changeMedida_nul('1')"><span class="lever"></span>Si
+															</label>
+														</div>
+													</div>
+												</div>
+												<!-- FECHAS DE MEDIDAS PROVISIONALES CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" ng-hide="hdeFechaMedida_nul" style="margin-top: 15px;">
+													<div class="input-field col l3 m12 s12">
+														<input id="dteFechaRecepcionMedida_nul" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" ng-blur="setFechaVencimientoMedida_nul()">
+														<label for="dteFechaRecepcionMedida_nul" class="labelper"
+															style="margin-top: -30px;">Fecha de Recepción Medida Provisional</label>
+													</div>
+													<div class="input-field col l3 m12 s12">
+														<input id="plazoMedida_nul" type="text" ng-model="registro_nul.plazo_medida_prov"
+															ng-blur="setFechaVencimientoMedida_nul()" minlength="1" maxlength="2">
+														<label for="plazoMedida_nul">Plazo (Días) Medida Provisional</label>
+													</div>
+													<div class="input-field col l3 m12 s12">
+														<input id="dteFechaVencimientoMedida_nul" class="datepicker picker__input uppercase"
+															style="width: 100%;" type="date" disabled>
+														<label for="dteFechaVencimientoMedida_nul" class="labelper">Fecha de Vencimiento Medida
+															Provisional</label>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="hdeGuardaTut_nul"
+													style="margin-top: 15px;margin-bottom: 15px;">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit"
+																ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+						</fieldset>
+
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-disabled="dsbVBrespuestatutela_nul" ng-hide="hdeVBrespuestatutela_nul" id="panelListado2_nul">
+							<div class="card">
+								<form id="frmArchivoRespuestaTutela_nul"
+									ng-submit="adjuntaRecibidoTutela_nul();validaFechas('dteFechaRecepcionRespuesta_nul','Respuesta')"
+									ng-init="despl2_nul=false">
+									<div class="card-content">
+										<h5 style="display: flex;">Respuesta de Tutela
+											<a href="" ng-click="despl2_nul=true" ng-show="despl2_nul==false" class="zmdi zmdi-chevron-down"
+												data-toggle="Desplegar información" title="Desplegar información"
+												style="padding-left: 5px"></a>
+											<a href="" ng-click="despl2_nul=false" ng-show="despl2_nul==true" class="zmdi zmdi-chevron-up"
+												style="padding-left: 5px"></a>
+										</h5>
+									</div>
+									<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+										ng-show="despl2_nul==false">Despliegue información</p>
+
+									<div class="card-action" ng-show="despl2_nul==true">
+										<div class="row">
+											<blockquote style="margin-top: -10px;">Radicación respuesta tutela</blockquote>
+											<div class="input-field col l2 m12 s12">
+												<input id="dteFechaRecepcionRespuesta_nul" class="datepicker picker__input uppercase"
+													type="text" placeholder="dd/mm/aaaa">
+												<label for="dteFechaRecepcionRespuesta_nul" class="labelper">Fecha de Radicación</label>
+											</div>
+											<div class="col l5 m12 s12">
+												<div class="input-field col l12 m12 s12" style="margin-top: 0px;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="recibidorespuestatutela_nul" accept=".pdf" type="file" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" id="archivorespuesta_nul"
+																ng-model="archivorespuesta_nul" placeholder="Adjuntar archivo"
+																ng-change="loadFile('respuestatutela_nul','respuestatutela_nulext', 'recibidorespuestatutela_nul', 'archivorespuesta_nul')">
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- FRONTEND RECEPCION RESPUESTA CNVU 12/12/2019-->
+											<div class="col l12 m12 s12" style="margin-top: 15px;margin-bottom: 17px;">
+												<div class="input-field col l2 m12 s12">
+													<div class="switch">
+														<label for="medioRecepcionRespuesta_nul" class="labelper">Medio de Recepción</label>
+														<label>
+															Físico<input id="medioRecepcionRespuesta_nul" type="checkbox"
+																ng-model="registro_nul.medioRecepcionRespuesta"
+																ng-change="changeMedida_nul('2')"><span class="lever"></span>Correo
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeMedioRecepcionRespuesta_nul">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="medioRecepcionRespuestaAdjunto_nul" accept=".pdf" type="file">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+															id="archivoMedioRespuesta_nul" ng-model="archivoMedioRespuesta_nul"
+															ng-change="loadFile('archivoMedioRecepcionRespuesta_nul','archivoMedioRecepcionRespuesta_nulext', 'medioRecepcionRespuestaAdjunto_nul', 'archivoMedioRespuesta_nul')">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeAdjuntarRespuesta_nul">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+													</center>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</fieldset>
+						
+						<!-- ng-disabled="dsbDetalles_nul" -->
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-hide="hdeDetallesAccion_nul" id="panelListado3_nul">
+							<div class="card">
+								<form ng-submit="registraDetalles_nul()" ng-init="despl3_nul=false">
+									<div class="card-content">
+										<h5 style="display: flex;">Detalles de Acción de Tutela (Fallo de Tutela)
+											<a href="" ng-click="despl3_nul=true" ng-show="despl3_nul==false" class="zmdi zmdi-chevron-down"
+												data-toggle="Desplegar información" title="Desplegar información"
+												style="padding-left: 5px"></a>
+											<a href="" ng-click="despl3_nul=false" ng-show="despl3_nul==true" class="zmdi zmdi-chevron-up"
+												style="padding-left: 5px"></a>
+										</h5>
+									</div>
+									<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+										ng-show="despl3_nul==false">Despliegue información</p>
+									<div class="card-action" ng-show="despl3_nul==true">
+										<div class="row">
+											<div class="col l12 m12 s12">
+												<div class="input-field col l4 m12 s12" style="padding-bottom: 55px;">
+													<div class="switch">
+														<label for="medida" class="labelper">Fallo de Tutela</label>
+														<label>
+															En Contra<input id="checkfallotutela_nul" type="checkbox" ng-model="detalles_nul.fallotutela"
+																ng-change="changeFallo_nul()"><span class="lever"></span>A
+															Favor
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeAdjuntarFallo_nul">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="fallotutela_nul" accept=".pdf" type="file" name="detalles_nul.archivofallo" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivodetalletut_nul" required id="archivodetalletut_nul"
+																ng-change="loadFile('archivoFalloTut_nul','archivoFalloTut_nulext', 'fallotutela_nul', 'archivodetalletut_nul')">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeFechaFallo_nul">
+												<blockquote>Fecha Fallo de Tutela</blockquote>
+												<div class="input-field col l3 m12 s12">
+													<input id="dteFechaFallo_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="date" placeholder="dd/mm/aaaa"
+														ng-blur="setFechaVencimientoFallo_nul()">
+													<label for="dteFechaFallo_nul" class="labelper" style="margin-top: -30px;">Fecha de
+														Recepción Fallo de
+														Tutela</label>
+												</div>
+												<div class="input-field col l2 m12 s12">
+													<input id="plazofallo_nul" type="text" ng-model="detalles_nul.plazofallo"
+														ng-blur="setFechaVencimientoFallo_nul()" minlength="1" maxlength="2"
+														ng-keyup="formatNumberFallo_nul()">
+													<label for="plazofallo_nul">Plazo (Días)</label>
+												</div>
+												<div class="input-field col l3 m12 s12">
+													<input id="dteFechaVencimientoFallo_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="date" placeholder="dd/mm/aaaa" disabled>
+													<label for="dteFechaVencimientoFallo_nul" class="labelper"
+														style="margin-top: -30px;">Fecha de Cumplimiento Fallo de
+														Tutela</label>
+												</div>
+											</div>
+											<!-- FRONTEND RECEPCION FALLO CNVU 12/12/2019-->
+											<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+												<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+													<div class="switch">
+														<label for="medioRecepcionFallo_nul" class="labelper">Medio de Recepción</label>
+														<label>
+															Físico<input id="medioRecepcionFallo_nul" type="checkbox"
+																ng-model="registro_nul.medioRecepcionFallo"
+																ng-change="changeMedida_nul('3')"><span class="lever"></span>Correo
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeAdjuntarFallo_nul">
+													<div class="file-field input-field" ng-hide="hdeMedioRecepcionFallo_nul">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="medioRecepcionFalloAdjunto_nul" accept=".pdf" type="file">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+															id="archivoMedioFallo_nul" ng-model="archivoMedioFallo_nul"
+															ng-change="loadFile('archivoMedioFalloTut_nul','archivoMedioFalloTut_nulext', 'medioRecepcionFalloAdjunto_nul', 'archivoMedioFallo_nul')">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 md12 m12" ng-show="registro_nul.status > 3 && detalles_nul.observacion_fallo == null">
+												<div class="input-field col m12 s12 margin no-padding" ng-hide="detalles_nul.observacion_fallo != null">
+													<div class="default-background file-field input-field"
+														style="display: flex;margin: 0;color: white;">
+														<div>
+															<i class="material-icons dp48" style="margin-top: 10px;">attach_file</i>
+															<input type="file" id="archivoObservacionFallo_nul" accept=".pdf">
+														</div>
+														<div class="file-path-wrapper" style="width: 100%;">
+															<input class="file-path validate valid" type="text" id="archivoObservacionFalloNom_nul"
+																placeholder="Seleccionar un adjunto" ng-model="archivoObservacionFalloNom_nul"
+																style="margin: 0;border: none;"
+																ng-change="loadFile('archivoObsFalloTut_nul','archivoObsFalloTut_nulext', 'archivoObservacionFallo_nul', 'archivoObservacionFalloNom_nul')">
+														</div>
+													</div>
+												</div>
+												<div class="col l12 md12 m12 no-padding">
+													<textarea class="border-radius-none"
+														placeholder="Observación..." id="observacion_fallo_nul" ng-model="detalles_nul.observacion_fallo" rows="4" cols="50"
+														style="margin: 0px 0px 10px;border-radius: 3px;padding: 1em;max-width: 100%;width: 100%;height: 90px;outline: none;">
+													</textarea>
+												</div>
+											</div>
+											<div class="col l12 m12 s12">
+												<div class="divider"></div>
+											</div>
+											<div class="col l12 m12 s12" style="padding-bottom: 55px;" ng-hide="detalles_nul.fallotutela">
+												<div class="input-field col l4 m12 s12">
+													<div class="switch">
+														<label for="tratamientointegral_nul" class="labelper">Tratamiento Integral</label>
+														<label>
+															No<input id="tratamientointegral_nul" type="checkbox" ng-model="detalles_nul.tratamientointegral"><span
+																class="lever"></span>Si
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" style="margin-bottom: 55px;" ng-hide="detalles_nul.fallotutela">
+												<div class="input-field col l6 m12 s12">
+													<div class="switch">
+														<label for="seguimientomensual_nul" class="labelper">Seguimiento</label>
+														<label>
+															No<input id="seguimiento_nul" type="checkbox" ng-model="detalles_nul.seguimiento"><span
+																class="lever"></span>Si
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 m12 s12">
+												<div class="divider"></div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeAdjuntarFallo_nul">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+													</center>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-show="registro_nul.status > 3 && detalles_nul.observacion_fallo == null">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button id="btnRegistraObs_nul" class="btn btn-primary" type="button"
+															ng-click="registraObs_nul('F')" ng-disabled="btn.GuardaRegistro_nul">Actualizar</button>
+													</center>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</fieldset>
+
+						<!-- <fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-disabled="dsbDetallesSegInst" ng-hide="hdeDetallesAccionSeg" id="panelListado7">
+							<div class="col s12 m12 l12">
+								<div class="card">
+									<form ng-submit="registraDetallesInstDos()" ng-init="despl7=false">
+										<div class="card-content">
+											<h5 style="display: flex;">Acción de Tutela - Segunda Instancia
+												<a href="" ng-click="despl7=true" ng-show="despl7==false" class="zmdi zmdi-chevron-down"
+													data-toggle="Desplegar información" title="Desplegar información"
+													style="padding-left: 5px"></a>
+												<a href="" ng-click="despl7=false" ng-show="despl7==true" class="zmdi zmdi-chevron-up"
+													style="padding-left: 5px"></a>
+											</h5>
+										</div>
+										<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+											ng-show="despl7==false">Despliegue información</p>
+										&nbsp;
+										<div class="card-action" ng-show="despl7==true">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<div class="input-field col l4 m12 s12" style="padding-bottom: 55px;">
+														<div class="switch">
+															<label for="medida" class="labelper">Fallo de Tutela - Segunda Instancia</label>
+															<label>En Contra<input type="checkbox"
+																	ng-model="detallesetpdos.fallotutelainstdos">
+																<span class="lever"></span>A Favor
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeAdjuntarFalloSegInst">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="filefallotutelainstdos" type="file"
+																	name="detallesetpdos.archivofalloinstdos" required>
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																	ng-model="filefallotutelainstdos">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionSegunda" class="labelper">Medio de Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionSegunda" type="checkbox"
+																	ng-model="registro.medioRecepcionSegunda"
+																	ng-change="changeMedida_nul('4')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionSegunda">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionSegundaAdjunto" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo">
+															</div>
+														</div>
+													</div>
+												</div>
+												&nbsp;
+												<div class="col l12 m12 s12">
+													<div class="divider"></div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="hdeAdjuntarFalloSegInst">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</fieldset> -->
+						
+						<!-- ng-disabled="dsbImpugnacion_nul" -->
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-hide="hdeImpugnacion_nul" id="panelListado4_nul">
+							<div class="card">
+								<form ng-submit="registraImpugnacion_nul();validaFechas('dteMedioRecepcionImpugnacion','Impugnación')"
+									ng-init="despl4_nul=false">
+									<div class="card-content">
+										<h5 style="display: flex;">Impugnación de Tutela
+											<a href="" ng-click="despl4_nul=true" ng-show="despl4_nul==false" class="zmdi zmdi-chevron-down"
+												data-toggle="Desplegar información" title="Desplegar información"
+												style="padding-left: 5px"></a>
+											<a href="" ng-click="despl4_nul=false" ng-show="despl4_nul==true" class="zmdi zmdi-chevron-up"
+												style="padding-left: 5px"></a></h5>
+									</div>
+									<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+										ng-show="despl4_nul==false">Despliegue información</p>
+									<div class="card-action" ng-show="despl4_nul==true">
+										<div class="row">
+											<div class="col l12 m12 s12">
+												<div class="input-field col l4 m12 s12" style="margin-bottom: 60px;">
+													<div class="switch">
+														<label for="impugnado_nul" class="labelper">Impugnado</label>
+														<label>
+															No<input id="checkimpugnado_nul" type="checkbox" ng-model="detalles_nul.impugnado"><span
+																class="lever"></span>Si
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l5 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;" ng-hide="!detalles_nul.impugnado">
+													<div class="file-field input-field" ng-hide="hdeAdjuntarImpugnacion_nul">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivoimpugnacion_nul" accept=".pdf" type="file"
+																name="detalles_nul.archivoimpugnacion" ng-required="detalles_nul.impugnado">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+															id="archivoImpugnacionNom_nul" ng-model="archivoImpugnacionNom_nul"
+															ng-change="loadFile('archivoImpugnacionTut_nul','archivoImpugnacionTut_nulext', 'archivoimpugnacion_nul', 'archivoImpugnacionNom_nul')">
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- FRONTEND RECEPCION IMPUGNACION CNVU 12/12/2019-->
+											<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+												<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+													<div class="switch">
+														<label for="medioRecepcionImpugnacion_nul" class="labelper">Medio de
+															Recepción</label>
+														<label>
+															Físico<input id="medioRecepcionImpugnacion_nul" type="checkbox"
+																ng-model="registro_nul.medioRecepcionImpugnacion"
+																ng-change="changeMedida_nul('5')"><span class="lever"></span>Correo
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l2 m12 s12" ng-hide="hdeMedioRecepcionImpugnacion_nul">
+													<input id="dteMedioRecepcionImpugnacion_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="date" placeholder="dd/mm/aaaa">
+													<label for="dteMedioRecepcionImpugnacion_nul" class="labelper"
+														style="margin-top: -30px;">Fecha de
+														Recepción</label>
+												</div>
+												<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+													ng-hide="hdeAdjuntarImpugnacion_nul">
+													<div class="file-field input-field" ng-hide="hdeMedioRecepcionImpugnacion_nul">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="medioRecepcionImpugnacionAdjunto_nul" accept=".pdf" type="file">
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+															id="archivoMedioImpugnacionNom_nul" ng-model="archivoMedioImpugnacionNom_nul"
+															ng-change="loadFile('archivoMedioImpugnacionTut_nul','archivoMedioImpugnacionTut_nulext', 'medioRecepcionImpugnacionAdjunto_nul', 'archivoMedioImpugnacionNom_nul')">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col l12 md12 m12" ng-show="registro_nul.status > 4 && detalles_nul.observacion_impugnado == null">
+												<div class="input-field col m12 s12 margin no-padding" ng-hide="detalles_nul.observacion_impugnado != null">
+													<div class="default-background file-field input-field"
+														style="display: flex;margin: 0;color: white;">
+														<div>
+															<i class="material-icons dp48" style="margin-top: 10px;">attach_file</i>
+															<input type="file" id="archivoObservacionImpugnacion_nul" accept=".pdf">
+														</div>
+														<div class="file-path-wrapper" style="width: 100%;">
+															<input class="file-path validate valid" type="text" id="archivoObservacionImpugnacionNom_nul"
+																placeholder="Seleccionar un adjunto" ng-model="archivoObservacionImpugnacionNom_nul"
+																style="margin: 0;border: none;"
+																ng-change="loadFile('archivoObsImpugnacionTut_nul','archivoObsImpugnacionTut_nulext', 'archivoObservacionImpugnacion_nul', 'archivoObservacionImpugnacionNom_nul')">
+														</div>
+													</div>
+												</div>
+												<div class="col l12 md12 m12 no-padding">
+													<textarea class="border-radius-none"
+														placeholder="Observación..." id="observacion_impugnado_nul" ng-model="detalles_nul.observacion_impugnado" rows="4" cols="50"
+														style="margin: 0px 0px 10px;border-radius: 3px;padding: 1em;max-width: 100%;width: 100%;height: 90px;outline: none;">
+													</textarea>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-hide="hdeAdjuntarImpugnacion_nul">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+													</center>
+												</div>
+											</div>
+											<div class="col l12 m12 s12" ng-show="registro_nul.status > 4 && detalles_nul.observacion_impugnado == null">
+												<div class="input-field col l12 m12 s12">
+													<center>
+														<button id="btnRegistraObs_nul" class="btn btn-primary" type="button"
+															ng-click="registraObs_nul('I')" ng-disabled="btn.GuardaRegistro_nul">Actualizar</button>
+													</center>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</fieldset>
+						
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;"
+							ng-hide="hdeCumplimiento_nul" id="panelListado5_nul">
+							<div class="card">
+								<div class="card-content" ng-init="despl5_nul=false">
+									<h5 style="display: flex;">Cumplimiento
+										<a href="" ng-click="despl5_nul=true" ng-show="despl5_nul==false" class="zmdi zmdi-chevron-down"
+											data-toggle="Desplegar información" title="Desplegar información"
+											style="padding-left: 5px"></a>
+										<a href="" ng-click="despl5_nul=false" ng-show="despl5_nul==true" class="zmdi zmdi-chevron-up"
+											style="padding-left: 5px"></a></h5>
+									<br ng-hide="!hdecumpli">
+								</div>
+								<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+									ng-show="despl5_nul==false">Despliegue información</p>
+								<div ng-show="despl5_nul==true" style="padding-top: 5px">
+									<form ng-submit="registraCumplimientoMensual_nul();validaFechas('FechaSegMen_nul','Cumplimiento')"
+										ng-hide="hdecumpli_nul">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Cumplimiento Mensual y Seguimiento Continuo
+													</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaSegMen_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaSegMen_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivocumplimensual_nul" accept=".pdf" type="file"
+																name="detalles_nul.archivocumplimensual" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+															id="archivoCumplimientoNom_nul" ng-model="archivoCumplimientoNom_nul"
+															ng-change="loadFile('archivoCumplimientoTut_nul','archivoCumplimientoTut_nulext', 'archivocumplimensual_nul', 'archivoCumplimientoNom_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION CUMPLIMIENTO CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionCumplimiento_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionCumplimiento_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionCumplimiento"
+																	ng-change="changeMedida_nul('6')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionCumplimiento_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionCumplimientoAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																id="archivoMMedioCumplimientoNom_nul" ng-model="archivoMMedioCumplimientoNom_nul" 
+																ng-change="loadFile('archivoMedioCumplimientoTut_nul','archivoMedioCumplimientoTut_nulext', 'medioRecepcionCumplimientoAdjunto_nul', 'archivoMMedioCumplimientoNom_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+
+									<div class="card-content" ng-hide="hdefallo_nul">
+										<h5 style="display: flex;">
+											<div></div>
+										</h5>
+									</div>
+									<form ng-submit="registrafechafalloimpugnacion_nul();validaFechas('FechaFallImp_nul','Fallo de Impugnación')"
+										style="margin-top: -60px;" ng-hide="hdefallo_nul">
+										<div class="card-content" ng-show="hdefallo_nul">
+											<h5 style="display: flex;">
+												<div></div>
+											</h5>
+										</div>
+										<div class="card-action" ng-hide="hdefallo_nul">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Fallo de Impugnación</blockquote>
+												</div>
+												<div class="input-field col l3 m12 s12"
+													style="padding-bottom: 55px;margin-right: -40px;">
+													<div class="switch">
+														<label for="fimpug_nul" class="labelper">Fallo de Impugnación</label>
+														<label>En Contra<input type="checkbox" ng-model="detalles_nul.falloimpugnacionfc">
+															<span class="lever"></span>A Favor
+														</label>
+													</div>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaFallImp_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaFallImp_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="falloimpugnacion_nul" accept=".pdf" type="file" name="detalles_nul.falloimpugnacion"
+																required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																id="archivoFalloImgNom_nul" ng-model="archivoFalloImgNom_nul" 
+																ng-change="loadFile('archivoFalloImgTut_nul','archivoFalloImgTut_nulext', 'falloimpugnacion_nul', 'archivoFalloImgNom_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION FALLO DE IMPUGNACION CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionFImpugnacion_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionFImpugnacion_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionFImpugnacion"
+																	ng-change="changeMedida_nul('7')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionFImpugnacion_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionFImpugnacionAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																id="archivoMedioFalloImgNom_nul" ng-model="archivoMedioFalloImgNom_nul" 
+																ng-change="loadFile('archivoMedioFalloImgTut_nul','archivoMedioFalloImgTut_nulext', 'medioRecepcionFImpugnacionAdjunto_nul', 'archivoMedioFalloImgNom_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12" ng-hide="hdeAdjuntarFalloImpugnacion_nul">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</fieldset>
+
+						<fieldset style="border: none; margin-left: -10px; margin-right: -10px; margin-bottom: -30px;" 
+							ng-disabled="dsbIncidentes_nul" ng-hide="hdeIncidentes_nul" id="panelListado6_nul">
+							<div class="card">
+								<div class="card-content" ng-init="despl6_nul=false">
+									<h5 style="display: flex;">Proceso de incidentes {{registro_nul.desacato}}
+										<a href="" ng-click=" despl6_nul=true" ng-show=" despl6_nul==false" class="zmdi zmdi-chevron-down"
+											data-toggle="Desplegar información" title="Desplegar información"
+											style="padding-left: 5px"></a>
+										<a href="" ng-click=" despl6_nul=false" ng-show=" despl6_nul==true" class="zmdi zmdi-chevron-up"
+											style="padding-left: 5px"></a></h5>
+									<!-- <br ng-show="hderequerimiento==false || hderequerimientores==false || hdeproincdes==false || hderesincdes==false || hdefalincdes==false || hdeautcieinc==false"> -->
+								</div>
+								<p style="font-style: italic; margin-bottom: 0px;margin-left: 30px; padding-bottom: 10px;text-align: center"
+									ng-show=" despl6_nul==false">Despliegue información</p>
+								<div ng-show=" despl6_nul==true" style="padding-top: 5px">
+									<form ng-submit="registrarequerimientopre_nul();validaFechas('FechaReqPre_nul','Requerimiento Previo')"
+										style="border-color: black">
+										<div class="card-action" ng-show="tabselect_nul==1">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Requerimiento Previo</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqPre_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqPre_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechareqpre_nul" accept=".pdf" type="file"
+																name="detalles_nul.archivofechareqpre" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivorequepre_nul" id="archivorequepre_nul"
+																ng-change="loadFile('archivorequepretut_nul','archivorequepretut_nulext', 'archivofechareqpre_nul', 'archivorequepre_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES RQ PREVIO CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionRqPrevio_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionRqPrevio_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionRqPrevio"
+																	ng-change="changeMedida_nul('8')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionRqPrevio_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionRqPrevioAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivorequepre_nul" id="Medioarchivorequepre_nul"
+																	ng-change="loadFile('archivoMediorequepretut_nul','archivoMediorequepretut_nulext', 'medioRecepcionRqPrevioAdjunto_nul', 'Medioarchivorequepre_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form ng-submit="registrarequerimientopreres_nul();validaFechas('FechaReqPreRes_nul','Respuesta de Requerimiento')"
+										ng-show="tabselect_nul==2">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Respuesta de Requerimiento Previo</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqPreRes_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqPreRes_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechareqpreres_nul" accept=".pdf" type="file"
+																name="detalles_nul.archivofechareqpreres" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivorequepreres_nul" id="archivorequepreres_nul"
+																ng-change="loadFile('archivorequepreresTut_nul','archivorequepreresTut_nulext', 'archivofechareqpreres_nul', 'archivorequepreres_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES RESPUESTA RQ CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionRespuestaRq_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionRespuestaRq_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionRespuestaRq"
+																	ng-change="changeMedida_nul('9')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionRespuestaRq_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionRespuestaRqAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivorequepreres_nul" id="Medioarchivorequepreres_nul"
+																	ng-change="loadFile('MedioarchivorequepreresTut_nul','MedioarchivorequepreresTut_nulext', 'medioRecepcionRespuestaRqAdjunto_nul', 'Medioarchivorequepreres_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form ng-submit="registraprocesoincidente_nul();validaFechas('FechaReqPro_nul','Admisión de Incidente')"
+										ng-show="tabselect_nul==3">
+										<div class="card-action" ng-show="despl6_nul==true">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Admisión de Incidente de Desacato</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqPro_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqPro_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechreqpro_nul" accept=".pdf" type="file" name="detalles_nul.archivofechreqpro"
+																required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivoproincdes_nul" id="archivoproincdes_nul"
+																ng-change="loadFile('archivoproincdesTut_nul','archivoproincdesTut_nulext', 'archivofechreqpro_nul', 'archivoproincdes_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES ADMISION CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionAdmision_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionAdmision_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionAdmision"
+																	ng-change="changeMedida_nul('10')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionAdmision_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionAdmisionAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivoproincdes_nul" id="Medioarchivoproincdes_nul"
+																	ng-change="loadFile('MedioarchivoproincdesTut_nul','MedioarchivoproincdesTut_nulext', 'medioRecepcionAdmisionAdjunto_nul', 'Medioarchivoproincdes_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form ng-submit="registraprocesoincidenteres_nul();validaFechas('FechaReqProRes_nul','Respuesta de Incidente')"
+										ng-show="tabselect_nul==4">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Respuesta de Incidente de Desacato</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaReqProRes_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaReqProRes_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechreqprores_nul" accept=".pdf" type="file"
+																name="detalles_nul.archivofechreqprores" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivoproincdesres_nul" id="archivoproincdesres_nul"
+																ng-change="loadFile('archivofechreqproresTut_nul','archivofechreqproresTut_nulext', 'archivofechreqprores_nul', 'archivoproincdesres_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES RESPUESTA CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionRespuestaInc_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionRespuestaInc_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionRespuestaInc"
+																	ng-change="changeMedida_nul('11')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionRespuestaInc_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionRespuestaIncAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivoproincdesres_nul" id="Medioarchivoproincdesres_nul"
+																	ng-change="loadFile('medioRecepcionRespuestaIncAdjuntoTut_nul','medioRecepcionRespuestaIncAdjuntoTut_nulext', 'medioRecepcionRespuestaIncAdjunto_nul', 'Medioarchivoproincdesres_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form ng-submit="registrafalloincidente_nul();validaFechas('FechaFalInc_nul','Decisión de Incidente')"
+										ng-show="tabselect_nul==5">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Decisión de Incidente de Desacato</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaFalInc_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaFalInc_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofalinc_nul" accept=".pdf" type="file" name="detalles_nul.archivofalinc"
+																required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivofallincdes_nul" id="archivofallincdes_nul"
+																ng-change="loadFile('archivofalincTut_nul','archivofalincTut_nulext', 'archivofalinc_nul', 'archivofallincdes_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES DECISION CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionDecisionInc_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionDecisionInc_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionDecisionInc"
+																	ng-change="changeMedida_nul('12')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionDecisionInc_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionDecisionIncAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivofallincdes_nul" id="Medioarchivofallincdes_nul"
+																	ng-change="loadFile('medioRecepcionDecisionIncAdjuntoTut_nul','medioRecepcionDecisionIncAdjuntoTut_nulext', 'medioRecepcionDecisionIncAdjunto_nul', 'Medioarchivofallincdes_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form ng-submit="registraconsultaincidente_nul();validaFechas('FechaConInc_nul','Consulta de Incidente')"
+										ng-show="tabselect_nul==6">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Consulta de Incidente</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaConInc_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaConInc_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechaconinc_nul" accept=".pdf" type="file"
+																name="detalles_nul.archivofechaconinc" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivoconincdes_nul" id="archivoconincdes_nul"
+																ng-change="loadFile('archivofechaconincTut_nul','archivofechaconincTut_nulext', 'archivofechaconinc_nul', 'archivoconincdes_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES CONSULTA CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionConsultaInc_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionConsultaInc_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionConsultaInc"
+																	ng-change="changeMedida_nul('13')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionConsultaInc_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionConsultaIncAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivoconincdes_nul" id="Medioarchivoconincdes_nul"
+																	ng-change="loadFile('medioRecepcionConsultaIncAdjuntoTut_nul','medioRecepcionConsultaIncAdjuntoTut_nulext', 'medioRecepcionConsultaIncAdjunto_nul', 'Medioarchivoconincdes_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form ng-submit="registracierreincidente_nul();validaFechas('FechaAutInc_nul','Cierre de Incidente')"
+										ng-show="tabselect_nul==7">
+										<div class="card-action">
+											<div class="row">
+												<div class="col l12 m12 s12">
+													<blockquote style="margin-top: -10px;">Cierre de Incidente</blockquote>
+												</div>
+												<div class="input-field col l2 m12 s12" style="margin-left: 10px">
+													<input id="FechaAutInc_nul" class="datepicker picker__input uppercase"
+														style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+													<label for="FechaAutInc_nul" class="labelper">Fecha de radicación</label>
+												</div>
+												<div class="input-field col l4 m12 s12"
+													style="margin-top: 0px; z-index: 10000 !important;">
+													<div class="file-field input-field">
+														<div class="btn">
+															<span class="white-text">Archivo</span>
+															<input id="archivofechaautinc_nul" accept=".pdf" type="file"
+																name="detalles_nul.archivofechaautinc" required>
+														</div>
+														<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+																ng-model="archivocieincdes_nul" id="archivocieincdes_nul"
+																ng-change="loadFile('archivofechaautincTut_nul','archivofechaautincTut_nulext', 'archivofechaautinc_nul', 'archivocieincdes_nul')">
+														</div>
+													</div>
+												</div>
+												<!-- FRONTEND RECEPCION INCIDENTES CIERRE CNVU 12/12/2019-->
+												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
+													<div class="input-field col l2 m12 s12" style="margin-bottom: 40px;">
+														<div class="switch">
+															<label for="medioRecepcionCierreInc_nul" class="labelper">Medio de
+																Recepción</label>
+															<label>
+																Físico<input id="medioRecepcionCierreInc_nul" type="checkbox"
+																	ng-model="registro_nul.medioRecepcionCierreInc"
+																	ng-change="changeMedida_nul('14')"><span class="lever"></span>Correo
+															</label>
+														</div>
+													</div>
+													<div class="input-field col l5 m12 s12" style="margin-top: 0px;"
+														ng-hide="hdeMedioRecepcionCierreInc_nul">
+														<div class="file-field input-field">
+															<div class="btn">
+																<span class="white-text">Archivo</span>
+																<input id="medioRecepcionCierreIncAdjunto_nul" accept=".pdf" type="file">
+															</div>
+															<div class="file-path-wrapper">
+																<input class="file-path validate" type="text"
+																	placeholder="Adjuntar archivo" ng-model="Medioarchivocieincdes_nul" id="Medioarchivocieincdes_nul"
+																	ng-change="loadFile('medioRecepcionCierreIncAdjuntoTut_nul','medioRecepcionCierreIncAdjuntoTut_nulext', 'medioRecepcionCierreIncAdjunto_nul', 'Medioarchivocieincdes_nul')">
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col l12 m12 s12">
+													<div class="input-field col l12 m12 s12">
+														<center>
+															<button class="btn btn-primary" type="submit" ng-disabled="btn.GuardaRegistro_nul">Guardar</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<div class='steps-container'>
+										<div class='steps' id="paso_nul1" ng-click="vertab_nul(1)">
+											<span>Requerimiento Previo</span>
+										</div>
+										<div class='steps' id="paso_nul2" ng-click="vertab_nul(2)">
+											<span>Respuesta Requerimiento</span>
+										</div>
+										<div class='steps' id="paso_nul3" ng-click="vertab_nul(3)">
+											<span>Admisión Incidente</span>
+										</div>
+										<div class='steps' id="paso_nul4" ng-click="vertab_nul(4)">
+											<span>Respuesta Incidente</span>
+										</div>
+										<div class='steps' id="paso_nul5" ng-click="vertab_nul(5)">
+											<span>Decisión Incidente</span>
+										</div>
+										<div class='steps' id="paso_nul6" ng-click="vertab_nul(6)">
+											<span>Consulta Incidente</span>
+										</div>
+										<div class='steps' id="paso_nul7" ng-click="vertab_nul(7)">
+											<span>Cierre Incidente</span>
+										</div>
+									</div><br><br><br>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- ng-hide="hdeIncidentes" id="panelListado6" -->		
+	</fieldset>
+
+	<div class="fabs" style="margin-right: 40px;" ng-hide="hdeBtnPanelAdjuntos">
+		<a ng-click="openPanelAdjuntos()" target="" class="fab cyan" tooltip="Panel de Adjuntos"><i
+			class="sec zmdi zmdi-file zmdi-hc-fw animated"></i></a>
+		<a ng-click="abrirModal('',2)" target="_blank" class="fab red" tooltip="Nulidad"><i
+				class="sec zmdi zmdi-assignment-alert animated"></i></a>
+		<!-- <a ng-click="ReporteS2()" target="_blank" class="fab amber" tooltip="Reporte S2"><i
+				class="sec zmdi zmdi-format-valign-bottom animated"></i></a>
+		<a ng-click="ReporteR2()" target="_blank" class="fab green" tooltip="Reporte R2"><i
+				class="sec zmdi zmdi-format-valign-bottom animated"></i></a>
+		<a ng-click="OpenModal('MS')" target="_blank" class="fab lime" tooltip="Reporte MS"><i
+				class="sec zmdi zmdi-format-valign-bottom animated"></i></a>
+		<a ng-click="OpenModal('NS')" target="_blank" class="fab blue-grey" tooltip="Reporte NS"><i
+				class="sec zmdi zmdi-format-valign-bottom animated"></i></a>
+		<a ng-click="lmaPolizaAseguradora()" ng-if="habilitar" target="_blank" class="fab light-blue"
+			tooltip="LMA Poliza Aseguradora"><i class="sec zmdi zmdi-assignment animated"></i></a> -->
+		<a target="_blank" class="fab blue-dark" tooltip="Opciones"><i class="prime zmdi animated rotateIn zmdi-plus"></i></a>
+	</div>
+
+	<!-- MODAL ESTADO TUTELA -->
+	<div class="col s12 m12 l12">
+		<div id="modalEstadoTutela" class="modal" style="max-height: 80%;width: 60% !important;">
+		   <div class="card " style="padding:10px;margin-bottom: 0;">
+				<div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+					ng-click="cerrarModal('1')"></div>
+				<div class="card-content default-background">
+					<h5 style="margin-bottom:6px;font-weight:600;color:white;padding-left:30px">Estado de Tutela</h5>
+				</div>
+				<div class="row">
+					<div class="col s12 m12 l12">
+						<div class="col s11 m11 l11 switch" style="margin-top: 20px;">
+							<label for="estadoTutela" class="labelper mb-10">Estado de Tutela:</label>
+							<label>
+								Archivado<input id="estadoTutela" type="checkbox"
+									ng-model="registro.estadoTutelaModal"><span class="lever"></span>Activo
+							</label>
+						</div>
+						<div class="col s11 m11 l11" style="margin-top: 20px;">
+                            <div class="form-group shadow-textarea">
+                                <!--<label style=" margin-top: -20px;">Descripción caracteres: {{count}}</label>-->
+                                <textarea class="form-control z-depth-1" id="exampleFormControlTextarea6" rows="3"
+                                    ng-keyup="handleKeyPress($event)" ng-model="registro.descripcionEstadoTutela" cols="50" placeholder="DESCRIPCIÓN"
+                                    style="margin: 0px;height: 134px; text-transform: uppercase;"></textarea>
+                            </div>
+                        </div>
+						<div class="input-field col l4 m4 s4" style="margin-left: 10px">
+							<input id="FechaEstadoTutela" class="datepicker picker__input uppercase"
+								style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+							<label for="FechaEstadoTutela" class="labelper">Fecha de radicación</label>
+						</div>
+						<div class="input-field col l11 m11 s11"
+							style="margin-top: 20px; z-index: 10000 !important;">
+							<div class="file-field input-field">
+								<div class="btn">
+									<span class="white-text">Archivo</span>
+									<input id="idarchivoEstadoTutela" accept=".pdf" type="file"
+										name="idarchivoEstadoTutela" required>
+								</div>
+								<div class="file-path-wrapper">
+									<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+										ng-model="archivoEstadoTutelaNom" id="archivoEstadoTutelaNom"
+										ng-change="loadFile('archivoEstadoTutela','archivoEstadoTutelaExt', 'idarchivoEstadoTutela', 'archivoEstadoTutelaNom')">
+								</div>
+							</div>
+						</div>
+						<!-- FRONTEND RECEPCION INCIDENTES RQ PREVIO CNVU 12/12/2019-->
+						<div class="col l12 m12 s12" style="margin-bottom: 40px;">
+							<div class="input-field col l4 m4 s4" style="margin-bottom: 40px;">
+								<div class="switch">
+									<label for="medioRecepcionEstadoTutela" class="labelper">Medio de
+										Recepción</label>
+									<label>
+										Físico<input id="medioRecepcionEstadoTutela" type="checkbox"
+											ng-model="registro.medioRecepcionEstadoTutela"
+											ng-change="changeMedida('16')"><span class="lever"></span>Correo
+									</label>
+								</div>
+							</div>
+							<div class="input-field col l7 m7 s7" style="margin-top: 0px;"
+								ng-hide="hdeMedioRecepcionEstadoTutela">
+								<div class="file-field input-field">
+									<div class="btn">
+										<span class="white-text">Archivo</span>
+										<input id="medioEstadoTutelaAdjunto" accept=".pdf" type="file">
+									</div>
+									<div class="file-path-wrapper">
+										<input class="file-path validate" type="text"
+											placeholder="Adjuntar archivo" ng-model="archivoMedioEstadoTutelaNom" id="archivoMedioEstadoTutelaNom"
+											ng-change="loadFile('archivoMedioEstadoTutela','archivoMedioEstadoTutelaExt', 'medioEstadoTutelaAdjunto', 'archivoMedioEstadoTutelaNom')">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col s12 m12 l12">
+						<center>
+						<a class="waves-effect waves-light btn-large white-text" ng-click="registrarEstadoTutela()" ng-disabled="btn.GuardaRegistro">
+							Guardar
+						</a>
+						</center>
+					</div>
+				</div>
+		   </div>
+		</div>
+	</div>
+
+	<!-- MODAL NULIDAD -->
+	<div class="col s12 m12 l12">
+		<div id="modalNulidad" class="modal" style="max-height: 90%;width: 80% !important;">
+		   <div class="card " style="padding:10px;margin-bottom: 0;">
+				<div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+					ng-click="cerrarModal('2')"></div>
+				<div class="card-content default-background">
+					<h5 style="margin-bottom:6px;font-weight:600;color:white;padding-left:30px">Nulidad</h5>
+				</div>
+				<div class="row">
+					<div class="col s12 m12 l12">
+						<div class="col l12 m12 s12">
+							<div class="input-field" style="margin-top: 10px;">
+								<div class="switch">
+									<label for="estadoTutela" class="labelper">Tipo de Nulidad</label>
+									<label>
+										Solicitud Parte<input id="tipoNulidad" type="checkbox"
+											ng-model="tiponulidad"><span class="lever"></span>Oficio
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col s12 m12 l12 mt-50" ng-show="tiponulidad == false">
+							<div class="input-field col l4 m4 s4" style="margin-left: 10px">
+								<input id="fechaNulidadParte" class="datepicker picker__input uppercase"
+									style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+								<label for="fechaNulidadParte" class="labelper">Fecha de radicación <span style="color: red;">*</span></label>
+							</div>
+							<div class="input-field col l7 m7 s7" style="margin-top: 0px; z-index: 10000 !important;">
+								<div class="file-field input-field">
+									<div class="btn">
+										<span class="white-text">Archivo <span style="color: red;">*</span></span>
+										<input id="idarchivoNulidadParte" accept=".pdf" type="file"
+											name="idarchivoNulidadParte" required>
+									</div>
+									<div class="file-path-wrapper">
+										<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+											ng-model="archivoNulidadParte" id="archivoNulidadParte"
+											ng-change="loadFile('archivoNulidadSolicitudParte','archivoNulidadSolicitudParteExt', 'idarchivoNulidadParte', 'archivoNulidadParte')">
+									</div>
+								</div>
+							</div>
+							<!-- FRONTEND RECEPCION INCIDENTES RQ PREVIO CNVU 12/12/2019-->
+							<div class="col l12 m12 s12" style="margin-bottom: 40px;">
+								<div class="input-field col l4 m4 s4" style="margin-bottom: 40px;">
+									<div class="switch">
+										<label for="medioRecepcionNulidadParte" class="labelper">Medio de
+											Recepción</label>
+										<label>
+											Físico<input id="medioRecepcionNulidadParte" type="checkbox"
+												ng-model="medioRecepcionNulidadParte"><span class="lever"></span>Correo
+										</label>
+									</div>
+								</div>
+								<div class="input-field col l7 m7 s7" style="margin-top: 0px;" ng-if="medioRecepcionNulidadParte == true">
+									<div class="file-field input-field">
+										<div class="btn">
+											<span class="white-text">Archivo <span style="color: red;">*</span></span>
+											<input id="medioNulidadParteAdjunto" accept=".pdf" type="file">
+										</div>
+										<div class="file-path-wrapper">
+											<input class="file-path validate" type="text"
+												placeholder="Adjuntar archivo" ng-model="archivoMedioNulidadParte" id="archivoMedioNulidadParte"
+												ng-change="loadFile('archivoMedioNulidadSolicitudParte','archivoMedioNulidadSolicitudParteExt', 'medioNulidadParteAdjunto', 'Medioarchivoadminision')">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="input-field col l12 m12 s12 mb-50" style="margin-top: 10px;">
+								<div class="switch">
+									<label for="declaracionNulidad" class="labelper">Declaración de Nulidad</label>
+									<label>
+										No<input id="tipoNulidad" type="checkbox"
+											ng-model="declaracionnulidad"><span class="lever"></span>Si
+									</label>
+								</div>
+							</div>
+							<div class="col s12 m12 l12 mt-50 mb-50">
+								<div class="input-field col l4 m4 s4" style="margin-left: 10px">
+									<input id="FechaDeclaracionNulidad" class="datepicker picker__input uppercase"
+										style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+									<label for="FechaDeclaracionNulidad" class="labelper">Fecha de recibido <span style="color: red;">*</span></label>
+								</div>
+								<div class="input-field col l7 m7 s7"
+									style="margin-top: 0px; z-index: 10000 !important;">
+									<div class="file-field input-field">
+										<div class="btn">
+											<span class="white-text">Archivo <span style="color: red;">*</span></span>
+											<input id="idarchivoDeclaracionNulidad" accept=".pdf" type="file"
+												name="idarchivoDeclaracionNulidad" required>
+										</div>
+										<div class="file-path-wrapper">
+											<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+												ng-model="archivoDeclaracionNulidad" id="archivoDeclaracionNulidad"
+												ng-change="loadFile('archivoDeclaracionNulidadb64','archivoDeclaracionNulidadext', 'idarchivoDeclaracionNulidad', 'archivoDeclaracionNulidad')">
+										</div>
+									</div>
+								</div>
+								<!-- FRONTEND RECEPCION INCIDENTES RQ PREVIO CNVU 12/12/2019-->
+								<div class="col l12 m12 s12">
+									<div class="input-field col l4 m4 s4">
+										<div class="switch">
+											<label for="medioRecepcionDeclaracionNulidad" class="labelper">Medio de
+												Recepción</label>
+											<label>
+												Físico<input id="medioRecepcionDeclaracionNulidad" type="checkbox"
+													ng-model="medioRecepcionDeclaracionNulidad"><span class="lever"></span>Correo
+											</label>
+										</div>
+									</div>
+									<div class="input-field col l7 m7 s7" style="margin-top: 0px;" ng-if="medioRecepcionDeclaracionNulidad == true">
+										<div class="file-field input-field">
+											<div class="btn">
+												<span class="white-text">Archivo <span style="color: red;">*</span></span>
+												<input id="medioDeclaracionNulidadAdjunto" accept=".pdf" type="file">
+											</div>
+											<div class="file-path-wrapper">
+												<input class="file-path validate" type="text"
+													placeholder="Adjuntar archivo" ng-model="idarchivoMedioDeclaracionNulidad" id="idarchivoMedioDeclaracionNulidad"
+													ng-change="loadFile('archivoMedioDeclaracionNulidad','archivoMedioDeclaracionNulidadext', 'medioDeclaracionNulidadAdjunto', 'idarchivoMedioDeclaracionNulidad')">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="input-field col l12 m12 s12" style="margin-top: 80px;" ng-show="declaracionnulidad == true">
+									<label class="labelper">Etapa <span style="color: red;">*</span></label>
+									<select id="etapaNulidad" class="select-chosen-eps" ng-model="etapaNulidad">
+										<option value="" disabled>SELECCIONAR</option>
+										<option value="1">ADMISIÓN</option>
+										<option value="2">RESPUESTA</option>
+										<option value="3">FALLO</option>
+										<option value="4">IMPUGNACIÓN</option>
+										<option value="5">CUMPLIMIENTO</option>
+										<option value="6">INCIDENTES</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col s12 m12 l12 mt-50 mb-50" ng-show="tiponulidad == true">
+							<div class="input-field col l4 m4 s4" style="margin-left: 10px">
+								<input id="FechaNulidadOficio" class="datepicker picker__input uppercase"
+									style="width: 100%;" type="text" placeholder="dd/mm/aaaa">
+								<label for="FechaNulidadOficio" class="labelper">Fecha de recibido <span style="color: red;">*</span></label>
+							</div>
+							<div class="input-field col l7 m7 s7"
+								style="margin-top: 0px; z-index: 10000 !important;">
+								<div class="file-field input-field">
+									<div class="btn">
+										<span class="white-text">Archivo <span style="color: red;">*</span></span>
+										<input id="idarchivoNulidadOficio" accept=".pdf" type="file"
+											name="idarchivoNulidadOficio" required>
+									</div>
+									<div class="file-path-wrapper">
+										<input class="file-path validate" type="text" placeholder="Adjuntar archivo"
+											ng-model="archivoNulidadOficionom" id="archivoNulidadOficionom"
+											ng-change="loadFile('archivoNulidadOficiob','archivoNulidadOficiobext', 'idarchivoNulidadOficio', 'archivoNulidadOficionom')">
+									</div>
+								</div>
+							</div>
+							<!-- FRONTEND RECEPCION INCIDENTES RQ PREVIO CNVU 12/12/2019-->
+							<div class="col l12 m12 s12">
+								<div class="input-field col l4 m4 s4">
+									<div class="switch">
+										<label for="medioRecepcionNulidadOficio" class="labelper">Medio de
+											Recepción</label>
+										<label>
+											Físico<input id="medioRecepcionNulidadOficio" type="checkbox"
+												ng-model="medioRecepcionNulidadOficio"><span class="lever"></span>Correo
+										</label>
+									</div>
+								</div>
+								<div class="input-field col l7 m7 s7" style="margin-top: 0px;" ng-if="medioRecepcionNulidadOficio == true">
+									<div class="file-field input-field">
+										<div class="btn">
+											<span class="white-text">Archivo <span style="color: red;">*</span></span>
+											<input id="medioNulidadOficioAdjunto" accept=".pdf" type="file">
+										</div>
+										<div class="file-path-wrapper">
+											<input class="file-path validate" type="text"
+												placeholder="Adjuntar archivo" ng-model="archivoMedioNulidadOficio" id="archivoMedioNulidadOficio"
+												ng-change="loadFile('archivoMedioNulidadOficiob','archivoMedioNulidadOficiobext', 'medioNulidadOficioAdjunto', 'archivoNulidadOficionom')">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col s12 m12 l12 mt-50">
+						<center>
+						<a class="waves-effect waves-light btn-large white-text" ng-click="registrarNulidad()" ng-disabled="btn.GuardaRegistro">
+							Guardar
+						</a>
+						</center>
+					</div>
+				</div>
+		   </div>
+		</div>
+	</div>
+
+	<style>
+		.pulsate {
+			animation: heartbeat 1.5s ease-in-out 0s infinite normal both running;
+		}
+
+		@keyframes heartbeat {
+			0% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+				-webkit-transform-origin: center center;
+				transform-origin: center center;
+				-webkit-animation-timing-function: ease-out;
+				animation-timing-function: ease-out;
+			}
+
+			10% {
+				-webkit-transform: scale(.91);
+				transform: scale(.91);
+				-webkit-animation-timing-function: ease-in;
+				animation-timing-function: ease-in;
+			}
+
+			17% {
+				-webkit-transform: scale(.98);
+				transform: scale(.98);
+				-webkit-animation-timing-function: ease-out;
+				animation-timing-function: ease-out;
+			}
+
+			33% {
+				-webkit-transform: scale(.87);
+				transform: scale(.87);
+				-webkit-animation-timing-function: ease-in;
+				animation-timing-function: ease-in;
+			}
+
+			45% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+				-webkit-animation-timing-function: ease-out;
+				animation-timing-function: ease-out;
+			}
+		}
+
+		*,
+		*:after,
+		*:before {
+			box-sizing: border-box;
+		}
+
+		.steps-container {
+			overflow: hidden;
+			margin: 0px;
+			padding: 0px;
+			white-space: nowrap;
+			width: 100%;
+			counter-reset: steps;
+			font-size: 12px;
+			text-align: center;
+			margin-top: -20px;
+			z-index: 5;
+			position: relative;
+		}
+
+		.steps {
+			position: relative;
+			display: inline-block;
+			left: -10px;
+			/* -2px default + 26px offset to hide skewed area on the left side of first element*/
+			height: 30px;
+			line-height: 30px;
+			margin-left: 0px;
+			margin-right: 0px;
+			counter-increment: steps;
+			transition: background 1s;
+			min-height: 20px;
+			cursor: pointer;
+		}
+
+		.steps:after,
+		.steps:before {
+			position: absolute;
+			content: '';
+			left: 0px;
+			height: 50%;
+			width: 100%;
+			/* border-top: 2px solid;
+	  border-bottom: 2px solid;
+	  border-left: 3px solid;
+	  border-right: 3px solid; */
+			background: #1a2e6347;
+		}
+
+		.steps:before {
+			transform: skew(45deg);
+			top: 0px;
+			border-bottom: none;
+			transform-origin: top left;
+		}
+
+		.steps:after {
+			transform: skew(-45deg);
+			bottom: 0px;
+			border-top: none;
+			transform-origin: bottom left;
+		}
+
+		.steps span {
+			display: block;
+			padding-left: 23px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			width: 100%;
+			height: 75%;
+			/* vertical-align: middle; */
+		}
+
+		.steps span:before {
+			content: counter(steps) ". ";
+		}
+
+		.steps.active span {
+			font-weight: bold;
+			animation-name: example;
+			animation-duration: 2s;
+		}
+
+		.steps.active:before,
+		.steps.active:after {
+			background: #1a2e6391;
+
+		}
+
+
+		html body.cyan-scheme .steps.active:before,
+		html body.cyan-scheme .steps.active:after {
+			background: #00abc091 !important;
+		}
+
+		html body.cyan-scheme .steps:after,
+		html body.cyan-scheme .steps:before {
+			background: #00abc047 !important;
+		}
+
+		html body.blue-scheme .steps.active:before,
+		html body.blue-scheme .steps.active:after {
+			background: #1565c091 !important;
+		}
+
+		html body.blue-scheme .steps:before,
+		html body.blue-scheme .steps:after {
+			background: #1565c047 !important;
+		}
+
+		html body.green-scheme .steps.active:before,
+		html body.green-scheme .steps.active:after {
+			background: #558A2F91 !important;
+		}
+
+		html body.green-scheme .steps:before,
+		html body.green-scheme .steps:after {
+			background: #558A2F47 !important;
+		}
+
+		html body.purple-scheme .steps.active:before,
+		html body.purple-scheme .steps.active:after {
+			background: #6A1B9991 !important;
+		}
+
+		html body.purple-scheme .steps:before,
+		html body.purple-scheme .steps:after {
+			background: #6A1B9947 !important;
+		}
+
+		html body.yellow-scheme .steps.active:before,
+		html body.yellow-scheme .steps.active:after {
+			background: #FDA62691 !important;
+		}
+
+		html body.yellow-scheme .steps:before,
+		html body.yellow-scheme .steps:after {
+			background: #FDA62647 !important;
+		}
+
+		html body.dark-scheme .steps.active:before,
+		html body.dark-scheme .steps.active:after {
+			background: #00000091 !important;
+		}
+
+		html body.dark-scheme .steps:before,
+		html body.dark-scheme .steps:after {
+			background: #00000047 !important;
+		}
+
+		@keyframes example {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			33% {
+				transform: rotate(4deg);
+			}
+
+			66% {
+				transform: rotate(-4deg);
+			}
+
+			100% {
+				transform: rotate(0deg);
+			}
+
+		}
+
+		/* BOTON VARIAS OPCIONES */
+		.fabs {
+			bottom: 0;
+			position: fixed;
+			margin: 1em;
+			right: 0;
+			z-index: 1000;
+		}
+
+		.fab {
+			display: block;
+			width: 56px;
+			height: 56px;
+			border-radius: 50%;
+			text-align: center;
+			color: white;
+			margin: 20px auto 0;
+			box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 0px 4px 12px -7px rgba(0, 0, 0, 0.15);
+			cursor: pointer;
+			-webkit-transition: all .1s ease-out;
+			transition: all .1s ease-out;
+			position: relative;
+		}
+
+		.fab>i {
+			font-size: 28px;
+			line-height: 60px;
+			transition: all .2s ease-in-out;
+			transition-delay: 2s;
+		}
+
+		.fab.red {
+			background: #F44336;
+		}
+
+		.fab:active,
+		.fab:focus,
+		.fab:hover {
+			box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+		}
+
+		.fab:not(:last-child) {
+			width: 36px;
+			height: 36px;
+			margin: 20px auto 0;
+			opacity: 0;
+		}
+
+		.fab:not(:last-child)>i {
+			font-size: 18px;
+			line-height: 40px;
+			transition: all .3s ease-in-out;
+		}
+
+		.fabs:hover .fab:not(:last-child) {
+			opacity: 1;
+			width: 40px;
+			height: 40px;
+			margin: 15px auto 0;
+		}
+
+		.fab:nth-last-child(1) {
+			-webkit-transition-delay: 25ms;
+			transition-delay: 25ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(2) {
+			-webkit-transition-delay: 20ms;
+			transition-delay: 20ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(3) {
+			-webkit-transition-delay: 40ms;
+			transition-delay: 40ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(4) {
+			-webkit-transition-delay: 60ms;
+			transition-delay: 60ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(5) {
+			-webkit-transition-delay: 80ms;
+			transition-delay: 80ms;
+		}
+
+		[tooltip]:before {
+			font-family: 'Roboto';
+			font-weight: 600;
+			-webkit-border-radius: 2px;
+			-moz-border-radius: 2px;
+			border-radius: 7px;
+			background-color: #000000;
+			color: #fff;
+			content: attr(tooltip);
+			font-size: 12px;
+			visibility: hidden;
+			opacity: 0;
+			padding: 5px 7px;
+			margin-right: 10px;
+			position: absolute;
+			right: 100%;
+			bottom: 25%;
+			white-space: nowrap;
+		}
+
+		.fab.red {
+			background: #F44336;
+		}
+
+		.fab.pink {
+			background: #E91E63;
+		}
+
+		.fab.purple {
+			background: #9C27B0;
+		}
+
+		.fab.deep-purple {
+			background: #673AB7;
+		}
+
+		.fab.indigo {
+			background: #3F51B5;
+		}
+
+		.fab.blue {
+			background: #2196F3;
+		}
+
+		.fab.light-blue {
+			background: #03A9F4;
+		}
+
+		.fab.cyan {
+			background: #00BCD4;
+		}
+
+		.fab.teal {
+			background: #009688;
+		}
+
+		.fab.green {
+			background: #4CAF50;
+		}
+
+		.fab.light-green {
+			background: #8BC34A;
+		}
+
+		.fab.lime {
+			background: #CDDC39;
+		}
+
+		.fab.yellow {
+			background: #FFEB3B;
+		}
+
+		.fab.amber {
+			background: #FFC107;
+		}
+
+		.fab.orange {
+			background: #FF9800;
+		}
+
+		.fab.deep-orange {
+			background: #FF5722;
+		}
+
+		.fab.blue-dark {
+			background: #1a2e63;
+		}
+
+		.fab.grey {
+			background: #9E9E9E;
+		}
+
+		.fab.blue-grey {
+			background: #607D8B;
+		}
+
+		[tooltip]:hover:before,
+		[tooltip]:hover:after {
+			visibility: visible;
+			opacity: 1;
+		}
+
+		/* @keyframes example {
+      0%   {font-size: 12px;}
+      33%  {font-size: 13px;}
+      66%  {font-size: 13px;}
+      100%  {font-size: 12px;}
+
+  } */
+	</style>
+
+</div>

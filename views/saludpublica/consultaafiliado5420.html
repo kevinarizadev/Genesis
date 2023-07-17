@@ -1,0 +1,280 @@
+<div class="row" style="background-color: transparent;" ng-init="ValidaInformacion=false;EstadoInformacion=false;OcultarEvolucion=false;ListadoEvoluciones=false">
+	<style>
+		.columnas p {position: absolute;top: -38px;width: 207px;border: 1px solid #e5e6e6;padding: 1px 10px;border-radius: 0px 19px 0px 0px;}
+		.dataTables_filter {margin: 0 !important}
+		.incla {height: auto !important;font-size: 1em !important;}
+		.lb {padding-left: 20px !important;height: 20px!important;transform: scale(.8) !important;}
+		.medidas {width: 33.3% !important;margin-right: 0.4%;}
+		.select-personalizado {background-color: #bcbdbd;padding: 0px !important;height: 2em !important; width: 15em !important;}
+		p.titulo_card {padding: 0.3em 1.2em;margin: 0px;background: #ffffff;border: 1px solid #c4c4c4;color: #818282;}
+		hr {height: 0px;background-color: black;padding: 0;margin: 0;margin-bottom: 0.2%;}
+		table.dataTable {width: 100% !important;}
+		.medidas{height: 12vh !important;    width: 100% !important;}
+		@media only screen and (max-width: 1440px) {
+			#tabla_info th, #tabla_info td {font-size: 11px;}
+			.medidas {height: 18vh !important;width: 100% !important;}
+		}
+	</style>
+
+	<div class="row section-header" ng-init="obtenerDocumento();" style="margin: 0;background: #9897e81f;padding: 0px; margin-bottom: 0em;">
+		<ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+			<li id="inicio">
+				<h5>Consultar Afiliado</h5>
+			</li>
+			<li>
+				<div class="col input-field">
+					<label class="active" style="color: black;margin-top: -3px;">Tipo de Documento</label>
+					<select class="select-chosen-eps border-none input-text-new select-personalizado" ng-model="type">
+						<option ng-repeat="documento in Documentos.Documento" ng-value="documento.Codigo">
+						{{documento.Nombre}}</option>
+					</select>
+				</div>
+				<div class="col input-field">
+					<input type="text" class="border-none input-text-new" ng-model="id" placeholder="Número de identificación" style="background-color: #bcbdbd;width: 10em;margin-left: auto;">
+				</div>
+				<div class="input-field col">
+					<a ng-click="ConsultarAfiliado()" class="btn btn-small" style="background-color: rgba(238, 64, 53, 0.8);">CONSULTAR</a>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="col s12 m12 l12" ng-if="ValidaInformacion">
+		<div class="card">
+			<div class="card-content">
+				<h5>Informacion Del Afiliado</h5>
+			</div>
+			<div class="card-content clearfix">
+				<table id="tabla_info" class="responsive-table table-bordered striped">
+					<tbody>
+						<tr>
+							<th>TIPO DOCUMENTO</th>
+							<td colspan="1" align="center">{{afildato.tipo_documento}}</td>
+							<th>NUMERO DOCUMENTO</th>
+							<td colspan="1" align="center">{{afildato.documento}}</td>
+						</tr>
+						<tr>
+							<th >NOMBRE AFILIADO</th>
+							<td colspan="3" align="center">{{afildato.nombre_afiliado}}</td>
+						</tr>
+
+						<tr>
+							<th>DEPARTAMENTO</th>
+							<td colspan="1" align="center">{{afildato.departamento}}</td>
+							<th>MUNICIPIO</th>
+							<td colspan="1" align="center">{{afildato.municipio}}</td>											
+						</tr>
+						<tr>
+							<th>GENERO</th>
+							<td colspan="1" align="center">{{afildato.genero}}</td>
+							<th>FECHA NACIMIENTO</th>
+							<td colspan="1" align="center">{{afildato.fecha_nacimiento}}</td>											
+						</tr>
+						<tr>
+							<th>DIRECCION</th>
+							<td colspan="3" align="center">{{afildato.direccion}}</td>
+						</tr>									
+
+						<tr>
+							<th>CELULAR</th>
+							<td colspan="1" align="center">{{afildato.celular}}</td>
+							<th>CELULAR 2</th>
+							<td colspan="1" align="center">{{afildato.celular2}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<center>
+				<a ng-click="EditarInformacion(afildato)" class="btn btn-small" style="background-color: #FF5722"><i class="icon-edit"></i> Editar Información</a>
+				<a ng-click="ConfirmarAfiliado()" class="btn btn-small" style="background-color: #558a2f;"><i class="icon-person"></i>Actualizar Estado</a>
+				<a ng-click="CrearEvolucion()" class="btn btn-small" style="background-color: #1a2e63;"><i class="icon-person"></i>Crear Evolución</a>
+				<a ng-click="VerEvolucion('comenzar')" class="btn btn-small" style="background-color: #9C27B0;"><i class="icon-eye"></i>Ver Evolución</a>
+			</center>
+			<br>
+		</div>
+	</div>
+
+	<div class="row" ng-if="EstadoInformacion">
+		<div class="col l12 m6 s12">
+			<div class="card">
+				<div class="card-content">
+					<h5 style="display: flex;">Estado de Afiliado</h5>
+				</div>
+				<div class="card-action">
+					<div class="row">
+						<div class="col l12 m12 s12">
+
+							<div class="input-field col l4 m12 s12 margin" style="padding: 0 !important">
+								<label class="active">Estado</label>
+								<select class="select-chosen-eps" ng-model="estado">
+									<option value="D">DESCARTADO</option>
+									<option value="E">EN ESTUDIO</option>
+									<option value="C">CONFIRMADO</option>
+									<option value="F">FALLECIDO</option>
+									<option value="S">SOSPECHOSO</option>
+									<option value="N">NO APLICA</option>
+								</select>
+							</div>
+							<div class="input-field col l4 m12 s12 margin" style="padding: 0 !important">
+								<label class="active">Fuente</label>
+								<select class="select-chosen-eps" ng-model="fuente">
+									<option>SELECCIONAR</option>
+									<option value="ENTE TERRITORIAL">ENTE TERRITORIAL</option>
+									<option value="INS - ALERTA TEMPRANA">INS - ALERTA TEMPRANA</option>
+									<option value="PSS">PSS</option>
+									<option value="SUPERSALUD">SUPERSALUD</option>
+								</select>
+							</div>
+							<div class="input-field col l4 m12 s12 margin" style="padding: 8px !important;">
+								<label for="simple-select" class="active">Fecha Sospecha</label>
+								<input class="datepicker picker__input calendario uppercase"
+								id="fecha_sospecha" ng-model="fecha_sospecha"
+								class="datepicker_inicio picker__input"
+								style=" background-color: white;">
+							</div>
+						</div>
+						<br><br>
+						<div class="input-button">
+							<center>							
+								<a ng-click="Registrar(estado,fuente,fecha_sospecha)" class="btn btn-small" style="background-color: rgba(238, 64, 53, 0.8);">Registrar</a>
+							</center>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+	<div class="row" ng-if="OcultarEvolucion">
+		<div class="col l12 m6 s12">
+			<div class="card">
+				<div class="card-content">
+					<h5 style="display: flex;">Crear Evoclución</h5>
+				</div>
+				<div class="card-action">
+					<div class="row">
+						<div class="col l12 m12 s12">
+							<div class="input-field col l6 m12 s12">
+								<label for="simple-select" class="active">Fecha Sospecha</label>
+								<input class="datepicker picker__input calendario uppercase"
+								id="fecha_evolucion" ng-model="fecha_evolucion"
+								class="datepicker_inicio picker__input"
+								style=" background-color: white;">
+							</div>
+						</div>
+						<br>
+						<textarea placeholder="Observación" ng-model="observacion" style="margin: 0px; height: 106px; width: 1097px;"></textarea>
+						<br>
+						<div class="input-button">
+							<center>							
+								<a ng-click="Crear(fecha_evolucion,observacion)" class="btn btn-small" style="background-color: rgba(238, 64, 53, 0.8);">Crear</a>
+							</center>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>	
+
+	<div class="row" ng-if="ListadoEvoluciones">
+		<div class="col l12 m12 s12">
+			<div class="card">
+				<div class="card-content">
+					<h5 style="display: flex;"><strong>Evoluciónes</strong></h5>
+				</div>
+				<div class="divider"></div>
+				<div class="card-content clearfix">
+					<table class="responsive-table striped table-bordered" align="center" id="informacion"
+					style="border-bottom: none;">
+					<thead align="center">
+						<tr>
+							<td><strong>#</strong></td>
+							<td><strong>DOCUMENTO</strong></td>
+							<td><strong>FECHA EVOLUCIÓN</strong></td>
+							<td><strong>OBSERVACION</strong></td>
+							<td><strong>RESPONSABLE</strong></td>
+						</tr>
+					</thead>
+					<tbody style="height: 40%; overflow: scroll;">
+						<tr ng-repeat="listo in informacion">
+							<td>{{$index + 1}}</td>
+							<td>{{listo.tipo_documento}} - {{listo.documento}}</td>
+							<td>{{listo.fecha_evolucion}}</td>
+							<td>{{listo.observacion}}</td>
+							<td>{{listo.usuario_registro}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="modalactualizar" class="modal" style="width: 80%;">
+	<div class="modal-content">
+		<div style="width: 100%;margin: 0 auto;">
+			<div class="card-content">
+				<div class="row">
+					<form>
+						<blockquote><strong>ACTUALIZAR INFORMACION</strong></blockquote>
+						<div class="col l12 m12 s12">
+
+							<div class="input-field col l3 m12 s12 margin">
+								<input id="documento" type="text" ng-model="p_tipo" disabled>
+								<label for="documento" class="">Tipo Documento</label>
+							</div>
+
+							<div class="input-field col l3 m12 s12 margin">
+								<input id="documento" type="text" ng-model="p_documento" disabled>
+								<label for="documento" class="">Documento</label>
+							</div>
+							<div class="input-field col l6 m12 s12 margin">
+								<input id="nombre" type="text" ng-model="p_nombre" disabled>
+								<label for="nombre" class="">Nombre Afiliado</nombre_aportante>
+								</div>
+							</div>
+						</div>
+						<div class="col l12 m12 s12">
+							<div class="input-field col l6 m12 s12 margin">
+								<div class="input-field col l6 m12 s12 margin">
+									<input id="celular" type="text" ng-model="p_celular">
+									<label for="celular" class="">Celular</label>
+								</div>
+								<div class="input-field col l6 m12 s12 margin">
+									<input id="celular" type="text" ng-model="p_celular2">
+									<label for="celular" class="">Celular 2</label>
+								</div>
+							</div>
+							<div class="input-field col l6 m12 s12 margin">
+								<div class="input-field col l6 m12 s12">
+									<input id="direccion" type="text" ng-model="p_direccion" disabled>
+									<label for="direccion" class="">Dirección</label>
+								</div>
+								<div class="input-field col l3 m12 s12">
+									<input id="direccion" type="text" ng-model="p_barrio" disabled>
+									<label for="direccion" class="">Barrio</label>
+								</div>
+								<div class="tooltip">
+									<label ng-click="AbrirModalDireccion()"><i class="material-icons">info</i></label>
+									<span class="tooltiptext">Click Para Actualizar Direccion</span>
+								</div>
+							</div>
+						</div>
+						<br>
+						<center>								
+							<a ng-click="ActualizarInfor()" class="btn btn-small" style="background-color: #558a2f;"><i class="icon-save"></i>Actualizar Informacion</a>
+						</center>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+

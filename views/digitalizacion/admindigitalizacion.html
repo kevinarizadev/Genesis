@@ -1,0 +1,300 @@
+<div>
+  <div class="row" ng-hide="InformacionProcesos">
+    <div class="col l12 m12 s12">
+      <div class="card">
+        <div class="card-content">
+          <h5 style="display: flex;"><strong>Procesos De Digitalización</strong></h5>
+          <blockquote>
+            Para La Creación De Un Nuevo Proceso, Con La Parametrización Personalizada.
+            <a style="cursor: pointer;" ng-click="HabilitarCreacion()" title="Búsqueda por detalles del afiliado">CLICK
+              AQUI</a>
+          </blockquote>
+        </div>
+        <div class="divider"></div>
+        <div class="card-content clearfix">
+          <div class="col s12">
+            <form>
+              <div class="input-field col s2" style="float: right;">
+                <input id="buscarautaa" type="text" ng-model="val" ng-keyup="filter(val)">
+                <label for="buscarautaa">Buscar:</label>
+              </div>
+            </form>
+          </div>
+
+          <table class="responsive-table striped table-bordered" align="center" id="anexos" style="cursor: pointer !important;">
+            <thead align="center">
+              <tr>
+                <td class="center-align"><strong>#</strong></td>
+                <!-- <td class="center-align"><strong>CODIGO</strong></td> -->
+                <td class="center-align"><strong>TIPO PROCESOS</strong></td>
+                <td class="center-align"><strong>OPCION</strong></td>
+              </tr>
+            </thead>
+            <tbody style="height: 40%; overflow: scroll;">
+              <tr ng-repeat="procesos in procesotemp | inicio: currentPage * pageSize | limitTo: pageSize" ng-show="MostarDatos">
+                <td class="center-align">{{($index + 1)+(currentPage * pageSize)}} </td>
+                <!-- <td class="center-align">{{procesos.codigo}}</td> -->
+                <td class="center-align">{{procesos.nombre}}</td>
+                <td class="center-align">
+                  <div class="tooltip">
+                    <i ng-click="EditarProcesos(procesos.codigo,procesos.nombre)" class="Medium material-icons">chrome_reader_mode</i>
+                    <span class="tooltiptext">Editar Procesos</span>
+                  </div>
+                  <div class="tooltip">
+                    <i ng-click="EliminarProcesos(procesos.codigo)" class="Medium material-icons">delete</i>
+                    <span class="tooltiptext">Eliminar Procesos</span>
+                  </div>
+                </td>
+
+              </tr>
+              <tr ng-hide="MostarDatos">
+                <td colspan="3" style="text-align: center;">
+                  <strong> NO SE ENCONTRO DATOS </strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <ul style="text-align: center;" class="pagination" ng-show="MostarDatos">
+            <li><button ng-disabled='currentPage == 0' class="btn" ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+            <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1' class="btn" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+            <li><button ng-disabled='currentPage >= procesotemp.length/pageSize - 1' class="btn" ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-hide="CreacionProcesos">
+    <div class="col l12 m12 s12">
+      <div class="card">
+        <div class="card-content">
+          <div class="black-text title-panel" style="display: flex;justify-content: space-between;">
+            <h5 style="display: flex;"><strong>Crear Procesos</strong></h5>
+            <div class="btn-panel" style="display: flex;align-items: center;">
+              <i ng-click="Regresar('1')" class="icon-left-open-2" style="cursor:pointer">Regresar</i>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="card-content clearfix">
+          <form>
+            <div class="col l12">
+              <div class="col l12">
+                <div class="input-field col s3">
+                  <i class="material-icons prefix">view_list</i>
+                  <select id="simple-select chosen" ng-change="ObtenerModulos(Area)" ng-model="Area" name="Area"
+                    material-select watch>
+                    <option value="0">SELECCIONAR</option>
+                    <option ng-repeat="x in areas" value="{{x.codigo}}">{{x.nombre}}</option>
+                  </select>
+                  <label for="simple-select hide-on-med-and-down">Area</label>
+                </div>
+                <div class="input-field col s3">
+                  <i class="material-icons prefix">view_list</i>
+                  <select id="simple-select chosen" ng-model="Modulo" name="Modulo" material-select watch>
+                    <option value="0">SELECCIONAR</option>
+                    <option ng-repeat="x1 in modulos" value="{{x1.codigo}}">{{x1.nombre}}</option>
+                  </select>
+                  <label for="simple-select hide-on-med-and-down">Modulos</label>
+                </div>
+                <div class="input-field col s3">
+                  <i class="material-icons prefix">account_circle</i>
+                  <input id="with_icon" type="text" ng-model="NombreDelProceso" class="validate">
+                  <label for="with_icon">Nombre Del Proceso</label>
+                </div>
+                <div class="input-field col s2" ng-hide="OcultarRegimen">
+                  <i class="material-icons prefix">view_list</i>
+                  <select id="simple-select chosen" ng-change="CambioRegimen(Regimen)" ng-model="Regimen"
+                    material-select watch>
+                    <option value="0">SELECCIONAR</option>
+                    <option value="S">SUBSIDIADO</option>
+                    <option value="C">CONTRIBUTIVO</option>
+                  </select>
+                  <label for="simple-select hide-on-med-and-down">Regimen</label>
+                </div>
+              </div>
+              <div class="col l12">
+                <div class="row">
+                  <div class="col s12">
+                    <center><button class="waves-effect waves-light btn-large white-text pink" ng-click="CrearProceso()"
+                        ng-hide="OcultarBoton">Crear Procesos</button></center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-hide="InformacionPaquete">
+    <div class="col l12 m12 s12">
+      <div class="card">
+        <div class="card-content">
+
+          <div class="black-text title-panel" style="display: flex;justify-content: space-between;">
+            <h5 style="display: flex;"><strong>Editar Paquete</strong>
+              <a class="btn-floating btn waves-effect waves-light primary-button" style="margin-left: 1em;" ng-click="NuevoPaquete()">
+                <i class="material-icons dp48">add_to_photos</i></a>
+            </h5>
+            <div class="btn-panel" style="display: flex;align-items: center;">
+              <i ng-click="Regresar('4')" class="icon-left-open-2" style="cursor:pointer">Regresar</i>
+            </div>
+          </div>
+          <p style="display: flex;"><strong>( {{nombreprocesos}} )</strong></p>
+        </div>
+        <div class="divider"></div>
+        <div class="card-content clearfix">
+          <table class="responsive-table striped table-bordered" align="center" id="anexos" style="cursor: pointer !important;">
+            <thead align="center">
+              <tr>
+                <td class="center-align"><strong>CODIGO</strong></td>
+                <td class="center-align"><strong>TIPO PROCESOS</strong></td>
+                <td class="center-align"><strong>OPCIÓN</strong></td>
+              </tr>
+            </thead>
+            <tbody style="height: 40%; overflow: scroll;">
+              <tr ng-repeat="paq in paquetes">
+                <td class="center-align">{{paq.codigo}}</td>
+                <td class="center-align">{{paq.nombre}}</td>
+                <td class="center-align">
+                  <div class="tooltip">
+                    <i ng-click="MostrarParametros(paq.codigo)" class="Medium material-icons">chrome_reader_mode</i>
+                    <span class="tooltiptext">Editar Paquete</span>
+                  </div>
+                  <div class="tooltip">
+                    <i ng-click="EliminarPaquete(paq.codigo)" class="Medium material-icons">delete</i>
+                    <span class="tooltiptext">Eliminar Paquete</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-hide="CreacionPaquete">
+    <div class="col l12 m12 s12">
+      <div class="card">
+        <div class="card-content">
+
+          <div class="black-text title-panel" style="display: flex;justify-content: space-between;">
+            <h5 style="display: flex;"><strong>Creación Paquete</strong>
+            </h5>
+            <div class="btn-panel" style="display: flex;align-items: center;">
+              <i ng-click="Regresar('2')" class="icon-left-open-2" style="cursor:pointer">Regresar</i>
+            </div>
+          </div>
+          <p style="display: flex;"><strong>( {{nombreprocesos}} )</strong></p>
+        </div>
+        <div class="divider"></div>
+        <div class="card-content clearfix">
+          <form>
+            <div class="col l12">
+              <div class="col l12">
+                <div class="input-field col s3">
+                  <i class="material-icons prefix">account_circle</i>
+                  <input id="with_icon" type="text" ng-model="NombreDelPaquete" class="validate">
+                  <label for="with_icon">Nombre Del Paquete</label>
+                </div>
+              </div>
+              <div class="col l12">
+                <div class="row">
+                  <div class="col s12">
+                    <center><button class="waves-effect waves-light btn-large white-text pink" ng-click="CrearPaquete()"
+                        ng-hide="OcultarBoton">Registrar Paquete</button></center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-hide="PaqueteDeDigitalizacion">
+    <div class="col l12 s12">
+      <div class="card">
+        <div class="card-content">
+          <div class="black-text title-panel" style="display: flex;justify-content: space-between;">
+            <h5 style="display: flex;"><strong>Parametro De Digitalización</strong>
+              <a class="btn-floating btn waves-effect waves-light primary-button" style="margin-left: 1em;" ng-click="CreacionParametro()">
+                <i class="material-icons dp48">save</i></a>
+            </h5>
+            <div class="btn-panel" style="display: flex;align-items: center;">
+              <i ng-click="Regresar('3')" class="icon-left-open-2" style="cursor:pointer">Regresar</i>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="card-content clearfix">
+          <div class="col s12">
+            <form>
+              <div class="input-field col s2">
+                <input id="buscarautaa" type="text" ng-model="valtipo" ng-keyup="filterTipo(valtipo)">
+                <label for="buscarautaa">Consultar:</label>
+              </div>
+            </form>
+          </div>
+          <div class="col l6 s6">
+            <table class="responsive-table striped table-bordered" align="center" id="anexos" style="cursor: pointer !important;">
+              <thead align="center">
+                <tr>
+                  <td class="center-align"><strong>#</strong></td>
+                  <td class="center-align"><strong>NOMBRE</strong></td>
+                  <td class="center-align"><strong>PRIORIDAD</strong></td>
+                  <td class="center-align"><strong>OPCION</strong></td>
+                </tr>
+              </thead>
+              <tbody style="height: 40%; overflow: scroll;">
+                <tr ng-repeat="item in tipodocumentaltemp | inicio: currentPageTipo * pageSizeTipp | limitTo: pageSizeTipp"
+                  ng-show="MostarDatosTipo">
+                  <td class="center-align">{{($index + 1)+(currentPageTipo * pageSizeTipp)}} </td>
+                  <td class="center-align">{{item.nombre}}</td>
+                  <td class="center-align">{{item.obligatorio}}</td>
+                  <td class="center-align">
+                    <input ng-click="MarcarParametro(item)" type="checkbox" class="filled-in checkbox-info" id="checkbox{{item.codigo}}"
+                      ng-checked={{item.checked}}>
+                    <label for="checkbox{{item.codigo}}"></label>
+                  </td>
+                </tr>
+                <tr ng-hide="MostarDatosTipo">
+                  <td colspan="4" style="text-align: center;">
+                    <strong> NO SE ENCONTRO DATOS</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <ul style="text-align: center;" class="pagination" ng-show="MostarDatosTipo">
+              <li><button ng-disabled='currentPageTipo == 0' class="btn" ng-click='currentPageTipo = currentPageTipo - 1'>&laquo;</button></li>
+              <li ng-repeat='pageT in pagesTipo'><button ng-disabled='currentPageTipo == pageT.no - 1' class="btn"
+                  ng-click='setPageTipo(pageT.no)'>{{pageT.no}}</button></li>
+              <li><button ng-disabled='currentPageTipo >= tipodocumentaltemp.length/pageSizeTipp - 1' class="btn"
+                  ng-click='currentPageTipo = currentPageTipo + 1'>&raquo;</button></li>
+            </ul>
+          </div>
+
+          <div class="col l6 s6">
+            <table class="responsive-table striped table-bordered" align="center" id="anexos" style="cursor: pointer !important;">
+              <thead align="center">
+                <tr>
+                  <td class="center-align"><strong>NOMBRE</strong></td>
+                  <td class="center-align"><strong>PRIORIDAD</strong></td>
+                  <td class="center-align"><strong>OPCION</strong></td>
+                </tr>
+              </thead>
+              <tbody style="height: 40%; overflow: scroll;">
+                <tr ng-repeat="i in ItemsMarcado">
+                  <td class="center-align">{{i.nombre}}</td>
+                  <td class="center-align">{{i.obligatorio}}</td>
+                  <td class="center-align"><i ng-click="EliminarParametros(i.codigo_paquete,i.codigo_soporte)" class="material-icons dp48">delete</i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<div id="gestionacastic" class="white newdesing" style="position:relative">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h4>Modelos de analitica de datos</h4>
+      </li>
+      <li style="display:flex;align-items: center;" ng-show="panel.activo==1">
+        <form method="post" autocomplete="off" class="form-input-icon-new">
+          <input type="text" class="margin border-none" ng-model="buscaritem" placeholder="Buscar">
+          <i class="icon-search"></i>
+        </form>
+      </li>
+      <li style="display:flex;align-items: center;" ng-show="panel.activo==2">
+        <form method="post" autocomplete="off" class="form-input-icon-new">
+          <input type="text" class="margin border-none" ng-model="buscarmodelo" placeholder="Buscar Modelo">
+          <i class="icon-search"></i>
+        </form>
+      </li>
+    </ul>
+  </div>
+  <!-- Contenido -->
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <h5> {{panel.activo == 1?'('+listareas.length+') Opciones de Consulta:':panel.titulo}}</h5>
+        <div class="btn-panel" style="display: flex;align-items: center;">
+          <i ng-click="filtrar = '';buscaritem = '';changePanel()" ng-show="panel.activo!=1"
+            class="icon-left-open-2">Atras</i>
+        </div>
+      </div>
+      <div id="focus-effect" class="row margin" ng-show="panel.activo==1">
+        <div ng-repeat="list in listareas | filter: buscaritem " class="col s12 m6 l3">
+          <div ng-click="getModelos(list)" class="card-panel center-align no-padding" style="cursor:pointer">
+            <div style="padding: 20px 20px 10px;position:relative">
+              <p style="z-index: 10;position: relative;width: calc(100% + 40px);margin-left: -20px!important;">
+                <strong>
+                  {{list.AREC_NOMBRE}}
+                </strong>
+              </p>
+              <img src="images/undraw_growth_analytics_re_pyxf.svg" alt="" srcset="">
+
+            </div>
+            <div class="black-text white"
+              style="font-size: 14px;padding: 10px 20px;display: flex;justify-content: space-around;">
+              <div class="green-text" style="width: 50%;display: grid;font-weight: bold">
+                Ver modelos
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="focus-effect" class="row" ng-show="panel.activo == 2">
+        <div ng-repeat="list in listmodelos | filter: buscarmodelo" class="col s12 m6 l3">
+          <div class="card-panel center-align" style="cursor:pointer" ng-show="list.info">
+            <i ng-click="list.info=false" class="icon-info-circled" style="float: right;font-size: 30px;"></i>
+            <div ng-click="getModelo(list)" style="margin-top: 30px;">
+              <div style="padding: 20px;position:relative">
+                <img src="images/undraw_all_the_data_re_hh4w.svg" alt="" srcset="">
+              </div>
+              <div class="black-text">
+                <p class="margin">
+                  <strong>
+                    {{list.TABC_NOMBRE}}
+                  </strong>
+                </p>
+              </div>
+              <div class="black-text">
+                <p class="margin">Publicación {{list.TABF_FECHA_PUBLICACION}}</p>
+              </div>
+              <i style="font-size: 30px;"
+                ng-class="{'icon-lock blue-text': list.TABC_PUBLICO=='N', 'icon-lock-open green-text': list.TABC_PUBLICO=='S' }"></i>
+            </div>
+
+          </div>
+          <div class="card-panel" style="cursor:pointer" ng-hide="list.info">
+            <i ng-click="list.info=true" class="icon-minus-circled" style="float: right;font-size: 30px;"></i>
+            <div style="margin-top: 30px;">
+              <div class="black-text">
+                <p>
+                  <strong>
+                    {{list.TABC_NOMBRE}}
+                  </strong>
+                </p>
+                <!-- <p>
+                  Cordinacion {{list.nombre}}
+                </p>
+                <p>
+                  Area {{list.nombre}}
+                </p> -->
+                <p>
+                  {{list.TABC_DESCRIPCION}}
+                </p>
+              </div>
+              <!-- <div class="black-text">
+                <p class="margin">Fecha creacion 3/01/2022</p>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="focus-effect" class="row" ng-if="panel.activo == 3">
+        <iframe ng-src="{{trustSrc(tempmodelbi.TABC_IFRAME)}}" style="width:100%; height: 75vh;margin-bottom: 1em;"
+          frameborder="0" allowFullScreen="true"></iframe>
+      </div>
+    </div>
+  </div>
+</div>

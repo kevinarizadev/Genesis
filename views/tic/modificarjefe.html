@@ -1,0 +1,245 @@
+<div id="modificarjefe" class="white newdesing position-relative">
+    <style>
+        i {
+            cursor: pointer;
+        }
+
+        td,
+        th {
+            padding: 5px 10px;
+            font-size: 13px !important;
+        }
+
+        .gray-input {
+            background-color: #e5e6e6 !important;
+        }
+
+        .select-input-new.select-chosen-eps {
+            height: 2rem !important;
+            padding: 0 0.5rem !important;
+            border-bottom: none !important;
+            box-shadow: 0 1px 0 0 #dadce0;
+            padding-right: 1rem !important;
+            border-radius: 0;
+        }
+
+        [type="checkbox"].filled-in:not(:checked)+label:after {
+            border: 2px solid #26a69a;
+        }
+
+        [type="checkbox"].filled-in:checked+label:after {
+            border: 2px solid #26a69a;
+            background-color: #26a69a;
+        }
+
+        #tabla_usuarios {
+            height: auto;
+            max-height: 30vh !important;
+        }
+
+        #modificarjefe * {
+            transition: all 0s ease;
+        }
+    </style>
+    <div class="row section-header">
+        <ul class="list-inline d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+                    Modificar Jefe de los funcionarios</h5>
+            </li>
+            <li>
+                <form class="form-input-icon-new" method="post" ng-submit="filtrarUser(usuario_genesis)"
+                    autocomplete="off">
+                    <input ng-model="usuario_genesis" ng-change="usuario_genesis=usuario_genesis.toLowerCase()"
+                        type="text" class="margin border-none" placeholder="Usuario o Cedula">
+                    <i ng-click="filtrarUser(usuario_genesis)" class="icon-search"></i>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+        <div ng-show="vista.panel_1" class="col s12 m12 l6 position-relative">
+            <div class="black-text title-panel" style="margin-bottom: 15px;align-items: center;">
+                <div class="margin no-padding label-new col s4">
+                    <select ng-model="filter_fun_1" ng-change="change_filter_fun_1(filter_fun_1)" id="filter_fun_1"
+                        class="select-new gray-input m-r" style="box-shadow: none;" material-select watch>
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="fd1 in filter_datos_1" value="{{fd1.codigo}}">{{fd1.nombre}}</option>
+                    </select>
+                </div>
+                <div ng-show="filter_fun_1!='' && filter_fun_1!='T'" class="margin no-padding label-new col s8">
+                    <select ng-model="filter_fun_2" ng-change="change_filter_fun_2(filter_fun_1,filter_fun_2)"
+                        id="filter_fun_2" class="select-new gray-input select-input-new select-chosen-eps"
+                        style="box-shadow: none;display: block;">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="fd2 in filter_datos_2 | orderBy:'nombre'" value="{{fd2.codigo}}">
+                            {{fd2.nombre}}
+                            {{fd2.codigo}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="position-relative" style="overflow: auto;height: calc(100vh - 210px);">
+                <table class="striped table-bordered white">
+                    <thead>
+                        <tr class="default-background white-text">
+                            <th class="border-none">
+                                {{lis_users.length==0?'#':lis_users.length}}
+                            </th>
+                            <th class="border-none">
+                                <input type="text" ng-model="filter_cedula_list"
+                                    class="margin border-none ng-pristine ng-valid ng-touched"
+                                    style="height: auto;font-size: 13px;" placeholder="Cedula">
+                            </th>
+                            <th class="border-none">
+                                <input type="text" ng-model="filter_nombre_list"
+                                    class="margin border-none ng-pristine ng-valid ng-touched"
+                                    style="height: auto;font-size: 13px;" placeholder="Nombre">
+                            </th>
+                            <th class="border-none center-align">
+                                Editar
+                            </th>
+                            <th class="border-none center-align">
+                                <div ng-show="lis_users.length > 0" style="display: flex;">
+                                    <input type="checkbox" class="filled-in" id="select_all" ng-model="select_all"
+                                        ng-change="checkboxAllSelect(select_all)">
+                                    <label title="Seleccionar Todos" for="select_all"
+                                        style="padding-left: 20px;height: 20px;transform: scale(.8);"></label>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-if="lis_users.length == 0">
+                            <td colspan="5" class="center-align">
+                                No hay usuarios para mostrar
+                            </td>
+                        </tr>
+                        <tr
+                            ng-repeat="user in lis_users | filter:{cedula:filter_cedula_list,nombre:filter_nombre_list} | orderBy:'nombre' track by user.usuario">
+                            <td>{{($index+1)}}</td>
+                            <td>{{user.cedula}}</td>
+                            <td>{{user.nombre}}</td>
+                            <td class="center-align">
+                                <i ng-click="editarUser(user);" title="Modificar Jefe" class="icon-users-3 margin"></i>
+                            </td>
+                            <td class="center-align" style="line-height: 10px;">
+                                <input type="checkbox" class="filled-in" name="user" id="chk-{{user.cedula}}"
+                                    ng-model="check_user[$index]" ng-value="user"
+                                    ng-change="checkbox_select_users($index,check_user[$index],user);">
+                                <label title="Seleccionar" for="chk-{{user.cedula}}"
+                                    style="padding-left: 20px;height: 20px;transform: scale(.8);"></label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0 -->
+        <div ng-show="vista.panel_2" class="col s12 m12 l6 position-relative">
+            <div class="position-relative" style="margin: 5px 0px 17px;">
+                {{vista.panel_title_2?form.nombre_user+' - JEFE:':'Funcionarios seleccionados:'}}
+            </div>
+            <div ng-if="vista.panel_title_2" style="margin-bottom: 15px;border: 2px solid #e5e6e6;padding: 5px;">
+                <div class="row margin">
+                    <div class="col s12 no-padding m-b">
+                        <p class="margin"><b>Cedula:</b> {{form.cedula}}</p>
+                    </div>
+                    <div class="col s12 no-padding m-b">
+                        <p class="margin"><b>Nombre:</b> {{form.nombre}}</p>
+                    </div>
+                    <div class="col s12 no-padding m-b">
+                        <p class="margin"><b>Cargo:</b> ({{form.ccargo}}){{form.ncargo}}</p>
+                    </div>
+                </div>
+            </div>
+            <div id="tabla_usuarios" ng-if="!vista.panel_title_2"
+                style="position: relative;overflow: auto;margin-bottom: 15px;">
+                <div class="row margin">
+                    <table class="striped table-bordered white">
+                        <thead>
+                            <tr class="default-background white-text">
+                                <th class="border-none">
+                                    {{list_users_update_boss.length==0?'#':list_users_update_boss.length}}
+                                </th>
+                                <th class="border-none">
+                                    <input type="text" ng-model="filter_nombre_list_user"
+                                        class="margin border-none w-auto" style="height: auto;font-size: 13px;"
+                                        placeholder="Nombre">
+                                </th>
+                                <th class="border-none">
+                                    <input type="text" ng-model="filter_jefe_list_user"
+                                        class="margin border-none w-auto" style="height: auto;font-size: 13px;"
+                                        placeholder="Nombre Jefe">
+                                </th>
+                                <th class="border-none center-align">
+                                    <i ng-click="delete_list_user_all();" title="Borrar toda la lista"
+                                        class="icon-trash-empty red-text" style="cursor:pointer"></i>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="list_users_update_boss.length == 0">
+                                <td colspan="4" class="center-align">
+                                    No hay usuarios para mostrar
+                                </td>
+                            </tr>
+                            <tr
+                                ng-repeat="user in list_users_update_boss | filter:{cedula:filter_cedula_list_user,nombre:filter_nombre_list_user} | orderBy:'nombre'">
+                                <td>{{($index+1)}}</td>
+                                <td>{{user.nombre}}</td>
+                                <td>
+                                    {{user.jefe}}
+                                </td>
+                                <td class="center-align">
+                                    <i ng-click="delete_list_user(user);" title="Borrar de la lista"
+                                        class="icon-trash-empty red-text"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="position-relative d-flex justify-content-between align-items-center"
+                style="margin-bottom: 15px;">
+                Asignar un Jefe:
+                <form class="form-input-icon-new" method="post" ng-submit="search_user(user_name)" autocomplete="off">
+                    <input ng-model="user_name" ng-change="user_name=user_name.toLowerCase()" type="text"
+                        class="margin border-none gray-input" placeholder="Cedula, Usuario o Nombre">
+                    <i ng-click="search_user(user_name)" class="icon-search"></i>
+                </form>
+            </div>
+            <div ng-show="users.length>0" class="row"
+                style="overflow: auto;height: auto;max-height: 20vh !important;margin-bottom: 15px;">
+                <table class="striped table-bordered white">
+                    <thead>
+                        <tr class="default-background white-text">
+                            <th class="border-none">
+                                <input type="text" ng-model="filter_name_list_boss" class="margin border-none w-auto"
+                                    style="height: auto;font-size: 13px;" placeholder="Nombre">
+                            </th>
+                            <th class="border-none">
+                                <input type="text" ng-model="filter_cargo_list_boss" class="margin border-none w-auto"
+                                    style="height: auto;font-size: 13px;" placeholder="Cargo">
+                            </th>
+                            <th class="border-none">
+                                Asignar
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            ng-repeat="user in users | filter:{nombre:filter_name_list_boss,cargo:filter_cargo_list_boss} | orderBy:'nombre'">
+                            <td>{{user.nombre}}</td>
+                            <td>{{user.cargo}}</td>
+                            <td class="center-align">
+                                <i ng-click="select_user_boss(user);" title="Asignar Jefe"
+                                    class="icon-check-2 green-text" style="font-size: 16px;"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

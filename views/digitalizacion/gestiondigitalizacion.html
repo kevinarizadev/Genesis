@@ -1,0 +1,176 @@
+<div>
+    <div class="row">
+      <div class="col l12 m12 s12">
+        <div class="card">
+          <div class="card-content">
+            <h5 style="display: flex;"><strong>Listado De Rechazo</strong></h5>
+          </div>
+          <div class="divider"></div>
+          <div class="card-content clearfix">
+            <div class="col s12">
+                <div class="black-text title-panel ng-binding" style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+                     <span><strong>CANTIDAD</strong>: <strong>{{cantidad}}</strong></span> 
+                    <form>
+                        <div class="input-field col s12" style="float: right;">
+                          <input id="buscarautaa" type="text"  ng-model="val" ng-keyup="filter(val)" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                          <label for="buscarautaa">Buscar:</label>
+                        </div>
+                      </form>
+                  </div>
+  
+            </div>
+            <table class="responsive-table striped table-bordered" align="center" id="anexos">
+              <thead align="center">
+                <tr>
+                  <td class="center-align"><strong>#</strong></td>
+                  <td class="center-align"><strong>DOCUMENTO AFILIADO</strong></td>
+                  <td class="center-align"><strong>NOMBRE AFILIADO</strong></td>
+                  <td class="center-align"><strong>FUNCIONARIO</strong></td>
+                  <td class="center-align"><strong>FECHA CARGUE</strong></td>
+                  <td class="center-align"><strong>TIPO DOCUMENTAL</strong></td>
+                  <td class="center-align"><strong>MOTIVO DE RECHAZO</strong></td>
+                  <td class="center-align"><strong>RECHAZADO POR</strong></td>
+                  <td class="center-align"><strong>OPCIÓN</strong></td>
+                </tr>
+              </thead>
+              <tbody style="height: 40%; overflow: scroll;">
+                <tr ng-repeat="listarinfo in informacion | inicio: currentPage * pageSize | limitTo: pageSize | filter:{ nombre:val}"
+                  ng-show="MostarDatos">
+                  <td class="center-align">{{($index + 1)+(currentPage * pageSize)}} </td>
+                  <td class="center-align">{{listarinfo.tipo_documento}} - {{listarinfo.documento}}</td>
+                  <td class="center-align">{{listarinfo.nombre}}</td>
+                  <td class="center-align">{{listarinfo.nombre_cargue}}</td>
+                  <td class="center-align">{{listarinfo.fecha_abjunto}}</td>
+                  <td class="center-align">{{listarinfo.tipo_documental}}</td>
+                  <td class="center-align">{{listarinfo.motivo_rechazo}}</td>
+                  <td class="center-align">{{listarinfo.rechazado}}</td>
+                  <td class="center-align">
+                    <div class="tooltip" style="cursor: pointer !important;">
+                      <i ng-click="VerDocumento(listarinfo.ruta)" class="Medium material-icons">collections</i>
+                      <span class="tooltiptext">Visualizar Documento</span>
+                    </div>
+                    <!-- <div class="tooltip" style="cursor: pointer !important;">
+                      <i ng-click="SubirDocumento('6',listarinfo)" class="Medium material-icons">cloud_upload</i>
+                      <span class="tooltiptext">Subir Documento</span>
+                    </div> -->
+                  </td>
+                </tr>
+                <tr ng-hide="MostarDatos">
+                  <td colspan="6" style="text-align: center;">
+                    <strong> NO SE ENCONTRO DATOS </strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <ul style="text-align: center;" class="pagination" ng-show="MostarDatos">
+              <li><button class="btn-floating btn waves-effect waves-light primary-button"  ng-disabled='currentPage == 0' class="btn" ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+              <li ng-repeat='page in pages'><button class="btn-floating btn waves-effect waves-light primary-button"  ng-disabled='currentPage == page.no - 1' class="btn" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+              <li><button class="btn-floating btn waves-effect waves-light primary-button"  ng-disabled='currentPage >= informacion.length/pageSize - 1' class="btn" ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div id="modalvisual" class="modal">
+      <div class="row margin">
+        <div id="Iframe-Master-CC-and-Rs" class="center-block-horiz no-padding" style="max-width: 100%;">
+          <div ng-if="!tipoImgPdf" ng-class="{'d-block':tipoImgPdf==false}" class="d-none responsive-wrapper 
+                     responsive-wrapper-wxh-572x612"
+            style="-webkit-overflow-scrolling: touch; overflow: auto;">
+            <iframe ng-src="{{file}}">
+              <p style="font-size: 110%;"><em><strong>ERROR: </strong>
+                  An &#105;frame should be displayed here but your browser version does not support &#105;frames.
+                </em>Please update your browser to its most recent version and try again.</p>
+            </iframe>
+          </div>
+          <div ng-if="tipoImgPdf" ng-class="{'d-block':tipoImgPdf==true}" class="d-none responsive-wrapper" style="height: auto;overflow: auto;">
+            <img ng-src="{{file}}">
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <style>
+      .material-icons {
+        font-size: 15px !important;
+      }
+      .tooltip .tooltiptext {
+        left: -98%;
+      }
+  
+      .tooltip .tooltiptext::after {
+        left: 80%;
+      }
+  
+      .d-none {
+        display: none;
+      }
+  
+      .d-block {
+        display: block !important;
+      }
+  
+      #Iframe-Master-CC-and-Rs {
+        max-width: 512px;
+        max-height: 100%;
+        overflow: hidden;
+      }
+  
+      /* inner wrapper: make responsive */
+      .responsive-wrapper {
+        position: relative;
+        height: 0;
+        /* gets height from padding-bottom */
+  
+        /* put following styles (necessary for overflow and scrolling handling on mobile devices) inline in .responsive-wrapper around iframe because not stable in CSS:
+      -webkit-overflow-scrolling: touch; overflow: auto; */
+  
+      }
+  
+      .responsive-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+  
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+  
+      /* padding-bottom = h/w as % -- sets aspect ratio */
+      /* YouTube video aspect ratio */
+      .responsive-wrapper-wxh-572x612 {
+        padding-bottom: 107%;
+      }
+  
+      /* general styles */
+      /* ============== */
+      .set-border {
+        border: 5px inset #4f4f4f;
+      }
+  
+      .set-box-shadow {
+        -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+        -moz-box-shadow: 4px 4px 14px #4f4f4f;
+        box-shadow: 4px 4px 14px #4f4f4f;
+      }
+  
+      .set-padding {
+        padding: 40px;
+      }
+  
+      .set-margin {
+        margin: 30px;
+      }
+  
+      .center-block-horiz {
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+    </style>
+    
+  </div>

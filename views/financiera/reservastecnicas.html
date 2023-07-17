@@ -1,0 +1,192 @@
+<div class="row section-header" ng-controller="reservastecnicasController">
+    <h4 class="page-title">Reservas Tecnicas - Resolucion 4175 de 2014</h4>
+    <div class="card h550">
+        <div class="col s12 m12 s12">
+            <div class="card charts">
+                <div class="card-content">
+                    <div class="card-action">
+                        <div class="row">
+                            <div class="col s12">
+                                <form ng-submit="BuscarReserva()" class="ng-valid ng-dirty ng-valid-parse">
+                                    <div class="col m4 s12">
+                                        <div class="input-field col m12 s12">
+                                            <!-- <i class="material-icons prefix">view_list</i> -->
+                                            <label for="simple-select" class="active">Año</label>
+                                            <select class="select-chosen-eps" ng-model="anno" ng-change="obtenerperiodo()" id="simple-select" required>
+                        <option value="" selected disabled>SELECCIONAR</option>
+                        <option ng-value="{{an.anno}}" ng-repeat="an in annos">{{an.anno}}</option>
+                      </select>
+                                        </div>
+                                    </div>
+                                    <div class="col m4 s12">
+                                        <div class="input-field col m12 s12">
+                                            <!-- <i class="material-icons prefix">view_list</i> -->
+                                            <label for="simple-select" class="active">Periodo</label>
+                                            <select class="select-chosen-eps" ng-model="periodo" id=" simple-select" required>
+                        <option value="" selected disabled>SELECCIONAR</option>
+                        <option ng-value="{{pr.periodo}}" ng-repeat="pr in periodos">{{pr.periodo}}</option>
+                      </select>
+                                        </div>
+                                    </div>
+                                    <div class="col m2 s12">
+                                        <div class="input-field col m12 s12">
+                                            <center><button class="waves-effect waves-light btn-large white-text blue" type="submit">Buscar</button></center>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col s12">
+                                <!-- informacion basica del afiliado -->
+                                <div class="col s12" ng-hide="ver_descarga">
+                                    <table class="responsive-table table-bordered striped" style="height:100px;">
+                                        <thead>
+                                            <tr>
+                                                <th data-field="Consecutivo" class="center-align">#</th>
+                                                <th data-field="Nombre" class="center-align">Nombre</th>
+                                                <th data-field="Archivo Base" colspan="6" class="center-align">Archivo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="res in reservas">
+                                                <td class="center-align ng-binding">{{res.CODIGO}}</td>
+                                                <td class="center-align ng-binding">{{res.NUMERO}} - {{res.NOMBRE}}</td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="DescargaTxt(res)"><i
+                              style="font-size:large;" class="fa fa-file-text-o"></i></a></td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="DescargaXls(res)"><i
+                              style="font-size:large;" class="fa fa-file-excel-o"></i></a></td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="openmodal(res.NUMERO,1)"><i
+                              style="font-size:large;" class="fa fa-edit"></i></a></td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="openmodal(res.NUMERO,2)"><i
+                              style="font-size:large;" class="fa fa-eraser"></i></a></td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="Gentri(res)"><i
+                              style="font-size:large;" class="fa fa-refresh"></i></a></td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="modal_ver(res.NUMERO)"><i style="font-size:large;" class="fa icon-eye"></i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="col s12">
+                                        <div class="col s10">
+                                        </div>
+                                        <div class="col 2">
+                                            <a ng-click="Calacular()" class="waves-effect waves-light btn-small  white-text pink margin-bottom-10">Calcular</a>
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <center><b>Base Consolidada</b></center><br>
+                                    <table class="responsive-table table-bordered striped" style="height:100px;">
+                                        <thead>
+                                            <tr>
+                                                <th data-field="Consecutivo" class="center-align">#</th>
+                                                <th data-field="Nombre" class="center-align">Nombre</th>
+                                                <th data-field="Archivo Base" colspan="3" class="center-align">Archivo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="center-align ng-binding">1</td>
+                                                <td class="center-align ng-binding">Triangulos Consolidados</td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="DescargaXlsCon(res)"><i
+                              style="font-size:large;" class="fa fa-file-excel-o"></i></a></td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="GenCon(res)"><i
+                              style="font-size:large;" class="fa fa-refresh"></i></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="center-align ng-binding">2</td>
+                                                <td class="center-align ng-binding">Log Triangulos</td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="DescargaXlsLog(res)"><i
+                              style="font-size:large;" class="fa fa-file-excel-o"></i></a></td>
+                                                <td class="center-align ng-binding"><a style="cursor:pointer; color:black;" ng-click="GenCom(res)"><i
+                              style="font-size:large;" class="fa fa-refresh"></i></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="center-align ng-binding" colspan="2" style="font-weight: 700;">VALOR IBNR</td>
+                                                <td class="center-align ng-binding" colspan="2"><a style="color:black;">
+                                                  $
+                                                  {{IBNR | number:5}}</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="input-field col m12 s12">
+                                        <center><button class="waves-effect waves-light btn-large white-text pink" ng-click="reGenerarReserva()" type="button">Volver a Generar</button></center>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="modal_ver" class="modal">
+            <div class="modal-content">
+                <h4>Mostrar Ajustes</h4>
+                <br>
+                <br>
+                <div class="col s12 m-b">
+                    <table class="responsive-table table-bordered striped" style="height:100px;">
+                        <thead>
+                            <tr>
+                                <th data-field="Archivo Base" class="center-align">Llave</th>
+                                <th data-field="Archivo Base" class="center-align">Valor</th>
+                                <th data-field="Archivo Base" class="center-align">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr ng-repeat="ver in ver_ajustes">
+                                <td class="center-align ng-binding">{{ver.VALOR}}</td>
+                                <td class="center-align ng-binding">{{ver.LLAVE}}</td>
+                                <td class="center-align ng-binding">{{ver.ESTADO}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br>
+            <br>
+        </div>
+
+        <div id="modalafi" class="modal">
+            <div class="modal-content">
+                <h4>Actualizacion</h4>
+                <br>
+                <br>
+                <div class="col s12">
+                    <form id="busafi" ng-submit=c lass="ng-valid ng-dirty ng-valid-parse">
+                        <div class="col m4 s12 ">
+                            <div class="col s10">
+                                <div class="input-field col m12 s12">
+                                    <input id="buscar" ng-model="llave" ng-disabled="inactivenit" type="text" class=" ng-touched ng-dirty ng-valid-parse">
+                                    <label for="buscar" class="search-label active">Llave</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col m4 s12" ng-hide="Ocultar">
+                            <div class="col s10">
+                                <div class="input-field col m12 s12">
+                                    <input id="buscar" ng-model="valor" ng-disabled="inactivenit" type="text" class="ng-touched ng-dirty ng-valid-parse">
+                                    <label for="buscar" class="search-label active">Valor</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col m2 s12">
+                            <div class="input-field col m12 s12" ng-hide="Ocultar">
+                                <center><button class="waves-effect waves-light btn-large white-text pink" ng-click="ActualizaBase()">Guardar</button></center>
+                                <br>
+                            </div>
+                            <div class="input-field col m12 s12" ng-show="Ocultar">
+                                <center><button class="waves-effect waves-light btn-large white-text pink" ng-click="RestablecerValores()">Restablecer</button></center>
+                                <br>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,888 @@
+<div class="row">
+  <div class="row section-header" style="padding-bottom: 0px;">
+    <div class="col s12">
+      <div class="col s6 prod-title-div no-padding">
+        <h3 class="page-title">Plan de Capacitación</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m12 l12 magazine margin widgets-tabs">
+    <div class="card-panel widgets-tabs col l12">
+      <ul tabs reload="allTabContentLoaded">
+        <li class="tab col s3" style="cursor: pointer;"><a ng-click="paneladjuntos = false; paneldx = true; activedx = 'active final'; activead = 'none';" ng-class="activedx">Crear Plan</a></li>
+        <li class="tab col s3" style="cursor: pointer;" ng-click="listarAgenda()"><a ng-click="paneladjuntos = true; paneldx = false; activead = 'active final'; activedx = 'none';" ng-class="activead">Visualizar Plan</a></li>
+      </ul>
+      <div ng-show="paneldx" class="col no-padding" style="width: 100%;">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+                <div class="row">
+                  <div class="steper">
+                    <div class="step">
+                      <button type="button" class="btn btn-default btn-lg btn-step paso1 step-item">Evento</button>
+                    </div>
+                    <hr class="step-divider">
+                    <div class="step">
+                      <button type="button" class="btn btn-default btn-lg btn-step paso2 step-item">Asistentes</button>
+                    </div>
+                    <hr class="step-divider">
+                    <div class="step">
+                      <button type="button" class="btn btn-default btn-lg btn-step paso3 step-item">Finalizar</button>
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+                <div class="row">
+                  <!-- registro de actividad -->
+                  <div class="col s12 content-step1" ng-hide="inactivepaso1" style="min-height:480px;">
+                    <form ng-submit="wizardstep('paso1','next')" name="formevento" id="evento">
+                      <div class="step-content">
+                        <div class="card charts">
+                          <div class="row">
+                            <div class="card-content">
+                            <!-- linea 1 -->
+                              <div class="col s12">
+                                <div class="input-field col s2">
+                                  <label style=" margin-top: -20px;">Programación:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.programacion" required>
+                                    <option value="">Seleccionar</option>
+                                    <option value="1">Programado</option>
+                                    <option value="2">Imprevisto</option>
+                                  </select>
+                                </div>
+                                 <div class="input-field col s2">
+                                  <label style=" margin-top: -20px;">Evento:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.evento" required>
+                                    <option value="">Seleccionar</option>
+                                    <option value="P">Presencial</option>
+                                    <option value="V">Virtual</option>
+                                  </select>
+                                </div>
+                                <div class="input-field col s7">
+                                  <input id="tema" type="text" ng-model="agenda.tema" required>
+                                  <label for="tema">Tema:</label>
+                                </div>
+                              </div>
+                              <!-- linea 2 -->
+                              <div class="col s12">
+                                <div class="input-field col s2">
+                                  <label style=" margin-top: -20px;">Tipo Acividad:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.tipoactividad" ng-change="listarObjetivoActividad()" required>
+                                    <option value="">Seleccionar</option>
+                                    <option ng-repeat="lta in listtipoactividad" ng-value="lta.codigo">{{lta.nombre}}</option>
+                                  </select>
+                                </div>
+                                <div class="input-field col s4">
+                                  <label style=" margin-top: -20px;">Objetivo Actividad:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.objetivoactividad" required>
+                                    <option value="">Seleccionar</option>
+                                    <option ng-repeat="loa in listobjetivoactividad" ng-value="loa.codigo">{{loa.nombre}}</option>
+                                  </select>
+                                </div>
+                                <div class="input-field col s2">
+                                  <label style=" margin-top: -20px;">Seccional Solicitante:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.sedePrin" ng-change="listarAreas(agenda.sedePrin)" required>
+                                    <option value="">Seleccionar</option>
+                                    <option ng-repeat="sede in listsedes" ng-value="sede.codigo">{{sede.nombre}}</option>
+                                  </select>
+                                </div>
+                                 <div class="input-field col s2">
+                                    <label style=" margin-top: -20px;">Area Solicitante:</label>
+                                    <select class="select-chosen-eps" ng-model="agenda.areasolicita" required>
+                                      <option value="">Seleccionar</option>
+                                      <option ng-repeat="area in listareasxsedes" ng-value="area.codigo">{{area.nombre}}</option>
+                                    </select>
+                                </div>
+                              </div>
+                              <!-- linea 3-->
+                              <div class="col s12">
+                                <div class="input-field col s6">
+                                  <label style=" margin-top: -20px;">Objetivo Macro Estratégico:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.objetivoestrategico" ng-change="listarObjetivosEstrategicos()" required>
+                                    <option value="">Seleccionar</option>
+                                    <option ng-repeat="loe in listobjetivosestrategicos" ng-value="loe.codigo">{{loe.nombre}}</option>
+                                  </select>
+                                </div>
+                                <div class="input-field col s3">
+                                  <input id="fechaparseada" type="date" ng-model="agenda.fechaparseada" required >
+                                  <label style=" margin-top: -20px;">Fecha Programada:</label>
+                                </div>
+                                <div class="input-field col s1,1">
+                                  <input id="horasprogramada" type="text"  maxlength="4" numbers-only ng-model="agenda.horasprogramadas" required>
+                                  <label for="horasprogramada" >Hrs Programadas:</label>
+                                </div>
+                              </div>
+                              <!-- linea 4-->
+                              <div class="col s12">
+                                <div class="input-field col s2">
+                                  <label style=" margin-top: -20px; cursor:pointer; color:#00abc0;" ng-click="seleccionarFacilitador(agenda.tipofacilitador)">Tipo Facilitador:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.tipofacilitador" ng-change="seleccionarFacilitador(agenda.tipofacilitador)" required>
+                                    <option value="2">Externo</option>
+                                    <option value="1">Interno</option>
+                                  </select>
+                                </div>
+                                <div class="input-field col s2">
+                                  <input id="documentofacilitador" type="text" ng-model="agenda.documentofacilitador" ng-disabled="inactivefacilitador" required>
+                                  <label for="documentofacilitador" >Documento Facilitador:</label>
+                                </div>
+                                <div class="input-field col s3">
+                                  <input id="nombrefacilitador" type="text" ng-model="agenda.facilitador" ng-disabled="inactivefacilitador" required>
+                                  <label for="nombrefacilitador" >Nombre Facilitador:</label>
+                                </div>
+                                <div class="input-field col s1,5">
+                                  <label style=" margin-top: -20px;">Tipo Lugar:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.tipolugar" ng-change="seleccionarLugar()" required>
+                                    <option value="2">Externo</option>
+                                    <option value="1">Interno</option>
+                                  </select>
+                                </div>
+                                <div class="input-field col s3" ng-hide="inactivelugar">
+                                  <input id="Lugar" type="text" ng-model="agenda.lugarex" ng-required="requierelugarex">
+                                  <label for="Lugar" >Lugar del Evento:</label>
+                                </div>
+                                <div class="input-field col s3" ng-hide="!inactivelugar">
+                                  <label style=" margin-top: -20px;">Lugar del Evento:</label>
+                                  <select class="select-chosen-eps" ng-model="agenda.lugarin" ng-required="requierelugarin">
+                                    <option value="">Seleccionar</option>
+                                    <option ng-repeat="lle in listolugarevento" ng-value="lle.nombre">{{lle.nombre}}</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="step-option" style="position: absolute !important;  bottom: 0px !important;">
+                        <button type="submit" class="btn-floating btn-large waves-light green" style="margin-top: 7px; position: absolute; right: 10px;"><i class="material-icons dp48">done</i></button>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- registro de asistentes -->
+                  <div class="col s12 content-step2" ng-hide="inactivepaso2" style="min-height:480px;">
+                    <div class="step-content">
+                      <div class="col s12">
+                        <div class="card charts">
+                          <div class="card-content">
+                            <h5 style="text-align: center; font-size: xx-large; cursor:pointer" ng-click="verDpto('td')">Agendar por <i class="material-icons" style="font-size: xx-large; position: relative; top: 4px; left: -4px;">device_hub</i></h5>
+                          </div>
+                          <div class="card-action">
+                            <div class="row">
+                              <div class="col s12" ng-hide="inactivepanel">
+                                <div class="col s10 offset-s1" style="margin-top: 10px;">
+                                  <div class="col s6" style="margin-bottom: 15px; padding-right: 0px;" align="center">
+                                    <div class="cuadrado hovpanel" ng-click="verOpcionesAsistentes('A')">
+                                      <h5 style="text-align:center; height: 54px; padding-top: 15px;" class="colorblack">Area</h5>
+                                      <div class="divider"></div>
+                                      <div class="col s12" align="center" style="margin-top: 40px;">
+                                        <i class="material-icons prefix hovitem" style="font-size: -webkit-xxx-large;">people</i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col s6" style="margin-bottom: 15px; padding-right: 0px;" align="center">
+                                    <div class="cuadrado hovpanel" ng-click="verOpcionesAsistentes('I')">
+                                      <h5 style="text-align:center; height: 54px; padding-top: 15px;" class="colorblack">Individual</h5>
+                                      <div class="divider"></div>
+                                      <div class="col s12" align="center" style="margin-top: 40px;">
+                                        <i class="material-icons prefix hovitem" style="font-size: -webkit-xxx-large;">accessibility</i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col s12" ng-hide="inactivepanelareas">
+                                <div class="col s10 offset-s1" style="margin-top: 10px;">
+                                  <div class="input-field col s5">
+                                      <label style="margin-top: -20px;">Sedes:</label>
+                                      <select class="select-chosen-eps" ng-model="sede" required ng-change="listarAreas(sede)">
+                                        <option value="">Seleccionar</option>
+                                        <option ng-repeat="sede in listsedes" ng-value="sede.codigo">{{sede.nombre}}</option>
+                                      </select>
+                                  </div>
+                                  <div class="input-field col s5">
+                                      <input id="buscar" type="text" ng-model="searchareas" class="validate">
+                                      <label for="buscar" >Filtrar:</label>
+                                  </div>
+                                  <div class="col s12" style="padding-top: 45px;" ng-hide="inactiveareas">
+                                    <fieldset>
+                                      <legend>Areas <input type="checkbox" id="todas_areas" ng-click="marcarareas('#areas input:checkbox',allareas)" ng-model="allareas"/> <label style="padding-left: 31px; margin-left: 13px;" for="todas_areas">Todas</label></legend>
+                                      <div id="areas" class="row margin">
+                                        <div class="col s12 m3 areas" ng-repeat="area in listareasxsedes | filter:searchareas">
+                                          <div class="card" style="height: 130px;">
+                                            <div class="card-content">
+                                              <div class="col s10">
+                                                <input type="checkbox" id="checkbox{{area.codigo}}" name="{{area.codigo}}"/>
+                                                <label for="checkbox{{area.codigo}}"></label>
+                                              </div>
+                                              <div class="col s2">
+                                                <i style="font-size: xx-large; position: absolute; top: 9px; right: 9px;" class="zmdi zmdi-puzzle-piece grey-text right"></i>
+                                              </div>
+                                              <br>
+                                              <h6 style="margin-top: 9px;">{{area.nombre}}</h6>
+                                              <div class="progress yellow lighten-4" style="position: absolute; bottom: 0px;  margin-top: 0px; left: 0px;">
+                                                <div class="determinate yellow darken-2" style="width: 100%"></div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </fieldset>
+                                    <div class="col s12" style="margin-top: 13px;">
+                                      <center>
+                                        <button class="waves-effect waves-light btn-large white-text" type="button" ng-click="agendarAsistentes('area','areas',sede)">Agendar</button>
+                                      </center>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col s12" ng-hide="inactivepanelindividual">
+                                <div class="input-field col s3">
+                                    <label style=" margin-top: -20px;">Sedes:</label>
+                                    <select class="select-chosen-eps" ng-model="sede2" ng-change="listarAreas(sede2)" required>
+                                      <option value="">Seleccionar</option>
+                                      <option ng-repeat="sede in listsedes" ng-value="sede.codigo">{{sede.nombre}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-field col s3">
+                                    <label style=" margin-top: -20px;">Areas:</label>
+                                    <select class="select-chosen-eps" ng-model="area" ng-change="listarAsistentes()" required>
+                                      <option value="">Seleccionar</option>
+                                      <option ng-repeat="area in listareasxsedes" ng-value="area.codigo">{{area.nombre}}</option>
+                                    </select>
+                                </div>
+                                <div class="input-field col s3">
+                                    <input id="buscar2" type="text" ng-model="searchasistente" class="validate">
+                                    <label for="buscar2" >Filtrar:</label>
+                                </div>
+                                <div class="col s10 offset-s1" style="padding-top: 45px;" ng-hide="inactivecardasistentes">
+                                  <fieldset>
+                                    <legend>Asistentes <input type="checkbox" id="todas_individual" ng-click="marcarareas('#individual input:checkbox',allasistentes)" ng-model="allasistentes"/> <label style="padding-left: 31px; margin-left: 13px;" for="todas_individual">Todas</label></legend>
+                                    <div id="individual" class="row margin">
+                                      <div class="col s12 m3 areas" ng-repeat="asist in listasistentes | filter: searchasistente">
+                                        <div class="card" style="height: 160px;">
+                                          <div class="card-content">
+                                            <div class="col s10">
+                                              <input type="checkbox" id="checkbox{{asist.codigo}}" name="{{asist.codigo}}"/>
+                                              <label for="checkbox{{asist.codigo}}"></label>
+                                            </div>
+                                            <div class="col s2">
+                                              <i style="font-size: xx-large; position: absolute; top: 9px; right: 9px;" class="material-icons grey-text right">accessibility</i>
+                                            </div>
+                                            <br>
+                                            <h6 style="margin-top: 9px;">{{asist.nombre}} <br/><small>{{asist.cargo}}</small></h6>
+                                            <div class="progress yellow lighten-4" style="position: absolute; bottom: 0px;  margin-top: 0px; left: 0px;">
+                                              <div class="determinate yellow darken-2" style="width: 100%"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                  <div class="col s12" style="margin-top: 13px;">
+                                    <center>
+                                      <button class="waves-effect waves-light btn-large white-text" type="button" ng-click="agendarAsistentes('individual','individual',sede2)">Agendar</button>
+                                    </center>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="step-option">
+                      <!-- <a class="btn-floating btn-large waves-light back-step" ng-click="wizardstep('paso2','back')"><i class="material-icons dp48">keyboard_arrow_left</i></a> -->
+                      <a class="btn-floating btn-large waves-light green" style="margin-top: 7px; position: absolute; right: 10px;" ng-click="wizardstep('paso2','next')"><i class="material-icons dp48">done</i></a>
+                    </div>
+                  </div>
+                  <!-- Finalizar actividad -->
+                  <div class="col s12 content-step3" ng-hide="inactivepaso3" style="min-height:480px;">
+                    <div class="step-content">
+                      <div class="col s12">
+                        <!-- card de evento  -->
+                        <div class="col l4 m12 s12">
+                          <div class="card">
+                            <div class="card-content">
+                              <h5>Evento</h5>
+                            </div>
+                            <div class="card-action" style="z-index: auto; padding-left: 0px; padding-right: 0px;">
+                              <div class="row" ng-hide="cardempresarial2">
+                                <div class="card-content">
+                                  <div class="col s12">
+                                    <div class="card" style="position: absolute; top: 0px; left: 0; width: 100%;">
+                                      <div class="card-content" style="padding-left: 5px; padding-right: 5px; padding-bottom: 0px; padding-top: 0px; margin-bottom: 5px;  margin-top: 5px;">
+                                          <div class="foot4 circle" style="width: 80px; height: 80px; padding: 0px;">
+                                              <center style="font-size: -webkit-xxx-large; color: white;">{{infoevento.LetraTema}}</center>
+                                          </div>
+                                          <spam style="margin-left: 10px; font-size: xx-large;">{{infoevento.Actividad}}</spam>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col s12" style="margin-top: 42px;">
+                                  <div class="card-panel col s12">
+                                      <div class="col m12 s12">
+                                          <div class="collection">
+                                              <a href="javascript:void(0)" class="collection-item">Tema: <span style="color: darkgrey;">{{infoevento.Tema}}</span></a>
+                                              <a href="javascript:void(0)" class="collection-item">Fecha: <span style="color: darkgrey;">{{infoevento.Fecha}}</spam><span class="badge">{{infoevento.Horas}} Horas</span></a>
+                                              <a href="javascript:void(0)" class="collection-item">Lugar: <span style="color: darkgrey;">{{infoevento.Lugar}}</span></a>
+                                              <a href="javascript:void(0)" class="collection-item">Facilitador: <span style="color: darkgrey;">{{infoevento.Facilitador}}</span></a>
+                                              <a href="javascript:void(0)" class="collection-item">Area Solicitante: <span style="color: darkgrey;">{{infoevento.Area}}</span></a>
+                                              <a href="javascript:void(0)" class="collection-item">Objetivo: <span style="color: darkgrey;">{{infoevento.Objetivo}}</span></a>
+                                              <a href="javascript:void(0)" class="collection-item">Objetivo Estrategico: <span style="color: darkgrey;">{{infoevento.ObjetivoE}}</span></a>
+                                          </div>
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- card de asistentes  -->
+                        <div class="col l8 m12 s12">
+                          <div class="card">
+                            <div class="card-content">
+                              <h5>Asistentes</h5>
+                            </div>
+                            <div class="card-action">
+                              <div class="row">
+                                <div class="col s12">
+                                  <div class="row">
+                                    <div class="col l4 m6 s12" style="color: white;">
+                                      <div style="height: 78px;background: linear-gradient(to right, rgb(54, 122, 189) 26%, rgba(54, 122, 189, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                                        <div class="col l3 m3 s3">
+                                          <div><center><i style="font-size: 48px; margin-top: 15px;" class="large material-icons">event_note</i></center></div>
+                                        </div>
+                                        <div class="col l9 m9 s9" style="color: white;">
+                                          <center><p><strong>AGENDADOS</strong></p></center>
+                                          <center><h5 class="ng-binding">{{agendados}}</h5></center>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col l4 m6 s12">
+                                      <div style="height: 78px;background: linear-gradient(to right, rgb(136, 197, 66) 26%, rgba(136, 197, 66, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                                        <div class="col l3 m3 s3">
+                                          <div><center><i style="font-size: 48px;margin-top: 15px;color: white;" class="large material-icons">done</i></center></div>
+                                        </div>
+                                        <div class="col l9 m9 s9" style="color: white;">
+                                          <center><p><strong>CONFIRMADOS</strong></p></center>
+                                          <center><h5 class="ng-binding">{{confirmados}}</h5></center>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col l4 m6 s12" style="color: white;">
+                                      <div style="height: 78px;background: linear-gradient(to right, rgb(243, 165, 48) 26%, rgba(243, 165, 48, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                                        <div class="col l3 m3 s3">
+                                          <div><center><i style="font-size: 48px; margin-top: 15px; color: white;" class="large material-icons">not_interested</i></center></div>
+                                        </div>
+                                        <div class="col l9 m9 s9" style="color: white;">
+                                          <center><p><strong>AUSENTES</strong></p></center>
+                                          <center><h5 class="ng-binding">{{ausentes}}</h5></center>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col s12" style="max-height: 487px; overflow: auto;">
+                                  <div class="col s12" ng-repeat="area in agendadostotal">
+                                    <h6><strong>{{area.area}} ({{area.asistentes.length}})</strong></h6>
+                                    <div class="col l4 m3 s12" ng-repeat="asis in area.asistentes">
+                                      <div class="card">
+                                        <div class="card-content" style="padding-left: 5px; padding-right: 5px;">
+                                            <div class="foot4 circle" style="width: 40px; height: 40px; padding: 0px;">
+                                              <center style="font-size: x-large; color: white;">{{asis.LetraAsistente}}</center>
+                                            </div>
+                                            <spam style="margin-left: 10px;">{{asis.Asistente}}</spam>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <a href="javascript:void(0)" style="posicion:absolute; button:0px; right:0px" ng-hide="inactivepag" ng-click="obtenerpaginacion(consecutivo,numero,paginacion)">Ver mas</a>
+                                  <div class="col s12" ng-hide="!inactiveasistentes">
+                                    <h6>{{mensaje}}</h6>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- carta de tablas adicionales -->
+                      </div>
+                    </div>
+                    <div class="step-option">
+                      <a class="btn-floating btn-large waves-light back-step" ng-click="wizardstep('paso3','back')" ><i class="material-icons dp48">keyboard_arrow_left</i></a>
+                      <a class="btn-floating btn-large waves-light green" style="margin-top: 7px; position: absolute; right: 10px;" ng-click="wizardstep('paso3','finish')" ><i class="material-icons dp48">done_all</i></a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ng-show="paneladjuntos" class="col no-padding" style="width: 100%;">
+        <div class="col no-padding" style="width: 100%;">
+          <div class="col s12">
+            <div class="card">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col m12 s12">
+                      <div class="col m12 s12" style="margin-top: 0px; margin-bottom: 5px;">
+                        <h5><strong>Agenda ({{listagendas.length}})</strong></h5>
+                        <div class="col s12 search-top-bar hide-on-med-and-down">
+                          <form>
+                            <i class="material-icons prefix" style="top: 7px; right: 181px;">search</i>
+                            <input type="search" id="search" ng-model="buscar" style="background-color: #e0e0e0 !important;" class="foot4 autocomplete search-top-bar-input z-depth-2" autocomplete="off" placeholder="Buscar evento">
+                          </form>
+                        </div>
+                      </div>
+                      <div class="collection" style="height: 450px; overflow: auto;">
+                          <a ng-repeat="age in listagendas | filter:buscar" href="javascript:void(0)" class="collection-item" ng-click="verDetalle(age.consecutivo,age.ubicacion,'1')"># {{age.consecutivo}} Tema: <span style="color: darkgrey;">{{age.Tema}}</span> <span class="badge">{{age.Fecha}}</span></a>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="modalevento" class="modal" style="width: 92%; min-height: max-content;">
+          <div class="modal-content">
+            <div class="col s12">
+              <!-- card de evento  -->
+              <div class="col l4 m12 s12">
+                <div class="card">
+                  <div class="card-content">
+                    <h5>Evento</h5>
+                  </div>
+                  <div class="card-action" style="z-index: auto; padding-left: 0px; padding-right: 0px; padding-bottom: 0px;">
+                    <div class="row" ng-hide="cardempresarial2">
+                      <div class="card-content">
+                        <div class="col s12" style="margin-top: 50px;">
+                          <div class="card" style="position: absolute; top: 0px; left: 0; width: 100%;">
+                            <div class="card-content" style="padding-left: 5px; padding-right: 5px; padding-bottom: 0px; padding-top: 0px; margin-bottom: 5px;  margin-top: 5px;">
+                                <div class="foot4 circle" style="width: 80px; height: 80px; padding: 0px;">
+                                    <center style="font-size: -webkit-xxx-large; color: white;">{{infoevento.LetraTema}}</center>
+                                </div>
+                                <spam style="margin-left: 10px; font-size: xx-large;">{{infoevento.Actividad}}</spam>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col s12" style="margin-top: 5px;">
+                        <div class="card-panel col s12">
+                            <div class="col m12 s12" style="width: 100%;">
+                                <div class="collection">
+                                    <a href="javascript:void(0)" class="collection-item">Tema: <span style="color: darkgrey;">{{infoevento.Tema}}</span></a>
+                                    <a href="javascript:void(0)" class="collection-item">Fecha: <span style="color: darkgrey;">{{infoevento.Fecha}}</spam><span class="badge">{{infoevento.Horas}} Horas</span></a>
+                                    <a href="javascript:void(0)" class="collection-item">Lugar: <span style="color: darkgrey;">{{infoevento.Lugar}}</span></a>
+                                    <a href="javascript:void(0)" class="collection-item">Facilitador: <span style="color: darkgrey;">{{infoevento.Facilitador}}</span></a>
+                                    <a href="javascript:void(0)" class="collection-item">Area Solicitante: <span style="color: darkgrey;">{{infoevento.Area}}</span></a>
+                                    <a href="javascript:void(0)" class="collection-item">Objetivo: <span style="color: darkgrey;">{{infoevento.Objetivo}}</span></a>
+                                    <a href="javascript:void(0)" class="collection-item">Objetivo Estrategico: <span style="color: darkgrey;">{{infoevento.ObjetivoE}}</span></a>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- card de asistentes  -->
+              <div class="col l8 m12 s12">
+                <div class="card">
+                  <div class="card-content">
+                    <h5>Asistentes</h5>
+                    <a ng-click="agregarasistentes()" style="position: absolute; top: 6px; right: 12px;"class="btn-floating btn-large waves-light primary-button"><i class="material-icons dp48">add</i></a>
+                  </div>
+                  <div class="card-action">
+                    <div class="row">
+                      <div class="col s12">
+                        <div class="row">
+                          <div class="col l4 m6 s12" style="color: white;">
+                            <div style="height: 78px;background: linear-gradient(to right, rgb(54, 122, 189) 26%, rgba(54, 122, 189, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                              <div class="col l3 m3 s3">
+                                <div><center><i style="font-size: 48px; margin-top: 15px;" class="large material-icons">event_note</i></center></div>
+                              </div>
+                              <div class="col l9 m9 s9" style="color: white;">
+                                <center><p><strong>AGENDADOS</strong></p></center>
+                                <center><h5 class="ng-binding">{{agendados}}</h5></center>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col l4 m6 s12">
+                            <div style="height: 78px;background: linear-gradient(to right, rgb(136, 197, 66) 26%, rgba(136, 197, 66, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                              <div class="col l3 m3 s3">
+                                <div><center><i style="font-size: 48px;margin-top: 15px;color: white;" class="large material-icons">done</i></center></div>
+                              </div>
+                              <div class="col l9 m9 s9" style="color: white;">
+                                <center><p><strong>CONFIRMADOS</strong></p></center>
+                                <center><h5 class="ng-binding">{{confirmados}}</h5></center>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col l4 m6 s12" style="color: white;">
+                            <div style="height: 78px;background: linear-gradient(to right, rgb(243, 165, 48) 26%, rgba(243, 165, 48, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                              <div class="col l3 m3 s3">
+                                <div><center><i style="font-size: 48px; margin-top: 15px; color: white;" class="large material-icons">not_interested</i></center></div>
+                              </div>
+                              <div class="col l9 m9 s9" style="color: white;">
+                                <center><p><strong>AUSENTES</strong></p></center>
+                                <center><h5 class="ng-binding">{{ausentes}}</h5></center>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col s12" style="max-height: 487px; overflow: auto;">
+                        <div class="col s12" ng-repeat="area in agendadostotal">
+                          <h6><strong>{{area.area}} ({{area.asistentes.length}})</strong></h6>
+                          <div class="col l4 m6 s12" ng-repeat="asis in area.asistentes">
+                            <div class="card">
+                              <i ng-click="eliminarAsistentes(asis.cedula,asis.consecutivo,asis.ubicacion)" class="prefix material-icons" style="color:red; position: absolute; top:5px; right:5px; cursor:pointer;">close</i>
+                              <div class="card-content" style="padding-left: 5px; padding-right: 5px;">
+                                  <div class="foot4 circle" style="width: 40px; height: 40px; padding: 0px;">
+                                    <center style="font-size: x-large; color: white;">{{asis.LetraAsistente}}</center>
+                                  </div>
+                                  <spam style="margin-left: 10px;">{{asis.Asistente}}</spam>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <a href="javascript:void(0)" style="posicion:absolute; button:0px; right:0px" ng-hide="inactivepag" ng-click="obtenerpaginacion(consecutivo,numero,paginacion)">Ver mas</a>
+                        <div class="col s12" ng-hide="inactiveasistentes">
+                          <h2><center>{{mensaje}}</center></h2>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- carta de tablas adicionales -->
+            </div>
+          </div>
+        </div>
+        <div id="modalasistentes" class="modal" style="width: 70%;">
+          <div class="modal-content">
+            <div class="col s12">
+              <div class="card charts">
+                <div class="card-content">
+                  <h5 style="text-align: center; font-size: xx-large; cursor:pointer" ng-click="verDpto('td')">Agendar por <i class="material-icons" style="font-size: xx-large; position: relative; top: 4px; left: -4px;">device_hub</i></h5>
+                </div>
+                <div class="card-action">
+                  <div class="row">
+                    <div class="col s12" ng-hide="inactivepanel">
+                      <div class="col s10 offset-s1" style="margin-top: 10px;">
+                        <div class="col s6" style="margin-bottom: 15px; padding-right: 0px;" align="center">
+                          <div class="cuadrado hovpanel" ng-click="verOpcionesAsistentes2('A')">
+                            <h5 style="text-align:center; height: 54px; padding-top: 15px;" class="colorblack">Area</h5>
+                            <div class="divider"></div>
+                            <div class="col s12" align="center" style="margin-top: 40px;">
+                              <i class="material-icons prefix hovitem" style="font-size: -webkit-xxx-large;">people</i>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col s6" style="margin-bottom: 15px; padding-right: 0px;" align="center">
+                          <div class="cuadrado hovpanel" ng-click="verOpcionesAsistentes2('I')">
+                            <h5 style="text-align:center; height: 54px; padding-top: 15px;" class="colorblack">Individual</h5>
+                            <div class="divider"></div>
+                            <div class="col s12" align="center" style="margin-top: 40px;">
+                              <i class="material-icons prefix hovitem" style="font-size: -webkit-xxx-large;">accessibility</i>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- <div class="col s4" style="margin-bottom: 15px; padding-right: 0px;" align="center">
+                          <div class="cuadrado hovpanel" ng-click="verOpcionesAsistentes2('B')">
+                            <h5 style="text-align:center; height: 54px; padding-top: 15px;" class="colorblack">Buscar</h5>
+                            <div class="divider"></div>
+                            <div class="col s12" align="center" style="margin-top: 40px;">
+                              <i class="material-icons prefix hovitem" style="font-size: -webkit-xxx-large;">search</i>
+                            </div>
+                          </div>
+                        </div> -->
+                      </div>
+                    </div>
+                    <div class="col s12" ng-hide="inactivepanelareas2">
+                      <div class="col s10 offset-s1" style="margin-top: 10px;">
+                        <div class="input-field col s5">
+                            <label style="margin-top: -20px;">Sedes:</label>
+                            <select class="select-chosen-eps" ng-model="sede3" required ng-change="listarAreas(sede3)">
+                              <option value="">Seleccionar</option>
+                              <option ng-repeat="sede in listsedes" ng-value="sede.codigo">{{sede.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="input-field col s5">
+                            <input id="buscar" type="text" ng-model="searchareas2" class="validate">
+                            <label for="buscar" >Filtrar:</label>
+                        </div>
+                        <div class="col s12" style="padding-top: 45px;" ng-hide="inactiveareas2">
+                          <fieldset>
+                            <legend>Areas <input type="checkbox" id="todas_areas2" ng-click="marcarareas('#areas2 input:checkbox',allareas2)" ng-model="allareas2"/> <label style="padding-left: 31px; margin-left: 13px;" for="todas_areas2">Todas</label></legend>
+                            <div id="areas2" class="row margin">
+                              <div class="col s12 m3 areas" ng-repeat="area in listareasxsedes | filter:searchareas2">
+                                <div class="card" style="height: 130px;">
+                                  <div class="card-content">
+                                    <div class="col s10">
+                                      <input type="checkbox" id="checkbox_{{area.codigo}}" name="{{area.codigo}}"/>
+                                      <label for="checkbox_{{area.codigo}}"></label>
+                                    </div>
+                                    <div class="col s2">
+                                      <i style="font-size: xx-large; position: absolute; top: 9px; right: 9px;" class="zmdi zmdi-puzzle-piece grey-text right"></i>
+                                    </div>
+                                    <br>
+                                    <h6 style="margin-top: 9px;">{{area.nombre}}</h6>
+                                    <div class="progress yellow lighten-4" style="position: absolute; bottom: 0px;  margin-top: 0px; left: 0px;">
+                                      <div class="determinate yellow darken-2" style="width: 100%"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </fieldset>
+                          <div class="col s12" style="margin-top: 13px;">
+                            <center>
+                              <button class="waves-effect waves-light btn-large white-text" type="button" ng-click="agendarAsistentes('area','areas2',sede3)">Agendar</button>
+                            </center>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s12" ng-hide="inactivepanelindividual2">
+                     <!--  <div class="input-field col s3">
+                          <label style=" margin-top: -20px;">Sedes:</label>
+                          <select class="select-chosen-eps" ng-model="sede4" ng-change="listarAreas(sede4)" required>
+                            <option value="">Seleccionar</option>
+                            <option ng-repeat="sede in listsedes" ng-value="sede.codigo">{{sede.nombre}}</option>
+                          </select>
+                      </div>
+                      <div class="input-field col s3">
+                          <label style=" margin-top: -20px;">Areas:</label>
+                          <select class="select-chosen-eps" ng-model="area2" ng-change="listarAsistentes2()" required>
+                            <option value="">Seleccionar</option>
+                            <option ng-repeat="area in listareasxsedes" ng-value="area.codigo">{{area.nombre}}</option>
+                          </select>
+                      </div> -->
+                      <div class="input-field col s3">
+                          <input id="buscar21" type="text" ng-model="searchasistente2" class="validate">
+                          <label for="buscar21" >Filtrar:</label>
+                      </div>
+                      <div class="col s10 offset-s1" style="padding-top: 45px;" ng-hide="inactivecardasistentes2">
+                        <fieldset>
+                          <legend>Asistentes <input type="checkbox" id="todas_individual2" ng-click="marcarareas('#individual2 input:checkbox',allasistentes2)" ng-model="allasistentes2"/> <label style="padding-left: 31px; margin-left: 13px;" for="todas_individual2">Todos</label></legend>
+                          <div id="individual2" class="row margin">
+                            <div class="col s12 m3 areas" ng-repeat="asist in listasistentes | filter: searchasistente2">
+                              <div class="card" style="height: 160px;">
+                                <div class="card-content">
+                                  <div class="col s10">
+                                    <input type="checkbox" id="checkbox_{{asist.codigo}}" name="{{asist.codigo}}"/>
+                                    <label for="checkbox_{{asist.codigo}}"></label>
+                                  </div>
+                                  <div class="col s2">
+                                    <i style="font-size: xx-large; position: absolute; top: 9px; right: 9px;" class="material-icons grey-text right">accessibility</i>
+                                  </div>
+                                  <br>
+                                  <h6 style="margin-top: 9px;">{{asist.nombre}} <br/><small>{{asist.cargo}}</small><br/><small>{{asist.seccional}}</small></h6>
+                                  <div class="progress yellow lighten-4" style="position: absolute; bottom: 0px;  margin-top: 0px; left: 0px;">
+                                    <div class="determinate yellow darken-2" style="width: 100%"></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+                        <div class="col s12" style="margin-top: 13px;">
+                          <center>
+                            <button class="waves-effect waves-light btn-large white-text" type="button" ng-click="agendarAsistentes('individual','individual2',1)">Agendar</button>
+                          </center>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="col s12" ng-hide="inactivepanelbuscar2">
+                      <form id="busafi2" class="row" ng-hide="inactivefinduser" ng-submit="buscarusuario(searchasistente2)" style="margin-bottom: 10px !important;">
+                        <div class="row">
+                          <div class="col s12">
+                            <div class="row">
+                              <div class="input-field col l10 m10 s10">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input id="with_icon" type="text" ng-model="searchasistente2" class="validate">
+                                <label for="with_icon">Buscar</label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                      <div class="col s10 offset-s1" style="padding-top: 45px;">
+                        <div class="col s8 offset-s2" ng-hide="tablausuario2">
+                          <table class="responsive-table striped table-bordered">
+                            <thead>
+                              <tr>
+                                <th style="text-align: center;">Documento</th>
+                                <th style="text-align: center;">Nombre</th>
+                                <th style="text-align: center;">Cargo</th>
+                                <th style="text-align: center;">Area</th>
+                                <th style="text-align: center;">Seleccionar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="us in usuarios">
+                                <td>{{us.cedula}}</td>
+                                <td>{{us.nombre}}</td>
+                                <td>{{us.cargo}}</td>
+                                <td>{{us.area}}</td>
+                                <td  align="center"><i ng-click="setFacilitador(us.cedula,us.nom)" style="cursor:pointer; position: relative; left: 40%;" class="material-icons">check</i></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modalfacilitador" class="modal" style="width: 70%; height: -webkit-fill-available;">
+    <div class="modal-content">
+      <div class="col s12">
+        <form id="busafi2" class="row" ng-hide="inactivefinduser" ng-submit="buscarusuario(finduser)" style="margin-bottom: 10px !important;">
+          <div class="row">
+            <div class="col s12">
+              <div class="row">
+                <div class="input-field col l10 m10 s10">
+                  <i class="material-icons prefix">account_circle</i>
+                  <input id="with_icon" type="text" ng-model="finduser" class="validate">
+                  <label for="with_icon">Buscar</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <!-- usuarios -->
+        <div class="col s8 offset-s2" ng-hide="tablausuario">
+          <table class="responsive-table striped table-bordered">
+            <thead>
+              <tr>
+                <th style="text-align: center;">Documento</th>
+                <th style="text-align: center;">Nombre</th>
+                <th style="text-align: center;">Cargo</th>
+                <th style="text-align: center;">Seleccionar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="us in usuarios">
+                <td>{{us.cedula}}</td>
+                <td>{{us.nombre}}</td>
+                <td>{{us.cargo}}</td>
+                <td  align="center"><i ng-click="setFacilitador(us.cedula,us.nom)" style="cursor:pointer; position: relative; left: 40%;" class="material-icons">check</i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+  .tab a:hover{
+    background-color: #2196f3 !important;
+    color: white !important;
+  }
+  /* Style the active class (and buttons on mouse-over) */
+  .activebtn-step, .activebtn-step:hover {
+    background-color: #2196f3 !important;
+    color: white !important;
+  }
+  .step-item{
+    height: 100px;
+    width: 100px;
+    border-radius: 100px;
+    padding: 0px;
+  }
+  .donebtn-step, .donebtn-step:hover {
+    background-color: #2196f3 !important;
+    color: white !important;
+  }
+  .steper{
+    width: 60%;
+    display: inline-flex;
+    text-align: center;
+    padding-bottom: 10px;
+    margin-left: 20%;
+  }
+  .step-divider{
+    width: 100%;
+    position: relative;
+    top: 30px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 20px;
+  }
+  .btn-step-content{
+    position: relative;
+    display: none;
+    height: calc(100% - 132px);
+    width: inherit;
+    overflow: visible;
+    margin-left: 41px;
+    margin-right: 24px;
+  }
+  .step-option{
+    background: transparent;
+    /*background: #eee;*/
+    height: 70px;
+    position: fixed;
+    bottom: -45px;
+    width: 100%;
+    margin-bottom: 6px;
+    left: 0px;
+    z-index: 2;
+  }
+  .back-step, .back-step:hover{
+    margin-top: 7px;
+    position: absolute;
+    right: 80px;
+    background: #ff4350 !important;
+  }
+  .btn-step{
+    background-color: rgba(0,0,0,.3);
+    color: white;
+  }
+
+  .hover-item:hover {background-color: rgba(221, 221, 221, 0.45);}
+  .hover-item:active {background-color: rgba(221, 221, 221, 0.45);}
+  .tabmenu>li:target>a {background-color: rgba(221, 221, 221, 0.45);}
+  .requerido{color:red !important;}
+  .tabactiva{background-color: rgba(206, 206, 206, 0.71);}
+  .colorblack{color: black;}
+  .itemsspam{
+    color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 2px 2px 3px 0px #ccc !important;
+    position: relative !important;
+    top: 5px !important;
+    left: 11px !important;
+    cursor: pointer;
+  }
+  .hovpanel:hover{
+    background: #32364c2b;
+    color: #ffa51b;
+    cursor: pointer;
+  }
+  .mayus{text-transform: uppercase;}
+    #header-fixed {
+        position: fixed;
+        top: 0px; display:none;
+    }
+    .cuadrado {
+      width: 25vh;
+      max-width: 240px;
+      height: 25vh;
+      max-height: 240px;
+      position: relative;
+      background: white;
+      box-shadow: 0 0 8px 1px #c7c7c7;
+    }
+
+
+</style>

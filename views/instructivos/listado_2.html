@@ -1,0 +1,87 @@
+<div id="instructivos">
+    <style>
+        .main-image {
+            animation: slide 1s ease;
+        }
+
+        @keyframes slide {
+            from {
+                max-height: 0;
+            }
+
+            to {
+                max-height: 1000px;
+            }
+        }
+        #instructivos .list_left>input {
+            padding: 0 20px;
+            box-sizing: border-box;
+            margin-bottom: 0;
+        }
+
+        html.ngdialog-open,
+        body.ngdialog-open {
+            overflow: hidden !important;
+        }
+        #instructivos+.ngdialog-close {
+            display: none;
+        }
+        .gray-input {
+            background-color: #e5e6e6 !important;
+        }
+    </style>
+    <div class="col s12 m6 l6 card">
+        <div class="ngdialog-close"></div>
+        <div class="card-content" style="display: flex;justify-content: start;padding: 10px 20px;">
+            <div class="form-input-icon-new">
+                <input type="text" class="margin border-none gray-input" ng-model="filtrar_instructivos" placeholder="Buscar Instructivo">
+            </div>
+            <h5 id="ngdialog1-aria-labelledby" style="margin-left: calc(50% - 250px);">Instructivos</h5>
+        </div>
+        <div class="card-action">
+            <div class="list_left scroll accordion_c">
+                <!-- <input type="text" placeholder="Buscar..." ng-model="textFil"> -->
+                <button class="accordion default-background"
+                    ng-click="(accordion.current != $index)? accordion.current = $index : accordion.current = null;accordion.current2 = null;accordion.current3 = null"
+                    ng-class="{ 'active': accordion.current == $index}"
+                    ng-repeat-start="level_1 in listado | filter:{$:filtrar_instructivos}">
+                    <i class="icon-plus"></i>
+                    <i class="icon-minus"></i>
+                    {{level_1.macro}}
+                </button>
+                <div class="panel main-image" ng-repeat-end>
+                    <button class="accordion default-background"
+                        ng-click="(accordion.current2 != $index)? accordion.current2 = $index : accordion.current2 = null;accordion.current3 = null"
+                        ng-class="{ 'active': accordion.current2 == $index}" ng-repeat-start="level_2 in level_1.data">
+                        <i class="icon-plus"></i>
+                        <i class="icon-minus"></i>
+                        {{level_2.area}}
+                    </button>
+                    <div class="panel main-image" ng-repeat-end>
+                        <button class="accordion default-background"
+                            ng-click="(accordion.current3 != $index)? accordion.current3 = $index : accordion.current3 = null;"
+                            ng-class="{ 'active': accordion.current3 == $index}"
+                            ng-repeat-start="level_3 in level_2.data">
+                            <i class="icon-plus"></i>
+                            <i class="icon-minus"></i>
+                            {{level_3.carpeta}}
+                        </button>
+                        <div class="panel main-image" ng-repeat-end>
+                            <a ng-repeat="level_4 in level_3.data" ng-click="viewPDF(level_4.url)"
+                                class="secondary-content">
+                                {{level_4.nombre}}
+                                <i class="icon-file-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="list_right">
+                <iframe ng-show="url!=''" ng-src="{{url}}"></iframe>
+                <a ng-show="url!=''" href="{{url}}" target="_blannk" style="position:absolute;bottom: 0;"><i
+                        class="icon-link-ext"></i></a>
+                <i ng-show="url==''" class="icon-file-pdf"></i>
+            </div>
+        </div>
+    </div>
+</div>

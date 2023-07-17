@@ -1,0 +1,152 @@
+<div class="row">
+   <div class="col s12 m4 l4 mailsParts" style="overflow-y: auto;max-height: 700px;">
+      <ul class="collection">
+         <li ng-repeat="hosp in listevolucionpaciente"
+            class="collection-item avatar waves-effect waves-pink form-evolu">
+            <img src="assets/images/medical.png" alt="katia" class="circle">
+            <span class="title"><strong>{{hosp.AFILIADO}}</strong></span>
+            <p class="truncate"><i>{{hosp.DIAGNOSTICO}}</i></p>
+            <p class="truncate"><i>Hosptalizacion: {{hosp.CLASIFICACION}}</i></p>
+            <span class="secondary-content"><small>{{hosp.FECHA}}</small></span>
+            <div class="form-tools">
+               <a class="btn-floating btn waves-effect waves-light primary-button"
+                  ng-click="mostrarModal('E',hosp.RENGLON,hosp.UBICACION)"><i
+                     class="material-icons dp48">assignment</i></a>
+                     
+               <a class="btn-floating btn waves-effect waves-light primary-button red" tooltip="Radicar Inconformidad"
+                  ng-click="mostrarModal('Q',hosp.RENGLON,hosp.UBICACION)" ng-hide="(hosp.QUEJAS == 'true')"><i
+                     class="material-icons dp48">priority_high</i></a>
+
+               <a class="btn-floating btn waves-effect waves-light primary-button green"
+                  tooltip="Resolver Inconformidad" ng-click="mostrarModal('solve',hosp.RENGLON,hosp.UBICACION)"
+                  ng-hide="!(hosp.QUEJAS == 'true') "><i class="material-icons dp48">queue</i></a> 
+                  <!-- (hosp.QUEJAS == 'true' && hosp.RESQUEJAS != '') -->
+
+               <!-- <a class="btn-floating btn waves-effect waves-light primary-button yellow"
+                  tooltip="Revisar Gestion" ng-click="mostrarModal('solve',hosp.RENGLON,hosp.UBICACION)"
+                  ng-hide="!(hosp.QUEJAS == 'true')"><i class="material-icons dp48">check</i></a> -->
+
+               <a ng-disabled="{{hosp.ESTADOGLOSA}}" ng-hide='esprocesado'
+                  class="btn-floating btn waves-effect waves-light primary-button"
+                  ng-click="mostrarModal('R',hosp.RENGLON,hosp.UBICACION)"><i class="material-icons dp48">replay</i></a>
+               <a ng-hide="{{hosp.EVENTOADV}}" ng-hide='esprocesado'
+                  class="btn-floating btn waves-effect waves-light primary-button"><i style="background-color: #ff3300;"
+                     class="material-icons dp48">new_releases</i></a>
+            </div>
+         </li>
+      </ul>
+   </div>
+
+   <div class="form-creaevolucio">
+      <div class="card card-default">
+         <div class="row">
+            <div class="card-header default-background white-text">
+               <div class="text-al switch">
+                  <strong>Crear Evolucion ( {{Afiliadoevo}} )</strong>
+                  <strong style="float: right;">Censo {{numerocenso}} </strong>
+               </div>
+            </div>
+            <div class="col s8">
+               <div class="input-list input-form">
+                  <div class="input-list input-view-column">
+                     <label for="normal8">Hospitalizacion</label>
+                     <select class="select-chosen-eps" ng-change="form()" id="hospitalizacion"
+                        ng-model="hospitalizacion">
+                        <option value="0">SELECCIONAR</option>
+                        <option ng-repeat="hp in listhospitalizaicon" ng-value="hp.CODIGO">{{hp.NOMBRE}}</option>
+                     </select>
+                  </div>
+
+                  <div class="input-list input-view-column" ng-hide="hdeDiagnostico">
+                     <label for="juzgado" class="active">Diagnostico</label>
+                     <input id="juzgado" style="cursor: pointer;" type="text" ng-value="diagnostico.seleccion"
+                        ng-click="mostrarModal('D','1')" title="{{diagnostico.seleccion}}" readonly>
+                  </div>
+
+                  <div class="input-list input-view-column">
+                     <input type="checkbox" id="checkboxavalorobjecion" ng-model="objecionchbox"
+                        ng-change="showDescripcionobjecion('A')" />
+                     <label for="checkboxavalorobjecion">Valor Objecion</label>
+                  </div>
+                  
+                  <!--  <i ng-click="showDescripcionobjecion('D')" class="material-icons medium" style="margin-left: 5%;cursor: pointer;" >message</i> -->
+               </div>
+
+               <div class="input-list input-form">
+                  <div class="input-list input-view-column">
+                     <input type="checkbox" id="checkboxadverso" ng-model="adverso" ng-change="showeventoadverso()" />
+                     <label for="checkboxadverso">Adverso</label>
+                  </div>
+                  <div class="input-list input-view-column" ng-hide="showeventoadv">
+                     <label for="normal8">Evento Adverso</label>
+                     <select class="select-chosen-eps" ng-change="ObtenerEvtDetalle()" id="eventoadv"
+                        ng-model="eventoadv">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="evtad in listeventoadv" ng-value="evtad.CODIGO">{{evtad.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-list input-view-column" ng-hide="showeventoadv">
+                     <label for="normal8">Relacion</label>
+                     <select class="select-chosen-eps" ng-change="form()" id="eventoadvdeta" ng-model="eventoadvdeta">
+                        <option value="0">SELECCIONAR</option>
+                        <option ng-repeat="evdeta in listeventoadvdeta" ng-value="evdeta.EADN_CODIGO">{{evdeta.EADC_NOMBRE}}
+                        </option>
+                     </select>
+                  </div>
+               </div>
+               
+
+               <div class="input-list input-form">
+                  <div class="input-list input-view-column">
+                     <input type="checkbox" id="remision" ng-model="remision"  />
+                     <label for="remision">Pendiente por Remision</label>
+                  </div>
+         </div>
+
+               <div class="input-list input-view-column">
+                  <label for="normal8">Descripcion</label>
+                  <textarea ng-model='Descripcionevo' id="bloquear" ng-value='Descripcionevo' ng-change="notpaastenot()"
+                     style="margin: 0px; width: 155%; height: 194px;"></textarea>
+               </div>
+            </div>
+
+            <div class="input-list input-form">
+               <div class="input-list input-view-column">
+                  <input type="checkbox" id="checkboxcerrarau" ng-model="cerrarau" ng-click="showfecha()" />
+                  <label for="checkboxcerrarau">Cerrar Auditoria</label>
+               </div>
+               <div class="input-list input-view-column">
+                  <div class="input-button">
+                     <button ng-hide='esprocesado' class="btn btn-primary" ng-click="insertarEvolucion()"
+                        ng-disabled="btnEvolucion" ng-model="validabtn">Crear Evolucion</button>
+                  </div>
+               </div>
+
+            </div>
+
+            <div class="input-list input-view-column" ng-hide="showfechacierre">
+               <label for="normal8">Motivo del Egreso</label>
+               <select class="select-chosen-eps" ng-change="form()" id="motivo_egreso" ng-model="motivo_egreso">
+                  <option value="0">SELECCIONAR</option>
+                  <option ng-repeat="lm in listMotivo" ng-value="lm.CODIGO">{{lm.NOMBRE}}</option>
+               </select>
+            </div>
+
+            <div class="input-list input-view-column" id="fechacierre" ng-hide="showfechacierre">
+               <label for="normal8">Fecha de Egreso</label>
+               <input id="normal8" ng-model="fecha_Cierre" type="date" class="validate">
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="fabs" style="margin-right: 5%;">
+      <!-- <a ng-click="Imprimir(Impri)" target="_blank" class="fab orange" tooltip="Imprimir"><i class="sec zmdi zmdi-print animated"></i></a> -->
+      <a ng-click="mostrarModal('K','1','1')" target="_blank" class="fab light-blue" tooltip="Entrevista"><i
+            class="sec zmdi zmdi-floppy animated"></i></a>
+      <a ng-click="mostrarModal('C','1','1')" target="_blank" class="fab red" tooltip="Chat"><i
+            class="prime zmdi animated rotateIn zmdi-comments"></i></a>
+   </div>
+
+
+</div>

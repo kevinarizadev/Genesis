@@ -1,0 +1,417 @@
+<div class="row">
+    <style>
+        #Iframe-Master-CC-and-Rs {
+            max-width: 512px;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        /* inner wrapper: make responsive */
+        .responsive-wrapper {
+            position: relative;
+            height: 0;
+            /* gets height from padding-bottom */
+
+            /* put following styles (necessary for overflow and scrolling handling on mobile devices) inline in .responsive-wrapper around iframe because not stable in CSS:
+    -webkit-overflow-scrolling: touch; overflow: auto; */
+
+        }
+
+        .responsive-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        /* padding-bottom = h/w as % -- sets aspect ratio */
+        /* YouTube video aspect ratio */
+        .responsive-wrapper-wxh-572x612 {
+            padding-bottom: 107%;
+        }
+
+        /* general styles */
+        /* ============== */
+        .set-border {
+            border: 5px inset #4f4f4f;
+        }
+
+        .set-box-shadow {
+            -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+            -moz-box-shadow: 4px 4px 14px #4f4f4f;
+            box-shadow: 4px 4px 14px #4f4f4f;
+        }
+
+        .set-padding {
+            padding: 40px;
+        }
+
+        .set-margin {
+            margin: 30px;
+        }
+
+        .center-block-horiz {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+
+
+        /* Ripple effect */
+        .ripple {
+            background-position: center;
+            transition: background 0.8s;
+        }
+
+        .ripple:hover {
+            background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%) center/15000%;
+        }
+
+        .ripple:active {
+            background-color: #484949;
+            background-size: 100%;
+            transition: background 0s;
+        }
+
+        /* Button style */
+        button {
+            border: none;
+            border-radius: 2px;
+            padding: 12px 18px;
+            font-size: 16px;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: white;
+            background-color: #2196f3;
+            box-shadow: 0 0 4px #999;
+            outline: none;
+        }
+
+        .botones {
+            height: calc(100vh - 143px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .botones>a {
+            margin: 40px;
+            height: 110px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            width: 20%;
+            border-radius: 70px;
+        }
+
+        .botones>a>i {
+            font-size: 3em;
+            margin-right: 0;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="date"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"],
+        input[type="date"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type=text]::-webkit-input-placeholder:after {
+            content: '*';
+            color: red;
+            vertical-align: top;
+            font-size: 10px;
+        }
+
+        label {
+            color: black;
+        }
+
+        .requerido {
+            color: red;
+        }
+
+        .normal {
+            color: black;
+        }
+
+        #modalsemana {
+            width: 80% !important;
+            max-height: 75% !important;
+
+        }
+
+        #modalcontrol {
+            width: 80% !important;
+            max-height: 75% !important;
+        }
+
+
+
+        .ftlc {
+            width: 20% !important;
+        }
+    </style>
+    <!-- 
+<div class="col s12 m12 l12 mt-5">
+    <div>
+        <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+            ng-click="vertabla()">tabla</button>
+    </div>
+</div> -->
+    <div class="row">
+        <div class="col l12 m12 s12">
+            <ul tabs="" reload="allTabContentLoaded"
+                class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content">
+                <li class="tab col l12" style="cursor: pointer;">
+                    <a ng-class="{ active: isSet(1) }" ng-click="setTab(1)" id="tab"
+                        class="col l12 large waves-effect waves-pink tabI">Tabla de seguimiento
+                    </a>
+                </li>
+                <li class="tab col l12" style="cursor: pointer;">
+                    <a ng-class="{ active: isSet(2) }" ng-click="setTab(2); cargar_datos()"
+                        class="col l12 large waves-effect waves-pink tabII">
+                        Validación codigo unico
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="foot4 divcardcustom">
+        <div class="text-al switch divcardcustom2" style="text-align: center;">
+            <div class="input-button">
+
+            </div>
+            <i ng-show="vistas != null" class="icon-left-open-2"
+                ng-click="(vistas==4)? cambiarVista(1) : cambiarVista()"
+                style="cursor: pointer;font-size: 13px;position: absolute;left: 0;">Atras</i>
+            <strong>{{titulo}} {{subtitulo}}</strong>
+
+        </div>
+    </div>
+
+
+
+
+    <div class="col l6 ml2 s12 right" ng-show="false">
+
+
+        <input type="text" class="margin border-none input-text-new" ng-model="buscar" placeholder="Buscar en la tabla">
+    </div>
+
+    <!-- 
+        <div class="col l12 ml2 s12 " ng-show="false" class="scrollDefault" style="overflow-y: auto">
+            <table class="responsive-table striped table-bordered display dataTable">
+                <thead>
+                    <tr>
+                        <th class="center-align">PERIODO CAPITACION</th>
+                        <th class="center-align">VAL. CAPITACION/MES/th>
+                        <th class="center-align">VAL_DES_ESPROPIO</th>
+                        <th class="center-align">RETROACTIVO</th>
+                        <th class="center-align">HOMONIMO</th>
+                        <th class="center-align">INCUMPLIMIENTO </th>
+                        <th class="center-align">NO RADICACION </th>
+
+                        <th class="center-align">RECOBROS</th>
+                        <th class="center-align">VAL CAPITACION MES FINAL</th>
+                        <th class="center-align">REG </th>
+                       
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in listacontrol | filter:buscar">
+                        <td class="center-align">{{item.NOMBRE}}</td>
+                        <td class="center-align">{{item.DOCUMENTO}}</td>
+                        <td class="center-align">{{item.IPS}}</td>
+                        <td class="center-align">{{item.FECHANOTI}}</td>
+                        <td class="center-align">{{item.ZONA}}</td>
+                        <td class="center-align">{{item.DESCRIPCION}}</td>
+                        <td class="center-align">{{item.TELEFONO}} </td>
+                        <td class="center-align">{{item.DIRECCION}} </td>
+                        <td class="center-align">{{item.FECHARETIRO}}</td>
+                        <td class="center-align">{{item.ESTADO}}</td>
+                  
+                    </tr>
+                </tbody>
+            </table>
+        </div> -->
+
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div ng-show="isSet(1)">
+        <div class="card-action" id="card-action">
+            <div class="input-field col l4 left" style="margin:0;">
+                <input id="normal1" type="text" class="validate" ng-model="buscar" ng-change="filter(buscar)"
+                    style="text-transform:uppercase">
+                <label for="normal" class="">Buscar en la tabla</label>
+            </div>
+
+            <table id="tabla_1" class="responsive-table striped display dataTable table-bordered"
+                style="width:99%; position: relative;">
+                <thead class="default-background" style="color:white;">
+                    <tr>
+                        <th class="center-align">PERIODO CAPITACION</th>
+                        <th class="center-align">VAL. CAPITACION/MES/th>
+                        <th class="center-align">DESCUENTO DE ESFUERZO PROPIO</th>
+                        <th class="center-align">RETROACTIVO</th>
+                        <th class="center-align">HOMONIMO</th>
+                        <th class="center-align">INCUMPLIMIENTO </th>
+                        <th class="center-align">NO RADICACION </th>
+
+                        <th class="center-align">RECOBROS</th>
+                        <th class="center-align">VAL CAPITACION MES FINAL</th>
+                        <th class="center-align">CANTIDAD REGISTRO </th>
+
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr style="cursor:pointer;"
+                        ng-repeat="item in listDatosTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+                        <td class="center-align">{{item.PER_CAPITACION}}</td>
+                        <td class="center-align">{{item.VAL_CAPITACIONMES}}</td>
+                        <td class="center-align">{{item.VAL_DES_ESFPROPIO}}</td>
+                        <td class="center-align">{{item.RETROACTIVO}}</td>
+                        <td class="center-align">{{item.HOMONIMO}} </td>
+                        <td class="center-align">{{item.INCUMPLIMIENTO}} </td>
+                        <td class="center-align">{{item.NORADICACION}}</td>
+                        <td class="center-align">{{item.RECOBROS}}</td>
+                        <td class="center-align">{{item.VAL_CAPITACIONMESFINAL}}</td>
+                        <td class="center-align">{{item.REG}}</td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin:0;position: absolute;left: 2%;">
+                <label for="normal" class="">Total de registros filtrados:
+                    {{listDatosTemp.length}}</label>
+            </div>
+            <div style="margin:0;position: absolute;right: 2%;">
+                <label for="normal" class="">Total de registros encontrados:
+                    {{listDatosTemp.length}}</label>
+            </div>
+            <ul style="text-align: center;padding-top: 20px;" class="pagination">
+
+                <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                        ng-click="paso('back')">&laquo;</button></li>
+
+                <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                        class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button>
+                </li>
+
+                <li><button ng-disabled='currentPage >= listDatosTemp.length/pageSize - 1'
+                        class="btn-floating default-background" ng-click="paso('next')">&raquo;</button></li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div ng-show="isSet(2)">  
+        <div class="row">
+            <div class="col s12" style="margin-top: 15px;">
+                <div class="col 12 center" style="margin: auto;display: contents;">
+                    <div class="switch" >
+
+                        <label for="medida" class="labelper">Ciudades sin estado unico</label>
+                        <label>
+                            <input type="checkbox" ng-change="Change_FiltarEstado(Ciudades_Estado == true ? 'S':'N')" ng-model="Ciudades_Estado"><span
+                                class="lever"></span>
+                        </label>
+                        <label for="medida" ng-click="Porfecha" class="labelper">Ciudades con estado unico</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div class="card-action" id="card-action">
+                <div class="input-field" style="margin:0;">
+                    <input id="normal1" type="text" class="validate" ng-model="buscar" ng-change="filter2(buscar)"
+                        style="text-transform:uppercase">
+                    <label for="normal" class="">Buscar en la tabla</label>
+                </div>
+                <div style="overflow-y: auto;max-height: 60vh;">
+                    <table id="tabla_1" class="responsive-table striped display dataTable table-bordered"
+                        style="width:99%; position: relative;">
+                        <thead class="default-background" style="color:white;">
+                            <tr>
+                                <th class="center-align">CIUDAD</th>
+                                <th class="center-align">DEPARTAMENTO</th>
+                                <th class="center-align" >ESTADO</th>
+                                <th class="center-align">NOMBRE </th>
+                                <th class="center-align">CAMBIAR ESTADO</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr style="cursor:pointer;"
+                                ng-repeat="item in listDatosTemp2 | inicio: currentPage2 * pageSize2 | limitTo: pageSize2">
+                                <td class="center-align">{{item.ciudad}}</td>
+                                <td class="center-align">{{item.depa}}</td>
+                                <td class="center-align">{{item.estado}}</td>
+                                <td class="center-align">{{item.nombre}}</td>
+
+                                <td class="center-align">
+                                    <div class="tooltip" >
+                                        <i ng-click="cambiarestado(item)"
+                                            style="cursor: pointer !important;"
+                                            class="Medium material-icons">arrow_forward</i>
+                                        <span class="tooltiptext">cambiar estado</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+      
+        <div style="margin:0;position: absolute;left: 2%;">
+            <label for="normal" class="">Total de registros filtrados:
+                {{listDatosTemp2.length}}</label>
+        </div>
+        <div style="margin:0;position: absolute;right: 2%;">
+            <label for="normal" class="">Total de registros encontrados:
+                {{listDatosTemp2.length}}</label>
+        </div>
+        <ul style="text-align: center;padding-top: 20px;" class="pagination">
+
+            <li><button ng-disabled='currentPage2 == 0' class="btn-floating default-background"
+                    ng-click="paso2('back')">&laquo;</button></li>
+
+            <li ng-repeat='page in pages2'><button ng-disabled='currentPage2 == page.no - 1'
+                    class="btn-floating default-background" ng-click='setPage2(page.no)'>{{page.no}}</button>
+            </li>
+
+            <li><button ng-disabled='currentPage2 >= listDatosTemp2.length/pageSize2 - 1'
+                    class="btn-floating default-background" ng-click="paso2('next')">&raquo;</button></li>
+
+        </ul>
+    </div>
+
+
+
+
+
+</div>

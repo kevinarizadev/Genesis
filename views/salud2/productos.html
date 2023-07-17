@@ -1,0 +1,422 @@
+<div>
+	<div> 
+		<div id="TourStep" ng-show="TourInit.active" class="card margin" style="margin: 1em!important;">
+			<div id="StepTriangle">
+				<div></div>
+			</div>
+			<div class="card-content">
+				<span class="card-title transparent"
+					style="font-size: 1.5em;line-height: normal;font-weight: 600;">{{tituloStep}}</span>
+				<p>{{descripcionStep}}</p>
+			</div>
+			<div class="card-action" style="display: flex;justify-content: flex-end;">
+				<small>{{Now+1}}/{{steps.length}}</small>
+				<a href="javascript:void(0)" ng-click="backStep()">{{btnBack}}</a>
+				<a href="javascript:void(0)" ng-click="nextStep();">{{btnNext}}</a>
+			</div>
+		</div>
+		<i id="ayuda" ng-if="mostra_formulario" ng-click="guideTour()" class="icon-help btn-floating"
+			style="position: fixed;bottom: 10px;right: 10px;z-index: 100000;
+	display: flex;justify-content: center;align-items: center;font-size: 1.5em;border: 1px solid #183a6f;padding: 9px;"></i>
+
+		<div id="my_menu" class="row section-header" style="background: #9897e81f;margin-bottom: 0">
+			<div class="col l12">
+				<ul class="left mailbox-custom-search list-inline"
+					style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+					<li>
+						<h5
+							style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+							Parametrización de Productos (EPRO)</h5>
+					</li>
+				</ul> 
+			</div>
+		</div>
+		<div class="container" style="width: 95%">
+			<div class="row">
+				<div class="col l12 m12 s12" ng-hide="mostra_formulario">
+					<div class="card inbox-element inbox-4">
+						<div class="row">
+							<div class="col s4 m4 l4" style="margin-left: 10px;border-radius: 12px;">
+								<form ng-submit="filter(val)">
+									<div class="input-field col s12">
+										<input id="buscarautaa" ng-change="filter(val)" ; type="text" ng-model="val">
+										<label for="buscarautaa" style="margin-left: 10px;">
+											<i class="icon-search-2"></i>
+											Filtrar:
+										</label>
+									</div>
+								</form>
+							</div>
+							<div class="responsive" style="padding:20px">
+								<table class="table table-bordered table-striped">
+									<thead class="white-text titulo">
+										<tr>
+											<th style="text-align:center;font-size: 14px">#</th>
+											<th style="text-align:center; width: 90px;font-size: 14px">NUMERO</th>
+											<th style="text-align:center;font-size: 14px">NOMBRE</th>
+											<th style="text-align:center;font-size: 14px">ESTADO</th>
+											<th style="text-align:center;font-size: 14px;">ACCIÓN</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr
+											ng-repeat="mda in mesasayudasTemp  | inicio: currentPage * pageSize | limitTo: pageSize">
+											<th>{{$index+1 + (currentPage * pageSize)}}</th>
+											<th>{{mda.NUMERO}}</th>
+											<td>{{mda.NOMBRE}}</td>
+											<td   class=" text-center" ng-style="{background:  [(mda.MARCA)=='ACTUALIZADO'?'#56b94942':'#fff']}">{{mda.MARCA}}</td>
+											<td ng-click="actualizar_productos(mda.NUMERO,mda.NOMBRE)"
+												style="text-align:center;">
+												<div class="tooltip" style="border-bottom: 0px !important;">
+													<span class="tooltiptext"
+														style="width: 120px;      background-color: #34446dc2;      border-radius :14px;      margin-top: -1px;        padding: 1px 0;">
+														Editar Producto
+													</span>
+													<i class="icon-cog-alt"
+														style="margin-top: -1px;font-size: 24px"></i>
+												</div>
+											</td>
+										</tr>
+										<tr ng-if="mesasayudasTemp.length==0">
+											<td colspan="7" style="text-align: center">
+												
+													<h5>No se ha encontrado Registros</h5>
+											
+											</td>
+
+										</tr>
+									</tbody>
+								</table>
+								<ul style="text-align: right;" class="pagination" ng-show="mesasayudasTemp.length!=0">
+									<li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+											ng-click="paso('back')">&laquo;</button></li>
+									<li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+											class="btn-floating default-background"
+											ng-click='setPage(page.no)'>{{page.no}}</button></li>
+									<li><button ng-disabled='currentPage >= mesasayudasTemp.length/pageSize - 1'
+											class="btn-floating default-background"
+											ng-click="paso('next')">&raquo;</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div ng-if="mostra_formulario" id="Editar_producto">
+					<div class="col l6 m12 s12 " ng-if="mostra_formulario">
+						<div class="card inbox-element inbox-4">
+							<div class="card-header default-background white-text ng-scope"
+								style="display: flex;text-align: center;justify-content: center;align-items: center;height: 70px;">
+								<button type="button" ng-click="atras()" class="btn-large waves-effect" style="position: absolute;
+							left: 11px;top: 8px;">
+									<i class="  icon-back"></i></button>
+								<strong style="margin-left: 95px;">DETALLE DE {{NOMBRE || uppercase}}</strong>
+							</div>
+							<form id="productos" class="productos_de" style="MARGIN-LEFT: 30PX;">
+								<br>
+								<div class=" col l12 m12 s12">
+									<div class="input-field col l4 m12 s12">
+										<input id="NUMERO" type="text" ng-model="productos.NUMERO" class="upper">
+										<label for="NUMERO" class="">Número</label>
+									</div>
+									<div class="input-field col l3 m12 s12">
+										<!-- <input id="ESTADO" type="text" ng-model="productos.ESTADO" class="upper"> -->
+										<label for="ESTADO" class="active">Estado</label>
+										<select class="select-chosen-eps" id="ESTADO" ng-model="productos.ESTADO"
+											style="height: auto;">
+											<option value="">SELECCIONAR</option>
+											<option value="A">ACTIVO</option>
+											<option value="I">INACTIVO</option>
+											<option value="R">RETIRADO</option>
+										</select>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<label for="NIVEL" class="active">Nivel de Complejidad</label>
+										<select class="select-chosen-eps" id="NIVEL"
+											ng-model="productos.NIVEL" style="height: auto;">
+											<option disabled value="">SELECCIONAR</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+										</select>
+									</div>
+								</div>
+								<br>
+								<div class=" col l11 m12 s12">
+									<div class="input-field col l12 m12 s12">
+										<input disabled id="CLASIFICACION" type="text" ng-model="productos.CLASIFICACION_NOMBRE"
+											class="upper">
+										<label for="CLASIFICACION" class="">Clasificación</label>
+										<i class="fontello-icon icon-attention-circled" ng-click="modal_clasificacion()"
+											style="font-size: 30px;position: absolute;top: 1px;right: 20px;cursor: pointer;">
+										</i>
+									</div>
+								</div>
+								<br>
+								<div class=" col l12 m12 s12">
+									<div class="input-field col l5 m12 s12">
+										<label for="TIPO_PROD" class="active">Tipo de Producto</label>
+										<select class="select-chosen-eps" id="TIPO_PROD" ng-model="productos.TIPO_PROD"
+											style="height: auto;">
+											<option disabled value="">SELECCIONAR</option>
+											<option value="A">AMBULATORIO</option>
+											<option value="D">DOMICILIARIO</option>
+											<option value="H">HOSPITALARIO</option>
+											<option value="U">URGENCIA</option>
+											<option value="T">TODAS</option>
+										</select>
+									</div>
+									<div class="input-field col l6 m12 s12">
+										<label for="CLASE" class="active">Clase</label>
+										<select class="select-chosen-eps" id="CLASE" ng-model="productos.CLASE"
+											style="height: auto;">
+											<option value="">SELECCIONAR</option>
+											<option value="A">AMBOS</option>
+											<option value="P">PYP</option>
+											<option value="N">NO APLICA</option>
+											<option value="C">RECUPERACION</option>
+										</select>
+									</div>
+								</div>
+								<br>
+								<div class=" col l12 m12 s12">
+									<div class="input-field col l3 m12 s12">
+										<label for="COPAGO" class="active">Copago</label>
+										<select class="select-chosen-eps" id="COPAGO" ng-model="productos.COPAGO"
+											style="height: auto;">
+											<option disabled value="">SELECCIONAR</option>
+											<option value="S">SI</option>
+											<option value="N">NO</option>
+										</select>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<input id="CANT_ANO" type="number" ng-model="productos.CANT_ANO" class="upper">
+										<label for="CANT_ANO" class="active">Cantidad por años</label>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<input id="CANT_MES" type="number" ng-model="productos.CANT_MES" class="upper">
+										<label for="CANT_MES" class="active">Cantidad por mes</label>
+									</div>
+								</div>
+								<br>
+								<div class=" col l12 m12 s12">
+									<div class="input-field col l3 m12 s12">
+										<label for="RECOBRO" class="active">Recobro</label>
+										<select class="select-chosen-eps" id="RECOBRO" ng-model="productos.RECOBRO"
+											style="height: auto;">
+											<option disabled value="">SELECCIONAR</option>
+											<option value="S">SI</option>
+											<option value="N">NO</option>
+										</select>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<input id="CANT_MAXIMA" type="number" ng-model="productos.CANT_MAXIMA"
+											class="upper">
+										<label for="CANT_MAXIMA" class="active">Cantidad Maxima</label>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<input id="CANT_MINIMA" type="number" ng-model="productos.CANT_MINIMA"
+											class="upper">
+										<label for="CANT_MINIMA" class="">Cantidad Minima</label>
+									</div>
+								</div>
+								<br>
+								<div class=" col l12 m12 s12">
+									<div class="input-field col l3 m12 s12">
+										<label for="POS" class="active">Pos</label>
+										<select class="select-chosen-eps" id="POS" ng-model="productos.POS"
+											style="height: auto;">
+											<option disabled value="">SELECCIONAR</option>
+											<option value="S">SI</option>
+											<option value="N">NO</option>
+										</select>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<input id="EDAD_MINIMA" type="number" ng-model="productos.EDAD_MINIMA"
+											class="upper">
+										<label for="EDAD_MINIMA" class="active">Edad Minima en Dias</label>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<input id="EDAD_MAXIMA" type="number" ng-model="productos.EDAD_MAXIMA"
+											class="upper">
+										<label for="EDAD_MAXIMA" class="">Edad Maxima en Dias</label>
+									</div>
+								</div>
+								<br>
+								<div class=" col l12 m12 s12">
+									<div class="input-field col l5 m12 s12">
+										<label for="GENERO" class="active">Genero</label>
+										<select class="select-chosen-eps" id="GENERO" ng-model="productos.GENERO"
+											style="height: auto;">
+											<option disabled value="">SELECCIONAR</option>
+											<option value="A">AMBOS</option>
+											<option value="F">FEMENINO</option>
+											<option value="M">MASCULINO</option>
+										</select>
+									</div>
+									<div class="input-field col l6 m12 s12">
+										<label for="ALTO_COSTO" class="active">Alto Costo</label>
+										<select class="select-chosen-eps" id="ALTO_COSTO"
+											ng-model="productos.ALTO_COSTO" style="height: auto;">
+											<option disabled value="">SELECCIONAR</option>
+											<option value="S">SI</option>
+											<option value="N">NO</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class=" col l12 m12 s12" style="padding:10px;text-align: center">
+										
+											<button disabled id="actualizar" class="btn" type="submit" ng-click="actualizar()"
+												style="margin-top: 10px;"><i class="icon-paper-plane"></i>Actualizar
+												Información</button>
+										
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="col l3 m12 s12 " ng-if="mostra_formulario" id="Clasificacion_alterna_div_completo">
+						<div class="card inbox-element inbox-4" style="height: 651px;margin-top:2px">
+							<div class="card-header default-background white-text ng-scope">
+								<div class="text-al switch" style="    padding: 21px;">
+									<strong>CLASIFICACIONES</strong>
+								</div>
+							</div>
+							<div style="margin: 0px;" class="row">
+								<div class="col l12 m4 s4">
+									<form>
+										<div class="input-field col l12" id="filtrar_clasificacion">
+											<input id="buscarautaa" type="text" ng-model="val2">
+											<label for="buscarautaa" style="margin-left: 10px;" class="">
+												<i class="icon-search-2"></i>
+												Filtrar:
+											</label>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div style="height: 481px;overflow-y: auto;    overflow-x: hidden;" id="Clasificacion_alterna">
+								<table style="cursor:pointer;" >
+									<thead >
+										<tr>
+											<td><b>CÓDIGO</b></td>
+											<td><b>NOMBRE</b></td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr id="DM{{cp.NUMERO}}" class="c-pointer"
+											ng-class="{'hover-item-list-agregar ': hovering}"
+											ng-mouseenter="hovering=true" ng-mouseleave="hovering=false"
+											ng-repeat="cp in clasificacion_alterna | filter: val2"
+											ng-show="cp.APARECER==0"
+											ng-click="selectClasificacion_alterna(cp.NUMERO,cp.NOMBRE);">
+											<td style="width:60px">{{cp.NUMERO}}</td>
+											<td>{{cp.NOMBRE}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="col l3 m12 s12 " ng-if="mostra_formulario" id="clasifi">
+						<div class="card inbox-element inbox-4" style="height: 653px;margin-top: 1px"
+							id="Clasificacion_alterna_selecionada_div2">
+							<div class="card-header default-background white-text ng-scope" style="    padding: 14px;">
+								<div class="text-al switch" style="    display: flex;
+							text-align: center;
+							justify-content: center;
+							align-items: center;">
+									<strong>CLASIFICACIONES ALTERNA</strong>
+								</div>
+							</div>
+							<div style="height: 526px;overflow: auto;" id="Clasificacion_alterna_selecionada_div1">
+								<table style="cursor:pointer;">
+									<thead >
+										<tr>
+											<td><b>CÓDIGO</b></td>
+											<td><b>NOMBRE</b></td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr id="DM{{cp.NUMERO}}" class="c-pointer"
+											ng-class="{'hover-item-list-eliminar ': hovering}"
+											ng-mouseenter="hovering=true" ng-mouseleave="hovering=false"
+											ng-repeat="cp in Clasificacion_alterna_selecionada"
+											ng-click="remove_selectClasificacion_alterna($index);">
+											<td style="width:60px">{{cp.NUMERO}}</td>
+											<td>{{cp.NOMBRE}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="row">
+								<div class=" col l12 m12 s12" style="padding:5px;text-align: center" ng-init="mostrar=true"
+									ng-mouseenter="mostrar=true" ng-mouseleave="mostrar=false" id="holi" >
+								
+										<button class="btn" type="submit" ng-click="confirmar()"
+											style="margin-top: 10px;">
+											<i class="icon-eject-1"></i></a>
+											<strong ng-show="mostrar==true">Confirmar</strong>
+										</button>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<style type="text/css">
+		.titulo {
+			background: #1A2E63;
+		}
+
+		html body.cyan-scheme .titulo {
+			background: #00abc0;
+		}
+
+		html body.blue-scheme .titulo {
+			background: #1565c0;
+		}
+
+		html body.green-scheme .titulo {
+			background: #558A2F;
+		}
+
+		html body.purple-scheme .titulo {
+			background: #6A1B99;
+		}
+
+		html body.yellow-scheme .titulo {
+			background: #FDA626;
+		}
+
+		html body.dark-scheme .titulo {
+			background: #111;
+		}
+
+		input#CLASIFICACION {
+			color: rgb(0, 0, 0) !important;
+		}
+
+		input[disabled] {
+			color: rgba(0, 0, 0, 0.6) !important;
+		}
+
+		.hover-item-list-agregar {
+			background-color: #56b9494d;
+		}
+
+		.hover-item-list-eliminar {
+			background-color: #ec5248b0;
+		}
+
+		i {
+			cursor: pointer;
+		}
+	</style>
+</div>

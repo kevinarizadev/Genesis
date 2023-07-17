@@ -1,0 +1,548 @@
+<div>
+    <i id="diagnosticos" ng-click="mostrardiagnosticos()" class="icon-stethoscope"
+        style="position: fixed;bottom: 10px;z-index: 99;
+    display: flex;justify-content: center;align-items: center;font-size: 1.5em;border: 1px solid #183a6f;padding: 9px;    background: #fff;margin-left:20px;box-shadow: 4px 7px 6px rgba(0, 0, 0, 0.3);">Diagnósticos</i>
+    <div class="row" style="    height: calc(100vh - 64px);
+    padding: 0;
+    margin-bottom: 0;
+    background-color: #1fc8db;
+    background-size: cover;
+    background-image: url(assets/images/Nacimientos/fondo_nacimiento.png);
+    position: relative;">
+        <div id="myDiv" class="col l12 m12 s12 no-padding" style="
+            height: calc(100vh - 64px);
+            overflow: auto;
+            width: 100%;
+            position: absolute;">
+            <div id="div1" class="margin" style="z-index:-1">
+                <div class=" dashboard-wrapper content-container" style=" 
+            margin: 0px;
+            height: calc(100vh - 64px);
+            display: flex;
+            width: 100%;">
+                    <div style="width: 510px; height:400px;       margin:auto;">
+                        <div class="">
+                            <div class=" card col l12 m12 s12"
+                                style="    border: 1px solid #66666659;    margin: -70px 0;    height: 514px;">
+
+                                <div class="cuadrito default-background" style="
+                        width: 95px;
+                        margin-left: 13px;
+                        position: absolute;
+                        z-index: 99;
+                        opacity: 0.9;
+                        top: -23px;
+                        border-radius: 3px;
+                        box-shadow: -2px 7px 10px rgba(32, 32, 73, 0.3);
+                    ">
+                                    <h4 class="white-text">
+                                        <div class="btn-panel"
+                                            style="display: flex;align-items: center;font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;">
+                                            <i ng-click="yearPrev()" class="icon-angle-left margin"></i>
+                                            <h6 style="font-weight: bold;" class="ng-binding">{{ano}}</h6>
+                                            <i ng-click="yearNext()" class="icon-angle-right"></i>
+                                        </div>
+                                    </h4>
+                                </div>
+
+                                <div id="container" ng-click="filterdepartamento()" style="margin: 0 auto">
+                                </div>
+
+                                <div class="row" style="    margin: 2px;">
+                                    <div class="col l8 m8 s8" style="    padding: 10px;
+                                        border: 1px solid #92c5e6;">
+                                        <p style="margin:-5px"><strong>Fuentes: </strong></p>
+                                        <p style="margin:-5px"><small>Poblacion BDUA corte 31 de diciembre del
+                                                {{ano-1}}</small> </p>
+                                        <p style="margin:-5px"><small><strong>Media Nacional = </strong>
+                                                {{cantidad_media | number}} <strong style="
+    font-size: 9px;
+">(Observatorio Nacional de Salud 2017)</strong></small>
+                                        </p>
+                                        <p style="margin:-5px"><small><strong>Total de Afiliado =
+                                                </strong> {{cantidad_nacional | number}}</small></p>
+                                        <p style="margin:-5px"><small><strong>Formula = </strong>
+                                                {{cantidad_nacional | number}} x 16.14 / 1000</small></p>
+                                    </div>
+                                    <div class="col l4 m4 s4" style="position:relative">
+                                        <i class="icon-down-big" ng-click="bajar_todo()" style="    border: 1px solid #92c5e6;
+                                               
+                                                padding: 6px;
+                                                position: absolute;
+                                                margin-top: 30px;
+                                                margin-left: 15px;
+                                                color: #098ac2;
+                                            ">Seccionales</i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="div2" class="row margin"
+                style="background:#fff;z-index: 9;position: relative;padding-bottom: 30%;padding-top: 4px;">
+                <div id="my_menu" class="col l12 section-header" style="    background: #9897e81f;">
+                    <ul class="left mailbox-custom-search list-inline"
+                        style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                        <li>
+                            <h5
+                                style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                                Gestión de Nacimientos</h5>
+                        </li>
+                        <li>
+                            <p style="  font-family: -webkit-body;
+                                    font-size: 19px;
+                                    line-height: 3px;
+                                    opacity: 0.7;">
+                                Total {{cantidad_total | number }} | Media {{cantidad_media | number}}
+                            </p>
+                        </li>
+                        <li>
+                            <div class="btn-panel"
+                                style="display: flex;align-items: center;font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                                <i ng-click="yearPrev()" class="icon-angle-left margin"></i>
+                                <h6 style="margin: 0 20px;font-weight: bold;" class="ng-binding"> {{(ano)}}</h6>
+                                <i ng-click="yearNext()" class="icon-angle-right"></i>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="icon-left-open-2" ng-click="mostrar_panel()" style="cursor: pointer;">Atras</i>
+
+                        </li>
+                    </ul>
+                </div>
+                <div class="container" style="width: 95% ;margin-bottom: -77px;">
+                    <div class="row margin" ng-show="mostrar==1">
+                        <ul style="position: relative;">
+                            <li ng-repeat="reg in Departamentos  | filter:  {CODIGO:filtrar}"
+                                style="position: relative;">
+                                <div class="flip" style="position: relative;" ng-hide="reg.CODIGO==0">
+                                    <div class="col s12 m6 l3 {{reg.CODIGO}}">
+                                        <div class="face front card card_front"
+                                            style="background: #1565c024; height: 585px;">
+                                            <div class="card-content">
+                                                <h6>{{reg.NOMBRE}}</h6>
+                                                <div style="border-bottom: 0.5px solid #fff;">
+                                                    <h5>
+                                                        {{reg.CANTIDAD | number}}
+                                                        <img src="assets/images/Nacimientos/broche.svg"
+                                                            class="icon-attach-5 right" style="width: 49px;
+                                                            margin-top: -35px;
+                                                            transition: all .2s ease-in-out;"></img>
+                                                    </h5>
+                                                    <p style="position: absolute;margin: -31px 67px;">
+                                                        <small>Nacimientos Totales</small>
+                                                    </p>
+                                                </div>
+
+                                                <div style="border-bottom: 0.5px solid #fff;">
+                                                    <h5>
+                                                        {{reg.PENDIENTES | number}}
+                                                    </h5>
+                                                    <p style="position: absolute;margin: -31px 67px;">
+                                                        <small>Pendientes</small>
+                                                    </p>
+                                                </div>
+                                                    
+                                                <div>
+                                                    <h5>
+                                                        {{reg.GESTIONADOS | number}}
+                                                    </h5>
+                                                    <p style="position: absolute;margin: -31px 67px;">
+                                                        <small>Gestionados</small>
+                                                    </p>
+                                                </div>
+
+                                                <div class="row">
+                                                    <p class="my_hover"
+                                                        ng-click="tendencia2(reg.CODIGO,reg.NOMBRE);mostrar_origen=true"
+                                                        style="cursor:pointer;border-top: 0.5px solid #fff;padding: 10px 0px;font-weight: 600;">
+                                                        Media Seccional
+                                                        <i class="icon-chart-bar"></i>
+                                                        <i class="icon-right-small" style=" margin-left: 54px;"></i>
+                                                    </p>
+                                                    <p class="my_hover"
+                                                        ng-click="filterMunicipio(reg.CODIGO,reg.NOMBRE,reg.CANTIDAD);"
+                                                        style="cursor:pointer;border-bottom: 0.5px solid #fff; border-top: 0.5px solid #fff;padding: 10px 0px;font-weight: 600;">
+                                                        Gestión por Municipio
+                                                        <i class="icon-location-outline"></i>
+                                                    </p>
+                                                </div>
+
+                                                <div ng-repeat="orig in Departamentos_origen | filter:reg.NOMBRE">
+                                                    <div class="progress teal deep-purple lighten-4">
+                                                        <div style="background:#1565c0 !important; "
+                                                            class="determinate deep-purple darken-2"
+                                                            ng-style="{width: [((orig.CANTIDAD/reg.CANTIDAD)*100)]+'%'}">
+                                                        </div>
+
+                                                    </div>
+                                                    <p style="margin-top:-17px;margin-bottom: 20px">
+                                                        <small style="font-size:13px;" ng-class="orig.CLASE">
+                                                            <i class=" icon-attach-4">
+                                                                {{ ((orig.CANTIDAD/reg.CANTIDAD)*100) | number:2}}%
+                                                            </i>
+                                                            del Total
+                                                            Seccional
+                                                        </small>
+                                                    </p>
+                                                    <p style="margin-top:-17px;margin-bottom: 20px">
+                                                        <small style="font-size:13px;" ng-class="orig.CLASE">
+                                                            <i class=" icon-database ">
+                                                                {{orig.CANTIDAD}}
+                                                            </i>
+                                                            {{orig.ORIGEN}}
+                                                        </small>
+                                                    </p>
+                                                    <!-- <small>{{ [((orig.CANTIDAD/reg.CANTIDAD)*100)] }}</small> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="face back card card_back"
+                                            style="background: #fff; height: 490px;transform: rotatey(118deg);display: none"
+                                            ng-click="tendencia2(reg.CODIGO,reg.NOMBRE);mostrar_origen=true">
+                                            <div class="card-content">
+                                                <div class="row" style="margin: 0px;">
+                                                    <h6>{{reg.NOMBRE}}</h6>
+                                                </div>
+                                                <div style="border-bottom: 0.5px solid rgb(21, 101, 192);margin-bottom: 5px;">
+                                                    <h5>
+                                                        {{reg.CANTIDAD | number}}
+                                                        <img src="assets/images/Nacimientos/broche.svg"
+                                                            class="icon-attach-5 right" style="width: 49px;
+                                                        margin-top: -35px;
+                                                        transition: all .2s ease-in-out;"></img>
+                                                    </h5>
+                                                    <p style="position: absolute;margin: -31px 67px;">
+                                                        <small>Nacimientos</small>
+                                                    </p>
+                                                </div>
+                                                
+                                                <div class="row" style="    margin: 0px;">
+                                                    <div id="{{reg.CODIGO}}"
+                                                        style="min-width: 310px; height: 400px; margin: 0 auto;    zoom: 0.7;">
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="    margin: 0px;">
+                                                    <p style="margin:-5px"><strong>Fuentes: </strong></p>
+                                                    <p style="margin:-5px"><small>Población BDUA</small> </p>
+                                                    <p style="margin:-5px"><small>Corte 31 de Diciembre
+                                                            del {{(ano-1)}}</small> </p>
+                                                    <p style="margin:-5px"><small><strong>Media Seccional = </strong>
+                                                        </small><small id="{{(reg.CODIGO*20)}}"></small></p>
+                                                    <p style="margin:-5px"><small><strong>Total de Afiliado =
+                                                            </strong></small><small id="{{(reg.CODIGO*10)}}"></small>
+                                                    </p>
+                                                    <p style="margin:-5px"><small><strong>Formula = </strong></small>
+                                                        <small id="{{(reg.CODIGO*30)}}"></small><small> x 16.14 /
+                                                            1000</small></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div class="row margin" ng-show="mostrar==2">
+                        <div class="col s11">
+                            <h6>{{departamento_nombre}}</h6>
+                        </div>
+                        <ul>
+                            <li ng-repeat="reg in Municipios  | filter:  {CODIGO:filtrar_municipio}">
+                                <div class="municipio col s12 m6 l3" style="cursor:pointer">
+                                    <div class="card" ng-click="filtertabla(reg.CODIGO,reg.NOMBRE,reg.CANTIDAD)"
+                                        ng-style="{'background':'rgba({{74}}, {{$index*12.75}}, {{156}}, {{0.19}})'}"
+                                        style="background: #ffe0b24f;    height: 155px;">
+                                        <!-- <div class="card default-background" ng-click="filtertabla(reg.CODIGO,reg.NOMBRE)" style=""> -->
+                                        <div class="card-content"
+                                            style="padding-top: 10px;padding-bottom: 0px;     margin: 2px;">
+                                            <h3 style="    margin: 9px;">
+                                                {{reg.CANTIDAD}}
+                                                <img ng-init="contar=(($index%4)+1)"
+                                                    src="assets/images/Nacimientos/{{contar}}.png" style="    margin: -18px !important;
+                                        width: 120px !important;" class="right">
+                                            </h3>
+
+                                            <p style="margin: -10px 0;">
+                                                <small>Nacimientos</small><br>
+                                                <small>Pendientes</small>
+                                            </p>
+                                            <div class="row">
+                                                <h6 style="font-weight: bolder;">{{reg.NOMBRE}}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                     <div class="col l12 m12 s12">
+                                        <div class="col l6 m6 s6">
+                                           <p style="margin: -10px 0;padding-bottom: 7px;text-align: center;">
+                                              <small><b>Legalizados:</b><br>
+                                                 {{reg.CANTIDAD_LEG}} - {{porcentajesGestionados(reg.CANTIDAD_LEG,reg.CANTIDAD_TOTAL)}}%
+                                              </small>
+                                           </p>
+                                        </div>
+                                        <div class="col l6 m6 s6">
+                                           <p style="margin: -10px 0;padding-bottom: 7px;text-align: center;">
+                                              <small><b>No Legalizados:</b><br>
+                                                 {{reg.CANTIDAD_NO}} - {{porcentajesGestionados(reg.CANTIDAD_NO,reg.CANTIDAD_TOTAL)}}%
+                                              </small>
+                                           </p>
+                                        </div>
+                                     </div>
+                                  </div>  
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="row margin" ng-show="mostrar==3">
+                        <div class="col s12 m12 l12" ng-init="filtrar=true">
+                           <h6 ng-click="filterdepartamento()">{{departamento_nombre}} / {{municipio_nombre}}</h6>
+                        </div>
+                        <div class="col s12 m12 l12" style="padding-top:15px;">
+                           <div class="col s4 m4 l4">
+                              <div class="col s12 m12 l12">
+                                 <i class="icon-search-2" ng-hide="verfiltrar" ng-click="verfiltrar=true;val='';filter('')"
+                                    style="top: 164px;cursor: pointer;">Filtrar</i>
+                                 <input id="buscarautaa" ng-show="verfiltrar"
+                                    style=" width: 300px;  margin-top: -25px; margin-bottom: -9px;" ng-change="filter(val)"
+                                    type="text" ng-model="val" placeholder="Filtrar Nacimiento"
+                                    class="ng-pristine ng-valid ng-touched">
+                                 <i ng-show="verfiltrar" ng-click="verfiltrar=false;val='';filter('')" class="icon-cancel-3"
+                                    style="margin-left: -30px;"></i>
+                              </div>
+                           </div>
+                           <div class="col s3 m3 l3">
+                              <div class="switch">
+                                 <label>
+                                    <span ng-class="{'activo':!check_option_estado}">Pendiente</span>
+                                    <input type="checkbox" ng-model="check_option_estado" 
+                                       ng-init="check_option_estado = false;"
+                                       ng-change="myFilter(check_option_estado);setPage(1)">
+                                    <span class="lever check-c"></span>
+                                    <span ng-class="{'activo':check_option_estado}">Gestionado</span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+
+                        <div class="col l12 m12 s12" style="height: 562px;">
+                            <div class="inbox-element inbox-4">
+                                <div class="row" ng-init="carga_listado_productos()">
+                                    <div class="responsive" style="padding:20px">
+                                        <table class="table table-bordered table-striped">
+                                            <thead class="white-text default-background">
+                                                <tr>
+                                                    <th style="text-align:center;font-size: 14px">#</th>
+                                                    <th style="text-align:center;font-size: 14px">DOCUMENTO DEL AFILIADO
+                                                    </th>
+                                                    <th style="text-align:center;font-size: 14px">NOMBRE DEL AFILIADO
+                                                    </th>
+                                                    <th style="text-align:center;font-size: 14px">REGIMEN</th>
+                                                    <th style="text-align:center;font-size: 14px">TELEFONO</th>
+                                                    <th style="text-align:center;font-size: 14px">CELULAR</th>
+                                                    <th style="text-align:center;font-size: 14px;">DIRECCIÓN</th>
+                                                    <th style="text-align:center;font-size: 14px;">ORIGEN</th>
+                                                    <th style="text-align:center;font-size: 14px;">ESTADO</th>
+                                                    <th style="text-align:center;font-size: 14px;">OPCIÓN</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="mda in mesasayudasTemp  | inicio: currentPage * pageSize | limitTo: pageSize"
+                                                    ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                                                    <td>{{$index+1 + (currentPage * pageSize)}}</td>
+                                                    <td>{{mda.tipodocumento}}--{{mda.documento}}</td>
+                                                    <td>{{mda.nombre}}</td>
+                                                    <td>{{mda.regimen}}</td>
+                                                    <td>{{mda.telefono}}</td>
+                                                    <td>{{mda.celular}}</td>
+                                                    <td>{{mda.direccion}}</td>
+                                                    <td>{{mda.origen}}</td>
+                                                    <td style="text-align: center;">{{mda.nombre_estado}}</td>
+                                                    <td>
+                                                        <div class="tooltip">
+                                                            <i ng-click="gestion(mda.tipodocumento,mda.documento,mda.codorigen,mda.origen)"
+                                                                class="fontello-icon  icon-cogs"
+                                                                style="font-size: 17px">
+                                                            </i>
+                                                            <span class="tooltiptext">Gestionar Información</span>
+                                                        </div>
+                                                        <div class="tooltip" ng-hide="iconGestion">
+                                                           <i ng-click="cambiarEstado(mda.documento,mda.ano,'L')"
+                                                              class="icon-ok-circled" style="font-size: 17px">
+                                                           </i>
+                                                           <span class="tooltiptext">Legalizado</span>
+                                                        </div>
+                                                        <div class="tooltip" ng-hide="iconGestion">
+                                                           <i ng-click="cambiarEstado(mda.documento,mda.ano,'N')"
+                                                              class="icon-cancel-circled-1" style="font-size: 17px">
+                                                           </i>
+                                                           <span class="tooltiptext">No Legalizado</span>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+                                                <tr ng-if="mesasayudasTemp.length==0">
+                                                    <td class="center-align" colspan="10">
+                                                        <h5>No se ha encontrado Registros</h5>
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <ul style="text-align: right;" class="pagination" ng-show="mesasayudasTemp.length!=0">
+                                            <li><button ng-disabled='currentPage == 0' class="btn" ng-click="paso('back')">&laquo;</button></li>
+                                            <li>
+                                                <small style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                                                    Página {{currentPage+1}} de {{(mesasayudasTemp.length/pageSize) | number:0}}
+                                                  </small>
+                                            </li>
+
+                                            <li><button ng-disabled='currentPage >= mesasayudasTemp.length/pageSize - 1' class="btn" ng-click="paso('next')">&raquo;</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        /* .card .card-content p {
+        margin: -6px !important; 
+        } */
+        .flip .card {
+            transition: 0.7s;
+        }
+
+        .flipped_back {
+            transform: rotatey(0deg) !important;
+        }
+
+        i.right {
+            position: absolute;
+            top: -2px;
+            right: 6px;
+            transform: rotate(-46deg);
+            font-size: 1.2em;
+        }
+
+        th {
+            border: none !important;
+        }
+
+        .municipio>.card:hover {
+            transform: scale(1.05);
+        }
+
+        i {
+            cursor: pointer;
+        }
+
+        .flip-box .flip-box-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* i.fontello-icon.icon-chart-bar-4.right:hover {
+            position: relative;
+            transform: scale(2);
+        } */
+
+        /* .highcharts-background {
+            fill: ;
+            stroke: #a4edba;
+            stroke-width: 2px;
+        } */
+
+
+        .flip {
+            -webkit-perspective: 800;
+
+        }
+
+        .flip .card.flipped {
+            -webkit-transform: rotatey(-180deg);
+
+        }
+
+        .flip .card {
+
+            -webkit-transform-style: preserve-3d;
+            -webkit-transition: 0.5s;
+        }
+
+        .flip .card .face {}
+
+        .flip .card .front {}
+
+        .flip .card .back {
+            -webkit-transform: rotatex(-180deg);
+        }
+
+        #my_menu {
+            transition: all 1s;
+        }
+
+        .my_fixed {
+            position: fixed;
+            padding-right: 24% !important;
+            width: 83%;
+            top: 64px;
+            left: 241px;
+            z-index: 9;
+            background: #fff !important;
+        }
+
+        .bajar {
+            padding-top: 110px !important;
+        }
+
+        @keyframes bouncing {
+            0% {
+                top: 100%;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            }
+
+            25% {
+                top: 105%;
+                box-shadow: 0 25px 25px rgba(0, 0, 0, 0.25);
+            }
+
+            50% {
+                top: 110%;
+                box-shadow: 0 50px 50px rgba(0, 0, 0, 0.1);
+            }
+
+            75% {
+                top: 105%;
+                box-shadow: 0 25px 25px rgba(0, 0, 0, 0.25);
+            }
+
+            100% {
+                top: 100%;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        p.my_hover:hover {
+            background: #fff;
+            color: black !important;
+            padding: 10px 4px !important;
+            box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        span.tooltiptext {
+            background: #bbc8ec !important;
+            color: #191919 !important;
+            border-bottom: 1px solid !important;
+        }
+    </style>
+</div>

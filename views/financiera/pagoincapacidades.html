@@ -1,0 +1,716 @@
+<div class="newdesing" style="position:relative" >
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Pago de Incapacidades</h5>
+      </li>
+    </ul>
+  </div>
+  <div class="row content-container elements mb-0">
+    <div class="row">
+      <!-- CONTENIDO -->
+      <div class="col m12 l12 s12">
+        <div class="card contentcard" style="min-height: 541px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Cargar Archivo Plano </small></h5>
+            </div>
+          </div>
+          <!-- SUBIDA INICIAL -->
+          <div class="col s12 m6 l6 mt-20">
+            <div class="row">
+              <div class="center">
+                <form>
+                  <div class="row">
+                    <div class="col s12 m12 l12">
+                      <div class="pad-20">
+                        <form class="form">
+                          <div class="file-upload-wrapper" data-text="Subir Archivo * ">
+                            <input name="file-upload-field" id="AM" type="file" class="file-upload-field" value="">
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+          <!-- DATOS DE LA SUBIDA -->
+          <div class="col s12 m6 l6 mt-20" ng-hide="json_csv2.length>0">
+            <div class="row">
+              <div class="center">
+                <form>
+                  <div class="row" >
+                    <div class="col l12 m12 s12">
+                      <img src="assets/images/upfile.svg" alt="imagen subir adjunto" style="height: 26em;">
+                    </div>
+                  </div>
+                  
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col l12 s12 m12" ng-show="json_csv2.length>0">
+            <div class="row" >
+              <div class="col m12 s12 s12" style="max-height: 15em; overflow: auto;">
+                <table class="table  table-bordered  table-striped striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">TIPO DOCUMENTO</th>
+                      <th style="text-align:center;">COTIZANTE</th>
+                      <th style="text-align:center;">FECHA INICIO</th>
+                      <th style="text-align:center;">FECHA FIN</th>
+                      <th style="text-align:center;">VALOR</th>
+                      <th style="text-align:center;">FECHA PAGO</th>
+                      <th style="text-align:center;">TIPO DOC APORTANTE</th>
+                      <th style="text-align:center;">DOC APORTANTE</th>
+                      <th style="text-align:center;" colspan="3">NUMERO DE AUTORIZACION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- var headers = ["TIPO_DOC", "DOCUMENTO", "FECHA_INICIO",
+                    "FECHA_FIN","NO_DOC_APORTANTE","NO_DOC_AAUTORIZACION"
+                     ]; -->
+                  <tr ng-repeat="r in json_csv2">
+                      <td style="text-align:center;"> {{r.TIPO_DOC}} </td>
+                      <td style="text-align:center;"> {{r.DOCUMENTO}} </td>
+                      <td style="text-align:center;"> {{r.FECHA_INICIO}} </td>
+                      <td style="text-align:center;"> {{r.FECHA_FIN}} </td>
+                      <td style="text-align:center;"> {{r.VALOR}} </td>
+                      <td style="text-align:center;"> {{r.FECHA_PAGO}} </td>
+                      <td style="text-align:center;"> {{r.TIPO_DOC_APO}} </td>
+                      <td style="text-align:center;"> {{r.DOCUMENTO_APO}} </td>
+                      <td style="text-align:center;" ng-init="partir_autorizacion( $index, r.NO_DE_AUTORIZACION)"> {{r.DOCUMENTO_INC}} </td>
+                      <td style="text-align:center;"> {{r.NUMERO_INC}} </td>
+                      <td style="text-align:center;"> {{r.UBICACION_INC}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s12 mt-20">
+                <div style="position: relative;text-align: center;" class="col s12">
+                  <a class="modal-action modal-close waves-effect waves-green btn" ng-click="Operacion_Kmov()">Generar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    .bt {
+      padding: 1em !important;
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .color_rojo {
+      background-color: red;
+      color: #fff
+    }
+
+    .color_verde {
+      color: green;
+    }
+
+    .rojo_tr {
+      background: #ff434c52 !important;
+    }
+
+    .icono_etiqueta {
+      right: 1em;
+      position: absolute;
+    }
+
+    .etiquita {
+      background: #e5e6e6;
+      border-radius: 1em;
+      padding-left: 1em;
+      position: relative;
+      margin: 1px;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .seleccion_contrato_t {
+      padding: 0.5em;
+      margin: 0px;
+    }
+
+    .seleccion_contrato {
+      margin: 0px;
+      padding: 0.5em 1.5em;
+      background: #e0e0e0;
+    }
+
+    .tabactiva {
+      background: #e5e6e6;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .verde {
+      background-color: #8BC34A !important;
+    }
+
+    .rojo {
+      background-color: #FF5722 !important;
+    }
+
+    .amarillo {
+      background-color: #FFC107 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 540px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+    .card-divider {
+      color: #FFC107;
+      width: 100%;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    div.columnas {
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+    .mt-20 {
+      margin-top: 20px;
+    }
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 128px;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    }
+
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input.input-text-new {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .tab-color {
+      background: #1565c033;
+    }
+
+    .tab-no-color {
+      background: #c5c7c7a6;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    div.columnas {
+      /* border-bottom: 1px solid #e5e6e6; */
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+    
+    .pad-20 {
+      padding: 2em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::before,
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::after {
+      right: -77px;
+      border-top-left-radius: .25rem !important;
+      border-bottom-left-radius: .25rem !important;
+    }
+
+    .content-box {
+      background-color: #f7f7f7;
+      border-bottom-right-radius: .50rem !important;
+      border-bottom-left-radius:
+        .50rem !important;
+      border-bottom: 30px solid #ebecec !important;
+      padding-top: 37px !important;
+      box-shadow:
+        none !important;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height:
+        43px;
+      background: #4daf7c;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* disabled */
+    .file-upload-wrapper2 {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper2:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper2:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height: 43px;
+      background: #919292;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper2:hover:before {
+      background: #919292;
+    }
+
+    .file-upload-wrapper2 input {
+      opacity: 0;
+      position:
+        absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: not-allowed !important;
+      width: 100%;
+    }
+  </style>
+</div>

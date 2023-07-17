@@ -1,0 +1,461 @@
+<div id="gestionaut">
+    <div class="row">
+        <div class="col s12 m12 l12 magazine margin widgets-tabs">
+            <div class="card" ng-if="afildata.length > 0">
+                <div class="card-content">
+                    <h5 style="display: flex;">Núcleo Familiar</h5>
+                </div>
+                <div class="divider"></div>
+                <div class="card-content clearfix">
+                    <blockquote style="border-left: 5px solid #000000 !important">
+                        Sr.(a) afiliado, seleccione el miembro del nucleo familiar del cual quiera realizar la solicitud de la autorizacion.
+                    </blockquote>
+                    <table class="highlight responsive-table bordered" align="center" id="tablanucleo"
+                        style="cursor: pointer !important;">
+                        <thead align="center">
+                            <tr>
+                                <td><strong>TIPO</strong></td>
+                                <td><strong>DOCUMENTO</strong></td>
+                                <td><strong>NOMBRE</strong></td>
+                                <td><strong>TIPO AFILIADO</strong></td>
+                            </tr>
+                        </thead>
+                        <tbody style="height: 40%; overflow: scroll;">
+                            <tr data-ng-repeat="data in afildata track by $index" ng-click="getAfiliado(data)">
+                                <td>{{data.TIPODOCUMENTO}}</td>
+                                <td>{{data.DOCUMENTO}}</td>
+                                <td>{{data.NOMBRECOMPLETO}}</td>
+                                <td>{{data.TIPO + (data.PARENTESCO ? '-':'') + data.PARENTESCO}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div ng-show="verformsolicitud" class="card-panel widgets-tabs col l12"
+                style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+                <div>
+                    <div class="col s12" style="margin-bottom: 15px">
+                        <div class="col s12">
+                            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                            <h5>Información del Afiliado
+
+                            </h5>
+                        </div>
+                        <div class="col s12">
+                            <table class="responsive-table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                                        <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                                        <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO</th>
+                                        <th data-field="UBICACION" class="center-align">UBICACION</th>
+                                        <th data-field="GENERO" class="center-align">GENERO</th>
+                                        <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                                        <th data-field="EDAD" class="center-align">EDAD</th>                                       
+                                        <th data-field="AFILIADO" class="center-align">
+                                            AFILIADO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                                        <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} -
+                                            {{infoafiliadoautedit.Documento}}
+                                        </td>
+                                        <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                                        <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                                        <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                                        <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                                        <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                                        <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                                            <span class="status purple"
+                                                style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                                        </td>
+                                        <td class="center-align">
+                                            <span class="status green">{{infoafiliadoautedit.Estado}}</span>
+                                        </td>                                      
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12">
+                    <div class="card-content" style="    display: flex;
+                    justify-content: space-between;
+                    align-items: center;margin-left: 20px;margin-right: 20px;">
+                        <p><b> Nueva Solicitud de Autorización</b></p>
+                    </div>
+                    <form ng-submit="saveSolicitud();">
+                        <div class="row" style="padding: 30px;">
+                            <!-- <div class="row">
+                                <div class="col s4">
+                                    <label for="tel" style="font-size: 14px;">Teléfono</label>
+                                    <input id="tel" type="text" ng-model="solitudAfiliado.telefono">
+                                </div>
+                                <div class="col s4">
+                                    <label for="cel" style="font-size: 14px;">Celular <span
+                                            style="color:red;">*</span></label>
+                                    <input required id="cel" type="tel" maxlength="10" max="10" ng-model="solitudAfiliado.celular">
+                                </div>
+                                <div class="col s4">
+                                    <label for="cel2" style="font-size: 14px;">Celular 2<span
+                                            style="color:red;">*</span></label>
+                                    <input required id="cel2" type="tel" maxlength="10" max="10" ng-model="solitudAfiliado.celular2">
+                                </div>
+                            </div> -->
+                            <!-- <div class="row">
+                                <div class="col s6">
+                                    <label for="email" style="font-size: 14px;">Correo electronico </label>
+                                    <input id="email" type="email" ng-model="solitudAfiliado.correo">
+                                </div>
+                                <div class="col s6">
+                                    <label for="direccion" style="font-size: 14px;">Direccion<span
+                                            style="color:red;">*</span></label>
+                                    <input  required id="direccion" type="tel" maxlength="50" max="50" ng-model="solitudAfiliado.direccion">
+                                </div>
+                            </div> -->
+                            <div class="row">
+                                <div class="col s6">
+                                    <label class="active gray-text">Departamento Residencia <span style="color:red;">*</span></label>
+                                          <select class="select-chosen-eps black-text" ng-model="solitudAfiliado.departamento_residencia"  ng-change="lista_municipio_change(solitudAfiliado.departamento_residencia)"> 
+                                            <option value="" ng-disabled="true">SELECCIONAR</option>
+                                            <option ng-repeat="dp in departamentoselect | orderBy:'NOMBRE'" value="{{dp.CODIGO}}">{{dp.NOMBRE}} - [{{dp.CODIGO}}]</option>
+                                         </select>
+                                 </div>
+                                 <div class="col s6">
+                                    <label class="active gray-text">Municipio Residencia <span style="color:red;">*</span></label>
+                                    <select class="select-chosen-eps black-text" ng-model="solitudAfiliado.municipio_residencia">
+                                            <option value="" ng-disabled="true">SELECCIONAR</option>
+                                              <option ng-repeat="mc in municipioselect | orderBy:'NOMBRE'" value="{{mc.CODIGO}}">{{mc.NOMBRE}} - [{{mc.CODIGO}}]</option>
+                                          </select>
+                                 </div>
+                            </div>
+                            <div class="row flex" style="color: #80868b;">
+                                <div class="col s12">
+                                    <label for="obsafiliado" class="textarea-label" style="font-size:14px"><span
+                                            style="color:red;">*</span> Utiliza este campo para darnos más detalle
+                                        de la solicitud. Ten en cuenta no incluir caracteres especiales como: &, %,
+                                        >¨</label>
+                                    <span style="float: right;">{{solitudAfiliado.observacion.length ? solitudAfiliado.observacion.length: '0'}}/500</span>
+                                    <textarea required id="obsafiliado" class="materialize-textarea"
+                                        ng-model="solitudAfiliado.observacion"
+                                        ng-keyup="FormatSoloTextoNumero('obsafiliado')"
+                                        style="padding-top: 0px; padding-bottom: 0px;" maxlength="500"></textarea>
+
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin: 1em; margin-top:0;margin-bottom: 0;">
+                                <label style="font-size: 14px;">
+                                    <p> Ten presente:</p>
+
+                                    <ol>
+                                        <li>Adjunta el documento de identidad, la Historia clínica y la orden médica.</li>                                        
+                                        <li> Verifica que los documentos que vas a adjuntar estén legibles y completos.</li>
+                                        <li> Solo puedes adjuntar un archivo en formato pdf y con un tamaño máximo de 15 megas.</li>                                        
+                                    </ol>
+                                </label>
+                            </div>
+
+                            <div class="row">
+                                <div class="col s12">
+                                    <label style="font-size: 14px;"><span style="color:red;">*</span> Soporte
+                                        solicitud</label>
+                                    <div class="input-field col m10 s12 w-100">
+
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <i class="icon-file-pdf"></i>
+                                                <input required type="file" name="adjunto" id="inputFileSolicitudAfi">
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input id="placeinputFileSolicitudAfi" class="file-path" type="text"
+                                                    placeholder="Adjuntar archivo">
+                                                <span ng-if="data.formato"
+                                                    ng-class="{'red-text': solitudAfiliado.solFile==null, 'green-text': solitudAfiliado.solFile!=null }">{{data.formato}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                                <div class="card-panel white-text teal lighten-2">
+                                    Al usar esta opción, se enviará la información de autorizaciones a tu número celular
+                                    y/o
+                                    correo electrónico registrado, entre 2 y 5 días hábiles, de acuerdo con la política
+                                    de
+                                    privacidad de Cajacopi EPS y la autorización de tratamiento dada a la misma.
+                                </div>
+
+                            </div> -->
+                            <div class="row text-center">
+                                <button type="submit" class="waves-effect waves-light btn-large white-text pink">
+                                    Enviar Solicitud</button>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+            </div>
+
+
+
+            <style>
+main {
+            padding-left:0px;
+        }
+
+       aside > ul{
+            display: none;
+        }
+
+                .tab a:hover {
+                    background-color: #ddd !important;
+                    color: white !important;
+                }
+
+                /* Style the active class (and buttons on mouse-over) */
+                .activebtn-step,
+                .activebtn-step:hover {
+                    background-color: #2196f3 !important;
+                    color: white !important;
+                }
+
+                .step-item {
+                    height: 100px;
+                    width: 100px;
+                    border-radius: 100px;
+                    padding: 0px;
+                }
+
+                .donebtn-step,
+                .donebtn-step:hover {
+                    background-color: #2196f3 !important;
+                    color: white !important;
+                }
+
+                .steper {
+                    width: 60%;
+                    display: inline-flex;
+                    text-align: center;
+                    padding-bottom: 10px;
+                    margin-left: 20%;
+                }
+
+                .step-divider {
+                    width: 100%;
+                    position: relative;
+                    top: 30px;
+                    margin-left: 0px;
+                    margin-right: 0px;
+                    margin-top: 20px;
+                }
+
+                .btn-step-content {
+                    position: relative;
+                    display: none;
+                    height: calc(100% - 132px);
+                    width: inherit;
+                    overflow: visible;
+                    margin-left: 41px;
+                    margin-right: 24px;
+                }
+
+                .step-option {
+                    background: #eee;
+                    height: 70px;
+                    position: absolute;
+                    bottom: -45px;
+                    width: 100%;
+                    margin-bottom: 6px;
+                    left: 0px;
+                    z-index: 2;
+                }
+
+                .back-step,
+                .back-step:hover {
+                    margin-top: 7px;
+                    position: absolute;
+                    right: 80px;
+                    background: #ff4350 !important;
+                }
+
+                .flex {
+                    display: flex !important;
+                }
+
+                .btn-step {
+                    background-color: rgba(0, 0, 0, .3);
+                    color: white;
+                }
+
+                .hover-item:hover {
+                    background-color: rgba(221, 221, 221, 0.45);
+                }
+
+                .hover-item:active {
+                    background-color: rgba(221, 221, 221, 0.45);
+                }
+
+                .tabmenu>li:target>a {
+                    background-color: rgba(221, 221, 221, 0.45);
+                }
+
+                .requerido {
+                    color: red !important;
+                }
+
+                .tabactiva {
+                    background-color: rgba(206, 206, 206, 0.71);
+                }
+
+                .colorblack {
+                    color: black;
+                }
+
+                .itemsspam {
+                    color: white !important;
+                    border-radius: 12px !important;
+                    box-shadow: 2px 2px 3px 0px #ccc !important;
+                    position: relative !important;
+                    top: 5px !important;
+                    left: 11px !important;
+                    cursor: pointer;
+                }
+
+                .hovpanel:hover {
+                    background: #32364c2b;
+                    color: #ffa51b;
+                    cursor: pointer;
+                }
+
+                .mayus {
+                    text-transform: uppercase;
+                }
+
+                #header-fixed {
+                    position: fixed;
+                    top: 0px;
+                    display: none;
+                }
+
+                .cuadrado {
+                    width: 25vh;
+                    max-width: 240px;
+                    height: 25vh;
+                    max-height: 240px;
+                    position: relative;
+                    background: white;
+                    box-shadow: 0 0 8px 1px #c7c7c7;
+                }
+
+                .coloritem {
+                    color: black !important;
+                }
+
+                .autprocesada {
+                    background-color: #4CAF50 !important;
+                }
+
+                .autactiva {
+                    background-color: #ff9800 !important;
+                }
+
+                .switch label {
+                    font-weight: 600;
+                }
+
+                .switch label .lever.check-c {
+                    background-color: #818181 !important;
+                }
+
+                .switch label .lever.check-c:after {
+                    background-color: #26a69a;
+                }
+
+                .switch label>span.activo {
+                    color: #26a69a !important;
+                }
+
+                .text-center {
+                    text-align: center;
+                }
+
+                div#modaldetalle {
+                    top: 1% !important;
+                }
+
+                div#modalnovedades {
+                    top: 1% !important;
+                }
+
+                .outer {
+                    width: 1px;
+                    height: 100%;
+                    margin: auto;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .inner {
+                    /* position: absolute; */
+                    width: 100%;
+                    height: 50vh;
+                    background: grey;
+                    top: 30%;
+                    box-shadow: 0px 0px 30px 20px grey;
+                }
+
+                .style-table-default {
+                    height: 350px;
+                    overflow: auto;
+                }
+
+                /* Style Scroll */
+                .scrollTableDefault::-webkit-scrollbar {
+                    /* width */
+                    width: 5px;
+                }
+
+                .scrollTableDefault::-webkit-scrollbar-track {
+                    /* Track */
+                    background: #f1f1f1;
+                }
+
+                .scrollTableDefault::-webkit-scrollbar-thumb {
+                    /* Handle */
+                    background: #888;
+                }
+
+                .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+                    /* Handle on hover */
+                    background: #555;
+                }
+
+                .swal2-container {
+                    z-index: 10000 !important;
+                }
+
+                .clase-gray {
+                    color: #736a6a !important;
+                }
+
+                .textFactura {
+                    color: blue;
+                    font-size: 10px;
+                    font-weight: bold;
+                }
+
+                .text_Tutela {
+                    color: red;
+                    font-weight: bold;
+                }
+            </style>
+        </div>
+    </div>

@@ -1,0 +1,811 @@
+<div style="zoom: 0.9;">
+
+    <div class="row" style="    height: calc(100vh - 64px);
+   
+   position: relative;">
+        <div id="myDiv" class="col l12 m12 s12 no-padding">
+
+            <div id="myDiv" class="row margin"
+                style="background:#fff;z-index: 9;position: relative;padding-bottom: 30%;padding-top: 4px;">
+                <div id="my_menu" class="col l12 section-header" style="    background: #9897e81f;">
+                    <ul class="left mailbox-custom-search list-inline"
+                        style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                        <li>
+                            <h5
+                                style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                                Plan de vacunación COVID-19 (TOTAL ACTIVOS  {{formatPeso2(cantidad_mostrar)}}) </h5>
+
+
+                        </li>
+
+                        <li class="row">
+                        <li>
+                            <i class="icon-circle cursor-pointer"
+                                style="color: blanchedalmond;font-size: 15px;border-radius: 15px;    margin-right: 2em;"
+                                ng-style="Estado_Solicitud_Color(30,'C')">
+                                BUENA GESTIÓN (0% - 35%)
+                            </i>
+                            <i class="icon-circle cursor-pointer"
+                                style="color: blanchedalmond;font-size: 15px;border-radius: 15px;    margin-right: 2em;"
+                                ng-style="Estado_Solicitud_Color(70,'C')">
+                                POCA GESTIÓN (36% - 70%)
+                            </i>
+                            <i class="icon-circle cursor-pointer"
+                                style="color: blanchedalmond;font-size: 15px;border-radius: 15px;    margin-right: 2em;"
+                                ng-style="Estado_Solicitud_Color(90,'C')">
+                                BAJA GESTIÓN (71% - 100%)
+                            </i>
+                        </li>
+
+                        <!-- <li>
+
+                            </li>
+    
+                            <li>
+                                <i class="icon-circle cursor-pointer"
+                                    style="color: blanchedalmond;font-size: 15px;border-radius: 15px;"
+                                    ng-style="Estado_Solicitud_Color(90,'C')">
+                                    MALO
+                                </i>
+                            </li> -->
+                        </li>
+
+
+                        <li ng-show="mostrar != 1">
+                            <i class="icon-left-open-2" ng-click="mostrar_panel()" style="cursor: pointer;">Atras</i>
+
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="container" style="width: 95% ;margin-bottom: -77px;">
+                    <div class="row margin" ng-show="mostrar==1">
+                        <ul style="position: relative;">
+                            <li ng-repeat="reg in Departamentos" style="position: relative;">
+                                <div class="flip" style="position: relative;" ng-hide="reg.CODIGO==0">
+                                    <div class="col s12 m6 l3 {{reg.CODIGO}}">
+                                        <div class="face front card card_front" style="background: #1565c024;">
+                                            <div class="card-content">
+                                                <h5>
+                                                    <h6>{{reg.NOMBRE}}</h6>
+
+                                                    <img src="assets/images/vacunacion/vacuna2.svg"
+                                                        class="icon-attach-5 right" style="width: 49px;
+                                                    margin-top: -35px;
+                                                    transition: all .2s ease-in-out;"></img>
+                                                </h5>
+
+
+                                                <div style="border-bottom: 0.5px solid #fff;">
+                                                    <h5>
+                                                        {{formatPeso2(reg.CANTIDAD) }}
+                                                    </h5>
+                                                    <p style="position: absolute;margin: -31px 67px;">
+                                                        <small>TOTAL</small>
+                                                    </p>
+                                                </div>
+
+                                                <div style="border-bottom: 0.5px solid #fff;">
+                                                    <h5>
+                                                        {{formatPeso2(reg.PENDIENTE)}}
+                                                    </h5>
+                                                    <p style="position: absolute;margin: -31px 67px;">
+                                                        <small>ACTIVOS</small>
+                                                    </p>
+                                                </div>
+
+
+
+                                                <div class="row">
+
+
+                                                    <div style="border-bottom: 0.5px solid #fff;">
+                                                        <h5>
+                                                            {{formatPeso2(reg.GESTIONADOS)}}
+                                                        </h5>
+                                                        <p style="position: absolute;margin: -31px 67px;">
+                                                            <small>APROBADOS</small>
+                                                        </p>
+                                                    </div>
+
+
+                                                    <div style="border-bottom: 0.5px solid #fff;">
+                                                        <h5>
+                                                            {{formatPeso2(reg.RECHAZADO) }}
+                                                        </h5>
+                                                        <p style="position: absolute;margin: -31px 67px;">
+                                                            <small>RECHAZADOS</small>
+                                                        </p>
+                                                    </div>
+                                                    <p class="my_hover"
+                                                        ng-click="tendencia2(reg.CODIGO,reg.NOMBRE);mostrar_origen=true"
+                                                        style="cursor:pointer;border-bottom: 0.5px solid #fff; border-top: 0.5px solid #fff;padding: 10px 0px;font-weight: 600;">
+                                                        Media Seccional
+                                                        <i class="icon-chart-bar"></i>
+                                                        <i class="icon-right-small" style=" margin-left: 54px;"></i>
+                                                    </p>
+                                                    <p class="my_hover"
+                                                        ng-click="filterMunicipio(reg.CODIGO,reg.NOMBRE,reg.CANTIDAD,reg.PENDIENTE);"
+                                                        style="cursor:pointer;border-bottom: 0.5px solid #fff; border-top: 0.5px solid #fff;padding: 10px 0px;font-weight: 600;">
+                                                        Gestión por Municipio
+                                                        <i class="icon-location-outline"></i>
+                                                    </p>
+
+                                                    </p>
+                                                </div>
+
+
+                                                <div ng-repeat="orig in Departamentos[$index].FUENTE">
+
+                                                    <div class="progress teal deep-purple lighten-4">
+                                                        <div style="background:#1565c0 !important; "
+                                                            class="determinate deep-purple darken-2"
+                                                            ng-style="{width: [((orig.TOTAL/reg.PENDIENTE)*100)]+'%'}">
+                                                        </div>
+
+                                                    </div>
+                                                    <p style="margin-top:-17px;margin-bottom: 20px">
+                                                        <small style="font-size:13px;" ng-class="orig.CLASE">
+
+                                                            <h6>FUENTES</h6>
+
+                                                            <!-- <p>
+                                                                <i style="color:#07cc66 !important;"
+                                                                    class=" icon-angle-double-right ">
+
+                                                                    PAGINA WEB -
+                                                                    {{orig.PAGINA_WEB}}
+                                                                </i>
+
+                                                            </p> -->
+
+                                                            <!-- <p>
+                                                                <i style="color:#cd2738 !important;"
+                                                                    class=" icon-angle-double-right ">
+
+                                                                    CONSUSALUD -
+                                                                    {{orig.CONSUSALUD}}
+                                                                </i>
+
+                                                            </p> -->
+
+                                                            <!-- <p>
+                                                                <i style="color:#ff9900 !important;"
+                                                                    class=" icon-angle-double-right ">
+
+                                                                    GESTION DE RIESGO -
+                                                                    {{orig.GESTION_DE_RIESGO}}
+                                                                </i>
+
+                                                            </p> -->
+
+                                                            <p>
+                                                                <i style="color:#0b78ff !important;"
+                                                                class=" icon-angle-double-right ">
+
+                                                                    SALUD PUBLICA -
+                                                                    {{formatPeso2(orig.SALUD_PUBLICA)}}
+                                                                </i>
+
+                                                            </p>
+
+                                                            <!-- <p>
+                                                                <i style="color:#0b78ff !important;"
+                                                                    class=" icon-angle-double-right ">
+
+                                                                    OTRAS FUENTES -
+                                                                    {{orig.OTRAS_FUENTES}}
+                                                                </i>
+
+                                                            </p> -->
+
+                                                            <!-- {{orig.CONSUSALUD}}
+                                                                {{orig.GESTION_DE_RIESGO}}
+                                                                {{orig.ASEGURAMIENTO}}
+                                                                {{orig.OTRAS_FUENTES}} -->
+
+
+                                                        </small>
+                                                    </p>
+
+                                                </div>
+
+
+                                                <!-- <div ng-repeat="orig in Departamentos[$index].FUENTE">
+                                                   <p style="margin-top:-17px;margin-bottom: 20px">
+                                                       <small style="font-size:13px;" ng-class="orig.CLASE">
+                                                           <i class=" icon-angle-double-right ">
+                                                              {{orig.FUENTE}}
+                                                              {{orig.TOTAL}}
+                                                           </i>
+                                                          
+                                                       </small>
+                                                   </p>
+                                                   
+                                               </div> -->
+                                            </div>
+                                        </div>
+                                        <div class="face back card card_back"
+                                            style="background: #fff; transform: rotatey(118deg);display: none;margin-bottom: 0px;"
+                                            ng-click="tendencia2(reg.CODIGO,reg.NOMBRE,reg.PENDIENTE);mostrar_origen=true">
+                                            <div class="card-content">
+                                                <h5>
+                                                    {{formatPeso2(reg.CANTIDAD) }}
+                                                    <img src="assets/images/Nacimientos/broche.svg"
+                                                        class="icon-attach-5 right" style="width: 49px;
+                                                   margin-top: -35px;
+                                                   transition: all .2s ease-in-out;"></img>
+                                                </h5>
+                                                <p style="position: absolute;margin: -21px 67px;">
+                                                    <small>Afiliados</small>
+                                                </p>
+                                                <div class="row" style="margin: 0px;">
+                                                    <h6>{{reg.NOMBRE}}</h6>
+                                                </div>
+                                                <div class="row" style="    margin: 0px;">
+                                                    <div id="{{reg.CODIGO}}"
+                                                        style="min-width: 310px; height: 400px; margin: 0 auto;    zoom: 0.7;">
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="    margin: 0px;">
+                                                    <!-- <p style="margin:-5px"><strong></strong  ng-style="Estado_Solicitud_Color(graficap_activos_total)" >ACTIVOS: {{graficap_activos_total}}% </strong> </p>
+                                                        
+                                                    </p>  -->
+
+
+                                                    <p style="margin:-5px"><strong>ACTIVO: </strong>
+                                                         <strong ng-style="Estado_Solicitud_Color(Calcular_Porcentajes(reg.PENDIENTE,reg.PENDIENTE,reg.GESTIONADOS,reg.RECHAZADO))">
+                                                             
+                                                            
+                                                            {{
+                                                                Calcular_Porcentajes(reg.PENDIENTE,reg.PENDIENTE,reg.GESTIONADOS,reg.RECHAZADO)
+                                                            }}% 
+
+                                                         </strong> </p>
+                                                    <p style="margin:-5px"><strong>APROBADO: </strong> {{Calcular_Porcentajes(reg.GESTIONADOS,reg.PENDIENTE,reg.GESTIONADOS,reg.RECHAZADO)}}%</p>
+                                                    <p style="margin:-5px"><strong>RECHAZADO: </strong> {{Calcular_Porcentajes(reg.RECHAZADO,reg.PENDIENTE,reg.GESTIONADOS,reg.RECHAZADO)}}%</p>
+                                                  
+                                                 
+                                                    
+                                                  
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div class="row margin" ng-show="mostrar==2">
+                         <div class=" row col s12">
+                            <h6> <strong>{{formatPeso2(departamento_nombre)}}</strong> <strong
+                                    ng-style="Estado_Solicitud_Color(porcentaje_total)" style="margin-left: 30em;font-size: 20px;" > <strong style="color:rgba(14, 13, 13, 0.72)" >
+                                          Resultado de gestión:</strong>  {{porcentaje_total}} % </strong>
+                            </h6>
+                        </div>
+                        <br>
+                        <ul>
+                            <li ng-repeat="reg in Municipios">
+                                <div class="municipio col s12 m6 l3" style="cursor:pointer">
+                                    <div class="card" ng-click="filtertabla(reg.CODIGO,reg.NOMBRE,reg.PENDIENTE)"
+                                        style="background: #8fccda4f;    height: 129px;">
+                                        <!-- <div class="card default-background" ng-click="filtertabla(reg.CODIGO,reg.NOMBRE)" style=""> -->
+                                        <div class="card-content"
+                                            style="padding-top: 10px;padding-bottom: 0px;   margin: 2px;">
+                                            <h3 style="color:red; margin: 9px;">
+                                                {{formatPeso2(reg.PENDIENTE)}}
+                                                <img src="assets/images/vacunacion/vacuna.svg" style="    margin: -18px !important;
+                                       width: 120px !important;" class="right">
+                                            </h3>
+
+                                            <p style="  margin: -10px 0;">
+                                                <small>Afiliados</small>
+                                            </p>
+                                            <div class="row">
+                                                <h6 style="font-weight: bolder;">{{reg.NOMBRE}}</h6>
+                                            </div>
+
+
+                                            <p>
+
+                                            </p>
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <!-- <div class="row">
+                                        <div class="col l12 m12 s12">
+                                    
+                                            <div class="col s6">
+                                                <p style="margin: -10px 0;padding-bottom: 7px;text-align: center;">
+                                                    <small><b>APROBADOS:</b><br>
+                                                        {{reg.GESTIONADOS}}
+                                                    </small>
+                                                </p>
+                                            </div>
+                                            <div class="col s6">
+                                                <p style="margin: -10px 0;padding-bottom: 7px;text-align: center;">
+                                                    <small><b>RECHAZADOS</b><br>
+                                                        {{reg.RECHAZADO}}
+                                                    </small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="row margin" ng-show="mostrar==3">
+                        <div class="col s6" ng-init="filtrar=true">
+                            <h6>{{formatPeso2(departamento_nombre)}}/ {{municipio_nombre +' (ACTIVOS ' + mesasayudas.length+')'}}
+                            </h6>
+                        </div>
+                        <div class="col s5">
+                            <div class="col s12">
+                                <i class="icon-search-2" ng-hide="verfiltrar"
+                                    ng-click="verfiltrar=true;val='';filter('')" style="
+                                   top: 164px;cursor: pointer;
+                                   ">Filtrar</i>
+                                <input id="buscarautaa" ng-show="verfiltrar"
+                                    style=" width: 300px;  margin-top: -25px; margin-bottom: -9px;"
+                                    ng-change="filter(val)" type="text" ng-model="val" placeholder="Filtrar Afiliado"
+                                    class="ng-pristine ng-valid ng-touched">
+                                <i ng-show="verfiltrar" ng-click="verfiltrar=false;val='';filter('')"
+                                    class="icon-cancel-3" style="margin-left: -30px;"></i>
+                            </div>
+                        </div>
+
+
+                        <div class="col l12 m12 s12" style="height: 562px;">
+                            <div class="inbox-element inbox-4">
+                                <div class="row" ng-init="carga_listado_productos()">
+                                    <div class="responsive" style="padding:20px">
+                                        <table class="table table-bordered table-striped">
+                                            <thead class="white-text default-background">
+                                                <tr>
+                                                    <th style="text-align:center;font-size: 14px">#</th>
+                                                    <th style="text-align:center;font-size: 14px">DOCUMENTO DEL AFILIADO
+                                                    </th>
+                                                    <th style="text-align:center;font-size: 14px">NOMBRE DEL AFILIADO
+                                                    </th>
+                                                    <th style="text-align:center;font-size: 14px">DIRECCIÓN</th>
+                                                    <th style="text-align:center;font-size: 14px">BARRIO</th>
+                                                    <th style="text-align:center;font-size: 14px">TELEFONO</th>
+                                                    <th style="text-align:center;font-size: 14px;">CELULAR</th>
+                                                    <th style="text-align:center;font-size: 14px;">CELULAR2</th>
+                                                    <th style="text-align:center;font-size: 14px;">CORREO</th>
+                                                    <th style="text-align:center;font-size: 14px;">FUENTE</th>
+                                                    <th style="text-align:center;font-size: 14px;">OPCION</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="mda in mesasayudasTemp  | inicio: currentPage * pageSize | limitTo: pageSize"
+                                                    ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                                                    <td>{{$index+1 + (currentPage * pageSize)}}</td>
+                                                    <td>{{mda.TIPO_DOC}}--{{mda.NUM_DOC}}</td>
+                                                    <td>{{mda.NOMBRE}}</td>
+                                                    <td>{{mda.DIRECCION}}</td>
+                                                    <td>{{mda.BARRIO}}</td>
+                                                    <td>{{mda.TELEFONO}}</td>
+                                                    <td>{{mda.CELULAR}}</td>
+                                                    <td>{{mda.CELULAR_1}}</td>
+                                                    <td>{{mda.CORREO}}</td>
+                                                    <td>{{mda.FUENTE}}</td>
+
+                                                    <td>
+                                                        <div class="tooltip">
+                                                            <i ng-click="abrirModal(mda)"
+                                                                class="fontello-icon  icon-cogs"
+                                                                style="font-size: 17px"></i></span></i>
+                                                            <span class="tooltiptext">Gestionar Información</span>
+                                                        </div>
+                                                        <div class="tooltip">
+                                                            <i ng-click="rechazar(mda)" class="icon-cancel-circled-1"
+                                                                style="font-size: 17px"></i></span></i>
+                                                            <span class="tooltiptext">rechazar</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-if="mesasayudasTemp.length==0">
+                                                    <td class="center-align" colspan="11">
+                                                        <h5>No se ha encontrado Registros</h5>
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <ul style="text-align: right;" class="pagination"
+                                            ng-show="mesasayudasTemp.length!=0">
+                                            <li><button ng-disabled='currentPage == 0'
+                                                    class="btn-floating default-background"
+                                                    ng-click="paso('back')">&laquo;</button></li>
+                                            <li ng-repeat='page in pages'><button
+                                                    ng-disabled='currentPage == page.no - 1'
+                                                    class="btn-floating default-background"
+                                                    ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                                            <li><button ng-disabled='currentPage >= mesasayudasTemp.length/pageSize - 1'
+                                                    class="btn-floating default-background"
+                                                    ng-click="paso('next')">&raquo;</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL PARA ACTUALIZAR LA INFORMACION -->
+        <div id="modaldatos" class="modal">
+            <div class="modal-content" style="padding: 0 !important;">
+                <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="card charts" style="margin-top: 0px; margin-bottom: -18px;">
+
+                        <div class="row" style="padding: 0">
+
+
+
+
+                            <div class="col s11">
+                                <h5>
+
+
+                                    <blockquote>Datos basicos del afiliado</blockquote>
+
+                                </h5>
+                            </div>
+
+
+                            <br>
+
+                            <div class="col s1">
+                                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="cerrarModal()"
+                                        class="material-icons ">close</i>
+                                </h5>
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- fila 1 -->
+                        <div class="row">
+
+                            <div class="col s4">
+                                <label style=" margin-top: -20px;">Via principal <span style="color:red;">*</span>
+                                </label>
+                                <select id="viaprincipal" ng-model="viaprincipal" ng-change="Dir()"
+                                    class="select-chosen-eps " style="margin-top: -6px; padding-top: 5px;">
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="s in list_viaprincipal2" value="{{s.CODIGO}}">{{s.NOMBRE}}
+                                    </option>
+                                </select>
+
+                            </div>
+
+                            <div class="col s2">
+                                <div class="">
+                                    <label for="nprincipal">N° Principal <span style="color:red;">*</span></label>
+                                    <input id="nprincipal" autocomplete="off" maxlength="4" ng-change="Dir()" type="text"
+                                        style="margin-top: -7px; Text-transform: uppercase;" class="form-control " ng-model="nprincipal">
+
+                                </div>
+                            </div>
+
+
+                            <div class="col s4">
+                                <label style=" margin-top: -20px;">Via de cruce </label>
+                                <select id="viacomplementaria" ng-model="viacomplementaria" ng-change="Dir()"
+                                    class="select-chosen-eps " style="margin-top: -6px; padding-top: 5px;">
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="s in list_viaprincipal2" value="{{s.CODIGO}}">{{s.NOMBRE}}
+                                    </option>
+                                </select>
+
+                            </div>
+
+                            <div class="col s2">
+                                <div class="">
+                                    <label for="ncomplementario">N° de cruce </label>
+                                    <input id="ncomplementario"  autocomplete="off" maxlength="4" type="text" style="margin-top: -7px; Text-transform: uppercase;"
+                                        ng-change="Dir()" class="form-control " ng-model="ncomplementario">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- fila 2 -->
+                        <div class="row">
+
+                            <div class="col s4">
+                                <div class="">
+                                    <label for="complemento">Complemento </label>
+                                    <input  autocomplete="off" id="complemento" type="text" style="margin-top: -7px; Text-transform: uppercase;" class="form-control "
+                                        placeholder="Ej: Casa, Apto, etc" ng-model="complemento" ng-change="Dir()">
+
+                                </div>
+                            </div>
+
+                            <div class="col s4">
+                                <div class="">
+                                    <label for="direccion">Dirección</label>
+                                    <input readonly id="direccion" type="text" style="margin-top: -7px;"
+                                        class="form-control " ng-model="direccion">
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="col s4">
+                                <div class="">
+                                    <label for="barrio">Barrio <span style="color:red;">*</span></label>
+                                    <input id="barrio" type="text" style="margin-top: -7px; Text-transform: uppercase; " class="form-control "
+                                        ng-model="barrio">
+
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+
+                        <!-- fila 2 -->
+                        <div class="row">
+
+                            <div class="col s3">
+                                <div class="">
+                                    <label for="celular">Teléfono móvil </label>
+                                    <input id="celular" type="number" onkeypress="if(this.value.length==10) return false;" style="margin-top: -7px;" class="form-control "
+                                        ng-model="celular">
+
+                                </div>
+                            </div>
+
+                            <div class="col s3">
+                                <div class="">
+                                    <label for="celular2">Teléfono móvil 2</label>
+                                    <input id="celular2" type="number" onkeypress="if(this.value.length==10) return false;" style="margin-top: -7px;" class="form-control "
+                                        ng-model="celular2" ng-change="tallacolor()">
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="col s3">
+                                <div class="">
+                                    <label for="telefono">Teléfono fijo</label>
+                                    <input id="telefono" type="number" onkeypress="if(this.value.length==7) return false;" style="margin-top: -7px;" class="form-control "
+                                        ng-model="telefono" ng-change="tallacolor()">
+
+                                </div>
+                            </div>
+
+                            <div class="col s3">
+                                <div class="">
+                                    <label for="correoelectronico">Correo electronico</label>
+                                    <input id="correoelectronico" type="email" style="margin-top: -7px; Text-transform: uppercase;"
+                                        class="form-control " ng-model="correoelectronico" ng-change="tallacolor()">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <!-- final -->
+                        <div class="row">
+                            <div class="col s12">
+                                <div class="input-button"
+                                    style="display: flex;justify-content: center;align-items: center;height: 76px;">
+                                    <center>
+                                        <button class="btn btn-primary" style="height: 45px;line-height: 45px;"
+                                            ng-click="actualizardatos(mda)" type="submit">ACTUALIZAR DATOS</button>
+                                    </center>
+                                </div>
+                               
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <style>
+        /* .card .card-content p {
+       margin: -6px !important; 
+       } */
+
+
+        .switch label .lever {
+            background-color: #1a2e63;
+            width: 60px;
+            height: 29px;
+        }
+
+
+        .switch label .lever:after {
+            left: 4px;
+            top: 4px;
+            background-color: #fff !important;
+        }
+
+
+        .switch label .lever.check-c {
+            background-color: #1a2e63 !important;
+        }
+
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            left: 35px;
+        }
+
+
+        /* // */
+        .lever.check-c:hover span.lever.check-c:after {
+            width: 100px !important;
+        }
+
+
+        /**/
+        [type="checkbox"].filled-in:not(:checked)+label:after {
+            border: 3px solid #1a2e63;
+        }
+
+
+        [type="checkbox"].filled-in:checked+label:after {
+            border: 3px solid #1a2e63;
+            background-color: #1a2e63;
+        }
+
+
+        .flip .card {
+            transition: 0.7s;
+        }
+
+        .flipped_back {
+            transform: rotatey(0deg) !important;
+        }
+
+        i.right {
+            position: absolute;
+            top: -2px;
+            right: 6px;
+            transform: rotate(-46deg);
+            font-size: 1.2em;
+        }
+
+        th {
+            border: none !important;
+        }
+
+        .municipio>.card:hover {
+            transform: scale(1.05);
+        }
+
+        i {
+            cursor: pointer;
+        }
+
+        .flip-box .flip-box-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* i.fontello-icon.icon-chart-bar-4.right:hover {
+           position: relative;
+           transform: scale(2);
+       } */
+
+        /* .highcharts-background {
+           fill: ;
+           stroke: #a4edba;
+           stroke-width: 2px;
+       } */
+
+
+        .flip {
+            -webkit-perspective: 800;
+
+        }
+
+        .flip .card.flipped {
+            -webkit-transform: rotatey(-180deg);
+
+        }
+
+        .flip .card {
+
+            -webkit-transform-style: preserve-3d;
+            -webkit-transition: 0.5s;
+        }
+
+        .flip .card .face {}
+
+        .flip .card .front {}
+
+        .flip .card .back {
+            -webkit-transform: rotatex(-180deg);
+        }
+
+        #my_menu {
+            transition: all 1s;
+        }
+
+        .my_fixed {
+            position: fixed;
+            padding-right: 24% !important;
+            width: 83%;
+            top: 64px;
+            left: 241px;
+            z-index: 9;
+            background: #fff !important;
+        }
+
+        .bajar {
+            padding-top: 110px !important;
+        }
+
+        @keyframes bouncing {
+            0% {
+                top: 100%;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            }
+
+            25% {
+                top: 105%;
+                box-shadow: 0 25px 25px rgba(0, 0, 0, 0.25);
+            }
+
+            50% {
+                top: 110%;
+                box-shadow: 0 50px 50px rgba(0, 0, 0, 0.1);
+            }
+
+            75% {
+                top: 105%;
+                box-shadow: 0 25px 25px rgba(0, 0, 0, 0.25);
+            }
+
+            100% {
+                top: 100%;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        p.my_hover:hover {
+            background: #fff;
+            color: black !important;
+            padding: 10px 4px !important;
+            box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        span.tooltiptext {
+            background: #bbc8ec !important;
+            color: #191919 !important;
+            border-bottom: 1px solid !important;
+        }
+    </style>
+</div>

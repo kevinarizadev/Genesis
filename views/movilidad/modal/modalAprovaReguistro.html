@@ -1,0 +1,132 @@
+<div id="actualizarinfor" style="width: 50%; margin: 0 auto;">
+   <div class="col s12 m6 l6 card">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px; margin-top: 0 auto; margin-bottom: -40px">
+      </div>
+      <div class="card-content">
+         <h5>Aprobación de Respuestas de Solicitud de Afiliado</h5>
+      </div>
+      <div class="card-action" id="mychat" style="padding-left: 0px; padding-right: 0px;">
+         <div class="row allMails bg-white white">
+           
+            <div class="col s12 m12 l12 messageBox first_3_2"  style="">
+                  <ul class="collection" style="overflow: auto; height: 300px;" ng-hide="shwConversacion">
+                  <li class="collection-item avatar second"> 
+                     <div class="foot4 circle avchat2">
+                        <center class="avletra">P</center>
+                     </div>
+                     <span><strong>Portal Genesis</strong></span>
+                     <div class="card-panel">
+                        <span>
+                           Debajo de este mensaje puedes escribir el mensaje que quieras enviar.
+                        </span>
+                     </div>
+                  </li>
+               </ul>
+               <ul class="collection" style="overflow: auto; height: 300px;" ng-show="shwConversacion" id="mensajes">
+                  <li class="collection-item avatar second" ng-repeat="reg in Conversacion"> 
+                     <div class="foot4 circle avchat2" ng-init="reg.inicial=reg.nombre==''?'E':reg.nombre.substring(0, 1)" >
+                        <center class="avletra" style="    font-size: xx-large !important;">{{reg.inicial}}</center>
+                     </div>
+                     <span><strong>{{reg.nombre==""?'Empresa':reg.nombre}}</strong> - <small>{{reg.fecha}}</small></span>
+                     <div class="card-panel">
+                        <span style="word-wrap: break-word !important;">{{reg.mensaje}}</span>
+                        <div style="margin-top: 10px;" ng-hide="(reg.archivo === 'false')" ng-click="descargafile(reg.ruta)">
+                           <hr>
+                           <img id="attachmenticon" src="assets/images/icons/attachment.png" title="Descargar Adjunto"><a class="dwnIcon">Descargar</a>
+                        </div>
+                     </div>
+                  </li>
+               </ul>
+               <div class="reply-text">
+                  <form id="frmMensaje" novalidate>
+                     <textarea rows="2" cols="10" placeholder="Mensaje.."  ng-model="fileaprob.mensaje" ></textarea>
+                     <input id="archivoVb" type="file" name="fileadjunto" onchange="angular.element(this).scope().changeFile()" style="display: none;" >
+                     <div ng-show="mostrarsDoc" style="border: 1px solid #cccccc";>
+                        <label for="tipoanexo" style="margin-top: -20px;"> Tipo de Docuemnto a Anexar</label>
+                        <select class="select-chosen-eps" id="tipoanexo" ng-model="tablaarchivos.anexo"  ng-init="tablaarchivos.anexo=''" >
+                                       <option value="">SELECCIONAR</option>
+                                       <option value="40">FORMULARIO DE INSCRIPCIÓN - EMPRESAS</option>
+                                       <option value="59">CARTA DE LA SOLICITUD</option>
+                                       <option value="45">CÁMARA DE COMERCIO (NO MAYOR A 90 DÍAS)</option>
+                                       <option value="41">RUT</option>
+                                       <option value="47">FOTOCOPIA DEL DOCUMENTO DEL REPRESENTANTE LEGAL</option>
+                       </select>
+                               
+                                 <div class="file-field input-field" >
+                                    <div class="btn">
+                                       <input type="file" id="adjunto" accept=".png,.jpg,.jpeg,.pdf,.doc" ng-model="adjunto" required="false" ng-disabled="!tablaarchivos.anexo">
+                                       <i ng-show="mostrarsDoc" class="material-icons waves-effect">attach_file</i>
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                       <input id="nombreadjunto" class="file-path" type="text" ng-change="obtenerBase()" placeholder="Seleccione Archivo" ng-disabled="!tablaarchivos.anexo" ng-model="nombreadjunto">
+                                    </div>
+                                 </div>
+                               
+                              
+                     </div>
+                  
+                     <div class="send-reply" style=" width: 100%;">
+                        <div style=" padding: 4px; text-align: right;">
+                              <button id="enviar" class="waves-effect waves-light btn white-text" ng-click="enviaMensaje()" style="  margin-top: 4px;  margin-right: 44px;" ng-disabled="!fileaprob.mensaje">Enviar</button>
+                              <button class="waves-effect waves-light btn white-text" ng-click="apruebaArchivo()" ng-hide="isRolAprob">Aprobar</button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         
+         </div>
+      </div>
+</div>
+<style type="text/css">
+	
+   #attachmenticon{
+      cursor: pointer;
+      width: 50px;
+   }
+   #attachmenticon:hover{
+      border-radius: 49px;
+      border: 1px solid;
+      border-color: gray;
+      box-shadow: 0px 0px 7px 0px #1fbbac;
+      transition: border 0.5s;
+   }
+   .avchat {
+      padding: 0 !important;
+      width: 60px !important;
+      height: 60px !important;
+   }
+   .avchat2 {
+      padding: 0 !important;
+      width: 42px !important;
+      height: 42px !important;
+   }
+   .avletra {
+      color: #ffffff; 
+      font-size: -webkit-xxx-large; 
+      margin-top: 25%;
+   }
+   .avtitle {
+      margin-top: 20px; 
+      position: fixed; 
+      font-size: 20px;
+      color: black !important;
+   }
+   .dwnIcon {
+      cursor: pointer;
+      margin-top: 14px;
+      position: absolute;
+   }
+   .highlight{
+   	background-color: #d7d8d8 !important; 
+   }
+   .divaprobado{
+      padding-top: 2px;
+      padding-bottom: 2px;
+      background-color: #56b949;
+   }
+   .fontaprobado{
+      font-size: 18px;
+      color: white;
+   }
+</style>

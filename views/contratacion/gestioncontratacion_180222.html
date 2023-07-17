@@ -1,0 +1,2681 @@
+<div class="newdesing" style="position:relative">
+  <!--modal-->
+  <!-- modal edicion de tarifas subcategoria] -->
+  <div id="modal_subcategorias" class="modal" style="    width: 800px;
+  max-height: 75%;
+  overflow: hidden;">
+    <div class=" modal-header row  card-content foot4" style="padding: 0;text-align: center;">
+      <div class="col s11">
+        <h5 class="white-text">Edición de Subcategoria de {{contrato_cabeza.subcategoria}}
+          {{contrato_cabeza.subcategoria_nombre}}</h5>
+      </div>
+      <div class="col s1">
+        <h5 style="text-align: end;"><i style="cursor:pointer;" class="material-icons white-text modal-close">close</i>
+        </h5>
+      </div>
+    </div>
+    <div class="row" style="margin: 0;">
+      <div class="col s12 m6 l4">
+        <div class="card">
+          <div class="card-content">
+            <h5>{{contrato_cabeza.numero}} <i class="icon-hospital grey-text right"></i></h5>
+            <h6> {{contrato_cabeza.prestador}}</h6>
+            <p>
+              <small>Contrato</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m6 l4">
+        <div class="card">
+          <div class="card-content">
+            <h5>{{contrato_cabeza.clasificacion}} <i class="icon-stethoscope grey-text right"></i></h5>
+            <h6>{{contrato_cabeza.clasificacion_nombre}}</h6>
+            <p>
+              <small>Clasificación</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m6 l4">
+        <div class="card">
+          <div class="card-content">
+            <h5>{{contrato_cabeza.producto}} <i class=" icon-medkit grey-text right"></i></h5>
+            <h6>{{contrato_cabeza.producto_nombre.substring(0,30)}} <strong
+                ng-show="contrato_cabeza.producto_nombre.length>30">...</strong>
+              <div class="tooltip">
+                <small style="    color: #1565c0;cursor: pointer;"> leer mas <span
+                    class="tooltiptext">{{contrato_cabeza.producto_nombre}}</span>
+                </small>
+              </div>
+            </h6>
+            <p>
+              <small>Producto</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin: 0;">
+      <div class="col s12 m12 l12">
+        <div class="row">
+          <div class="col l12 m12 s12">
+            <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;">
+              <div class="col s12 l12 m12">
+                <div class="switch" style="text-align: center;">
+                  <label>
+                    <span ng-class="{'activo':!switch_view}" style="font-size: 13px;" class="activo">POR VALOR </span>
+                    <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view"
+                      ng-change="switch_view == true" class="ng-pristine ng-valid ng-touched">
+                    <span class="lever"></span>
+                    <span ng-class="{'activo':switch_view}" style="font-size: 13px;">PORCENTAJE</span>
+                  </label>
+                </div>
+              </div>
+              <div class="col s12 l3 m6">
+                <div class="col s12 label-new no-p-l">
+                  <label for="tarifa_subcategoria_modal">TARIFA BASE</label>
+                  <select id="tarifa_subcategoria_modal" ng-model="tarifa_subcategoria_modal"
+                    ng-change="seleccion_opcion_tarifa2(tarifa_subcategoria_modal)"
+                    class="gray-input  select-chosen-eps  select-input-new  select-new" style="padding-top: 0;">
+                    <option value="">SELECCIONAR</option>
+                    <option ng-repeat="x in json_tarifa track by $index" value="{{x.CODIGO}}"> {{x.NOMBRE}} </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col s12 l3 m6">
+                <div class="col s12 label-new no-p-l">
+                  <label for="ajuste">AJUSTE</label>
+                  <select ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="ajuste"
+                    ng-model="gestion.DESCUENTO" class="select-new gray-input "
+                    style="box-shadow: none;display: block;">
+                    <option value="">SELECCIONAR</option>
+                    <option value="S">SUMA</option>
+                    <option value="R">RESTA</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col s12 l3 m6">
+                <div class="col s12 label-new no-p-l">
+                  <label for="porcentaje">%</label>
+                  <input ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="porcentaje" type="number"
+                    ng-model="gestion.P_DESCUENTO" class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+              <div class="col s12 l3 m6">
+                <div class="col s12 label-new no-p-l">
+                  <label for="valor">VALOR</label>
+                  <input ng-disabled="switch_view" ng-change="tarifa_calcular()" id="valor" type="number"
+                    ng-model="gestion.VALOR" class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row columnas" style="position: relative;margin: 0; ">
+      <p class="default-background white-text "> <i class=" icon-calc"></i>RESULTADO</p>
+      <div class="col s12 m12 l12">
+        <div class="col l12 m12 s12">
+          <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;     background: #e5e6e6;">
+            <div class="col s12">
+              <h6 style="text-align: center;">
+                {{cadena}}
+              </h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row " style="margin: 0;">
+      <div style="position: relative;text-align: center;" class="col s12">
+        <a class="modal-action modal-close waves-effect waves-green btn"
+          ng-click="guardar_subcateria_modal()">Guardar</a>
+      </div>
+    </div>
+  </div>
+  <!--modal edicion de tarifa de productos-->
+  <div id="modalproducto" class="modal" style="    width: 800px;  max-height: 75%; overflow-x: hidden;">
+    <div class=" modal-header row  card-content foot4" style="padding: 0;text-align: center;">
+      <div class="col s11">
+        <h5 class="white-text">Edición De Tarifa en Productos</h5>
+      </div>
+      <div class="col s1">
+        <h5 style="text-align: end;"><i style="cursor:pointer;" class="material-icons white-text modal-close">close</i>
+        </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12 m4 l4">
+        <div class="card" style="height: 10em;">
+          <div class="card-content">
+            <h5>{{contrato_cabeza.documento}}-{{contrato_cabeza.numero}} <i class="icon-hospital grey-text right"></i>
+            </h5>
+            <h6> {{contrato_cabeza.prestador}}</h6>
+            <p>
+              <small>Contrato</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m4 l4">
+        <div class="card" style="height: 10em;">
+          <div class="card-content">
+            <h5>{{gestion.clasificacion}} <i class="icon-stethoscope grey-text right"></i></h5>
+            <h6>{{gestion.clasificacion_nombre}}</h6>
+            <p>
+              <small>Servicio</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m4 l4">
+        <div class="card" style="height: 10em;">
+          <div class="card-content">
+            <h5>{{gestion.producto}} <i class="icon-stethoscope grey-text right"></i></h5>
+            <h6>{{gestion.producto_nombre}}</h6>
+            <p>
+              <small>Producto</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m12 l12">
+          <div class="row">
+            <div class="col l12 m12 s12">
+              <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;">
+                <div class="col s12 l12 m12">
+                  <div class="switch" style="text-align: center;">
+                    <label>
+                      <span ng-class="{'activo':!switch_view}" style="font-size: 13px;" class="activo">POR VALOR </span>
+                      <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view"
+                        ng-change="switch_view == true;tarifa_calcular()" class="ng-pristine ng-valid ng-touched">
+                      <span class="lever"></span>
+                      <span ng-class="{'activo':switch_view}" style="font-size: 13px;">PORCENTAJE</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12 no-p-l">
+                    <label for="tarifa_producto_modal">TARIFA BASE</label>
+                    <select id="tarifa_producto_modal" ng-model="TARIFA_id"
+                      ng-change="seleccion_opcion_tarifa2(TARIFA_id)"
+                      class="gray-input  select-chosen-eps  select-input-new  select-new" style="padding-top: 0;">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="x in json_tarifa track by $index" value="{{x.CODIGO}}"> {{x.NOMBRE}} </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="ajuste">AJUSTE</label>
+                    <select ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="ajuste"
+                      ng-model="gestion.DESCUENTO" class="select-new gray-input "
+                      style="box-shadow: none;display: block;">
+                      <option value="">SELECCIONAR</option>
+                      <option value="S">SUMA</option>
+                      <option value="R">RESTA</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="porcentaje">%</label>
+                    <input ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="porcentaje" type="number"
+                      ng-model="gestion.P_DESCUENTO" class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="valor">VALOR</label>
+                    <input ng-disabled="switch_view" ng-change="tarifa_calcular()" id="valor" type="number"
+                      ng-model="gestion.VALOR" class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="position: relative;">
+        <div class="col s12 columnas">
+          <p class="default-background white-text"> <i class=" icon-calc"></i>Resultado </p>
+        </div>
+        <div class="col s12 m12 l12">
+          <div class="col l12 m12 s12">
+            <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;     background: #e5e6e6;">
+              <div class="col s12">
+                <h6 style="text-align: center;"> {{cadena}} </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div style="position: relative;text-align: center;" class="col s12">
+          <a class="modal-action modal-close waves-effect waves-green btn"
+            ng-click="guardar_producto_modal()">Guardar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--fin modal producto-->
+  <!--modal edicion de tarifa de productos-->
+  <div id="modalproducto2" class="modal" style="    width: 800px;  max-height: 75%; overflow-x: hidden;">
+    <div class=" modal-header row  card-content foot4" style="padding: 0;text-align: center;">
+      <div class="col s11">
+        <h5 class="white-text">Edición de Tarifa del Nuevo Producto </h5>
+      </div>
+      <div class="col s1">
+        <h5 style="text-align: end;"><i style="cursor:pointer;" class="material-icons white-text modal-close">close</i>
+        </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12 m4 l4">
+        <div class="card" style="height: 10em;">
+          <div class="card-content">
+            <h5>{{contrato_cabeza.documento}}-{{contrato_cabeza.numero}} <i class="icon-hospital grey-text right"></i>
+            </h5>
+            <h6> {{contrato_cabeza.prestador}}</h6>
+            <p>
+              <small>Contrato</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m4 l4">
+        <div class="card" style="height: 10em;">
+          <div class="card-content">
+            <h5>{{gestion.clasificacion}} <i class="icon-stethoscope grey-text right"></i></h5>
+            <h6>{{gestion.clasificacion_nombre}}</h6>
+            <p>
+              <small>Servicio</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m4 l4">
+        <div class="card" style="height: 10em;">
+          <div class="card-content">
+            <h5>{{gestion.producto}} <i class="icon-stethoscope grey-text right"></i></h5>
+            <h6>{{gestion.producto_nombre}}</h6>
+            <p>
+              <small>Producto</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m12 l12">
+          <div class="row">
+            <div class="col l12 m12 s12">
+              <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;">
+                <div class="col s12 l12 m12">
+                  <div class="switch" style="text-align: center;">
+                    <label>
+                      <span ng-class="{'activo':!switch_view}" style="font-size: 13px;" class="activo">POR VALOR </span>
+                      <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view"
+                        ng-change="switch_view == true" class="ng-pristine ng-valid ng-touched">
+                      <span class="lever"></span>
+                      <span ng-class="{'activo':switch_view}" style="font-size: 13px;">PORCENTAJE</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="tarifa_producto_modal">TARIFA BASE</label>
+                    <select id="tarifa_producto_modal" ng-model="TARIFA_nueva"
+                      ng-change="seleccion_opcion_tarifa2(TARIFA_nueva)"
+                      class="gray-input  select-chosen-eps  select-input-new  select-new" style="padding-top: 0;">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="x  in json_tarifa" value="{{x.CODIGO}}"> {{x.NOMBRE}} </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="ajuste">AJUSTE</label>
+                    <select ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="ajuste"
+                      ng-model="gestion.DESCUENTO" class="select-new gray-input "
+                      style="box-shadow: none;display: block;">
+                      <option value="">SELECCIONAR</option>
+                      <option value="S">SUMA</option>
+                      <option value="R">RESTA</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="porcentaje">%</label>
+                    <input ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="porcentaje" type="number"
+                      ng-model="gestion.P_DESCUENTO" class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="valor">VALOR</label>
+                    <input ng-disabled="switch_view" ng-change="tarifa_calcular()" id="valor" type="number"
+                      ng-model="gestion.VALOR" class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="position: relative;">
+        <div class="col s12 columnas">
+          <p class="default-background white-text"> <i class=" icon-calc"></i>Resultado </p>
+        </div>
+        <div class="col s12 m12 l12" ng-show="cadena">
+          <div class="col l12 m12 s12">
+            <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;     background: #e5e6e6;">
+              <div class="col s12">
+                <h6 style="text-align: center;"> {{cadena}} </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div style="position: relative;text-align: center;" class="col s12">
+          <a class="modal-action modal-close waves-effect waves-green btn"
+            ng-click="agregar_producto_modal2()">Guardar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--fin modal producto-->
+  <!--modal guardar producto-->
+  <div id="modal_guardar_producto" class="modal" style="width: 50em; max-height: 75%;overflow: hidden;">
+    <div class=" modal-header row  card-content foot4" style="padding: 0;">
+      <div class="col s10">
+        <h5 class="white-text"><i class="white-text icon-floppy"></i>Guarda</h5>
+      </div>
+      <div class="col s2">
+        <h5 style="text-align: end;"><i style="cursor:pointer;" class="material-icons white-text modal-close">close</i>
+        </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12 m4 l4">
+        <div class="card" style="margin-bottom: 0.5em;height: 5.5em;">
+          <div class="card-content" style="padding: 0.5em;">
+            <h6>{{contrato_cabeza.documento}}-{{contrato_cabeza.numero}} <i class="icon-hospital grey-text right"></i>
+            </h6>
+            <h6> {{contrato_cabeza.prestador}}</h6>
+            <p>
+              <small>Contrato</small>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col s12 m12 l12" ng-show="bitacora_observacion!=''">
+        <div class="card" style="margin-bottom: 0.5em;">
+          <div class="card-content" style="padding: 0.5em;">
+            <label for="observacion">Observación</label>
+            <textarea id="observacion" ng-model="observacion_producto"
+              class="border-none gray-input input-w-p  margin w-100 white"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div style="position: relative;text-align: center;" class="col s12">
+          <a class="modal-action modal-close waves-effect waves-green btn"
+            ng-click="guardar_producto_completo()">Guardar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--fin modal guardar producto-->
+  <!--modal productos-->
+  <div id="modal_buscar_producto_para_agregar" class="modal">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right:  0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom:  0px;">
+          <div class="card-content foot4 row" style="padding: 0">
+            <div class="col s10">
+              <h5 class="white-text">Buscar Producto Para Contratar</h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;"
+                  class="material-icons white-text modal-close">close</i>
+              </h5>
+            </div>
+          </div>
+          <div style="padding-bottom:  3px;">
+            <div class="row">
+              <div class="switch col s12 right-align">
+                <label>
+                  <span ng-class="{'activo':!switch_manual}" style="
+                            font-size: 13px;" class="activo">Manual </span>
+                  <input type="checkbox" ng-init="switch_manual = false" ng-model="switch_manual"
+                    ng-change="switch_manual == true;proceso=true" class="ng-pristine ng-valid ng-touched">
+                  <span class="lever"></span>
+                  <span ng-class="{'activo':switch_manual}" style="
+                            font-size: 13px;">Validación Precontractual</span>
+                </label>
+              </div>
+            </div>
+            <div class="row" ng-show="switch_manual==false">
+              <div class="col s12">
+                <form ng-submit="buscar_contrato_habilitado_para_agregar()">
+                  <div class="row">
+                    <div class="col s9 l9 m9">
+                      <label for="ipsinput"> Digitar Codigo O Nombre de Producto </label>
+                      <input id="ipsinput" type="text" ng-model="coincidencia" autocomplete="off"
+                        class="border-none gray-input  input-w-p margin validate     w-100     white" required>
+                    </div>
+                    <div style="position: relative;text-align: center;" class="col s1 l1 m1">
+                      <a class="btn m-t modal-action" ng-click="buscar_contrato_habilitado_para_agregar()">Buscar</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="row" ng-show="switch_manual==false">
+              <div class="col s12" style="max-height:  45vh;overflow-y:  auto;">
+                <table class="table  table-bordered  table-striped striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">PRODUCTO</th>
+                      <th style="text-align:center;">SERVICIO</th>
+                      <th style="text-align:center;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="r in lista_productos_contratados_modal"
+                      ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                      <td style="text-align:center;"> {{r.codigo_producto}} - {{r.nombre_producto}}
+                      </td>
+                      <td style="text-align:center;"> {{r.codigo_servicio}} - {{r.nombre_servicio}}
+                      </td>
+                      <td class="modal-close" style="text-align:center;">
+                        <i ng-click="agregar_producto_modal(r)" class="modal-close font16 icon-plus"></i></h6>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row" ng-show="switch_manual==true">
+              <div class="col s12" style="max-height:  45vh;overflow-y:  auto;">
+                <table class="table  table-bordered  table-striped striped" ng-show="proceso==true;">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">FECHA</th>
+                      <th style="text-align:center;">PROCESO</th>
+                      <th style="text-align:center;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="r in listas_productos_contratados"
+                      ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                      <td style="text-align:center;"> {{r.fecha}} - {{r.hora}}
+                      </td>
+                      <td style="text-align:center;"> {{r.proceso}}
+                      </td>
+                      <td class="modal-close" style="text-align:center;">
+                        <i ng-click="agregar_producto_modal_masivo1(r.proceso)"
+                          class="modal-close font16 icon-plus"></i></h6>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table  table-bordered  table-striped striped" ng-show="proceso==false;">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">TIPO</th>
+                      <th style="text-align:center;">PRODUCTO</th>
+                      <th style="text-align:center;">SUBCATEGORIA</th>
+                      <th style="text-align:center;">DESCRIPCIIÓN</th>
+                      <th style="text-align:center;">TARIFA</th>
+                      <th style="text-align:center;">OPERADOR</th>
+                      <th style="text-align:center;">PORCENTAJE</th>
+                      <th style="text-align:center;">VALOR</th>
+                    </tr>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="r in listado_datos_validos | filter: buscar_tabla2">
+                      <td style="text-align:center;"> {{r.tipo_producto}} </td>
+                      <td style="text-align:center;"> {{r.producto}}</td>
+                      <td style="text-align:center;"> {{r.subcategoria}}</td>
+                      <td style="text-align:center;"> {{r.nombre_producto}} </td>
+                      <td style="text-align:center;"> {{r.nombre_tarifa}} </td>
+                      <td style="text-align:center;"> {{r.operador}} </td>
+                      <td style="text-align:center;"> {{r.porcentaje}} </td>
+                      <td style="text-align:center;">
+                        {{(r.valor==null)||(r.valor==0)||(r.valor=='') ||(r.valor=='$0.00'
+                        ||(r.valor=='$.00'))?r.vr_calculado:r.valor}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row" ng-show="proceso==false&&switch_manual==true">
+              <div style="position: relative;text-align: center;" class="col s12">
+                <a class="modal-action modal-close waves-effect waves-green btn"
+                  ng-click="agregar_producto_modal_masivo2()">Escoger Todos estos Productos</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--fin modal productos-->
+  <!--modal ver cambios-->
+  <div id="modal_productos_cambiados" class="modal">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right:  0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom:  0px;">
+          <div class="card-content foot4 row" style="padding: 0">
+            <div class="col s10">
+              <h5 class="white-text">Productos a Guardar</h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;"
+                  class="material-icons white-text modal-close">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="padding-bottom:  3px;">
+            <div class="row">
+              <div class="col s12" style="max-height:  45vh;overflow-y:  auto;">
+                <table class="table  table-bordered  table-striped striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">SERVICIO</th>
+                      <th style="text-align:center;">PRODUCTO</th>
+                      <th style="text-align:center;">ACCION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="r in nuevos_productos" ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                      <td style="text-align:center;"> {{r.codigo_servicio}} </td>
+                      <td style="text-align:center;"> {{r.codigo_producto}} </td>
+                      <td style="text-align:center;"> {{r.nombre_accion}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--fin modal productos-->
+  <!--MODAL DE SERVICIOS-->
+  <div id="modalservicio" class="modal" style="    width: 800px;  max-height: 75%; overflow-x: hidden;">
+    <div class=" modal-header row  card-content foot4" style="padding: 0;text-align: center;">
+      <div class="col s11">
+        <h5 class="white-text">Edicion de Tarifa En Servicio</h5>
+      </div>
+      <div class="col s1">
+        <h5 style="text-align: end;"><i style="cursor:pointer;" class="material-icons white-text modal-close">close</i>
+        </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12 m6 l6">
+        <div class="card">
+          <div class="card-content">
+            <h5>{{infoContrato.documento}}-{{infoContrato.numero}} <i class="icon-hospital grey-text right"></i></h5>
+            <h6> {{infoContrato.prestador}}</h6>
+            <p>
+              <small>Contrato</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m6 l6">
+        <div class="card">
+          <div class="card-content">
+            <h5>{{gestion.clasificacion}} <i class="icon-stethoscope grey-text right"></i></h5>
+            <h6>{{gestion.clasificacion_nombre}}</h6>
+            <p>
+              <small>Servicio</small>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m12 l12">
+          <div class="row">
+            <div class="col l12 m12 s12">
+              <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;">
+                <div class="col s12 l6 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="tarifa_1">Tarifa Base</label>
+                    <select id="tarifa_1" ng-model="gestion.TARIFA"
+                      class="gray-input  select-chosen-eps  select-input-new  select-new" style="padding-top: 0;">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="x  in listado_tarifas" value="{{x.codigo}}"> {{x.nombre}} </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="ajuste">AJUSTE</label>
+                    <select id="ajuste_m" ng-model="gestion.DESCUENTO" class="select-new gray-input "
+                      style="box-shadow: none;display: block;">
+                      <option value="">SELECCIONAR</option>
+                      <option value="S">SUMA</option>
+                      <option value="R">RESTA</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12  no-p-l">
+                    <label for="porcentaje">%</label>
+                    <input id="porcentaje_m" type="number" ng-model="gestion.P_DESCUENTO"
+                      class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div style="position: relative;text-align: center;" class="col s12">
+          <a class="modal-action modal-close waves-effect waves-green btn"
+            ng-click="guardar_servicio_modal()">Guardar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN MODAL DE SERVICIOS-->
+
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Gestión de Contratos</h5>
+      </li>
+    </ul>
+  </div>
+  <div class="row content-container elements mb-0">
+    <div class="row">
+      <!-- CONTENIDO -->
+      <div class="col m9 s12">
+        <div class="card contentcard" style="min-height: 541px;">
+          <div class="col s12" ng-show="paso==1">
+            <div class="col s12 bb">
+              <h5><small>{{titulo_tab}}</small></h5>
+            </div>
+          </div>
+          <!-- BUSQUEDA INICIAL -->
+          <div class="col s12 mt-20" ng-show="paso==1">
+            <div class="col s12" style="height: 394px;" ng-show="inactivecontratos">
+              <div class="center">
+                <small>Favor buscar por campo valido!</small>
+              </div>
+              <div class="center">
+                <img src="assets/images/contratos/gestion_contratos/buscar.svg" style="width: 368px;">
+              </div>
+            </div>
+            <div class="col s12 scroll" style="height: 394px;" ng-hide="inactivecontratos">
+              <div class="responsive">
+                <table class="table table-bordered striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">CONTRATO</th>
+                      <th style="text-align:center;">PRESTADOR</th>
+                      <th style="text-align:center;">REGIMEN</th>
+                      <th style="text-align:center;">CONCEPTO</th>
+                      <th style="text-align:center;">MOTIVO</th>
+                      <th style="text-align:center;">ASUNTO</th>
+                      <th style="text-align:center;">DEPARTAMENTO MUNICIPIO</th>
+                      <th style="text-align:center;">ESTADO</th>
+                      <th style="text-align:center;">ACCION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in json_contratos">
+                      <td style="text-align:center; ">{{x.numero}}</td>
+                      <td style="text-align:center; ">{{x.nit}} {{x.ips}}</td>
+                      <td style="text-align:center; ">{{x.regimen}}</td>
+                      <td style="text-align:center; ">{{x.nombre}}</td>
+                      <td style="text-align:center; ">{{x.nombre_motivo}}</td>
+                      <td style="text-align:center; ">{{x.nombre_asunto}}</td>
+                      <td style="text-align:center; ">{{x.departamento}} {{x.municipio}}</td>
+                      <td style="text-align:center; " class="white-text">
+                        <span ng-class="x.color" style="padding: 5px;">{{x.estado | uppercase}}</span>
+                      </td>
+                      <td style="text-align:center; ">
+                        <div class="tooltip">
+                          <i class="material-icons pointer" ng-click="gestionar_contrato($index)">visibility</i>
+                          <span class="tooltiptext">Gestionar Contrato</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 2-->
+          <div class="col s12" ng-show="paso==2">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>Elegir Gestión</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = 1">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="col s12 m6 l4" ng-repeat="gestion in json_gestion">
+              <div class="card tab-grande">
+                <div class="center">
+                  <p class="titulo" style="font-size: 22px; margin-bottom: 0px;"> {{gestion.titulo}}</p>
+                  <hr class="hr">
+                </div>
+                <div class="img-grande center">
+                  <img src="assets/images/contratos/gestion_contratos/{{gestion.id}}.svg" style="max-width: 240px;">
+                </div>
+                <div class="center col mt-20 s12 text-center">
+                  <a class="waves-effect waves-light btn white-text light-blue" ng-click="seleccion(gestion.id)"> Click
+                    Aqui</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 3-->
+          <div class="col s12 " ng-show="paso==3">
+            <div class="col s12 m4 l3" ng-repeat="modificacion in json_modificacion"
+              ng-click="mostrar_modificaciones(modificacion.accion,modificacion.titulo)">
+              <div class="card tab-mediano" ng-class='modificacion.activo==true?"tab-color":"tab-no-color"'>
+                <div class="center">
+                  <p class="titulo" style="font-size: 11px;    margin-bottom: 0px;"> {{modificacion.titulo}}</p>
+                  <div class="modificacion_actualizado" ng-show="modificacion.actualizado==true;">
+                    <i class="icon-pencil lapiz"></i>
+                    <i class="act icon-bookmark"></i>
+                  </div>
+                  <hr class="hr">
+                </div>
+                <div class="center">
+                  <img src="assets/images/contratos/gestion_contratos/modificaciones/{{modificacion.accion}}.svg"
+                    style="width: 100px !important; height: 87px;">
+                </div>
+              </div>
+            </div>
+            <div class="col s12 m4 l3" ng-click="paso = 2">
+              <div class="card tab-mediano tab-color">
+                <div class="center">
+                  <p class="titulo" style="font-size: 11px;    margin-bottom: 0px;"> ATRAS</p>
+                  <hr class="hr">
+                </div>
+                <div class="center">
+                  <img src="assets/images/contratos/gestion_contratos/modificaciones/atras.svg"
+                    style="width: 100px !important; height: 87px;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col s12 " ng-show="paso==31 && subpaso1!=0 && subpaso==1 ">
+            <!-- terminacion de contrato -->
+            <div class="row" ng-show="subpaso1==3">
+              <div class="col s12 bb">
+                <h5><small>Terminación de contrato</small>
+                  <i class="font16 icon-reply-3 right" ng-click="subpaso1=0">Atras</i>
+                </h5>
+              </div>
+              <div class="col s12">
+                <div class="row">
+                  <div class="switch">
+                    <div class="col s12 l12 m12 center ">
+                      <p>
+                        <span class="hide-on-large-only">Normal switch</span>
+                        <label> BILATERAL <input type="checkbox" ng-model="tipo_toma_desicion"
+                            ng-change="listar_causales()">
+                          <span class="lever"></span> UNILATERAL </label>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col s12 l12 m12 center">
+                    <div class="col s12  l3 m6 label-new no-p-l" ng-show="tipo_toma_desicion==true">
+                      <label for="accionante">Accionante</label>
+                      <select id="accionante" class="select-new gray-input" ng-model="accionante_terminacion"
+                        style="box-shadow: none;display: block;">
+                        <option value="">Seleccionar</option>
+                        <option value="1">Contratista</option>
+                        <option value="2">Contratante</option>
+                      </select>
+                    </div>
+                    <div class="col s12  l3 m6 label-new no-p-l">
+                      <label for="fecha_fin">Fecha Fin</label>
+                      <input id="fecha_fin" ng-model="fecha_fin_terminacion" type="date"
+                        class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                  </div>
+                  <!-- <div class="col s12 l12 m12">
+        <div class="col s12  l6 m6 label-new no-p-l">
+          <label for="causal">Causal</label>
+          <select id="causal" class="select-new gray-input " ng-model="causalTerminacion"
+            style="box-shadow: none;display: block;">
+            <option ng-repeat="causal in Listado_causales" value="causal.codigo">{{causal.descripcion}}
+            </option>
+          </select>
+        </div>
+      </div> -->
+                </div>
+                <div class="row ">
+                  <div class="col s12">
+                    <div class="col s12  l3 m6 label-new no-p-l">
+                      <label for="accionante">Accionante</label>
+                    </div>
+                  </div>
+                  <div class="col s12 center" style="height: 10em; overflow: auto;    margin-top: -2em;">
+                    <table class=" table-bordered">
+                      <tbody>
+                        <tr ng-repeat="causal in Listado_causales" ng-click="seleccionar_causal(causal.codigo)"
+                          id="ID{{causal.codigo}}" ng-class="causalTerminacion==causal.codigo?'btn-default-focus':''">
+                          <td style="text-align:center; ">{{causal.descripcion}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="row margin-top">
+                  <div class="col s12 columnas">
+
+                    <p class="default-background white-text"> <i class="icon-edit-1"></i>Observación</p>
+
+                  </div>
+                  <div class="col s12 center">
+                    <textarea rows="10" style=" width: 95%;" ng-model="observacion_terminacion_anticipada"
+                      class="margin border-none white input-w-p gray-input w-100" cols="50"></textarea>
+                  </div>
+                  <div class="col s12 mt-20 center">
+                    <button class="waves-effect waves-light btn white-text light-blue"
+                      ng-click="guardar_terminacion_contrato()">Guardar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- prorroga -->
+            <div class="row" ng-show="subpaso1==2">
+              <div class="col s12 bb">
+                <h5><small>Prorroga</small>
+                  <i class="font16 icon-reply-3 right" ng-click="subpaso1=0">Atras</i>
+                </h5>
+              </div>
+              <div class="col s12">
+                <div class="row">
+                  <div class="center-align col mt-20 s6">
+                    <span class="status green" ng-show="infoContrato.codigo_prorroga=='S'">Con prorroga
+                      Actualmente</span>
+                    <span class="status pink" ng-show="infoContrato.codigo_prorroga=='N'">Sin prorroga
+                      Actualmente</span>
+                  </div>
+                  <div class="col s6">
+                    <div class="col input-field l12 m12 s12">
+                      <input type="checkbox" id="requisito" ng-model="prorroga" checked="checked"
+                        class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                      <label for="requisito">Prorroga</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row margin-top">
+                  <div class="col s12 columnas">
+                    <p class="default-background white-text"> <i class="icon-edit-1"></i>Observación</p>
+                  </div>
+                  <div class="col s12 center">
+                    <textarea rows="10" style=" width: 95%;    height: 15em;" ng-model="observacion_prorroga"
+                      class="margin border-none white input-w-p gray-input w-100" cols="50"></textarea>
+                  </div>
+                  <div class="col s12 mt-20 center">
+                    <button class="waves-effect waves-light btn white-text light-blue"
+                      ng-click="guardar_prorroga()">Guardar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- fechas -->
+            <div class="row" ng-show="subpaso1==1">
+              <div class="col s12 bb">
+                <h5><small>Configurar Fecha </small>
+                  <i class="font16 icon-reply-3 right" ng-click="subpaso1=0">Atras</i>
+                </h5>
+              </div>
+              <div class="col s12">
+                <div class="mt-50 row">
+                  <div class="col s12 l6 m6">
+                    <div class="row">
+                      <div class="col s12 columnas no-p-l">
+                        <p class="default-background white-text"> <i class="icon-edit-1"></i>Datos Actuales</p>
+                      </div>
+                      <div class="col s12  l6 m6 label-new no-p-l">
+                        <label for="fecha_inicio">Fecha Inicial Actual </label>
+                        <input disabled id="fecha_inicio" ng-model="infoContrato.inicia" type="text"
+                          class="margin border-none white input-w-p gray-input w-100">
+                      </div>
+                      <div class="col s12  l6 m6 label-new no-p-l">
+                        <label for="fecha_dinal">Fecha final Actual </label>
+                        <input disabled id="fecha_dinal" ng-model="infoContrato.termina" type="text"
+                          class="margin border-none white input-w-p gray-input w-100">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col s12 l6 m6">
+                    <div class="row">
+                      <div class="col s12 columnas no-p-l">
+                        <p class="default-background white-text"> <i class="icon-edit-1"></i>Datos Actualizar</p>
+                      </div>
+                      <div class="col s12  l6 m6 label-new no-p-l">
+                        <label for="fecha_inicial">Nueva Fecha inicial</label>
+                        <input id="fecha_inicial" ng-model="fecha_inicial_editar" type="date"
+                          class="margin border-none white input-w-p gray-input w-100">
+                      </div>
+                      <div class="col s12  l6 m6 label-new no-p-l">
+                        <label for="fecha_final">Nueva Fecha final</label>
+                        <input id="fecha_final" ng-model="fecha_final_editar" type="date"
+                          class="margin border-none white input-w-p gray-input w-100">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row margin-top">
+                  <div class="col s12 columnas ">
+                    <p class="default-background white-text"> <i class="icon-edit-1"></i>Observación</p>
+                  </div>
+                  <div class="col s12 center ">
+                    <textarea rows="10" style=" width: 95%;" ng-model="observacion_fecha_inicial"
+                      class="margin border-none white input-w-p gray-input w-100" cols="50"></textarea>
+                  </div>
+                  <div class="col s12 mt-20 center ">
+                    <button class="waves-effect waves-light btn white-text light-blue"
+                      ng-click="guardar_fecha_inicial()">Guardar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col s12 bb">
+                <h5><small>Configurar Fecha Suscripcion</small>
+                  <i class="font16 icon-reply-3 right" ng-click="subpaso1=0">Atras</i>
+                </h5>
+              </div>
+              <div class="col s12">
+                <div class="row mb-0">
+                  <div class="col s12 l12 m12 center">
+                    <div class="col s12  l3 m6 label-new no-p-l">
+                      <label for="fecha_suscripcion_contratada">Fecha Suscripcion Actual</label>
+                      <input disabled id="fecha_suscripcion_contratada" ng-model="infoContrato.fecha_suscripcion"
+                        type="text" class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                    <div class="col s12  l3 m6 label-new no-p-l">
+                      <label for="fecha_suscripcion">Nueva Fecha Suscripcion</label>
+                      <input id="fecha_suscripcion" ng-model="fecha_suscripcion" type="date"
+                        class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12 mt-20 center">
+                    <button class="waves-effect waves-light btn white-text light-blue"
+                      ng-click="guardar_fecha_suscripcion()">Guardar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 31 FECHAS-->
+          <div class="col s12 " ng-show="paso==31">
+            <!-- EDICION DE FECHAS -->
+            <div class="row" ng-hide="subpaso==31 || subpaso1!=0">
+              <div class="col s12 bb">
+                <h5><small>{{nombre_modificacion}}</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso=3">Atras</i>
+                </h5>
+              </div>
+            </div>
+
+
+            <div class="row" ng-show="subpaso==1 && subpaso1==0">
+              <!-- MENU -->
+              <div class="col s12 m6 l4" ng-click="subpaso1 = 1 ">
+                <div class="card tab-grande">
+                  <div class="center">
+                    <p class="titulo" style="font-size: 22px;    margin-bottom: 0px;"> Edicion de Fechas</p>
+                    <hr class="hr">
+                  </div>
+                  <div class="img-grande center" style="height: 13em;">
+                    <img src="assets/images/contratos/gestion_contratos/modificaciones/fechas/fecha_edicion.svg"
+                      style="max-width: 240px;">
+                  </div>
+                  <div class="center col mt-20 s12 text-center">
+                    <a class="waves-effect waves-light btn white-text light-blue" ng-click="subpaso1 = 1 ">
+                      Click
+                      Aqui</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col s12 m6 l4" ng-click="subpaso1 = 2">
+                <div class="card tab-grande">
+                  <div class="center">
+                    <p class="titulo" style="font-size: 22px;    margin-bottom: 0px;">Prórroga</p>
+                    <hr class="hr">
+                  </div>
+                  <div class="img-grande center" style="height: 13em;">
+                    <img src="assets/images/contratos/gestion_contratos/modificaciones/1.svg" style="max-width: 240px;">
+                  </div>
+                  <div class="center col mt-20 s12 text-center">
+                    <a class="waves-effect waves-light btn white-text light-blue" ng-click="subpaso1 = 1 ">
+                      Click
+                      Aqui</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col s12 m6 l4" ng-click="subpaso1 = 3">
+                <div class="card tab-grande">
+                  <div class="center">
+                    <p class="titulo" style="font-size: 22px;    margin-bottom: 0px;">Terminación del Contrato</p>
+                    <hr class="hr">
+                  </div>
+                  <div class="img-grande center" style="height: 13em;">
+                    <img src="assets/images/contratos/gestion_contratos/modificaciones/5.svg" style="max-width: 190px;">
+                  </div>
+                  <div class="center col mt-20 s12 text-center">
+                    <a class="waves-effect waves-light btn white-text light-blue" ng-click="subpaso1 = 1 ">
+                      Click
+                      Aqui</a>
+                  </div>
+                </div>
+              </div>
+              <!-- MENU*] -->
+            </div>
+
+
+            <div class="row" ng-show="subpaso==31">
+              <div class="col s12 bb">
+                <h5><small>Edición de Tarifa</small>
+                  <i class="font16 icon-reply-3 right" ng-click="subpaso=3">Atras</i>
+                </h5>
+              </div>
+            </div>
+
+
+            <div class="row" ng-show="subpaso==10">
+              <table class="table table-bordered striped">
+                <thead>
+                  <tr>
+                    <th style="text-align:center;">CODIGO</th>
+                    <th style="text-align:center;">TITULO</th>
+                    <th style="text-align:center;">DESCRIPCION</th>
+                    <th style="text-align:center;">EDITAR</th>
+                  </tr>
+                </thead>
+
+              </table>
+            </div>
+
+
+            <div class="row" ng-show="subpaso==101">
+              <div class="col s12 margin-top">
+                <div class="col s12 columnas">
+                  <p class="default-background white-text"> <i class="icon-edit-1"></i>Clausura Anterior </p>
+                </div>
+              </div>
+              <div class="col s12 center ">
+                <textarea rows="10" style="
+                                        width: 95%; height: 90px;" disabled ng-model="clausura_anterior"
+                  class="margin border-none white input-w-p gray-input w-100" cols="50"></textarea>
+              </div>
+              <div class="col s12 margin-top">
+                <div class="col s12 columnas">
+                  <p class="default-background white-text"> <i class="icon-edit-1"></i>Cambio Clausura</p>
+                </div>
+              </div>
+              <div class="col s12 center">
+                <textarea rows="10" style="
+                                            width: 95%; height: 90px;" ng-model="clausura_actualizada"
+                  class="margin border-none white input-w-p gray-input w-100" cols="50"></textarea>
+              </div>
+            </div>
+
+
+            <div class="row margin-top" ng-show="subpaso==5">
+              <div class="switch">
+                <div class="col s12 l12 m12 center ">
+                  <p>
+                    <span class="hide-on-large-only">Normal switch</span>
+                    <label> BILATERAL <input type="checkbox" ng-model="tipo_toma_desicion">
+                      <span class="lever"></span> UNILATERAL </label>
+                  </p>
+                </div>
+              </div>
+              <div class="col s12 l12 m12 center " ng-show="tipo_toma_desicion==true">
+                <div class="col s12 l6 m6 label-new no-p-l">
+                  <label for="fecha_fin">Fecha Fin</label>
+                  <input id="fecha_fin" ng-model="fecha_fin" type="date"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+              <div class="col s12 l12 m12 center" ng-show="tipo_toma_desicion==false">
+                <div class="col s12  l3 m6 label-new no-p-l">
+                  <label for="accionante">Accionante</label>
+                  <select id="accionante" class="select-new gray-input  select-chosen-eps"
+                    ng-model="busqueda.accionante" style="box-shadow: none;display: block;">
+                    <option value="">Seleccionar</option>
+                    <option value="CONTRATISTA">Contratista</option>
+                    <option value="CONTRATANTE">Contratante</option>
+                  </select>
+                </div>
+                <div class="col s12  l6 m6 label-new no-p-l">
+                  <label for="causal">Causal</label>
+                  <select id="causal" class="select-new gray-input  select-chosen-eps"
+                    ng-model="busqueda.infoContratoizado.causal" style="box-shadow: none;display: block;">
+                    <option value="">Seleccionar</option>
+                  </select>
+                </div>
+                <div class="col s12  l3 m6 label-new no-p-l">
+                  <label for="fecha_fin">Fecha Fin</label>
+                  <input id="fecha_fin" ng-model="fecha_fin" type="date"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row margin-top" ng-show="subpaso==3">
+              <div class="col s12 ">
+                <div class="row">
+                  <div class="col s12 columnas">
+                    <p class="default-background white-text" style="width: 20em"> <i class="icon-edit-1"></i>Productos
+                      Contratados </p>
+                    <h6 style="position: absolute;top: -1.7em;right: 1em;">
+                      <i ng-click="guardar_productos()" class="font16 icon-floppy"></i>
+                      <i ng-click="agregar_producto()" class="font16 icon-plus"></i>
+                    </h6>
+                    <i class="font16 icon-search" style="position:absolute"></i>
+                    <form ng-submit="contratacion_productos(busqueda_listado_producto_contratos)">
+                      <input id="listado_contratos" ng-model-options="{debounce: 500}"
+                        ng-model="busqueda_listado_producto_contratos"
+                        ng-submit="contratacion_productos(busqueda_listado_producto_contratos)" type="text"
+                        class="margin border-none white input-w-p gray-input w-100"
+                        style="margin-left: 1.5em !important;" placeholder="Enter Para Buscar">
+                    </form>
+
+                  </div>
+                </div>
+                <div class="row" style="height: 24em; overflow: auto;">
+                  <table class="striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;" colspan="2">PRODUCTO</th>
+                        <th style="text-align:center;" colspan="2">SERVICIO</th>
+                        <th style="text-align:center;">TARIFA</th>
+                        <th style="text-align:center;">ESTADO</th>
+                        <th style="text-align:center;">ACCIÓN</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="productos_contratado in lista_productos_contratados | filter:
+                        busqueda_listado_producto_contratos track by $index">
+                        <td style="text-align:center;">
+                          {{productos_contratado.codigo_producto}}
+                        </td>
+                        <td style="text-align:center;"> {{productos_contratado.nombre_producto}}
+                        </td>
+                        <td style="text-align:center;"> {{productos_contratado.codigo_servicio}}
+                        </td>
+                        <td style="text-align:center;"> {{productos_contratado.nombre_servicio}}
+                        </td>
+                        <td style="text-align:center;"> {{productos_contratado.tarifa}}={{productos_contratado.valor}}
+                        </td>
+
+                        <td style="text-align:center; " class="white-text"
+                          ng-class="productos_contratado.id_estado=='0'?'azul':productos_contratado.id_estado=='A'?'verde':productos_contratado.id_estado=='5'?'gris':'rojo'">
+                          {{productos_contratado.estado}}</td>
+                        <td style="text-align:center;" ng-show="productos_contratado.id_estado!='5'">
+                          <i ng-hide="productos_contratado.id_estado=='0'"
+                            ng-click="cambiar_estado(productos_contratado)" class="font16 "
+                            ng-class="productos_contratado.id_estado!='A'?'icon-ok-1':'icon-cancel-2'"></i>
+                          <i ng-show="productos_contratado.id_estado=='A'"
+                            ng-click="editar_tarifa(productos_contratado)" class="font16 icon-edit-3"></i>
+                          <i ng-show="productos_contratado.cantidad_subcategorias>0" class="material-icons  pointer"
+                            ng-click="gestionar_productos(productos_contratado)">chrome_reader_mode
+                          </i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row" ng-show="subpaso==31">
+              <div class="col s12">
+                <div class="row">
+                  <div class="col s3">
+                    <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                      <input ng-change="filtrasr()" id="filtrar" placeholder="Filtrar" type="text"
+                        ng-model="filtrar_subcate" class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                  </div>
+                  <div class="col s3">
+                    <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                      <select id="regimen" ng-model="filtrar_estado"
+                        class="select-new gray-input ng-pristine ng-valid ng-touched"
+                        style="box-shadow: none;display: block;">
+                        <option value="">FILTRAR</option>
+                        <option value=1>CONFIGURADO</option>
+                        <option value=0>NO CONFIGURADO</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s6">
+                    <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                      <h6><i class=" icon-database"></i> El producto contiene un Total
+                        <strong>{{json_subcategoria.length}}
+                          Subcategorias</strong>
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" style="    overflow: auto;height: 25em;">
+                  <div class="col s12">
+                    <div class="col m12 s12 ">
+                      <div class="col s12 card-custom"
+                        ng-repeat="prod in json_subcategoria   | filter: filtrar_subcate  | filter: { configurado:filtrar_estado }">
+                        <div class="col s2  card-header-custom foot4">
+                          <span class="vcenter" style="font-size:1em;">{{prod.numero}}</span>
+                        </div>
+                        <div class="col s1  card-header-custom gris">
+                          <span class="vcenter" style="font-size:1em;">{{prod.codigo_alterno}}</span>
+                        </div>
+                        <div class="col s8 card-body-custom">
+                          <div class="row">
+                            <div class="col s12">
+                              <h6 class="card-body-title" style="font-size: smaller;"> {{prod.nombre_alterno}} </h6>
+                            </div>
+                            <div class="col s6">
+                              <p style="margin: 0; font-size: 9px;">TARIFA:<span
+                                  style=" padding: 0.2em;font-size: 9px;">{{prod.nomtarifa}}</span>
+                              <p style="margin: 0; font-size: 9px;">VALOR:<span
+                                  style=" padding: 0.2em;font-size: 9px;">{{prod.valor}}</span>
+                              </p>
+                            </div>
+                            <div class="col s6" style="    text-align: right;">
+                              <span class="white-text" ng-class="prod.configurado==0?'rojo':'verde'"
+                                style=" padding: 0.2em;">{{prod.configurado==0?'NO':''}} CONFIGURADO</span>
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col s1 card-footer-custom">
+                          <div class="tooltip">
+                            <i class="material-icons  pointer" ng-click="abrir_modal1(prod)">chrome_reader_mode</i>
+                            <span class="tooltiptext">Gestionar Tarifa</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row" ng-show="subpaso==6">
+              <div class="col l12 m12 s12">
+                <ul reload="allTabContentLoaded"
+                  class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content">
+                  <li class="tab col l12" style="cursor: pointer;">
+                    <a ng-click="setTab(1)" id="tab" class="col l12 large waves-effect waves-pink tabI">BASE </a>
+                  </li>
+                  <li class="tab col l12" style="cursor: pointer;">
+                    <a ng-click="setTab(2);" class="col l12 large waves-effect waves-pink tabII">
+                      SERVICIOS </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="col l12 m12 s12 " ng-show="tab==1">
+                <div class="row margin-top">
+                  <div class="col s12 m6 l6">
+                    <div class="row">
+                      <div class="col s12 columnas">
+                        <p class="default-background white-text"> <i class="icon-edit-1"></i>Datos Actuales</p>
+                      </div>
+                      <div class="col s12 mt-10">
+                        <div class="row">
+                          <div class="col s12 label-new no-p-l">
+                            <label for="v_tarifa">Tarifa Base</label>
+                            <input id="porcentaje" type="text" disabled ng-model="infoContrato.nombre_tarifa"
+                              class="margin border-none white input-w-p gray-input w-100">
+                          </div>
+                          <div class="col s12 label-new no-p-l">
+                            <label for="regimen">Operador</label>
+                            <select id="regimen" disabled ng-model="infoContrato.operador"
+                              class="gray-input  select-chosen-eps  select-input-new  select-new"
+                              style="padding-top: 0;">
+                              <option value="" disabled>SELECCIONAR</option>
+                              <option value="S">SUMA</option>
+                              <option value="R">RESTA</option>
+                            </select>
+                          </div>
+                          <div class="col s12 label-new no-p-l">
+                            <label for="tipo">{{infoContrato.v_poperador=='S'?'Incremento':'Disminución'}}</label>
+                            <input id="porcentaje" type="text" disabled ng-model="infoContrato.porcentaje"
+                              class="margin border-none white input-w-p gray-input w-100">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col l12 m12 s12 " ng-show="tab==2">
+                <div class="row">
+                  <div class="col s6">
+                    <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                      <input ng-change="filtrasr()" id="filtrar" placeholder="Filtrar" type="text"
+                        ng-model="filtrar_clasi" class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                  </div>
+                  <div class="col s6">
+                    <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                      <h6><i class=" icon-database"></i>El Contrato contiene un Total
+                        <strong>{{json_clasificacion.length}}
+                          Clasificaciones</strong>
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="row margin-top" style="    overflow-y: auto;
+                height: 21em;
+                overflow-x: hidden;">
+                  <div class="col s12">
+                    <div class="col m12 s12 ">
+                      <div class="col s12 card-custom" ng-repeat="clasi in json_clasificacion  | filter: filtrar_clasi">
+                        <div class="col s2  card-header-custom foot4">
+                          <span class="vcenter" style="font-size: x-large;">{{clasi.numero}}</span>
+                        </div>
+                        <div class="col s9 card-body-custom">
+                          <h6 class="card-body-title" style="font-size: smaller;">{{clasi.nombre}} </h6>
+                          <p style="margin: 0;">TARIFA: <strong>{{clasi.tarifa}}</strong></p>
+                        </div>
+                        <div class="col s1 card-footer-custom" style=" padding-top: 1.5em;">
+                          <div ng-click="abrir_modal_servicio($index)">
+                            <div class="tooltip">
+                              <i class="material-icons  pointer">mode_edit</i>
+                              <span class="tooltiptext">Editar Servicio</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col l12 m12 s12" ng-show="tab==3">
+                <div class="row margin-top">
+                  <div class="col l12 m12 s12">
+                    <table class="striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="text-align:center;">CODIGO</th>
+                          <th style="text-align:center;">NOMBRE</th>
+                          <th style="text-align:center;">FACTOR</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- && json_contratos[0].codigo_concepto == 'EV'" -->
+            <div class="col s12 m12 l12" ng-show="subpaso==11">
+              <!-- <div class="row">
+                <div class="col s12 m12 l12 bb">
+                  <h5><small>EDICIÓN ASUNTO Y MOTIVOS</small>
+                    <i class="font16 icon-reply-3 right" ng-click="paso = 3">Atras</i>
+                  </h5>
+                </div>
+              </div> -->
+              <div class="col l12 m12 s12">
+                <ul reload="allTabContentLoaded"
+                  class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content">
+                  <li class="tab col l12" style="cursor: pointer;">
+                    <a ng-click="setTab(1)" id="tab" class="col l12 large waves-effect waves-pink tabI">Red No
+                      Contratada</a>
+                  </li>
+                  <li class="tab col l12" style="cursor: pointer;">
+                    <a ng-click="setTab(2);" class="col l12 large waves-effect waves-pink tabII">Personalizada</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="row margin-top">
+                <div class="col s12 m12 l12" ng-show="tab==1">
+                  <!-- <div class="col s12 m12 l12">
+                      <div class="col s12 m12 l12 columnas">
+                        <p class="default-background white-text"> <i class="icon-edit-1"></i>Red No Contratada</p>
+                      </div>
+                    </div> -->
+                  <div class="col s12 m12 l12 label-new no-p-l">
+                    <label for="motivos">Motivos</label>
+                    <select id="motivos" disabled ng-model="motivos_no_contratados" ng-init="motivos_no_contratados=13"
+                      class="gray-input select-chosen-eps select-input-new  select-new" style="padding-top: 0;">
+                      <option value="" disabled>SELECCIONAR</option>
+                      <option value="13">RN - RED NO CONTRATADA</option>
+                      <!-- <option ng-value="mot.codigo" ng-repeat="mot in json_motivos">{{mot.nombre}}</option> -->
+                    </select>
+                  </div>
+                  <div class="col s12 m12 l12 label-new no-p-l">
+                    <label for="asunto">Asuntos</label>
+                    <select id="asunto" disabled ng-model="asunto_no_contratado" ng-init="asunto_no_contratado=1"
+                      class="gray-input select-chosen-eps select-input-new  select-new" style="padding-top: 0;">
+                      <option value="" disabled>SELECCIONAR</option>
+                      <option value="1">RN - RED NO CONTRATADA</option>
+                      <!-- <option ng-value="asun.codigo" ng-repeat="asun in json_asuntos">{{asun.nombre}}</option> -->
+                    </select>
+                  </div>
+                  <div class="col s12 m12 l12">
+                    <div class="col s12 mt-20 center">
+                      <a class="waves-effect waves-light btn white-text light-blue"
+                        ng-click="actualizar_asunto_motivos(motivos_no_contratados, asunto_no_contratado, 'N')">Actualizar</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col s12 m12 l12" ng-show="tab==2">
+                  <!-- <div class="col s12 m12 l12">
+                    <div class="col s12 m12 l12 columnas">
+                      <p class="default-background white-text"> <i class="icon-edit-1"></i>Personalizada</p>
+                    </div>
+                  </div> -->
+                  <div class="col s12 m12 l12 label-new no-p-l">
+                    <label for="motivos">Motivos</label>
+                    <select id="motivos" ng-model="motivos_personalizados"
+                      ng-change="obtener_asuntos(motivos_personalizados);"
+                      class="gray-input select-chosen-eps select-input-new  select-new" style="padding-top: 0;">
+                      <option value="" disabled>SELECCIONAR</option>
+                      <option ng-value="mot.codigo" ng-repeat="mot in json_motivos">{{mot.nombre}}</option>
+                    </select>
+                  </div>
+                  <div class="col s12 m12 l12 label-new no-p-l">
+                    <label for="asunto">Asuntos</label>
+                    <select id="asunto" ng-model="asunto_personalizado"
+                      class="gray-input select-chosen-eps select-input-new  select-new" style="padding-top: 0;">
+                      <option value="" disabled>SELECCIONAR</option>
+                      <option ng-value="asun.codigo" ng-repeat="asun in json_asuntos">{{asun.nombre}}</option>
+                    </select>
+                  </div>
+                  <div class="col s12 m12 l12">
+                    <div class="col s12 mt-20 center">
+                      <a class="waves-effect waves-light btn white-text light-blue"
+                        ng-click="actualizar_asunto_motivos(motivos_personalizados, asunto_personalizado, 'P')">Actualizar</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col s12 m12 l12 text-center" ng-show="subpaso==11 && json_contratos[0].codigo_concepto != 'EV'">
+              <img src="assets/images/contratos/gestion_contratos/not_found.svg"
+                    style="width: 500px !important; height: 250px;">
+              <h5><small>Esta opción solo aplica para contratos tipo evento.</small></h5>
+            </div> -->
+
+
+            <div class="row margin-top" ng-show="subpaso==8">
+              <div class="col s6 ">
+                <div class="row">
+                  <div class="col s12 columnas">
+                    <p class="default-background white-text"> <i class="icon-edit-1"></i>Sedes Habilitadas</p>
+                  </div>
+                </div>
+                <div class="row">
+                  <table class="striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;">NOMBRE</th>
+                        <th style="text-align:center;">UBICACION</th>
+                        <th style="text-align:center;">DIRRECCION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row">
+                  <ul style="text-align: center;" class="pagination" ng-show="mesasayudasTemp.length!=0">
+                    <li>
+                      <button disabled class="btn-floating default-background" ng-click="paso('back')">&laquo;</button>
+                    </li>
+                    <li> <small>Pág. 1 de 1</small> </li>
+                    <li>
+                      <button disabled class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col s6 ">
+                <div class="row">
+                  <div class="col s12 columnas">
+                    <p class="default-background white-text"> <i class="icon-edit-1"></i>Sedes Actuales</p>
+                  </div>
+                </div>
+                <div class="row">
+                  <table class="striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;">NOMBRE</th>
+                        <th style="text-align:center;">UBICACION</th>
+                        <th style="text-align:center;">DIRRECCION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row">
+                  <ul style="text-align: center;" class="pagination" ng-show="mesasayudasTemp.length!=0">
+                    <li>
+                      <button disabled class="btn-floating default-background" ng-click="paso('back')">&laquo;</button>
+                    </li>
+                    <li> <small>Pág. 1 de 1</small> </li>
+                    <li>
+                      <button disabled class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 32-->
+          <div class="col s12 " ng-show="paso==32">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>{{nombre_modificacion}}</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso=3">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row margin-top">
+              <div class="col l12 m12 s12">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">MODIFICACION</th>
+                      <th style="text-align:center;">DATO ANTERIOR</th>
+                      <th style="text-align:center;">DATO ACTUALIZADO</th>
+                    </tr>
+                  </thead>
+                  <thead>
+                    <tr>
+                      <td style="text-align:center;">MODIFICACION</td>
+                      <td style="text-align:center;">DATO ANTERIOR</td>
+                      <td style="text-align:center;">DATO ACTUALIZADO</td>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+            <div class="row margin-top">
+              <div class="col s12">
+                <div class="col s12 columnas">
+                  <p class="default-background white-text"> <i class="icon-edit-1"></i>Observacion</p>
+                </div>
+              </div>
+              <div class="col s12 center">
+                <textarea rows="10" style="
+                                    width: 95%;" ng-model="observacion_modificacion"
+                  class="margin border-none white input-w-p gray-input w-100" cols="50"></textarea>
+              </div>
+              <div class="col s12 mt-20 center">
+                <button class="waves-effect waves-light btn white-text light-blue"
+                  ng-click="guardar_modificacion()">Guardar</button>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 4-->
+          <div class="col s12 " ng-show="paso==4">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>BITACORAS</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = 2">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col l6 m6 s6">
+                <div class="card card-default">
+                  <div class="card-header  white-text default-panel-widget  pad-10" ng-style="estilo">
+                    <strong>Proceso Actual: </strong> {{listTareas.proceso}}
+                  </div>
+                  <div class="card-content">
+                    <p><strong>Responsable: </strong>{{listTareas.responsable}}</p>
+                    <p><strong>Observación: </strong>{{listTareas.observacion}}</p>
+                  </div>
+                </div>
+                <div class="row margin-top">
+                  <div class="col s12">
+                    <div class="col s12 columnas">
+                      <p class="default-background white-text"> <i class="icon-edit-1"></i>Observacion</p>
+                    </div>
+                  </div>
+                  <div class="col s12 center">
+                    <textarea rows="10" style=" width: 95%;height: 5.5em;" ng-model="observacion_bitacora"
+                      class="margin border-none white input-w-p gray-input w-100" cols="5"></textarea>
+                  </div>
+                  <div class="col s12 mt-20 center">
+                    <button class="waves-effect waves-light btn white-text light-blue"
+                      ng-click="guardar_bitacora()">Guardar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col l6 m6 s6">
+                <table class="responsive-table bordered">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Bitácora contractual</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="contractual in json_contractual">
+                      <td class="center-align" style="line-height: 10px;">
+                        <input type="checkbox" class="filled-in" ng-change="cambio_estado_bitacora($index)"
+                          name="contractual" id="chk-{{contractual.Codigo}}" ng-model="contractual.estado"
+                          ng-value="contractual" ng-disabled='contractual.Codigo==listTareas.codigo'>
+                        <label title="Seleccionar" for="chk-{{contractual.Codigo}}"
+                          style="padding-left: 20px;height: 20px;transform: scale(.8);"></label>
+                      </td>
+                      <td>{{contractual.Nombre}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!--  MOSTRAR LAS TAB 5 -->
+          <div class="col s12" ng-show="paso==5">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>POLIZA</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = 2">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row" ng-show="subpaso == 50">
+              <div class="col s12" style="height: 394px;" ng-show="Listado_polizas.length == 0">
+                <div class="center">
+                  <small>No se encontrarón resultados!</small>
+                </div>
+                <div class="center">
+                  <img src="assets/images/contratos/gestion_contratos/buscar.svg" style="width: 50%">
+                </div>
+              </div>
+              <div class="col s12 scroll" style="height: 394px;" ng-show="Listado_polizas.length > 0">
+                <div class="responsive">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;"><b>#</b></th>
+                        <th style="text-align:center;">POLIZA N°</th>
+                        <th style="text-align:center;">POLIZA</th>
+                        <th style="text-align:center;">ASEGURADOR</th>
+                        <th style="text-align:center;">CUBRIMIENTO</th>
+                        <th style="text-align:center;">VALOR POLIZA</th>
+                        <th style="text-align:center;">VALOR ASEGURADO</th>
+                        <th style="text-align:center;">FECHA EXPEDICION</th>
+                        <th style="text-align:center;">FECHA VENCIMIENTO</th>
+                        <!-- <th style="text-align:center;">ACCION</th> -->
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="x in Listado_polizas">
+                        <td style="text-align:center; ">{{x.RENGLON}}</td>
+                        <td style="text-align:center; ">{{x.POLIZA}}</td>
+                        <td style="text-align:center; ">{{x.NUMERO_POLIZA}}</td>
+                        <td style="text-align:center; ">{{x.ASEGURADOR+' - '+x.NOMBRE_ASEGURADOR}}</td>
+                        <td style="text-align:center; ">{{x.CUBRIMIENTO == 'R' ? 'RESPONSABILIDAD' : 'CUMPLIMIENTO'}}
+                        </td>
+                        <td style="text-align:center; ">{{x.VALOR_POLIZA}}</td>
+                        <td style="text-align:center; ">{{x.VALOR_ASEGURADO}}</td>
+                        <td style="text-align:center; ">{{x.FECHA_EXPEDICION}}</td>
+                        <td style="text-align:center; ">{{x.FECHA_VENCIMIENTO}}</td>
+                        <!-- <td style="text-align:center; "><span class="status {{x.clase}}">{{x.estado}}</span></td> -->
+                        <!-- <td style="text-align:center; ">
+                          <div class="tooltip"><i class="material-icons pointer" ng-click="paso=51">visibility</i><span
+                              class="tooltiptext">Ver Contrato</span></div>
+                        </td> -->
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="center col mt-20 s12 text-center">
+                <a class="waves-effect waves-light btn white-text light-blue" ng-click="subpaso = 51">
+                  Registrar Poliza</a>
+              </div>
+            </div>
+            <div class="row" ng-show="subpaso == 51">
+              <div class="col s12 HojaPoliza" style="height: 394px;">
+                <div class="col s12 m12 l12 ">
+                  <div class="col s4 label-new no-p-l">
+                    <label for="HojaPoliza_Poliza">Poliza</label>
+                    <input id="HojaPoliza_Poliza" ng-model="HojaPoliza.Poliza" autocomplete="off" type="text"
+                      class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                  <div class="col s5 label-new no-p-l">
+                    <label for="HojaPoliza_Asegurador">Asegurador</label>
+                    <input class="margin border-none white input-w-p gray-input w-100" id="HojaPoliza_Asegurador"
+                      title="{{(HojaPoliza.Asegurador=='')? 'Ingrese un nit o coincidencia' : 'Enter para buscar la Ips'}}"
+                      style="text-transform: uppercase;" autocomplete="off" ng-model="HojaPoliza.Asegurador"
+                      ng-keyup="Complete_Listado_Ips($event,Hoja2.Nit);KeyFind_ObIps($event);">
+                    <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+                      ng-click="Buscar_ObIps()"></i>
+                    <ul class="list-group Clase_Listar_Ips"
+                      style="overflow: auto;max-height: 14vh;position:absolute;width: inherit;margin-top:2.2em;z-index: 3;">
+                      <li class="list-group-item" style="font-size: 0.7em;" id="Ips{{$index}}"
+                        ng-repeat="x in Busqueda.Ips.Filtro" ng-click="FillTextbox_Listado_Ips(x.codigo,x.nombre)"
+                        ng-class="$index == Busqueda.Ips.Seleccion ? 'hover' : ''">
+                        {{x.codigo}} - {{x.nombre}}</li>
+                    </ul>
+                    <!-- <label for="HojaPoliza_Asegurador">Asegurador</label>
+                    <input id="HojaPoliza_Asegurador" ng-model="HojaPoliza.Asegurador" autocomplete="off" type="text"
+                      class="margin border-none white input-w-p gray-input w-100"> -->
+                  </div>
+                  <div class="col s3 label-new no-p-l">
+                    <label for="HojaPoliza_Cubrimiento">Cubrimiento</label>
+                    <select id="HojaPoliza_Cubrimiento" ng-model="HojaPoliza.Cubrimiento"
+                      class="select-new gray-input  select-chosen-eps"
+                      style="box-shadow: none;display: block; padding: 0;">
+                      <option value="">SELECCIONAR</option>
+                      <option value="R">RESPONSABILIDAD</option>
+                      <option value="C">CUMPLIMIENTO</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 m12 l12 mt-20">
+                  <div class="col s3 label-new no-p-l">
+                    <label for="HojaPoliza_Valor_Poliza">Valor Poliza</label>
+                    <input id="HojaPoliza_Valor_Poliza" ng-model="HojaPoliza.Valor_Poliza" type="text"
+                      ng-keyup="FormatPeso('HojaPoliza_Valor_Poliza')" maxlength="20"
+                      class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                  <div class="col s3 label-new no-p-l">
+                    <label for="HojaPoliza_Valor_Asegurado">Valor Asegurado</label>
+                    <input id="HojaPoliza_Valor_Asegurado" ng-model="HojaPoliza.Valor_Asegurado" type="text"
+                      ng-keyup="FormatPeso('HojaPoliza_Valor_Asegurado')" maxlength="20"
+                      class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                  <div class="col s3 label-new no-p-l">
+                    <label for="HojaPoliza_Fecha_Expedicion">Fecha Expedicion</label>
+                    <input id="HojaPoliza_Fecha_Expedicion" ng-model="HojaPoliza.Fecha_Expedicion" type="date"
+                      class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                  <div class="col s3 label-new no-p-l">
+                    <label for="HojaPoliza_Fecha_Vencimiento">Fecha Vencimiento</label>
+                    <input id="HojaPoliza_Fecha_Vencimiento" ng-model="HojaPoliza.Fecha_Vencimiento" type="date"
+                      class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+                <div class="center col s12 mt-20 text-center">
+                  <a class="waves-effect waves-light btn white-text light-blue" ng-click="Guardar_Poliza()">
+                    Guardar</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 51-->
+          <div class="col s12 " ng-show="paso==51">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>POLIZA</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = 2">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row margin-top">
+              <div class="col s12 m6 l6">
+                <div class="row">
+                  <div class="col s12">
+                    <div class="col s12 columnas">
+                      <p class="default-background white-text"> <i class="icon-edit-1"></i>Datos de La poliza</p>
+                    </div>
+                  </div>
+                  <div class="col s12 m12 l12 ">
+                    <div class="col s12 label-new no-p-l">
+                      <label for="fecha_inicio">Fecha Inico</label>
+                      <input id="fecha_inicio" ng-model="contrato_anterior.fecha_incio" type="date"
+                        class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                    <div class="col s12 label-new no-p-l">
+                      <label for="fecha_fin">Fecha Fin</label>
+                      <input id="fecha_fin" ng-model="contrato_anterior.fecha_fin" type="date"
+                        class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                    <div class="col s12 label-new no-p-l">
+                      <label for="valor">Valor</label>
+                      <input id="valor" ng-model="contrato_anterior.valor" type="number"
+                        class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                    <div class="col s12 label-new no-p-l">
+                      <label for="poblacion">Poblacion</label>
+                      <input id="poblacion" ng-model="contrato_anterior.poblacion" type="number"
+                        class="margin border-none white input-w-p gray-input w-100">
+                    </div>
+                    <div class="col s12 mt-20 center">
+                      <a class="waves-effect waves-light btn white-text light-blue" ng-click="buscar()">Buscar</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col l6 m6 s6">
+                <div class="col s12">
+                  <div class="col s12 columnas">
+                    <p class="default-background white-text"> <i class="icon-edit-1"></i>Datos de La poliza</p>
+                  </div>
+                </div>
+                <table class="responsive-table bordered">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Bitácora contractual</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="contractual in json_contractual">
+                      <td class="center-align" style="line-height: 10px;">
+                        <input type="checkbox" class="filled-in" name="contractual" id="chk-{{contractual.id}}"
+                          ng-model="check_user[$index]" ng-value="contractual">
+                        <label title="Seleccionar" for="chk-{{contractual.id}}"
+                          style="padding-left: 20px;height: 20px;transform: scale(.8);"></label>
+                      </td>
+                      <td>{{contractual.titulo}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 10-->
+          <div class="col s12 " ng-show="paso==10">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5>
+                  <small ng-show="subpaso==100">{{nombre_modificacion}}</small>
+                  <small ng-show="subpaso==101">Excepciones</small>
+                  <small ng-show="subpaso==102">Formas de Pago</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso=3;subpaso=100">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row d-flex">
+              <!-- MENU -->
+              <div class="col s12 m6 l4 center" ng-click="subpaso=101;obtener_excepciones();" ng-show="subpaso==100"
+                style="margin: auto">
+                <div class="card tab-grande">
+                  <div class="center">
+                    <p class="titulo" style="font-size: 22px;margin-bottom: 0px;"> Excepciones</p>
+                    <hr class="hr">
+                  </div>
+                  <div class="img-grande center" style="height: 13em;">
+                    <img src="assets/images/contratos/gestion_contratos/modificaciones/excepcion.svg"
+                      style="max-width: 240px;">
+                  </div>
+                  <div class="center col mt-20 s12 text-center">
+                    <a class="waves-effect waves-light btn white-text light-blue" ng-click="subpaso=101;">
+                      Click
+                      Aqui</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col s12 m6 l4 center" ng-click="subpaso=102;" ng-show="subpaso==100"
+                style="margin: auto">
+                <div class="card tab-grande">
+                  <div class="center">
+                    <p class="titulo" style="font-size: 22px;margin-bottom: 0px;">Formas de Pago</p>
+                    <hr class="hr">
+                  </div>
+                  <div class="img-grande center" style="height: 13em;">
+                    <img src="assets/images/contratos/gestion_contratos/modificaciones/formas_pago.svg"
+                      style="max-width: 240px;">
+                  </div>
+                  <div class="center col mt-20 s12 text-center">
+                    <a class="waves-effect waves-light btn white-text light-blue" ng-click="subpaso=100;">
+                      Click
+                      Aqui</a>
+                  </div>
+                </div>
+              </div>
+              <!-- //////// -->
+              <div class="col s12  responsive-table-shir" ng-show="subpaso==101">
+                <div class="responsive">
+                  <table class="table table-bordered table-striped striped">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;">Descripción</th>
+                        <th style="text-align:center;">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="text-align:center;">Tipo</td>
+                        <td style="text-align:center;">
+                          {{infoContrato.normalizado=='S'?'ESTANDAR':'EXCEPCIÓN'}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;">Genera Autorización</td>
+                        <td style="text-align:center;">
+                          <i style="font-size: 1.5em;"
+                            class="{{Excepciones.genera_autorizacion=='S'?'icon-ok-outline':'icon-cancel-outline'}}"
+                            ng-click="validador_excepciones('genera_autorizacion')"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;">Genera Pre-Factura</td>
+                        <td style="text-align:center;">
+                          <i style="font-size: 1.5em;"
+                            class="{{Excepciones.genera_prefactura=='S'?'icon-ok-outline':'icon-cancel-outline'}}"
+                            ng-click="validador_excepciones('genera_prefactura')"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;">Genera BD</td>
+                        <td style="text-align:center;">
+                          <i style="font-size: 1.5em;"
+                            class="{{Excepciones.genera_bd=='S'?'icon-ok-outline':'icon-cancel-outline'}}"
+                            ng-click="validador_excepciones('genera_bd')"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;">Genera Factura</td>
+                        <td style="text-align:center;">
+                          <i style="font-size: 1.5em;"
+                            class="{{Excepciones.genera_factura=='S'?'icon-ok-outline':'icon-cancel-outline'}}"
+                            ng-click="validador_excepciones('genera_factura')"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;">Genera Ubicación Capita</td>
+                        <td style="text-align:center;">
+                          <i style="font-size: 1.5em;"
+                            class="{{Excepciones.genera_ubicacion_capita=='S'?'icon-ok-outline':'icon-cancel-outline'}}"
+                            ng-click="validador_excepciones('genera_ubicacion_capita')"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;">Genera Retroactivas</td>
+                        <td style="text-align:center;">
+                          <i style="font-size: 1.5em;"
+                            class="{{Excepciones.genera_retroactivas=='S'?'icon-ok-outline':'icon-cancel-outline'}}"
+                            ng-click="validador_excepciones('genera_retroactivas')"></i>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="text-align:center;">Genera Priorizacion</td>
+                        <td style="text-align:center;">
+                          <i style="font-size: 1.5em;"
+                            class="{{Excepciones.genera_priorizacion=='S'?'icon-ok-outline':'icon-cancel-outline'}}"
+                            ng-click="validador_excepciones('genera_priorizacion')"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="center col mt-20 s12 text-center" ng-if="excepcion_Btn_Actualizar">
+                    <a class="waves-effect waves-light btn white-text light-blue" ng-click="deshacer_excepciones();">
+                      Deshacer</a>
+                    <a class="waves-effect waves-light btn white-text light-blue" ng-click="actualizar_excepciones();">
+                      Guardar</a>
+                  </div>
+                </div>
+              </div>
+              <!-- MENU*] -->
+            </div>
+          </div>
+          <div class="col s12 m12 l12" ng-show="subpaso==102">
+            <!-- ng-show="subpaso==12" -->
+            <div class="row">
+              <div class="col s12 m12 l12">
+                <div class="col s12 m12 l12 label-new no-p-l">
+                  <label for="forma_pago">Formas de Pago</label>
+                  <select id="forma_pago" ng-model="forma_pago"
+                    class="gray-input select-chosen-eps select-input-new  select-new" style="padding-top: 0;">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option ng-value="fpago.codigo" ng-repeat="fpago in json_formapago">{{fpago.nombre}}</option>
+                    <!-- <option value="13">RN - RED NO CONTRATADA</option> -->
+                  </select>
+                </div>
+                <div class="col s12 m12 l12">
+                  <div class="col s12 mt-20 center">
+                    <a class="waves-effect waves-light btn white-text light-blue"
+                      ng-click="ui_formas_pago('A')">Actualizar</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- BUSQUEDA DE CONTRATO SIEMPRE DEBE ESTAR ACTIVA -->
+      <div class="col  m3 s12" ng-show="paso == 1">
+        <div class="card contentcard" style="min-height: 543px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Busqueda de Contrato</small></h5>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12">
+              <form ng-submit="buscar()">
+                <div class="col s12 label-new no-p-l">
+                  <label for="numero">Número</label>
+                  <input id="numero" type="number" ng-model="busqueda.numero"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="regimen">Regimen</label>
+                  <select id="regimen" ng-model="busqueda.regimen" class="select-new gray-input  select-chosen-eps"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="">SELECCIONAR</option>
+                    <option value="KS">SUBSIDIADO</option>
+                    <option value="KC">CONTRIBUTIVO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="departamento">Estado</label>
+                  <select id="departamento" ng-model="busqueda.estado" class="select-new gray-input"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="A">ACTIVO</option>
+                    <option value="X">ANULADO</option>
+                    <option value="T">TERMINADO</option>
+                    <option value="L">LIQUIDADO</option>
+                    <option value="P">PROCESADO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador">NIT Prestador</label>
+                  <input id="prestador" ng-model="busqueda.prestador" autocomplete="off"
+                    ng-blur="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador">Prestador</label>
+                  <input id="prestador" ng-model="busqueda.prestador_nombre" autocomplete="off"
+                    ng-keyup="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                  <ul class="list-group" id="list-group-prestador"
+                    style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                    <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}"
+                      ng-repeat="x in json_prestador" ng-click="seleccion_opcion(x.CODIGO,x.NOMBRE)"> {{x.CODIGO}} -
+                      {{x.NOMBRE}}</li>
+                  </ul>
+                </div>
+                <div class="col s12 mt-20 center">
+                  <button class="waves-effect waves-light btn white-text light-blue" type="submit">Buscar</button>
+                </div>
+                <div class="col s12 mt-20 center">
+                  <button ng-click="borrar_busqueda_contrato()"
+                    class="btn red waves-effect waves-light white-text">Borrar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col  m3 s12" ng-show="paso != 1">
+        <div class="card contentcard" style="min-height: 543px;" ng-show="subpaso!=3 || paso!=31">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Contrato Selecionado</small></h5>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12">
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-clipboard-2"></i>Contrato
+                </h6>
+                <h6 class="seleccion_contrato">{{contrato_cabeza.numero}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class=" icon-pencil-2"></i> Estado
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.estado}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class=" icon-sliders"></i> Regimen
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.regimen}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-location-1"></i> Lugar
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.departamento}} {{contrato_cabeza.municipio}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-hospital"></i> Prestador
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.prestador}} <small>{{contrato_cabeza.nit}}</small>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card contentcard" style="min-height: 543px;" ng-show="subpaso==3 && paso==31">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h6 style="
+              font-size: 20px;
+              font-weight: 600;
+              color: #1a2e63;
+          "><small>Resumen de Modificaciones</small></h6>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12" style="overflow-y: auto;
+            max-height: 32em;">
+              <table class="table  table-bordered  table-striped striped" style="margin-left: -1em;">
+                <thead>
+                  <tr>
+                    <th style="text-align:center;">SERVICIO</th>
+                    <th style="text-align:center;">PRODUCTO</th>
+                    <th style="text-align:center;" colspan="2">ACCION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="r in nuevos_productos" ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                    <td style="text-align:center;"> {{r.codigo_servicio}} </td>
+                    <td style="text-align:center;"> {{r.codigo_producto}} </td>
+                    <td style="text-align:center;"> {{r.nombre_accion}} </td>
+                    <td> <i ng-click="eliminar_producto_nuevo(r)" class="font16 icon-trash-empty"></i></td>
+                  </tr>
+                  <tr ng-show="nuevos_productos.length==0">
+                    <td style="text-align:center;" colspan="4"> Sin Modificaciones <br />
+                      <img src="assets/images/contratos/gestion_contratos/modificaciones/nada.svg"
+                        style="width: 100px !important; height: 87px;">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    i.font16.icon-cancel-2 {
+      color: #ff5722;
+    }
+
+    i.font16.icon-ok-1 {
+      color: #8bc34a;
+    }
+
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .seleccion_contrato_t {
+      padding: 0.5em;
+      margin: 0px;
+    }
+
+    .seleccion_contrato {
+      margin: 0px;
+      padding: 0.5em 1.5em;
+      background: #e0e0e0;
+    }
+
+    .tabactiva {
+      background: #e5e6e6;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .verde {
+      background-color: #8BC34A !important;
+    }
+
+    .rojo {
+      background-color: #FF5722 !important;
+    }
+
+    .amarillo {
+      background-color: #FFC107 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 540px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+    .card-divider {
+      color: #FFC107;
+      width: 100%;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    div.columnas {
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 128px;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    }
+
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input.input-text-new {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .tab-color {
+      background: #1565c033;
+    }
+
+    .tab-no-color {
+      background: #c5c7c7a6;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    div.columnas {
+      /* border-bottom: 1px solid #e5e6e6; */
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::before,
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::after {
+      right: -77px;
+      border-top-left-radius: .25rem !important;
+      border-bottom-left-radius: .25rem !important;
+    }
+
+    .content-box {
+      background-color: #f7f7f7;
+      border-bottom-right-radius: .50rem !important;
+      border-bottom-left-radius:
+        .50rem !important;
+      border-bottom: 30px solid #ebecec !important;
+      padding-top: 37px !important;
+      box-shadow:
+        none !important;
+    }
+  </style>
+</div>

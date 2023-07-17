@@ -1,0 +1,162 @@
+<div class="row margin" id="view-alta-gerencia" style="
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+width: 100%;
+">
+    <style>
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        .table_border,
+        .table_border th,
+        .table_border td {
+            border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+            text-align: center;
+        }
+
+        table tbody tr {
+            cursor: pointer;
+        }
+
+        table tbody tr:hover {
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        #H1_Tabla>thead,
+        #H1_Tabla>tbody {
+            font-size: 1em;
+            /* border: 3px; */
+            border-width: medium;
+            border-style: solid;
+            border-radius: .375rem;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .error {
+            color: #EE0707;
+        }
+
+        .errorHoras {
+            color: #EE0707;
+        }
+    </style>
+    <div style="padding: 20px; padding-top: 0; width: 95vh; top: 5vh; position: absolute;">
+        <!-- Crear un comite -->
+        <div class="col l12 m12 s12" style="position: relative; z-index: 9;">
+            <div class="col l12 m12 s12 prod-title-div no-padding">
+                <blockquote>
+                    <h4>Agendar comité</h4>
+                </blockquote>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-action">
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col l12 m12 s12">
+                            <label class="labelper">Comité<span class="red-text">*</span></label>
+                            <select id="comite" name="comite" class="select-chosen-eps"
+                                ng-model="registrarAgenda.comite" required>
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="comite in comites" ng-value="comite.Codigo">
+                                    {{comite.Descripcion}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col l12 m12 s12">
+                            <input id="tema" type="text" ng-model="registrarAgenda.tema" required>
+                            <label for="tema">Tema<span class="red-text">*</span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col l5 m12 s12">
+                            <label class="labelper">Modalidad</label>
+                            <select id="modalidad" name="modalidad" class="select-chosen-eps"
+                                ng-model="registrarAgenda.modalidad" required>
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="modalidad in modalidades" ng-value="modalidad.Codigo">
+                                    {{modalidad.Descripcion}}</option>
+                            </select>
+                        </div>
+                        <div class="input-field col l5 m12 s12">
+                            <input id="fecha" class="fecha" type="date" ng-model="registrarAgenda.fecha" required>
+                            <label for="fecha" class="labelper">Fecha<span class="red-text">*</span></label>
+                            <div class="error" id="error"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col l5 m12 s12">
+                            <input id="horaInicio" type="time" ng-model="registrarAgenda.horaInicio" required>
+                            <label for="horaInicio" class="labelper">Hora inicio<span class="red-text">*</span></label>
+                        </div>
+                        <div class="input-field col l5 m12 s12">
+                            <input id="horaFin" type="time" ng-model="registrarAgenda.horaFin" required>
+                            <label for="horaFin" class="labelper">Hora fin<span class="red-text">*</span></label>
+                            <div  ng-if="esHoraMenor(registrarAgenda.horaFin,registrarAgenda.horaInicio)" class="error" id="error">La hora fin no puede ser menor a la hora inicio
+                            </div>
+                        </div>
+                    </div>
+                    <div class="errorHoras" id="errorHoras"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col l12 m12 s12">
+                            <input id="ubicacion" type="text" ng-model="registrarAgenda.ubicacion" required>
+                            <label for="ubicacion">Ubicación<span class="red-text">*</span></label>
+                        </div>
+                       
+                        <div class="switch col l3 m12 s12" style="margin-top: 25px;">
+                            <label for="recordatorio" class="labelper">Recordatorio</label>
+                            <label>
+                                <input type="checkbox" ng-click="HabilitarInformacion()" id="recordatorio"
+                                    ng-model="registrarAgenda.recordatorio"><span class="lever"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="file-field input-field">
+                            <div class="btn" style="background-color: #1a2e63">
+                                <span class="white-text">ADJUNTAR</span>
+                                <input type="file" id="soporte" accept=".pdf" name="soporte"
+                                    style="background-color: rgba(255, 255, 255, 0.9); width: 100%; padding: 5px; border: 1px solid #f2f2f2; border-radius: 2px;border-color: #a3a3b182; height: 3rem;"
+                                    ng-model="soporte">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input id="nombreadjunto" class="file-path" type="text" ng-change="obtenerBase()"
+                                    placeholder="Seleccione Archivo" ng-model="registrarAgenda.nombreArchivo"
+                                    style="background-color: rgba(255, 255, 255, 0.9); width: 100%; padding: 5px; border: 1px solid #f2f2f2; border-radius: 2px;border-color: #a3a3b182; height: 3rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div style="display: flex; justify-content: space-around;">
+                        <button class="btn btn-primary" type="button" ng-click="guardarAgenda()">Guardar
+                            agenda</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

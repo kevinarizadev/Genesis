@@ -1,0 +1,312 @@
+<div id="pantalla" class="white newdesing">
+  <!-- Encabezado -->
+  <div class="row section-header">
+      <ul class="left mailbox-custom-search list-inline"
+          style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+          <li id="inicio">
+              <h5 onclick="location.reload();">Autorizaciones de Productos PGP </h5>
+          </li>
+      </ul>
+  </div>
+  <div ng-show="true">
+      <!-- >paso 0 -->
+      <div ng-show="Hoja1.Listado.length == 0 || Hoja1.Listado == null">
+          <div class="row content-container elements mb-0">
+              <div class="col m12 s12">
+                  <div class="card contentcard row" style="min-height: 541px;">
+                      <div class="col s12 m-b" style="padding: 0;">
+                          <div class="foot4 divcardcustom default-linear-gradient">
+                              <div class="text-al divcardcustom2">
+                                  <strong class="switch" style="font-weight:600">Consulta por Periodo</strong>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col s12 m-l">
+                          <div class="row margin">
+                              <div class="col s4 no-padding label-new m-b">
+                                  <input type="text" id="Hoja1_Nit"
+                                      class="margin border-none input-text-new w-100 m-l"
+                                      style="text-transform:uppercase" autocomplete="off" ng-model="Hoja1.Nit"
+                                      ng-keyup="Complete_Listado_Ips($event,Hoja1.Nit);KeyFind_ObIps($event);">
+                                  <label>Nit/Nombre Ips
+                                  </label>
+                                  <ul class="list-group m-l Clase_Listar_Ips"
+                                      style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+                                      <li class="list-group-item" style="font-size: 0.7em;" id="Ips{{$index}}"
+                                          ng-repeat="x in Busqueda.Ips.Filtro"
+                                          ng-click="FillTextbox_Listado_Ips(x.nit,x.nombre_ips)"
+                                          ng-class="$index == Busqueda.Ips.Seleccion ? 'hover' : ''">
+                                          {{x.nit}} - {{x.nombre_ips}}</li>
+                                  </ul>
+                                  <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                                      title="Buscar" ng-click="Buscar_ObIps()"></i>
+                              </div>
+                              <!-- <div class="col s5 no-padding label-new m-b">
+                                  <input class="margin border-none input-text-new gray-input w-100" autocomplete="off"
+                                      ng-model="Hoja1.Nit">
+                                  <label>Nit Ips</label>
+                              </div> -->
+                              <div class="col s2 no-padding label-new">
+                                  <select id="Hoja1_Anio" class="select-new-style gray-input m-l"
+                                      ng-model="Hoja1.Anio" ng-selected="x.ANIO == Hoja1.Anio"
+                                      ng-change="Cargar_Periodos(Hoja1.Anio,'Hoja1')">
+                                      <option value="" disabled>SELECCIONAR</option>
+                                      <option ng-repeat="x in Hoja1.List_Anio" value="{{x.ANIO}}">
+                                          {{x.ANIO}}</option>
+                                  </select>
+                                  <label>Año</label>
+                              </div>
+                              <div class="col s2 no-padding label-new m-l">
+                                  <select id="Hoja1_Periodo" class="select-new-style gray-input m-l"
+                                      ng-model="Hoja1.Periodo">
+                                      <option value="" disabled>SELECCIONAR</option>
+                                      <option ng-repeat="x in Hoja1.List_Periodo" value="{{x.IDE}}"
+                                          ng-selected="x.IDE == Hoja1.Periodo">
+                                          {{x.NOMBRE}}</option>
+                                  </select>
+                                  <label>Periodo</label>
+                              </div>
+                              <div class="col s2 no-padding label-new m-l">
+                                  <select id="Hoja1_Regimen" class="select-new-style gray-input m-l"
+                                      ng-model="Hoja1.Regimen">
+                                      <option value="" disabled>SELECCIONAR</option>
+                                      <option value="C">CONTRIBUTIVO</option>
+                                      <option value="S">SUBSIDIADO</option>
+                                  </select>
+                                  <label>Regimen</label>
+                              </div>
+                              <div class="col s1 no-padding label-new m-l">
+                                  <button class="btn default-linear-gradient m-l" style="margin-top: -.5vh;" ng-click="Consultar_Soportes()">
+                                      <i class="icon-search"></i></button>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- BUSQUEDA INICIAL -->
+                      <div class="col s12">
+                          <div class="center">
+                              <img src="assets/images/contratos/pgp/seach.gif" style="width: 368px;">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- >paso 1 -->
+      <div ng-show="Hoja1.Listado.length > 0">
+          <div class="row content-container elements mb-0">
+              <div class="col m12 s12">
+                  <div class="card contentcard row" style="min-height: 541px;">
+                      <div class="col s12" style="padding: 0;">
+                          <div class="foot4 divcardcustom default-linear-gradient">
+                              <div class="text-al divcardcustom2">
+                                  <strong class="switch" style="font-weight:600">Consulta por Año {{Hoja1.Anio}} y
+                                      periodo
+                                      {{Hoja1.Nombre_Periodo.NOMBRE}}</strong>
+                                  <div class="right" style="margin-left: 2vw;">
+                                      <i ng-click="Hoja1.Listado=[]" class="icon-reply cursor-pointer">Atras</i>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col s12" style="margin: 1vh;">
+                          <div class="row">
+                              <div style="font-size: 1em;"><strong> Actividades PGP encontradas
+                                      {{Hoja1.Listado.length}}
+                                      por el filtro Anterior</strong>
+                              </div>
+                          </div>
+                          <div class="row margin">
+                              <div class="col s12">
+                                  <div class="col s4 no-padding label-new m-b right"
+                                      style="margin-right: .5rem !important;margin-top: 0;">
+                                      <input class="margin border-none input-text-new gray-input w-100 m-l"
+                                          autocomplete="off" type="text" placeholder="..." ng-model="Hoja1.Filtrar">
+                                      <label>Buscar</label>
+                                      <i class="icon-search cursor-pointer default-color"
+                                          style="margin-left: -1.45em;" title="Buscar"></i>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="col s12" style="zoom: 0.9;max-height: 60vh;overflow-y: auto;">
+                          <table class="highlight" style="width:100%;color: black;">
+                              <thead>
+                                  <th class="default-linear-gradient">IPS</th>
+                                  <th class="default-linear-gradient">Regimen</th>
+                                  <th class="default-linear-gradient">Documento</th>
+                                  <th class="default-linear-gradient">Afiliado</th>
+                                  <th class="default-linear-gradient">Fecha Cargue</th>
+                                  <th class="default-linear-gradient">Detalle</th>
+                                  <th class="default-linear-gradient">Soporte</th>
+                              </thead>
+                              <tbody>
+                                  <tr ng-repeat="x in Hoja1.Listado track by $index | filter: Hoja1.Filtrar">
+                                      <td>{{x.nit}} {{x.nombre_ips}}</td>
+                                      <td>{{x.regimen}}</td>
+                                      <td>{{x.tipo_documento}}
+                                          -{{x.num_documento}}</td>
+                                      <td>{{x.nombre_completo}}</td>
+                                      <td>{{x.fecha_cargue}}</td>
+                                      <td>
+                                          <i class="icon-docs-1" ng-click="Ver_Detalle(x)"></i>
+                                      </td>
+                                      <td ng-show="x.ruta!=''">
+                                          <i class="icon-download-1" ng-click="descargafile(x.ruta)"></i>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <style>
+      .default-linear-gradient {
+          border-radius: 0px !important;
+      }
+
+      .Valid_Campo {
+          border: 1px solid red !important;
+      }
+
+      /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+      .timeline-content p {
+          margin: 0vh;
+      }
+
+      td i {
+          font-size: 3vh;
+          cursor: pointer;
+      }
+
+      input.input-text-new {
+          height: 2rem !important;
+      }
+
+      table th {
+          position: sticky;
+          top: 0;
+          z-index: 9;
+      }
+
+      table,
+      table th,
+      table td {
+          text-align: center;
+      }
+
+      .label-new>label {
+          display: table;
+      }
+
+      input.input-text-new {
+          background-color: #f1f3f4 !important;
+      }
+
+      .gray-input {
+          background-color: #f1f3f4 !important;
+      }
+
+      .select_maxheigth ul {
+          max-height: 125px;
+      }
+
+      .dropdown-content li {
+          min-height: 23px;
+      }
+
+      .dropdown-content li>span {
+          line-height: 32px;
+          padding: 0px 16px;
+      }
+
+      /* // */
+      .list-group-item:last-child {
+          margin-bottom: 0;
+          border-bottom-right-radius: 4px;
+          border-bottom-left-radius: 4px;
+      }
+
+      .list-group-item:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+      }
+
+      .list-group-item:hover {
+          color: #1a2e63;
+          cursor: pointer;
+          font-weight: bold;
+      }
+
+      .list-group-item.hover {
+          color: #1a2e63;
+          cursor: pointer;
+          font-weight: bold;
+      }
+
+      .list-group-item {
+          position: relative;
+          display: block;
+          padding: 10px 15px;
+          margin-bottom: -1px;
+          background-color: #fff;
+          border: 1px solid #ddd;
+      }
+
+      .list-group {
+          font-size: 14px;
+      }
+
+      #toast-container .toast {
+          border-radius: 25px !important;
+          font-weight: 600;
+          text-align: center !important;
+          word-break: keep-all;
+          padding: 10px 25px;
+          width: auto;
+          background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+      }
+
+
+      ul::-webkit-scrollbar {
+          width: 6px;
+          background-color: #F5F5F5;
+      }
+
+      .select-wrapper input.select-dropdown:disabled {
+          color: black;
+      }
+
+      input {
+          text-transform: uppercase !important;
+      }
+
+      .switch label .lever {
+          background-color: #1a2e63;
+          width: 60px;
+          height: 29px;
+      }
+
+      .switch label .lever:after {
+          left: 4px;
+          top: 4px;
+          background-color: #fff !important;
+      }
+
+      .switch label .lever.check-c {
+          background-color: #1a2e63 !important;
+      }
+
+      .switch label input[type=checkbox]:checked+.lever:after {
+          left: 35px;
+      }
+
+      .lever.check-c:hover span.lever.check-c:after {
+          width: 100px !important;
+      }
+  </style>
+</div>

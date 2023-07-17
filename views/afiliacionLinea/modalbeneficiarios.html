@@ -1,0 +1,344 @@
+<div style="width: 85%; margin: 0 auto;">
+  <div class="col l6 m6 s12">
+    <div class="card">
+      <div class="card-title">
+
+        <div class="text-al switch"><strong>1. Datos basicos de identificacion</strong>
+          <label>
+            <input type="checkbox" checked="pistola" ng-model="pistola" ng-click="ipctrl.active()">
+            <span class="lever"></span>
+          </label>
+          <div class="tooltip"><a class="btn-floating btn waves-effect waves-light red" ng-click="ipctrl.clear()"><i
+                class="icon-eraser"></i></a>
+            <span class="tooltiptext">Limpiar</span>
+          </div>
+          <div class="codigobarra">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmcedula" id="qrmcedula">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmnumero">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmprimer_apellido">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmsegundo_apellido">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmprimer_nombre">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmsegundo_nombre">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmsexo">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmfecha">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmtipo_sangre">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="qrmnit">
+            <input class="editabletext  medium-editor-element" ng-value="texto" type="text" role="textbox"
+              ng-model="mcaso" ng-change="ipctrl.obtenerdatos()">
+          </div>
+        </div>
+      </div>
+
+      <div class="input-field">
+        <div class="input-list input-form">
+          <div class="input-list input-view-column input-padding">
+            <input ng-disabled="pistola" id="normal1" type="text" ng-model="bprimer_nombre" ng-change="formb()"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+              class="validate">
+            <label for="normal1" class="">1er Nombre</label>
+          </div>
+          <div class="input-list input-view-column">
+            <input ng-disabled="pistola" id="normal3" type="text" ng-model="bsegundo_nombre" ng-change="formb()"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+              class="validate">
+            <label for="normal3" class="">2do Nombre</label>
+          </div>
+        </div>
+
+        <div class="input-list input-form">
+          <div class="input-list input-view-column input-padding">
+            <input ng-disabled="pistola" id="normal2" ng-model="bprimer_apellido" type="text" ng-change="formb()"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+              class="validate">
+            <label for="normal2" class="">1er Apellido</label>
+          </div>
+          <div class="input-list input-view-column">
+            <input ng-disabled="pistola" id="normal4" ng-model="bsegundo_apellido" type="text" ng-change="formb()"
+              style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+              class="validate">
+            <label for="normal4" class="">2do Apellido</label>
+          </div>
+        </div>
+
+        <div class="input-list input-form">
+          <div class="input-list input-view-column input-padding" ng-init="obtenerDocumento()">
+            <label style=" margin-top: -20px;">Tipo de Documento</label>
+            <select ng-disabled="pistola" class="select-chosen-eps" ng-change="formb()" id="tipo_docb"
+              ng-model="bfiltro.bselectdocumento"  ng-blur="validarLongitudTipoDoc_Ben()">
+              <option ng-repeat="documento in Documentos" ng-value="documento.CODIGO"
+                ng-selected="documento.CODIGO == bfiltro.bselectdocumento">{{documento.NOMBRE}}
+              </option>
+            </select>
+          </div>
+          <div class="input-list input-view-column">
+            <input ng-disabled="pistola" id="normal8" ng-model="bdocumento" ng-change="formb()" type="text"
+              class="validate"  ng-blur="validarLongitudTipoDoc_Ben()" maxlength="20">
+            <label for="normal8" class="">Número</label>
+          </div>
+        </div>
+
+        <!--  -->
+        <div class="input-list input-form" ng-show="bfiltro.bselectdocumento == 'RC' && bdocumento.length > 9">
+          <div class="input-list input-view-column input-padding">
+            <label style=" margin-top: -20px;">Tipo de Documento CN</label>
+            <select ng-disabled="pistola" class="select-chosen-eps" ng-model="bfiltro.bselectdocumento_CN">
+              <option value="CN">CERTIFICADO NACIDO VIVO</option>
+            </select>
+          </div>
+          <div class="input-list input-view-column">
+            <input ng-disabled="pistola" id="normal81" ng-model="bdocumento_CN" type="text" class="validate"
+             ng-blur="validarLongitudTipoDoc_Ben_CN()"
+               maxlength="14" numbers-only>
+            <label for="normal81" class="">Número CN</label>
+          </div>
+        </div>
+        <!--  -->
+
+        <div class="input-list input-form">
+          <div class="input-list input-view-column input-padding" ng-init="obtenerRegimen()">
+            <label for="simple-select" style="margin-top: -20px;">Regimen</label>
+            <select disabled="true" class="select-chosen-eps" id="simple-select" ng-model="bfiltro.bselectregimen">
+              <option ng-repeat="reg in Regimenes.Regimen" ng-value="reg.Codigo">{{reg.Nombre}}</option>
+            </select>
+          </div>
+
+          <div class="input-list input-view-column" ng-init="obtenerSexo()">
+            <label style="margin-top: -20px;">Sexo</label>
+
+            <select ng-disabled="pistola" class="select-chosen-eps" id="sexoBeneficiario" ng-change="formb()"
+              ng-model="bfiltro.bselectsexo">
+              <option ng-repeat="sexo in Sexos.Sexo" ng-value="sexo.Codigo">{{sexo.Nombre}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-list input-form">
+          <label style="margin-top: -20px;">Fecha de nacimiento</label>
+          <div class="input-list input-view-column input-padding">
+            <input ng-disabled="pistola" ng-model="bnacimiento" ng-change="formb()" type="date" id="datepicker"
+              class="datepicker" />
+          </div>
+        </div>
+
+        <div class="input-button">
+          <button class="btn btn-primary" ng-click="ipctrl.MostrarFosyga()" ng-model="validabtn"
+            ng-disabled="btnFosygaB">
+            <span ng-show="fosygaButtonText == 'Cargando'"><i class="zmdi zmdi-refresh-sync fa-spin"></i></span>{{
+            fosygaButtonText }}</button>
+          <button type="submit" class="btn btn-primary" ng-click="ipctrl.validaform()" ng-model="validabtn"
+            ng-disabled="enable=='false'">
+            <span ng-show="validaButtonText == 'Validando'"><i class="zmdi zmdi-refresh-sync fa-spin"></i></span>{{
+            validaButtonText }}
+          </button>
+
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div class="text-al switch"><strong>2. Datos complementarios personales</strong></div>
+          </div>
+          <div class="input-field" ng-hide="binactive2">
+            <div class="input-list input-form">
+              <div class="input-list input-view-column input-padding" ng-init="obtenerEtnia()">
+                <label for="betnia" style="margin-top: -20px;">Etnia</label>
+                <select class="select-chosen-eps" id="betnia" ng-disabled="bhoja2_dsb" ng-model="bfiltro.bselectetnia">
+                  <option value="" selected>Seleccionar</option>
+                  <option ng-repeat="etnia in Etnias.Etnia" ng-value="etnia.Codigo">{{etnia.Nombre}}</option>
+                </select>
+              </div>
+              <div class="input-list input-view-column" ng-init="obtenerDiscapacidad()">
+                <label for="bdiscapacidad" style="margin-top: -20px;">Discapacidad</label>
+                <select ng-change="valorCondicion()" class="select-chosen-eps" id="bdiscapacidad"
+                  ng-disabled="bhoja2_dsb" ng-model="bfiltro.bselectdiscapacidad">
+                  <option value="" selected>Seleccionar</option>
+                  <option ng-repeat="discapacidad in Discapacidades.Discapacidad" ng-value="discapacidad.Codigo">
+                    {{discapacidad.Nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-list input-form">
+              <div class="input-list input-view-column input-padding" ng-init="obtenerCondicion()">
+                <label for="bcondicion" style="margin-top: -20px;">Condicion</label>
+                <select class="select-chosen-eps" id="bcondicion" ng-disabled="disDiscapacidad"
+                  ng-model="bfiltro.bselectcondicion">
+                  <option value="" selected>Seleccionar</option>
+                  <option ng-repeat="condicion in Condiciones.Condicion" ng-value="condicion.Codigo">
+                    {{condicion.Nombre}}</option>
+                </select>
+              </div>
+
+              <div class="input-list input-view-column" ng-init="obtenerParentesco()">
+                <label for="bselectparentesco" style="margin-top: -20px;">Parentesco</label>
+                <select class="select-chosen-eps" id="bselectparentesco" ng-disabled="bhoja2_dsb"
+                  ng-change="mostrarparentesco()" ng-model="bfiltro.bselectparentesco">
+                  <option ng-repeat="parent in Parentescos.Parentesco" ng-value="parent.Codigo">{{parent.Nombre}}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input-list input-form">
+              <div class="input-list input-view-column"
+                ng-show="bfiltro.bselectmetodogpoblacional == 1 || bfiltro.bselectmetodogpoblacional == 2">
+                <label for="simple-select" style="margin-top: -20px;">Ficha de SISBEN</label>
+                <input id="normal" ng-disabled="bhoja2_dsb" class="validate" type="text"
+                  maxlength="{{bfiltro.bselectmetodogpoblacional == 1 ? 9 : 20}}" numbers-only ng-model="bfichasisben">
+              </div>
+            </div>
+
+            <div class="input-list input-form">
+              <div class="input-list input-view-column input-padding">
+                <label for="simple-select" style="margin-top: -20px;">Metodologia G.Poblacional</label>
+                <select ng-disabled="bhoja2_dsb" ng-change="bobtenerGrupoPoblacional()" class="select-chosen-eps"
+                  id="bmetodogpoblacion" ng-model="bfiltro.bselectmetodogpoblacional">
+                  <option value="" selected>Seleccionar</option>
+                  <option value="1">Sisbén III</option>
+                  <option value="2">Sisbén IV</option>
+                  <option value="3">Listado Censales</option>
+                  <option value="4">Afiliacion de Oficio</option>
+                </select>
+              </div>
+              <div class="input-list input-view-column">
+                <label for="simple-select" style="margin-top: -20px;">G.Poblacional</label>
+                <select ng-disabled="bhoja2_dsb" ng-change="bCalcularGpoblacional()" class="select-chosen-eps"
+                  id="poblacion" ng-model="bfiltro.bselectpoblacional">
+                  <option value="" selected>Seleccionar</option>
+                  <option ng-repeat="x in bListado_Gpoblacional" value="{{x.codigo}}">{{x.Grupo_Poblacional}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-list input-form" ng-show="bmostrar_sisbeniii">
+              <div class="input-list input-view-column input-padding">
+                <label for="simple-select" style="margin-top: -20px;">Nivel de SISBEN</label>
+                <input id="normal" type="text" ng-model="bsisben" ng-change="validaSisbenF()">
+              </div>
+              <div class="input-list input-view-column input-padding">
+                <label for="simple-select" style="margin-top: -20px;">Puntaje de SISBEN</label>
+                <input id="normal" class="validate" type="text" ng-model="bpuntajesisben">
+              </div>
+            </div>
+            <div class="input-list input-form" ng-show="bmostrar_sisbeniv">
+              <div class="input-list input-view-column input-padding">
+                <label for="simple-select" style="margin-top: -20px;">Grupos</label>
+                <select ng-disabled="bhoja2_dsb" ng-change="bCalcularSubgrupoSisben()" class="select-chosen-eps"
+                  id="bselectgruposisben" ng-model="bfiltro.bselectgruposisben">
+                  <option value="" selected>Seleccionar</option>
+                  <option ng-repeat="x in bListado_GrupoSisben" value="{{x.Grupo}}">GRUPO {{x.Grupo}}</option>
+                </select>
+              </div>
+              <div class="input-list input-view-column">
+                <label for="simple-select" style="margin-top: -20px;">SubGrupos</label>
+                <select ng-disabled="bhoja2_dsb" class="select-chosen-eps" id="bselectsubgruposisben"
+                  ng-model="bfiltro.bselectsubgruposisben">
+                  <option value="" selected>Seleccionar</option>
+                  <option ng-repeat="x in bListado_SubGrupoSisben" value="{{x.Sub_Grupo}}">{{x.Sub_Grupo}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-list input-form" ng-show="bmostrar_Listado_Gpoblacional_31">
+              <div class="input-list input-view-column input-padding">
+                <label for="simple-select" style="margin-top: -20px;">Causal Afiliacion Oficio</label>
+                <select ng-disabled="bhoja2_dsb" class="select-chosen-eps" id="bselectcausalafi_oficio"
+                  ng-model="bfiltro.bselectcausalafi_oficio">
+                  <option value="" selected>Seleccionar</option>
+                  <option ng-repeat="x in bListado_Gpoblacional_31" value="{{x.CODIGO}}">CAUSAL {{x.NOMBRE}}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- <div class="input-list input-form">
+              <div class="input-list input-view-column input-padding" ng-init="obtenerGrupoPoblacional()">
+                <label for="simple-select" style="margin-top: -20px;">G.Poblacional</label>
+                <select class="select-chosen-eps" id="poblacionBeneficiario" ng-model="bfiltro.bselectpoblacional"
+                  ng-change="poblacionSisbenB()">
+                  <option ng-repeat="pobla in Gpoblacional" ng-value="pobla.CODIGO">{{pobla.NOMBRE}}</option>
+                </select>
+              </div>
+              <div class="input-list input-view-column">
+                <label for="simple-select" style="margin-top: -20px;">Ficha de SISBEN</label>
+                <input id="normal" ng-disabled="bdisFicha" class="validate" type="number" mask='999999999999999'
+                  ng-model="bfichasisben">
+              </div>
+            </div> -->
+            <!-- <div class="input-list input-view-column">
+              <label for="simple-select" style="margin-top: -20px;">Nivel de SISBEN</label>
+              <input class="validate" type="number" mask='9' ng-change="validaSisbenF()" ng-disabled="bdisSisben"
+                ng-model="bsisben">
+            </div> -->
+            <!-- <div class="input-list input-form">
+              <div class="input-list input-view-column input-padding">
+                <label for="simple-select" style="margin-top: -20px;">Puntaje de SISBEN</label>
+                <input id="normal" ng-disabled="bdisPuntaje" class="validate" type="text" ng-model="bpuntajesisben">
+              </div>
+              <div class="input-list input-view-column">
+                <label for="simple-select" style="margin-top: -20px;">Ficha de SISBEN</label>
+                <input id="normal" ng-disabled="bdisFicha" class="validate" type="number" mask='999999999999999'
+                  ng-model="bfichasisben">
+              </div>
+            </div> -->
+            <div class="input-list input-form" ng-show="reqSeleccionIps">
+              <div class="input-list input-view-column">
+                <label for="ips_atencion" class="active">IPS de Atención</label>
+                <select id="ips_atencion" class="select-chosen-eps" ng-model="bIpsAtencion"
+                  ng-required="reqSeleccionIps">
+                  <option ng-value="">SELECCIONAR</option>
+                  <option ng-repeat="ips in Ipss" ng-value="ips.CODIGO" value="{{ips.CODIGO}}"> {{ips.CODIGO}} -
+                    {{ips.NOMBRE}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-button m-t">
+              <button type="button" class="btn btn-primary" ng-click="bvalidar_datos2()">
+                <span></span>Validar
+              </button>
+            </div>
+
+          </div>
+          <div class="col l6 m6 s12">
+            <div class="card">
+              <div class="card-title">
+                <div class="text-al switch"><strong>3. Anexo de Documentos de Beneficiario</strong></div>
+              </div>
+              <div class="input-field" ng-hide="binactive3">
+
+                <div class="input-button">
+                  <center>
+                    <a class="waves-effect waves-light btn white-text primary-button"
+                      ng-click="ModalDigitalizacion('1')" ng-disabled="reporte">Subir Documento</a>
+                    <a class="waves-effect waves-light btn white-text primary-button" ng-click="acta()"
+                      ng-disabled="reporte"> <i class="icon-doc-text-inv"></i> Acta De Entrega</a>
+                  </center>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">
+                  <div class="text-al switch"><strong>4. Opciones </strong>
+                  </div>
+                </div>
+                <div class="input-field" ng-hide="binactive4">
+                  <div class="input-list input-form">
+                    <div class="input-button">
+                      <div class="tooltip">
+                        <button type="submit" class="btn-floating btn-large waves-effect waves-light"
+                          ng-click="ipctrl.ProcesarInfo()" ng-model="validabtn">
+                          <i class="icon-floppy"><span ng-show="validaButtonGuardar == 'Guardando...'"><i
+                                class="zmdi zmdi-refresh-sync fa-spin"></i></span></i>
+                        </button>
+                        <span class="tooltiptext">Guardar Beneficiario</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>

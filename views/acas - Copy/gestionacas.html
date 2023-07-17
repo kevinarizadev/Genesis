@@ -1,0 +1,111 @@
+<div id="gacas" class="white newdesing" style="position:relative">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Gestionar solicitudes</h5>
+      </li>
+      <li style="display:flex;align-items: center;">
+        <i ng-click="actualizarlistaacas()" class="fontello-icon icon-cw-1"
+          style="cursor: pointer;margin-right: 1em;font-size: 20px;"></i>
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!check_option}">Mis solicitudes</span>
+            <input type="checkbox" ng-init="check_option = false" ng-model="check_option"
+              ng-change="(check_option == true)?obtenerlistaacas('G'):obtenerlistaacas('A')">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':check_option}">Mis gestiones</span>
+          </label>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <!-- Contenido -->
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        {{titulo}}: {{count}}
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!check_option_estado}">Activo</span>
+            <input type="checkbox" ng-init="check_option_estado = false;filtrarestado='Activo'"
+              ng-model="check_option_estado"
+              ng-change="(check_option_estado == true)?filtrarestado='Procesado':filtrarestado='Activo';cloneHeadFixed();numAcas(check_option_estado,solicitudes)">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':check_option_estado}">Procesado</span>
+          </label>
+        </div>
+        <input type="text" class="margin border-none input-text-new" ng-model="filtrar" ng-change="cloneHeadFixed()"
+          placeholder="Buscar en la tabla">
+      </div>
+      <div class="scroll_x" style="position: absolute;width: calc(100% - 32.5px);z-index: 10;overflow: hidden;">
+        <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+
+        </table>
+      </div>
+      <div id="tabla_scroll" class="scroll_x" style="overflow: auto;height: calc(100vh - 219px);">
+        <table id="tablaGacas" class="striped table-bordered white" style="position: relative;">
+          <thead>
+            <tr class="default-background white-text">
+              <th class="border-none">#</th>
+              <th class="border-none" data-field="Date">Fecha</th>
+              <th class="border-none center-align" data-field="Date" ng-if="!check_option_estado">Dias</th>
+              <th class="border-none" data-field="Numero">Código Servicio</th>
+              <th class="border-none" data-field="Numeroth"
+                ng-if="sesdata.rolcod == 75 || sesdata.rolcod == 76 || sesdata.rolcod == 77">Código Talento Humano</th>
+              <th class="border-none" data-field="Ubicacion">Concepto</th>
+              <th class="border-none" data-field="Usuario">Motivo</th>
+              <th class="border-none" data-field="Usuario" ng-if="check_option">Emisor</th>
+              <th class="border-none" data-field="Usuario" ng-if="!check_option">Receptor</th>
+              <th class="border-none" data-field="Oficina" ng-if="check_option">Oficina</th>
+              <th class="border-none" data-field="Usuario">Asunto</th>
+              <th class="border-none" data-field="Date" ng-if="true">Descripción</th>
+              <th class="border-none" data-field="Date">Prioridad</th>
+              <th class="border-none" data-field="Date" ng-hide="permiso">Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="count == 0">
+              <td colspan="12" class="center-align">
+                No hay solicitudes para mostrar
+              </td>
+            </tr>
+            <tr data-ng-repeat="solicitud in solicitudes | filter:filtrar | filter:{ESTADO:filtrarestado}">
+              <td class="center-align">{{($index+1)}}</td>
+              <td>{{solicitud.FECHA.substring(0, 10)}}</td>
+              <td ng-if="!check_option_estado" class="center-align">{{solicitud.dias}}</td>
+              <td>{{solicitud.CODIGO}}</td>
+              <td ng-if="sesdata.rolcod == 75 || sesdata.rolcod == 76 || sesdata.rolcod == 77">{{solicitud.NUMEROTH}}
+              </td>
+              <td>{{solicitud.CONCEPTO}}</td>
+              <td>{{solicitud.MOTIVO}}</td>
+              <td ng-if="check_option">{{solicitud.EMISOR}}</td>
+              <td ng-if="!check_option">{{solicitud.RECEPTOR}}</td>
+              <td ng-if="check_option">{{solicitud.OFICINA}}</td>
+              <td>{{solicitud.ASUNTO}}</td>
+              <td ng-if="true">{{solicitud.DESCRIPCION}}</td>
+              <td class="center-align {{solicitud.STYLEP}} priority white-text">
+                <span>{{solicitud.PRIORIDAD}}</span>
+              </td>
+              <td class="center-align">
+                <i class="fontello-icon icon-check"
+                  ng-click="obteneracasinfo(solicitud.CODIGO,solicitud.UBICACION,solicitud.DESCRIPCION,solicitud.ESTADO,solicitud.MOTIVO,solicitud.CONCEPTO,solicitud.ADJUNTO,solicitud.OFICINA,solicitud.FECHA)"
+                  data-toggle="tooltip " title="Ver Detalle" style="position: relative;display: flow-root;">
+                  <span
+                    style="position: absolute;font-size: 10px;height: 15px;width: 15px;min-height: 15px;min-width: 15px;border-radius: 50%;top: 16px;left: 7px;font-weight: bold;display: flex;justify-content: center;align-items: center;"
+                    class="default-background white-text"
+                    ng-class="{'orange':solicitud.CANTIDAD <= 0}">{{solicitud.CANTIDAD}}</span>
+                </i>
+                <i class="fontello-icon icon-retweet" ng-hide="{{solicitud.ESTADOACAS}}" type="button"
+                  ng-click="obtenertranfer(solicitud.CODIGO,solicitud.UBICACION)" data-toggle="tooltip"
+                  title="Transferir"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

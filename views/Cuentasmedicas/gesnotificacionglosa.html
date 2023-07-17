@@ -1,0 +1,934 @@
+<div id="gesnotglosa" class="white newdesing" style="position:relative">
+  <style>
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .NOTIFICADA {
+      background-color: #FFC107 !important;
+    }
+
+
+
+    .ACEPTADA,
+    .CO {
+      background-color: #8BC34A !important;
+    }
+
+    .CONTESTADA {
+      background-color: #03a9f4 !important;
+    }
+
+    .error {
+      background-color: #FF5722 !important;
+    }
+
+
+
+    .S {
+      /* padding: 1em; */
+      color: white;
+      background-color: #1a2e63 !important;
+    }
+
+    .N {
+      /* padding: 1em; */
+      color: white;
+      background-color: #14d2a4;
+    }
+
+    /* CANTIDAD */
+    .PE {
+      background-color: #5ba2dc !important;
+    }
+
+    .CR {
+      background-color: #0375bc !important;
+    }
+
+    .IM {
+      background-color: #0f55bd !important;
+    }
+
+    .RI {
+      background-color: #14d2a4 !important;
+    }
+
+    .AC {
+      background-color: #18a378 !important;
+    }
+
+    .CO {
+      background-color: #2fb421 !important;
+    }
+
+    /* CANTIDAD */
+    .AMARILLO {
+      background-color: #dac008 !important;
+    }
+
+    .VERDE {
+      background-color: #56b949 !important;
+    }
+
+    .ROJO {
+      background-color: #b42121 !important;
+    }
+
+
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    #tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+
+    .table_border,
+    .table_border th,
+    .table_border td {
+      border: 1px solid #c2c2c2;
+    }
+
+    .table_center_align,
+    .table_center_align th,
+    .table_center_align td {
+      text-align: center;
+    }
+
+
+
+    #tabla_detalleglosa th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+    .swal-wide {
+      width: 850px !important;
+    }
+  </style>
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5 ng-click="Abrir()">Gestión de Notificación de Glosa</h5>
+      </li>
+      <li style="display:flex;align-items: center;" ng-show="Vista == 1">
+        <div>
+          <ul style="text-align: center;" class="pagination">
+            <span style="font-size: 1em;" class="status {{EstadoGlosaCod}}">
+              <strong>{{EstadoGlosa+ ' '+Lista_Glosa.length}}</strong></span>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <!-- Glosas -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 0">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="col s4 m6 l4 cursor-pointer" ng-repeat="x in List_Estados" ng-click="Ver_Glosas(x)">
+            <div class="card" style="border-radius: 10%;text-align: center;">
+              <div class="card-content {{x.CODIGO}}" style="padding: 0.5rem 0.8rem;">
+                <h6 style="color: white !important;font-weight: 600 !important;font-size: 1rem;">{{x.NOMBRE}}
+                </h6>
+                <div class="row" style="margin-bottom: 0;">
+                  <h6 style="font-weight: 600!important;font-size: 1.25rem;color: white;">{{x.CANTIDAD}}</h6>
+                </div>
+                <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                  <div class="determinate teal darken-2"
+                    ng-style="{width: ((x.CANTIDAD*100)/List_Estados_CantTotal).toFixed(2)+'%'}"></div>
+                </div>
+                <p>
+                  <span style="color: white !important;">{{x.PORCENTAJE}}%</span>
+                  <span style="color: white !important;"> del Total de Glosas</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Glosas -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 1">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        Listado de Glosas
+
+        <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-keyup="filter(filtro)"
+          ng-model="filtro" placeholder="Buscar en la tabla">
+        <i class="icon-left-2 cursor-pointer" ng-click="Atras(0)">
+          Atras
+        </i>
+      </div>
+      <div id="tabla_scroll" class="scroll_x">
+        <div class="responsive">
+          <table class="striped table-bordered white" style="zoom: 0.8;">
+            <thead>
+              <tr>
+                <th style="text-align:center;"><b>RENGLON</b></th>
+                <th style="text-align:center;">NUMERO NOTIFICACIÓN</th>
+                <th style="text-align:center;">FACTURA</th>
+                <th style="text-align:center;">IPS</th>
+                <th style="text-align:center;">VALOR FACTURA</th>
+                <th style="text-align:center;">VALOR GLOSA</th>
+                <th style="text-align:center;">FECHA</th>
+                <th style="text-align:center;">GENESIS</th>
+                <th style="text-align:center;">ESTADO</th>
+                <th style="text-align:center;"
+                  colspan="{{(EstadoGlosaCod=='RI' || X.CODESTADO =='CO' || X.CODESTADO =='CO')? 2 : 1}}">ACCION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="X in Lista_GlosaTemp | inicio: currentPage * pageSize | limitTo: pageSize"
+                ng-hide="Lista_GlosaTemp.length == 0">
+                <th style="text-align:center;">{{X.RENGLON}}</th>
+                <td style="text-align:center;">{{X.DOCUMENTO+'-'+X.NUMERO+'-'+X.UBICACION}}</td>
+                <td style="text-align:center;">{{X.FACTURA}}</td>
+                <td style="text-align:center;">{{X.IPS+'-'+X.NIT}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
+                <td style="text-align:center;">
+                  <span class="status" ng-class="Obtener_ClaseDias(X.DIAS)">{{X.FECHA}}</span>
+                </td>
+                <!-- <div class="tooltip" ng-if="X.DETALLE_GLOSA != null">
+                    <i class="icon-info-circled-3 default-color cursor-pointer" style="font-size: 15px;"
+                      ng-click="Ver_Glosa_Informacion(X)"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Ver
+                      Glosa</span>
+                  </div> -->
+                </td>
+                <td style="text-align:center;">
+                  <span class="status {{X.GENESIS}}">{{(X.GENESIS=='S')?'SI':'NO'}}</span>
+                </td>
+                <td style="text-align:center;">
+                  <span class="status {{X.CODESTADO}}">{{X.ESTADO}}</span>
+                </td>
+                <td style="text-align:center;">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" ng-click="Ver_Glosas_Detalle(X)" class="icon-eye-1"></i>
+                    <span class="tooltiptext">Ver Detalle</span>
+                  </div>
+                </td>
+                <td style="text-align:center;" ng-if="((X.CODESTADO =='RI' && X.GENESIS =='S') || X.CODESTADO =='CO')">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" class="icon-comment-2" ng-if="X.COMENTARIOS==0"
+                      ng-click="Ver_Glosas_Comentarios(X)"></i>
+                    <i style="cursor:pointer;font-size: 2em;" class="icon-comment-5" ng-if="X.COMENTARIOS==1"
+                      ng-click="Ver_Glosas_Comentarios(X)"></i>
+                    <i style="cursor:pointer;font-size: 2em;" class="icon-comment-alt-1" ng-if="X.COMENTARIOS>=2"
+                      ng-click="Ver_Glosas_Comentarios(X)"></i>
+                    <span class="tooltiptext">Responder</span>
+                  </div>
+                </td>
+                <td style="text-align:center;" ng-if="(X.CODESTADO =='PE' || X.CODESTADO =='RI') && X.GENESIS =='N'">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" class="icon-pencil-2"
+                      ng-click="Modal_Responder_NOIPS(X)"></i>
+                    <span class="tooltiptext">Responder</span>
+                  </div>
+                </td>
+                <!-- <td style="text-align:center;" ng-if="X.CODESTADO !='PE'">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" ng-click="Descargar_Notificacion(X)"
+                      class="zmdi zmdi-check-all"></i>
+                    <span class="tooltiptext">Aceptar</span>
+                  </div>
+                </td> -->
+              </tr>
+              <tr ng-show="Lista_GlosaTemp.length == 0">
+                <th colspan="12">
+                  <center>No hay notificaciones para mostrar</center>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ul ng-hide="Lista_GlosaTemp.length == 0" style="text-align: center;" class="pagination"
+          ng-hide="Lista_GlosaTemp.length > 0">
+          <li><button ng-disabled='currentPage == 0' class="btn" ng-click='paso("back")'>&laquo;</button></li>
+          <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1' class="btn"
+              ng-click='setPage(page.no)'>{{page.no}}</button></li>
+          <li><button ng-disabled='currentPage >= Lista_GlosaTemp.length/pageSize - 1' class="btn"
+              ng-click='paso("next")'>&raquo;</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal glosa detalle  -->
+  <div id="modalglosadetalle" class="modal" style="overflow: hidden;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h5 class="white-text">Información de la Glosa</h5>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="padding-bottom: 3px;">
+            <div class="col s12 m12 l12 center" style="padding-bottom: 1em;">
+              <div class="switch">
+                <label>
+                  <span ng-class="{'activo':!Check_Detalle_Glosa}">Servicios</span>
+                  <input type="checkbox" ng-init="Check_Detalle_Glosa = false" ng-model="Check_Detalle_Glosa">
+                  <span class="lever check-c"></span>
+                  <span ng-class="{'activo':Check_Detalle_Glosa}" id="Check_Act_Clss">Justificación</span>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="" style="max-height: 48vh;overflow: auto;">
+                <table id="tabla_detalleglosa" class="striped table-bordered white" style="zoom: 0.8;"
+                  ng-show="!Check_Detalle_Glosa">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;"><b>#</b></th>
+                      <th style="text-align:center;">NUMERO</th>
+                      <th style="text-align:center;">FECHA</th>
+                      <th style="text-align:center;">CLASIFICACION</th>
+                      <th style="text-align:center;">TOTAL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="X in List_Glosas_Detalle">
+                      <th style="text-align:center;">{{X.RENGLON}}</th>
+                      <th style="text-align:center;">{{X.NUMERO}}</th>
+                      <td style="text-align:center;">{{X.FECHA}}</td>
+                      <td style="text-align:center;">{{X.COD_CLASIFICACION+ ' - ' +X.CLASIFICACION}}</td>
+                      <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL.toString().replace(',', '.'))}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <textarea id="glosa_textarea" ng-show="Check_Detalle_Glosa" ng-model="Glosa_Descripcion"
+                  readonly></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal_Listado_Glosas" class="modal" style="overflow: hidden;max-height: 88%;width: 90%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h6 class="white-text">Listado de Glosas ({{Array_ListadoGlosas.length}})</h6>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-action" style="padding-bottom: 3px;">
+            <div class="row">
+              <div style="max-height: 70vh;overflow: auto;">
+                <table id="tabla_detalleglosa" class="striped table-bordered white" style="zoom: 0.8;">
+                  <thead>
+                    <tr>
+                      <!-- <th style="text-align:center;"><b>#</b></th> -->
+                      <th style="text-align:center;">RENGLON</th>
+                      <th style="text-align:center;">PRODUCTO</th>
+                      <th style="text-align:center;">VALOR</th>
+                      <th style="text-align:center;">DESCRIPCION GLOSA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in Array_ListadoGlosas">
+                      <!-- <td style="text-align:center;">{{x.TIPO_GLOSA + ' - ' + x.DESCRIPCION_GLOSA}}</td> -->
+                      <th style="text-align:center;">{{x.RENGLON}}</th>
+                      <th style="text-align:center;">{{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</th>
+                      <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA.toString().replace(',', '.'))}}
+                      </td>
+                      <td style="text-align:center;">{{x.GLOSA}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="card-action" style="overflow-y: auto;max-height: 80vh;">
+            <div style="max-height: calc(50vh - 15px);overflow:auto;" class="default-color">
+              <ul class="collapsible m-l" data-collapsible="accordion"
+                style="background-color: transparent;border: 0;box-shadow: none;margin-left: 0 !important;margin-top: 0;">
+
+                <li ng-repeat="x in Array_ListadoGlosas">
+                  <div id="collapsible-header-HojaAnt-Servicio_Producto_1" class="collapsible-header"
+                    style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                    <div class="foot4 divcardcustom input-file-radiu">
+                      <div class="text-al divcardcustom2" style="line-height: normal;">
+                        <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                            style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i>#{{$index+1}} | Renglon:
+                          {{x.RENGLON}} - Producto: {{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="collapsible-body" style="border-bottom: 0;">
+                    <div class="col s12 m12 l12 m-b"
+                      style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+
+                      <div class="col s12 no-padding">
+                        <div class="col s1">
+                          <label style="font-weight: 700;">Renglon: </label>
+                          <label>{{x.RENGLON}}</label>
+                        </div>
+                        <div class="col s9">
+                          <label style="font-weight: 700;">Producto: </label>
+                          <label>{{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</label>
+                        </div>
+                        <div class="col s2">
+                          <label style="font-weight: 700;">Producto: </label>
+                          <label>${{FormatPesoNumero(x.VALOR_GLOSA.toString().replace(',', '.'))}}</label>
+                        </div>
+                      </div>
+                      <div class="col s12 no-padding">
+                        <div class="col s12">
+                          <label style="font-weight: 700;">Código Glosa: </label>
+                          <label>{{x.TIPO_GLOSA + ' - ' + x.DESCRIPCION_GLOSA}}</label>
+                        </div>
+                      </div>
+                      <div class="col s12 no-padding">
+                        <div class="col s12">
+                          <label style="font-weight: 700;">Descripción Glosa: </label>
+                          <label>{{x.GLOSA}}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- modal comentarios-->
+  <div id="modalcomentarios" class="modal" style="width: 90%;overflow: hidden;max-height: 90%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #000;"
+            ng-click="closeModal()"></div>
+          <div class="card-content">
+            <h5><span style="font-weight: 700;">Comentarios</span>
+            </h5>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 m-b" style="padding: 0.5vh;margin: 0vh 2vh 0vh 2vh;"
+            ng-show="Array_ListadoGlosas.length > 0">
+            <span style="font-weight: 700;">Listado de Glosas ({{Array_ListadoGlosas.length}})</span>
+            <br>
+            <div style="max-height: 40vh;overflow: auto;">
+              <table id="tabla_detalleglosa" class="striped table-bordered white" style="zoom: 0.9;"
+                ng-show="!Check_Detalle_Glosa">
+                <thead>
+                  <tr>
+                    <!-- <th style="text-align:center;"><b>#</b></th> -->
+                    <th style="text-align:center;width: 4%;">RENGLON</th>
+                    <th style="text-align:center;width: 6%;">PRODUCTO</th>
+                    <th style="text-align:center;width: 5%;">VALOR GLOSA</th>
+                    <!-- <th style="text-align:center;width: 10%;">VALOR GLOSA EPS</th> -->
+                    <!-- <th style="text-align:center;width: 10%;">VALOR GLOSA IPS</th> -->
+                    <th style="text-align:center;width: 50%;">DESCRIPCION GLOSA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="x in Array_ListadoGlosas">
+                    <!-- <td style="text-align:center;">{{x.TIPO_GLOSA + ' - ' + x.DESCRIPCION_GLOSA}}</td> -->
+                    <td style="text-align:center;">{{x.RENGLON}}</td>
+                    <td style="text-align:center;">{{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</td>
+                    <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA.toString().replace(',', '.'))}}
+                    </td>
+
+                    <!-- <td style="text-align:center;">
+                      $<input type="text" class="margin border-none white input-text-new input-w-p input-out-new w-100"
+                        style="width: 75% !important;" id="Valor_Glosar_EPS_{{$index}}" maxlength="16"
+                        autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_EPS_'+$index)"
+                        ng-model="x.VALOR_GLOSAR_EPS">
+                      <br>
+                      <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                    </td> -->
+                    <!-- <td>
+                      $<input type="text" class="margin border-none white input-text-new input-w-p input-out-new w-100"
+                        style="width: 75% !important;" id="Valor_Glosar_IPS_{{$index}}" maxlength="16"
+                        autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_IPS_'+$index)"
+                        ng-model="x.VALOR_GLOSAR_IPS">
+                      <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                    </td> -->
+
+                    <td style="text-align:center;">{{x.GLOSA}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- <textarea id="glosa_textarea" ng-model="Glosa_Descripcion" readonly></textarea> -->
+            </div>
+            <!-- <div style="max-height: calc(50vh - 15px);overflow:auto;" class="default-color">
+              <ul class="collapsible m-l" data-collapsible="accordion"
+                style="background-color: transparent;border: 0;box-shadow: none;margin-left: 0 !important;margin-top: 0;">
+
+                <li ng-repeat="x in Array_ListadoGlosas">
+                  <div id="collapsible-header-HojaAnt-Servicio_Producto_1" class="collapsible-header"
+                    style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                    <div class="foot4 divcardcustom input-file-radiu">
+                      <div class="text-al divcardcustom2" style="line-height: normal;">
+                        <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                            style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i>#{{$index+1}} | Renglon:
+                          {{x.RENGLON}} - Producto: {{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="collapsible-body" style="border-bottom: 0;">
+                    <div class="col s12 m12 l12 m-b"
+                      style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+
+                      <div class="col s12 no-padding">
+                        <div class="col s1">
+                          <label style="font-weight: 700;">Renglon: </label>
+                          <label>{{x.RENGLON}}</label>
+                        </div>
+                        <div class="col s9">
+                          <label style="font-weight: 700;">Producto: </label>
+                          <label>{{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</label>
+                        </div>
+                        <div class="col s2">
+                          <label style="font-weight: 700;">Producto: </label>
+                          <label>${{FormatPesoNumero(x.VALOR_GLOSA.toString().replace(',', '.'))}}</label>
+                        </div>
+                      </div>
+                      <div class="col s12 no-padding">
+                        <div class="col s12">
+                          <label style="font-weight: 700;">Código Glosa: </label>
+                          <label>{{x.TIPO_GLOSA + ' - ' + x.DESCRIPCION_GLOSA}}</label>
+                        </div>
+                      </div>
+                      <div class="col s12 no-padding">
+                        <div class="col s12">
+                          <label style="font-weight: 700;">Descripción Glosa: </label>
+                          <label>{{x.GLOSA}}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div> -->
+          </div>
+          <!--  -->
+
+          <div>
+            <ul id="chat_completo">
+              <li class="{{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'me':'you'}}"
+                ng-repeat="com in List_Comentarios">
+                <div class="chat_titulo" ng-if="Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase()">
+                  <span class="tooltiptext_ab" style="margin-right: 1em;" ng-if="com.ADJUNTO != null"
+                    ng-click="DescargarRespuesta(com.ADJUNTO)">Ver Adjunto</span>
+                  <h3>{{com.FECHA +' - '+com.HORA}}</h3>
+                  <h2>{{com.RESPONSABLE}}</h2>
+                  <span
+                    class="chat_status {{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'blue':'green'}}"></span>
+                </div>
+                <div class="chat_titulo" ng-if="Rol_Cedula.toLowerCase() != com.IDRESPONSABLE.toLowerCase()">
+                  <span
+                    class="chat_status {{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'blue':'green'}}"></span>
+                  <h2>{{com.RESPONSABLE}}</h2>
+                  <h3>{{com.FECHA +' - '+com.HORA}}</h3>
+                  <span class="tooltiptext_ab" style="margin-left: 1em;" ng-if="com.ADJUNTO != null"
+                    ng-click="DescargarRespuesta(com.ADJUNTO)">Ver Adjunto</span>
+                </div>
+                <div
+                  class="{{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'chat_triangle_der':'chat_triangle'}}">
+                </div>
+                <div class="message">
+                  {{com.OBSERVACION}}
+                </div>
+              </li>
+            </ul>
+            <div id="chat_comentar" class="row margin" ng-show="Comentario_R == 'S' && Comentario_Adjunto.Act == true">
+
+              <textarea id="chat_textarea" placeholder="Comentar..." ng-model="Comentario_Observacion"></textarea>
+              <div class="row">
+                <div class="col s10 m10 l10">
+                  <div class="file-field input-field" style="display: flex;margin: 0;color: black;">
+                    <div>
+                      <i class="material-icons dp48" style="line-height: 3;font-size: 13px;">attach_file</i>
+                      <input type="file" id="Comentario_Adjunto" required>
+                    </div>
+                    <div class="file-path-wrapper" style="width: 100%;">
+                      <input class="file-path validate valid black-text" type="text" id="nombreadjunto"
+                        placeholder="Seleccionar un adjunto (.PDF, .ZIP)" ng-model="Comentario_Model_Adjunto"
+                        ng-change="loadFile()" style="margin: 0;border: none;font-size: 13px;">
+                    </div>
+                  </div>
+                </div>
+                <div class="col s2 m2 l2 center">
+                  <!-- <span id="chat_comentar_enviar" style="cursor: pointer;"
+                    ng-click="Abrir_Modal_GlosaGlosa('Antes_Inserta_Comentario')">Enviar</span> -->
+                  <span id="chat_comentar_enviar" style="cursor: pointer;"
+                    ng-click="Guardar_Valor_Glosar()">Enviar</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- modal no ips  -->
+  <div id="modalrespondernoips" class="modal" style="overflow: hidden;max-height: 88%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h6 class="white-text">Respuesta a {{Responder_NOIPS_Titulo}}</h6>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="overflow-y: auto;max-height: 80vh;">
+
+            <div class="col s12 m12 l12 center"
+              ng-style="{'padding-bottom': Responder_NOIPS_Sel == 'AC'? '1em': '0em;'}">
+              <div class="col s12 no-padding label-new m-b">
+                <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
+                  ng-model="Responder_NOIPS_Sel">
+                  <option value="">Seleccionar</option>
+                  <option style="text-transform: capitalize;" ng-selected="x.CODIGO == Responder_NOIPS_Sel"
+                    ng-repeat="x in Responder_NOIPS_Sel_Array" value="{{x.CODIGO}}">{{x.CODIGO+' - '+x.NOMBRE}}</option>
+                </select>
+                <label>Estado:</label>
+              </div>
+            </div>
+            <div class="row center">
+              <div class="col s12 m12 l12" ng-show="Responder_NOIPS_Sel != 'AC'">
+                <div class="col s12 no-padding label-new m-b">
+                  <input type="date" class="margin border-none input-date-new w-100" ng-model="Responder_NOIPS_Fecha"
+                    max="{{SysDay | date:'yyyy-MM-dd'}}">
+                  <label>Fecha de respuesta</label>
+                </div>
+              </div>
+              <div style="margin-bottom: 20px;" ng-show="Responder_NOIPS_Sel != 'AC'">
+                <textarea id="noips_textarea" ng-model="Responder_NOIPS_Text"></textarea>
+              </div>
+              <div class="col s10 m10 l10" ng-show="Responder_NOIPS_Sel != 'AC'">
+                <div class="file-field input-field" style="display: flex;margin: 0;color: black;">
+                  <div>
+                    <i class="material-icons dp48" style="margin-top: 3vh;font-size: 13px;">attach_file</i>
+                    <input type="file" id="Comentario_Adjunto_NOIPS" required>
+                  </div>
+                  <div class="file-path-wrapper" style="width: 100%;">
+                    <input class="file-path validate valid black-text" type="text" id="nombreadjunto_NOIPS"
+                      placeholder="Seleccionar un adjunto" ng-model="Responder_NOIPS_Model_Adjunto"
+                      ng-change="loadFile_IPS()" style="margin: 0;border: none;font-size: 13px;">
+                  </div>
+                </div>
+              </div>
+              <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+                ng-click="Responder_NOIPS_F()">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modalvalorglosa -->
+  <div id="modalvalorglosa" class="modal"
+    style="margin: 0 auto;width: 40%;top:0px !important;overflow: hidden;max-height: 88%;">
+    <div class="card-content clearfix white">
+      <div class="foot4 divcardcustom">
+        <div class="text-al divcardcustom2" style="text-align: center;">
+          Valor Final a Glosar
+        </div>
+      </div>
+      <div class="col s12 m12 s12 center">
+        <div class="row center" style="display: flex;">
+          <div class="col s8 no-padding label-new m-b" style="margin-left: auto;margin-right: auto;">
+            <input type="text" class="margin border-none input-text-new m-l w-100 currency"
+              style="width: 75% !important;" id="Valor_Glosar" maxlength="16" autocomplete="off" ng-model="Valor_Glosar"
+              disabled>
+          </div>
+          <div class="col s8 no-padding label-new m-b" style="margin-left: auto;margin-right: auto;">
+            <input type="text" class="margin border-none input-text-new m-l w-100 currency"
+              style="width: 75% !important;" id="Valor_Glosar_EPS" maxlength="16" autocomplete="off"
+              ng-keyup="FormatPeso('Valor_Glosar_EPS')" ng-model="Valor_Glosar_EPS">
+            <label>Valor Aceptado Eps</label>
+          </div>
+          <div class="col s8 no-padding label-new m-b" style="margin-left: auto;margin-right: auto;">
+            <input type="text" class="margin border-none input-text-new m-l w-100 currency"
+              style="width: 75% !important;" id="Valor_Glosar_IPS" maxlength="16" autocomplete="off"
+              ng-keyup="FormatPeso('Valor_Glosar_IPS')" ng-model="Valor_Glosar_IPS">
+            <label>Valor Aceptado Ips</label>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m12 s12 center m-b ">
+        <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+          ng-click="Guardar_Valor_Glosar()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <style>
+    .chat_status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 7px;
+    }
+
+    .chat_green {
+      background-color: #58b666;
+    }
+
+    .chat_blue {
+      background-color: #6fbced;
+      margin-right: 0;
+      margin-left: 7px;
+    }
+
+    #chat_completo {
+      padding-left: 0;
+      margin: 0;
+      list-style-type: none;
+      overflow-y: auto;
+      max-height: 300px;
+      border-top: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+    }
+
+    #chat_completo li {
+      padding: 10px 30px;
+    }
+
+    #chat_completo h2,
+    #chat_completo h3 {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #chat_completo h3 {
+      color: #bbb;
+    }
+
+    #chat_completo span.tooltiptext_ab {
+      font-size: 13px;
+      color: black;
+      display: inline-block;
+      cursor: pointer;
+      font-style: italic;
+    }
+
+    #chat_completo .chat_titulo {
+      margin-bottom: 5px;
+    }
+
+    #chat_completo .message {
+      padding: 20px;
+      color: #fff;
+      line-height: 25px;
+      max-width: 90%;
+      display: inline-block;
+      text-align: left;
+      border-radius: 5px;
+    }
+
+    #chat_completo .me {
+      text-align: right;
+    }
+
+    #chat_completo .you .message {
+      background-color: #58b666;
+    }
+
+    #chat_completo .me .message {
+      background-color: #6fbced;
+    }
+
+    #chat_completo .chat_triangle,
+    .chat_triangle_der {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 10px 10px 10px;
+    }
+
+    #chat_completo .you .chat_triangle {
+      border-color: transparent transparent #58b666 transparent;
+      margin-left: 15px;
+    }
+
+    #chat_completo .me .chat_triangle_der {
+      border-color: transparent transparent #6fbced transparent;
+      /* margin-left: 375px; */
+    }
+
+    #chat_comentar {
+      height: 155px;
+      padding: 20px 30px 10px 20px;
+    }
+
+    #chat_textarea {
+      resize: none;
+      border: none;
+      display: block;
+      width: 100%;
+      height: 80px;
+      border-radius: 3px;
+      padding: 20px;
+      font-size: 13px;
+      background-color: #0f55bd;
+      color: white;
+    }
+
+    #chat_comentar_enviar {
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #0f55bd;
+      vertical-align: top;
+      margin-top: 5px;
+      display: inline-block;
+    }
+
+    #nombreadjunto::placeholder {
+      color: #0f55bd;
+    }
+
+    .switch label .lever.check-c:after {
+      background-color: #ffffff;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #ffffff;
+    }
+
+    #glosa_textarea {
+      resize: none;
+      border: none;
+      display: block;
+      width: 100%;
+      height: 42vh;
+      border-radius: 3px;
+      padding: 20px;
+      font-size: 13px;
+      background-color: white;
+      text-align: justify;
+    }
+
+    #noips_textarea {
+      resize: none;
+      /* border: none; */
+      display: block;
+      width: 100%;
+      height: 23vh;
+      border-radius: 3px;
+      padding: 20px;
+      font-size: 13px;
+      background-color: white;
+      text-align: justify;
+    }
+
+    .tooltip_ab {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip_ab .tooltiptext_ab::after {
+      content: "";
+      position: absolute;
+      top: -37%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #00000000 #00000000 #555 #00000000;
+    }
+
+    .tooltip_ab:hover .tooltiptext_ab {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip_ab .tooltiptext_ab {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: -150%;
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    .currency-input {
+      position: relative;
+    }
+
+    .currency {
+      padding-left: -22px;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      left: 8px;
+      font-size: 21px;
+    }
+  </style>
+</div>

@@ -1,0 +1,438 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+
+    .content-container {
+      padding: 0 20px;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="Inicio()"></i>
+          Cargue CUBOS SISPRO
+        </h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto" ng-if="permisos.CARGAR_REPORTE != undefined && permisos.CARGAR_REPORTE == 'S'">
+            <a ng-click="SetTab(1);" id="tabCargue" href class="active">Cargue<i class="icon-doc-add"></i></a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(2);" id="tabConsulta" href>Consulta<i class="icon-pen"></i></a>
+          </li>
+          <li class="tab col w-auto" ng-if="permisos.ADMIN == 'S'">
+            <a ng-click="SetTab(3)" href>Permisos
+              <i class="icon-users"></i></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <!-- ///// -->
+  <!-- CARGUE -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==1">
+    <form ng-submit="guardarCargue()">
+      <div class="col s12 m12 l12 d-flex">
+        <div class="col s9 m9 l9" style="margin: auto;">
+          <div class="col s4 no-padding label-new m-b">
+            <label>Tipo de Reporte</label>
+            <select class="select-default-new input-out-new m-l" ng-model="hoja1.tipoCubo" required>
+              <option value="" disabled>SELECCIONAR</option>
+
+              <option value="NAC">Cubos Nacimientos</option>
+              <option value="DEF">Cubos Defunciones</option>
+            </select>
+          </div>
+
+          <div class="col s4 no-padding label-new m-b">
+            <label>Año</label>
+            <select class="select-default-new input-out-new m-l" ng-model="hoja1.anio"
+              ng-change="obtenerMeses(hoja1.anio)" required>
+              <option value="" disabled>SELECCIONAR</option>
+
+              <option value="{{x.codigo}}" ng-repeat="x in list.listadoAnio">{{x.codigo}}</option>
+            </select>
+          </div>
+
+          <div class="col s4 no-padding label-new m-b">
+            <label>Mes</label>
+            <select class="select-default-new input-out-new m-l" ng-model="hoja1.mes" required>
+              <option value="x" disabled>SELECCIONAR</option>
+
+              <option value="{{x.codigo}}" ng-repeat="x in list.listadoMes">{{x.nombre}}</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="col s12 m12 l12">
+        <div
+          class="file-upload-wrapper file-field input-field {{hoja1.textoFile == 'Archivo Cargado' ? 'success' : ''}}"
+          id="file-upload-wrapper" data-text="{{hoja1.textoFile}}" style="margin: 0;width: -webkit-fill-available;">
+          <div class="right">
+            <input type="file" id="files_cargue" name="files_cargue" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="col s12 m12 l12 center" style="margin-top: 5vh;">
+        <button type="submit" class="btn" ng-disabled="btnGuardarDsb">Guardar</button>
+      </div>
+
+      <!-- <ul style='max-height: 50vh;display: contents;'>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+        <li class='left-align'><b>Error: </b>Campo municipio solo se permite caracter (-). Error en la linea 1</li>
+      </ul> -->
+    </form>
+
+
+  </div>
+  <!-- ///// -->
+  <!-- TABLA CONSULTA-->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==2">
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de cargues
+          ({{list.listadoCargues.length}})</strong>
+
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoCargues()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="hoja2.Filtro">
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>Id Cargue</th>
+          <th>Año</th>
+          <th>Mes</th>
+          <th>Tipo Reporte</th>
+          <th>Fecha de Cargue</th>
+          <th>Responsable</th>
+          <th>Estado</th>
+
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in list.listadoCargues | filter:hoja2.Filtro">
+            <td>{{x.ID}}</td>
+            <td>{{x.ANO}}</td>
+            <td>{{x.MES}}</td>
+            <td>{{x.TIPO_REPORTE == 'NAC' ? 'NACIMIENTOS' : 'DEFUNCIONES'}}</td>
+            <td>{{x.FECHA_CARGUE}}</td>
+            <td>{{x.RESPONSABLE}}</td>
+            <td>
+              <span class="{{x.ESTADO_CLASE}}">{{x.ESTADO_NOM}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- ///// -->
+
+  <!-- TABLA FUNCIONARIOS -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==3">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de usuarios con permisos en el módulo
+          ({{list.listadoFuncionarios.length}})</strong>
+
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="agregarUsuario()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoFuncs()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="hoja3.Filtro">
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>#</th>
+          <th>Cédula</th>
+          <th>Funcionario</th>
+          <th>Cargo</th>
+          <th>Realizar Cargue</th>
+          <th>Estado</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in list.listadoFuncionarios | filter:hoja3.Filtro">
+            <td>{{$index + 1}}</td>
+            <td>{{x.CEDULA}}</td>
+            <td>{{x.NOMBRE}}</td>
+            <td>{{x.CARGO}}</td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.CARGAR_REPORTE == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'cargarReporte', x.CARGAR_REPORTE == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.CARGAR_REPORTE == 'S'
+                  ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+
+
+            <td class="center">
+              <div class="tooltip" ng-if="x.ESTADO == 'A'">
+                <i class="icon-circle Con_pulse_A"
+                  style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                  ng-click="modificarUsuario(x,'estado', x.ESTADO == 'A' ? 'I' : 'A')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Activo</span>
+              </div>
+              <div class="tooltip" ng-if="x.ESTADO == 'I'">
+                <i class="icon-circle Con_pulse_X"
+                  style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                  ng-click="modificarUsuario(x,'estado', x.ESTADO == 'A' ? 'I' : 'A')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- //-// -->
+  </div>
+
+  <!-- ///// -->
+
+
+  <style>
+    table th,
+    table td {
+      text-align: center;
+    }
+
+
+    .etiquetaRoja {
+      padding: 5px;
+      background-color: red;
+      color: white;
+    }
+
+    .etiquetaVerde {
+      padding: 5px;
+      background-color: green;
+      color: white;
+    }
+
+    .etiquetaNaranja {
+      padding: 5px;
+      background-color: orange;
+      color: white;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      width: 100%;
+      height: 10vh;
+      /* height: 44px; */
+      /* border: 1px solid #eeeeee; */
+      z-index: 1;
+      border-radius: 10px;
+      border: 2px dashed #ccc;
+    }
+
+    .file-upload-wrapper.success {
+      border: 2px dashed #08d108;
+    }
+
+    .file-upload-wrapper:after {
+      text-align: center;
+      content: attr(data-text);
+      font-size: 3vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      line-height: 2;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 400;
+      height: 8vh;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: 10vh;
+    }
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_X {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    select:disabled {
+      color: black;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    .text-upper {
+      text-transform: uppercase !important;
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+
+    .label-new>label {
+      display: table;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    #toast-container .success {
+      background: linear-gradient(to bottom left, #0fda00, #007217, #0fda00);
+    }
+
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

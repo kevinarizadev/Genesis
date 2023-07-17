@@ -1,0 +1,888 @@
+<div class="newdesing" style="position:relative">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5 ng-click="vlaor()">Tarifa Categoria</h5>
+      </li>
+    </ul>
+  </div>
+  <div class="row content-container elements mb-0">
+    <div class="row">
+      <!-- CONTENIDO -->
+      <div class="col m9 s12" ng-class="hover_busqueda==true?'l8':'l9'"
+        style="transition: width 1s, height 1s, transform 1s;">
+        <div class="card contentcard" style="min-height: 541px;">
+          <div class="col s12" ng-show="paso==1">
+            <div class="col s12 bb">
+              <h5><small>{{titulo_tab}}</small></h5>
+            </div>
+          </div>
+          <!-- BUSQUEDA INICIAL -->
+          <div class="col s12 mt-20" ng-show="paso==1">
+            <div class="col s12" style="height: 394px;" ng-show="inactivecontratos">
+              <div class="center">
+                <small>Favor buscar por campo valido!</small>
+              </div>
+              <div class="center">
+                <img src="assets/images/contratos/gestion_contratos/buscar.svg" style="width: 368px;">
+              </div>
+            </div>
+            <div class="col s12 scroll" style="height: 394px;" ng-hide="inactivecontratos">
+              <div class="responsive">
+                <table class="table table-bordered striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">CONTRATO</th>
+                      <th style="text-align:center;">PRESTADOR</th>
+                      <th style="text-align:center;">CONCEPTO</th>
+                      <th style="text-align:center;">REGIMEN</th>
+                      <th style="text-align:center;">DEPARTAMENTO MUNICIPIO</th>
+                      <th style="text-align:center;">ESTADO</th>
+                      <th style="text-align:center;">ACCION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in json_contratos">
+                      <td style="text-align:center; ">{{x.numero}}</td>
+                      <td style="text-align:center; ">{{x.prestador}} <small> {{x.nit}}</small></td>
+                      <td style="text-align:center; ">{{x.concepto}}</td>
+                      <td style="text-align:center; ">{{x.regimen}}</td>
+                      <td style="text-align:center; ">{{x.departamento}} - {{x.municipio}}</td>
+                      <td style="text-align:center; " class="white-text" ng-class="x.color">{{x.estado | uppercase}}
+                      </td>
+                      <td style="text-align:center; ">
+                        <div class="tooltip">
+                          <i class="material-icons pointer" ng-click="gestionar_contrato($index)">visibility</i>
+                          <span class="tooltiptext">Gestionar Contrato</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 2-->
+          <div class="col s12" ng-show="paso==2">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>Elegir Clasificacion</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = paso-1">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6">
+                <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                  <input ng-change="filtrasr()" id="filtrar" placeholder="Filtrar" type="text" ng-model="filtrar_clasi"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+              <div class="col s6">
+                <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                  <h6><i class=" icon-database"></i>El Contrato contiene un Total <strong>{{json_clasificacion.length}}
+                      Clasificaciones</strong></h6>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="    overflow: auto;height: 25em;">
+              <div class="col s12">
+                <div class="col m12 s12 ">
+                  <div class="col s12 card-custom" ng-repeat="clasi in json_clasificacion  | filter: filtrar_clasi">
+                    <div class="col s2  card-header-custom foot4">
+                      <span class="vcenter" style="font-size: x-large;">{{clasi.numero}}</span>
+                    </div>
+                    <div class="col s9 card-body-custom">
+                      <h6 class="card-body-title" style="font-size: smaller;">{{clasi.nombre}} </h6>
+                        <p style="margin: 0;">TARIFA: <strong>{{clasi.tarifa}}</strong></p>
+                    </div>
+                    <div class="col s1 card-footer-custom">
+                      <div class="tooltip">
+                        <i class="material-icons  pointer"
+                          ng-click="gestionar_clasificacion(clasi.numero,clasi.nombre)">chrome_reader_mode</i>
+                        <span class="tooltiptext">Ver Productos</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 3-->
+          <div class="col s12" ng-show="paso==3">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>Elegir Producto</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = paso-1">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6">
+                <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                  <input ng-change="filtrasr()" id="filtrar" placeholder="Filtrar" type="text" ng-model="filtrar_prod"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+              <div class="col s6">
+                <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                  <h6><i class=" icon-database"></i> La clasificación contiene un Total
+                    <strong>{{json_productos.length}} Productos</strong></h6>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="    overflow: auto;height: 25em;">
+              <div class="col s12">
+                <div class="col m12 s12 ">
+                  <div class="col s12 card-custom" ng-repeat="prod in json_productos   | filter: filtrar_prod">
+                    <div class="col s2  card-header-custom foot4">
+                      <span class="vcenter">{{prod.numero}}</span>
+                    </div>
+                    <div class="col s9 card-body-custom">
+                      <h6 class="card-body-title" style="font-size: smaller;" ng-init="nom=limite(prod.nombre)">
+                        {{nom }} 
+                        <div class="tooltip">
+                          <small ng-show="prod.nombre.length>100" style="    color: #1565c0;cursor: pointer;">
+                            leer  mas
+                              <span class="tooltiptext">{{prod.nombre}}</span>
+                          </small>
+                        </div>
+                      </h6>
+                      <p style="margin: 0;    font-size: 12px;">SUBCATEGORIA: <strong>{{prod.cantidad}}</strong> |
+                        TARIFA: <strong>{{prod.tarifa}}</strong> | VALOR:<strong>{{prod.valor}}</strong> <span
+                          class="{{prod.color}} white-text" style=" padding: 0.2em;">{{prod.estado}}</span></p>
+                    </div>
+                    <div class="col s1 card-footer-custom" ng-hide="prod.cantidad==0">
+                      <div class="tooltip">
+                        <i class="material-icons  pointer"
+                          ng-click="gestionar_productos(prod.numero,prod.nombre)">chrome_reader_mode</i>
+                        <span class="tooltiptext">Ver Productos</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- MOSTRAR LAS TAB 4-->
+          <div class="col s12" ng-show="paso==4">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>Elegir Subcategoria de Producto</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = paso-1">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s3">
+                <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                  <input ng-change="filtrasr()" id="filtrar" placeholder="Filtrar" type="text"
+                    ng-model="filtrar_subcate" class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+              <div class="col s3">
+                <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                  <select id="regimen" ng-model="filtrar_estado" class="select-new gray-input ng-pristine ng-valid ng-touched" style="box-shadow: none;display: block;">
+                    <option value="" >FILTRAR</option>
+                    <option value=1>CONFIGURADO</option>
+                    <option value=0>NO CONFIGURADO</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col s6">
+                <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                  <h6><i class=" icon-database"></i> El producto contiene un Total <strong>{{json_subcategoria.length}}
+                      Subcategorias</strong></h6>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="    overflow: auto;height: 25em;">
+              <div class="col s12">
+                <div class="col m12 s12 ">
+                  <div class="col s12 card-custom" ng-repeat="prod in json_subcategoria   | filter: filtrar_subcate  | filter: { configurado:filtrar_estado }">
+                    <div class="col s2  card-header-custom foot4">
+                      <span class="vcenter" style="font-size:1em;">{{prod.numero}}</span>
+                    </div>
+                    <div class="col s1  card-header-custom gris">
+                      <span class="vcenter" style="font-size:1em;">{{prod.codigo_alterno}}</span>
+                    </div>
+                    <div class="col s8 card-body-custom">
+                      <div class="row">
+                        <div class="col s12">
+                           <h6 class="card-body-title" style="font-size: smaller;"> {{prod.nombre_alterno}} </h6>
+                        </div>
+                         <div class="col s8" >
+                           <p style="margin: 0;">VALOR:<span style=" padding: 0.2em;">${{prod.valor}}</span>
+                        </p>
+                        </div>
+                         <div class="col s4" style="    text-align: right;">
+                          <span class="white-text" ng-class="prod.configurado==0?'rojo':'verde'" style=" padding: 0.2em;">{{prod.configurado==0?'NO':''}} CONFIGURADO</span>
+                         
+                        </div>
+                      </div>
+                     
+                     
+                    </div>
+                    <div class="col s1 card-footer-custom">
+                      <div class="tooltip">
+                        <i class="material-icons  pointer"
+                          ng-click="abrir_modal1(prod)">chrome_reader_mode</i>
+                        <span class="tooltiptext">Gestionar Tarifa</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- BUSQUEDA DE CONTRATO SIEMPRE DEBE ESTAR ACTIVA -->
+      <div class="col  m3 s12" ng-show="paso == 1" ng-class="hover_busqueda==true?'l4':'l3'; "
+        style="transition: width 1s, height 1s, transform 1s;" ng-mouseenter="hover_busqueda=true"
+        ng-mouseleave="hover_busqueda=false">
+        <div class="card contentcard" style="min-height: 543px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Busqueda de Contrato</small></h5>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12">
+              <form ng-submit="buscar()">
+                <div class="col s12 label-new no-p-l">
+                  <label for="numero">Número</label>
+                  <input id="numero" type="number" ng-model="busqueda.numero"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="regimen">Regimen</label>
+                  <select id="regimen" ng-model="busqueda.regimen" class="select-new gray-input "
+                    style="box-shadow: none;display: block;">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="KS">SUBSIDIADO</option>
+                    <option value="KC">CONTRIBUTIVO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="departamento">Estado</label>
+                  <select id="departamento" ng-model="busqueda.estado" class="select-new gray-input"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="A">ACTIVO</option>
+                    <option value="X">ANULADO</option>
+                    <option value="T">TERMINADO</option>
+                    <option value="L">LIQUIDADO</option>
+                    <option value="P">PROCESADO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador">NIT Prestador</label>
+                  <input id="prestador" ng-model="busqueda.prestador" autocomplete="off"
+                    ng-blur="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador_nombre">Prestador</label>
+                  <input id="prestador_nombre" ng-model="busqueda.prestador_nombre" autocomplete="off"
+                    ng-keyup="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                  <ul class="list-group" id="list-group-prestador"
+                    style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                    <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}"
+                      ng-repeat="x in json_prestador" ng-click="seleccion_opcion(x.CODIGO,x.NOMBRE)"> {{x.CODIGO}} -
+                      {{x.NOMBRE}}</li>
+                  </ul>
+                </div>
+                <div class="col s12 mt-20 center">
+                  <button class="waves-effect waves-light btn white-text light-blue" type="submit">Buscar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col  m3 s12" ng-show="paso != 1">
+        <div class="card contentcard" style="min-height: 543px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Contrato Seleccionado</small></h5>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12">
+              <div class="row" ng-show="paso==4">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-hospital"></i> Productos </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.producto}}-- {{contrato_cabeza.producto_nombre}} </h6>
+              </div>
+              <div class="row" ng-show="paso>=3">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-hospital"></i> Clasificación </h6>
+                <h6 class="seleccion_contrato">
+                  {{contrato_cabeza.clasificacion}}--{{contrato_cabeza.clasificacion_nombre}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-clipboard-2"></i> Contrato </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.numero}}- {{contrato_cabeza.regimen}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-hospital"></i> Prestador </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.prestador}} <small>{{contrato_cabeza.nit}}</small>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal1" class="modal" style="    width: 800px;
+    max-height: 75%;
+    overflow: hidden;">
+      <div class=" modal-header row  card-content foot4" style="padding: 0;text-align: center;">
+        <div class="col s11">
+          <h5 class="white-text">Edicion de Subcategoria de {{contrato_cabeza.subcategoria}}
+            {{contrato_cabeza.subcategoria_nombre}}</h5>
+        </div>
+        <div class="col s1">
+          <h5 style="text-align: end;"><i style="cursor:pointer;"
+              class="material-icons white-text modal-close">close</i>
+          </h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-content">
+              <h5>{{contrato_cabeza.numero}} <i class="icon-hospital grey-text right"></i></h5>
+              <h6> {{contrato_cabeza.prestador}}</h6>
+              <p>
+                <small>Contrato</small>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-content">
+              <h5>{{contrato_cabeza.clasificacion}} <i class="icon-stethoscope grey-text right"></i></h5>
+              <h6>{{contrato_cabeza.clasificacion_nombre}}</h6>
+              <p>
+                <small>Clasificación</small>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-content">
+              <h5>{{contrato_cabeza.producto}} <i class=" icon-medkit grey-text right"></i></h5>
+              <h6>{{contrato_cabeza.producto_nombre.substring(0,30)}} <strong
+                  ng-show="contrato_cabeza.producto_nombre.length>30">...</strong>
+                   <div class="tooltip">
+                     <small style="    color: #1565c0;cursor: pointer;"> leer mas <span
+                         class="tooltiptext">{{contrato_cabeza.producto_nombre}}</span>
+                     </small>
+                   </div>
+              </h6>
+              <p>
+                <small>Producto</small>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m12 l12">
+          <div class="row">
+            <div class="col l12 m12 s12">
+              <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;">
+                <div class="col s12 l12 m12">
+                  <div class="switch" style="text-align: center;">
+                    <label>
+                      <span ng-class="{'activo':!switch_view}" style="font-size: 13px;" class="activo">POR VALOR </span>
+                      <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view"
+                        ng-change="switch_view == true" class="ng-pristine ng-valid ng-touched">
+                      <span class="lever"></span>
+                      <span ng-class="{'activo':switch_view}" style="font-size: 13px;">PORCENTAJE</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12 label-new no-p-l">
+                    <label for="tarifa">TARIFA</label>
+                    <input id="tarifa" ng-model="gestion.TARIFA" autocomplete="off"
+                      ng-keyup="buscar_listado_select_tarifa()" type="text"
+                      class="margin border-none white input-w-p gray-input w-100">
+                    <ul class="list-group" id="list-group-tarifa"
+                      style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: 15em;z-index: 999999999999;">
+                      <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}"
+                        ng-repeat="x in json_tarifa" ng-click="seleccion_opcion_tarifa($index)"> {{x.NOMBRE}}</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12 label-new no-p-l">
+                    <label for="ajuste">AJUSTE</label>
+                    <select ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="ajuste"
+                      ng-model="gestion.DESCUENTO" class="select-new gray-input "
+                      style="box-shadow: none;display: block;">
+                      <option value="">SELECCIONAR</option>
+                      <option value="S">SUMA</option>
+                      <option value="R">RESTA</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12 label-new no-p-l">
+                    <label for="porcentaje">%</label>
+                    <input ng-disabled="!switch_view" ng-change="tarifa_calcular()" id="porcentaje" type="number"
+                      ng-model="gestion.P_DESCUENTO" class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+                <div class="col s12 l3 m6">
+                  <div class="col s12 label-new no-p-l">
+                    <label for="valor">VALOR</label>
+                    <input ng-disabled="switch_view"  
+                      ng-change="tarifa_calcular()" id="valor"
+                      type="number"
+                      ng-model="gestion.VALOR" class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+     <div class="row" style="position: relative;" ng-show="switch_view"> 
+        <p class="default-background white-text columnas"> <i class=" icon-calc"></i>RESULTADO</p>
+        <div class="col s12 m12 l12">
+          <div class="col l12 m12 s12">
+             <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;     background: #e5e6e6;">
+               <div class="col s12">
+                 <h6 style="text-align: center;">
+                   <strong>{{gestion.TARIFA_VALOR}}</strong>  <strong>{{gestion.DESCUENTO=='S'?'+':'-'}}</strong> ((
+                   <strong>{{gestion.TARIFA_VALOR}}</strong> * <strong>{{gestion.P_DESCUENTO}}</strong>) / 100) = <strong>{{gestion.VALOR}}</strong>
+                 </h6>
+               </div>
+             </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="position: relative;" ng-show="!switch_view">
+          <p class="default-background white-text columnas"> <i class=" icon-calc"></i>RESULTADO</p>
+          <div class="col s12 m12 l12">
+            <div class="col l12 m12 s12">
+              <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;     background: #e5e6e6;">
+                <div class="col s12">
+                   <h6 style="text-align: center;">
+                     {{cadena}}
+                   </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div> 
+      <div class="row">
+        <div style="position: relative;text-align: center;" class="col s12">
+          <a  class="modal-action modal-close waves-effect waves-green btn" ng-click="guardar()">Guardar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .seleccion_contrato_t {
+      padding: 0.5em;
+      margin: 0px;
+    }
+
+    .seleccion_contrato {
+      margin: 0px;
+      padding: 0.5em 1.5em;
+      background: #e0e0e0;
+    }
+
+    .tabactiva {
+      background: #e5e6e6;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .verde {
+      background-color: #8BC34A !important;
+    }
+
+    .rojo {
+      background-color: #FF5722 !important;
+    }
+
+    .amarillo {
+      background-color: #FFC107 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 540px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+    .card-divider {
+      color: #FFC107;
+      width: 100%;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    .columnas {
+      position: absolute;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+      z-index: 999;
+      top: -2.66em;
+      left: 1.65em;
+    }
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 128px;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    }
+
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input.input-text-new {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+  </style>
+</div>

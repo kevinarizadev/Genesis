@@ -1,0 +1,348 @@
+<div class="row">
+   <style>
+      .Activo {
+         color: red;
+      }
+
+      .Procesado {
+         color: green;
+      }
+   </style>
+   <div id="validador" class="white newdesing" style="position:relative">
+      <!-- Encabezado -->
+      <div class="row section-header">
+         <ul class="tabs nav nav-pills nav-stacked tabmenu" style="background-color: transparent!important;">
+            <li ng-class="{ active: isSet(1) }" class="tab col s3 hover-item tabI tabactiva"><a href
+                  ng-click="setTab(1)" class="active"><strong style="font-weight: bold;">Buscar Censo
+                     Hospitalario</strong></a></li>
+            <li ng-class="{ active: isSet(2) }" class="tab col s3 hover-item tabII" ng-click="obtener_auditoria()">
+               <a href ng-click="setTab(2); actualizartabla()"><strong
+                     style="font-weight: bold;">Seguimiento</strong></a>
+            </li>
+            <!-- <li ng-class="{ active: isSet(3) }" class="tab col s3 hover-item tabIII"><a href ng-click="setTab(3); actualizagrafica()"><strong
+                  style="font-weight: bold;">Indicadores</strong></a></li> -->
+         </ul>
+      </div>
+      <div class="row" ng-show="isSet(1)">
+         <div class="row section-header">
+            <ul class="left mailbox-custom-search list-inline"
+               style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+               <li id="inicio">
+                  <h5>Buscar censo hospitalario</h5>
+               </li>
+               <li>
+                  <!--style="display:flex;align-items: center;"-->
+                  <label for="identificacion">Documento afiliado</label>
+                  <form method="post" ng-submit="buscar()" autocomplete="off" class="form-input-icon-new">
+                     <input class="margin border-none" id="identificacion" type="text" ng-model="codigo"
+                        placeholder="Buscar">
+                     <i ng-click="buscar()" class="icon-search"></i>
+                  </form>
+               </li>
+            </ul>
+         </div>
+         <!-- Contenido -->
+         <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;"
+            ng-hide="body">
+            <div class="col l12 m12 s12" style="position:relative">
+               <div class="row margin">
+                  <table>
+                     <thead>
+                        <th>
+                           <center>Codigo </center>
+                        </th>
+                        <th>
+                           <center>Datos Afiliado</center>
+                        </th>
+                        <th>
+                           <center>Diagnostico </center>
+                        </th>
+                        <th>
+                           <center>IPS </center>
+                        </th>
+                        <th>
+                           <center>Responsable </center>
+                        </th>
+                        <th>
+                           <center>Fecha Registrado</center>
+                        </th>
+                        <th>
+                           <center>Fecha Ingreso Estancia</center>
+                        </th>
+                        <th>
+                           <center>Estado Censo</center>
+                        </th>
+                        <th ng-hide="false">
+                           <center>Historial Glosas</center>
+                        </th>
+
+                        <th ng-hide="false">
+                           <center>Estado Censo</center>
+                        </th>
+                        <th ng-hide="false">
+                           <center>Autorizaciones</center>
+                        </th>
+                        <th ng-hide="false">
+                           <center>Adjuntar Soporte</center>
+                        </th>
+                        <th ng-hide="false">
+                           <center>Editar Censo</center>
+                        </th>
+                        <th ng-hide="false">
+                           <center>Procesar Estancia</center>
+                        </th>
+                     </thead>
+                     <tbody>
+                        <tr data-ng-repeat="data in censos track by $index">
+                           <td>{{data.CODIGOCENSO}}</td>
+                           <td>{{data.NOMBREAFILIADO}}
+                              <br> {{data.TIPODOCUMENTO}}. {{data.DOCUMENTO}}
+                           </td>
+                           <td>{{data.DIAGNOSTICO}}</td>
+                           <td>{{data.NOMBREIPS}}</td>
+                           <td>{{data.RESPONSABLE}}</td>
+                           <td>{{data.FECHA}}</td>
+                           <td>{{data.FECHAINGRESO}}</td>
+                           <td>
+                              <div class="{{data.ESTADO}}"><b>{{data.ESTADO}}</b></div><b>Estancia:</b>
+                              {{data.DIAESTANCIA}} Día(s)
+                           </td>
+                           <td ng-hide="lector">
+                              <center><button class="blue btn-floating waves-effect waves-light"
+                                    ng-click="open_modal('A',data.CODIGOCENSO, data.UBICACION,data.DOCUMENTO)"><i
+                                       class="material-icons">add_circle_outline</i></button></center>
+                           </td>
+
+                           <td ng-hide="lector">
+                              <button class="blue btn-floating waves-effect waves-light"
+                                 ng-click="detail(data.CODIGOCENSO, data.UBICACION)"><i
+                                    class="material-icons">add_circle_outline</i></button>
+                                 </td>
+                           <td ng-hide="lector">
+                              <center><button class="blue btn-floating waves-effect waves-light"
+                                    ng-click="open_modal('aut',data.CODIGOCENSO, data.UBICACION, data.DOCUMENTO)">
+                                    <i class="material-icons">speaker_notes</i>
+                                 </button></center>
+                           </td>
+                           <td ng-hide="lector">
+                              <center><button class="btn-floating waves-effect waves-light red"
+                                    ng-click="open_modal('B',data.CODIGOCENSO, data.UBICACION,data.DOCUMENTO)"><i
+                                       class="material-icons">attach_file</i></button></center>
+                           </td>
+                           <!--<input id="file-upload" type="file"/>-->
+                           <td ng-hide="editor" >
+                              <center><button class="btn-floating waves-effect waves-light red"
+                                    ng-click="open_modal('edit',data.CODIGOCENSO, data.UBICACION,data.DOCUMENTO)"><i
+                                       class="material-icons">create</i></button></center>
+                           </td>
+                           <td ng-hide="editor">
+                              <center><button class="red btn-floating waves-effect waves-light"
+                                    ng-click="open_modal('pro',data.CODIGOCENSO, data.UBICACION, data.DOCUMENTO)">
+                                    <i class="material-icons">close</i>
+                                 </button></center>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+
+
+               <!-- boton guardar actualizar-->
+
+            </div>
+         </div>
+      </div>
+      <div class="row" ng-show="isSet(2)">
+         <table id="auditorias" class="responsive-table display dataTable" style="width:100%!important; padding:40px">
+            <thead>
+               <tr>
+                  <th>Fecha</th>
+                  <th>Documento</th>
+                  <th>Nombres</th>
+                  <th>Comentario</th>
+                  <!-- <th>ERC</th> -->
+               </tr>
+            </thead>
+            <tfoot>
+               <tr>
+                  <th>Fecha</th>
+                  <th>Documento</th>
+                  <th>Nombres</th>
+                  <th>Comentario</th>
+                  <!-- <th>ERC</th> -->
+               </tr>
+            </tfoot>
+         </table>
+      </div>
+
+
+   </div>
+   <div class="modal" id="modal12" class="modal" style="width: 95%; overflow-x: hidden;">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 style="float:right; cursor:pointer" ng-click="close('modal12')">&times;</h4>
+            <h5>Historial Autorizaciones</h5>
+         </div>
+
+         <div class="">
+
+
+            <div class="row">
+               <div class="container-fluid">
+                  <div class="responsive">
+                     <table id="ha" class="table table-bordered table-striped">
+                        <thead>
+                           <tr>
+                              <th style="text-align:center;">#</th>
+                              <th style="text-align:center;">NUMERO</th>
+                              <th style="text-align:center;">AFILIADO</th>
+                              <th style="text-align:center;">IPS</th>
+                              <th style="text-align:center;">SERVICIO</th>
+                              <th style="text-align:center;">REGIMEN</th>
+                              <th style="text-align:center;">CLASE</th>
+                              <th style="text-align:center;">FECHA</th>
+                              <th style="text-align:center;">ESTADO</th>
+                              <th colspan="4" style="text-align:center;">ACCIÓN</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr ng-repeat="aut in listarAutorizaciones">
+                              <td style="text-align:center;">{{$index + 1}}</td>
+                              <td style="text-align:center;">{{aut.NUMERO}}</td>
+                              <td style="text-align:center;">{{aut.NOMBRE_AFI}}</td>
+                              <td style="text-align:center;">{{aut.IPS}}</td>
+                              <td style="text-align:center;">{{aut.SERVICIO}}</td>
+                              <td style="text-align:center;">{{aut.REGIMEN}}</td>
+                              <td style="text-align:center;">{{aut.CLASE}}</td>
+                              <td style="text-align:center;">{{aut.FECHA}}</td>
+                              <td style="text-align:center;"><span
+                                    class="status {{aut.ESTADO_CLASE}} white-text">{{aut.ESTADO}}</span></td>
+                              <td colspan="{{aut.NUMSPAN}}" style="text-align:center;">
+                                 <div class="tooltip">
+                                    <i style="cursor:pointer;"
+                                       ng-click="open_modal('modaldetalle',0,aut.UBICACION,aut.NUMERO);"
+                                       class="material-icons">assignment_turned_in</i>
+                                    <span class="tooltiptext">Detalle</span>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr ng-hide="viewdataAut">
+                              <td colspan="13" class="order-th center-align"><b>No hay autorizaciones ordinarias
+                                    encontradas.</b></td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+
+
+
+         </div>
+      </div>
+   </div>
+
+   <div id="modaldetalle" class="modal" style="width: 95%!important; max-height: 100%;">
+      <div class="modal-content" style="padding: 0px !important;">
+         <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+            <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+               <div class="card-content foot4" style="padding: 0">
+                  <div class="col s11">
+                     <h5 class="white-text">Detalle Autorización {{dAuto.NUMERO}} <i
+                           style="position: relative; cursor: pointer;" class="material-icons prefix"
+                           ng-hide="verPrintDetalle" ng-click="printAut('4')">print</i></h5>
+
+                  </div>
+                  <div class="col s1">
+                     <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="close('modaldetalle')"
+                           class="material-icons white-text">close</i></h5>
+                  </div>
+               </div>
+               <div class="card-action" style="border-top: 0">
+
+                  <div class="row">
+                     <div class="col s6">
+                        <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                           <strong class="c-none">Datos Autorización</strong>
+                        </blockquote>
+                        <div class="card-action"
+                           style="padding-top: 0;padding-bottom: 0; border-top: 0;max-height: 60vh;overflow: auto;height: auto;"
+                           ng-hide="dAuto">
+                           <p style="margin: 0"><b>DIAGNOSTICO 1 : </b> {{v_encabezadov.DX}}-{{v_encabezadov.NOMBRE_DX}}
+                           </p>
+                           <p style="margin: 0"><b>DIAGNOSTICO 2 : </b>
+                              {{v_encabezadov.DX1}}-{{v_encabezadov.NOMBRE_DX1}}</p>
+                           <p style="margin: 0"><b>SERVICIO : </b> {{v_encabezadov.CLASIFICACION}}-{{
+                         v_encabezadov.NOMBRE_CLAS}}</p>
+                           <p style="margin: 0;text-transform: uppercase;"><b>MEDICO : </b>
+                              {{v_encabezadov.MEDICO}}</p>
+                           <p style="margin: 0"><b>ESPECIALIDAD : </b> {{v_encabezadov.ESPECIALIDAD_MEDICO}}</p>
+                           <p style="margin: 0;text-transform: uppercase;"><b>OBSERVACION : </b>
+                              {{v_encabezadov.OBSERVACION}}</p>
+                           <p style="margin: 0"><b>IPS SOLICITANTE: </b> {{v_encabezadov.SOLICITANTE}}</p>
+                           <p style="margin: 0"><b>DIRECCION:</b> {{v_encabezadov.DIR_SOLICITANTE}}</p>
+                           <p style="margin: 0"><b>TELEFONO:</b> {{v_encabezadov.TEL_SOLICITANTE}}</p>
+                           <p style="margin: 0"><b>CONTRATO: </b> {{v_encabezadov.CONTRATO}}</p>
+                           <p style="margin: 0"><b>FECHA ORDEN: </b> {{v_encabezadov.FECHA_ORDEN}}</p>
+                           <p style="margin: 0"><b>FECHA AUTORIZACION: </b> {{v_encabezadov.FECHA_AUTORIZACION}}</p>
+                           <p style="margin: 0"><b>FECHA VENCIMIENTO: </b> {{v_encabezadov.FECHA_VENCIMIENTO}}</p>
+                           <p style="margin: 0"><b>ORIGEN ATENCION: </b> {{v_encabezadov.ORIGEN_ATENCION}}</p>
+                           <p style="margin: 0"><b>TIPO DE SERVICIO:</b> {{v_encabezadov.TIPO_SOLICITUD}}</p>
+                           <p style="margin: 0"><b>UBICACION: </b> {{v_encabezadov.UBICACION_SOLi}}</p>
+                           <p style="margin: 0"><b>IPS ASIGNADA: </b> {{v_encabezadov.ASIGNADA}}</p>
+                           <p style="margin: 0"><b>DIRECCION: </b> {{v_encabezadov.DIR_ASIGNADA}}</p>
+                           <p style="margin: 0"><b>TELEFONO: </b> {{v_encabezadov.TEL_ASIGNADA}}</p>
+                        </div>
+                        <div ng-show="dAuto" style="max-height: 60vh;overflow: auto;height: auto;">
+                           <p style="margin: 0"><b>DIAGNOSTICO 1: </b> {{dAuto.NOMBREDX}}</p>
+                           <p style="margin: 0"><b>DIAGNOSTICO 2 : </b> {{dAuto.NOMBREDX2}}</p>
+                           <p style="margin: 0;text-transform: uppercase;"><b>JUSTIFICACION MEDICA :
+                              </b>{{dAuto.JUSTIFICACION}}
+                           </p>
+                           <p style="margin: 0"><b>IPS SOLICITANTE : </b> {{dAuto.IPS}}</p>
+                           <p style="margin: 0"><b>DIRECCION: </b> {{dAuto.DIRECCIONIPSSOLICITANTE}}</p>
+                           <p style="margin: 0"><b>TELEFONO: </b> {{dAuto.TELEFONOIPSSOLICITANTE}}</p>
+                           <!-- <p style="margin: 0"><b>SERVICIO: </b> {{dAuto.SERVICIO}}</p> -->
+                           <p style="margin: 0"><b>FECHA ENTREGA: </b> {{dAuto.FECHA_ENTREGA}}</p>
+                           <p style="margin: 0"><b>IPS ASIGNADA : </b> {{dAuto.IPSASIGNADA}}</p>
+                           <p style="margin: 0"><b>DIRECCION: </b> {{dAuto.DIRECCIONIPSASIGNADA}}</p>
+                           <p style="margin: 0"><b>TELEFONO: </b> {{dAuto.TELEFONOIPSASIGNADA}}</p>
+                        </div>
+                     </div>
+                     <div class="col s6">
+                        <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                           <strong class="c-none">Productos</strong>
+                        </blockquote>
+                        <div class="row">
+                           <div class="col s6" ng-repeat="d in v_detallev track by $index">
+                              <div class="card">
+                                 <div class="card-content" style="height: auto;">
+                                    <label><b>CODIGO:</b> {{d.CODIGO}}</label>
+                                    <br>
+                                    <label> <b>NOMBRE:</b> {{d.NOMBRE}}</label>
+                                    <br>
+                                    <div>
+                                       <label><b>CANTIDAD:</b> {{d.CANTIDAD}}</label>
+                                       <label><b>VALOR:</b><i class="icon-dollar"></i>{{d.VALOR}}</label>
+                                    </div>
+                                    <i style="position: absolute; top: 9px; right: 9px;" class="icon-ok-6"></i>
+                                    <div class="progress green lighten-4"
+                                       style="position: absolute; bottom: 0px;  margin-top: 0px; left: 0px;">
+                                       <div class="determinate green darken-2" style="width: 100%"></div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+
+                        </div>
+                        <div class="row" ng-hide="v_detallev.length>0" style="text-align: center">
+                           <h2>No hay productos en la Autorización</h2>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>

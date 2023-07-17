@@ -1,0 +1,351 @@
+<div id="listausuarios" class="white newdesing" style="position:relative">
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5 style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">Lista
+          de usuarios IPS</h5>
+      </li>
+      <li>
+        <a href="assets/instructivo/GTIC-015-FR -  Instructivo  Login Funcionarios IPS.pdf" target="_blank" style="cursor: pointer;">¿Como
+          gestionar los usuarios IPS?</a>
+      </li>
+      <li ng-show="!vista.form">
+        <i ng-click="agregarUser(true)" title="Crear un nuevo usuario" class="icon-plus">Crear Usuario</i>
+      </li>
+      <li ng-show="vista.form">
+        <i ng-click="agregarUser(false)" class="icon-left-open-2">Atras</i>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div ng-show="vista.tabla_0" class="col s12 m12 l6" style="position: relative;">
+      <div class="black-text title-panel" style="margin-bottom: 15px;">Todos los usuarios:
+        <input type="text" class="margin border-none input-text-new" ng-model="filtrar_text" placeholder="Buscar..."
+            style="width: 160px;">
+        <!-- <div class="btn-panel" style="display: flex;align-items: center;">        
+          <i ng-click="agregarUser(true)" title="Crear un nuevo usuario" class="icon-plus">Agregar</i>
+        </div> -->
+      </div>
+      <!-- Todos los Usuarios -->
+      <!-- <div class="scroll_x" style="position: absolute;z-index: 10;overflow: hidden;">
+        <table id="tablaClone_0" class="striped table-bordered white" style="position: relative;">
+
+        </table>
+      </div> -->
+      <div class="scroll_x" style="overflow: auto;height: calc(100vh - 218px);">
+        <table id="tablaOriginal_0" class="striped table-bordered white">
+          <thead>
+            <tr class="default-background white-text">
+              <th class="border-none" data-field="Codigo">
+                Cargo
+              </th>
+              <th class="border-none">
+                Nombre
+              </th>
+              <th class="border-none">
+                Estado
+              </th>
+              <th class="border-none center-align">
+                Opciones
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="lis_users.length == 0">
+              <td colspan="4" class="center-align">
+                No hay usuarios para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat="user in lis_users | filter:{$:filtrar_text} | orderBy:'Cargo' track by user.Cedula">
+              <td>{{user.Cargo}}</td>
+              <td>{{user.Nombre_usuario}}</td>
+              <td>
+                {{user.Estado}}
+              </td>
+              <td class="center-align">
+                <i title="Cambiar Estado del Usuario" ng-click="cambiarEstado(user)" class="zmdi zmdi-traffic" style="font-size: 15px;margin-right: 16px;"></i>
+                <i title="Editar Usuario" ng-click="editarUser(user)" class="icon-edit margin"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div ng-if="vista.form" class="col s12 m12 l6" style="position: relative;min-height: calc(100vh - 169px);border-right: 2px solid #f1f3f4;">
+      <div class="black-text title-panel" style="margin-bottom: 15px;">{{(u_i==true)?'Editar usuario:':'Crear nuevo
+        usuario:'}}
+      </div>
+      <div class="row margin">
+        <div class="col s6 no-padding label-new m-b h-auto">
+          <label>NIT:</label>
+          <p class="margin m-l">{{form.nit}}</p>
+        </div>
+        <div class="col s6 no-padding label-new m-b h-auto">
+          <label>Nombre de la IPS:</label>
+          <p class="margin m-l">{{form.nombreIps}}</p>
+        </div>
+        <div ng-if="!u_i" class="col s6 no-padding label-new m-b">
+          <select ng-model="form.tipoDocumento" id="form_tipoDocumento" class="select-new gray-input" material-select
+            watch convert-to-number>
+            <option ng-repeat="td in tipo_documento" value="{{td.Codigo}}">{{td.Nombre}}</option>
+          </select>
+          <label for="form_tipoDocumento">Tipo de Documento *</label>
+        </div>
+        <div ng-if="!u_i" class="col s6 no-padding label-new m-b">
+          <input ng-model="form.numeroId" id="form_numeroId" type="number" class="margin border-none white input-text-new input-w-p m-l gray-input w-100">
+          <label for="form_numeroId">Número de identificación *</label>
+        </div>
+        <div ng-if="u_i" class="col s6 no-padding label-new m-b">
+          <label for="form_tipoDocumento">Tipo de Documento</label>
+          <p class="margin m-l">{{form.tipoDocumento}}</p>
+        </div>
+        <div ng-if="u_i" class="col s6 no-padding label-new m-b">
+          <label for="form_numeroId">Número de identificación</label>
+          <p class="margin m-l">{{form.numeroId}}</p>
+        </div>
+        <div class="col s12 no-padding label-new m-b">
+          <input ng-model="form.nombreUser" id="form_nombreUser" type="text" autocomplete="off" class="margin border-none white input-text-new input-w-p gray-input w-100">
+          <label for="form_nombreUser">Nombre Completo del Usuario *</label>
+        </div>
+        <div class="col s4 no-padding label-new m-b h-auto">
+          <input value="{{form.numeroId}}" ng-disabled="true" type="text" class="margin border-none white input-text-new input-w-p gray-input w-100">
+          <label>Usuario:</label>
+        </div>
+        <div class="col s4 no-padding label-new m-b">
+          <input ng-model="form.contrasenna_0" id="form_contrasenna_0" type="text" autocomplete="off" class="margin border-none white input-text-new input-w-p m-l gray-input w-100">
+          <label for="form_contrasenna_0">Contraseña *</label>
+        </div>
+        <div class="col s4 no-padding label-new m-b">
+          <input ng-model="form.contrasenna_1" id="form_contrasenna_1" type="password" autocomplete="off" class="margin border-none white input-text-new input-w-p m-l gray-input w-100">
+          <label for="form_contrasenna_1">Verificar Contraseña *</label>
+        </div>
+        <div class="col s6 no-padding label-new m-b">
+          <input ng-model="form.celular" id="form_celular" type="number" class="margin border-none white input-text-new input-w-p gray-input w-100">
+          <label for="form_celular">Celular *</label>
+        </div>
+        <div class="col s6 no-padding label-new m-b">
+          <input ng-model="form.telefono" id="form_telefono" type="number" class="margin border-none white input-text-new input-w-p m-l gray-input w-100">
+          <label for="form_telefono">Telefono *</label>
+        </div>
+        <div class="col s6 no-padding label-new m-b">
+          <input ng-model="form.correo" id="form_correo" type="text" class="margin border-none white input-text-new input-w-p gray-input w-100">
+          <label for="form_correo">Correo *</label>
+        </div>
+        <div class="col s6 no-padding label-new m-b">
+          <input ng-model="form.cargo" id="form_cargo" type="text" class="margin border-none white input-text-new input-w-p m-l gray-input w-100">
+          <label for="form_cargo">Cargo *</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 no-padding label-new m-b h-auto">
+          <label>Nota:</label>
+          <p class="margin m-l">Despues de llenar todos los campos obligatorios marcados con el * puedes modificar los
+            modulos a los que el usuario accedera y luego clic en boton {{btn_value}}</p>
+        </div>
+      </div>
+      <!-- NIT 900600256
+USUARIO NIT900600257
+CLAVE 900600256
+COD VERIFICACION 562151
+ -->
+      <!-- <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+          value="Cerrar">
+        <input ng-click="guardarAgenda(agenda_fecha)" class="btn white-text default-background right" type="submit"
+          value="Guardar"> -->
+    </div>
+
+    <div class="col s12 m12 l6" style="position: relative;min-height: calc(100vh - 229px);">
+      <div class="black-text title-panel" ng-if="vista.tabla_1" style="margin-bottom: 15px;">{{moduloTitle}}
+        <div class="btn-panel">
+          <div class="button-dropdown-angular" style="margin-left: 20px;">
+            <i ng-click="ModuloAdd()" ng-class="{'active':btn.icon,'icon-plus':btn.icon==false}" title="Agrega modulos a la cuenta"
+              class="icon-cancel dropdown-toggle-angular" style="user-select: none;">{{(btn.icon)?'Cerrar':'Agregar'}}</i>
+            <div id="modulo_dropdown" class="dropdown-menu" style="background-color: #f1f3f4;">
+              <!-- Modulos para agregar -->
+              <table class="striped table-bordered" ng-show="moduloTitle!=''" style="background-color: white;overflow: auto;max-height: calc(100vh - 311px);">
+                <thead class="default-background white-text">
+                  <tr>
+                    <th class="border-none" style="width: 80%;">
+                      Titulo
+                    </th>
+                    <th class="center-align border-none" data-field="Icono">Icono</th>
+                    <th ng-click="BtnAgregar()" class="center-align border-none default-background-dark" data-field="Estado"
+                      style="cursor: pointer;">
+                      Agregar
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="scroll-tbody-2 top-menu">
+                  <tr ng-if="moduloAdd.length == 0">
+                    <td colspan="3" class="center-align">
+                      No hay módulos para agregar
+                    </td>
+                  </tr>
+                  <tr ng-repeat="moduloa in moduloAdd | filter:{titulo:filter_modulosBase} | orderBy:'titulo'" ng-class="{'active':collapse.level == $index}">
+                    <td>{{moduloa.titulo}}</td>
+                    <td class="center-align"><i class="{{moduloa.icono}}"></i></td>
+                    <td class="center-align">
+                      <input type="checkbox" class="filled-in" id="input_label_add{{$index}}" ng-init="check_agregar$index = false"
+                        ng-checked="check_agregar$index" ng-model="check_agregar$index" ng-change="checkboxAgregar($index,check_agregar$index,moduloa)">
+                      <label for="input_label_add{{$index}}" style="padding-left: 20px;height: 20px;"></label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <i class="icon-list-alt" ng-show="!vista.tabla_1" style="position:absolute;top:50%;left:50%;font-size: 2em;"></i> -->
+      <!-- Modulos -->
+      <!-- <div ng-if="vista.tabla_1" class="scroll_x" style="position: absolute;z-index: 10;overflow: hidden;">
+        <table id="tablaClone_1" class="striped table-bordered white" style="position: relative;">
+
+        </table>
+      </div> -->
+      <div ng-if="vista.tabla_1" class="scroll_x tabla-1">
+        <table id="tablaOriginal_1" class="striped table-bordered white">
+          <thead class="default-background white-text">
+            <tr style="position: relative;">
+              <th class="border-none" data-field="Titulo">
+                Titulo
+              </th>
+              <th class="center-align border-none" data-field="Icono">Icono</th>
+              <th colspan="2" class="center-align border-none">Opciones</th>
+            </tr>
+          </thead>
+
+          <tbody class="scroll-tbody-2 collapsible-body-new">
+            <tr ng-if="modulos.length == 0">
+              <td colspan="4" class="center-align">
+                No hay módulos para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat-start="modulo in modulos | filter:{titulo:filter_modules} | orderBy:'titulo'" ng-class="{'active':collapse.level == $index}">
+              <td ng-click="(collapse.level != $index)? collapse.level = $index : collapse.level = null;">{{modulo.titulo}}</td>
+              <td class="center-align"><i class="{{modulo.icono}}"></i></td>
+              <td ng-click="(collapse.level != $index)? collapse.level = $index : collapse.level = null;" class="center-align">
+                <i class="icon-down-open-1 margin" style="font-size: 20px;"></i>
+              </td>
+              <td class="center-align">
+                <i ng-click="BtnBorrarModulo('modulos',modulo.id)" class="icon-trash-empty red-text"></i>
+              </td>
+            </tr>
+            <tr ng-repeat-end>
+              <td colspan="4" class="panel">
+                <!-- Submódulos -->
+                <table class="responsive-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 80%;" data-field="Codigo">Titulo</th>
+                      <!-- <th style="width: 40%;" data-field="Titulo">Url</th> -->
+                      <th style="width: 20%;cursor: pointer;" class="center-align" data-field="Titulo">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="center-align" ng-repeat="submodulo in modulo.options | orderBy:'titulo' track by $index">
+                      <td style="width: 80%;">{{submodulo.titulo}}</td>
+                      <!-- <td style="width: 40%;">{{submodulo.url}}</td> -->
+                      <td style="width: 20%;position:relative" class="center-align switch">
+                        <label>
+                          <input type="checkbox" ng-model="check_estadoActive[$index]" ng-checked="(submodulo.estado == true)? check_estadoActive[$index] = true : check_estadoActive[$index] = false;"
+                            ng-change="checkboxEstado(modulo.titulo,submodulo.estado,submodulo.titulo)">
+                          <span class="lever"></span>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr ng-if="set.rol == 0">
+                      <td colspan="3" class="no-padding">
+                        <table class="responsive-table">
+                          <tbody>
+                            <tr class="center-align">
+                              <td style="width: 80%;">
+                                <input type="text" ng-model="new_titulo_submodulo" ng-change="(new_titulo_submodulo!='')? new_url_submodulo = 'mara.'+url_auto(new_titulo_submodulo).toLowerCase() : new_url_submodulo = ''"
+                                  class="margin border-none" style="height: auto;font-size: 13px;" placeholder="Titulo">
+                              </td>
+                              <!-- <td style="width: 40%;">
+                                <input type="text" ng-model="new_url_submodulo" class="margin border-none" style="height: auto;font-size: 13px;"
+                                  placeholder="Url">
+                              </td> -->
+                              <td class="center-align" style="width: 20%;">
+                                <i class="icon-list-add" style="font-size: 1.2em;cursor: pointer;color: teal;" ng-click="(new_titulo_submodulo != '' && new_url_submodulo != '')? new_submodulo(modulo.titulo,new_titulo_submodulo,new_url_submodulo) : new_titulo_submodulo = '';new_titulo_submodulo = '';new_url_submodulo = ''"></i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <!-- Nuevo Modulo -->
+            <tr ng-if="set.rol == 0">
+              <td class="center-align" style="width: 80%;">
+                <input type="text" ng-model="new_titulo_modulo" class="margin border-none" style="height: auto;font-size: 13px;"
+                  placeholder="Titulo">
+              </td>
+              <td style="width: 20%;">
+                <input type="text" ng-model="new_icono_modulo" class="margin border-none" style="height: auto;font-size: 13px;"
+                  placeholder="Icono">
+              </td>
+              <td style="width: 20%;position:relative;display: flex;justify-content: space-around;align-items: center;">
+                <i class="icon-list-add" style="font-size: 1.2em;cursor: pointer;color: teal;" ng-click="(new_titulo_modulo != '' && new_icono_modulo != '')? new_modulo(new_titulo_modulo,new_icono_modulo) : new_titulo_modulo = '';new_titulo_modulo = '';new_icono_modulo = ''"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <input ng-click="guardarUser(u_i)" ng-if="vista.form" class="btn white-text default-background right" type="submit"
+        value="{{btn_value}}" style="transition: all 0s;">
+    </div>
+  </div>
+  <style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .h-auto {
+      height: auto;
+    }
+
+    .tabla-1 {
+      overflow: auto;
+      height: calc(100vh - 265px) !important;
+      margin-bottom: 20px !important;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .newdesing td,
+    th {
+      font-size: 13px;
+    }
+
+    #listausuarios .scroll-tbody-2 tr:not(.active)+tr>.panel {
+      display: none;
+    }
+
+    #listausuarios td,
+    th {
+      border-radius: 0;
+    }
+
+    #listausuarios .active.dropdown-toggle-angular~div#modulo_dropdown {
+      display: block !important;
+    }
+
+    #listausuarios #modulo_dropdown {
+      top: 30px;
+      width: 400px;
+    }
+  </style>
+</div>

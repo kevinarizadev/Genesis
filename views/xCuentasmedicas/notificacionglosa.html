@@ -1,0 +1,576 @@
+<div class="newdesing" style="position:relative">
+  <!-- modal -->
+  <div id="modal_impreso" class="modal" style="    width: 800px;  max-height: 75% overflow-x: hidden;">
+    <div class=" modal-header row  card-content foot4" style="padding: 0;text-align: center;">
+      <div class="col s11">
+        <h5 class="white-text">Glosa</h5>
+      </div>
+      <div class="col s1">
+        <h5 style="text-align: end;"><i style="cursor:pointer;" class="material-icons white-text modal-close">close</i>
+        </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12 m12 l12">
+        <div class="row">
+          <div class="col l12 m12 s12">
+            <div class="row" style="    border: 1px solid #e5e6e6;     padding: 0.3em;">
+              <div class="col s12 l6 m6">
+                <div class="col s12  no-p-l">
+                  <label for="fecha">Fecha de Radicación</label>
+                  <input id="fecha" type="date" ng-model="fecha"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+              </div>
+            </div>
+          </div>
+           <div class="adjunto col l12 m12 s12">
+             <div class="file-field col  l12 m12 s12">
+               <div class="btn" style="background-color: #1a2e63">
+                 <span class="white-text"><i class="icon-upload"></i>Subir Adjunto</span>
+                 <input type="file" id="Comentario_Adjunto" accept=".pdf, png"
+                   style="background-color: rgba(255, 255, 255, 0.9); width: 100%; padding: 5px; border: 1px solid #f2f2f2; border-radius: 2px;border-color: #a3a3b182; height: 3rem;"
+                   ng-model="archivoemp">
+               </div>
+               <div class="file-path-wrapper">
+                 <input id="nombreadjunto" class="file-path" type="text" ng-change="loadFile()"
+                   placeholder="Seleccione Archivo" ng-model="nombreadjunto"
+                   style="background-color: rgba(255, 255, 255, 0.9); width: 90%; padding: 5px; border: 1px solid #f2f2f2; border-radius: 2px;border-color: #a3a3b182; height: 3rem;">
+               </div>
+             </div>
+           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div style="position: relative;text-align: center;" class="col s12">
+        <a class="modal-action modal-close waves-effect waves-green btn" ng-click="guardar_datos_glosa()">Guardar</a>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Notificación de Glosa</h5>
+      </li>
+    </ul>
+  </div>
+  <div class="row content-container elements mb-0">
+    <div class="row">
+      <!-- CONTENIDO -->
+      <div class="col m12 l12 s12">
+        <div class="card contentcard" style="min-height: 541px;">
+          <div class="col s12" ng-show="paso==1">
+            <div class="col s12 bb">
+              <h5><small>Busqueda de Glosa</small></h5>
+            </div>
+          </div>
+          <!-- BUSQUEDA INICIAL -->
+          <div class="col s12 mt-20">
+            <div class="col l12" style="border: 1px solid #e5e6e6;padding: 1em;">
+              <form>
+                <div class="col s9">
+                  <label for="estado" class="label-new-shirley">Estado</label>
+                  <select id="estado" ng-model="estado" class="select-new gray-input"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="0">CREADA</option>
+                    <option value="1">IMPRESA</option>
+
+                  
+                  </select>
+                </div>
+                <div class="col s3 mt-20 center">
+                  <button class="waves-effect waves-light btn white-text light-blue"
+                    ng-click="buscar_glosa()">Buscar</button>
+                </div>
+              </form>
+            </div>
+            <div class="col s12" style="height: 394px;" ng-show="inactivecontratos">
+              <div class="center">
+                <img src="assets/images/contratos/gestion_contratos/buscar.svg" style="width: 368px;">
+              </div>
+            </div>
+            <div class="col s12" ng-hide="inactivecontratos">
+              <div class="row">
+                <div class="col s6">
+                  <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                    <input ng-change="filtrasr()" id="filtrar" placeholder="Filtrar" type="text" ng-model="filtrar"
+                      class="margin border-none white input-w-p gray-input w-100">
+                  </div>
+                </div>
+                <div class="col s6">
+                  <div class="col s12 label-new no-p-l " style=" margin-left: 10px; ">
+                    <h6><i class=" icon-database"></i> Un Total <strong>{{ListarResultado.length}} Glosas</strong></h6>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="scroll" style="height: 270px;">
+                  <table class="table table-bordered striped">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;">CONS</th>
+                        <th style="text-align:center;">SECCIONAL</th>
+                        <th style="text-align:center;">FECHA</th>
+                        <th style="text-align:center;">RAZON SOCIAL</th>
+                        <th style="text-align:center;">USUARIO NOTIFICA</th>
+                        <th style="text-align:center;">ESTADO</th>
+                        <th style="text-align:center;" colspan="2">ACCION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="x in ListarResultado  | filter: filtrar">
+                        <td style="text-align:center;">{{x.CONS}}</td>
+                        <td style="text-align:center;">{{x.SECCIONAL}}</td>
+                        <td style="text-align:center;">{{x.FECHA}}</td>
+                        <td style="text-align:center;">{{x.NIT}} - {{x.NOMBRE}}</td>
+                        <td style="text-align:center;">{{x.NOMBRE_RESPONSABLE}}</td>
+                        <td style="text-align:center;">{{x.ESTATUS}}</td>
+                        <td style="text-align:center; ">
+                          <div class="tooltip">
+                            <i style="font-size: 1.5em;"class="icon-download-cloud pointer" ng-click="imprimir(x)"></i>
+                            <span class="tooltiptext">DESCARGAR</span>
+                          </div>
+                        </td>
+                        <td style="text-align:center; " ng-show="x.ESTATUS_COD==1">
+                          <div class="tooltip">
+                            <i class="material-icons pointer" ng-click="ver(x)">visibility</i>
+                            <span class="tooltiptext">VER</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .adjunto {
+      margin-top: 1em;
+    }
+
+    .select-chosen-eps {
+      padding-top: 0px !important
+    }
+
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .seleccion_contrato_t {
+      padding: 0.5em;
+      margin: 0px;
+    }
+
+    .seleccion_contrato {
+      margin: 0px;
+      padding: 0.5em 1.5em;
+      background: #e0e0e0;
+    }
+
+    .tabactiva {
+      background: #e5e6e6;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .verde {
+      background-color: #8BC34A !important;
+    }
+
+    .rojo {
+      background-color: #FF5722 !important;
+    }
+
+    .amarillo {
+      background-color: #FFC107 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 540px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+    .card-divider {
+      color: #FFC107;
+      width: 100%;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    .columnas {
+      position: absolute;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+      z-index: 999;
+      top: -2.66em;
+      left: 1.65em;
+    }
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 155px;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+s
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    } */
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input. {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .label-new-shirley {
+      font-weight: 400;
+      font-size: 1rem;
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+    .responsive-table-shir {
+      overflow: auto;
+      height: 32em;
+    }
+
+    li.active_list {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+  </style>
+</div>

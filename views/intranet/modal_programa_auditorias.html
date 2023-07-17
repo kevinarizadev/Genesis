@@ -1,0 +1,473 @@
+<div id="programa_auditorias_modal" class="close-none newdesing_modal">
+    <style>
+      .newdesing_modal .ngdialog-add:hover {
+        background-color: #164691;
+        color: white;
+      }
+  
+      .newdesing_modal input[type="date"]::-webkit-inner-spin-button,
+      .newdesing_modal input[type="date"]::-webkit-calendar-picker-indicator {
+        /* display: none; */
+        -webkit-appearance: none;
+      }
+  
+      .newdesing_modal ::-webkit-input-placeholder {
+        color: #80868b;
+      }
+  
+  
+  
+      #programa_auditorias_modal {
+        width: 90%;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        margin: auto;
+      }
+  
+      #programa_auditorias_modal>.card {
+        background-color: #e5e6e6;
+        width: 100%;
+      }
+  
+      .input-w-p {
+        width: 100% !important;
+        padding: 0 0.5rem !important;
+      }
+  
+      .w-100 {
+        width: 100% !important;
+      }
+  
+      /* .btn-inactivo {
+              background-color: #DFDFDF !important;
+              box-shadow: none;
+              color: #9F9F9F !important;
+              cursor: pointer;
+              opacity: .65;
+            } */
+  
+      html.ngdialog-open,
+      body.ngdialog-open {
+        overflow: hidden !important;
+        height: auto !important;
+      }
+  
+      #programa_auditorias_modal .w-30vw>.dropdown-content {
+        width: 30vw !important;
+      }
+  
+      #programa_auditorias_modal .red {
+        background-color: #c1001f !important;
+      }
+  
+      #programa_auditorias_modal .blue {
+        background-color: #134c95 !important;
+      }
+  
+      .h-auto {
+        height: auto !important;
+      }
+  
+      .label-new>label {
+        font-weight: bold;
+        color: black;
+      }
+  
+      tr>td {
+        width: 50%;
+      }
+  
+      .group_btn>i:hover {
+        background-color: white;
+        border-radius: 50%;
+      }
+  
+      @media only screen and (max-width: 992px) {
+        #programa_auditorias_modal {
+          width: 95% !important;
+        }
+      }
+  
+      #buscar_aditores,
+      #buscar_auditado {
+        padding: 0;
+        top: 35px;
+        width: 100%;
+        overflow: auto;
+        max-height: calc(20vh + 60px);
+      }
+  
+      select:disabled+label {
+        color: rgba(0, 0, 0, 0.26);
+      }
+    </style>
+    <div class="col s12 m6 l6 card">
+      <div class="card-content" style="border-bottom: 5px solid #4CAF50">
+        <div ng-if="datos.vista == 0" title="Crear Nuevo" class="ngdialog-add">
+          <i ng-click="cambiarVista(1);" class="icon-plus"></i>
+        </div>
+        <h5 style="max-width: 85%;">{{titulo}}</h5>
+        <div title="Cerrar" class="ngdialog-close" style="margin-left: auto;"></div>
+      </div>
+      <div class="card-action border-none">
+        <!-- ---------------------------------------------------------------------------Vista Previa------------------------------------------------------------------------------ -->
+        <div ng-if="datos.vista == 0" class="row margin">
+          <div class="col l12 m12 s12">
+            <div class="row margin" style="max-height: 80vh;overflow: auto;">
+              <ul class="margin last-child-not-border" style="margin-right: 8px!important;">
+                <li class="detalles" ng-repeat="des in id_detalles"
+                  style="display: flex;padding: 8px 0;border-bottom: 1px solid #26a69a8c;">
+                  <div ng-click="cambiarVista(2,des.code);" title="Ver Agenda" ng-class="{'w-100':admin == false}"
+                    class="details" style="display: flex;width: 82%;padding: 8px;border-radius: 15px;">
+                    <div
+                      style="justify-content: start;margin: auto 0;margin-right: 25px;margin-left: 15px;min-width: 15px;min-height: 15px;">
+                      <div class="active day-btn desable {{des.EstadoCal}}"></div>
+                    </div>
+                    <div style="margin-right: auto;line-height: 2;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
+                      {{des.name}}
+                    </div>
+                  </div>
+                  <div class="group_btn" ng-if="admin == true"
+                    style="display: flex;align-items: center;justify-content: space-around;width: 18%;">
+                    <i ng-click="cambiarVista(1,des.code);" title="Editar" class="icon-edit grey-text margin"></i>
+                    <i ng-click="desactivar_auditoria(des.code)" title="Eliminar" class="icon-trash-empty red-text"></i>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- ---------------------------------------------------------------------------Editar y Crear------------------------------------------------------------------------------ -->
+        <div ng-if="datos.vista == 1" class="row margin">
+          <div class="col l12 m12 s12">
+            <div class="row margin" style="max-height: 80vh;overflow: auto;">
+              <div class="col m12 l4 no-padding label-new" style="height: auto;">
+                <textarea ng-model="auditoria.objetivo" id="auditoria_objetivo" rows="5" cols="5"
+                  class="materialize-textarea input-w-p border-none textarea-new white"
+                  style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                <label for="auditoria_objetivo">Objetivo del programa *</label>
+              </div>
+              <div class="col m12 l4 no-padding label-new" style="height: auto;">
+                <textarea ng-model="auditoria.riesgos" id="auditoria_riesgos" rows="5" cols="5"
+                  class="materialize-textarea input-w-p border-none textarea-new white m-l"
+                  style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                <label for="auditoria_riesgos">Riesgos *</label>
+              </div>
+              <div class="col m12 l4 no-padding label-new" style="height: auto;">
+                <textarea ng-model="auditoria.oportunidades" id="auditoria_oportunidades" rows="5" cols="5"
+                  class="materialize-textarea input-w-p border-none textarea-new white m-l"
+                  style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                <label for="auditoria_oportunidades">Oportunidades *</label>
+              </div>
+              <div class="col m12 l4 no-padding m-b">
+                <div class="col s12 no-padding label-new" style="height: auto;">
+                  <textarea ng-model="auditoria.alcance" id="auditoria_alcance" rows="5" cols="5"
+                    class="materialize-textarea input-w-p border-none textarea-new white"
+                    style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                  <label for="auditoria_alcance">Alcance *</label>
+                </div>
+                <div class="col s12 no-padding label-new" style="height: auto;">
+                  <textarea ng-model="auditoria.recursos" id="auditoria_recursos" rows="5" cols="5"
+                    class="materialize-textarea input-w-p border-none textarea-new white"
+                    style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                  <label for="auditoria_recursos">Recursos *</label>
+                </div>
+              </div>
+              <div class="col m12 l4 no-padding label-new m-b" style="height: auto;flex-direction: column;">
+                <form class="form-input-icon-new m-l" method="post"
+                  ng-submit="search_user(texto_eq_auditado,'listar_resultado_aud','resultados_aud')" autocomplete="off"
+                  style="width: calc(100% - .5rem)">
+                  <input ng-model="texto_eq_auditado"
+                    ng-change="(texto_eq_auditado.length==0)?filtro.resultados_aud=false:texto_eq_auditado=texto_eq_auditado.toLowerCase();"
+                    type="text" class="margin border-none" placeholder="Cedula, Usuario o Nombre">
+                  <i ng-click="search_user(texto_eq_auditado,'listar_resultado_aud','resultados_aud')"
+                    class="icon-search dropdown-toggle-angular {{(filtro.resultados_aud)?'active':''}}"></i>
+                  <div id="buscar_auditado" class="dropdown-menu">
+                    <a ng-click="agregar_usuario(resultado,'auditado','resultados_aud');"
+                      ng-repeat="resultado in listar_resultado_aud | orderBy:'nombre'" href="javascript:void(0)"
+                      class="margin black-text">{{resultado.nombre}}</a>
+                  </div>
+                  <i ng-click="filtro.resultados_aud=false;" class="icon-cancel"
+                    style="cursor: pointer;left: initial; top: 4px; right: 9px;" title="Cerrar Pestaña"></i>
+                </form>
+                <div class="m-l position-relative row white"
+                  style="overflow: auto;height: calc(12rem + 37px);margin-bottom: 15px;width: calc(100% - .5rem);margin-top: .5rem;">
+                  <table class="striped table-bordered white">
+                    <thead>
+                      <tr class="default-background white-text">
+                        <th class="border-none">
+                          <!-- <input type="text" ng-model="filter_name_list_boss" class="margin border-none w-auto"
+                              style="height: auto;font-size: 13px;" placeholder="Nombre"> -->
+                          Nombre
+                        </th>
+                        <th class="border-none">
+                          <!-- <input type="text" ng-model="filter_cargo_list_boss" class="margin border-none w-auto"
+                              style="height: auto;font-size: 13px;" placeholder="Cargo"> -->
+                          Cargo
+                        </th>
+                        <th class="border-none">
+                          Borrar
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="user in auditoria.auditado | orderBy:'nombre'">
+                        <td>{{user.nombre}}</td>
+                        <td>{{user.cargo}}</td>
+                        <td class="center-align" style="border-right: 0;">
+                          <i ng-click="borrar_usuario(user,'auditado')" class="icon-trash-empty"
+                            style="font-size: 17px;"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <label for="texto_eq_auditado">Auditado ({{auditoria.auditado.length}})*</label>
+              </div>
+              <div class="col m12 l4 no-padding label-new m-b" style="height: auto;flex-direction: column;">
+                <form class="form-input-icon-new m-l" method="post"
+                  ng-submit="search_user(texto_eq_aditor,'listar_resultado','resultados')" autocomplete="off"
+                  style="width: calc(100% - .5rem)">
+                  <input ng-model="texto_eq_aditor"
+                    ng-change="(texto_eq_aditor.length==0)?filtro.resultados=false:texto_eq_aditor=texto_eq_aditor.toLowerCase();"
+                    type="text" class="margin border-none" placeholder="Cedula, Usuario o Nombre">
+                  <i ng-click="search_user(texto_eq_aditor,'listar_resultado','resultados')"
+                    class="icon-search dropdown-toggle-angular {{(filtro.resultados)?'active':''}}"></i>
+                  <div id="buscar_aditores" class="dropdown-menu">
+                    <a ng-click="agregar_usuario(resultado,'equipo','resultados');"
+                      ng-repeat="resultado in listar_resultado | orderBy:'nombre'" href="javascript:void(0)"
+                      class="margin black-text">{{resultado.nombre}}</a>
+                  </div>
+                  <i ng-click="filtro.resultados=false;" class="icon-cancel"
+                    style="cursor: pointer;left: initial; top: 4px; right: 9px;" title="Cerrar Pestaña"></i>
+                </form>
+                <div class="m-l position-relative row white"
+                  style="overflow: auto;height: calc(12rem + 37px);margin-bottom: 15px;width: calc(100% - .5rem);margin-top: .5rem;">
+                  <table class="striped table-bordered white">
+                    <thead>
+                      <tr class="default-background white-text">
+                        <th class="border-none">
+                          <!-- <input type="text" ng-model="filter_name_list_boss" class="margin border-none w-auto"
+                            style="height: auto;font-size: 13px;" placeholder="Nombre"> -->
+                          Nombre
+                        </th>
+                        <th class="border-none">
+                          <!-- <input type="text" ng-model="filter_cargo_list_boss" class="margin border-none w-auto"
+                            style="height: auto;font-size: 13px;" placeholder="Cargo"> -->
+                          Cargo
+                        </th>
+                        <th class="border-none">
+                          Borrar
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="user in auditoria.equipo | orderBy:'nombre'">
+                        <td>{{user.nombre}}</td>
+                        <td>{{user.cargo}}</td>
+                        <td class="center-align" style="border-right: 0;">
+                          <i ng-click="borrar_usuario(user,'equipo')" class="icon-trash-empty"
+                            style="font-size: 17px;"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <label for="texto_eq_aditor">Equipo auditor ({{auditoria.equipo.length}})*</label>
+              </div>
+              <div class="col m12 l12 no-padding">
+                <div class="col m12 l8 no-padding m-b">
+                  <div class="col m12 l4 no-padding label-new" style="height: auto;">
+                    <textarea ng-model="auditoria.metodo" id="auditoria_metodo" rows="5" cols="5"
+                      class="materialize-textarea input-w-p border-none textarea-new white"
+                      style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                    <label for="auditoria_metodo">Metodo *</label>
+                  </div>
+                  <div class="col m12 l4 no-padding label-new" style="height: auto;">
+                    <textarea ng-model="auditoria.responsabilidades" id="auditoria_responsabilidades" rows="5" cols="5"
+                      class="materialize-textarea input-w-p border-none textarea-new white m-l"
+                      style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                    <label for="auditoria_responsabilidades">Responsabilidades *</label>
+                  </div>
+                  <div class="col m12 l4 no-padding label-new" style="height: auto;">
+                    <textarea ng-model="auditoria.observaciones" id="auditoria_observaciones" rows="5" cols="5"
+                      class="materialize-textarea input-w-p border-none textarea-new white m-l"
+                      style="max-height: 6rem;min-height: 6rem;overflow: auto;" maxlength="1000"></textarea>
+                    <label for="auditoria_observaciones">Observaciones *</label>
+                  </div>
+                </div>
+                <div class="col m12 l2 no-padding label-new m-b">
+                  <select ng-model="auditoria.tipo_auditoria" id="auditoria_tipo_auditoria"
+                    class="select-default-new white m-l">
+                    <option value="" ng-selected>Seleccionar</option>
+                    <option value="I">Interna</option>
+                    <option value="E">Externa</option>
+                    <option value="P">Preauditoria</option>
+                    <option value="O">Otra</option>
+                  </select>
+                  <label for="auditoria_tipo_auditoria" title="Tipo de auditoria">Tipo de auditoria *</label>
+                </div>
+                <div class="col m12 l2 no-padding m-b label-new">
+                  <input ng-model="agenda_fecha" id="agenda_fecha" type="date"
+                    class="datepicker border-none input-date-new white m-l">
+                  <label title="Fecha de la agenda" for="agenda_fecha">Fecha *</label>
+                </div>
+                <div class="col m12 l4 no-padding label-new m-b">
+                  <i ng-if="auditoria.adjunto!=''" ng-click="abrir_ruta_ftp(auditoria.adjunto)"
+                    class="{{ver_icono(auditoria.adjunto)}} position-absolute"
+                    style="cursor:pointer;font-size: 16px;right: 0;top: -27px;"></i>
+                  <div data-file="Seleccionar Documento" class="input-file-new m-l white">
+                    <i class="icon-folder-open-1"></i>
+                    <input input-ng-file id="auditoria" data-index="0" data-name_default="Seleccionar Documento"
+                      type="file" class="margin border-none">
+                  </div>
+                  <label for="auditoria">Adjunto *</label>
+                </div>
+              </div>
+            </div>
+            <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+              value="Cerrar">
+            <input ng-click="guardar_auditoria(agenda_fecha)" class="btn white-text default-background right"
+              type="submit" value="Guardar">
+          </div>
+        </div>
+        <!-- ---------------------------------------------------------------------------Ver Agenda------------------------------------------------------------------------------ -->
+        <div ng-if="datos.vista == 2" class="row margin">
+          <div class="col l12 m12 s12">
+            <div class="row margin" style="max-height: 80vh;overflow: auto;">
+              <div class="col l12 m12 s12 no-padding">
+                <div class="col s4 no-padding label-new m-b h-auto">
+                  <label>Objetivo del programa:</label>
+                  <p class="margin m-l" style="min-height: 6rem" ng-bind-html="IdentList(auditoria.objetivo)"></p>
+                </div>
+                <div class="col s4 no-padding label-new m-b h-auto">
+                  <label>Riesgos:</label>
+                  <p class="margin m-l" style="min-height: 6rem" ng-bind-html="IdentList(auditoria.riesgos)"></p>
+                </div>
+                <div class="col s4 no-padding label-new m-b h-auto">
+                  <label>Oportunidades:</label>
+                  <p class="margin m-l" style="min-height: 6rem"  ng-bind-html="IdentList(auditoria.oportunidades)"></p>
+                </div>
+              </div>
+              <div class="col m12 l4 no-padding">
+                <div class="col s12 no-padding label-new m-b h-auto">
+                  <label>Alcance:</label>
+                  <p class="margin m-l" style="min-height: 6rem"  ng-bind-html="IdentList(auditoria.alcance)"></p>
+                </div>
+                <div class="col s12 no-padding label-new m-b h-auto">
+                  <label>Recursos:</label>
+                  <p class="margin m-l" style="min-height: 6rem"  ng-bind-html="IdentList(auditoria.recursos)"></p>
+                </div>
+              </div>
+              <div class="col m12 l4 no-padding label-new" style="height: auto;flex-direction: column;">
+                <div class="m-l position-relative row"
+                  style="overflow: auto;height: calc(12rem + 75px);margin-bottom: 15px;width: calc(100% - .5rem);">
+                  <table class="striped table-bordered white">
+                    <thead>
+                      <tr class="default-background white-text">
+                        <th class="border-none">
+                          Nombre
+                        </th>
+                        <th class="border-none">
+                          Cargo
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="user in auditoria.auditado | orderBy:'nombre'">
+                        <td>{{user.nombre}}</td>
+                        <td style="border-right: 0;">{{user.cargo}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <label for="texto_eq_auditado">Auditado ({{auditoria.auditado.length}})</label>
+              </div>
+              <div class="col m12 l4 no-padding label-new" style="height: auto;flex-direction: column;">
+                <div class="m-l position-relative row"
+                  style="overflow: auto;height: calc(12rem + 75px);margin-bottom: 15px;width: calc(100% - .5rem);">
+                  <table class="striped table-bordered white">
+                    <thead>
+                      <tr class="default-background white-text">
+                        <th class="border-none">
+                          Nombre
+                        </th>
+                        <th class="border-none">
+                          Cargo
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="user in auditoria.equipo | orderBy:'nombre'">
+                        <td>{{user.nombre}}</td>
+                        <td style="border-right: 0;">{{user.cargo}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <label for="texto_eq_aditor">Equipo auditor ({{auditoria.equipo.length}})</label>
+              </div>
+              <div class="col s12 l12 no-padding">
+                <div class="col s12 l8 no-padding">
+                  <div class="col s12 l4 no-padding label-new m-b h-auto">
+                    <label>Metodo:</label>
+                    <p class="margin m-l" style="min-height: 6rem" ng-bind-html="IdentList(auditoria.metodo)"></p>
+                  </div>
+                  <div class="col s12 l4 no-padding label-new m-b h-auto">
+                    <label>Responsabilidades:</label>
+                    <p class="margin m-l" style="min-height: 6rem"  ng-bind-html="IdentList(auditoria.responsabilidades)"></p>
+                  </div>
+                  <div class="col s12 l4 no-padding label-new m-b h-auto">
+                    <label>Observaciones:</label>
+                    <p class="margin m-l" style="min-height: 6rem"  ng-bind-html="IdentList(auditoria.observaciones)"></p>
+                  </div>
+                </div>
+                <div class="col s12 l2 no-padding label-new m-b h-auto">
+                  <label>Tipo de auditoria:</label>
+                  <!-- <p class="margin m-l" style="min-height: 6rem">{{auditoria.tipo_auditoria}}</p> -->
+                  <select ng-model="auditoria.tipo_auditoria" id="auditoria_tipo_auditoria"
+                    class="select-default-new white m-l" disabled>
+                    <option value="" ng-selected>Seleccionar</option>
+                    <option value="I">Interna</option>
+                    <option value="E">Externa</option>
+                    <option value="P">Preauditoria</option>
+                    <option value="O">Otra</option>
+                  </select>
+                </div>
+                <div class="col s12 l2 no-padding label-new m-b h-auto">
+                  <label>Fecha:</label>
+                  <!-- <p class="margin m-l" style="min-height: 6rem">{{auditoria.fecha}}</p> -->
+                  <input ng-model="agenda_fecha" id="agenda_fecha" type="date"
+                    class="datepicker border-none input-date-new white m-l" disabled>
+                </div>
+                <!-- <div class="col m12 l2 no-padding label-new">
+                  <select ng-model="auditoria.tipo_auditoria" id="auditoria_tipo_auditoria"
+                    class="select-default-new white m-l" disabled>
+                    <option value="" ng-selected>Seleccionar</option>
+                    <option value="I">Interna</option>
+                    <option value="E">Externa</option>
+                    <option value="P">Preauditoria</option>
+                    <option value="O">Otra</option>
+                  </select>
+                  <label for="auditoria_tipo_auditoria" title="Tipo de auditoria">Tipo de auditoria</label>
+                </div>
+                <div class="col m12 l2 no-padding m-b label-new">
+                  <input ng-model="agenda_fecha" id="agenda_fecha" type="date"
+                    class="datepicker border-none input-date-new white m-l" disabled>
+                  <label title="Fecha de la agenda" for="agenda_fecha">Fecha</label>
+                </div> -->
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+                value="Cerrar">
+              <i ng-if="auditoria.adjunto!=''" ng-click="abrir_ruta_ftp(auditoria.adjunto)"
+                class="{{ver_icono(auditoria.adjunto)}} cursor-pointer" style="font-size: 24px;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

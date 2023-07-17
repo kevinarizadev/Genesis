@@ -1,0 +1,236 @@
+<div id="pantalla" class="white newdesing" style="position:relative">
+  <!-- Contenido  -->
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div class="col l12 m12 s12" style="position:relative">
+      <!-- /////////////////////////////////////////////// -->
+      <div class="row">
+        <div class="col s4">
+          <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+          <h5>Consultar Gestiones</h5>
+        </div>
+
+        <div class="col s12">
+          <form ng-submit="consultaGestion()">
+            <div class="col s11" style="padding: 20px;">
+              <div class="row margin">
+                <div class="col s12">
+                  <div class="row" style="margin-bottom: 10px">
+                    <label for="with_icon" style="margin-top: -20px;">Fecha de Radicación</label>
+                  </div>
+                  <div class="row margin">
+                    <div class="col s6">
+                      <div class="input-field col s6" style="margin: 0">
+                        <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio
+                          (*)</label>
+                        <input id="with_icon" type="date" ng-model="formConsulta.finicio"
+                          max="{{SysDay | date:'yyyy-MM-dd'}}">
+                      </div>
+                      <div class="input-field col s6" style="margin: 0">
+                        <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin
+                          (*)</label>
+                        <input id="with_icon" type="date" ng-model="formConsulta.ffinal"
+                          min="{{formConsulta.finicio | date:'yyyy-MM-dd'}}" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col s1 right">
+              <div class="input-field col m12 s12">
+                <button class="btn white-text" style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                    style="position: relative;" class="material-icons prefix">search</i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- /////////////////////////////////////////////// -->
+      <div class="m-l">
+        <!-- <strong ng-click="download()" ng-show="Gestiones.length != 0">Descargar Excel</strong> -->
+        <button class="btn m-b" ng-click="download()" ng-show="Gestiones.length != 0">Descargar Excel<strong><i class=" icon-file-excel"></i></strong></button>
+      </div>
+      <div class="row margin" ng-show="Gestiones.length != 0" style="position: relative;">
+        <div class="col s12">
+          <div class="scroll_x" style="position: absolute;width: calc(100% - 10px);z-index: 10;overflow: hidden;">
+            <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+            </table>
+          </div>
+          <div id="tabla_scroll" class="scroll_x" style="overflow: auto;height: calc(70vh + 10px);overflow-x: hidden;">
+            <table id="tablaByCN" class="striped table-bordered white" style="position: relative;">
+              <thead class="default-linear-gradient">
+                <tr>
+                  <th data-field="Ticket" class="border-none">NOMBRE</th>
+                  <th data-field="Asusnto" class="border-none">TIPO DOCUMENTO</th>
+                  <th data-field="Fecha Ingreso" class="border-none">DOCUMENTO</th>
+                  <th data-field="Fecha Cierre" class="border-none">TELEFONO CELULAR</th>
+                  <th data-field="Ciudad" class="border-none">TELEFONO FIJO</th>
+                  <th data-field="Dias" class="border-none center-align">BARRIO</th>
+                  <th data-field="Cargo" class="border-none">DIRECCION</th>
+                  <th data-field="Autoriza" class="border-none">DEPARTAMENTO</th>
+                  <th data-field="Nombre" class="border-none">MUNICIPIO</th>
+                  <th data-field="Cargo" class="border-none">CORREO ELECTRONICO</th>
+                  <th data-field="Adjunto" class="border-none">FECHA INGRESO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-if="Gestiones.length == 0">
+                  <td colspan="10" class="center-align">
+                    No hay datos para mostrar
+                  </td>
+                </tr>
+                <tr ng-repeat="gestion in Gestiones">
+                  <!-- <td class="center-align">{{$index + 1}}</td> -->
+                  <td>{{gestion.NOMBRE1}}</td>
+                  <td>{{gestion.TIPODOCUMENTO}}</td>
+                  <td>{{gestion.DOCUMENTO}}</td>
+                  <td>{{gestion.TELEFONO}}</td>
+                  <td>{{gestion.TELEFONO2}}</td>
+                  <td>{{gestion.BARRIO}}</td>
+                  <td>{{gestion.DIRECCION}}</td>
+                  <td>{{gestion.NDEPARTAMENTO}}</td>
+                  <td>{{gestion.NMUNICIPIO}}</td>
+                  <td>{{gestion.CORREO}}</td>
+                  <td>{{gestion.FMODIFICADO}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /////////////// -->
+    <div id="Modal_Soportes" class="modal"
+      style="margin: 0 auto;max-height:99%;width: 95%;top:-100px !important;transition-duration: 0.3s;">
+      <div class="col s12 m12 l12 card margin">
+        <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #000;"
+          ng-click="closeModal()"></div>
+        <div class="card-content">
+          <h5><span style="font-weight: 700;">Anexo</span></h5>
+        </div>
+        <div class="card-action" style="padding-left: 0px; padding-right: 0px;padding-bottom: 0;">
+          <div class="row allMails bg-white white" style="margin-bottom: 0px;">
+            <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+              style="height: 80vh;" ng-show="Listado.Url==''">
+              <i class="icon-file-pdf" style="margin: auto;font-size: 5em;"></i>
+            </div>
+            <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+              style="height: 80vh;overflow: auto;" ng-show="Listado.Url!=''">
+              <iframe style="width: 100%;height: 100%;" ng-if="Listado.Url!=''" type="application/pdf"
+                ng-src="{{Listado.Url}}" src="{{Listado.Url}}">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /////////////// -->
+  </div>
+  <style>
+    .yellow {
+      background-color: #b7a60f !important;
+    }
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .list-group {
+      font-size: .8rem;
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+    .tooltip_ab {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip_ab .tooltiptext_ab::after {
+      content: "";
+      position: absolute;
+      top: -37%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #00000000 #00000000 #555 #00000000;
+    }
+
+    .tooltip_ab:hover .tooltiptext_ab {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip_ab .tooltiptext_ab {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: -150%;
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    #toast-container .toast {
+      border-radius: 25px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+  </style>
+</div>

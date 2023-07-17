@@ -1,0 +1,136 @@
+<div>
+   <script src="bower_components/sweetalert/js/sweetalert2.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="bower_components/sweetalert/css/sweetalert2.css">
+   <div class="row margin">
+      <div class="row section-header" style="padding-bottom: 0px;">
+         <h4 class="page-title">Gestión de Solicitudes</h4>
+      </div>
+      <div class="col l12 m12 s12">
+         <div class="card card-default table-height">
+            <div class="card-content">
+               <h5>Listado</h5>
+               <br>
+               <div class="input-field col s3">
+                  <select class="select-chosen-eps" ng-model="estado" ng-change="reloadTable()">
+                     <option value="A">ACTIVAS</option>
+                     <option value="P">APROBADAS</option>
+                     <option value="R">RECHAZADAS</option>
+                     <option value="T">TODAS</option>
+                  </select>
+               </div>
+            </div>
+            <div class="card-content clearfix">
+               <table id="tblSolicitudes" class="responsive-table display dataTable" style="width:100%; cursor:pointer;">
+                  <thead>
+                     <tr>
+                        <td><b>CODIGO</b></td>
+                        <td><b>DOCUMENTO</b></td>
+                        <td><b>NOMBRE AFILIADO</b></td>
+                        <td><b>EMPLEADOR</b></td>
+                        <td><b>FECHA SOLICITUD</b></td>
+                        <td><b>ESTADO</b></td>
+                        <td><b>AFILIACIÓN ASEGURAMIENTO</b></td>
+                        <!-- NEW 7 - 10 -->
+                        <td><b>COMENTARIO</b></td>
+                        <td><b>MOTIVO RECHAZO</b></td>
+                        <td><b>FECHA RESPUESTA</b></td>
+                        <td><b>ASESOR</b></td>
+                     </tr>
+                  </thead>
+               </table>
+               <center><button class="waves-effect waves-light btn white-text" type="button" ng-click="reloadTable()" ng-hide="hdeBtnProcesar">Procesar</button></center>
+            </div>
+         </div>
+      </div>
+      <div class="col s12 m12 l12" ng-hide="panelprocesar">
+         <div class="card">
+            <div class="card-content">
+               <h5>Procesar Solicitud # {{gestion.codigo}}</h5>
+            </div>
+            <div class="card-action" style="height: 900px;" ng-hide="!panelPendienteAcas">
+               <ul class="collection avatar-profile-av border" style="cursor: pointer; width: 300px;">
+                  <a ng-click="descargafile(gestion.ruta)">
+                     <li class="collection-item border-none avatar">
+                        <img src="assets/images/download.png" alt="Descargar" class="circle">
+                        <span class="title" style="font-size: 20px; padding-top: 10px;"><strong>Descargar Archivo</strong></span>
+                     </li>
+                  </a>
+               </ul>
+               <div class="input-field col l12 m12 s12" ng-hide="hdeComentarios">
+                  {{mensaje_acas}}
+                  <blockquote>
+                     Comentarios de Afiliación y Registro:
+                  </blockquote>
+                  <ul>
+                     <li ng-repeat="reg in gestion.Comentarios">- {{reg.comentario}}</li>
+                  </ul>
+               </div>
+               <form ng-submit="enviarrespuesta()" id="formRespuesta">
+                  <input type="text" name="tipo_documento" style="display: none" ng-model="gestion.tipo_doc">
+                  <input type="text" name="documento" style="display: none" ng-model="gestion.doc">
+                  <input type="text" name="nombreempresa" style="display: none" ng-model="gestion.empresa">
+                  <input type="text" name="correo_empresa" style="display: none" ng-model="gestion.correo_empresa">
+                  <input type="text" name="codigo" style="display: none" ng-model="gestion.codigo">
+                  <div class="input-field col l4 m4 s4">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Seleccione acción:
+                     </blockquote>
+                     <!-- <label style=" margin-top: -20px;">Seleccionar Asesor</label> -->
+                     <select class="select-chosen-eps" ng-model="gestion.newestado" ng-change="changeEstado()">
+                        <option value="0" disabled>SELECCIONAR</option>
+                        <option value="P">APROBAR</option>
+                        <option value="R">RECHAZAR</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l4 m4 s4" ng-show="gestion.showrechazo">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Seleccione el motivo de rechazo:
+                     </blockquote>
+                     <!-- <label style=" margin-top: -20px;">Seleccionar Asesor</label> -->
+                     <select id="motivorechazo" class="select-chosen-eps" ng-model="gestion.motivorechazo">
+                        <option value="0">SELECCIONAR</option>
+                        <option ng-repeat="motivo in motivos track by $index" ng-value="motivo.CODIGO">{{motivo.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l4 m4 s4" ng-show="gestion.showaprobacion">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Adjunte formulario radicado:
+                     </blockquote>
+                     <div class="file-field input-field">
+                        <div class="btn">
+                           <span class="white-text">Archivo</span>
+                           <input name="archivo" accept=".png,.jpg,.jpeg,.pdf,.doc" type="file">
+                        </div>
+                        <div class="file-path-wrapper">
+                           <input id="nombreadjunto" class="file-path validate" type="text" placeholder="Adjunte archivo" ng-model="gestion.nombrearchivo" ng-disabled="seleccionarchivodis" ng-change="validaAnexo()">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="input-field col l8 m8 s8">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Ingrese comentarios:
+                     </blockquote>
+                     <textarea name="comentarios" style="height: 100px;" ng-model="gestion.comentarios" maxlength="2000"></textarea>
+                  </div>
+                  <div class="input-field col l12 m12 s12">
+                     <center><button class="waves-effect waves-light btn white-text" type="submit">Enviar</button></center>
+                  </div>
+               </form>
+            </div>
+            <div class="card-action" ng-hide="panelPendienteAcas">
+               <div class="row">
+                  <div class="input-field col l12 m12 s12" ng-hide="hdeComentarios">
+                     {{mensaje_acas}}
+                     <blockquote>
+                        Comentarios:
+                     </blockquote>
+                     <ul>
+                        <li ng-repeat="reg in gestion.Comentarios">- {{reg.comentario}}</li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

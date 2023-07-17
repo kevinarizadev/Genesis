@@ -1,0 +1,422 @@
+<div id="llamadastelecobro" class="white newdesing" style="position:relative">
+  <style>
+    .tiempo {
+    position: absolute;
+    right: 55px;
+    font-size: 30px;
+    font-family: monospace;
+    padding: 10px;
+    border: 2px solid #4CAF50;
+    z-index: 100;
+    border-radius: 5px;
+    background-color: rgb(242, 255, 242);
+    color: #000000;
+    /*top: 49%;*/
+    top: 5%;
+    }
+    div.columnas {
+    border-top: 1px solid #e5e6e6;
+    position: relative;
+    }
+    .columnas p {
+    position: absolute;
+    top: -38px;
+    width: 207px;
+    border: 1px solid #e5e6e6;
+    padding: 1px 10px;
+    border-radius: 0px 19px 0px 0px;
+    }
+    .columnas .ocultar_adjuntos {
+    position: absolute;
+    right: 1em;
+    cursor: pointer;
+    top: -1em;
+    border: 1px solid #1a2e63;
+    border-radius: 2em;
+    background: #fff;
+    }
+    p{
+    margin-top: 0px !important;
+    font-size: 15px !important;
+    margin-bottom: 0px !important;
+    }
+  </style>
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Registro de llamadas recibidas y salientes</h5>
+      </li>
+      <li ng-if="botones">
+        <div class="input-field col">
+          <a ng-click="RegistrarLLamada('N')" class="btn btn-small" style="background-color: #54504f;"><i class="icon-call"></i>Registar Llamadas</a>
+          <a ng-click="VerInforme()" class="btn btn-small" style="background-color: #eb7b2d;"><i class="icon-info-3"></i>Ver Informe</a>
+        </div>
+      </li>
+      <li ng-show="reloj">
+        <div for="duracion" id="duracion" value="0" class="tiempo">{{info.duracion}}</div>
+      </li>
+    </ul>
+  </div>
+  <div class="row white newdesing section-header" ng-show="BotonRegistroLlamada">
+    <div class="row margin">
+      <div class="general row">
+        <div class="col l6 m3 s3 scc no-padd" ng-repeat="duplicarse in duplicar" >
+          <div class="card small-chart margin" id="small-chart{{$index+1}}" style="height:120px;;width: 98%;">
+            <div class="col l3 m3 s3 scc no-padd" style="display: inline-table;">
+              <h4> <strong>{{duplicarse.porcentaje_meta}}% </strong></h4>
+              <h2><strong>DE LA META </strong></h2>
+            </div>
+            <div class="col l9 m9 s9 sct no-padd">
+              <h2 style="margin-bottom: 2%;margin-top: 2%;"><strong> {{duplicarse.nombre_funcionario}} </strong></h2>
+              <div class="col l6 m6 s6 sct no-padd">
+                <div class="justify-align">
+                  <p><strong>Rango Cartera: </strong> {{duplicarse.segmento_cartera}}</p>
+                  <p><strong>Meta a Recuperar: </strong> ${{duplicarse.meta_x_recuperar}}</p>
+                  <p><strong>Numero De Aportante: </strong> {{duplicarse.cantidad_aportante}}</p>
+                </div>
+              </div>
+              <div class="col l6 m6 s6 sct no-padd">
+                <div class="justify-align">
+                  <p><strong>Valor De Mora: </strong> ${{duplicarse.mora_x_cobrar}}</p>
+                  <p><strong>Valor Recuperado: </strong> ${{duplicarse.gestion_mora_recuperada}}</p>
+                  <p><strong>Cantidad Registro: </strong> {{duplicarse.cantidad_registro}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col l6 m3 s3 scc no-padd">
+          <div class="card small-chart margin" id="small-chart3" style="height:120px;;width: 98%;">
+            <div class="col l6 m6 s6 sct no-padd" style="cursor: pointer!important;" ng-click="ObtenerGestionLlamada('R','Llamada Entrante')">
+              <h5 style="margin: 0;">Llamada Entrante</h5>
+              <h4> <i class="icon-phone-circled"></i> <strong>{{infodata.Entrante}} </strong></h4>
+            </div>
+            <div class="col l6 m6 s6 sct no-padd" style="cursor: pointer!important;" ng-click="ObtenerGestionLlamada('S','Llamada Saliente')">
+              <h5 style="margin: 0;">Llamada Saliente</h5>
+              <h4>  <i class="icon-phone-circled"></i> <strong>{{infodata.Saliente}}</strong></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row white newdesing section-header" ng-show="OcultarInforme">
+    <div class="row margin">
+      <table class="responsive-table striped table-bordered display dataTable" id="llamadas" style="border-bottom: none; width: 100%">
+        <thead align="center">
+          <tr>
+            <td class="center-align"><strong>DEPARTAMENTO APORTANTE</strong></td>
+            <td class="center-align"><strong>MUNCIPIO APORTANTE</strong></td>
+            <td class="center-align"><strong>DOCUMENTO APORTANTE</strong></td>
+            <td class="center-align"><strong>NOMBRE</strong></td>
+            <td class="center-align"><strong>PERIODOS</strong></td>
+            <td class="center-align"><strong>VALOR CARTERA</strong></td>
+            <td class="center-align"><strong>TIPO MORA</strong></td>
+            <td class="center-align"><strong>ULTIMA LLAMADA</strong></td>
+          </tr>
+        </thead>
+        <tbody style="height: 40%; overflow: scroll;">
+          <tr ng-repeat="q in llamadaxpendiente">
+            <td>{{q.nom_departamento_aportante}}</td>
+            <td> {{q.nom_muncipio_aportante}} </td>
+            <td>{{q.nit}}</td>
+            <td>{{q.nombre}}</td>
+            <td>{{q.periodos}}</td>
+            <td>{{q.valor_cartera}}</td>
+            <td>{{q.tipo_mora}}</td>
+            <td>{{q.ultima_llamada}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!--   <div class="row white newdesing section-header" ng-show="VisualizacionListadoPendiente">
+    <div class="row margin">
+      <table class="responsive-table striped table-bordered display dataTable" id="callpend" style="border-bottom: none; width: 100%">
+        <thead align="center">
+          <tr>
+            <td class="center-align"><strong>NIT</strong></td>
+            <td class="center-align"><strong>APORTANTE</strong></td>
+            <td><strong>CANTIDAD REGISTRO</strong></td>
+            <td><strong>A 3O DÍAS</strong></td>
+            <td><strong>A 6O DÍAS</strong></td>
+            <td><strong>A 9O DÍAS</strong></td>
+            <td><strong>MAS DE 9O DÍAS</strong></td>
+            <td><strong>TOTAL CARTERA</strong></td>
+            <td><strong>SEGMENTO CARTERA</strong></td>
+            <td><strong>ULTIMA LLAMADA</strong></td>
+            <td><strong>OPCION</strong></td>
+          </tr>
+        </thead>
+        <tbody style="height: 40%; overflow: scroll;">
+          <tr ng-repeat="call in callpendiente">
+            <td>{{call.nit}}</td>
+            <td>{{call.aportante}}</td>
+            <td>{{call.cantidad_registro}} </td>
+            <td> $ {{call.a_30_dias}}</td>
+            <td> $ {{call.a_60_dias}}</td>
+            <td> $ {{call.a_90_dias}}</td>
+            <td> $ {{call.mas_de_90_dias}}</td>
+            <td> $ {{call.total_cartera}}</td>
+            <td>{{call.segmento_cartera}}</td>
+            <td>{{call.ultima_llamada}}</td>
+            <td class="center-align">
+              <div class="tooltip">
+                <i ng-click="RegistrarLLamada('R',call)"  style="cursor: pointer"
+                  class="Medium material-icons">call</i>
+                <span class="tooltiptext">Registrar Llamada</span>
+              </div>
+              <div class="tooltip">
+                <i ng-click="VerDetalle(call)"  style="cursor: pointer"
+                  class="Medium material-icons">remove_red_eye</i>
+                <span class="tooltiptext">Ver Detalle</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+  <div class="row section-header white no-padd" ng-show="FormularioDeLlamada">
+    <div class="col l8 m8 s8 no-padd">
+      <div class="col l12 m12 s12 no-padd">
+        <div class="row">
+          <div class="col l12 m12 s12 no-padd">
+            <div class="col l4 m12 s12">
+              <div class="input-field">
+                <input id="fecha" type="text" class="" ng-model="info.fechatemporal" disabled>
+                <label for="fecha" class="">Fecha Registro</label>
+              </div>
+            </div>
+            <div class=" col l4 m12 s12">
+              <div class="input-field">
+                <input id="hora" type="text" class="" ng-model="info.hora" disabled>
+                <label for="hora" class="">Hora Registro</label>
+              </div>
+            </div>
+          </div>
+          <div class="col l12 m12 s12 no-padd">
+            <form ng-submit="ConsultarAportante()">
+              <div class="col l3 m12 s12">
+                <div class="input-field">
+                  <label class="active">Tipo de Documento (*)</label>
+                  <select class="select-chosen-eps" ng-model="tipodocumento" ng-disabled="On">
+                    <option disabled value="0">SELECCIONAR</option>
+                    <option value="N">NIT</option>
+                    <option value="C">CEDULA DE CIUDADANÍA</option>
+                    <option value="CE">CEDULA EXTRANJERA</option>
+                    <option value="PT">PERMISO TEMPORAL DE PROTECCIÓN</option>                                                                        
+                    <option value="SC">SALVO CONDUCTO</option>
+                    <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                  </select>
+                </div>
+              </div>
+              <div class=" col l3 m12 s12">
+                <div class="input-field">
+                  <input id="id" type="text" class="validate" ng-model="info.documento" ng-disabled="On">
+                  <label for="id" class="">Número de identificación (*)</label>
+                </div>
+              </div>
+            </form>
+            <div class="col l3 m12 s12" ng-if="MostrarSede">
+              <div class="input-field">
+                <label style="margin-top: -20px;">Sede o Surcusales (*)</label>
+                <select class="select-chosen-eps" ng-model="info.sede" ng-change="ObtenerInformacionAportante(info.sede)" ng-disabled="On">
+                  <option value="0">SELECCIONAR</option>
+                  <option ng-repeat="is in infosede" value="{{is.reglon}}">{{is.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col l3 m12 s12" ng-if="SegundaParte">
+              <div class="input-field">
+                <label for="razons">Nombre o Razon Social</label>
+                <input id="razons" type="text" class="" value="0" ng-model="info.razonsocial" ng-disabled="CampoRazonSocial">
+              </div>
+            </div>
+          </div>
+          <div ng-if="SegundaParte">
+            <div class="col l12 m12 s12 no-padd">
+              <div class=" col l4 m12 s12">
+                <div class="input-field">
+                  <label style="margin-top: -20px;">Departamento (*)</label>
+                  <select class="select-chosen-eps" ng-model="departamento"
+                    ng-change="BuscoMunicipio(departamento)">
+                    <option value="0">SELECCIONAR</option>
+                    <option ng-selected="{{departamento}}" ng-repeat="d2 in depto" value="{{d2.CODIGO}}">{{d2.NOMBRE}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class=" col l4 m12 s12">
+                <div class="input-field">
+                  <label style="margin-top: -20px;">Municipio (*)</label>
+                  <select id="municipio" class="select-chosen-eps" ng-model="municipio">
+                    <option  ng-selected="{{municipio}}" value="0">SELECCIONAR</option>
+                    <option ng-selected="{{municipio}}" ng-repeat="m in muni" value="{{m.CODIGO}}">{{m.NOMBRE}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class=" col l2 m12 s12">
+                <div class="input-field">
+                  <input id="telefono" type="text" class="validate" ng-model="info.telefono">
+                  <label for="telefono" class="">Telefono (*)</label>
+                </div>
+              </div>
+              <div class="col l2 m12 s12">
+                <div class="input-field">
+                  <label for="celular" class="active">Celular (*)</label>
+                  <input id="celular" type="text" class="validate valid" value="0"
+                    ng-model="info.celular">
+                </div>
+              </div>
+            </div>
+            <div class="col l12 m12 s12 no-padd">
+              <div class="col l6 m12 s12">
+                <div class="input-field">
+                  <input id="dirrecion" type="text" class="validate" ng-model="info.direccion" disabled>
+                  <label for="dirrecion" class="">Dirección (*)</label>
+                </div>
+              </div>
+              <div class="col l1 m12 s12">
+                <div class="tooltip">
+                  <label ng-click="AbrirModalDireccion()"><i class="material-icons" style="margin-top:30px;">info</i></label>
+                  <span class="tooltiptext">Click Para Actualizar Direccion</span>
+                </div>
+              </div>
+              <div class=" col l5 m12 s12">
+                <div class="input-field">
+                  <input id="correo" type="text" class="validate" ng-model="info.correo">
+                  <label for="correo" class="">Correo Electronico (*) </label>
+                </div>
+              </div>
+            </div>
+            <div class="col l12 m12 s12 no-padd">
+              <div class="col l5 m5 s5">
+                <div class="input-field">
+                  <label class="active">Motivos (*)</label>
+                  <select class="select-chosen-eps" ng-model="info.motivo">
+                    <option value="">SELECCIONAR</option>
+                    <option ng-repeat="lm in lmotivos" value="{{lm.codigo}}">{{lm.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col l4 m4 s4">
+                <div class="input-field">
+                  <label class="active">Tipo Llamada (*)</label>
+                  <select class="select-chosen-eps" ng-model="info.tipollamada">
+                    <option value="">SELECCIONAR</option>
+                    <option value="R">LLAMADA RECIBIDA</option>
+                    <option value="S">LLAMADA REALIZADA</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col l3 m3 s3">
+                <div class="input-field">
+                  <label for="persona" class="active">Persona Contactada (*)</label>
+                  <input id="persona" type="text" class="validate valid" ng-model="info.personacontacto">
+                </div>
+              </div>
+            </div>
+            <div class="col l12 m12 s12 no-padd">
+              <div class="col l6 m12 s12">
+                <div class="input-field">
+                  <textarea class="validate valid" placeholder="Observacion" id="observacion" cols="30" rows="10" ng-model="info.observacion" style="margin: 0px;width: 920px;height: 109px;"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col l12 m12 s12 no-padd" style="margin-top: 20px;">
+              <center>
+                <button class="btn white-text primary-button margin-bottom-10" style="background-color: #88C542" ng-click="FinalizarLlamadas(info)"> 
+                <i class="icon-call"></i>Finalizar Llamadas </button>
+              </center>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col l4 m4 s4" ng-if ="TablaDetalleAfil">
+      <div class="row margin">
+        <table class="responsive-table striped table-bordered display dataTable" id="infoafiliado"  >
+          <thead>
+            <td class="center-align"><strong>DOCUMENTO</strong></td>
+            <td class="center-align"><strong>AFILIADO</strong></td>
+            <td class="center-align"><strong>PERIODO</strong></td>
+            <td class="center-align"><strong>VALOR</strong></td>
+            <td class="center-align"><strong>SEGEMENTO</strong></td>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="row in myObj">
+              <td>{{ row.documento_afiliado }}</td>
+              <td>{{ row.nombre_afiliado }}</td>
+              <td>{{ row.periodo_adecuado }}</td>
+              <td>${{ row.valor_adecuado }}</td>
+              <td>{{ row.segmento_cartera }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="modaltabla" class="modal" style="width: 80%;">
+    <div class="modal-content" style="padding: 2em;">
+      <div class="card-action">
+        <div class="row">
+          <p class="default-background white-text"> <i class="icon-users-1"></i> {{ titulo }} </p>
+          <table class="responsive-table striped table-bordered display dataTable" id="infoafiliado"  >
+            <thead>
+              <td class="center-align"><strong>DOCUMENTO</strong></td>
+              <td class="center-align"><strong>AFILIADO</strong></td>
+              <td class="center-align"><strong>PERIODO</strong></td>
+              <td class="center-align"><strong>VALOR</strong></td>
+              <td class="center-align"><strong>SEGEMENTO</strong></td>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="r in listado">
+                <td>{{ r.documento_afiliado }}</td>
+                <td>{{ r.nombre_afiliado }}</td>
+                <td>{{ r.periodo_adecuado }}</td>
+                <td>${{ r.valor_adecuado }}</td>
+                <td>{{ r.segmento_cartera }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modalllamada" class="modal" style="width: 80%;">
+    <div class="modal-content" style="padding: 2em;">
+      <div class="card-action">
+        <div class="row">
+          <p class="default-background white-text"> <i class="icon-users-1"></i> Detalle Gestion Llamadas - {{titulo}} </p>
+          <table class="responsive-table striped table-bordered display dataTable" id="modalllamada">
+            <tbody>
+              <tr>
+                <th>NOMBRE FUNCIONARIO</th>
+                <td colspan="3" align="center">{{response.nombre_funcionario}}</td>
+              </tr>
+              <tr>
+                <th>CERTIFICADO DE APORTES POR_COTIZANTE</th>
+                <td>{{response.certificado_de_aportes_por_cotizante}}</td>
+                <th>CERTIFICADO DE APORTES</th>
+                <td>{{response.certificado_de_aportes}}</td>
+              </tr>
+              <tr>
+                <th>LISTADO DE USUARIOS POR CONFIRMAR AFILIACION</th>
+                <td>{{response.listado_de_usuarios_por_confirmar_afiliacion}}</td>
+                <th>PERSONAL ACTIVO</th>
+                <td>{{response.personal_activo}}</td>
+              </tr>
+              <tr>
+                <th>PAZ Y SALVO</th>
+                <td>{{response.paz_y_salvo}}</td>
+                <th>MORA</th>
+                <td>{{response.mora}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

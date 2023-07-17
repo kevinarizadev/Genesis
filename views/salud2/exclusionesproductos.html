@@ -1,0 +1,448 @@
+<div>
+    <div id="my_menu" class="row section-header" style="background: #9897e81f;margin-bottom: 0">
+        <div class="col l12">
+            <ul class="left mailbox-custom-search list-inline"
+                style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                <li>
+                    <h5
+                        style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                        <i class="icon-folder-open"></i>
+                        Exclusiones
+                    </h5>
+                </li>
+
+            </ul> 
+        </div>
+    </div>
+    <!-- la busqueda -->
+    <div ng-hide="tab==3" class="row content-container server margin">
+        <div class="col l12">
+            <form ng-submit="p_lista_producto(codigo_bus);">
+                <div class="row " style="border: 1px solid #ebebf5;position: relative;">
+                    <div class="col s6">
+                        <div class="input-field col l12" style="display: flex;align-items: flex-end;">
+                            <input id="producto" type="text" ng-model="codigo_bus" style="text-transform: uppercase">
+                            <label class="">Código o Nombre</label>
+                        </div>
+                    </div>
+
+                    <div style=" padding: 20px;">
+                        <a ng-click="p_lista_producto(codigo_bus);" style="background: #ebebf5;
+                                                    box-shadow: 2px 3px 5px grey;"
+                            class="btnRotate modal-action modal-close waves-effect waves-green btn-flat"><i
+                                class="icon-search-outline"></i>BUSCAR PRODUCTO</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- tabla -->
+    <div ng-show="tab==2" class="row content-container server margin" style="margin-top: 1em !important;">
+        <div class=" inbox-element inbox-4 col l12 m12 s12">
+            <div class="row" ng-init="carga_listado_productos()" style="border: 1px solid #ebebf5">
+
+                <div class="responsive" style="padding:20px">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="white-text default-background">
+                            <tr>
+                                <th style="text-align:center;border:none;font-size: 14px">#</th>
+                                <th style="text-align:center;border:none;font-size: 14px;width: 9em;">CODIGO</th>
+                                <th style="text-align:center;border:none;font-size: 14px">NOMBRE DEL PRODUCTO
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="c-pointer tabla-body hover-item-list"
+                                ng-repeat="mda in reporteTemp  | inicio: currentPage * pageSize | limitTo: pageSize"
+                                ng-click="buscar_productos(mda.NUMERO,mda.NOMBRE)">
+                                <td>{{$index+1 + (currentPage * pageSize)}}</td>
+                                <td>{{mda.NUMERO}}</td>
+                                <td>{{mda.NOMBRE}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <td colspan="3" ng-hide="reporte.length==0">
+                                <h6 class="center-align">Un total de productos encontrados: {{reporte.length}}
+                                    registros</h6>
+                            </td>
+                            <td colspan="3" ng-show="reporte.length==0">
+                                <h6 class="center-align">Producto no Encontrado o esta Clasificado como POS</h6>
+                            </td>
+                        </tfoot>
+                    </table>
+                    <ul ng-if="reporteTemp" style="text-align: right;margin: 0px" class="pagination"
+                        ng-show="reporteTemp.length!=0">
+                        <li style="margin: 0px;padding: 0px"><button ng-disabled='currentPage == 0'
+                                class="btn default-background" ng-click="paso('back')">&laquo;</button></li>
+                        <li style="margin: 0px;padding: 0px" ng-repeat='page in pages'><button
+                                ng-disabled='currentPage == page.no - 1' class="btn default-background"
+                                ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                        <li style="margin: 0px;padding: 0px"><button
+                                ng-disabled='currentPage >= reporteTemp.length/pageSize - 1'
+                                class="btn default-background" ng-click="paso('next')">&raquo;</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- el editar diagnostico -->
+    <div ng-show="tab==3">
+        <div class="row content-container server margin">
+            <div class="col s12 l12 m12">
+                <div class="input-field col l4 m12 s12">
+                    <input id="codigo" type="text" ng-model="producto_codigo" disabled>
+                    <label for="codigo" class="">Numero</label>
+                </div>
+                <div class="col l4 s12 m12" style=" padding: 20px;">
+                    <a ng-click="mostrar_nueva_campos();buscar_productos(producto_codigo, producto_nombre)" style="background: #ebebf5;
+                                        box-shadow: 2px 3px 5px grey;"
+                        class="btnRotate modal-action modal-close waves-effect waves-green btn-flat"><i
+                            class="icon-doc-new"></i>NUEVO DIAGNOSTICO</a>
+                </div>
+                <div class="col l3 s12 m12" style=" padding: 20px;">
+                    <a ng-click="buscar_listado();val=''" style="background: #ebebf5;
+                                        box-shadow: 2px 3px 5px grey;"
+                        class="btnRotate modal-action modal-close waves-effect waves-green btn-flat"><i
+                            class=" icon-reply-all"></i>VOLVER LISTADO</a>
+                </div>
+            </div>
+            <div class="col s12 l12 m12">
+                <div class="input-field col l12">
+                    <input id="nombre" type="text" ng-model="producto_nombre" disabled>
+                    <label for="nombre" class="">Producto</label>
+                </div>
+            </div>
+            <div class="col s12 l6 m6">
+                <div class="input-field col l12">
+                    <input id="nombre" type="text" ng-model="producto_clasificacion" disabled>
+                    <label for="nombre" class="">Clasificacion</label>
+                </div>
+            </div>
+            <div class="col s12 l6 m6">
+                <div class="input-field col l12">
+                    <input id="nombre" type="text" ng-model="producto_pos" disabled>
+                    <label for="nombre" class="">POS</label>
+                </div>
+            </div>
+        </div>
+        <div class="row content-container server margin">
+            <div class="col l12 m12 s12">
+                <table style="cursor:pointer;" id="listar_diagnostico" class="table-bordered">
+                    <thead class="default-background white-text">
+                        <tr>
+                            <th><b>CODIGO</b></th>
+                            <th><b>DIAGNOSTICO</b></th>
+                            <th><b>ESTADO</b></th>
+                            <th><b></b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="activo" ng-show="mostrar_nueva_diagnostico==1">
+                            <td>{{nueva_diagnostico.CODIGO}}</td>
+                            <td style="padding:0; position: relative">
+                                <input class=" center imput_table" id="nuevo_nombre" type="text"
+                                    ng-change="buscar_listado_diagnostico_sin_producto(nueva_diagnostico.NOMBRE)"
+                                    ng-model="nueva_diagnostico.NOMBRE" ng-blur="borrar_listado()">
+                                <ul class="list-group" id="list-group-ips"
+                                    style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                                    <li class="list-group-item" ng-repeat="x in listado_diagnosticos_busqueda"
+                                        ng-click="seleccionar(x.CODIGO,x.NOMBRE)">
+                                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                                </ul>
+                            </td>
+
+                            <td style="background:#56b949;color: #fff">
+                                ACTIVO
+                            </td>
+                            <td>
+                                <i class="icon  icon-floppy" style="border: 1px solid #039be5;color: #039be5;border-radius: 14px;
+                                padding-top: 0; padding-bottom: 1px;font-size: 23px; cursor: pointer;"
+                                    ng-click="accion_diagnostico('I',$index)"></i>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="listado in listado_diagnostico" ng-class="{'activo':listado.EDITAR=='N'}">
+                            <td>{{listado.CODIGO}}</td>
+                            <td>{{listado.NOMBRE | uppercase}}</td>
+                            <td ng-if="listado.EDITAR!='N'"
+                                ng-style="{background:  [listado.ESTADO=='A'?'#56b949':'#ff4350']}" style="color: #fff">
+                                {{listado.ESTADO_NOMBRE}}</td>
+                            <td ng-if="listado.EDITAR=='N'" style="padding:0">
+                                <!-- <input ng-if="listado.N_PORC=='N'" ng-keyup="FormatearPeso('valor'+$index)"
+                                            maxlength="16" class="center imput_table" id="valor{{$index}}" type="text"
+                                            ng-model="listado.VALOR" N05AH03
+                                            ng-disabled="listado.EDITAR=='S'"> -->
+                                <!-- <input maxlength="16" class="center imput_table" id="valor{{$index}}" type="number"
+                                    ng-model="listado.VALOR" ng-disabled="listado.EDITAR=='S'"> -->
+                                <select class="select-chosen-eps" ng-model="listado.ESTADO" id=estadosolicitud required
+                                    style="    background: #ddd;
+                                    border-bottom: #ddd !important;
+                                    padding: 0px;
+                                    text-align-last: center;">
+                                    <!-- <option value="" disabled>SELECCIONAR</option> -->
+                                    <option value="A">ACTIVAS</option>
+                                    <option value="I">INACTIVO</option>
+                                </select>
+                            </td>
+                            <td>
+                                <i ng-if="listado.EDITAR=='N'" class="icon  icon-floppy" style="border: 1px solid #039be5;color: #039be5;border-radius: 14px;
+                                padding-top: 0; padding-bottom: 1px;font-size: 23px; cursor: pointer;"
+                                    ng-click="accion_diagnostico('U',$index)"></i>
+                                <i ng-show="listado.EDITAR=='S'" class="icon  icon-edit" style="border: 1px solid #039be5;color: #039be5;border-radius: 14px;
+                                padding-top: 0; padding-bottom: 1px;font-size: 23px; cursor: pointer;"
+                                    ng-click="accion_diagnostico('E',$index)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <style type="text/css">
+        /* LISTAS */
+        #estadosolicitud:active {
+            box-shadow: none !important;
+            border-bottom: none !important;
+        }
+
+        #estadosolicitud:focus {
+            outline: 1px solid rgb(221, 221, 221);
+            box-shadow: none;
+            border-bottom: none;
+        }
+
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-item:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .list-group-item:hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #ddd;
+            border: 1px solid #f7f7f7;
+
+        }
+
+        /* listas hasta aqui */
+        tr.activo {
+            background: #dddddd;
+        }
+
+        input.imput_table:focus {
+            border-bottom: 0px !important;
+            box-shadow: 0 0px !important;
+        }
+
+        input.imput_table {
+            border-bottom: 0px !important;
+            box-shadow: 0 0px !important;
+        }
+
+        a.active {
+            border-bottom: 1px solid;
+        }
+
+        th,
+        td {
+            text-align: center;
+            word-break: break-word;
+        }
+
+        i {
+            cursor: pointer;
+        }
+
+        .pagination li {
+            padding: 0 1px;
+        }
+
+        span.tooltiptext {
+            background: #bbc8ec !important;
+            color: #191919 !important;
+            border-bottom: 1px solid !important;
+        }
+
+        .vista_elements {
+            position: absolute;
+            z-index: 20000;
+            width: 100%;
+            height: 100vh;
+            overflow: auto;
+            left: 0;
+            top: 0;
+            padding: 2em 5em 0;
+            background: rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        .d-pdf {
+            display: flex;
+            justify-content: center;
+        }
+
+        .nombre {
+            top: 41px;
+            font-size: 11px
+        }
+
+        @media only screen and (max-width: 992px) {
+            .titulochat {
+                display: block !important;
+            }
+
+            .triangulo {
+                display: none !important;
+            }
+        }
+
+        .fecha {
+            margin-left: 49%;
+            top: -15px;
+            position: relative;
+        }
+
+        .triangulo {
+            display: block;
+            position: absolute;
+            top: 28px;
+            left: 60px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #d4d4d4;
+            size: 25px;
+
+        }
+
+        .trianguloderecha {
+            border-left: 10px solid #d4d4d4 !important;
+            left: 80% !important;
+            border-right: 0px solid #2e2e2e !important;
+        }
+
+        .circuloderecho {
+            margin-left: 80%;
+        }
+
+        .cuadroderecho {
+            margin-left: 10% !important;
+            box-shadow: -5px 5px 5px 0 #d0d0d0, 0 2px 10px 0 #9f9f9f !important;
+        }
+
+        .fechaderecha {
+            margin-left: 15%
+        }
+
+        .textoderecho {
+            display: block;
+            text-align: right;
+        }
+
+        .nombrederecho {
+            display: block;
+            text-align: right;
+            margin-bottom: -21px
+        }
+
+        input[disabled] {
+            color: #111 !important;
+
+        }
+
+        .cuadro {
+            width: 70%;
+            margin-left: 0px;
+            margin-top: -1px;
+            background-color: #ffffff !important;
+            border-radius: 5px;
+            box-shadow: 5px 5px 5px 0px #d0d0d0, 0 2px 10px 0 #9f9f9f;
+            padding: 5px 20px;
+        }
+
+        #attachmenticon {
+            cursor: pointer;
+            width: 50px;
+        }
+
+        #attachmenticon:hover {
+            border-radius: 49px;
+            border: 1px solid;
+            border-color: gray;
+            box-shadow: 0px 0px 7px 0px #1fbbac;
+            transition: border 0.5s;
+        }
+
+        .avchat {
+            padding: 0 !important;
+            width: 60px !important;
+            height: 60px !important;
+            top: 16px;
+        }
+
+        .avchat2 {
+            padding: 0 !important;
+            width: 42px !important;
+            height: 42px !important;
+            top: 16px;
+        }
+
+        .avletra {
+            color: #ffffff;
+            font-size: -webkit-xxx-large;
+            margin-top: 24%;
+        }
+
+        .avtitle {
+            margin-top: 20px;
+            position: fixed;
+            font-size: 20px;
+            color: black !important;
+        }
+
+        .dwnIcon {
+            cursor: pointer;
+            margin-top: 14px;
+            position: absolute;
+        }
+
+        .highlight {
+            background-color: #d7d8d8 !important;
+        }
+
+        .divaprobado {
+            padding-top: 2px;
+            padding-bottom: 2px;
+            background-color: #56b949;
+        }
+
+        .fontaprobado {
+            font-size: 18px;
+            color: white;
+        }
+
+        .row {
+            margin-bottom: 0px;
+        }
+
+        input[disabled] {
+            color: #111;
+        }
+    </style>
+
+</div>

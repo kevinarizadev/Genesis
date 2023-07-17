@@ -1,0 +1,130 @@
+<div id="modalDiagnosticos" class="style-modal-default">
+    <div class="col s12 m6 l6 card">
+        <div class="ngdialog-close style-btn-close"></div>
+        <div class="card-content">
+            <h5 id="ngdialog1-aria-labelledby">Historial de Prestaciones</h5>
+        </div>
+        <div class="card-content clearfix">
+            <div class="row" ng-style="stylesrowsearch" style="margin-bottom: 47px;">
+                <div class="col s12">
+                    <label for="coincidencia1" class="label">
+                        Buscar
+                    </label>
+                    <input id="coincidencia1" type="text" ng-init="coincidencia1=''" ng-model="coincidencia1"
+                        class="ng-pristine ng-valid ng-touched">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="scrollTableDefault style-table-default" style="overflow-x: hidden;">
+                        <table id="tbclas" style="cursor: pointer;" class="table-bordered">
+                            <thead>
+                                <tr>
+                                    <td style="border: none"><b>RADICADO</b></td>
+                                    <td style="border: none"><b>CONCEPTO</b></td>
+                                    <td style="border: none"><b>ADJUNTO</b></td>
+                                    <td style="border: none;width: 16em;"><b>DIAGNOSTICO</b></td>
+                                    <td style="border: none;width: 9em;"><b>FECHA INICIO</b></td>
+                                    <td style="border: none;width: 9em;"><b>FECHA FIN</b></td>
+                                    <td style="border: none;width: 6em;"><b>DIAS DE LA INCAPACIDAD</b></td>
+                                    <td style="border: none;width: 6em;"><b>DIAS ACUMULADOS</b></td>
+                                    <td style="border: none;width: 16em;"><b>OBSERVACIÓN MEDICA</b></td>
+                                    <!-- <td style="border: none;width: 16em;"><b>PRORROGA </b></td> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="    box-shadow: inset 0px 0px 5px #56b9497a;
+                                background: #2ca32712;">
+                                    <td style="text-align:center;width:134px;border:none">{{liquidacion.radicado}}</td>
+                                    <td style="text-align:center;width:134px;border:none">{{liquidacion.concepto_nombre}}</td>
+                                    <td style="text-align:center;width:134px;border:none"></td>
+                                    <td style="text-align:left; border:none">{{liquidacion.nombre_diagnostico}}</td>
+                                    <td style="text-align:left; border:none">{{liquidacion.fecha_incapacidad|date: "dd-MM-yyyy"}}</td>
+                                    <td style="text-align:left; border:none">{{liquidacion.fecha_final_incapacidad | date: "dd-MM-yyyy"}}</td>
+                                    <td style="text-align:left; border:none">{{liquidacion.duracion}}</td>
+                                    <td style="text-align:center;width:134px;"></td>
+                                    <td style="text-align:left; border:none">-</td>
+                                    <!-- <td style="text-align:left; border:none"></td> -->
+                                </tr>
+                                <tr ng-hide="liquidacion.radicado==dm.RADICADO" id="DM{{dm.NUMERO}}" class="c-pointer"
+                                    ng-repeat="dm in listar_historial | filter:coincidencia1"
+                                    ng-click="escoger_prorroga($index);">
+                                    <td style="text-align:center;width:134px">{{dm.RADICADO}}</td>
+                                    <td style="text-align:center;width:134px">{{dm.CONCEPTO}}</td>
+                                    <td style="text-align:center;width:134px" ng-click="descargafile(dm.HC_RUTA)" >
+                                        <div  ng-show="dm.HC_RUTA" class="tooltip" style="margin-left: 20px;">
+                                                <i class="icon-archive-2"></i>
+                                                <span class="tooltiptext">Historial Clinico</span>
+                                        </div>
+                                    </td>
+                                    <td style="text-align:left;">{{dm.DIAGNOSTICO_COD}} - {{dm.DIAGNOSTICO_NOM}}</td>
+                                    <td style="text-align:left;">{{dm.FECHA_INICIO}}</td>
+                                    <td style="text-align:left;">{{dm.FECHA_FIN}}</td>
+                                    <td style="text-align:left;">{{dm.DURACION}}</td>
+                                    <td style="text-align:left;">{{dm.DIAS_PRORROGA}}</td>
+                                    <td style="text-align:left;">{{dm.OBSERVACION_MEDICA}}</td>
+                                    <!-- <td style="text-align:center;" ng-click="liquidacion" ><i class="icon-check-empty-1"></i></td>                                     -->
+                                </tr> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                    <div class="col l12 m12 s12" style="margin: 1%">
+        
+                        <div class="col l4 m3 s12" style="text-align: center">
+                            <button class=" btn btn-primary" type="submit" ng-click="quitar_proronga()"
+                                style="background-color: #1a2e63;">Remover</button>
+                        </div>
+                        <div class="col l4 m3 s12" style="text-align: center">
+                            <button class="btn btn-primary" type="submit" ng-click="closeThisDialog()"
+                                style="background-color: #1a2e63;">Selección</button>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .style-modal-default {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .style-table-default {
+        height: 350px;
+        overflow: auto;
+    }
+
+    .style-btn-close {
+        float: right;
+        font-size: 50px;
+        padding-right: 20px;
+    }
+
+    #modalDiagnosticos tr>td:first-child {
+        width: 74px;
+        text-align: center;
+    }
+
+    #tbclas>thead {
+
+        top: 188px;
+
+    }
+
+    .hover-item-list {
+        background-color: #d6d6d6;
+    }
+
+    .eleacti {
+        background: #7198fd2b;
+    }
+
+    span {
+        padding-left: 5px;
+    }
+</style>

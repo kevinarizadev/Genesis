@@ -1,0 +1,171 @@
+<div class="row">
+	<style>
+		.columnas p {
+			position: absolute;
+			top: -38px;
+			width: 207px;
+			border: 1px solid #e5e6e6;
+			padding: 1px 10px;
+			border-radius: 0px 19px 0px 0px;
+		}
+		.dataTables_filter {margin: 0 !important}
+		.incla {height: auto !important;font-size: 1em !important;}
+		.lb {padding-left: 20px !important;height: 20px!important;transform: scale(.8) !important;}
+
+	</style>
+	<div class="row section-header" style="margin: 0;background: #9897e81f;padding: 0px; margin-bottom: 1em;">
+		<ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+			<li id="inicio">
+				<h5>Incumplimiento Pago de Aportes</h5>
+			</li>
+			<li>
+				<div class="switch">
+					<label>
+						<a ng-click="TipoReporte('CE')" class="btn" style="background-color: #5bc34d;">CONSOLIDADO DE
+						EMPRESA</a>
+						<a ng-click="TipoReporte('GC')" class="btn" style="background-color: #eb7b2d;">ENVIAR
+						CARTAS</a>
+					</label>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="section-header" style="background-color: transparent;" ng-hide="!ConsolidadoEmpresaPanelTabla">
+		<div class="card">
+			<div class="card-action">
+				<div class="row columnas">
+					<p class="default-background white-text"><i class="icon-users-1"></i>Consolidado De Empresa</p>
+
+					<form>
+						<div class="input-field col s4" style="float: right; margin: 0;padding: 0;">
+							<input id="buscarautaa" type="text"  ng-model="val" ng-keyup="filter(val)">
+							<label for="buscarautaa">Buscar:</label>
+						</div>
+					</form>
+
+					<div  class="col s12 l12" style="height: 60vh;overflow-y: scroll;overflow-x: hidden;">
+						<table id="tablaOriginal_0" class="responsive-table striped table-bordered white">
+							<thead>
+								<tr class="default-background white-text">
+									<td class="center-align">
+										<input type="checkbox" class="filled-in" ng-model="checkservicio" id="filled-in-box-servicheck2" ng-click="seleccionarOpcion()" />
+										<label for="filled-in-box-servicheck2"></label>
+									</td>
+									<td class="center-align"><strong>PERIDO</strong></td>
+									<td class="center-align"><strong>FECHA LIMITE</strong></td>
+									<td class="center-align"><strong>DOCUMENTO APORTANTE</strong></td>
+									<td class="center-align"><strong>NOMBRE APORTANTE</strong></td>
+									<td class="center-align"><strong>OPCION</strong></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-if="infodatatemp.length == 0">
+									<td colspan="5" class="center-align"> No hay informacion para mostrar </td>
+								</tr>
+								<tr ng-repeat="d in infodatatemp">
+									<td class="center-align">
+										<div class="tooltip">
+											<input type="checkbox" class="filled-in aportante" id="aportante2_{{$index+1}}" ng-click="checkoption(d,$index+1)"/>
+											<label for="aportante2_{{$index+1}}"></label>
+											<span class="tooltiptext">Seleccionar</span>
+										</div>
+									</td>                                
+									<td class="center-align">{{d.periodo}} - {{d.ano}}</td>
+									<td class="center-align">{{d.fecha_limite}}</td>
+									<td class="center-align">{{d.tipo_doc_aportante}} - {{d.doc_aportante}}</td>
+									<td class="center-align">{{d.nombre_aportante}}</td>
+									<td class="center-align">
+										<div class="tooltip">
+											<i ng-click="VerDetalle(d)"  style="cursor: pointer"
+											class="Medium material-icons">remove_red_eye</i>
+											<span class="tooltiptext">Visualizar Detalle</span>
+										</div>
+										<div class="tooltip">
+											<i ng-click="PrintCarta(d,'IP')"  style="cursor: pointer"
+											class="Medium material-icons">print</i>
+											<span class="tooltiptext">Imprimir Carta</span>
+										</div>										
+									</td> 
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="section-header" style="background-color: transparent;" ng-hide="!ValidaEmpresaPanelTabla">
+		<div class="card">
+			<div class="card-action">
+				<div class="row columnas" style="height: 60vh;overflow-y: scroll;overflow-x: hidden;" >
+					<p class="default-background white-text"> <i class="icon-users-1"></i>Informacion</p>
+					<table class="responsive-table striped table-bordered" align="center" id="informacionaportante" style="width: 100%; border-bottom: none;">
+						<thead align="center">
+							<tr>
+								<td class="center-align"><strong>#</strong></td>
+								<td class="center-align"><strong>NOMBRE APORTANTE</strong></td>
+								<td class="center-align"><strong>DOCUMENTO APORTANTE</strong></td>
+								<td class="center-align"><strong>PERIODO</strong></td>
+							</tr>
+						</thead>
+						<tbody style="height: 40%; overflow: scroll;">
+							<tr ng-repeat="l in AportanteMarcado">
+								<td class="center-align">{{$index + 1}}</td>
+								<td class="center-align">{{l.nombre_aportante}}</td>
+								<td class="center-align">{{l.tipo_doc_aportante}}- {{l.doc_aportante}}</td>
+								<td class="center-align">{{l.periodo}} - {{l.ano}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="switch">
+			<label>
+				<a ng-click="EnviarCarta()" class="btn" style="background-color: #558a2f;">ENVIAR CARTAS</a>
+			</label>
+		</div>
+	</div>
+
+
+	<div id="modaltablaincumplimiento" class="modal" style="width: 80%;">
+		<div class="modal-content" style="padding: 2em;">
+			<div class="card">
+				<div class="card-action">
+					<div class="row columnas">
+						<p class="default-background white-text"> <i class="icon-users-1"></i>Informacion Aportante</p>
+						<table class="responsive-table striped table-bordered" align="center" id="informacionaportante" style="width: 100%; border-bottom: none;">
+							<thead align="center">
+								<tr>
+									<td class="center-align"><strong>#</strong></td>
+									<td class="center-align"><strong>NOMBRE COTIZANTE</strong></td>
+									<td class="center-align"><strong>DOCUMENTO COTIZANTE</strong></td>
+									<td class="center-align"><strong>UBICACION COTIZANTE</strong></td>
+									<td class="center-align"><strong>PERIODO</strong></td>
+									<td class="center-align"><strong>FECHA LIMITE</strong></td>
+								</tr>
+							</thead>
+							<tbody style="height: 40%; overflow: scroll;">
+								<tr ng-repeat="li in info">
+									<td class="center-align">{{$index + 1}}</td>
+									<td class="center-align">{{li.nombre_completo}}</td>
+									<td class="center-align">{{li.tipo_doc_afiliado}}- {{li.documento_afiliado}}</td>
+									<td class="center-align">{{li.nombre_dpto_afiliado}}- {{li.municipio_afiliado}}</td>
+									<td class="center-align">{{li.periodo}} - {{li.ano}}</td>
+									<td class="center-align">{{li.fecha_limite}}</td>								
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+

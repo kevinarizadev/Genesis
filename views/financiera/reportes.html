@@ -1,0 +1,1118 @@
+<div id="pantalla" class="white newdesing">
+   <div class="row section-header" style="margin-top:7px">
+      <ul class="left mailbox-custom-search list-inline"
+         style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+         <li id="inicio">
+            <i ng-click="Refrescar_Inicio()"></i>
+            <h5 onclick="location.reload();" class="cursor-pointer">MODULO DE REPORTES</h5>
+         </li>
+      </ul>
+   </div>
+   <div class="row">
+      <div class="card ng-scope" style="margin: 38px; bottom: 10px ;zoom:93%;">
+         <div class="row">
+            <br>
+            <div class="col l5 m5 s5">
+               <label style="padding-left: 4%;font-size: inherit;"></span>Tipo de Reporte:<span
+                     class="red-text">*</label>
+               <div class="col s12 ">
+                  <select class="select-new-ps cursor-pointer" ng-model="tiporeporte" ng-change="buscaReporte()"
+                     required>
+                     <option value="">Seleccionar</option>
+                     <option ng-repeat="reporte in Reportes" ng-value="reporte.CODIGO">{{reporte.NOMBRE}}</option>
+                  </select>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="card ng-scope" style="margin: 38px; bottom: 10px ;zoom:93%;">
+               <div class="col s12" ng-show="shw_parametros">
+                  <strong style="font-size: x-large;">
+                     CRITERIOS DE CONSULTA
+                  </strong>
+                  <div class="col l12 m12 s12">
+                     <blockquote>
+                        <h6>Por favor ingrese los datos para la generacion del reporte o genere su reporte</h6>
+                     </blockquote>
+                     <div class="margin row">
+                        <!-- Regimen -->
+                        <div class="col l2 m2 s2" ng-show="shw_regimen">
+                           <label style="padding-left: 4%;font-size: inherit;">Régimen:<span
+                                 class="red-text">*</span></label>
+                           <div class="col s12 " type="text">
+                              <select ng-change="Selector()" class="select-new-ps cursor-pointer" type="text"
+                                 ng-model="regimen" id="tipoSolicitud">
+                                 <option value="X">SELECCIONAR</option>
+                                 <option value="A">AMBOS REGIMEN</option>
+                                 <option value="C">CONTRIBUTIVO</option>
+                                 <option value="S">SUBSIDIADO</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Años -->
+                        <div class="col l2 m2 s2" ng-init="cargaAnnos()" ng-show="shw_annos">
+                           <label style="padding-left: 4%;font-size: inherit;">Año:</label>
+                           <div class="col s12">
+                              <select ng-change="cargaCiclos()" class="select-new-ps cursor-pointer" type="text"
+                                 ng-model="anno">
+                                 <option ng-repeat="anno in Annos" ng-value="anno.ANNO">{{anno.ANNO}}</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Clico -->
+                        <div class="col l2 m2 s2" ng-show="shw_ciclo">
+                           <label style="padding-left: 4%;font-size: inherit;">Ciclo:</label>
+                           <div class="col s12">
+                              <select class="select-new-ps cursor-pointer" type="text" ng-model="ciclo"
+                                 ng-disabled="true">
+                                 <option ng-repeat="ciclo in Ciclos" ng-value="ciclo.IDE">{{ciclo.NOMBRE}}</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Perido -->
+                        <div class="col l2 m2 s2" ng-show="shw_periodo">
+                           <label style="padding-left: 4%;font-size: inherit;">Periodo:</label>
+                           <div class="col s12">
+                              <select class="select-new-ps cursor-pointer" type="text" ng-model="periodo">
+                                 <option ng-repeat="periodo in Periodos" ng-value="periodo.IDE">{{periodo.NOMBRE}}
+                                 </option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Clicos -->
+                        <div class="col l2 m2 s2" ng-show="shw_periodo_trimestre">
+                           <label style="padding-left: 4%;font-size: inherit;">Ciclo:</label>
+                           <div class="col s12 ">
+                              <input readonly id="ciclo_trimestral" ng-model="ciclo_trimestral" type="text">
+                              <label for="ciclo_trimestral">Ciclo:</label>
+                           </div>
+                        </div>
+                        <!-- Periodo trimestre -->
+                        <div class="col l2 m2 s2" ng-show="shw_periodo_trimestre">>
+                           <label style="padding-left: 4%;font-size: inherit;">Periodo:<span
+                                 class="red-text">*</span></label>
+                           <div class="col s12 " type="text">
+                              <select ng-change="Selector()" class="select-new-ps cursor-pointer" type="text"
+                                 ng-model="trimestre">
+                                 <option value="">SELECCIONAR</option>
+                                 <option value="1">PRIMER TRIMESTRE</option>
+                                 <option value="2">SEGUNDO TRIMESTRE</option>
+                                 <option value="3">TERCER TRIMESTRE</option>
+                                 <option value="4">CUARTO TRIMESTRE</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Nit -->
+                        <div class="col l2 m2 s2" ng-show="shw_nit">
+                           <label for="nit" class="" style="padding-left: 4%;font-size: inherit;">Nit:</label>
+                           <div class="col s12 ">
+                              <input ng-model="tercero" type="text">
+   
+                           </div>
+                        </div>
+                        <!-- Departamento -->
+                        <div class="col l2 m2 s2" ng-init="obtenerDepartamentos()" ng-show="shw_departamento">
+                           <label style="padding-left: 4%;font-size: inherit;">Departamento:</label>
+                           <div class="col s12">
+                              <select class="select-new-ps cursor-pointer" type="text" ng-model="departamento" ng-change="obtenerMunicipios()">
+                                 <option value="0">SELECCIONAR</option>
+                                 <option ng-repeat="depa in Departamentos track by $index" ng-value="depa.CODIGO">
+                                    {{depa.NOMBRE}}</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Municipio -->
+                        <div class="col l2 m2 s2" ng-show="shw_municipio">
+                           <label style="padding-left: 4%;font-size: inherit;">Municipio:</label>
+                           <div class="col s12">
+                              <select class="select-new-ps cursor-pointer" type="text" ng-model="municipio">
+                                 <option value="0">SELECCIONAR</option>
+                                 <option ng-repeat="municipio in Municipios track by $index" ng-value="municipio.CODIGO">{{municipio.NOMBRE}}</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Fecha de Inicio -->
+                        <div class="col l2 m2 s2" ng-show="shw_fecha_inicio">
+                           <label style="padding-left: 4%;font-size: inherit;">Fecha de Inicio:</label>
+                           <div class="col s12 ">
+                              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l ng-pristine ng-valid ng-valid-max ng-touched" type="date" name="" ng-model="fecha_inicio" type="text">
+                           </div>
+                        </div>
+                        <!-- Fecha de Final -->
+                        <div class="col l2 m2 s2" ng-show="shw_fecha_final">
+                           <label style="padding-left: 4%;font-size: inherit;">Fecha de Final:</label>
+                           <div class="col s12 ">
+                              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l ng-pristine ng-valid ng-valid-max ng-touched" type="date" name="" ng-model="fecha_final">
+                           </div>
+                        </div>
+                        <!-- Tipo Cuenta -->
+                        <div class="col l3 m3 s3" ng-show="shw_tipo_cuenta">
+                           <label style="padding-left: 4%;font-size: inherit;">Tipo Cuenta:<span
+                                 class="red-text">*</span></label>
+                           <div class="col s12 " type="text">
+                              <select ng-change="Selector()" class="select-new-ps cursor-pointer" type="text"
+                                 ng-model="tipo_cuenta">
+                                 <option value="0">SELECCIONAR</option>
+                                 <option value="1">Anticipo</option>
+                                 <option value="2">Glosa</option>
+                                 <option value="3">Autorizacion</option>
+                                 <option value="4">Cuentas por pagar</option>
+                                 <option value="5">Todas (Ant, Glo, Aut, CXP)</option>
+                                 <option value="6">Activos y Pasivos</option>
+                                 <option value="7">Estado de Resultado</option>
+                                 <option value="8">Presupuesto Max AUT</option>
+                                 <option value="9">Presupuesto Max CXP</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Tipo homologacion-->
+                        <div class="col l2 m2 s2" ng-show="shw_tipo_homologacion">
+                           <label style="padding-left: 4%;font-size: inherit;">Tipo Cuenta:<span
+                                 class="red-text">*</span></label>
+                           <div class="col s12 " type="text">
+                              <select ng-change="Selector()" class="select-new-ps cursor-pointer" type="text"
+                                 ng-model="tipo_homologacion">
+                                 <option value="0">SELECCIONAR</option>
+                                 <option value="1">Plan Caja</option>
+                                 <option value="2">Plan Niff</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Documento -->
+                        <div class="col l2 m2 s2" ng-show="shw_documento">
+                           <label style="padding-left: 4%;font-size: inherit;">Documento:</label>
+                           <div class="col s12">
+                              <select class="select-new-ps cursor-pointer" type="text" ng-model="documento"
+                                 ng-change="obtenerConceptos()">
+                                 <option ng-repeat="doc in Documentos track by $index" ng-value="doc.CODIGO">
+                                    {{doc.CODIGO + ' - ' + doc.NOMBRE}}</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Conceptos -->
+                        <div class="col l3 m3 s3" ng-show="shw_concepto">
+                           <label style="padding-left: 4%;font-size: inherit;">Concepto:</label>
+                           <div class="col s12">
+                              <select class="select-new-ps cursor-pointer" type="text" ng-model="concepto">
+                                 <option ng-repeat="con in Conceptos track by $index" ng-value="con.CODIGO">{{con.CODIGO
+                                    + ' - ' + con.NOMBRE}}</option>
+                              </select>
+                           </div>
+                        </div>
+                        <!-- Numero -->
+                        <div class="col l2 m2 s2" ng-show="shw_numero">
+                           <label  for="numero" class="" style="padding-left: 4%;font-size: inherit;">Numero:</label>
+                           <div class="col s12 ">
+                              <input id="numero" ng-model="numero" type="text">
+                           </div>
+                        </div>
+                        <!-- Ubicacion -->
+                        <div class="col l2 m2 s2" ng-show="shw_ubicacion">
+                           <label for="ubicacion" class=""
+                              style="padding-left: 4%;font-size: inherit;">Ubicacion:</label>
+                           <div class="col s12 ">
+                              <input id="ubicacion" ng-model="ubicacion" type="text">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- boton cancelar y guardar -->
+                  <div class="row">
+                     <br>
+                     <br>
+                     <div ng-hide="mostrar_generar" style="text-align: center; padding: 10px 0.75px;">
+                        <button class="icon-floppy white-text default-background" type="button"
+                           ng-click="generaReporte()" style="border-radius: 10px;zoom:130%;">Generar</button>
+                     </div>
+                     <div ng-show="mostrar_generasr" style="text-align: center; padding: 10px 0.75px;">
+                        <button class="icon-floppy white-text default-background" type="button"
+                           ng-click="enviar_goanywhere()" style="border-radius: 10px;zoom:130%;">Generar en
+                           Goanywhere</button>
+                     </div>
+                     <div ng-show="mostrar_anexo1" style="text-align: center; padding: 10px 0.75px;">
+                        <button class="icon-floppy white-text default-background" type="button"
+                           ng-click="enviar_anexo1()" style="border-radius: 10px;zoom:130%;">Generar Anexo 1
+                           Circular 30</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- <div class="col l12 m12 s12">
+         <div class="card">
+            <div class="card-title">
+               <div class="text-al switch" style="display:flex;">
+                  <strong>Criterios de Consulta</strong>
+               </div>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_regimen">
+               <label style=" margin-top: -20px;">Régimen:</label>
+               <select class="select-chosen-eps" ng-model="regimen">
+                  <option value="X">SELECCIONAR</option>
+                  <option value="A">AMBOS REGIMEN</option>
+                  <option value="C">CONTRIBUTIVO</option>
+                  <option value="S">SUBSIDIADO</option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-init="cargaAnnos()" ng-show="shw_annos">
+               <label style=" margin-top: -20px;">Año:</label>
+               <select class="select-chosen-eps" ng-model="anno" ng-change="cargaCiclos()">
+                  <option ng-repeat="anno in Annos" ng-value="anno.ANNO">{{anno.ANNO}}</option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_ciclo">
+               <label style=" margin-top: -20px;">Ciclo:</label>
+               <select class="select-chosen-eps" ng-model="ciclo" ng-disabled="true">
+                  <option ng-repeat="ciclo in Ciclos" ng-value="ciclo.IDE">{{ciclo.NOMBRE}}</option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_periodo">
+               <label style=" margin-top: -20px;">Periodo:</label>
+               <select class="select-chosen-eps" ng-model="periodo">
+                  <option ng-repeat="periodo in Periodos" ng-value="periodo.IDE">{{periodo.NOMBRE}}</option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_periodo_trimestre">
+               <input readonly id="ciclo_trimestral" type="text" ng-model="ciclo_trimestral">
+               <label for="ciclo_trimestral">Ciclo:</label>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_periodo_trimestre">
+               <label style=" margin-top: -20px;">Periodo:</label>
+               <select class="select-chosen-eps" ng-model="trimestre">
+                  <option value="">SELECCIONAR</option>
+                  <option value="1">PRIMER TRIMESTRE</option>
+                  <option value="2">SEGUNDO TRIMESTRE</option>
+                  <option value="3">TERCER TRIMESTRE</option>
+                  <option value="4">CUARTO TRIMESTRE</option>
+               </select>
+            </div>
+            <div class="input-field col l1 m1 s1" ng-show="shw_nit">
+               <input id="nit" type="text" ng-model="tercero">
+               <label for="nit" class="">Nit:</label>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-init="obtenerDepartamentos()" ng-show="shw_departamento">
+               <label style=" margin-top: -20px;">Departamento</label>
+               <select class="select-chosen-eps" ng-model="departamento" ng-change="obtenerMunicipios()">
+                  <option value="0">SELECCIONAR</option>
+                  <option ng-repeat="depa in Departamentos track by $index" ng-value="depa.CODIGO">{{depa.NOMBRE}}
+                  </option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_municipio">
+               <label style=" margin-top: -20px;">Municipio</label>
+               <select class="select-chosen-eps" ng-model="municipio">
+                  <option value="0">SELECCIONAR</option>
+                  <option ng-repeat="municipio in Municipios track by $index" ng-value="municipio.CODIGO">
+                     {{municipio.NOMBRE}}</option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_fecha_final">
+               <label style=" margin-top: -20px;">Fecha de Inicio</label>
+               <input type="date" name="" ng-model="fecha_inicio">
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_fecha_inicio">
+               <label style=" margin-top: -20px;">Fecha de Final</label>
+               <input type="date" name="" ng-model="fecha_final">
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_tipo_cuenta">
+               <label style=" margin-top: -20px;">Tipo Cuenta:</label>
+               <select class="select-chosen-eps" ng-model="tipo_cuenta">
+                  <option value="0">SELECCIONAR</option>
+                  <option value="1">Anticipo</option>
+                  <option value="2">Glosa</option>
+                  <option value="3">Autorizacion</option>
+                  <option value="4">Cuentas por pagar</option>
+                  <option value="5">Todas (Ant, Glo, Aut, CXP)</option>
+                  <option value="6">Activos y Pasivos</option>
+                  <option value="7">Estado de Resultado</option>
+                  <option value="8">Presupuesto Max AUT</option>
+                  <option value="9">Presupuesto Max CXP</option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_tipo_homologacion">
+               <label style=" margin-top: -20px;">Tipo Cuenta:</label>
+               <select class="select-chosen-eps" ng-model="tipo_homologacion">
+                  <option value="0">SELECCIONAR</option>
+                  <option value="1">Plan Caja</option>
+                  <option value="2">Plan Niff</option>
+               </select>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_documento">
+               <select class="select-chosen-eps" ng-model="documento" ng-change="obtenerConceptos()">
+                  <option ng-repeat="doc in Documentos track by $index" ng-value="doc.CODIGO">{{doc.CODIGO + ' - ' +
+                     doc.NOMBRE}}</option>
+               </select>
+               <label style=" margin-top: -20px;">Documento:</label>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_concepto">
+               <select class="select-chosen-eps" ng-model="concepto">
+                  <option ng-repeat="con in Conceptos track by $index" ng-value="con.CODIGO">{{con.CODIGO + ' - ' +
+                     con.NOMBRE}}</option>
+               </select>
+               <label style=" margin-top: -20px;">Concepto:</label>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_numero">
+               <input id="numero" type="text" ng-model="numero">
+               <label for="numero" class="">Numero:</label>
+            </div>
+            <div class="input-field col l2 m2 s2" ng-show="shw_ubicacion">
+               <input id="ubicacion" type="text" ng-model="ubicacion">
+               <label for="ubicacion" class="">Ubicacion:</label>
+            </div>
+            <div ng-hide="mostrar_generar" class="input-button ">
+               <a class="waves-effect waves-light btn white-text" style="margin-right: 741px; margin-top: 67px;"
+                  ng-click="generaReporte()">Generar</a>
+               <br>
+            </div>
+            <div ng-show="mostrar_generasr" class="input-button">
+               <a class="waves-effect waves-light btn white-text" ng-click="enviar_goanywhere()">Generar en
+                  Goanywhere</a>
+               <br>
+            </div>
+            <div ng-show="mostrar_anexo1" class="input-button">
+               <a class="waves-effect waves-light btn white-text" ng-click="enviar_anexo1()">Generar Anexo 1
+                  Circular 30 </a>
+               <br>
+            </div>
+            <div ng-show="mostrar_anexo3" class="input-button">
+               <a class="waves-effect waves-light btn white-text" ng-click="enviar_anexo3()">Generar Anexo 3
+                  Circular 30 </a>
+               <br>
+            </div>
+            <div class="col s12" ng-hide="inactive2" style="margin-top: 30px;">
+               <img src="assets\images\cargando2.gif" alt="Cargando...">
+            </div>
+         </div>
+      </div> -->
+<style>
+   .subraya {
+      border-bottom-style: ridge !important;
+      border-color: #1a2e63 !important;
+      margin: 0px 9px !important;
+   }
+
+   .ps-light-yellow {
+      background-color: #f7fb00de !important;
+   }
+
+   .ps-light-green {
+      background-color: rgb(3, 197, 20) !important;
+   }
+
+   .ps-light-red {
+      background-color: #f75050 !important;
+   }
+
+   .ps-light-purple {
+      background-color: rgb(71, 71, 165) !important;
+   }
+
+   #tabla_modal_ENTREGA th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+   }
+
+   .btn_2 {
+      border: none;
+      border-radius: 2px;
+      display: inline-block;
+      height: 36px;
+      line-height: 36px;
+      outline: 0;
+      padding: 0 2rem;
+      text-transform: uppercase;
+      vertical-align: middle;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #1a2e63;
+   }
+
+   .light-red {
+      background-color: palevioletred !important;
+   }
+
+
+   .input-field-ps {
+      position: relative;
+      margin-top: 1px;
+      margin-left: 5px;
+      margin-right: 5px;
+   }
+
+   .select-new-ps {
+      outline: none !important;
+      height: 34px;
+      background-color: white;
+      display: block;
+      border: 1px solid #8a88865e;
+      border-radius: 0.25rem;
+      border-bottom: 1px solid #8a88865e;
+      box-shadow: none !important;
+   }
+
+   .btn-new-ps {
+      border: none;
+      border-radius: 2px;
+      display: inline-block;
+      height: 32px;
+      line-height: 36px;
+      outline: 0;
+      padding: 0 2rem;
+      text-transform: uppercase;
+      vertical-align: middle;
+      background-color: #1a2e63;
+      -webkit-tap-highlight-color: transparent
+   }
+
+   .border_bottom_LR {
+      border-bottom-left-radius: 0px !important;
+      border-bottom-right-radius: 0px !important;
+   }
+
+   .Green_Est {
+      background-color: green !important;
+   }
+
+   .Red_Est {
+      background-color: red !important;
+   }
+
+   .buena {
+      color: rgb(3, 197, 20) !important;
+   }
+
+   .poca {
+      color: rgb(235, 156, 5) !important;
+   }
+
+   .baja {
+      color: rgb(245, 75, 75) !important;
+   }
+
+   .teal.activo {
+      background-color: rgb(3, 197, 20) !important;
+   }
+
+   .teal.procesado {
+      background-color: rgb(71, 71, 165) !important;
+   }
+
+
+   .yellow {
+      background-color: #b7a60f !important;
+   }
+
+
+
+
+   #IMG_Secc {
+      cursor: pointer;
+   }
+
+   #IMG_Secc:hover .tooltip-css3 {
+      display: block;
+   }
+
+   .tooltip-css3:before {
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 20px solid #6c63ff;
+      bottom: -15px;
+      content: "";
+      height: 0;
+      left: 50%;
+      margin-left: -30px;
+      position: absolute;
+      transform: skew(-45deg);
+      width: 0;
+   }
+
+   .tooltip-css3 {
+      background-color: #6c63ff;
+      border-radius: 100% 100% 100% 100%;
+      box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+      color: #FFFFFF;
+      display: none;
+      left: 70%;
+      padding: 20px 30px;
+      position: absolute;
+      top: 23%;
+   }
+
+   .Btn_Secc_Pen {
+      background-color: #afaaff;
+      box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+      color: #FFFFFF;
+      padding: 10px;
+      cursor: pointer;
+   }
+
+   .Btn_Secc_New {
+      background-color: #afaaff;
+      box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+      color: #FFFFFF;
+      padding: 10px;
+      cursor: pointer;
+   }
+
+   /* /// */
+   .Con_pulse_P {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_P 5s linear infinite;
+      cursor: pointer;
+   }
+
+   @keyframes animate-pulse_P {
+      0% {
+         box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.7), 0 0 0 0 rgba(71, 71, 165, 0.7);
+      }
+
+      40% {
+         box-shadow: 0 0 0 15px rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0.7);
+      }
+
+      80% {
+         box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 15px rgba(71, 71, 165, 0);
+      }
+
+      100% {
+         box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0);
+      }
+   }
+
+
+   .Con_pulse_G {
+
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_G 3s linear infinite;
+      cursor: pointer;
+   }
+
+   @keyframes animate-pulse_G {
+      0% {
+         box-shadow: 0 0 0 0 rgba(162, 162, 175, 0.7), 0 0 0 0 rgba(162, 162, 175, 0.7);
+      }
+
+      40% {
+         box-shadow: 0 0 0 15px rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(162, 162, 175, 0.7);
+      }
+
+      80% {
+         box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 15px rgba(71, 71, 165, 0);
+      }
+
+      100% {
+         box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0);
+      }
+   }
+
+
+   .Con_pulse_V {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_V 5s linear infinite;
+      cursor: pointer;
+   }
+
+   @keyframes animate-pulse_V {
+      0% {
+         box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.7), 0 0 0 0 rgba(43, 255, 36, 0.7);
+      }
+
+      40% {
+         box-shadow: 0 0 0 15px rgba(43, 255, 36, 0.0), 0 0 0 0 rgba(43, 255, 36, 0.7);
+      }
+
+      80% {
+         box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.0), 0 0 0 15px rgba(43, 255, 36, 0);
+      }
+
+      100% {
+         box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.0), 0 0 0 0 rgba(43, 255, 36, 0);
+      }
+   }
+
+   /* /// */
+   .Animacion_HojaForm {
+      animation: 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal both running swing-in-top-fwd;
+   }
+
+   @keyframes swing-in-top-fwd {
+      0% {
+         /* -webkit-transform: rotateX(-100deg);
+        transform: rotateX(-100deg);
+        -webkit-transform-origin: top;
+        transform-origin: top; */
+         opacity: 0;
+      }
+
+      100% {
+         /* -webkit-transform: rotateX(0deg);
+        transform: rotateX(0deg);
+        -webkit-transform-origin: top;
+        transform-origin: top; */
+         opacity: 1;
+      }
+   }
+
+   .BgColor_A {
+      background: linear-gradient(to bottom left, #37daf0, #00acc1, #37daf0);
+   }
+
+   .BgColor_R {
+      background: linear-gradient(to bottom left, #f1ad5a, #fb8c00, #f1ad5a);
+   }
+
+   .BgColor_C {
+      background: linear-gradient(to bottom left, #e65b8e, #d81b60, #e65b8e);
+   }
+
+   .BgColor_O {
+      background: linear-gradient(to bottom left, #d7d9db, #6A6D71, #d7d9db);
+   }
+
+   .BgColor_N {
+      background: linear-gradient(to bottom left, #63f193, #25D962, #63f193);
+   }
+
+   .Color_A {
+      color: #00acc1 !important;
+      border-left: 5px solid #00acc1;
+   }
+
+   .Color_R {
+      color: #fb8c00 !important;
+      border-left: 5px solid #fb8c00;
+   }
+
+
+
+   .Color_C {
+      color: #d81b60 !important;
+      border-left: 5px solid #d81b60;
+   }
+
+   .Color_O {
+      color: #6A6D71 !important;
+      border-left: 5px solid #6A6D71;
+   }
+
+   .Color_N {
+      color: #25D962 !important;
+      border-left: 5px solid #25D962;
+   }
+
+   .textarea2 {
+      padding: 0.5rem !important;
+      width: calc(100% - 0rem) !important;
+      /* background-color: #cbcdce; */
+      background-color: #f1f3f4;
+      resize: none;
+      height: 7rem;
+   }
+
+   input.input-text-new {
+      background-color: #f1f3f4 !important;
+   }
+
+   .gray-input {
+      background-color: #f1f3f4 !important;
+   }
+
+   .Tarjeta_Titulo {
+      -webkit-transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+      transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+      position: relative;
+      z-index: 3;
+   }
+
+   .Tarjeta_Titulo:hover {
+      transform: translate3d(0, -25px, 0);
+   }
+
+   .Tarjeta_Titulo>.card {
+      border-radius: .375rem;
+      z-index: 2;
+   }
+
+   .Tarjeta_Titulo .card-content {
+      padding: 0.6rem 0.8rem;
+      display: flex;
+   }
+
+   .Tarjeta_Titulo h6 {
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      font-size: 0.8125rem;
+   }
+
+   .Tarjeta_Texto {
+      z-index: -1;
+      margin-top: -3.7em;
+      width: calc(100% - 30px);
+      left: 15px;
+      /* text-align: center; */
+      width: auto;
+      border-radius: .375rem;
+      height: 41px;
+      padding: 0.9rem 0.8rem;
+   }
+
+   .Tarjeta_Texto>span {
+      position: relative;
+      font-size: 0.8em;
+      font-weight: 700;
+   }
+
+   #H1_Tabla>thead,
+   #H1_Tabla>tbody {
+      font-size: 1em;
+      /* border: 3px; */
+      border-width: medium;
+      border-style: solid;
+      border-radius: .375rem;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+   }
+
+   .Class_Tabla_Btn_Gestionar {
+      border-radius: .375rem;
+      width: 30%;
+      margin: auto;
+      border-width: medium;
+   }
+
+   .Class_Tabla_Btn_Gestionar h6 {
+      font-weight: 700 !important;
+      font-size: 0.8125rem;
+   }
+
+   .animated {
+      -webkit-animation-duration: 1s;
+      animation-duration: 1s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+   }
+
+   .switch label .lever.check-c:after {
+      background-color: #ffffff;
+   }
+
+   .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #ffffff;
+   }
+
+   .dropdown-content li {
+      min-height: 23px;
+   }
+
+   .select_maxheigth ul {
+      max-height: 125px;
+   }
+
+   .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+   }
+
+   .currency-input {
+      position: relative;
+   }
+
+   .currency {
+      padding-left: -22px;
+   }
+
+   .currency-symbol {
+      position: absolute;
+      left: 8px;
+      font-size: 21px;
+   }
+
+   #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+   }
+
+   blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+   }
+
+   .VistaFile .Iframe {
+      visibility: hidden;
+      height: 50vh;
+      color: #fff;
+      text-align: center;
+      margin-bottom: -0.6rem;
+      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: calc(100% + 6px);
+      right: 0;
+      opacity: 0;
+      transition: opacity 1s;
+      border: 3px solid #333333;
+   }
+
+   .VistaFile:hover .Iframe {
+      visibility: visible;
+      opacity: 1;
+   }
+
+   .Iframe:hover {
+      visibility: visible;
+      opacity: 1;
+   }
+
+   .input-file-radius-cargado {
+      /* border-top-right-radius: 0 !important; */
+      /* border-bottom-right-radius: 0 !important; */
+      background-color: #03c5146e !important;
+   }
+
+   .input-file-radius-cargado2 {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      background-color: #03c5146e !important;
+   }
+
+   .input-file-radius-opcional {
+      background-color: #0000004f !important;
+   }
+
+   .input-file-radius-obligatorio {
+      background-color: #f54b4bb0 !important;
+   }
+
+   .input-file-radiu {
+      border-radius: 10px;
+   }
+
+   .input-file-radius {
+      border-radius: 10px;
+   }
+
+   .select-wrapper input.select-dropdown:disabled {
+      color: black;
+   }
+
+   .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+   }
+
+   .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+   }
+
+   .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+   }
+
+   .list-group-item.hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+   }
+
+   .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+   }
+
+   .list-group {
+      font-size: 14px;
+   }
+
+   .class_upper td,
+   .class_upper th {
+      text-transform: uppercase;
+   }
+
+   .class_gris {
+      color: rgba(0, 0, 0, 0.26) !important;
+   }
+
+   .class_label {
+      color: #80868b;
+   }
+
+   /*******************/
+
+   .switch label .lever {
+      background-color: #1a2e63;
+      width: 60px;
+      height: 29px;
+   }
+
+   .switch label .lever:after {
+      left: 4px;
+      top: 4px;
+      background-color: #fff !important;
+   }
+
+   .switch label .lever.check-c {
+      background-color: #1a2e63 !important;
+   }
+
+   .switch label input[type=checkbox]:checked+.lever:after {
+      left: 35px;
+   }
+
+   /* // */
+   .lever.check-c:hover span.lever.check-c:after {
+      width: 100px !important;
+   }
+
+   /**/
+   [type="checkbox"].filled-in:not(:checked)+label:after {
+      border: 3px solid #1a2e63;
+   }
+
+   [type="checkbox"].filled-in:checked+label:after {
+      border: 3px solid #1a2e63;
+      background-color: #1a2e63;
+   }
+
+   .modal {
+      border-radius: 10px;
+      overflow: hidden;
+      max-height: 88%;
+      z-index: 1003;
+      display: none;
+      opacity: 0;
+      transform: scaleX(0.7);
+      top: 4%;
+   }
+
+   .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+   }
+
+   /* --------------------------------------------------------------------------------------------- */
+   @keyframes Anim_Show {
+      0% {
+         opacity: 0;
+      }
+
+      100% {
+         opacity: 1;
+      }
+   }
+
+   .Anim_Show {
+      animation-name: Anim_Show;
+      animation-duration: 1s;
+   }
+
+   .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+   }
+
+   @keyframes animate-pulse_A {
+      0% {
+         box-shadow: 0 0 0 0 #f7fb00de, 0 0 0 0 #f7fb00de;
+      }
+
+      40% {
+         box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 #f7fb00de;
+      }
+
+      80% {
+         box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+         box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+   }
+
+   .Con_pulse_X {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+   }
+
+   @keyframes animate-pulse_X {
+      0% {
+         box-shadow: 0 0 0 0 #f75050, 0 0 0 0 #f75050;
+      }
+
+      40% {
+         box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 #f75050;
+      }
+
+      80% {
+         box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+         box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+   }
+
+   .Con_pulse_D {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_D 5s linear infinite;
+      cursor: pointer;
+   }
+
+   @keyframes animate-pulse_D {
+      0% {
+         box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.7), 0 0 0 0 rgba(235, 156, 5, 0.7);
+      }
+
+      40% {
+         box-shadow: 0 0 0 15px rgba(235, 156, 5, 0.0), 0 0 0 0 rgba(235, 156, 5, 0.7);
+      }
+
+      80% {
+         box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.0), 0 0 0 15px rgba(235, 156, 5, 0);
+      }
+
+      100% {
+         box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.0), 0 0 0 0 rgba(235, 156, 5, 0);
+      }
+   }
+
+
+
+   input[type=text] {
+      border: 1px solid #dee2e6;
+      border-radius: 0.25rem;
+      background-color: #fff;
+      background-clip: padding-box;
+      padding: 0 1em;
+      font-weight: 600;
+      height: 2rem;
+   }
+</style>
+</div>

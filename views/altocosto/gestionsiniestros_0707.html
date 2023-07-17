@@ -1,0 +1,2416 @@
+<div id="pantalla" class="white newdesing">
+  <style>
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    #tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+
+    .table_border,
+    .table_border th,
+    .table_border td {
+      border: 1px solid #c2c2c2;
+    }
+
+    .table_center_align,
+    .table_center_align th,
+    .table_center_align td {
+      text-align: center;
+    }
+
+    .swal-wide {
+      width: 850px !important;
+    }
+  </style>
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <i class="icon-arrows-ccw default-color cursor-pointer"
+          style="margin-left: -40px;font-size:1rem;position: absolute;margin-top: 10px;line-height: 0;"
+          title="Refrescar" ng-click="Refrescar_Inicio()"></i>
+        <h5 onclick="location.reload();" class="cursor-pointer">Gestión Siniestros - Alto Costo</h5>
+      </li>
+
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="Set_Tab(1);" href>Gestión Siniestros
+            </a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="Set_Tab(2);" href>Asignación Tratamiento</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <!-- Encabezado -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-if="Rol_Ubi != undefined && Rol_Ubi != 'N' && Var_Seccional.Vista == '1' && Tabs == 1">
+    <div class="col l12 m12 s12 center">
+      <div style="margin-top:3vh">
+        <span class="Btn_Secc_Pen" ng-click="Var_Seccional.Vista = '2'">{{Var_Seccional.Cont_Pendientes}} Por
+          Gestión</span>
+      </div>
+      <div style="width: 40vw;margin: auto;" id="IMG_Secc" ng-click="HSEC_Btn_Obtener()">
+        <img src="images\altocosto\search.svg" alt="Imagen">
+        <span class="tooltip-css3">Obtener Registro</span>
+      </div>
+      <div style="margin-top:3vh">
+        <span class="Btn_Secc_New" ng-click="Consultar_NuevaGestion('A')">Gestionar Nuevo Registro</span>
+      </div>
+    </div>
+  </div>
+  <!-- Hoja Var_Seccional Tabla -->
+  <div style="margin: 20px 40px;" ng-show="Rol_Ubi != 'N' && Var_Seccional.Vista == '2' && Tabs == 1">
+    <div id="Var_Seccional_Hoja_Form" class="row card-content clearfix Var_Seccional_Clase" ng-class="salida">
+      <!--  -->
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- // -->
+          <div class="col s12">
+            <div class="row" style="margin-bottom: 0px;">
+              <i class="icon-cw-circle default-color cursor-pointer"
+                style="margin-left: -40px;font-size:1.5rem;position: absolute;margin-top: 10px;" title="Refrescar"
+                ng-click="HNAC_ObtenerListado()"></i>
+              <!--  -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#26c6da,#00acc1,#26c6da);"
+                    ng-click="filter('Autorizaciones')">
+                    <div class="card-content">
+                      <i class="icon-ok-outline white-text"></i>
+                      <h6>Autorizaciones
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #00acc1;">
+                  <span style="color: #00acc1;">
+                    <i class="icon-docs-1"></i> {{Var_Seccional.List_Count.Aut}} Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#ffa726,#fb8c00,#ffa726);"
+                    ng-click="filter('Rips')">
+                    <div class="card-content">
+                      <i class="icon-clipboard-2 white-text"></i>
+                      <h6>RIPS</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #fb8c00;">
+                  <span style="color: #fb8c00;"><i class="icon-docs-1"></i> {{Var_Seccional.List_Count.Rips}}
+                    Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#eb6794,#d81b60,#eb6794);"
+                    ng-click="filter('Censo')">
+                    <div class="card-content">
+                      <i class="icon-medkit white-text"></i>
+                      <h6>Censo Hospitalario</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #d81b60;">
+                  <span style="color: #d81b60;"><i class="icon-docs-1"></i> {{Var_Seccional.List_Count.Censo}}
+                    Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#989da4,#6A6D71,#989da4);"
+                    ng-click="filter('Otra')">
+                    <div class="card-content">
+                      <i class="icon-folder-2 white-text"></i>
+                      <h6>Otra Fuente</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #6A6D71;">
+                  <span style="color: #6A6D71;"><i class="icon-docs-1"></i> {{Var_Seccional.List_Count.Otra}}
+                    Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+            </div>
+
+          </div>
+          <!-- // -->
+          <div class="col s12" style="margin-top:3em;">
+            <!-- ----------- -->
+            <div class="tooltip" style="float:right;margin: 0px 15px 0px 20px;">
+              <i class="icon-cancel-alt-filled cursor-pointer" style="font-size: 1.3em;"
+                ng-click="Var_Seccional.Vista = '1'"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Volver</span>
+            </div>
+            <div class="col s4 no-padding label-new m-b right" style="margin-right: .5rem !important;margin-top: 0;">
+              <input id="Var_Seccional_Filtrar_Sol" class="margin border-none input-text-new gray-input w-100 m-l"
+                autocomplete="off" type="text" placeholder="..." ng-model="Var_Seccional.Filtrar_Sol"
+                ng-change="chg_filtrar('Var_Seccional');">
+              <label>Buscar</label>
+              <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"></i>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="foot4 divcardcustom default-linear-gradient border_bottom_LR">
+            <div class="text-al divcardcustom2" style="text-align: center;">
+              <strong class="switch" style="font-weight:600;font-size: 0.9rem;">SINIESTROS ACTIVOS</strong>
+            </div>
+          </div>
+          <!-- /TABLA/ -->
+          <div style="width:100%;">
+            <table id="H1_Tabla" class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>NÚM. DEL SINIESTRO</th>
+                  <th>SECCIONAL</th>
+                  <th>DOC. DEL AFILIADO</th>
+                  <th>NOMBRE DEL AFILIADO</th>
+                  <th>COHORTE</th>
+                  <th>PRIORIDAD</th>
+                  <th>PLURIPATOLOGICO</th>
+                  <th>FUENTE</th>
+                  <th>ESTADO AFILIADO</th>
+                </tr>
+              </thead>
+              <tbody class="default-border">
+                <tr
+                  ng-repeat="X in Lista_Tabla_Temp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
+                  style="color: black;cursor:pointer;">
+
+                  <td ng-click="HSEC_Mostar_Formulario(X)">{{X.NUM_RADICADO}}</td>
+                  <td ng-click="HSEC_Mostar_Formulario(X)">{{X.SECCIONAL}}</td>
+                  <td ng-click="HSEC_Mostar_Formulario(X)">{{X.TIPO_DOC_AFI +' - '+X.DOC_AFI}}</td>
+                  <td ng-click="HSEC_Mostar_Formulario(X)">{{X.NOMBRE_AFI}}</td>
+                  <td ng-click="HSEC_Mostar_Formulario(X)">{{X.COHORTE}}</td>
+                  <td ng-click="HSEC_Mostar_Formulario(X)"><span class="white-text"
+                      ng-class="(X.PRIORIDAD == 'Alta' ? 'red' : X.PRIORIDAD == 'Media' ? 'yellow' : 'green')"
+                      style="padding: 5px;font-weight: 700;">{{X.PRIORIDAD}}</span></td>
+                  <td ng-click="HSEC_Mostar_Formulario(X)">
+                    <i class="default-color {{X.PLURIPATOLOGICO == 'S' ? 'icon-check' : 'icon-check-empty'}}"
+                      style="font-size: 3vh;"></i>
+                  </td>
+                  <td>
+                    <div ng-show="X.FUENTE=='A'">
+                      <div>
+                        <i class="default-color icon-ok-outline cursor-pointer" style="font-size: 3vh;color: #00acc1"
+                          ng-click="HSEC_Mostar_Formulario(X)"></i>
+                      </div>
+                    </div>
+                    <div ng-show="X.FUENTE=='R'">
+                      <div>
+                        <i class="default-color icon-clipboard-2 cursor-pointer" style="font-size: 3vh;color: #fb8c00"
+                          ng-click="HSEC_Mostar_Formulario(X)"></i>
+                      </div>
+                    </div>
+                    <div ng-show="X.FUENTE=='C'">
+                      <div>
+                        <i class="default-color icon-medkit cursor-pointer" style="font-size: 3vh;color: #d81b60"
+                          ng-click="HSEC_Mostar_Formulario(X)"></i>
+                      </div>
+                    </div>
+                    <div ng-show="X.FUENTE!='A' && X.FUENTE!='R' && X.FUENTE!='C'">
+                      <div>
+                        <i class="default-color icon-folder-2" style="font-size: 3vh;color: #6A6D71"></i>
+                      </div>
+                    </div>
+                  </td>
+                  <td ng-click="HSEC_Mostar_Formulario(X)">{{X.ESTADO_AFILIADO}}</td>
+                </tr>
+                <tr ng-show="Lista_Tabla_Temp.length==0">
+                  <td class="center-align" colspan="10" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="width: 100%;display: flex;">
+              <div style="width: 50%;">
+                <label for="normal">Total de documentos filtrados:
+                  {{Lista_Tabla_Temp.length}}</label>
+              </div>
+              <div style="width: 50%;text-align: right;">
+                <label for="normal">Total de documentos encontrados:
+                  {{Lista_Tabla.length}}</label>
+              </div>
+            </div>
+            <div style="width: 100%;display: flex;">
+              <!-- <div style="width: 33%;"></div> -->
+              <div style="width: 100%;">
+                <ul class="pagination">
+                  <li><button ng-disabled='currentPage == 0' class="btn-floating white-text default-linear-gradient"
+                      ng-click="paso('back')">&laquo;</button></li>
+                  <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                      class="btn-floating white-text default-linear-gradient"
+                      ng-click='setPage(page.no)'>{{page.no}}</button>
+                  </li>
+                  <li><button ng-disabled='currentPage >= Lista_Tabla_Temp.length/pageSize - 1'
+                      class="btn-floating white-text default-linear-gradient" ng-click="paso('next')">&raquo;</button>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- // -->
+        </div>
+      </div>
+      <!--  -->
+    </div>
+  </div>
+  <!-- Hoja Var_Seccional Form -->
+  <div style="margin: 20px 40px;" ng-show="Rol_Ubi != 'N' && Var_Seccional.Vista == '3' && Tabs == 1">
+    <div id="Var_Seccional_Hoja_Form" class="row card-content clearfix Var_Seccional_Clase" ng-class="salida">
+      <div class="foot4 divcardcustom" ng-class="Color_Bg">
+        <div class="text-al divcardcustom2">
+          <strong class="switch" style="font-weight:900" ng-show="Var_Seccional.Form.Radicado == ''">Siniestro</strong>
+          <strong class="switch" style="font-weight:900" ng-hide="Var_Seccional.Form.Radicado == ''">Siniestro N°
+            {{ Var_Seccional.Form.Radicado}}</strong>
+
+          <div style="float:right">
+            <label style="padding-left:30px;padding-right:30px;color:white !important;"><label
+                style="font-weight:800;color:white !important;">FUENTE:</label>
+              {{Var_Seccional.Form.Fuente_Nom}}
+            </label>
+            <label style="padding-left:30px;color:white !important;"><label
+                style="font-weight:800;color:white !important;">FECHA DE GESTION:</label></label>
+            <input type="date" style="width: auto;border: none;height: auto;color:white !important;padding-right:20px;"
+              ng-model="Var_Seccional.Form.Fecha_Gestion" readonly>
+            <div class="tooltip" style="float:right;margin: 0px 15px 0px 30px;">
+              <i class="icon-cancel-alt-filled cursor-pointer" ng-click="HSEC_Cerrar_Form()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Cerrar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--  -->
+      <!-- Información del Afiliado -->
+      <div class="col s12 m12 l12 m-b">
+        <!-- Información del Afiliado -->
+        <blockquote class="default-color" ng-class="Color_Co">Información del Afiliado</blockquote>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Seccional.Form.Afi_Tipo_Doc">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Var_Seccional.Form.Afi_Tipo_Doc"
+              ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+          </select>
+          <label id="Var_Seccional_Form_Afi_Tipo_Doc_Label">Tipo de Identificación</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Seccional.Form.Afi_Num_Doc">
+          <label id="Var_Seccional_Form_Afi_Num_Doc_Label">Número de Documento</label>
+        </div>
+        <div class="col s6 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <input class="margin border-none input-text-new gray-input w-100 m-l"
+            ng-model="Var_Seccional.Form.Afi_Ubicacion">
+          <label>Ubicación</label>
+        </div>
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b">
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Seccional.Form.Afi_Pri_Nombre">
+          <label id="Var_Seccional_Form_Afi_Pri_Nombre_Label">Primer Nombre</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Seccional.Form.Afi_Seg_Nombre">
+          <label id="Var_Seccional_Form_Afi_Seg_Nombre_Label">Segundo Nombre</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Seccional.Form.Afi_Pri_Apellido">
+          <label id="Var_Seccional_Form_Afi_Pri_Apellido_Label">Primer Apellido</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Seccional.Form.Afi_Seg_Apellido">
+          <label id="Var_Seccional_Form_Afi_Seg_Apellido_Label">Segundo Apellido</label>
+        </div>
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b">
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <input type="date" class="margin border-none input-date-new w-100 m-l"
+            ng-model="Var_Seccional.Form.Afi_Fecha_Nac">
+          <label id="Var_Seccional_Form_AFi_Fecha_Nac_Label">Fecha de Nacimiento</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Seccional.Form.Afi_Edad">
+          <label id="Var_Seccional_Form_Afi_Edad_Label">Edad</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Seccional.Form.Afi_Sexo">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="F">Femenino</option>
+            <option value="M">Masculino</option>
+          </select>
+          <label id="Var_Seccional_Form_Afi_Sexo_Label">Sexo</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Seccional.Form.Afi_Portabilidad">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="S">SI</option>
+            <option value="N">NO</option>
+          </select>
+          <label id="Var_Seccional_Form_Afi_Portabilidad_Label">Portabilidad</label>
+        </div>
+      </div>
+      <!--  -->
+      <!-- Gestión de Riesgo - Seguimiento -->
+      <div class="col s12 m12 l12 m-b">
+        <blockquote class="default-color" ng-class="Color_Co">Gestión Siniestro
+          <span class="right" style="margin-right: 1vw;" ng-if="Var_Seccional.Form.Afi_Ips != '-'">IPS -
+            {{Var_Seccional.Form.Afi_Ips}}</span>
+        </blockquote>
+        <div class="col s4 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Seccional.Form.Cod_Cohorte">
+            <option value="" disabled>SELECCIONAR</option>
+            <option style="text-transform: capitalize;" ng-selected="x.CODIGO == Var_Seccional.Form.Cod_Cohorte"
+              ng-repeat="x in Array_Patologias" value="{{x.CODIGO}}">{{x.NOMBRE}}</option>
+          </select>
+          <label id="Var_Seccional_Form_Cod_Cohorte_Label">Cohorte</label>
+        </div>
+        <!-- // -->
+        <div class="col s8 no-padding label-new m-b">
+          <input type="text" id="Var_Seccional_Form_Diagnostico" class="margin border-none input-text-new w-100 m-l"
+            style="text-transform:uppercase" autocomplete="off" ng-model="Var_Seccional.Form.Diagnostico"
+            ng-keyup="Complete_Listado_Diag_F($event,Var_Seccional.Form.Diagnostico,'Var_Seccional');KeyFind_ObDiag_F($event,'Var_Seccional','Var_Seccional_Scroll');"
+            ng-blur="Blur_Diag_F('Var_Seccional')">
+          <label id="Var_Seccional_Form_Diagnostico_Label">Diagnóstico</label>
+          <ul class="list-group m-l Clase_Listar_Diags_F Var_Seccional_Scroll"
+            style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+            <li class="list-group-item" style="font-size: 0.7em;" id="Diagnostico_F{{$index}}"
+              ng-repeat="x in Var_Seccional.Busqueda.Diagnostico_F.Filtro"
+              ng-click="FillTextbox_Listado_Diag_F(x.DIAGNOSTICO,x.DESCRIPCION,'Var_Seccional')"
+              ng-class="$index == Var_Seccional.Busqueda.Diagnostico_F.Seleccion ? 'hover' : ''">
+              {{x.DIAGNOSTICO}} - {{x.DESCRIPCION}} </li>
+          </ul>
+          <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+            ng-click="Buscar_Diag_F('Var_Seccional')"></i>
+        </div>
+        <!-- // -->
+        <!-- <div class="col s8 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+            autocomplete="off" ng-model="Var_Seccional.Form.Diagnostico">
+          <label id="Var_Seccional_Form_Cod_Diag_Label">Diagnóstico</label>
+        </div> -->
+
+      </div>
+      <div class="col s12 m12 l12 m-b">
+        <!-- ///// -->
+        <div class="col s4 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <input type="text" id="Var_Seccional_Form_Clase" class="margin border-none input-text-new w-100 m-l"
+            style="text-transform:uppercase" autocomplete="off" ng-model="Var_Seccional.Form.Clase"
+            ng-keyup="Complete_Listado_Clase_F($event,Var_Seccional.Form.Clase,'Var_Seccional');KeyFind_ObClase_F($event,'Var_Seccional','Var_Seccional_Scroll');"
+            ng-blur="Blur_Clase_F('Var_Seccional')">
+          <label id="Var_Seccional_Form_Clase_Label">Clasificación de Patología</label>
+          <ul class="list-group m-l Clase_Listar_Clase_F Var_Seccional_Scroll"
+            style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+            <li class="list-group-item" style="font-size: 0.7em;" id="Clase_F{{$index}}"
+              ng-repeat="x in Var_Seccional.Busqueda.Clase_F.Filtro"
+              ng-click="FillTextbox_Listado_Clase_F(x.CLASE,x.DESCRIPCION,'Var_Seccional')"
+              ng-class="$index == Var_Seccional.Busqueda.Clase_F.Seleccion ? 'hover' : ''">
+              {{x.CLASE}} - {{x.DESCRIPCION}} </li>
+          </ul>
+        </div>
+        <!-- <div class="col s4 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados"
+          ng-show="Var_Seccional.Form.Cod_Cohorte == 'CA' || Var_Seccional.Form.Cod_Cohorte == 'EH'">
+          <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+            autocomplete="off" ng-model="Var_Seccional.Form.Clase_Concepto">
+          <label>Clasificación de Patología:</label>
+        </div> -->
+        <div class="col s4 no-padding label-new m-b">
+          <input type="date" class="margin border-none input-date-new w-100 m-l" id="Var_Seccional_Form_Op_Fecha_Diag"
+            ng-model="Var_Seccional.Form.Op_Fecha_Diag" max="{{SysDay | date:'yyyy-MM-dd'}}"
+            ng-blur="ValFecha('Var_Seccional','Op_Fecha_Diag')">
+          <label id="Var_Seccional_Form_Op_Fecha_Diag_Label">Fecha del Diagnóstico</label>
+        </div>
+        <div class="col s2 no-padding label-new m-b">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Seccional.Form.Op_Prioridad">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="A">ALTA</option>
+            <option value="M">MEDIA</option>
+            <option value="B">BAJA</option>
+          </select>
+          <label id="Var_Seccional_Form_Op_Prioridad_Label">Prioridad</label>
+        </div>
+        <div class="col s2 no-padding label-new m-b Var_Seccional_Form_Campos_Desactivados">
+          <input type="checkbox" class="filled-in" id="Var_Seccional_Op_Pluripatologico" ng-disabled="true"
+            ng-model="Var_Seccional.Form.Op_Pluripatologico">
+          <label for="Var_Seccional_Op_Pluripatologico"
+            style="font-weight: 400;font-size: 1rem;margin-left: 2vw;top: 0.5vh;">Pluripatologico</label>
+        </div>
+        <!-- //////// -->
+        <div class="col s12 m12 l12 m-b default-border" style="border-radius: 15px; border-style: dashed;"
+          ng-if="Var_Seccional.Form.Op_Pluripatologico == true">
+          <blockquote class="default-color" ng-class="Color_Co" style="font-size: .9em; margin: 11px 0px;">
+            ({{Array_Patologias_Pluri.length}}) Patologias</blockquote>
+          <ul class="collapsible m-l" data-collapsible="accordion"
+            style="background-color: transparent;border: 0;box-shadow: none;margin-left: 0 !important;">
+            <!-- Prestador 1 -->
+            <li ng-repeat="x in Array_Patologias_Pluri">
+              <div id="collapsible-header-Patologias1" class="collapsible-header"
+                style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                <div class="foot4 divcardcustom input-file-radius" ng-class="Color_Bg">
+                  <div class="text-al divcardcustom2" style="line-height: normal;">
+                    <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                        style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                        title="Desplegar lista"></i>#{{$index+1}} | Proceso: {{x.PROCESO}} - Patologia:
+                      {{x.DESCRIPCION_COHORTE}}</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Body-->
+              <div class="collapsible-body" style="border-bottom: 0;">
+                <div class="col s12 m12 l12 m-b"
+                  style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+                  <!-- Nombre  -->
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Proceso: </label>
+                      <label>{{x.PROCESO}}</label>
+                    </div>
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Cohorte: </label>
+                      <label>{{x.DESCRIPCION_COHORTE}}</label>
+                    </div>
+                    <div class="col s3">
+                      <label style="font-weight: 700;">Fecha de Identificación: </label>
+                      <label>{{x.FECHA_IDENTIFICACION}}</label>
+                    </div>
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Estado: </label>
+                      <label>{{x.ESTADO}}</label>
+                    </div>
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Gestión: </label>
+                      <label>{{x.GESTION}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s8">
+                      <label style="font-weight: 700;">Diagnóstico: </label>
+                      <label>{{x.DIAGNO}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;"
+                    ng-if="x.COHORTE == 'CA' || x.COHORTE == 'EH'">
+                    <div class="col s8">
+                      <label style="font-weight: 700;">Clasificación de Cohorte: </label>
+                      <label>{{x.CLASE_CONCEPTO}}</label>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- //////// -->
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b">
+        <div class="col s8 no-padding label-new m-b">
+          <input type="text" id="Var_Seccional_Form_Op_IpsAsig" class="margin border-none input-text-new w-100 m-l"
+            style="text-transform:uppercase" autocomplete="off" ng-model="Var_Seccional.Form.Op_IpsAsig"
+            ng-keyup="Complete_Listado_IpsAsig($event,Var_Seccional.Form.Op_IpsAsig, 'Var_Seccional');KeyFind_ObIpsAsig($event, 'Var_Seccional');"
+            ng-blur="Blur_IpsAsig('Var_Seccional')">
+          <label id="Var_Seccional_Form_Op_IpsAsig_Label">IPS de Atención Integral Asignada
+            <strong ng-show="Var_Seccional.Form.Afi_Contratada"><span
+                class="status {{(Var_Seccional.Form.Afi_Contratada == 'S')?'Green_Est':'Red_Est'}}"
+                style="margin-left: 1vw;padding: .3vw;">{{(Var_Seccional.Form.Afi_Contratada
+                == 'S')?'RED CONTRATADA':'RED NO CONTRATADA'}}</span></strong>
+          </label>
+          <ul class="list-group m-l Clase_Listar_IpsAsig"
+            style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+            <li class="list-group-item" style="font-size: 0.7em;" id="IpsAsig{{$index}}"
+              ng-repeat="x in Var_Seccional.Busqueda.IpsAsig.Filtro"
+              ng-click="FillTextbox_Listado_IpsAsig(x.CODIGO,x.NOMBRE,x.CONTRATADA, 'Var_Seccional')"
+              ng-class="$index == Var_Seccional.Busqueda.IpsAsig.Seleccion ? 'hover' : ''">
+              {{x.CODIGO}} - {{x.NOMBRE}}</li>
+          </ul>
+          <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+            ng-click="Buscar_IpsAsig('Var_Seccional')"></i>
+        </div>
+        <div class="col s4 no-padding label-new m-b">
+          <input type="date" class="margin border-none input-date-new w-100 m-l"
+            id="Var_Seccional_Form_Op_Fecha_inicio_IpsAsig" ng-model="Var_Seccional.Form.Op_Fecha_inicio_IpsAsig"
+            max="{{SysDay | date:'yyyy-MM-dd'}}" ng-blur="ValFecha('Var_Seccional','Op_Fecha_inicio_IpsAsig')">
+          <label id="Var_Seccional_Form_Op_Fecha_inicio_IpsAsig_Label">Fecha de Inicio</label>
+        </div>
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b" style="margin-bottom: 5.5rem;">
+        <div class="col s12 no-padding label-new m-b Form_Campos">
+          <textarea id="Var_Seccional_Form_Observacion" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+            autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+            ng-keyup="FormatTexto('Var_Seccional_Form_Observacion')" ng-model="Var_Seccional.Form.Op_Observacion"
+            title="Se permiten un minimo de 20 y un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+          <label id="Var_Seccional_Form_Op_Observacion_Label">Observación</label>
+        </div>
+      </div>
+      <div class="col s12 no-padding" style="text-align: right;margin-top: -24px;padding: 0.5rem !important;"
+        ng-style="{'color' : (Var_Seccional.Form.Op_Observacion.length == 1000) ? 'green' : '#333'}"
+        ng-show="Var_Seccional.Form.Op_Observacion">
+        <span style="position:absolute;right: 4em;">{{Var_Seccional.Form.Op_Observacion.length}}/1000</span>
+      </div>
+      <!-- -- --  -->
+      <div class="col s12 m12 l12 m-b" style="margin-bottom: 1.5rem;">
+        <div class="col s6 no-padding label-new m-b" id="AdjustSop">
+          <label class="m-l" style="width: max-content;" id="Var_Seccional_Soporte_Label">Soporte - Seccionales</label>
+          <div class="file-field input-field gray-input m-l input-file-radiu input-file-radius-obligatorio"
+            style="margin: 0;width: -webkit-fill-available;">
+            <div class="right">
+              <span class="black-text"><i class="icon-folder-open-1 default-color"
+                  style="line-height: 2rem;"></i></span>
+              <input type="file" id="Var_Seccional_Soporte">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path Var_Seccional_Archivos" type="text" placeholder="Adjunte un archivo (zip)"
+                readonly style="border-radius: 0;height: 2rem;border-bottom: 0;" id="Var_Seccional_Sop_Lab_Soporte"
+                ng-model="Var_Seccional.Sop_Lab.Soporte"
+                ng-change="loadFile('Soportes', 'Soporte_URL', 'Soporte_B64', 'Var_Seccional_Soporte', 'Var_Seccional_Sop_Lab_Soporte', 'Var_Seccional')">
+            </div>
+          </div>
+          <div class="VistaFile gray-input input-file-radiu" style="position: relative;display: inline-block;"
+            ng-if="Var_Seccional.Form.Soportes.Soporte_URL!=''"
+            ng-class="(Var_Seccional.Form.Soportes.Soporte_URL=='')? '' : 'input-file-radius-cargado2';">
+            <i class="icon-eye default-color" style="cursor: pointer;font-size: 18px;"
+              ng-click="openInNewTab(Var_Seccional.Var_Seccional.Form.Soportes.Soporte_URL)"></i>
+            <iframe id="Iframe_Sop1" class="Iframe" ng-src="{{Var_Seccional.Form.Soportes.Soporte_URL}}"></iframe>
+          </div>
+        </div>
+      </div>
+      <!-- Guardar Gestion -->
+      <div class="col s12 m12 l12 center" ng-if="Var_Seccional.Vista == '3'" style="margin-bottom: 2em;">
+        <button id="buton" class="btn"
+          style="border-radius: 20px;margin-right: 2em;background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);"
+          ng-click="HSEC_Anular_Solicitud()" ng-if="Var_Seccional.Form.Fuente == 'O'" ng-disabled="HSEC_Btn_X">
+          Anular
+        </button>
+        <button id="buton" class="btn"
+          style="border-radius: 20px;background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);"
+          ng-click="HSEC_Guardar_Solicitud()" ng-disabled="HSEC_Btn_G">
+          Procesar
+        </button>
+      </div>
+      <!--  -->
+    </div>
+  </div>
+
+  <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+  <!-- Hoja Var_Nacional Tabla -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-if="Rol_Ubi == 'N' && Var_Nacional.Vista == '1' && Tabs == 1">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- // -->
+          <div class="col s12">
+            <div class="row" style="margin-bottom: 0px;">
+              <i class="icon-cw-circle default-color cursor-pointer"
+                style="margin-left: -40px;font-size:1.5rem;position: absolute;margin-top: 10px;" title="Refrescar"
+                ng-click="HNAC_ObtenerListado()"></i>
+              <!--  -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#26c6da,#00acc1,#26c6da);"
+                    ng-click="filter('Autorizaciones')">
+                    <div class="card-content">
+                      <i class="icon-ok-outline white-text"></i>
+                      <h6>Autorizaciones
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #00acc1;">
+                  <span style="color: #00acc1;">
+                    <i class="icon-docs-1"></i> {{Var_Nacional.List_Count.Aut}} Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#ffa726,#fb8c00,#ffa726);"
+                    ng-click="filter('Rips')">
+                    <div class="card-content">
+                      <i class="icon-clipboard-2 white-text"></i>
+                      <h6>RIPS</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #fb8c00;">
+                  <span style="color: #fb8c00;"><i class="icon-docs-1"></i> {{Var_Nacional.List_Count.Rips}}
+                    Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#eb6794,#d81b60,#eb6794);"
+                    ng-click="filter('Censo')">
+                    <div class="card-content">
+                      <i class="icon-medkit white-text"></i>
+                      <h6>Censo Hospitalario</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #d81b60;">
+                  <span style="color: #d81b60;"><i class="icon-docs-1"></i> {{Var_Nacional.List_Count.Censo}}
+                    Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+              <div class="col s3 m6 l3" style="position: relative;">
+                <div class="Tarjeta_Titulo">
+                  <div class="card cursor-pointer"
+                    style="background: linear-gradient(to bottom left,#989da4,#6A6D71,#989da4);"
+                    ng-click="filter('Otra')">
+                    <div class="card-content">
+                      <i class="icon-folder-2 white-text"></i>
+                      <h6>Otra Fuente</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="Tarjeta_Texto" style="border: 2px solid #6A6D71;">
+                  <span style="color: #6A6D71;"><i class="icon-docs-1"></i> {{Var_Nacional.List_Count.Otra}}
+                    Registros</span>
+                </div>
+              </div>
+              <!-- // -->
+            </div>
+
+          </div>
+          <!-- // -->
+          <div class="col s12" style="margin-top:3em;">
+            <div class="col s4 no-padding label-new m-b right" style="margin-right: .5rem !important;margin-top: 0;">
+              <input id="Var_Nacional_Filtrar_Sol" class="margin border-none input-text-new gray-input w-100 m-l"
+                autocomplete="off" type="text" placeholder="..." ng-model="Var_Nacional.Filtrar_Sol"
+                ng-change="chg_filtrar('Var_Nacional');">
+              <label>Buscar</label>
+              <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"></i>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="foot4 divcardcustom default-linear-gradient border_bottom_LR">
+            <div class="text-al divcardcustom2" style="text-align: center;">
+              <strong class="switch" style="font-weight:600;font-size: 0.9rem;">SINIESTROS PENDIENTES
+                POR GESTIONAR</strong>
+            </div>
+          </div>
+          <!-- /TABLA/ -->
+          <div style="width:100%;">
+            <table id="H1_Tabla" class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>NÚM. DEL SINIESTRO</th>
+                  <th>SECCIONAL</th>
+                  <th>DOC. DEL AFILIADO</th>
+                  <th>NOMBRE DEL AFILIADO</th>
+                  <th>ESTADO AFILIADO</th>
+                  <th>COHORTE</th>
+                  <!-- <th>IPS</th> -->
+                  <th>RESPONSABLE SECCIONAL</th>
+                  <th>PRIORIDAD</th>
+                  <th>PLURIPATOLOGICO</th>
+                  <th>FUENTE</th>
+                </tr>
+              </thead>
+              <tbody class="default-border">
+                <tr
+                  ng-repeat="X in Lista_Tabla_Temp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
+                  style="color: black;cursor:pointer;">
+
+                  <td ng-click="HNAC_Mostar_Formulario(X)">{{X.NUM_RADICADO}}</td>
+                  <td ng-click="HNAC_Mostar_Formulario(X)">{{X.SECCIONAL}}</td>
+                  <td ng-click="HNAC_Mostar_Formulario(X)">{{X.TIPO_DOC_AFI +' - '+X.DOC_AFI}}</td>
+                  <td ng-click="HNAC_Mostar_Formulario(X)">{{X.NOMBRE_AFI}}</td>
+                  <td ng-click="HNAC_Mostar_Formulario(X)">{{X.ESTADO_AFILIADO}}</td>
+                  <td ng-click="HNAC_Mostar_Formulario(X)">{{X.COHORTE}}</td>
+                  <!-- <td ng-click="HNAC_Mostar_Formulario(X)">{{X.IPS}}</td> -->
+                  <td ng-click="HNAC_Mostar_Formulario(X)">{{X.RESPONSABLE_SECCIONAL}}</td>
+                  <td ng-click="HNAC_Mostar_Formulario(X)"><span class="white-text"
+                      ng-class="(X.PRIORIDAD == 'Alta' ? 'red' : X.PRIORIDAD == 'Media' ? 'yellow' : 'green')"
+                      style="padding: 5px;font-weight: 700;">{{X.PRIORIDAD}}</span></td>
+                  <td ng-click="HNAC_Mostar_Formulario(X)">
+                    <i class="default-color {{X.PLURIPATOLOGICO == 'S' ? 'icon-check' : 'icon-check-empty'}}"
+                      style="font-size: 3vh;"></i>
+                  </td>
+                  <td>
+                    <div ng-show="X.FUENTE=='A'">
+                      <div>
+                        <i class="default-color icon-ok-outline cursor-pointer" style="font-size: 3vh;color: #00acc1"
+                          ng-click="Abrir_Modal_Detalle(X.NUM_RADICADO)"></i>
+                      </div>
+                    </div>
+                    <div ng-show="X.FUENTE=='R'">
+                      <div>
+                        <i class="default-color icon-clipboard-2 cursor-pointer" style="font-size: 3vh;color: #fb8c00"
+                          ng-click="Abrir_Modal_Detalle(X.NUM_RADICADO)"></i>
+                      </div>
+                    </div>
+                    <div ng-show="X.FUENTE=='C'">
+                      <div>
+                        <i class="default-color icon-medkit cursor-pointer" style="font-size: 3vh;color: #d81b60"
+                          ng-click="Abrir_Modal_Detalle(X.NUM_RADICADO)"></i>
+                      </div>
+                    </div>
+                    <div ng-show="X.FUENTE!='A' && X.FUENTE!='R' && X.FUENTE!='C'">
+                      <div>
+                        <i class="default-color icon-folder-2" style="font-size: 3vh;color: #6A6D71"></i>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr ng-show="Lista_Tabla_Temp.length==0">
+                  <td class="center-align" colspan="10" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="width: 100%;display: flex;">
+              <div style="width: 50%;">
+                <label for="normal">Total de documentos filtrados:
+                  {{Lista_Tabla_Temp.length}}</label>
+              </div>
+              <div style="width: 50%;text-align: right;">
+                <label for="normal">Total de documentos encontrados:
+                  {{Lista_Tabla.length}}</label>
+              </div>
+            </div>
+            <div style="width: 100%;display: flex;">
+              <!-- <div style="width: 33%;"></div> -->
+              <div style="width: 100%;">
+                <ul class="pagination">
+                  <li><button ng-disabled='currentPage == 0' class="btn-floating white-text default-linear-gradient"
+                      ng-click="paso('back')">&laquo;</button></li>
+                  <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                      class="btn-floating white-text default-linear-gradient"
+                      ng-click='setPage(page.no)'>{{page.no}}</button>
+                  </li>
+                  <li><button ng-disabled='currentPage >= Lista_Tabla_Temp.length/pageSize - 1'
+                      class="btn-floating white-text default-linear-gradient" ng-click="paso('next')">&raquo;</button>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- // -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Hoja Var_Nacional Form -->
+  <div class="card" style="margin: 0 40px;" ng-show="Rol_Ubi == 'N' && Var_Nacional.Vista == '2' && Tabs == 1">
+    <div id="Hoja_Form" class="row card-content clearfix Var_Nacional_Clase" ng-class="salida">
+      <div class="foot4 divcardcustom" ng-class="Color_Bg">
+        <div class="text-al divcardcustom2">
+          <strong class="switch" style="font-weight:900" ng-show="Var_Nacional.Form.Radicado == ''">Siniestro</strong>
+          <strong class="switch" style="font-weight:900" ng-hide="Var_Nacional.Form.Radicado == ''">Siniestro N°
+            {{ Var_Nacional.Form.Radicado}}</strong>
+          <div style="float:right">
+            <label style="padding-left:30px;padding-right:30px;color:white !important;"><label
+                style="font-weight:800;color:white !important;">SECCIONAL:</label>
+              {{ Var_Nacional.Form.Seccional_Nom}}
+            </label>
+            <label style="padding-left:30px;padding-right:30px;color:white !important;"><label
+                style="font-weight:800;color:white !important;">FUENTE:</label>
+              {{Var_Nacional.Form.Fuente_Nom}}
+            </label>
+            <label style="padding-left:30px;color:white !important;"><label
+                style="font-weight:800;color:white !important;">FECHA DE GESTIÓN:
+              </label>{{Var_Nacional.Form.Fecha_Gestion}}</label>
+            <!-- <input type="date" style="width: auto;border: none;height: auto;color:white !important;padding-right:20px;"
+              ng-model="Var_Nacional.Form.Fecha_Gestion" readonly> -->
+            <div class="tooltip" style="float:right;margin: 0px 15px 0px 30px;">
+              <i class="icon-cancel-alt-filled cursor-pointer" ng-click="HNAC_Cerrar_Form()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Cerrar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--  -->
+
+      <!-- Información del Afiliado -->
+      <div class="col s12 m12 l12 m-b">
+        <!-- Información del Afiliado -->
+        <blockquote class="default-color" ng-class="Color_Co">Información del Afiliado</blockquote>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Nacional.Form.Afi_Tipo_Doc">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Var_Nacional.Form.Afi_Tipo_Doc"
+              ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+          </select>
+          <label id="Var_Nacional_Form_Afi_Tipo_Doc_Label">Tipo de Identificación</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Nacional.Form.Afi_Num_Doc">
+          <label id="Var_Nacional_Form_Afi_Num_Doc_Label">Número de Documento</label>
+        </div>
+        <div class="col s6 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <input class="margin border-none input-text-new gray-input w-100 m-l"
+            ng-model="Var_Nacional.Form.Afi_Ubicacion">
+          <label>Ubicación</label>
+        </div>
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b">
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Nacional.Form.Afi_Pri_Nombre">
+          <label id="Var_Nacional_Form_Afi_Pri_Nombre_Label">Primer Nombre</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Nacional.Form.Afi_Seg_Nombre">
+          <label id="Var_Nacional_Form_Afi_Seg_Nombre_Label">Segundo Nombre</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Nacional.Form.Afi_Pri_Apellido">
+          <label id="Var_Nacional_Form_Afi_Pri_Apellido_Label">Primer Apellido</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados" style="width: 25%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Nacional.Form.Afi_Seg_Apellido">
+          <label id="Var_Nacional_Form_Afi_Seg_Apellido_Label">Segundo Apellido</label>
+        </div>
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b">
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <input type="date" class="margin border-none input-date-new w-100 m-l"
+            ng-model="Var_Nacional.Form.Afi_Fecha_Nac">
+          <label id="Var_Nacional_Form_AFi_Fecha_Nac_Label">Fecha de Nacimiento</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+            ng-model="Var_Nacional.Form.Afi_Edad">
+          <label id="Var_Nacional_Form_Afi_Edad_Label">Edad</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Nacional.Form.Afi_Sexo">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="F">Femenino</option>
+            <option value="M">Masculino</option>
+          </select>
+          <label id="Var_Nacional_Form_Afi_Sexo_Label">Sexo</label>
+        </div>
+        <div class="col s3 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Nacional.Form.Afi_Portabilidad">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="S">SI</option>
+            <option value="N">NO</option>
+          </select>
+          <label id="Var_Nacional_Form_Afi_Portabilidad_Label">Portabilidad</label>
+        </div>
+      </div>
+      <!--  -->
+      <!-- Gestión de Riesgo - Seguimiento -->
+      <div class="col s12 m12 l12 m-b">
+        <blockquote class="default-color" ng-class="Color_Co">Gestión Siniestro
+          <div class="display-flex right">
+            <span class="right" style="margin-right: 1vw;" ng-if="Var_Nacional.Form.Afi_Ips != '-'">IPS_SOLICITANTE:
+              {{Var_Nacional.Form.Afi_Ips_Asg}}</span>
+              <span style="margin-right: 1em;">|</span>
+            <span class="right" style="margin-right: 1vw;" ng-if="Var_Nacional.Form.Afi_Ips != '-'">IPS_ASIGNADA:
+              {{Var_Nacional.Form.Afi_Ips}}</span>
+          </div>
+
+        </blockquote>
+        <div class="col s4 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Nacional.Form.Cod_Cohorte">
+            <option value="" disabled>SELECCIONAR</option>
+            <option style="text-transform: capitalize;" ng-selected="x.CODIGO == Var_Nacional.Form.Cod_Cohorte"
+              ng-repeat="x in Array_Patologias" value="{{x.CODIGO}}">{{x.NOMBRE}}</option>
+          </select>
+          <label id="Var_Nacional_Form_Cod_Cohorte_Label">Cohorte</label>
+        </div>
+        <!-- // -->
+        <div class="col s8 no-padding label-new m-b">
+          <input type="text" id="Var_Nacional_Form_Diagnostico" class="margin border-none input-text-new w-100 m-l"
+            style="text-transform:uppercase" autocomplete="off" ng-model="Var_Nacional.Form.Diagnostico"
+            ng-keyup="Complete_Listado_Diag_F($event,Var_Nacional.Form.Diagnostico,'Var_Nacional');KeyFind_ObDiag_F($event,'Var_Nacional','Var_Nacional_Scroll');"
+            ng-blur="Blur_Diag_F('Var_Nacional')">
+          <label id="Var_Nacional_Form_Diagnostico_Label">Diagnóstico</label>
+          <ul class="list-group m-l Clase_Listar_Diags_F Var_Nacional_Scroll"
+            style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+            <li class="list-group-item" style="font-size: 0.7em;" id="Diagnostico_F{{$index}}"
+              ng-repeat="x in Var_Nacional.Busqueda.Diagnostico_F.Filtro"
+              ng-click="FillTextbox_Listado_Diag_F(x.DIAGNOSTICO,x.DESCRIPCION,'Var_Nacional')"
+              ng-class="$index == Var_Nacional.Busqueda.Diagnostico_F.Seleccion ? 'hover' : ''">
+              {{x.DIAGNOSTICO}} - {{x.DESCRIPCION}} </li>
+          </ul>
+          <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+            ng-click="Buscar_Diag_F('Var_Nacional')"></i>
+        </div>
+        <!-- <div class="col s8 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+            autocomplete="off" ng-model="Var_Nacional.Form.Diagnostico">
+          <label id="Var_Nacional_Form_Cod_Diag_Label">Diagnóstico</label>
+        </div> -->
+
+      </div>
+      <div class="col s12 m12 l12 m-b">
+        <div class="col s4 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <input type="text" id="Var_Nacional_Form_Clase" class="margin border-none input-text-new w-100 m-l"
+            style="text-transform:uppercase" autocomplete="off" ng-model="Var_Nacional.Form.Clase"
+            ng-keyup="Complete_Listado_Clase_F($event,Var_Nacional.Form.Clase,'Var_Nacional');KeyFind_ObClase_F($event,'Var_Nacional','Var_Nacional_Scroll');"
+            ng-blur="Blur_Clase_F('Var_Nacional')">
+          <label id="Var_Nacional_Form_Clase_Label">Clasificación de Patología</label>
+          <ul class="list-group m-l Clase_Listar_Clase_F Var_Nacional_Scroll"
+            style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+            <li class="list-group-item" style="font-size: 0.7em;" id="Clase_F{{$index}}"
+              ng-repeat="x in Var_Nacional.Busqueda.Clase_F.Filtro"
+              ng-click="FillTextbox_Listado_Clase_F(x.CLASE,x.DESCRIPCION,'Var_Nacional')"
+              ng-class="$index == Var_Nacional.Busqueda.Clase_F.Seleccion ? 'hover' : ''">
+              {{x.CLASE}} - {{x.DESCRIPCION}} </li>
+          </ul>
+        </div>
+        <!-- <div class="col s4 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados"
+          ng-show="Var_Nacional.Form.Cod_Cohorte == 'CA' || Var_Nacional.Form.Cod_Cohorte == 'EH'">
+          <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+            autocomplete="off" ng-model="Var_Nacional.Form.Clase_Concepto">
+          <label>Clasificación de Patología:</label>
+        </div> -->
+        <div class="col s4 no-padding label-new m-b">
+          <input type="date" class="margin border-none input-date-new w-100 m-l"
+            ng-model="Var_Nacional.Form.Op_Fecha_Diag" max="{{SysDay | date:'yyyy-MM-dd'}}"
+            ng-blur="ValFecha('Var_Nacional','Op_Fecha_Diag')">
+          <label id="Var_Nacional_Form_Op_Fecha_Diag_Label">Fecha del Diagnóstico</label>
+        </div>
+        <div class="col s2 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+            ng-model="Var_Nacional.Form.Op_Prioridad">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="A">ALTA</option>
+            <option value="M">MEDIA</option>
+            <option value="B">BAJA</option>
+          </select>
+          <label id="Var_Nacional_Form_Op_Prioridad_Label">Prioridad</label>
+        </div>
+        <div class="col s2 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <input type="checkbox" class="filled-in" id="Var_Nacional_Op_Pluripatologico" ng-disabled="true"
+            ng-model="Var_Nacional.Form.Op_Pluripatologico">
+          <label for="Var_Nacional_Op_Pluripatologico"
+            style="font-weight: 400;font-size: 1rem;margin-left: 2vw;top: 0.5vh;">Pluripatologico</label>
+        </div>
+
+        <!-- //////// -->
+        <div class="col s12 m12 l12 m-b default-border" style="border-radius: 15px; border-style: dashed;"
+          ng-if="Var_Nacional.Form.Op_Pluripatologico == true">
+          <blockquote class="default-color" ng-class="Color_Co" style="font-size: .9em; margin: 11px 0px;">
+            ({{Array_Patologias_Pluri.length}}) Patologias</blockquote>
+
+          <ul class="collapsible m-l" data-collapsible="accordion"
+            style="background-color: transparent;border: 0;box-shadow: none;margin-left: 0 !important;">
+            <!-- Prestador 1 -->
+            <li ng-repeat="x in Array_Patologias_Pluri">
+              <div id="collapsible-header-Patologias2" class="collapsible-header"
+                style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                <div class="foot4 divcardcustom input-file-radius" ng-class="Color_Bg">
+                  <div class="text-al divcardcustom2" style="line-height: normal;">
+                    <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                        style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                        title="Desplegar lista"></i>#{{$index+1}} | Proceso: {{x.PROCESO}} - Patologia:
+                      {{x.DESCRIPCION_COHORTE}}</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Body-->
+              <div class="collapsible-body" style="border-bottom: 0;">
+                <div class="col s12 m12 l12 m-b"
+                  style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+                  <!-- Nombre  -->
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Proceso: </label>
+                      <label>{{x.PROCESO}}</label>
+                    </div>
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Cohorte: </label>
+                      <label>{{x.DESCRIPCION_COHORTE}}</label>
+                    </div>
+                    <div class="col s3">
+                      <label style="font-weight: 700;">Fecha de Identificación: </label>
+                      <label>{{x.FECHA_IDENTIFICACION}}</label>
+                    </div>
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Estado: </label>
+                      <label>{{x.ESTADO}}</label>
+                    </div>
+                    <div class="col s2">
+                      <label style="font-weight: 700;">Gestión: </label>
+                      <label>{{x.GESTION}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s8">
+                      <label style="font-weight: 700;">Diagnóstico: </label>
+                      <label>{{x.DIAGNO}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;"
+                    ng-if="x.COHORTE == 'CA' || x.COHORTE == 'EH'">
+                    <div class="col s8">
+                      <label style="font-weight: 700;">Clasificación de Cohorte: </label>
+                      <label>{{x.CLASE_CONCEPTO}}</label>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </ul>
+
+
+        </div>
+        <!-- //////// -->
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b">
+        <div class="col s8 no-padding label-new m-b">
+          <input type="text" id="Var_Nacional_Form_Op_IpsAsig" class="margin border-none input-text-new w-100 m-l"
+            style="text-transform:uppercase" autocomplete="off" ng-model="Var_Nacional.Form.Op_IpsAsig"
+            ng-keyup="Complete_Listado_IpsAsig($event,Var_Nacional.Form.Op_IpsAsig, 'Var_Nacional');KeyFind_ObIpsAsig($event, 'Var_Nacional');"
+            ng-blur="Blur_IpsAsig('Var_Nacional')">
+          <label id="Var_Nacional_Form_Op_IpsAsig_Label">IPS de Atención Integral Asignada
+            <strong ng-show="Var_Nacional.Form.Afi_Contratada"><span
+                class="status {{(Var_Nacional.Form.Afi_Contratada == 'S')?'Green_Est':'Red_Est'}}"
+                style="margin-left: 1vw;padding: .3vw;">{{(Var_Nacional.Form.Afi_Contratada
+                == 'S')?'RED CONTRATADA':'RED NO CONTRATADA'}}</span></strong>
+          </label>
+          <ul class="list-group m-l Clase_Listar_IpsAsig"
+            style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+            <li class="list-group-item" style="font-size: 0.7em;" id="IpsAsig{{$index}}"
+              ng-repeat="x in Var_Nacional.Busqueda.IpsAsig.Filtro"
+              ng-click="FillTextbox_Listado_IpsAsig(x.CODIGO,x.NOMBRE,x.CONTRATADA, 'Var_Nacional')"
+              ng-class="$index == Var_Nacional.Busqueda.IpsAsig.Seleccion ? 'hover' : ''">
+              {{x.CODIGO}} - {{x.NOMBRE}}</li>
+          </ul>
+          <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+            ng-click="Buscar_IpsAsig('Var_Nacional')"></i>
+        </div>
+        <div class="col s4 no-padding label-new m-b">
+          <input type="date" class="margin border-none input-date-new w-100 m-l"
+            id="Var_Nacional_Form_Op_Fecha_inicio_IpsAsig" ng-model="Var_Nacional.Form.Op_Fecha_inicio_IpsAsig"
+            max="{{SysDay | date:'yyyy-MM-dd'}}" ng-blur="ValFecha('Var_Nacional','Op_Fecha_inicio_IpsAsig')">
+          <label id="Var_Nacional_Form_Op_Fecha_inicio_IpsAsig_Label">Fecha de Inicio</label>
+        </div>
+      </div>
+      <!--  -->
+      <div class="col s12 m12 l12 m-b" style="margin-bottom: 5.5rem;">
+        <div class="col s12 no-padding label-new m-b Var_Nacional_Form_Campos_Desactivados">
+          <textarea class="margin border-none textarea2 w-100 m-l" maxlength="1000" autocomplete="off"
+            style="height: 100px;text-transform:uppercase;text-align: justify;"
+            ng-keyup="FormatTexto('Form_Observacion')" ng-model="Var_Nacional.Form.Op_Observacion"
+            title="Se permiten un minimo de 20 y un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+          <label id="Var_Nacional_Form_Op_Observacion_Label">Observación de la Seccional</label>
+        </div>
+      </div>
+      <div class="col s12 no-padding" style="text-align: right;margin-top: -24px;padding: 0.5rem !important;"
+        ng-style="{'color' : (Var_Nacional.Form.Op_Observacion.length == 1000) ? 'green' : '#333'}"
+        ng-show="Var_Nacional.Form.Op_Observacion">
+        <span style="position:absolute;right: 4em;">{{Var_Nacional.Form.Op_Observacion.length}}/1000</span>
+      </div>
+      <!-- -- --  -->
+      <div class="col s12 m12 l12 m-b" style="margin-bottom: 5.5rem;">
+        <div class="col s12 no-padding label-new m-b">
+          <textarea id="Var_Nacional_Form_Observacion" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+            autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+            ng-keyup="FormatTexto('Var_Nacional_Form_Observacion')" ng-model="Var_Nacional.Form.Op_Observacion_Nac"
+            title="Se permiten un minimo de 20 y un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+          <label id="Var_Nacional_Form_Op_Observacion_Nac_Label">Observación</label>
+        </div>
+      </div>
+      <div class="col s12 m12 l12 m-b" style="margin-bottom: 1.5rem;">
+        <div class="col s6 no-padding label-new m-b" id="AdjustSop">
+          <label class="m-l" style="width: max-content;" id="Var_Nacional_Soporte_Label">Soporte - Nacional</label>
+          <div class="file-field input-field gray-input m-l input-file-radiu input-file-radius-opcional"
+            style="margin: 0;width: -webkit-fill-available;">
+            <div class="right">
+              <span class="black-text"><i class="icon-folder-open-1 default-color"
+                  style="line-height: 2rem;"></i></span>
+              <input type="file" id="Var_Nacional_Soporte">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path Var_Nacional_Archivos" type="text" placeholder="Adjunte un archivo (zip)" readonly
+                style="border-radius: 0;height: 2rem;border-bottom: 0;" id="Var_Nacional_Sop_Lab_Soporte"
+                ng-model="Var_Nacional.Sop_Lab.Soporte"
+                ng-change="loadFile('Soportes', 'Soporte_URL', 'Soporte_B64', 'Var_Nacional_Soporte', 'Var_Nacional_Sop_Lab_Soporte', 'Var_Nacional')">
+            </div>
+          </div>
+          <div class="VistaFile gray-input input-file-radiu" style="position: relative;display: inline-block;"
+            ng-if="Var_Nacional.Form.Soportes.Soporte_URL!=''"
+            ng-class="(Var_Nacional.Form.Soportes.Soporte_URL=='')? '' : 'input-file-radius-cargado2';">
+            <i class="icon-eye default-color" style="cursor: pointer;font-size: 18px;"
+              ng-click="openInNewTab(Var_Nacional.Var_Nacional.Form.Soportes.Soporte_URL)"></i>
+            <iframe id="Iframe_Sop1" class="Iframe" ng-src="{{Var_Nacional.Form.Soportes.Soporte_URL}}"></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 no-padding" style="text-align: right;margin-top: -24px;padding: 0.5rem !important;"
+        ng-style="{'color' : (Var_Nacional.Form.Op_Observacion_Nac.length == 1000) ? 'green' : '#333'}"
+        ng-show="Var_Nacional.Form.Op_Observacion_Nac">
+        <span style="position:absolute;right: 4em;">{{Var_Nacional.Form.Op_Observacion_Nac.length}}/1000</span>
+      </div>
+      <!-- Guardar Gestion -->
+      <div class="col s12 m12 l12 center" ng-if="Var_Nacional.Vista == '2'">
+        <button id="buton" class="btn"
+          style="border-radius: 20px;background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);"
+          ng-click="HNAC_Guardar_Solicitud('X')" ng-disabled="HNAC_Btn_G">
+          Anular
+        </button>
+        <button id="buton" class="btn"
+          style="border-radius: 20px;background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);"
+          ng-click="HNAC_Guardar_Solicitud('P')" ng-disabled="HNAC_Btn_G">
+          Procesar
+        </button>
+      </div>
+      <!--  -->
+    </div>
+  </div>
+
+  <!--  -->
+  <!--  -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Tabs == 2">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;" ng-if="Hoja2.Vista == 1">
+          <!-- // -->
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;font-weight: 600;">
+            <div class="left">
+              {{Hoja2.Titulo}}
+            </div>
+            <div>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em;background-image: linear-gradient(to bottom left,#49d455,#03c514,#49d455);">
+                BUENA GESTIÓN (0% - 35%)
+              </i>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em; background-image: linear-gradient(to bottom left,#f5be57,#eb9c05,#f5be57);">
+                POCA GESTIÓN (36% - 70%)
+              </i>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em; background-image: linear-gradient(to bottom left,#f18686,#f54b4b,#f18686);">
+                BAJA GESTIÓN (71% - 100%)
+              </i>
+            </div>
+          </div>
+          <div class="row">
+            <div class="black-text title-panel col s9"
+              style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;font-weight: 600;"
+              ng-class="Hoja2.Total_Cohorte_Color" ng-show="Hoja2.Total_Cohorte_Color != ''">
+              {{formatPeso(Hoja2.Total_Cohorte_Cant)}} ({{Hoja2.Total_Cohorte_Porc}}%) Siniestros Sin Asignacion de
+              Tratamiento
+            </div>
+            <div class="col s3 center">
+              <button class="btn waves-effect waves-light right" ng-click="Abrir_Modal_Consulta_Avanzada()"
+                style="border-radius: 15px;"><i class="icon-search" style="font-size: 1rem;">Consulta
+                  avanzada</i></button>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="col s4 m6 l3 cursor-pointer" ng-repeat="X in Hoja2.Array_Cohortes"
+            ng-click="HOJA2_Obtener_Seccionales(X.COHORTE,X.CODIGO)">
+            <div class="card" style="border-radius: .375rem;">
+              <div class="card-content"
+                style="padding: 0.5rem 0.8rem; background-image: linear-gradient(to bottom left,#ffffff,#f3f3f3,#ffffff);">
+                <div class="right">
+                  <i class="icon-location-7 default-color" style="padding: 10px;display: flex;font-size: 1.5vw;"></i>
+                </div>
+                <h5 class="default-color" style="font-weight: 700 !important;margin-top: 2vh;font-size: 1.1rem;">
+                  {{X.COHORTE}}
+                </h5>
+                <div class="row" style="margin-bottom: 0;margin-top: 3vh;">
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.TOTAL)}} <span class="right"
+                      style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Total Siniestros Procesados</span>
+                  </h6>
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.PROCESADO_CON_TTO)}} <span
+                      class="right" style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Procesados con
+                      Tratamiento</span>
+                  </h6>
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.PROCESADO_SIN_TTO)}} <span
+                      class="right" style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Procesados sin
+                      Tratamiento</span>
+                  </h6>
+                </div>
+                <div class="progress gray-input" style="margin: 0;height: 10px;">
+                  <div class="determinate" ng-class="X.GESTION" style="width: 100%" ng-style="Obt_Estilo(X.GESTION)">
+                  </div>
+                </div>
+                <p class="center">
+                  <span style="font-weight: 600;" ng-class="X.GESTION">{{X.PROCESADO_SIN_TTO_PORC}}% de Gestión
+                    Pendiente</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- // -->
+        </div>
+        <div class="row" style="margin-bottom: 0px;" ng-if="Hoja2.Vista == 2">
+          <!-- // -->
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;font-weight: 600;">
+            <div class="left">
+              {{Hoja2.Titulo}}
+            </div>
+            <div>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em;background-image: linear-gradient(to bottom left,#49d455,#03c514,#49d455);">
+                BUENA GESTIÓN (0% - 35%)
+              </i>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em; background-image: linear-gradient(to bottom left,#f5be57,#eb9c05,#f5be57);">
+                POCA GESTIÓN (36% - 70%)
+              </i>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em; background-image: linear-gradient(to bottom left,#f18686,#f54b4b,#f18686);">
+                BAJA GESTIÓN (71% - 100%)
+              </i>
+            </div>
+            <i ng-click="Hoja2_Volver()" class="icon-left-open-2 cursor-pointer">Atras</i>
+          </div>
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;font-weight: 600;"
+            ng-class="Hoja2.Total_Seccional_Color" ng-show="Hoja2.Total_Seccional_Color != ''">
+            {{formatPeso(Hoja2.Total_Seccional_Cant)}} ({{Hoja2.Total_Seccional_Porc}}%) Siniestros Sin Asignacion de
+            Tratamiento
+          </div>
+          <!-- // -->
+          <div class="col s4 m6 l3 cursor-pointer" ng-repeat="X in Hoja2.Array_Seccionales"
+            ng-click="HOJA2_Obtener_Municipios('DPTO. '+ X.SECCIONAL,X.CODIGO)">
+            <div class="card" style="border-radius: .375rem;">
+              <div class="card-content"
+                style="padding: 0.5rem 0.8rem; background-image: linear-gradient(to bottom left,#ffffff,#f3f3f3,#ffffff);">
+                <div class="right">
+                  <i class="icon-location-7 default-color" style="padding: 10px;display: flex;font-size: 1.5vw;"></i>
+                </div>
+                <h5 class="default-color" style="font-weight: 700 !important;margin-top: 2vh;font-size: 1.1rem;">
+                  {{X.SECCIONAL}}
+                </h5>
+                <div class="row" style="margin-bottom: 0;margin-top: 3vh;">
+
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.TOTAL)}} <span class="right"
+                      style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Total Siniestros Procesados</span>
+                  </h6>
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.PROCESADO_CON_TTO)}} <span
+                      class="right" style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Procesados con
+                      Tratamiento</span>
+                  </h6>
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.PROCESADO_SIN_TTO)}} <span
+                      class="right" style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Procesados sin
+                      Tratamiento</span>
+                  </h6>
+                </div>
+                <div class="progress gray-input" style="margin: 0;height: 10px;">
+                  <div class="determinate" ng-class="X.GESTION" style="width: 100%" ng-style="Obt_Estilo(X.GESTION)">
+                  </div>
+                </div>
+                <p class="center">
+                  <span style="font-weight: 600;" ng-class="X.GESTION">{{X.PROCESADO_SIN_TTO_PORC}}% de Gestión
+                    Pendiente</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- // -->
+        </div>
+        <div class="row" style="margin-bottom: 0px;" ng-if="Hoja2.Vista == 3">
+          <!-- // -->
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;font-weight: 600;">
+            {{Hoja2.Titulo}}
+            <div>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em;background-image: linear-gradient(to bottom left,#49d455,#03c514,#49d455);">
+                BUENA GESTIÓN (0% - 35%)
+              </i>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em; background-image: linear-gradient(to bottom left,#f5be57,#eb9c05,#f5be57);">
+                POCA GESTIÓN (36% - 70%)
+              </i>
+              <i class="icon-circle cursor-pointer"
+                style="color: blanchedalmond; font-size: 15px; border-radius: 15px; margin-right: 2em; background-image: linear-gradient(to bottom left,#f18686,#f54b4b,#f18686);">
+                BAJA GESTIÓN (71% - 100%)
+              </i>
+            </div>
+            <i ng-click="Hoja2_Volver()" class="icon-left-open-2 cursor-pointer">Atras</i>
+          </div>
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;font-weight: 600;"
+            ng-class="Hoja2.Total_Municipio_Color" ng-show="Hoja2.Total_Municipio_Color != ''">
+            {{formatPeso(Hoja2.Total_Municipio_Cant)}} ({{Hoja2.Total_Municipio_Porc}}%) Siniestros Sin Asignacion de
+            Tratamiento
+          </div>
+          <!-- // -->
+          <div class="col s4 m6 l3 {{X.PROCESADO_SIN_TTO == '0' ? '' : 'cursor-pointer' }}"
+            ng-repeat="X in Hoja2.Array_Municipios"
+            ng-click="X.PROCESADO_SIN_TTO == '0' ? '' : HOJA2_Obtener_Detalle_Municipios(X.SECCIONAL,X.CODIGO)">
+            <div class="card" style="border-radius: .375rem;">
+              <div class="card-content"
+                style="padding: 0.5rem 0.8rem; background-image: linear-gradient(to bottom left,#ffffff,#f3f3f3,#ffffff);">
+                <div class="right">
+                  <i class="icon-location-7 default-color" style="padding: 10px;display: flex;font-size: 1.5vw;"></i>
+                </div>
+                <h5 class="default-color" style="font-weight: 700 !important;margin-top: 2vh;font-size: 1.1rem;">
+                  {{X.SECCIONAL}}
+                </h5>
+                <div class="row" style="margin-bottom: 0;margin-top: 3vh;">
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.TOTAL)}} <span class="right"
+                      style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Total Siniestros Procesados</span>
+                  </h6>
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.PROCESADO_CON_TTO)}} <span
+                      class="right" style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Procesados con
+                      Tratamiento</span>
+                  </h6>
+                  <h6 style="font-weight: 600!important;font-size: 1.2rem;">{{formatPeso(X.PROCESADO_SIN_TTO)}} <span
+                      class="right" style="font-size: .8rem; font-weight: 500; padding-right: 3vw;">Procesados sin
+                      Tratamiento</span>
+                  </h6>
+                </div>
+                <div class="progress gray-input" style="margin: 0;height: 10px;">
+                  <div class="determinate" ng-class="X.GESTION" style="width: 100%" ng-style="Obt_Estilo(X.GESTION)">
+                  </div>
+                </div>
+                <p class="center">
+                  <span style="font-weight: 600;" ng-class="X.GESTION">{{X.PROCESADO_SIN_TTO_PORC}}% de Gestión
+                    Pendiente</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- // -->
+        </div>
+        <div class="row" style="margin-bottom: 0px;" ng-show="Hoja2.Vista == 4">
+          <!-- // -->
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;font-weight: 600;">
+            {{Hoja2.Titulo}}
+            <div class="right">
+              <input type="text" class="margin border-none input-text-new" ng-model="Hoja2.Filtro_Detalle_Municipio"
+                placeholder="Filtrar en la tabla" ng-keyup="Hoja2_chg_filtrar()">
+              <i ng-click="Hoja2_Volver()" class="icon-left-open-2 cursor-pointer">Atras</i>
+            </div>
+
+          </div>
+          <!-- // -->
+          <div class="col s12 m12 l12">
+            <div class="foot4 divcardcustom default-linear-gradient border_bottom_LR">
+              <div class="text-al divcardcustom2" style="text-align: center;">
+                <strong class="switch" style="font-weight:600;font-size: 0.9rem;">SINIESTROS
+                  PROCESADOS,
+                  PENDIENTES POR ASIGNACION DE TRATAMIENTO</strong>
+              </div>
+            </div>
+            <!-- /TABLA/ -->
+            <div style="width:100%;">
+              <table id="H1_Tabla" class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+                <thead class="default-border default-color">
+                  <tr>
+                    <th>NÚM. DEL SINIESTRO</th>
+                    <th>AFILIADO</th>
+                    <th>COHORTE</th>
+                    <th>CLASIFICACION</th>
+                    <th>DIAGNOSTICO</th>
+                    <th>FUENTE</th>
+                    <th>ESTADO</th>
+                    <th>CONF DIAGNOSTICO</th>
+                  </tr>
+                </thead>
+                <tbody class="default-border">
+                  <tr
+                    ng-repeat="X in Hoja2_Lista_Tabla_Temp | inicio: Hoja2_currentPage * Hoja2_pageSize | limitTo: Hoja2_pageSize"
+                    style="color: black;cursor:pointer;">
+
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.RADICADO}}</td>
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.USUARIO}}</td>
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.COHORTE}}</td>
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.CLASIFICACION}}</td>
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.DIAGNOSTICO}}</td>
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.ORIGEN}}</td>
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.ESTADO_GESTION}}</td>
+                    <td ng-click="HOJA2_Mostrar_Formulario(X)">{{X.CONF_DIAGNOSTICO}}</td>
+                  </tr>
+                  <tr ng-show="Hoja2_Lista_Tabla_Temp.length==0">
+                    <td class="center-align" colspan="8" style="font-weight: bolder;">No se encontraron
+                      resultados.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="width: 100%;display: flex;">
+                <div style="width: 50%;">
+                  <label for="normal">Total de documentos filtrados:
+                    {{Hoja2_Lista_Tabla_Temp.length}}</label>
+                </div>
+                <div style="width: 50%;text-align: right;">
+                  <label for="normal">Total de documentos encontrados:
+                    {{Hoja2_Lista_Tabla.length}}</label>
+                </div>
+              </div>
+              <div style="width: 100%;display: flex;">
+                <div style="width: 100%;">
+                  <ul class="pagination">
+                    <li><button ng-disabled='Hoja2_currentPage == 0'
+                        class="btn-floating white-text default-linear-gradient"
+                        ng-click="Hoja2_paso('back')">&laquo;</button>
+                    </li>
+                    <li ng-repeat='page in Hoja2_pages'><button ng-disabled='Hoja2_currentPage == page.no - 1'
+                        class="btn-floating white-text default-linear-gradient"
+                        ng-click='Hoja2_setPage(page.no)'>{{page.no}}</button>
+                    </li>
+                    <li><button ng-disabled='Hoja2_currentPage >= Hoja2_Lista_Tabla_Temp.length/Hoja2_pageSize - 1'
+                        class="btn-floating white-text default-linear-gradient"
+                        ng-click="Hoja2_paso('next')">&raquo;</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- // -->
+        </div>
+        <div class="row" style="margin-bottom: 0px;" ng-show="Hoja2.Vista == 5">
+          <div id="Hoja_Form" class="row card-content clearfix Hoja2_Clase" ng-class="salida">
+            <div class="foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:900" ng-hide="Hoja2.Form.Radicado == ''">Siniestro N°
+                  {{ Hoja2.Form.Radicado}}</strong>
+                <div style="float:right">
+                  <label style="padding-left:30px;padding-right:30px;color:white !important;"><label
+                      style="font-weight:800;color:white !important;">SECCIONAL:</label>
+                    {{ Hoja2.Form.Afi_Seccional}}
+                  </label>
+                  <div class="tooltip" style="float:right;margin: 0px 15px 0px 30px;">
+                    <i class="icon-cancel-alt-filled cursor-pointer" ng-click="Hoja2.Vista = 4;"></i>
+                    <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Cerrar</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+
+            <!-- Información del Afiliado -->
+            <div class="col s12 m12 l12 m-b">
+              <!-- Información del Afiliado -->
+              <blockquote class="default-color">Información del Afiliado</blockquote>
+              <div class="col s3 no-padding label-new m-b Hoja2_Form_Campos_Desactivados">
+                <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+                  ng-model="Hoja2.Form.Afi_Tipo_Doc">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Hoja2.Form.Afi_Tipo_Doc"
+                    ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                </select>
+                <label id="Hoja2_Form_Afi_Tipo_Doc_Label">Tipo de Identificación</label>
+              </div>
+              <div class="col s3 no-padding label-new m-b Hoja2_Form_Campos_Desactivados" style="width: 25%;">
+                <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                  ng-model="Hoja2.Form.Afi_Num_Doc">
+                <label id="Hoja2_Form_Afi_Num_Doc_Label">Número de Documento</label>
+              </div>
+              <div class="col s6 no-padding label-new m-b Hoja2_Form_Campos_Desactivados">
+                <input class="margin border-none input-text-new gray-input w-100 m-l" ng-model="Hoja2.Form.Afi_Nombre">
+                <label>Nombre Completo</label>
+              </div>
+              <div class="col s6 no-padding label-new m-b Hoja2_Form_Campos_Desactivados">
+                <input class="margin border-none input-text-new gray-input w-100 m-l"
+                  ng-model="Hoja2.Form.Afi_Ubicacion">
+                <label>Ubicación del Afiliado</label>
+              </div>
+              <div class="col s6 no-padding label-new m-b Hoja2_Form_Campos_Desactivados">
+                <input class="margin border-none input-text-new gray-input w-100 m-l" ng-model="Hoja2.Form.Fuente">
+                <label>Fuente</label>
+              </div>
+            </div>
+            <!--  -->
+            <!-- Gestión de Riesgo - Seguimiento -->
+            <div class="col s12 m12 l12 m-b">
+              <blockquote class="default-color">Gestión Siniestro
+              </blockquote>
+              <div class="col s4 no-padding label-new m-b Hoja2_Form_Campos_Desactivados">
+                <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+                  ng-model="Hoja2.Form.Cod_Cohorte">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option style="text-transform: capitalize;" ng-selected="x.CODIGO == Hoja2.Form.Cod_Cohorte"
+                    ng-repeat="x in Array_Patologias" value="{{x.CODIGO}}">{{x.NOMBRE}}</option>
+                </select>
+                <label id="Hoja2_Form_Cod_Cohorte_Label">Cohorte</label>
+              </div>
+              <div class="col s8 no-padding label-new m-b Hoja2_Form_Campos_Desactivados">
+                <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                  autocomplete="off" ng-model="Hoja2.Form.Diagnostico">
+                <label id="Hoja2_Form_Cod_Diag_Label">Diagnóstico</label>
+              </div>
+
+            </div>
+            <div class="col s12 m12 l12 m-b">
+              <div class="col s4 no-padding label-new m-b Hoja2_Form_Campos_Desactivados"
+                ng-show="Hoja2.Form.Cod_Cohorte == 'CA' || Hoja2.Form.Cod_Cohorte == 'EH'">
+                <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                  autocomplete="off" ng-model="Hoja2.Form.Clase_Concepto">
+                <label>Clasificación de Patología:</label>
+              </div>
+              <div class="col s4 no-padding label-new m-b Hoja2_Form_Campos_Desactivados">
+                <input type="date" class="margin border-none input-date-new w-100 m-l"
+                  ng-model="Hoja2.Form.Op_Fecha_Diag">
+                <label id="Hoja2_Form_Op_Fecha_Diag_Label">Fecha del Diagnóstico</label>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col s12 m12 l12 m-b">
+              <div class="col s3 no-padding label-new m-b">
+                <input type="date" class="margin border-none input-date-new w-100 m-l"
+                  id="Hoja2_Form_Op_Fecha_I_Tratamiento" ng-model="Hoja2.Form.Op_Fecha_I_Tratamiento"
+                  min="{{Hoja2.Form.Op_Fecha_Diag | date:'yyyy-MM-dd'}}" max="{{SysDay | date:'yyyy-MM-dd'}}"
+                  ng-change="ValFecha('Hoja2','Op_Fecha_I_Tratamiento')">
+                <label id="Hoja2_Form_Op_Fecha_I_Tratamiento_Label">Fecha de Inicio Tratamiento</label>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <input type="text" id="Hoja2_Form_Op_Tipo_Tratamiento"
+                  class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                  autocomplete="off" ng-model="Hoja2.Form.Op_Tipo_Tratamiento"
+                  ng-keyup="KeyFind_Tipo_Tratamiento('Hoja2',$event);Complete_Listado_Tipo_Tratamiento('Hoja2',$event,Hoja2.Form.Op_Tipo_Tratamiento);"
+                  ng-blur="Blur_Tipo_Tratamiento('Hoja2')" ng-click="Click_Tipo_Tratamiento('Hoja2')">
+                <label id="Hoja2_Form_Op_Tipo_Tratamiento_Label">Tipo de Tratamiento</label>
+                <ul class="list-group m-l Clase_Listar_Tipo_Tratamiento"
+                  style="overflow: auto;max-height: 12vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+                  <li class="list-group-item" style="font-size: 0.7em;" id="Tipo_Tratamiento{{$index}}"
+                    ng-repeat="x in Hoja2.Busqueda.Tipo_Tratamiento.Filtro"
+                    ng-click="FillTextbox_Listado_Tipo_Tratamiento('Hoja2',x.CODIGO,x.NOMBRE)"
+                    ng-class="$index == Hoja2.Busqueda.Tipo_Tratamiento.Seleccion ? 'hover' : ''">
+                    {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                </ul>
+              </div>
+              <div class="col s4 no-padding label-new m-b">
+                <input type="text" id="Hoja2_Form_Op_Ips_I_Tratamiento"
+                  class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                  autocomplete="off" ng-model="Hoja2.Form.Op_Ips_I_Tratamiento"
+                  ng-keyup="Complete_Listado_Ips_I_Tratamiento('Hoja2',$event,Hoja2.Form.Op_Ips_I_Tratamiento);KeyFind_Ips_I_Tratamiento('Hoja2',$event);"
+                  ng-blur="Blur_Ips_I_Tratamiento('Hoja2')" ng-click="Click_Ips_I_Tratamiento('Hoja2')">
+                <label id="Hoja2_Form_Op_Ips_I_Tratamiento_Label">Ips Inicio de Tratamiento</label>
+                <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+                  ng-click="HOJA2_Buscar_Ips_Tratamiento('Hoja2')"></i>
+                <strong ng-show="Hoja2.Form.Op_Afi_Contratada"><span
+                    class="status {{(Hoja2.Form.Op_Afi_Contratada == 'S')?'Green_Est':'Red_Est'}}"
+                    style="margin-left: 1vw;padding: .3vw;">{{(Hoja2.Form.Op_Afi_Contratada
+                    == 'S')?'RED CONTRATADA':'RED NO CONTRATADA'}}</span></strong>
+                <ul class="list-group m-l Clase_Listar_Ips_I_Tratamiento"
+                  style="overflow: auto;max-height: 12vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+                  <li class="list-group-item" style="font-size: 0.7em;" id="Ips_I_Tratamiento{{$index}}"
+                    ng-repeat="x in Hoja2.Busqueda.Ips_I_Tratamiento.Filtro"
+                    ng-click="FillTextbox_Listado_Ips_I_Tratamiento('Hoja2',x.CODIGO,x.NOMBRE,x.CONTRATADA)"
+                    ng-class="$index == Hoja2.Busqueda.Ips_I_Tratamiento.Seleccion ? 'hover' : ''">
+                    {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                </ul>
+
+              </div>
+            </div>
+            <!--  -->
+            <!-- Guardar Gestion -->
+            <div class="col s12 m12 l12 center">
+              <button id="buton" class="btn"
+                style="border-radius: 20px;background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);"
+                ng-click="HOJA2_Guardar()" ng-disabled="HOJA2_Btn_G">
+                Guardar
+              </button>
+            </div>
+            <!--  -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <!--  -->
+
+  <!-- MODALS -->
+  <!-- Modal_NuevaGestion  -->
+  <div id="Modal_NuevaGestion" class="modal">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h6 class="white-text">Nueva Gestión - Otras Fuentes</h6>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="overflow-y: auto;max-height: 80vh;">
+
+            <div class="col s12 m12 l12 center" style="padding-bottom:1em">
+              <div class="row" style="margin-bottom: 0;">
+                <div class="col s4 no-padding label-new m-b select_maxheigth">
+                  <select id="Modal_Consulta_Tipo" class="select-new-style gray-input m-l" style="box-shadow: none;"
+                    ng-model="Modal_Consulta_Tipo">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Modal_Consulta_Tipo"
+                      ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                  </select>
+                  <label id="Modal_Consulta_Tipo_Label">Tipo de Identificación</label>
+                </div>
+                <div class="col s4 no-padding label-new m-b">
+                  <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                    id="Modal_Consulta_Numero" ng-model="Modal_Consulta_Numero"
+                    ng-keyup="FormatSoloNumero('Modal_Consulta_Numero');KeyFind_Afiliado($event)">
+                  <label id="Modal_Consulta_Numero_Label">Número de Documento</label>
+                  <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+                    ng-click="Buscar_Afiliado()"></i>
+                </div>
+                <div class="col s4 no-padding label-new m-b select_maxheigth">
+                  <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+                    ng-model="Modal_Consulta_Fuente">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="O">Otras Fuentes</option>
+                  </select>
+                  <label id="Modal_Consulta_Fuente_Label">Fuente</label>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 0;">
+                <div class="col s12 no-padding label-new m-b Form_Consulta">
+                  <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                    ng-model="Modal_Consulta_Nombre">
+                  <label id="Modal_Consulta_Nombre_Label">Nombre Completo del Afiliado</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s8 no-padding label-new m-b">
+                  <input type="text" id="Gestion_Diag" class="margin border-none input-text-new w-100 m-l"
+                    style="text-transform:uppercase" autocomplete="off" ng-model="Modal_Consulta_Diagnostico"
+                    ng-keyup="Complete_Listado_Diag($event,Modal_Consulta_Diagnostico);KeyFind_ObDiag($event);"
+                    ng-blur="Blur_Diag()">
+                  <label id="Modal_Consulta_Cod_Diag_Label">Diagnóstico</label>
+                  <ul class="list-group m-l Clase_Listar_Diags"
+                    style="overflow: auto;max-height: 12vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+                    <li class="list-group-item" style="font-size: 0.7em;" id="Diagnostico{{$index}}"
+                      ng-repeat="x in Var_Seccional.Busqueda.Diagnostico.Filtro"
+                      ng-click="FillTextbox_Listado_Diag(x.DIAGNOSTICO,x.DESCRIPCION,x.COD_COHORTE,x.COD_CLASE_COHORTE,x.NOM_CLASE_COHORTE)"
+                      ng-class="$index == Var_Seccional.Busqueda.Diagnostico.Seleccion ? 'hover' : ''">
+                      {{x.DIAGNOSTICO}} -
+                      {{x.DESCRIPCION}} - ({{x.NOM_COHORTE}}) - ({{x.NOM_CLASE_COHORTE}})</li>
+                  </ul>
+                  <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+                    ng-click="Buscar_Diag()"></i>
+                </div>
+                <div class="col s4 no-padding label-new m-b select_maxheigth Form_Consulta">
+                  <select class="select-new-style gray-input m-l" style="box-shadow: none;"
+                    ng-model="Modal_Consulta_Cod_Cohorte">
+                    <option value="" disabled></option>
+                    <option style="text-transform: capitalize;" ng-selected="x.CODIGO == Modal_Consulta_Cod_Cohorte"
+                      ng-repeat="x in Array_Patologias" value="{{x.CODIGO}}">{{x.NOMBRE}}</option>
+                  </select>
+                  <label id="Modal_Consulta_Cod_Cohorte_Label">Cohorte</label>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 0;"
+                ng-show="Modal_Consulta_Cod_Cohorte == 'CA' || Modal_Consulta_Cod_Cohorte == 'EH'">
+                <div class="col s12 no-padding label-new m-b Form_Consulta">
+                  <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                    ng-model="Modal_Consulta_Clase">
+                  <label>Clasificación de Cohorte</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row center">
+              <button class="btn"
+                style="border-radius: 5px;background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);"
+                ng-click="Consultar_NuevaGestion('G')">Consultar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Consulta Avanzada -->
+  <div id="Modal_ConsultaAvanzada" class="modal" style="width: 40%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h6 class="white-text">Consulta Avanzada</h6>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="overflow-y: auto;max-height: 80vh;">
+
+            <div class="col s12 m12 l12 center" style="padding-bottom:1em">
+              <div class="row" style="margin-bottom: 0;">
+                <div class="col s6 no-padding label-new m-b select_maxheigth">
+                  <select id="Modal_ConsultaA_Tipo" class="select-new-style gray-input m-l" style="box-shadow: none;"
+                    ng-model="Modal_ConsultaA.tipoDoc">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Modal_Consulta_Tipo"
+                      ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                  </select>
+                  <label id="Modal_Consulta_Tipo_Label">Tipo de Identificación</label>
+                </div>
+                <div class="col s6 no-padding label-new m-b">
+                  <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                    id="Modal_ConsultaA_numDoc" ng-model="Modal_ConsultaA.numDoc">
+                  <label id="Modal_Consulta_Numero_Label">Número de Documento</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row center">
+              <button class="btn"
+                style="border-radius: 5px;background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);"
+                ng-click="Consulta_Avanzada_Modal()">Consultar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- /////////////////////////////////////////MODAL SOPORTES///////////////////////////////////////// -->
+  <div id="Modal_Soportes" class="modal">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #000;"
+        ng-click="closeModal()"></div>
+      <div class="card-content">
+        <h5><span style="font-weight: 700;">Soporte</span></h5>
+      </div>
+      <div class="card-action" style="padding-left: 0px; padding-right: 0px;padding-bottom: 0;">
+        <div class="row allMails bg-white white" style="margin-bottom: 0px;">
+          <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+            style="height: 80vh;" ng-show="Var_Nacional.Form.Url==''">
+            <i class="icon-file-pdf" style="margin: auto;font-size: 5em;"></i>
+          </div>
+          <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+            style="height: 80vh;overflow: auto;" ng-show="Var_Nacional.Form.Url!=''">
+            <iframe style="width: 100%;height: 100%;" ng-if="Var_Nacional.Form.Url!=''" type="application/pdf"
+              ng-src="{{Var_Nacional.Form.Url}}" src="{{Var_Nacional.Form.Url}}">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Btn_Adjuntos  -->
+  <div class="fixed-action-btn horizontal"
+    ng-if="Tabs == '1' && (Var_Nacional.Form.Ruta != '' && Var_Nacional.Vista == '2')">
+    <div class="tooltip">
+      <a class="btn-floating btn-large waves-effect waves-light" data-toggle="modal"
+        ng-click="Abrir_Modal_Soportes(Var_Nacional.Form.Ruta,Var_Nacional.Form.Ftp)">
+        <i class="icon-archive"></i>
+      </a>
+      <span class="tooltiptext">Descargar Soporte</span>
+    </div>
+  </div>
+  <!-- Btn_Adjuntos  -->
+  <div class="fixed-action-btn horizontal" ng-if="Tabs == '2' && (Hoja2.Form.Ruta != '' && Hoja2.Vista == '5')">
+    <div class="tooltip">
+      <a class="btn-floating btn-large waves-effect waves-light" data-toggle="modal"
+        ng-click="Abrir_Modal_Soportes(Hoja2.Form.Ruta, Hoja2.Form.Ftp)">
+        <i class="icon-archive"></i>
+      </a>
+      <span class="tooltiptext">Descargar Soporte</span>
+    </div>
+  </div>
+
+
+
+  <style>
+    .border_bottom_LR {
+      border-bottom-left-radius: 0px !important;
+      border-bottom-right-radius: 0px !important;
+    }
+
+    .Green_Est {
+      background-color: green !important;
+    }
+
+    .Red_Est {
+      background-color: red !important;
+    }
+
+    .buena {
+      color: rgb(3, 197, 20) !important;
+    }
+
+    .poca {
+      color: rgb(235, 156, 5) !important;
+    }
+
+    .baja {
+      color: rgb(245, 75, 75) !important;
+    }
+
+    .teal.activo {
+      background-color: rgb(3, 197, 20) !important;
+    }
+
+    .teal.procesado {
+      background-color: rgb(71, 71, 165) !important;
+    }
+
+
+    .yellow {
+      background-color: #b7a60f !important;
+    }
+
+    #IMG_Secc {
+      cursor: pointer;
+    }
+
+    #IMG_Secc:hover .tooltip-css3 {
+      display: block;
+    }
+
+    .tooltip-css3:before {
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 20px solid #6c63ff;
+      bottom: -15px;
+      content: "";
+      height: 0;
+      left: 50%;
+      margin-left: -30px;
+      position: absolute;
+      transform: skew(-45deg);
+      width: 0;
+    }
+
+    .tooltip-css3 {
+      background-color: #6c63ff;
+      border-radius: 100% 100% 100% 100%;
+      box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+      color: #FFFFFF;
+      display: none;
+      left: 70%;
+      padding: 20px 30px;
+      position: absolute;
+      top: 23%;
+    }
+
+    .Btn_Secc_Pen {
+      background-color: #afaaff;
+      box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+      color: #FFFFFF;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .Btn_Secc_New {
+      background-color: #afaaff;
+      box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+      color: #FFFFFF;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(155, 155, 155, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    /* /// */
+    .Con_pulse_P {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_P 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_P {
+      0% {
+        box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.7), 0 0 0 0 rgba(71, 71, 165, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 15px rgba(71, 71, 165, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0);
+      }
+    }
+
+    /* /// */
+    .Con_pulse_X {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+
+    .Animacion_HojaForm {
+      animation: 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal both running swing-in-top-fwd;
+    }
+
+    @keyframes swing-in-top-fwd {
+      0% {
+        /* -webkit-transform: rotateX(-100deg);
+        transform: rotateX(-100deg);
+        -webkit-transform-origin: top;
+        transform-origin: top; */
+        opacity: 0;
+      }
+
+      100% {
+        /* -webkit-transform: rotateX(0deg);
+        transform: rotateX(0deg);
+        -webkit-transform-origin: top;
+        transform-origin: top; */
+        opacity: 1;
+      }
+    }
+
+    .BgColor_A {
+      background: linear-gradient(to bottom left, #37daf0, #00acc1, #37daf0);
+    }
+
+    .BgColor_R {
+      background: linear-gradient(to bottom left, #f1ad5a, #fb8c00, #f1ad5a);
+    }
+
+    .BgColor_C {
+      background: linear-gradient(to bottom left, #e65b8e, #d81b60, #e65b8e);
+    }
+
+    .BgColor_O {
+      background: linear-gradient(to bottom left, #d7d9db, #6A6D71, #d7d9db);
+    }
+
+    .BgColor_N {
+      background: linear-gradient(to bottom left, #63f193, #25D962, #63f193);
+    }
+
+    .Color_A {
+      color: #00acc1 !important;
+      border-left: 5px solid #00acc1;
+    }
+
+    .Color_R {
+      color: #fb8c00 !important;
+      border-left: 5px solid #fb8c00;
+    }
+
+    .Color_C {
+      color: #d81b60 !important;
+      border-left: 5px solid #d81b60;
+    }
+
+    .Color_O {
+      color: #6A6D71 !important;
+      border-left: 5px solid #6A6D71;
+    }
+
+    .Color_N {
+      color: #25D962 !important;
+      border-left: 5px solid #25D962;
+    }
+
+    .textarea2 {
+      padding: 0.5rem !important;
+      width: calc(100% - 0rem) !important;
+      /* background-color: #cbcdce; */
+      background-color: #f1f3f4;
+      resize: none;
+      height: 7rem;
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+    .Tarjeta_Titulo {
+      -webkit-transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+      transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+      position: relative;
+      z-index: 3;
+    }
+
+    .Tarjeta_Titulo:hover {
+      transform: translate3d(0, -25px, 0);
+    }
+
+    .Tarjeta_Titulo>.card {
+      border-radius: .375rem;
+      z-index: 2;
+    }
+
+    .Tarjeta_Titulo .card-content {
+      padding: 0.6rem 0.8rem;
+      display: flex;
+    }
+
+    .Tarjeta_Titulo h6 {
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      font-size: 0.8125rem;
+    }
+
+    .Tarjeta_Texto {
+      z-index: -1;
+      margin-top: -3.7em;
+      width: calc(100% - 30px);
+      left: 15px;
+      /* text-align: center; */
+      width: auto;
+      border-radius: .375rem;
+      height: 41px;
+      padding: 0.9rem 0.8rem;
+    }
+
+    .Tarjeta_Texto>span {
+      position: relative;
+      font-size: 0.8em;
+      font-weight: 700;
+    }
+
+
+    #H1_Tabla>thead,
+    #H1_Tabla>tbody {
+      font-size: 1em;
+      /* border: 3px; */
+      border-width: medium;
+      border-style: solid;
+      border-radius: .375rem;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .Class_Tabla_Btn_Gestionar {
+      border-radius: .375rem;
+      width: 30%;
+      margin: auto;
+      border-width: medium;
+    }
+
+    .Class_Tabla_Btn_Gestionar h6 {
+      font-weight: 700 !important;
+      font-size: 0.8125rem;
+    }
+
+
+
+    .animated {
+      -webkit-animation-duration: 1s;
+      animation-duration: 1s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+
+
+    .switch label .lever.check-c:after {
+      background-color: #ffffff;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #ffffff;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    .currency-input {
+      position: relative;
+    }
+
+    .currency {
+      padding-left: -22px;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      left: 8px;
+      font-size: 21px;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
+    .VistaFile .Iframe {
+      visibility: hidden;
+      height: 50vh;
+      color: #fff;
+      text-align: center;
+      margin-bottom: -0.6rem;
+      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: calc(100% + 6px);
+      right: 0;
+      opacity: 0;
+      transition: opacity 1s;
+      border: 3px solid #333333;
+    }
+
+    .VistaFile:hover .Iframe {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .Iframe:hover {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .input-file-radius-cargado {
+      /* border-top-right-radius: 0 !important; */
+      /* border-bottom-right-radius: 0 !important; */
+      background-color: #03c5146e !important;
+    }
+
+    .input-file-radius-cargado2 {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      background-color: #03c5146e !important;
+    }
+
+    .input-file-radius-opcional {
+      background-color: #0000004f !important;
+    }
+
+    .input-file-radius-obligatorio {
+      background-color: #f54b4bb0 !important;
+    }
+
+    .input-file-radiu {
+      border-radius: 10px;
+    }
+
+    .input-file-radius {
+      border-radius: 10px;
+    }
+
+    .select-wrapper input.select-dropdown:disabled {
+      color: black;
+    }
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .list-group {
+      font-size: 14px;
+    }
+
+    .class_upper td,
+    .class_upper th {
+      text-transform: uppercase;
+    }
+
+    .class_gris {
+      color: rgba(0, 0, 0, 0.26) !important;
+    }
+
+    .class_label {
+      color: #80868b;
+    }
+
+    /*******************/
+
+    .switch label .lever {
+      background-color: #1a2e63;
+      width: 60px;
+      height: 29px;
+    }
+
+    .switch label .lever:after {
+      left: 4px;
+      top: 4px;
+      background-color: #fff !important;
+    }
+
+    .switch label .lever.check-c {
+      background-color: #1a2e63 !important;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      left: 35px;
+    }
+
+    /* // */
+    .lever.check-c:hover span.lever.check-c:after {
+      width: 100px !important;
+    }
+
+    /**/
+    [type="checkbox"].filled-in:not(:checked)+label:after {
+      border: 3px solid #1a2e63;
+    }
+
+    [type="checkbox"].filled-in:checked+label:after {
+      border: 3px solid #1a2e63;
+      background-color: #1a2e63;
+    }
+
+    .modal {
+      border-radius: 10px;
+      overflow: hidden;
+      max-height: 88%;
+      z-index: 1003;
+      display: none;
+      opacity: 0;
+      transform: scaleX(0.7);
+      top: 4%;
+    }
+
+    .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+    }
+  </style>
+</div>

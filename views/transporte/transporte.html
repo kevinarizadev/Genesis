@@ -1,0 +1,465 @@
+<div class="card-action" style="z-index: auto;" ng-hide="all">
+  <ul tabs="" reload="allTabContentLoaded" class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content">
+    <li class="tab col s4" style="cursor: pointer;" ng-hide="!jefe"><a ng-class="{ active: isSet(1) }"  ng-click="setTab(1)" class="col s2 large waves-effect waves-pink tabI">Registro Tickets</a></li>
+    <li class="tab col s4" style="cursor: pointer;" ng-hide="!jefe"><a ng-class="{ active: isSet(2) }"  ng-click="setTab(2)" class="col s2 large waves-effect waves-pink tabII">Autorización Tickets</a></li>
+    <li class="tab col s4" style="cursor: pointer;" ng-hide="!jefe"><a ng-class="{ active: isSet(3) }"  ng-click="setTab(3)" class="col s2 large waves-effect waves-pink tabIII">Balance Tickets</a></li>
+    <li class="tab col s4" style="cursor: pointer;" ng-hide="jefe" ><a ng-class="{ active: isSet(4) }" ng-click="setTab(4)" class="col s2 large waves-effect waves-pink tabIV">Aprobación Tickets</a></li>
+  </ul>
+  <div class="row">
+    <div ng-show="isSet(1)" class="fade">
+      <!-- INICIO TAB 1 -->
+      <div class="col s12 m12 l12">
+        <div class="card">
+          <form>
+            <div class="card-content" >
+              <h5 style="display: flex;">Registro de Tickets</h5>
+            </div>
+            <div class="card-action">
+              <div class="row">
+                <blockquote>Ingrese Información de Tickets</blockquote>
+                <div class="col l3 m3 s3">
+                  <div class="input-field col l10 m12 s12" ng-hide="hdeOtro">
+                    <label for="" style="margin-top:-20px">Valor del Ticket</label>
+                    <select class="select-chosen-eps" ng-model="valor">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-value="1000">$1.000</option>
+                      <option ng-value="2000">$2.000</option>
+                      <option ng-value="5000">$5.000</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col l12 m12 s12">
+                  <div class="input-field col l10 m12 s12" ng-hide="hdeOtro">
+                    <input type="number" ng-model="codigo_inicio" style="color:black"><label>Código Inicial</label>
+                  </div>
+                </div>
+                <div class="col l12 m12 s12">
+                  <div class="input-field col l10 m12 s12" ng-hide="hdeOtro">
+                    <input type="number" ng-model="codigo_fin" style="color:black">
+                    <label>Código Final</label>
+                  </div>
+                </div>
+                <div class="col l12 m12 s12">
+                  <div class="input-field col l12 m12 s12">
+                    <center>
+                      <button class="btn btn-primary" type="submit" ng-click="registrarfunc()" style="border-radius:5px;">Registrar Tickets</button>
+                    </center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--fin tab 1-->
+    <!--tab 2-->
+    <div ng-show="isSet(2)" class="fade">
+      <div class="col s12 m12 l12">
+        <div class="card">
+          <div class="card-content" >
+            <h5 style="display: flex;">Autorización de Tickets</h5>
+          </div>
+          <div class="card-action">
+            <div class="row">
+              <div class="col l12 m12 s12">
+                <div class="col s12" style="padding-left: 0px; padding-right: 0px; padding-bottom: 15px;">
+                  <blockquote>Información de Mesa de Ayuda</blockquote>
+                  <div class="input-field col l12 m12 s12">
+                    <button class="btn btn-floating" style="float:right; border-radius:50px" ng-click="refrescar()"><i class="material-icons">refresh</i></button>
+                    <table class="responsive-table display dataTable striped">
+                      <thead>
+                        <tr>
+                          <th>Código Mesa Ayuda</th>
+                          <th>Nombre Solicitante</th>
+                          <th>Información</th>
+                          <th>Barrio</th>
+                          <th></th>
+                          <!-- <th></th> -->
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-hide="no_mat">
+                          <td></td>
+                          <td><b>No existe Mesa de Ayuda de transporte actualmente</b></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr ng-repeat="aca in acas" ng-hide="!no_mat">
+                          <td>{{aca.CODIGO}}</td>
+                          <td>{{aca.NOMBRE}}</td>
+                          <td>{{aca.DESCRIPCION}}</td>
+                          <td>{{aca.BARRIO}}</td>
+                          <!-- <td><a class="btn-floating btn waves-effect waves-light blue" type="submit" style="border-radius: 200px 200px 200px 200px;"><i class="material-icons">more_vert</i></a></td> -->
+                          <td>
+                            <div class="fixed-action-btn horizontal click-to-toggle " style="position:relative; float:right; top:0px!important; bottom:0px!important; right:0px!important;">
+                              <a class="btn-floating blue" ng-click="estado(aca.CODIGO,aca.UBICACION)">
+                                <i class="large material-icons" style="color:#b3e5fc;">more_vert</i>
+                              </a>
+                              <!-- <div style="display: flex;">
+                                <a class="btn-floating blue"  ng-click="ejecutar(aca.CEDULA, aca.CODIGO, aca.NOMBRE, aca.UBICACION)">
+                                  <i class="material-icons">fingerprint</i>
+                                </a>
+                                <a class="btn-floating green"  ng-click="estacion(aca.CEDULA, aca.CODIGO, aca.NOMBRE, aca.UBICACION,aca.PRECIOVUELTA)">
+                                  <i class="material-icons">attach_money</i>
+                                </a>
+                                <a class="btn-floating red" ng-click="cerrar( aca.CODIGO, aca.UBICACION)">
+                                  <i class="material-icons">cancel</i>
+                                </a>
+                              </div> -->
+                              <ul style="right: 40px;">
+                                <li style="margin: 0 0 0 0 !important;" id="h{{aca.CODIGO}}{{aca.UBICACION}}">
+                                  <a class="btn-floating blue"  ng-click="ejecutar(aca.CEDULA, aca.CODIGO, aca.NOMBRE, aca.UBICACION)">
+                                    <i class="material-icons">fingerprint</i>
+                                  </a>
+                                </li>
+                                <li style=" margin:0 0 0 0 !important;" id="d{{aca.CODIGO}}{{aca.UBICACION}}">
+                                  <a class="btn-floating green"  ng-click="estacion(aca.CEDULA, aca.CODIGO, aca.NOMBRE, aca.UBICACION,aca.PRECIOVUELTA)">
+                                    <i class="material-icons">attach_money</i>
+                                  </a>
+                                </li>
+                                <li style=" margin:0 0 0 0 !important;">
+                                  <a class="btn-floating red" ng-click="cerrar( aca.CODIGO, aca.UBICACION)">
+                                    <i class="material-icons">cancel</i>
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+
+                          <!-- <td><a class="btn-floating btn waves-effect waves-light blue" type="submit" ng-disabled="{{aca.ESTADO}}" ng-click="ejecutar(aca.CEDULA, aca.CODIGO, aca.NOMBRE, aca.UBICACION)" style="border-radius: 200px 200px 200px 200px;"><i class="material-icons">fingerprint</i></a></td>
+                          <td><a class="btn-floating btn waves-effect waves-light green" type="submit" ng-disabled="!{{aca.ESTADO}}"  ng-click="consignar(aca.CEDULA, aca.CODIGO, aca.NOMBRE, aca.UBICACION)" style="border-radius: 200px 200px 200px 200px;"><i class="material-icons">attach_money</i></a></td> -->
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--fin tab 2-->
+    <div ng-show="isSet(3)" class="fade">
+      <div class="col s12 m12 l12">
+        <div class="card">
+          <div class="card-content" >
+            <h5 style="display: flex;">Balance General de Tickets</h5>
+          </div>
+          <div class="card-action">
+            <div class="row">
+              <div class="col l12 m12 s12">
+                <div class="col s12" style="padding-left: 0px; padding-right: 0px; padding-bottom: 15px;">
+                  <blockquote>Tickets Activos Vs. Tickets Pendientes</blockquote>
+                  <div class="col l6 m10 s12">
+                    <div ng-click="resumenfunc()" style="height: 78px; background: linear-gradient(160deg, rgb(54, 122, 189) 10%, rgb(26, 46, 99) 50%); box-shadow: 2px 2px 8px 0px darkgrey; border-radius:5px;cursor:pointer;" >
+                      <div class="col l2 m5 s5">
+                        <div>
+                          <center><i style="font-size: 48px;margin-top: 15px;color: white;" class="large material-icons">show_chart</i></center>
+                        </div>
+                      </div>
+                      <div class="col l10 m7 s7" style="color: white;">
+                        <center>
+                          <h5>Resumen Tickets</h5>
+                        </center>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col l6 m10 s12">
+                    <div ng-click="listarfunc()" style="height: 78px; background: linear-gradient(160deg, rgb(54, 122, 189) 10%, rgb(26, 46, 99) 50%); box-shadow: 2px 2px 8px 0px darkgrey; border-radius:5px; cursor:pointer;" >
+                      <div class="col l2 m5 s5">
+                        <div>
+                          <center><i style="font-size: 48px;margin-top: 15px;color: white;" class="large material-icons">attach_money</i></center>
+                        </div>
+                      </div>
+                      <div class="col l10 m7 s7" style="color: white;" >
+                        <center>
+                          <h5>Histórico Tickets</h5>
+                        </center>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col l6 m12 s12" ng-init="pietickets()">
+          <center>
+            <div class="card charts">
+              <div class="card-content">
+                <h5>Tickets de {{yyyy}}</h5>
+              </div>
+              <div class="card-action" style="height: 441px;">
+                <div id="pietickets" ></div>
+              </div>
+            </div>
+          </center>
+        </div>
+        <div class="col l6 m12 s12" ng-init="pietickets()">
+          <center>
+            <div class="card charts">
+              <div class="card-content">
+                <h5>Consolidado Semestral</h5>
+              </div>
+              <div class="card-action" style="height: 442px !important;">
+                <div id="tendencia" ></div>
+              </div>
+            </div>
+          </center>
+        </div>
+      </div>
+      <!--fin tab 3-->
+    </div>
+    <div ng-show="isSet(4)" class="fade">
+      <div class="col s12 m12 l12">
+        <div class="card">
+          <div class="card-content" >
+            <h5 style="display: flex;">Aprobación de Tickets</h5>
+          </div>
+          <div class="card-action">
+            <div class="row">
+              <div class="col l12 m12 s12">
+                <div class="col s12" style="padding-left: 0px; padding-right: 0px; padding-bottom: 15px;">
+                  <blockquote>Panel Directivo </blockquote>
+                  <div class="input-field col l12 m12 s12">
+                    <button class="btn btn-floating" style="float:right; border-radius:50px" ng-click="refrescar_admint()"><i class="material-icons">refresh</i></button>
+                    <table class="responsive-table display dataTable">
+                      <thead>
+                        <tr>
+                          <th>Codigo Mesa Ayuda</th>
+                          <th>Nombre Solicitante</th>
+                          <th>Información</th>
+                          <th>Barrio</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-hide="no_jef">
+                          <td></td>
+                          <td><b>No existe Mesa de Ayuda de transporte actualmente</b></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr ng-repeat="obtener_admint in obtener_admints" ng-hide="!no_jef">
+                          <td>{{obtener_admint.CODIGO}}</td>
+                          <td>{{obtener_admint.NOMBRE}}</td>
+                          <td>{{obtener_admint.DESCRIPCION}}</td>
+                          <td>{{obtener_admint.BARRIO}}</td>
+                          <td><a class="btn-floating btn waves-effect waves-light blue" type="submit" ng-click="aprobar_jef(obtener_admint.CODIGO, obtener_admint.UBICACION)" style="border-radius: 200px 200px 200px 200px;"><i class="material-icons">check</i>  </a></td>
+                          <td><a class="btn-floating btn waves-effect waves-light red" type="submit" ng-click="rechazar_jef(obtener_admint.CODIGO, obtener_admint.UBICACION)" style="border-radius: 200px 200px 200px 200px;"><i class="material-icons">close</i>  </a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col l12 m12 s12">
+                  <div class="input-field col l12 m12 s12">
+                    <center>
+                    </center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--fin tab 4-->
+  <div id="modal12" class="modal">
+    <div class="modal-content">
+      <h4 align="center">Histórico de Tickets</h4>
+      <div class="row">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col l12">
+              <button class="btn btn-primary" style="float:right; border-radius:50px" ng-click="refrescar_dt()"><i class="material-icons">refresh</i></button>
+              <table id="listar_ticket" class="responsive-table display dataTable">
+                <thead>
+                  <tr>
+                    <th>RESPONSABLE</th>
+                    <th>CODIGO</th>
+                    <th>VALOR</th>
+                    <th>AREA</th>
+                    <th>FECHA</th>
+                    <th>ESTADO</th>
+                    <th id="detail">DETALLE</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal15" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 style="float:right; cursor:pointer" ng-click="close()">&times;</h4>
+        <h4 align="center">Detalles transacción</h4>
+      </div>
+      <blockquote>
+        Responsable: {{responsable}}
+        <br>Codigo mesa de ayuda: {{codigo}}
+      </blockquote>
+      <div class="modal-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Codigo Ticket</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="detalle in detalles" >
+              <td>{{detalle.CODIGOT}}</td>
+              <td>$ {{detalle.VALOR}} COP</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="modal14" class="modal">
+    <div class="modal-content">
+      <h4 align="center">Resumen de Tickets</h4>
+      <div class="row">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col l12">
+              <button class="btn btn-primary" style="float:right; border-radius:50px" ng-click="refrescar_dt()"><i class="material-icons">refresh</i></button>
+              <table id="listar_resumen" class="responsive-table display dataTable">
+                <thead>
+                  <tr>
+                    <th>FECHA INGRESO</th>
+                    <th>CODIGO INICIAL</th>
+                    <th>CODIGO FINAL</th>
+                    <th>CANTIDAD</th>
+                    <th>VALOR</th>
+                    <th>TOTAL</th>
+                    <th>RESPONSABLE</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>FECHA INGRESO</th>
+                    <th>CODIGO INICIAL</th>
+                    <th>CODIGO FINAL</th>
+                    <th>CANTIDAD</th>
+                    <th>VALOR</th>
+                    <th>TOTAL</th>
+                    <th>RESPONSABLE</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal13" class="modal">
+    <div class="modal-content">
+      <input  ng-model="codigo_ticket" ng-change="consulta_codigo()" autofocus type="number" id="input-ticket" style="height:0px; width:0px;"></input>
+      <div class="switch" style="float: right;">
+        <label for="medida" class="labelper">Lectora</label>
+        <label>
+          <input type="checkbox" ng-model="lectora" ng-focus="focus()"><a class="btn-floating waves-effect waves-light  red"><i class="material-icons dp48">power_settings_new</i></a>
+        </label>
+      </div>
+      <blockquote>
+        <h4>Transacción Transporte</h4>
+        Precio sugerido por carrera:  {{precios}}
+      </blockquote>
+      <div class="col l12" id="lista_tickets">
+        <table class="">
+          <thead>
+            <tr>
+              <th>
+                <center>Codigo</center>
+              </th>
+              <th>
+                <center>Valor</center>
+              </th>
+              <th>
+                <center>Acción</center>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="ticket in tickets_lista">
+              <td>
+                <center>
+                  <p>{{ticket.CODIGO}}</p>
+                </center>
+              </td>
+              <td>
+                <center>
+                  <p>{{ticket.VALOR}}</p>
+                </center>
+              </td>
+              <td>
+                <center>
+                  <h5 class="{{ticket.ICONO}}" style="cursor:pointer" ng-click="eliminar($index,ticket.VALOR)"></h5>
+                </center>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                <center><b>Total: {{total}}</h5></center>
+                </b>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <center>
+        <button class="waves-effect waves-light btn white-text primary-button" type="submit" style="margin:10px; border-radius:5px;" ng-click="aprobar_tickets()">Aprobar</button>
+      </center>
+    </div>
+  </div>
+  <div id="modal16" class="modal">
+    <div class="modal-content">
+      <h4 align="center">Gestión Tickets</h4>
+      <div class="row">
+        <div class="container-fluid">
+
+            <div class="col l12">
+              <blockquote>
+                Estación de servicio de taxi:
+              </blockquote>
+              <div>
+                <select class="select-chosen-eps" ng-model="select_estacion">
+                  <option ng-value="0">Seleccionar</option>
+                  <option ng-repeat="x in estaciones" ng-value="{{x.CODIGO}}">{{x.NOMBRE}}</option>
+                </select>
+                <center>
+                  <button class="waves-effect waves-light btn white-text primary-button" type="submit" style="margin:10px; border-radius:5px;" ng-click="continuar(select_estacion)">Continuar</button>
+                </center>
+              </div>
+
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style type="text/css">
+    .tabactiva {
+    background-color: #0000002e!important;
+  }
+  </style>
+
+</div>

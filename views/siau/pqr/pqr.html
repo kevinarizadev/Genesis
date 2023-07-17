@@ -1,0 +1,3356 @@
+<div id="pqr" class="row margin" style="position: relative;">
+  <div class="section-header noselectxtpqr transparent">
+    <ul class="tabs c-pointer content-tabs-pqr transparent" ng-init="tabs.tab='R'">
+      <li id="inicio" ng-class="{'default-background white-text': tabs.tab=='R'}" class="tab col s3 align-items"
+        ng-click="tabs.tab='R'" style="font-size: 12px;">
+        <i class="icon-plus-circled icon-tab-pqr"></i>RADICACION
+      </li>
+      <li ng-class="{'default-background white-text': tabs.tab=='G'}" class="tab col s3 align-items"
+        ng-click="tabs.tab='G';getPQRS('A');" style="font-size: 12px;">
+        <i class="icon-cogs icon-tab-pqr"></i>GESTION
+      </li>
+      <li ng-class="{'default-background white-text': tabs.tab=='C'}" class="tab col s4 align-items"
+        ng-click="tabs.tab='C';getCorrespondencia('A');" style="font-size: 12px;">
+        <i class="icon-email icon-tab-pqr"></i>GESTION CORRESPONDENCIA
+      </li>
+      <li ng-class="{'default-background white-text': tabs.tab=='M'}" class="tab col s3 align-items"
+        ng-show="privilegios[0].Codigo==7 || privilegios[0].Codigo==109 || privilegios[0].Codigo==113"
+        ng-click="tabs.tab='M'" style="font-size: 12px;">
+        <i class="icon-upload icon-tab-pqr"></i>MASIVO
+      </li>
+      <li ng-class="{'default-background white-text': tabs.tab=='E'}" class="tab col s3 align-items"
+        ng-show="privilegios[0].Codigo==7 || privilegios[0].Codigo==109"
+        ng-click="tabs.tab='E'; hidegrafica = true ;getStatistics();" style="font-size: 12px;">
+        <i class="icon-chart-bar icon-tab-pqr"></i>ESTADISTICAS
+      </li>
+    </ul>
+  </div>
+  <div class="w-100" ng-show="tabs.tab=='R'">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="foot4 divcardcustom">
+          <div class="text-al switch">
+            <strong>RADICACION</strong>
+            <div ng-if="cedulausuario =='80091378' || cedulausuario =='1045307221'" class="tooltip">
+              <i class="fontello-icon icon-list" ng-click="admincorrespondencia()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Asignar Permisos</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" ng-style="{'height': showmsj==true ? 'auto':'60vh'}">
+          <div id="radicacion" ng-show="showmsj">
+            <div class="row">
+              <div class="col s12">
+                <div class="col m12 s12">
+                  <div class="display-flex">
+                    <h5 class="w-divTitle noselectxtpqr">PQR</h5>
+                  </div>
+                  <p class="card-text text-justify noselectxtpqr">
+                    Siempre hay una oportunidad para mejorar la calidad de nuestro servicio y la
+                    calidad
+                    de nuestra
+                    relación con nuestros usuarios, con la excelencia que se merecen. Por esta razón
+                    usted podrá
+                    registrar su petición, queja o reclamo alusivo a nuestros servicios para lo cual
+                    se
+                    ha dispuesto
+                    el siguiente formato para su diligenciamiento.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s3">
+                <div class="col s12">
+                  <label class="c-pointer noselectxtpqr" for="tiposolicitud">Tipo de Solicitud</label>
+                  <select class="select-chosen-eps select  pt-select-pqr" id="tiposolicitud"
+                    ng-model="selectedtipoSolicitud" ng-change="changeSolicitud(selectedtipoSolicitud)">
+                    <option value="">SELECCIONAR</option>
+                    <option ng-repeat="s in tipoSolicitud" value="{{s}}">{{s.Nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col s3" ng-hide="data.inactiveSolicitud">
+                <div class="col s12">
+                  <label class="c-pointer noselectxtpqr" for="mediosrecepcion">
+                    {{pqrData.selectedtipoSolicitud=='E' ? 'Medios de Correspondencia':'Medios de Recepción'}}
+                  </label>
+                  <select class="select-chosen-eps select pt-select-pqr" id="mediosrecepcion"
+                    ng-model="pqrData.selectedmediosRecepcion"
+                    ng-change="changeMediosRecepcion(pqrData.selectedmediosRecepcion)">
+                    <option value="">SELECCIONAR</option>
+                    <option ng-repeat="m in mediosRecepcion" value="{{m.CODIGO}}"
+                      ng-selected="m.CODIGO == pqrData.selectedmediosRecepcion">{{m.NOMBRE}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col s3" ng-if="pqrData.selectedtipoSolicitud=='E'">
+                <i class="zmdi zmdi-check-circle-u zmdi-hc-3x c-pointer" ng-click="openmodals('modalvalidardocumento')"
+                  title="Presiona para validar documento a Radicar"></i>
+              </div>
+              <div class="col s3" ng-if="pqrData.selectedmediosRecepcion">
+                <div class="col s12">
+                  <label class="c-pointer noselectxtpqr" for="tiporadicacion">Tipo de
+                    Radicación</label>
+                  <select class="select-chosen-eps select  pt-select-pqr" id="tiporadicacion"
+                    ng-model="pqrData.selectedtipoRadicacion"
+                    ng-change="changeTipoRadicacion(pqrData.selectedtipoRadicacion)">
+                    <option value="">SELECCIONAR</option>
+                    <option ng-repeat="r in tipoRadicacion" value="{{r.Codigo}}"
+                      ng-selected="r.Codigo == pqrData.selectedtipoRadicacion">
+                      {{r.Nombre}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div ng-hide="data.inactiveSolicitud">
+              <div class="row">
+                <div class="col s3" ng-hide="data.inactiveOtrosEntes">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="entesdecontrol">Entes de
+                      Control</label>
+                    <select class="select-chosen-eps select  pt-select-pqr" id="entesdecontrol"
+                      ng-model="pqrData.selectedOtrosEntesDeControl"
+                      ng-change="getEnteControl(pqrData.selectedOtrosEntesDeControl);">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="e in otrosEntesDeControl" value="{{e}}">{{e.NOMBRE}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div id="colpqrsupersalud" class="col s3" ng-hide="data.inactiveSuperSalud">
+                  <div class="input-field col m12 s12">
+                    <label for="pqrsupersalud" class="">Cod PQR SuperSalud</label>
+                    <input id="pqrsupersalud" type="text" ng-model="pqrData.textCodPqrSuperSalud" maxlength="22"
+                      autocomplete="off">
+                  </div>
+                </div>
+                <div id="colnurc" class="col s3" ng-hide="data.inactiveNurc">
+                  <div class="input-field col m12 s12">
+                    <label for="nurc" class="">Cod Nurc</label>
+                    <input id="nurc" type="text" ng-model="pqrData.textCodNurc" maxlength="22"
+                      title="Número de radicación asignado por Supersalud" autocomplete="off">
+                  </div>
+                </div>
+                <div class="col s3" ng-show="pqrData.selectedtipoSolicitud=='E' && pqrData.selectedtipoRadicacion=='P'">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="tcorrepondencia"
+                      ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Tipo
+                      de
+                      Correspondencia</label>
+                    <select class="select-chosen-eps select pt-select-pqr" id="tcorrepondencia"
+                      ng-model="pqrData.selectedCorrespondencia" ng-change="changetipoCorrespondencia();"
+                      ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R',  'color-normal': pqrData.selectedCorrespondencia==''}">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="c in tipocorrespondencia" ng-value="c.Codigo">
+                        {{c.Nombre}}</option>
+                    </select>
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="row" ng-if="pqrData.sede=='S' && pqrData.selectedOtrosEntesDeControl">
+                <div class="col s3">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="entidades">Entidades</label>
+                    <select class="select-chosen-eps select  pt-select-pqr" id="entidades"
+                      ng-model="pqrData.selectedEntidad">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="e in entidades" ng-value="e.CODIGO">{{e.NOMBRE}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row" ng-hide="data.inactiveOptionsAfiliado">
+                <div ng-include src="'views/siau/pqr/datAfiliado.html'"></div>
+              </div>
+              <div class="row" ng-hide="data.inactiveIps">
+                <div ng-include src="'views/siau/pqr/dataIps.html'"></div>
+              </div>
+              <div class="row" ng-hide="data.inactiveEmpleador">
+                <div ng-include src="'views/siau/pqr/empleador.html'"></div>
+              </div>
+
+              <div id="riesgo" ng-if="pqrData.selectedtipoSolicitud == 'R' && pqrData.selectedtipoRadicacion == 'A'">
+                <div class="col s12">
+                  <blockquote ng-hide="data.inactiveTitleRv" id="datosRiegovida" class="display-flex noselectxtpqr">
+                    <strong ng-if="data.inactiveRv" class="c-none">TIPO DE VIDA</strong>
+                    <div class="w-divTitle c-pointer" ng-click="collapseRiegoVida();">
+                      <strong ng-if="!data.inactiveRv"
+                        ng-attr-title="{{data.collapseRv? 'Puedes mostrar las opciones del riesgo de vida':'Puedes ocultar las opciones del riesgo de vida'}}">CRITERIOS
+                        DEL RV Y OTROS</strong>
+                      <i ng-if="!data.inactiveRv"
+                        ng-class="{'icon-up-open': !data.collapseRv, 'icon-right-open': data.collapseRv}"></i>
+                    </div>
+                  </blockquote>
+                </div>
+                <div class="row">
+                  <div class="col s3" ng-hide="data.inactiveTitleRv">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="riegovida">Riesgo de
+                        Solicitud</label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="riegovida"
+                        ng-model="pqrDatariesgodevida" ng-change="changeRv(pqrDatariesgodevida)">
+                        <option ng-repeat="r in rv" value="{{r}}">
+                          {{r.NOMBRE}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- <div class="col s3" ng-hide="data.inactiveTitleRv">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="riegovida">Riesgo de
+                        vida</label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="riegovida"
+                        ng-model="pqrData.selectedRv" ng-change="changeRv(pqrData.selectedRv)">
+                        <option ng-repeat="r in rv" ng-value="r.Codigo" ng-selected="r.Codigo==pqrData.selectedRv">
+                          {{r.Nombre}}</option>
+                      </select>
+                    </div>
+                  </div> -->
+                  <div ng-hide="data.stateRv">
+                    <div class="col s3">
+                      <div class="col s12">
+                        <label class="c-pointer noselectxtpqr" for="c-objetivo">Criterio
+                          Objetivo</label>
+                        <select class="select-chosen-eps select pt-select-pqr" id="c-objetivo"
+                          ng-model="pqrData.selectedCriteriObjetivo">
+                          <option value="">NO APLICA</option>
+                          <option ng-repeat="co in criteriObjetivo" ng-value="co.CODIGO">
+                            {{co.NOMBRE}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s3">
+                      <div class="col s12">
+                        <label class="c-pointer noselectxtpqr" for="c-subjetivo">Criterio
+                          Subjetivo</label>
+                        <select class="select-chosen-eps select pt-select-pqr" id="c-subjetivo"
+                          ng-model="pqrData.selectedCriterioSubjetivo">
+                          <option value="">NO APLICA</option>
+                          <option ng-repeat="cs in criterioSubjetivo" ng-value="cs.CODIGO">
+                            {{cs.NOMBRE}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s3">
+                      <div class="col s12">
+                        <label class="c-pointer noselectxtpqr" for="c-complementario">Criterio
+                          Complementario</label>
+                        <select class="select-chosen-eps select pt-select-pqr" id="c-complementario"
+                          ng-model="pqrData.selectedCriteriComplementario"
+                          ng-change="changeComplement(pqrData.selectedCriteriComplementario)">
+                          <option value="">NO APLICA</option>
+                          <option ng-repeat="cc in criterioComplementario" ng-value="cc.CODIGO">
+                            {{cc.NOMBRE}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" ng-hide="data.collapseRv">
+                  <div class="col s3" ng-hide="data.sujeto">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="s-especial">Sujetos</label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="s-especial"
+                        ng-model="pqrData.selectedSujetosProteccionEspecial">
+                        <option value="0">NO APLICA</option>
+                        <option ng-repeat="sj in sujetosProteccionEspecial" ng-value="sj.CODIGO">
+                          {{sj.NOMBRE}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s3">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="servicios">Servicios</label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="servicios"
+                        ng-model="pqrData.selectedServicios">
+                        <option value="">NO APLICA</option>
+                        <option ng-repeat="s in servicios" ng-value="s.CODIGO">{{s.NOMBRE}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s3">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="medicamentos">Medicamentos</label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="medicamentos"
+                        ng-model="pqrData.selectedMedicamentos">
+                        <option value="">NO APLICA</option>
+                        <option ng-repeat="m in medicamentos" ng-value="m.CODIGO">{{m.NOMBRE}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="otrosdatos" class="row" ng-hide="data.inactiveTitleComplement">
+                <div class="col s12">
+                  <blockquote class="display-flex noselectxtpqr"
+                    ng-attr-title="{{data.inactivePqr? 'Puedes mostrar los datos complementarios':'Puedes ocultar los datos complementarios' }}">
+                    <div class="w-divTitle c-pointer" ng-click="collapseDatosComplement()">
+                      <strong>OTROS DATOS <span ng-if="pqrData.selectedCorrespondencia=='R'">CORRESPONDENCIA
+                          RECIBIDA</span>
+                        <span ng-if="pqrData.selectedCorrespondencia=='E'">CORRESPONDENCIA
+                          ENVIADA</span></strong>
+
+                      <i ng-class="{'icon-up-open': data.inactivePqr==false, 'icon-right-open': data.inactivePqr }"></i>
+                    </div>
+                  </blockquote>
+                </div>
+                <div class="row" ng-hide="data.collapsePqrComplement">
+                  <div class="col"
+                    ng-class="{'s3':!pqrData.selectedMotivoEspecifico, 's12':pqrData.selectedMotivoEspecifico}">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="especificos">Motivos</label>
+                      <input class="c-pointer" id="especificos" placeholder="CLICK PARA VER LOS MOTIVOS" type="text"
+                        ng-value="motivo.seleccion" ng-click="showModalMotivosEspecificos()"
+                        ng-attr-title="{{motivo.seleccion?motivo.seleccion:'CLICK PARA VER LOS MOTIVOS'}}" readonly=""
+                        value="CLICK PARA VER LOS MOTIVOS">
+                    </div>
+                  </div>
+                  <!-- --------------------------------yordis 16/06/2023------------------------------------------------------ -->
+                  <div class="col s3" ng-show="pqrData.selectedtipoRadicacion == 'A'">
+                    <label class="c-pointer noselectxtpqr" for="motivosEspecificos">Tipo Motivo Especifico</label>
+                    <select class="select-chosen-eps select pt-select-pqr" id="motivosEspecificos"
+                      ng-model="pqrData.motivosEspecificos" ng-change="Optener_Sub_Motivos_Especificos(pqrData.motivosEspecificos);">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="me in Lista_Motivos_Especificos" value="{{me.CODIGO_TIPOMOTIVO_ESPECIFICO}}">
+                        {{me.NOMBRE_TIPOMOTIVO_ESPECIFICO}}</option>
+                    </select>
+                  </div>
+                  <div class="col s3" ng-show="pqrData.selectedtipoRadicacion == 'A'">
+                    <label class="c-pointer noselectxtpqr" for="submotivosEspecificos">Sub Tipo Motivo Especifico</label>
+                    <select  class="select-chosen-eps select pt-select-pqr" id="submotivosEspecificos"
+                      ng-model="pqrData.submotivosEspecificos">
+                      <option value="" disabled>SELECCIONAR</option>
+                      <option ng-repeat="se in Lista_Sub_Motivos_Especificos" value="{{se.CODIGO_SUBTIPOMOTIVO_ESPECIFICO}}">
+                        {{se.NOMBRE_SUBTIPOMOTIVO_ESPECIFICO}}</option>
+                    </select>
+                  </div>
+                  <!-- --------------------------------yordis 16/06/2023------------------------------------------------------ -->
+                  <div class="col s3" ng-show="pqrData.selectedtipoRadicacion == 'A'">
+                    <label class="c-pointer noselectxtpqr" for="motivosaltocosto">Motivo Alto Costo</label>
+                    <select class="select-chosen-eps select pt-select-pqr" id="motivosaltocosto"
+                      ng-model="pqrData.motivoAltoCosto" ng-change="changeAltoCosto(pqrData.motivoAltoCosto);">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="m in motivosAltoCosto" value="{{m.CODIGO}}">
+                        {{m.NOMBRE}}</option>
+                    </select>
+                  </div>
+                  <div class="col s3" ng-show="pqrData.selectedtipoRadicacion == 'A'">
+                    <label class="c-pointer noselectxtpqr" for="motivospatologias">Motivo Patología</label>
+                    <select class="select-chosen-eps select pt-select-pqr" style="color: #000;" id="motivospatologias"
+                      ng-model="pqrData.motivoPatologia" ng-disabled="disabledmotpatologia">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="m in motivosPatologias" value="{{m.CODIGO}}"
+                        ng-selected="pqrData.motivoPatologia == m.CODIGO">
+                        {{m.NOMBRE}}</option>
+                    </select>
+                  </div>
+                  <!-- SERVICIOS -->
+                  <div
+                    ng-show="(pqrData.selectedtipoSolicitud == 'D' || pqrData.selectedtipoSolicitud == 'Q'|| pqrData.selectedtipoSolicitud == 'R') && pqrServicios.obligAut == 'S' && pqrData.selectedtipoRadicacion == 'A'">
+                    <div class="col s12 m-t">
+                      <blockquote class="display-flex noselectxtpqr">
+                        <div>
+                          <strong>SERVICIOS</strong>
+                        </div>
+                      </blockquote>
+                    </div>
+                    <!--  -->
+                    <div class="col s12">
+                      <form ng-submit="obtenerProductoServicio();">
+                        <div class="col s8">
+                          <label for="buscarProducto">CUPS/CUMS <i class="icon-search c-pointer"
+                              ng-click="obtenerProductoServicio();"></i></label>
+                          <input type="text" id="buscarProducto" class="text-upper" autocomplete="off"
+                            placeholder="Buscar Producto" ng-model="pqrServicios.buscarProducto"
+                            ng-change="changeBuscarProductoServicio()" name="myBrowser" list="pqrServicios">
+                          <datalist id="pqrServicios" open="open">
+                            <option value="{{x.NOMBRE}}" ng-repeat="x in pqrServicios.listProductos">
+                          </datalist>
+                        </div>
+                      </form>
+                      <!--  -->
+                      <!-- <form ng-submit="obtenerProductoServicio();" ng-show="pqrServicios.mostrarSubclase == 'S'"> -->
+                      <div class="col s4" ng-show="pqrServicios.mostrarSubclase == 'S'">
+                        <label for="buscarProductoSubclase">SUBCLASE</label>
+                        <input type="text" id="buscarProductoSubclase" class="text-upper" autocomplete="off"
+                          placeholder="Seleccionar Subclase" ng-model="pqrServicios.buscarProductoSubclase"
+                          ng-change="changeBuscarProductoServicio_Subclase()" name="myBrowser"
+                          list="pqrServiciosSubclase">
+                        <datalist id="pqrServiciosSubclase" open="open">
+                          <option value="{{x.nombre}}" ng-repeat="x in pqrServicios.listProductosSubclase">
+                        </datalist>
+                      </div>
+                      <!-- </form> -->
+                      <!--  -->
+                      <div class="col s2">
+                        <label class="c-pointer noselectxtpqr" for="pqrServicios_reqAut">Requiere Aut.</label>
+                        <select class="select-chosen-eps select pt-select-pqr" id="pqrServicios_reqAut"
+                          ng-model="pqrServicios.reqAut">
+                          <option value="N">NO</option>
+                          <option value="S">SI</option>
+                        </select>
+                      </div>
+
+                      <div class="col s2 m-t">
+                        <a class="waves-effect waves-light btn" ng-click="agregarProductoServicio();">
+                          <i class="icon-list-add c-pointer"></i>
+                        </a>
+                      </div>
+
+                    </div>
+                    <!--  -->
+                    <div class="col s12 m-t m-b">
+                      <span class="default-color"><b>Servicios agregados ({{listServicios.length}})</b></span>
+                      <div class="overflow-table_2 text-center" ng-show="listServicios.length">
+                        <table class="striped table-bordered" style="position: relative;zoom: 0.8;">
+                          <thead class="noselectxtpqr">
+                            <tr>
+                              <th class="text-center">CODIGO</th>
+                              <th class="text-center">NOMBRE</th>
+                              <th class="text-center">REQUIERE AUT</th>
+                              <th class="text-center">-</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="x in listServicios">
+                              <td class="text-center">{{x.COD_PRODUCTO}}</td>
+                              <td class="text-center">{{x.NOM_PRODUCTO}}
+                                <br>
+                                <span>
+                                  <i><b>SUBCLASE:</b> {{x.COD_SUBCLASE == '' ? ('NO APLICA') : (x.COD_SUBCLASE +' - '+
+                                    x.NOM_SUBCLASE)}}</i>
+                                </span>
+                              </td>
+                              <td class="text-center">{{x.REQUIEREAUT == 'S' ? 'SI':'NO'}}</td>
+                              <td class="text-center">
+                                <i class="icon-trash c-pointer" style="font-size: 1.5em;" title="Eliminar"
+                                  ng-click="quitarProductoServicio($index);"></i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <!-- <img ng-if="listpqrds.length == 0" src="images/undraw_No_data_re_kwbl.png" style="width:35vh;float:none;">
+                        <p ng-if="listpqrds.length == 0"><b>No se encontraron registros para mostrar </b></p> -->
+                      </div>
+
+                    </div>
+                    <!--  -->
+                    <!-- <div class="col s12">
+                      <div class="float-none text-center">
+                        <a class="waves-effect waves-light btn white-text" ng-click="guardarProductoServicio('235658');">
+                          SERVICIOS
+                        </a>
+                      </div>
+                    </div> -->
+                    <!-- SERVICIOS -->
+                  </div>
+                </div>
+
+                <div class="row" ng-if="pqrData.selectedCorrespondencia =='R'">
+                  <div ng-include src="'views/siau/pqr/tercero.html'"></div>
+                </div>
+                <div class="row" ng-if="pqrData.selectedCorrespondencia=='E'">
+                  <div class="col s3" ng-if="pqrData.remitente">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="idarea">Area Remitente</label>
+                      <input class="c-pointer black-text" id="idarea" type="text"
+                        ng-attr-title="{{tempareajs.seleccion}}" ng-value="tempareajs.seleccion" ng-disabled="true">
+                    </div>
+                  </div>
+                  <div class="col" ng-class="{'s3':!pqrData.remitente, 's8':pqrData.remitente}">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="idremitente"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Remitente</label>
+                      <input class="c-pointer" id="especificos" placeholder="CLICK PARA VER LOS REMITENTES" type="text"
+                        id="idremitente" ng-value="tempremitente.seleccion" ng-click="openTercero('R')"
+                        ng-attr-title="{{tempremitente.seleccion?tempremitente.seleccion:'CLICK PARA VER LOS REMITENTES'}}"
+                        readonly="" value="CLICK PARA VER LOS REMITENTES">
+                    </div>
+                    <a href="javascript:void(0)" ng-hide="!pqrData.remitente" title="Remover Remitente"
+                      ng-click="removeRemitente('R')"
+                      style="display: flex;align-items: center;justify-content: center;"><i
+                        class="icon-trash default-color"></i></a>
+                  </div>
+                </div>
+                <div class="row" ng-show="pqrData.selectedCorrespondencia=='R'">
+                  <div class="col s3" ng-if="data.inactivecorrespondencia==false">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="area"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R' , 'color-normal': pqrData.selectedCorrespondencia==''}">Destinatario</label>
+                      <select class="select-chosen-eps select pt-select-pqr" id="area" ng-model="nomarea.nomarea"
+                        ng-change="getArea(nomarea.nomarea,'R');">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="a in areaspqr" ng-value="a.Codigo">
+                          {{a.Nombre}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s3" ng-if="data.inactivecorrespondencia==true">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="scorrepondencia"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R' , 'color-normal': pqrData.selectedCorrespondencia==''}">Sede
+                        Correspondencia</label>
+                      <select class="select-chosen-eps select pt-select-pqr" id="scorrepondencia" ng-model="pqrsecional"
+                        ng-change="getResSeccional(pqrsecional,'R');">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="c in sedecorrespondencia" ng-value="c.Codigo">
+                          {{c.Nombre}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s3" ng-if="responsablesareas.length>0">
+                    <div class="input-field col m12 s12">
+                      <label for="nom" class="noselectxtpqr"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Reponsable
+                        1 </label>
+                      <input id="nom" class="black-text" type="text" ng-model="responsablesareas[0].Nombre"
+                        ng-attr-title="{{responsablesareas[0].Nombre}}" ng-disabled="true">
+                    </div>
+                  </div>
+                  <div class="col s3" ng-if="responsablesareas.length>0">
+                    <div class="input-field col m12 s12">
+                      <label for="nom" class="noselectxtpqr"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Responsable
+                        2</label>
+                      <input id="nom" class="black-text" type="text" ng-model="responsablesareas[0].Nombre1"
+                        ng-attr-title="{{responsablesareas[0].Nombre1}}" ng-disabled="true">
+                    </div>
+                  </div>
+                  <div class="col s3" ng-if="responsablesareas.length>0">
+                    <div class="input-field col m12 s12">
+                      <label for="nom" class="noselectxtpqr"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Responsable
+                        3</label>
+                      <input id="nom" class="black-text" type="text" ng-model="responsablesareas[0].Nombre2"
+                        ng-attr-title="{{responsablesareas[0].Nombre2}}" ng-disabled="true">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" ng-if="pqrData.selectedCorrespondencia =='E'">
+                  <div ng-include src="'views/siau/pqr/tercero.html'"></div>
+                </div>
+
+                <div class="row" ng-if="pqrData.selectedtipoSolicitud=='E'">
+                  <div class="col s6">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="tipodocumentorad"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Tipo
+                        de
+                        Documento a Radicar</label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="tipodocumentorad"
+                        ng-model="pqrData.tipo_documento_rad">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="r in pqr_documentos_radicar" ng-value="r.CODIGO">
+                          {{r.NOMBRE}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s6">
+                    <div class="input-field col m12 s12">
+                      <input id="documentorad" type="text" ng-model="pqrData.documento_rad">
+                      <label for="documentorad"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">NUMERO
+                        DOCUMENTO</label>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <div class="input-field col m2 w-auto">
+                      <p class="noselectxtpqr"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">
+                        Soporte</p>
+                    </div>
+                    <div class="input-field col m10 s12 w-100">
+                      <div class="file-field input-field">
+                        <div class="btn">
+                          <i class="icon-file-pdf"></i>
+                          <input type="file" name="adjunto" id="pqrfile">
+                        </div>
+                        <div class="file-path-wrapper">
+                          <input id="inputFilePlaceHolder" class="file-path" type="text" placeholder="Adjuntar archivo">
+                          <span ng-if="data.formato"
+                            ng-class="{'red-text': pqrData.pqrFile==null, 'green-text': pqrData.pqrFile!=null }">{{data.formato}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-hide="data.inactivePqr">
+                <div class="row" ng-show="pqrData.selectedCorrespondencia=='R'">
+                  <div class="col s4">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}"
+                        for="courier">Courier</label>
+                      <input class="c-pointer" id="courier" placeholder="CLICK PARA VER LAS EMPRESAS OPERADORAS"
+                        type="text" ng-value="courier.seleccion" ng-click="openCourier('R');"
+                        ng-attr-title="{{courier.seleccion?courier.seleccion:'CLICK PARA VER LAS EMPRESAS OPERADORAS'}}"
+                        readonly="" value="CLICK PARA VER LAS EMPRESAS OPERADORAS">
+                    </div>
+                  </div>
+                  <div class="col s4" ng-if="pqrData.courier!=null">
+                    <div class="input-field col m12 s12">
+                      <input id="numguia" type="text" ng-model="pqrData.numguia"
+                        ng-change="changeguia(pqrData.numguia,'R')">
+                      <label for="numguia"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">NUMERO
+                        DE GUIA OPERADOR</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" ng-show="pqrData.numguia!=null">
+                  <div class="col s12">
+                    <div class="input-field col m2 w-auto">
+                      <p class="noselectxtpqr"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">
+                        Soporte guia Recibido</p>
+                    </div>
+                    <div class="input-field col m10 s12 w-100">
+                      <div class="file-field input-field">
+                        <div class="btn">
+                          <i class=" icon-file-image"></i>
+                          <input type="file" name="adjunto" id="gradfile">
+                        </div>
+                        <div class="file-path-wrapper">
+                          <input id="inputFilePlaceHolderGrad" class="file-path" type="text"
+                            placeholder="Adjuntar archivo">
+                          <span ng-show="datagrad"
+                            ng-class="{'red-text': pqrData.gradfile==null, 'green-text': pqrData.gradfile!=null }">{{datagrad}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <div class="input-field col m10 s12 w-100">
+                      <label for="observaciones" class="noselectxtpqr"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Observaciones</label>
+                      <textarea id="observaciones" class="materialize-textarea" ng-model="pqrData.observaciones"
+                        ng-style="{'height':data.inactivePqr? '':'auto'}"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" ng-if="pqrData.selectedtipoSolicitud=='E'">
+                  <div class="col s4">
+                    <div class="input-field col m12 s12">
+                      <input id="numguia" type="number" ng-model="pqrData.numfolio"
+                        ng-keypress="formatSoloNumero('numguia')" min="1">
+                      <label for="numguia"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">NUMERO
+                        FOLIO</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- <div class="col s3" ng-show="data.inactivecorrespondencia==false">
+                                        <div class="col s12">
+                                            <label class="c-pointer noselectxtpqr" for="area"
+                                                ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Tramite</label>
+                                            <select class="select-chosen-eps select pt-select-pqr" id="tramite"
+                                                ng-model="pqrData.selectedTramite"
+                                                ng-change="getTramite(pqrData.selectedTramite);">
+                                                <option value="">SELECCIONAR</option>
+                                                <option ng-repeat="t in tramite" ng-value="t.Codigo">{{t.Nombre}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div> -->
+                  <div class="col s3">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="frecibido"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Fecha
+                        recibido</label>
+                      <input type="datetime-local" id="frecibido" ng-model="pqrData.fecha_recibido">
+                      <!-- <input type="datetime-local" id="frecibido" ng-model="pqrData.fecha_recibido" min="{{firstDay}}"
+                        max="{{maxDate}}"> -->
+                    </div>
+                  </div>
+                  <div class="col s3"
+                    ng-show="data.inactivecorrespondencia==true && pqrData.selectedtipoSolicitud!='E' && pqrDatariesgodevidaver == false">
+                    <div class="col s12">
+                      <label class="noselectxtpqr" ng-class="{'c-pointer':!disabledDias , 'c-none':disabledDias}"
+                        for="dias" ng-disabled="disabledDias">Días
+                        Hábiles</label>
+                      <select class="select-chosen-eps select  pt-select-pqr black-text" id="dias"
+                        ng-class="{'c-pointer':!disabledDias ,'c-none':disabledDias}" ng-model="pqrData.selectedDias"
+                        ng-disabled="disabledDias">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="d in dias" ng-value="d.Codigo" ng-selected="d.Codigo==pqrData.selectedDias">
+                          {{d.Nombre}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s3"
+                    ng-show="data.inactivecorrespondencia==true && pqrData.selectedtipoSolicitud!='E' && pqrDatariesgodevidaver == true">
+                    <div class="col s12">
+                      <label class="noselectxtpqr"
+                        for="dias" ng-disabled="disabledDias">Horas
+                        Hábiles</label>
+                        <input type="text" id="horashabiles" ng-model="pqrData.selectedHoras">
+                    </div>
+                  </div>
+                  <div class="col s3" ng-hide="data.inactiveRespuesta">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="respuesta"
+                        ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Respuesta</label>
+                      <select class="select-chosen-eps select pt-select-pqr" id="respuesta"
+                        ng-model="pqrData.selectedRespuesta" ng-change="changeRespuestas(pqrData.selectedRespuesta)">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="r in respuestas" ng-value="r.Codigo">{{r.Nombre}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="float-none text-center">
+                <a class="waves-effect waves-light btn white-text red" ng-click="cancelPqr();">CANCELAR
+                  PQR</a>
+                <a class="waves-effect waves-light btn white-text" ng-hide="data.inactiveSave"
+                  ng-click="validateFiels();">
+                  GUARDAR PQR
+                </a>
+              </div>
+            </div>
+          </div>
+          <div id="print" ng-hide="showmsj" style="margin-top:15vh;">
+            <div class="col s5 offset-s3" style="padding-left: 0px; padding-right: 0px;">
+              <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                <div class="card-content {{claseEstadoCorrep}}">
+                  <div class="col s11">
+                    <h5 style="margin-bottom: 0px; margin-top: -12px; margin-left: -20px;" class="white-text">
+                      Estado:
+                      {{estadoCorrep}}</h5>
+                  </div>
+                </div>
+                <div class="card-action" style="padding-bottom: 3px;">
+                  <div class="row">
+                    <div class="col s10 offset-s1">
+                      <span class="status blue"
+                        style="position: absolute; right: 30px; top: 10px;">{{numconsecutivo}}</span>
+                      <blockquote>{{mensajeCorrep}}</blockquote>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col s12">
+              <div class="input-field col m12 s12" style="text-align: right;">
+                <button class="btn white-text" type="button" ng-click="printsticker(numconsecutivo)"
+                  style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                    class="material-icons prefix">print</i></button>
+                <button class="btn white-text" type="button" ng-click="showform()"
+                  style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                    class="material-icons prefix">done</i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="w-100" ng-show="tabs.tab=='G'">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="foot4 divcardcustom">
+          <div class="text-al switch">
+            <strong>GESTION</strong>
+            <a ng-if="arrayPages.length>0" ng-show="privilegios[0].Codigo==7 || cedulausuario == '1140861113'"
+              class="right c-pointer"
+              style="background-color: white;color: #1a2e63 !important;padding: 0px 10px;border-radius: 5px;"
+              ng-click="fnExcelReport();">Descargar
+              Excel</a>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="row margin">
+            <div class="noselectxtpqr">
+              <div class="col s3 margin no-padding w-20">
+                <div class="input-field col m12 s12 margin">
+                  <!-- <a class="btn-link" href="javascript:void(0)" ng-click="hidepqr==true?fnbuscarPQR():limpiarBusquedaPQR()">
+                                        <i class="material-icons styleIconSearch noselectxtpqr">{{hidepqr==true?'search':'close'}}</i>
+                                      </a>                                                                            -->
+                  <input type="text" placeholder="Filtrar PQR" ng-model="filterPQRS">
+                </div>
+              </div>
+
+              <div ng-if="privilegios[0].Codigo==7" class="col s3 w-20 align-items" style="margin-top: 10px">
+                <div class="c-pointer" ng-click="showModalConfigResponsables();">
+                  <i class="icon-users fs-25"></i> RESPONSABLES
+                </div>
+              </div>
+              <!-- <div class="col s3">
+                <a ng-if="arrayPages.length>0" ng-show="privilegios[0].Codigo==7 || cedulausuario == '1140861113'"
+                  class="waves-effect waves-light btn white-text success" ng-click="fnExcelReport();">Descargar
+                  Excel</a>
+              </div> -->
+            </div>
+            <!-- <div class="col s3 w-20 align-items" style="margin-top: 10px">
+                            <div class="switch">
+                                <label>
+                                    Activo
+                                    <input type="checkbox" ng-init="check_option = false" ng-model="check_option"
+                                        ng-change="filterAreas='';check_option ? getPQRS('G'):getPQRS('A')">
+                                    <span class="lever"></span>
+                                    Procesado
+                                </label>
+                            </div>
+                        </div> -->
+            <div class="col s3 margin no-padding w-20" style="display: flex;justify-content: flex-end;float: right;">
+              <div ng-if="pqrs.length>records_per_page">
+                <ul class="noselectxtpqr" ng-if="resultsP.length>0">
+                  <li>
+                    {{inicio}} - {{sum_records}} de {{pqrs.length}}
+                    <a class="btn btn-small default-background" style="padding: 0px" ng-click="prevPage();"
+                      ng-disabled="disableArrowLeft">
+                      <i class="icon-left-open"></i></a>
+                    <a class="btn btn-small default-background" style="padding: 0px;" ng-click="nextPage();"
+                      ng-disabled="disableArrowRight">
+                      <i class="icon-right-open"></i></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row" ng-show="cedulausuario != '1140861113'">
+            <div class="col s12">
+              <blockquote class="margin">Filtros primarios</blockquote>
+            </div>
+            <!-- <div class="col s6">
+              <blockquote class="margin">Filtros secundarios</blockquote>
+            </div> -->
+            <div class="col s12">
+              <div class="col s3 margin">
+                <select class="select-chosen-eps select pt-select-pqr" ng-model="filterVencidas" ng-change="validarFiltrosTabla()">
+                  <!-- <option value="X">XXXXXXXX</option> -->
+                  <option value="N">NO VENCIDAS</option>
+                  <option value="S">VENCIDAS</option>
+                  <option value="T" ng-show="filterPQRS.toString()">TODAS</option>
+                </select>
+              </div>
+              <div class="col s3 margin">
+                <select class="select-chosen-eps select pt-select-pqr" ng-model="filterSuperSalud" ng-change="validarFiltrosTabla()"
+                >
+                  <option value="T">TODAS</option>
+                  <option value="S">SUPERSALUD</option>
+                  <option value="D">DERECHO DE PETICION</option>
+                </select>
+              </div>
+              <div class="col s3 margin">
+                <input type="date" ng-model="filterFechaVenc"  ng-change="validarFiltrosTabla()">
+              </div>
+            </div>
+            <!-- <div class="col s6">
+              <div class="col s6 margin">
+                <select class="select-chosen-eps select pt-select-pqr" ng-model="filterAreas">
+                  <option value=""> TODAS LAS AREAS</option>
+                  <option value="A">ASEGURAMIENTO</option>
+                  <option value="S">SALUD</option>
+                </select>
+              </div>
+              <div class="col s6 margin">
+                <input type="date" ng-model="filterFechaVenc">
+              </div>
+
+            </div> -->
+
+
+
+          </div>
+
+          <div style="width: 100%;z-index: 10;overflow: hidden;">
+            <div style="overflow: auto;">
+              <table id="tablePQR" class="striped table-bordered" style="position: relative;">
+                <thead class="noselectxtpqr">
+                  <tr>
+                    <th class="text-center">NUMERO SOLICITUD</th>
+                    <th class="text-center">FECHA RADICACION</th>
+                    <th class="text-center">FECHA VENCIMIENTO</th>
+                    <th class="text-center">DIAS HABILES RESTANTES</th>
+                    <th class="text-center">TIPO DE SOLICITUD</th>
+                    <th class="text-center">AREA DELEGADA</th>
+                    <th class="text-center">MEDIO RECEPCION SOLICITUD</th>
+                    <th ng-if="privilegios[0].Codigo==7" class="text-center">RESPONSABLE SOLICITUD
+                    </th>
+                    <th class="text-center">ESTADO SOLICITUD</th>
+                    <th class="text-center">STATUS SOLICITUD</th>
+                    <th class="text-center">ACCION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- AREA:filterAreas, -->
+                  <!-- ng-repeat="p in arrayPages | filter:{ AREA:filterAreas, FECHAENT: formatDate2(filterFechaVenc)} as resultsP track by $index "> -->
+                  <!-- ng-repeat="p in arrayPages | filter:{FILTRO_VENCIDA:filterVencidas.toString(), FILTRO_SUPER_DERE:filterSuperSalud.toString()} as resultsP track by $index "> -->
+                  <tr
+                  ng-repeat="p in arrayPages as resultsP track by $index"
+                    >
+                    <td class="text-center">{{p.CODIGO2}}</td>
+                    <td class="text-center">{{p.FECHARAD}}</td>
+                    <td class="text-center">{{p.FECHAENT}}</td>
+                    <th class="text-center">
+                      <span class="status" ng-style="{ 'background':p.DIAS < 0 ? 'orange' : 'green' }"
+                        style="color:#fff">
+                        {{p.DIAS < 0 ? 'VENCIDA':p.DIAS}}
+                      </span>
+                    </th>
+                    <td class="text-center">{{p.SOLICITUD}}</td>
+                    <td class="text-center">{{p.AREA == 'S'? 'SALUD':'ASEGURAMIENTO'}}</td>
+                    <td class="text-center">{{p.NOMMEDIO}}</td>
+                    <td ng-if="privilegios[0].Codigo==7" class="text-center">{{p.RESPONSABLE}}</td>
+                    <td class="text-trans-up text-center">{{p.ESTADO}}</td>
+                    <th class="text-center">
+                      <span class="status" ng-style="{ 'background': p.STATUS=='GESTIONADA' ? 'green':'orange' }"
+                        style="color:#fff">{{p.STATUS}}</span>
+                    </th>
+                    <td class="text-center noselectxtpqr float-none">
+                      <a class="waves-effect waves-light btn-small" ng-if="p.CORRESPONDENCIA=='N'"
+                        ng-click="showModalGestionar(p,p.AREA);" title="GESTIONAR {{p.SOLICITUD}}">
+                        <i id="bt-ges" class="icon-cogs fs-25"></i>
+                        <span ng-show="p.CANTIDAD>0" class="badge-green fs-10"
+                          style="left: 20px;bottom: 5px;">{{p.CANTIDAD}}</span>
+                      </a>
+                      <a class="waves-effect waves-light btn-small" ng-if="p.CORRESPONDENCIA=='S'"
+                        ng-click="openmodals('modalcorrespondencia',p);">
+                        <i id="bt-ges" class="icon-eye fs-25 c-pointer" title="DETALLE {{p.SOLICITUD}}"></i>
+                      </a>
+                      <br>
+
+                      <a class="waves-effect waves-light btn-small" ng-if="p.CORRESPONDENCIA=='N'"
+                        ng-click="showModalResponsables(p);">
+                        <i id="bt-ges" class="icon-plus-circled fs-25"></i>
+                      </a>
+                      <br>
+                      <a class="waves-effect waves-light btn-small" ng-click="openmodals('trazapqr',p);"
+                        title="VER TRAZABILIDAD {{p.SOLICITUD}}">
+                        <i id="bt-ges" class="icon-road fs-25"></i>
+                      </a>
+                      <br>
+                      <a ng-if="p.RUTA" class="waves-effect waves-light btn-small"
+                        ng-click="descargafile(p.RUTA,p.FTP);" title="DESCARGAR ADJUNTO">
+                        <i id="bt-ges" class="icon-download-6 fs-25"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr ng-if="resultsP.length==0">
+                    <td colspan="12" class="center-align white" style="padding: 100px;">
+                      <div class="results-lupa">
+                        <i class="icon-search-4"></i>
+                      </div>
+                      <p class="text-center" ng-if="!check_option && (resultsP.length==0)">
+                        No hay PQRS Activos Disponibles
+                      </p>
+                      <p class="text-center" ng-if="check_option && (resultsP.length==0)">
+                        No hay PQRS Procesados Disponibles
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-100" ng-show="tabs.tab=='C'">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="foot4 divcardcustom">
+          <div class="text-al switch">
+            <strong ng-hide="showtablecorresp">VISUALIZAR CORRESPONDENCIA</strong> <i ng-show="showtablecorresp"
+              style="cursor: pointer;" class="icon-left-open-2" ng-click="showtablecorresp=false;"></i> <strong
+              ng-show="showtablecorresp">CORRESPONDENCIA
+              {{vcorrespondencia.consecutivo_correspondencia}}</strong>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="row margin" ng-hide="showtablecorresp">
+            <div class="noselectxtpqr">
+              <div class="col s4 margin no-padding right">
+                <input type="text" placeholder="CORRESPONDENCIA" ng-model="filterC">
+              </div>
+
+            </div>
+          </div>
+          <div class="row" ng-hide="showtablecorresp">
+            <!--    <div class="col s3 w-20 align-items" style="margin-top: 20px">
+                            <div class="switch">
+                                <label>
+                                    Activo
+                                    <input type="checkbox" ng-init="check_optionc = false" ng-model="check_optionc"
+                                        ng-change="filterAreas='';check_optionc ? getCorrespondencia('R'):getCorrespondencia('A');">
+                                    <span class="lever"></span>
+                                    Procesado
+                                </label>
+                            </div>
+                        </div> -->
+            <div class="col s6  align-items" style="margin-top: 20px">
+              <div class="col s12 input-padding">
+                Estado :
+                <span>
+                  <input class="with-gap" type="radio" ng-model="filterOptionsEstado" name="filterestado" value="A"
+                    id="id_activo" ng-click="getStateCorrespondnecia(filterOptionsEstado);" />
+                  <label for="id_activo" ng-class="{'default-color': filterOptionsEstado=='A' }"
+                    style="height: 0!important">ACTIVO </label>
+                </span>
+                <span> <input class="with-gap" type="radio" ng-model="filterOptionsEstado" name="filterestado" value="P"
+                    id="id_procesado" ng-click="getStateCorrespondnecia(filterOptionsEstado);" />
+                  <label style="height: 0!important" ng-class="{'default-color': filterOptionsEstado=='P' }"
+                    for="id_procesado">PROCESADO</label>
+                </span>
+                <span> <input class="with-gap" type="radio" ng-model="filterOptionsEstado" name="filterestado" value="D"
+                    id="id_devuelto" ng-click="getStateCorrespondnecia(filterOptionsEstado);" />
+                  <label style="height: 25px!important" ng-class="{'default-color': filterOptionsEstado=='D'}"
+                    for="id_devuelto">DEVUELTO</label>
+                </span>
+              </div>
+            </div>
+            <div class="col s3 w-20 align-items" style="margin-top: 20px">
+              <div class="switch">
+                <label>
+                  Enviada
+                  <input type="checkbox" ng-init="check_optiontc = false" ng-model="check_optiontc"
+                    ng-change="check_optionc ? getCorrespondencia('R'):getCorrespondencia('A');">
+                  <span class="lever"></span>
+                  Recibida
+                </label>
+              </div>
+            </div>
+            <div class="align-items col s3 w-20" style="margin-top: 20px" ng-hide="hidecorrespondencia">
+              <strong id="bt-ges" class="c-pointer" ng-click="openmodals('modalpqcorrespondencia');"><i
+                  class="icon-archive-2"></i> CORRESPONDENCIA</strong>
+            </div>
+            <div class="col s3 w-20 align-items" style="margin-top: 20px"
+              ng-if="tempcorrespenviada.length>0 && !check_optiontc">
+
+              <strong id="bt-ges" class="c-pointer" ng-click="openCourier('G');">
+                <i class="icon-fighter-jet"></i> COURIER
+              </strong>
+            </div>
+            <div class="col s3 w-20 align-items" style="margin-top: 20px"
+              ng-if="tempcorresprecibida.length>0 && check_optiontc">
+              <strong id="bt-ges" class="c-pointer" ng-click="printformato('R');">
+                <i class="icon-print"></i> IMPRIMIR
+              </strong>
+            </div>
+          </div>
+          <div ng-show="hidecorrespondencia">
+            <div class="row" ng-show="hidefiltroCorrespondencia==true">
+              <div class="col s12">
+                <div class="col s12 input-padding">
+                  Tipo de consulta :
+                  <span>
+                    <input class="with-gap" type="radio" ng-model="filterOptionsPqr" name="filteropnpqr" value="RA"
+                      id="id_radicador" ng-click="getCorrespondencia();" />
+                    <label for="id_radicador" ng-class="{'default-color': filterOptionsPqr=='RA' }"
+                      style="height: 0!important">RADICADOR </label>
+                  </span>
+                  <span> <input class="with-gap" type="radio" ng-model="filterOptionsPqr" name="filteropnpqr" value="RR"
+                      id="id_destinatario" ng-click="getCorrespondencia();" />
+                    <label style="height: 0!important" ng-class="{'default-color': filterOptionsPqr=='RR' }"
+                      for="id_destinatario">DESTINATARIO</label>
+                  </span>
+                  <span> <input class="with-gap" type="radio" ng-model="filterOptionsPqr" name="filteropnpqr" value="RE"
+                      id="id_remitente" ng-click="getCorrespondencia();" />
+                    <label style="height: 25px!important" ng-class="{'default-color': filterOptionsPqr=='RE'}"
+                      for="id_remitente">REMITENTE</label>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="width: 100%;z-index: 10;overflow: hidden;" ng-hide="showtablecorresp">
+            <div style="overflow: auto;">
+              <table id="tableCORRESPONDENCIA" class="striped table-bordered" style="position: relative;">
+                <thead class="noselectxtpqr">
+                  <tr>
+                    <th ng-hide="check_optionc">SELECCIONAR</th>
+                    <th class="text-center">CONSECUTIVO</th>
+                    <th class="text-center">FECHA RADICACION</th>
+                    <th class="text-center">ASUNTO</th>
+                    <th class="text-center">REMITENTE</th>
+                    <th class="text-center">DESTINATARIO</th>
+                    <th class="text-center">ESTADO</th>
+                    <th class="text-center">ACCION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="p in correspondencias | filter: filterC as resultsC">
+                    <td style="text-align:center;" ng-hide="check_optionc">
+                      <div class="col s12 input-padding">
+                        <input type="checkbox" id="c{{$index}}" ng-click="seleccionarcorrespondencia(p,$index,p.Check);"
+                          ng-model="p.Check" />
+                        <label for="c{{$index}}"></label>
+                      </div>
+                    </td>
+                    <td class="text-center">{{p.CONSECUTIVO}}</td>
+                    <td class="text-center">{{p.FECHARAD}}</td>
+                    <td class="text-center" style="padding: 0;margin:0;">
+                      <p>{{p.OBSERVACION}}</p>
+                    </td>
+                    <td class="text-center">{{p.REMITENTE}}</td>
+                    <td class="text-center">{{p.DESTINATARIO}}</td>
+                    <td class="text-trans-up text-center">{{p.ESTADO}}</td>
+                    <td class="text-center noselectxtpqr float-none" style="display: grid;">
+                      <a class="waves-effect waves-light" ng-if="p.CORRESPONDENCIA=='S'"
+                        ng-click="openmodals('modalcorrespondencia',p);">
+                        <i id="bt-ges" class="icon-eye fs-25 c-pointer" title="DETALLE {{p.CONSECUTIVO}}"></i>
+                      </a>
+                      <a ng-show="hidefiltroCorrespondencia" class="waves-effect waves-light"
+                        title="EDITAR {{p.CONSECUTIVO}}" ng-click="showUpdateCorresp(p);">
+                        <i id="bt-ges" class="icon-edit-alt fs-25"></i>
+                      </a>
+                      <a class="waves-effect waves-light" ng-click="openmodals('trazapqr',p);"
+                        title="VER TRAZABILIDAD {{p.CONSECUTIVO}}">
+                        <i id="bt-ges" class="icon-road fs-25"></i>
+                      </a>
+                      <a ng-show="hidefiltroCorrespondencia" class="waves-effect waves-light"
+                        ng-click="openmodals('modaltranferircorresp',p);" title="TRANSFERIR {{p.CONSECUTIVO}}">
+                        <i id="bt-ges" class="icon-exchange fs-20"></i>
+                      </a>
+                      <a ng-show="hidefiltroCorrespondencia" class="waves-effect waves-light"
+                        ng-click="openmodals('modaldevolucion',p);" title="DEVOLVER {{p.CONSECUTIVO}}">
+                        <i id="bt-ges" class="icon-reply-all-2 fs-20"></i>
+                      </a>
+                      <a ng-if="p.RUTA" class="waves-effect waves-light" ng-click="descargafile(p.RUTA,p.FTP);"
+                        title="DESCARGAR ADJUNTO">
+                        <i id="bt-ges" class="icon-download-6 fs-25"></i>
+                      </a>
+                      <a ng-show="hidefiltroCorrespondencia" class="waves-effect waves-light"
+                        ng-click="printsticker(p.CONSECUTIVO);" title="Imprimir Formato Sticker">
+                        <i id="bt-ges" class=" icon-print-2 fs-22"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr ng-if="resultsC.length==0">
+                    <td colspan="12" class="center-align white" style="padding: 100px;">
+                      <div class="results-lupa">
+                        <i class="icon-search-4"></i>
+                      </div>
+                      <p class="text-center" ng-if="!check_optiontc && (filterC.length==0)">
+                        No hay Correspondencia Enviada Disponible
+                      </p>
+                      <p class="text-center" ng-if="check_optiontc && (filterC.length==0)">
+                        No hay Correspondencia Recibida Disponible
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+              <a ng-if="tempCorrespondencia.length>0"
+                class="btn-floating  waves-effect waves-light primary-button margin-bottom-10 green" style="position:fixed;
+        bottom:0;
+        right:110px;
+        color:#FFF;
+        text-align:center;" title="GUARDAR" ng-click="accionesCorrespondencia();"><i class="icon-floppy"></i></a>
+
+            </div>
+          </div>
+          <div class="row" ng-show="showtablecorresp">
+            <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+              <div class="row">
+                <div class="col s3">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="mediosrecepcion">
+                      Medios de Correspondencia
+                    </label>
+                    <select class="select-chosen-eps select pt-select-pqr" id="mediosrecepcion"
+                      ng-model="pqrData.EditCorresp.medio">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="m in mediosRecepcion" ng-value="m.CODIGO"
+                        ng-selected="m.CODIGO==pqrData.EditCorresp.medio">{{m.NOMBRE}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row" ng-if="vcorrespondencia.tipo_correspondencia=='E'">
+                <div class="col s3" ng-if="pqrData.remitente">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="idarea">Area Remitente</label>
+                    <input class="c-pointer black-text" id="idarea" type="text"
+                      ng-attr-title="{{tempareajsedit.seleccion}}" ng-value="tempareajs.seleccion" ng-disabled="true">
+                  </div>
+                </div>
+                <div class="col"
+                  ng-class="{'s3':!pqrData.EditCorresp.v_remitente, 's8':pqrData.EditCorresp.v_remitente}">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="idremitente">Remitente</label>
+                    <input class="c-pointer" id="especificos" placeholder="CLICK PARA VER LOS REMITENTES" type="text"
+                      id="idremitente" ng-value="tempremitentedit.seleccion" ng-click="openTercero('U')"
+                      ng-attr-title="{{tempremitentedit.seleccion?tempremitentedit.seleccion:'CLICK PARA VER LOS REMITENTES'}}"
+                      readonly="" value="CLICK PARA VER LOS REMITENTES">
+                  </div>
+                  <a href="javascript:void(0)" ng-hide="!pqrData.EditCorresp.v_remitente" title="Remover Remitente"
+                    ng-click="removeRemitente('U')"
+                    style="display: flex;align-items: center;justify-content: center;"><i
+                      class="icon-trash default-color"></i></a>
+                </div>
+              </div>
+              <div id="tercero">
+                <div>
+                  <label style="margin-left: 22px;">
+                    <span ng-if="vcorrespondencia.tipo_correspondencia=='R'">Remitente </span>
+                    <span ng-if="vcorrespondencia.tipo_correspondencia=='E'">Destinatario</span>
+                  </label>
+                  <div class="row">
+                    <div id="colemailTercero" class="col s3">
+                      <div class="input-field col s12" ng-click="openmodals('modaltercero')">
+                        <input id="documento" class="black-text" type="text" ng-model="pqrData.UpdateTercero.documento"
+                          disabled ng-attr-title="{{pqrData.UpdateTercero.documento}}" style="cursor: pointer;">
+                        <label for="with_icon" style="cursor: pointer;">Documento: </label>
+                        <a><i style="position: absolute; top: 16px; right: 0px;cursor: pointer;"
+                            class="material-icons prefix default-color">search</i></a>
+                      </div>
+                    </div>
+                    <div class="col s3">
+                      <div class="input-field col m12 s12">
+                        <label for="nom" class="noselectxtpqr">Nombre</label>
+                        <input id="nom" class="black-text" type="text" ng-model="pqrData.UpdateTercero.nombre"
+                          ng-attr-title="{{pqrData.UpdateTercero.nombre}}" ng-disabled="true">
+                      </div>
+                    </div>
+                    <div class="col s3">
+                      <div class="input-field col m12 s12">
+                        <label for="nom" class="noselectxtpqr">Ciudad</label>
+                        <input id="nom" class="black-text" type="text" ng-model="pqrData.UpdateTercero.municipio"
+                          ng-attr-title="{{pqrData.UpdateTercero.municipio}}" ng-disabled="true">
+                      </div>
+                    </div>
+                    <div id="coldireccionTercero" class="col s3">
+                      <label for="direccionTercero" class="c-pointer noselectxtpqr">Dirección</label>
+                      <input class="c-pointer" id="direccionTercero" placeholder="CLICK PARA AGREGAR DIRECCION"
+                        type="text" ng-model="pqrData.UpdateTercero.direccion"
+                        ng-attr-title="{{pqrData.UpdateTercero.direccion? pqrData.UpdateTercero.direccion:'CLICK PARA AGREGAR DIRECCION'}}"
+                        maxlength="100" ng-click="showModalDireccion('UpdateTercero');" readonly="">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div id="colemailTercero" class="col s3">
+                    <div class="input-field col m12 s12">
+                      <label for="emailTercero" class="c-pointer noselectxtpqr">Email</label>
+                      <input id="emailTercero" type="text" ng-model="pqrData.UpdateTercero.correo"
+                        ng-attr-title="{{pqrData.UpdateTercero.correo}}">
+                    </div>
+                  </div>
+                  <div id="coltelefonTercero" class="col s3">
+                    <div class="input-field col m12 s12">
+                      <label for="telefonTercero" class="c-pointer noselectxtpqr">Telefono</label>
+                      <input id="telefonTercero" type="text" ng-model="pqrData.UpdateTercero.telefono" maxlength="10">
+                    </div>
+                  </div>
+                  <!-- <div id="coltelefonTercero" class="col s3">
+                                        <div class="input-field col m12 s12">
+                                            <label for="barrioTercero" class="c-pointer noselectxtpqr">Barrio</label>
+                                            <input id="telefonTercero" type="text"
+                                                ng-model="pqrData.UpdateTercero.barrio">
+                                        </div>
+                                    </div> -->
+                  <div id="coltelefonTercero" class="col s3">
+                    <div class="input-field col m12 s12">
+                      <label for="telefonTercero" class="c-pointer noselectxtpqr">Señor(a)</label>
+                      <input id="telefonTercero" type="text" ng-model="pqrData.UpdateTercero.senor">
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="row" ng-if="vcorrespondencia.tipo_correspondencia=='R'">
+                <!-- <div class="col s3">
+                                    <div class="col s12">
+                                        <label class="c-pointer noselectxtpqr" for="area">Destinatario</label>
+                                        <select class="select-chosen-eps select pt-select-pqr" id="area"
+                                            ng-model="vcorrespondencia.area_correspondencia"
+                                            ng-change="getArea(vcorrespondencia.area_correspondencia,'R');">
+                                            <option value="">SELECCIONAR</option>
+                                            <option ng-repeat="a in areaspqr" ng-value="a.Codigo"
+                                                ng-selected="vcorrespondencia.area_correspondencia==a.Codigo">
+                                                {{a.Nombre}}</option>
+                                        </select>
+                                    </div>
+                                </div> -->
+                <div class="col s3" ng-if="data.inactivecorrespondenciaseccional==false">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="area">Destinatario</label>
+                    <select class="select-chosen-eps select pt-select-pqr" id="area"
+                      ng-model="vcorrespondencia.area_correspondencia"
+                      ng-change="getArea(vcorrespondencia.area_correspondencia,'R');">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="a in areaspqr" ng-value="a.Codigo"
+                        ng-selected="vcorrespondencia.area_correspondencia==a.Codigo">
+                        {{a.Nombre}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s3" ng-if="data.inactivecorrespondenciaseccional==true">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="scorrepondencia"
+                      ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R' , 'color-normal': pqrData.selectedCorrespondencia==''}">
+                      Sede Correspondencia</label>
+                    <select class="select-chosen-eps select pt-select-pqr" id="scorrepondencia"
+                      ng-model="areasecnacional" ng-change="getResSeccional(areasecnacional,'U');">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="c in sedecorrespondencia" ng-value="c.Codigo"
+                        ng-selected="areasecnacional==c.Codigo">
+                        {{c.Nombre}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col s3" ng-if="responsablesareas.length>0">
+                  <div class="input-field col m12 s12">
+                    <label for="nom" class="noselectxtpqr"
+                      ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Reponsable
+                      1 </label>
+                    <input id="nom" class="black-text" type="text" ng-model="responsablesareas[0].Nombre"
+                      ng-attr-title="{{responsablesareas[0].Nombre}}" ng-disabled="true">
+                  </div>
+                </div>
+                <div class="col s3" ng-if="responsablesareas.length>0">
+                  <div class="input-field col m12 s12">
+                    <label for="nom" class="noselectxtpqr"
+                      ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Responsable
+                      2</label>
+                    <input id="nom" class="black-text" type="text" ng-model="responsablesareas[0].Nombre1"
+                      ng-attr-title="{{responsablesareas[0].Nombre1}}" ng-disabled="true">
+                  </div>
+                </div>
+                <div class="col s3" ng-if="responsablesareas.length>0">
+                  <div class="input-field col m12 s12">
+                    <label for="nom" class="noselectxtpqr"
+                      ng-class="{ 'color-green': pqrData.selectedCorrespondencia=='E', 'color-red':pqrData.selectedCorrespondencia=='R', 'color-normal': pqrData.selectedCorrespondencia==''}">Responsable
+                      3</label>
+                    <input id="nom" class="black-text" type="text" ng-model="responsablesareas[0].Nombre2"
+                      ng-attr-title="{{responsablesareas[0].Nombre2}}" ng-disabled="true">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12">
+                  <div class="input-field col m2 w-auto">
+                    <p class="noselectxtpqr">
+                      Soporte</p>
+                  </div>
+                  <div class="input-field col m10 s12 w-100">
+                    <div class="file-field input-field">
+                      <div class="btn">
+                        <i class="icon-file-pdf"></i>
+                        <input type="file" name="adjunto" id="upqrfile">
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input id="inputFilePlaceHolderupdate" class="file-path" type="text"
+                          placeholder="Adjuntar archivo">
+                        <span ng-if="data.formatou"
+                          ng-class="{'red-text': pqrData.EditCorresp.pqrFile==null, 'green-text': pqrData.EditCorresp.pqrFile!=null }">{{data.formatou}}</span>
+                      </div>
+                      <i ng-if="vcorrespondencia.pqrfile" style="font-size: 20px;float: right;cursor: pointer"
+                        class="icon-download"
+                        ng-click="descargafile(vcorrespondencia.gradfile,vcorrespondencia.ftp_gradfile);"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12">
+                  <div class="input-field col m10 s12 w-100">
+                    <label for="observaciones" class="noselectxtpqr">Observaciones</label>
+                    <textarea id="observaciones" class="materialize-textarea"
+                      ng-model="pqrData.EditCorresp.v_observacion"
+                      ng-style="{'height':data.inactivePqr? '':'auto'}"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s4">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="courieredit">Courier</label>
+                    <input class="c-pointer" id="courieredit" placeholder="CLICK PARA VER LAS EMPRESAS OPERADORAS"
+                      type="text" ng-value="courieredit.seleccion" ng-click="openCourier('U');"
+                      ng-attr-title="{{courieredit.seleccion?courieredit.seleccion:'CLICK PARA VER LAS EMPRESAS OPERADORAS'}}"
+                      readonly="" value="CLICK PARA VER LAS EMPRESAS OPERADORAS">
+                  </div>
+                </div>
+                <div class="col s4" ng-if="pqrData.EditCorresp.v_courier!=null">
+                  <div class="input-field col m12 s12">
+                    <input id="numguia" type="text" ng-model="pqrData.EditCorresp.v_numero_guia"
+                      ng-change="changeguia(pqrData.EditCorresp.v_numero_guia,'U')">
+                    <label for="numguia">NUMERO
+                      DE GUIA OPERADOR</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row"
+                ng-show="pqrData.EditCorresp.v_numero_guia!=null && (vcorrespondencia.tipo_correspondencia=='E' || vcorrespondencia.tipo_correspondencia=='R' )">
+                <div class="col s12">
+                  <div class="input-field col m2 w-auto">
+                    <p class="noselectxtpqr">
+                      Soporte Guia Radicación</p>
+                  </div>
+                  <div class="input-field col m10 s12 w-100">
+                    <div class="file-field input-field">
+                      <div class="btn">
+                        <i class=" icon-file-image"></i>
+                        <input type="file" name="adjunto" id="ugradfile">
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input id="inputFilePlaceHolderGradu" class="file-path" type="text"
+                          placeholder="Adjuntar archivo">
+                        <span ng-show="datagradu"
+                          ng-class="{'red-text': pqrData.EditCorresp.gradfile==null, 'green-text': pqrData.EditCorresp.gradfile!=null }">{{datagradu}}</span>
+                      </div>
+                    </div>
+
+                  </div>
+                  <i ng-if="vcorrespondencia.gradfile" style="font-size: 20px;float: right;cursor: pointer"
+                    class="icon-download"
+                    ng-click="descargafile(vcorrespondencia.gradfile,vcorrespondencia.ftp_gradfile);"></i>
+                </div>
+              </div>
+              <div class="row"
+                ng-show="pqrData.EditCorresp.v_numero_guia!=null && vcorrespondencia.tipo_correspondencia=='E'">
+                <div class="col s12">
+                  <div class="input-field col m2 w-auto">
+                    <p class="noselectxtpqr">
+                      Soporte Guia Gestión</p>
+                  </div>
+                  <div class="input-field col m10 s12 w-100">
+                    <div class="file-field input-field">
+                      <div class="btn">
+                        <i class=" icon-file-image"></i>
+                        <input type="file" name="adjunto" id="uggesfile">
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input id="inputFilePlaceHolderGradg" class="file-path" type="text"
+                          placeholder="Adjuntar archivo">
+                        <span ng-show="dataggesu"
+                          ng-class="{'red-text': pqrData.EditCorresp.ggesfile==null, 'green-text': pqrData.EditCorresp.ggesfile!=null }">{{dataggesu}}</span>
+                      </div>
+
+                    </div>
+                  </div>
+                  <i ng-if="vcorrespondencia.ggesfile" style="font-size: 20px;float: right;cursor: pointer"
+                    class="icon-download"
+                    ng-click="descargafile(vcorrespondencia.ggesfile,vcorrespondencia.ftp_ggesfile);"></i>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s4">
+                  <div class="input-field col m12 s12">
+                    <input id="numfolio" type="number" ng-model="pqrData.EditCorresp.v_numero_folio"
+                      ng-keypress="formatSoloNumero('numfolio')" min="1">
+                    <label for="numfolio">NUMERO
+                      FOLIO</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <i ng-click="cancelUpdateCorresp()" title="CANCELAR ACTUALIZACION"
+              class="btn-floating icon-cancel-1 white-text red"
+              style="position: fixed;bottom: 40px;right: 100px;z-index: 100000;display: flex;justify-content: center;align-items: center;font-size: 1.5em;"></i>
+            <i ng-click="updateCorrespondencia()" title="ACTUALIZAR CORRESPONDENCIA"
+              class="btn-floating icon-floppy  white-text green"
+              style="position: fixed;bottom: 40px;right: 60px;z-index: 100000;display: flex;justify-content: center;align-items: center;font-size: 1.5em;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-100" ng-show="tabs.tab=='M'">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="foot4 divcardcustom">
+          <div class="text-al switch">
+            <strong>Radicación Masiva PQR</strong>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="section-header noselectxtpqr transparent">
+            <ul class="tabs c-pointer content-tabs-pqr transparent" ng-init="tabsM.tab='C'">
+              <li id="inicio" ng-class="{'default-background white-text': tabsM.tab=='C'}"
+                class="tab col s3 align-items" ng-click="tabsM.tab='C'">
+                <i class="icon-upload icon-tab-pqr"></i>CARGUE
+              </li>
+              <li ng-class="{'default-background white-text': tabsM.tab=='S'}" class="tab col s3 align-items"
+                ng-click="tabsM.tab='S';getPQRSExcel('destruir');">
+                <i class="icon-paper-plane icon-tab-pqr"></i>SINCRONIZACION
+              </li>
+            </ul>
+          </div>
+          <div class="w-100" ng-show="tabsM.tab=='C'">
+            <div class="row">
+              <div class="col s12">
+                <div class="display-flex">
+                  <h5 class="w-divTitle noselectxtpqr">CARGUE PQRD SUPERSALUD</h5>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <div class="file-field input-field">
+                      <div class="btn">
+                        <i class="icon-file-excel"></i>
+                        <input type="file" accept=".xls,.xlsx" id="pqrMassive">
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input id="inputFilePlaceHolderMasive" class="file-path" type="text"
+                          placeholder="Adjuntar archivo">
+                        <span ng-if="dataFile"
+                          ng-class="{'red-text': filePqrs==null, 'green-text': filePqrs!=null }">{{dataFile}}</span>
+                      </div>
+                      <div class="btn" style="float: right" ng-click="loadPQRS();">
+                        CARGAR
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-100" ng-show="tabsM.tab=='S'">
+            <div class="row">
+              <div class="col s12">
+                <div class="display-flex">
+                  <h5 class="w-divTitle noselectxtpqr">SINCRONIZAR PQRD SUPERSALUD</h5>
+                </div>
+                <div style="width: 100%;z-index: 10;overflow: hidden;">
+                  <div style="overflow: hidden;">
+                    <table id="tablePQRS" class="striped table-bordered" style="position: relative;width: 100%;">
+                      <thead class="noselectxtpqr">
+                        <tr>
+                          <th class="text-center">#</th>
+                          <th class="text-center">CODIGOSUPER</th>
+                          <th class="text-center">DOCUMENTO</th>
+                          <th>OBSERVACION</th>
+                          <th class="text-center">RIESGO</th>
+                          <th class="text-center">ACCION</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="p in pqrExcel">
+                          <td class="text-center">{{$index+1}}</td>
+                          <td class="text-center">{{p.CODIGOSUPER}}</td>
+                          <td class="text-center">{{p.DOCUMENTO}}</td>
+                          <td class="text-justify">{{p.OBSERVACION}}</td>
+                          <td class="text-center">{{p.RIESGO=='N'?'NO':'SI'}}</td>
+                          <td class="text-center"> <a class="waves-effect waves-light btn-small"
+                              ng-click="showModalEditarSuper(p);" title="Editar SuperSalud">
+                              <i id="bt-ges" class=" icon-edit-alt fs-25"></i>
+                            </a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-100" ng-show="tabs.tab=='E'">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="foot4 divcardcustom">
+          <div class="text-al switch">
+            <strong>ESTADISTICAS</strong>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="row" style="display: flex;justify-content: center;">
+            <div class="switch">
+              <label>
+                Activos
+                <input type="checkbox" ng-init="check_optione = false" ng-model="check_optione"
+                  ng-change="getStatistics();hidegrafica = true;">
+                <span class="lever"></span>
+                Historicos
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s6" ng-style="{'display': hidegraficapie ==true ? 'none':'show'}">
+              <div id="container"></div>
+            </div>
+            <div class="col s6" ng-style="{'display': hidegrafica ==true ? 'none':'show'}" style="overflow: auto;">
+              <div id="containerbar"></div>
+            </div>
+
+          </div>
+          <div class="col s12" ng-style="{'display': hidegraficapie ==true ? 'show':'none'}">
+            <h5 style="float:none;color:#333333;font-size:30px;fill:#333333;text-align: center;">NO HAY
+              ESTADISTICAS PARA MOSTRAR</h5>
+          </div>
+
+        </div>
+        <div class="card-content">
+          <div class="row">
+            <div class="col s6" ng-hide="hidetabletipsol">
+              <span style="color:#333333;font-size:18px;fill:#333333;width:463px;text-align: center;">SOLICITUD
+                - {{namesol}}</span>
+              <div class="noselectxtpqr">
+                <div class="col s12 margin no-padding">
+                  <input type="text" placeholder="RESPONSABLES" ng-model="filteres">
+                </div>
+              </div>
+              <div style="width: 100%;z-index: 10;overflow: hidden;">
+                <div style="overflow: auto;height: 350px;">
+                  <table class="striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Documento</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="r in dataReportPieRes | filter: filteres as resultres">
+                        <td>{{r.responsable}}</td>
+                        <td>{{r.nombre}}</td>
+                        <td style="text-align: center">{{r.cantidad}}</td>
+                        <td style="text-align: center"> <i id="bt-ges" class="icon-eye fs-25 c-pointer"
+                            title="DETALLE {{r.nombre}}" ng-click="showpqrs(r.responsable);"></i>
+                        </td>
+                      </tr>
+                      <tr ng-if="resultres.length==0">
+                        <td colspan="12" class="center-align white">
+                          <div class="results-lupa">
+                            <i class="icon-search-4"></i>
+                          </div>
+                          <p class="text-center">
+                            No hay RESPONSABLES Disponibles
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col s6" ng-hide="hidetableres">
+              <div class="noselectxtpqr">
+                <div class="col s12 margin no-padding">
+                  <input type="text" placeholder="PQRS" ng-model="filterpqr">
+                </div>
+              </div>
+              <div style="width: 100%;z-index: 10;overflow: hidden;">
+                <div style="overflow: auto;height: 350px;">
+                  <table class="striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="text-align: center">#</th>
+                        <th style="text-align: center">Codigo</th>
+                        <th style="text-align: center">Radicación</th>
+                        <th style="text-align: center">Entrega</th>
+                        <th style="text-align: center">Respuesta</th>
+                        <th style="text-align: center">Asignado</th>
+                        <th style="text-align: center">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="r in pqrDataRes | filter: filterpqr as filterespqr">
+                        <td>{{$index+1}}</td>
+                        <td style="text-align: center">{{r.CODIGO}}</td>
+                        <td style="text-align: center">{{r.FECHARAD}}</td>
+                        <td style="text-align: center">{{r.FECHAENT}}</td>
+                        <td style="text-align: center">{{r.RESPUESTA}}</td>
+                        <td style="text-align: center">
+                          {{r.ASIGNADO=='P'? 'PRINCIPAL':'SECUNDARIO'}}</td>
+                        <td style="text-align: center">
+                          <a ng-if="r.RUTA" class="waves-effect waves-light btn-small"
+                            ng-click="descargafile(r.RUTA,r.FTP);" title="DESCARGAR ADJUNTO">
+                            <i id="bt-ges" class="icon-download-6 fs-25"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      <tr ng-if="filterespqr.length==0">
+                        <td colspan="12" class="center-align white">
+                          <div class="results-lupa">
+                            <i class="icon-search-4"></i>
+                          </div>
+                          <p class="text-center">
+                            No hay PQRS Disponibles
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="trazapqr" class="modal modal-trazapqr" style="width: 95%!important; max-height: 100%;top: 5%!important;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text">TRAZABILIDAD {{dpqr.SOLICITUD}} - {{dpqr.CODIGO}}</h5>
+
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('trazapqr')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+              <div class="col s6">
+                <div class="row mb-15">
+                  <div class="row">
+                    <div class="card-content" style="padding: 10px;text-align: center">
+                      <span class="w-divTitle margin default-color"> DATOS {{dpqr.SOLICITUD}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="row" style="height: 30em; overflow-y:auto">
+                    <table class="table-bordered">
+                      <tbody>
+                        <tr>
+                          <th class="noselectxtpqr">Codigo</th>
+                          <td>{{dpqr.CODIGO}}</td>
+                          <th class="noselectxtpqr">Estado</th>
+                          <td colspan="2" style="text-transform: uppercase;text-align: center">
+                            <span
+                              class="status white-text {{dpqr.ESTADO=='Activo'?'orange':'green'}}">{{dpqr.ESTADO}}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Tipo Solicitud</th>
+                          <td>{{dpqr.SOLICITUD}}</td>
+                          <th class="noselectxtpqr">Medio Recepcion</th>
+                          <td colspan="6">{{dpqr.NOMMEDIO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.NOMENTECONTROL">
+                          <th class="noselectxtpqr">Ente de control</th>
+                          <td colspan="6">{{dpqr.NOMENTECONTROL}}</td>
+                        </tr>
+                        <tr>
+                          <th ng-if="dpqr.CODPQR" class="noselectxtpqr">Codigo PQR
+                            SUPERSALUD
+                          </th>
+                          <td ng-if="dpqr.CODPQR" colspan="3">{{dpqr.CODPQR}}</td>
+                          <th ng-if="dpqr.NURC" class="noselectxtpqr">Codigo Nurc</th>
+                          <td ng-if="dpqr.NURC" colspan="3">{{dpqr.NURC}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.NOMENTIDAD">
+                          <th class="noselectxtpqr">Nombre entidad</th>
+                          <td colspan="3">{{dpqr.NOMENTIDAD}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Observaciones</th>
+                          <td colspan="6">
+                            <div class="scrollable">{{dpqr.OBSERVACION}}</div>
+                          </td>
+                        </tr>
+                        <tr ng-if="dpqr.NITIPS">
+                          <th class="text-center noselectxtpqr" colspan="6">IPS</th>
+                        </tr>
+                        <tr ng-if="dpqr.NITIPS">
+                          <th>NIT IPS</th>
+                          <td>{{dpqr.NITIPS}}</td>
+                          <th>IPS</th>
+                          <td>{{dpqr.IPS}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.NITIPS">
+                          <th>TELEFONO</th>
+                          <td>{{dpqr.TELEFONOIPS}}</td>
+                          <th>CORREO</th>
+                          <td>{{dpqr.EMAILIPS}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.NITIPS">
+                          <th>Dirección</th>
+                          <td colspan="3">{{dpqr.DIRECCIONIPS}}</td>
+                        </tr>
+
+                        <tr ng-if="dpqr.DOC_EMPLEADOR">
+                          <th class="text-center noselectxtpqr" colspan="6">EMPLEADOR</th>
+                        </tr>
+                        <tr ng-if="dpqr.DOC_EMPLEADOR">
+                          <th class="noselectxtpqr">Tipo Documento</th>
+                          <td>{{dpqr.TIPODOC_EMPLEADOR}}</td>
+                          <th class="noselectxtpqr">Documento</th>
+                          <td colspan="6">{{dpqr.DOC_EMPLEADOR}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.DOC_EMPLEADOR">
+                          <th class="noselectxtpqr">Nombre</th>
+                          <td colspan="6">{{dpqr.NOM_EMPLEADOR}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.EMP_DIR">
+                          <th class="noselectxtpqr">Dirección</th>
+                          <td colspan="6">{{dpqr.EMP_DIR}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.EMP_TEL">
+                          <th class="noselectxtpqr">Telefono</th>
+                          <td colspan="6">{{dpqr.EMP_TEL}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.EMP_EMAIL">
+                          <th class="noselectxtpqr">Correo</th>
+                          <td colspan="6">{{dpqr.EMP_EMAIL}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.DOCUMENTO">
+                          <th class="text-center noselectxtpqr" colspan="6">AFILIADO</th>
+                        </tr>
+                        <tr ng-if="dpqr.DOCUMENTO">
+                          <th class="noselectxtpqr">Tipo Documento</th>
+                          <td>{{dpqr.TIPODOCU}}</td>
+                          <th class="noselectxtpqr">Documento</th>
+                          <td colspan="6">{{dpqr.DOCUMENTO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.DOCUMENTO">
+                          <th class="noselectxtpqr">Nombre</th>
+                          <td colspan="6">{{dpqr.AFILIADO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.DIRECCION">
+                          <th class="noselectxtpqr">Dirección</th>
+                          <td colspan="6">{{dpqr.DIRECCION}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.TELEFONO">
+                          <th class="noselectxtpqr">Telefono</th>
+                          <td colspan="6">{{dpqr.TELEFONO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.CORREO">
+                          <th class="noselectxtpqr">Correo</th>
+                          <td colspan="6">{{dpqr.CORREO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.TIPODOCUAC">
+                          <th class="text-center noselectxtpqr" colspan="6">ACUDIENTE</th>
+                        </tr>
+                        <tr ng-if="dpqr.TIPODOCUAC">
+                          <th class="noselectxtpqr">Tipo Documento</th>
+                          <td>{{dpqr.TIPODOCUAC}}</td>
+                          <th class="noselectxtpqr">Documento</th>
+                          <td>{{dpqr.DOCUMENTOAC}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.TIPODOCUAC">
+                          <th class="noselectxtpqr">Nombre</th>
+                          <td colspan="6">{{dpqr.AFILIADOAC}}</td>
+                        </tr>
+                        <tr>
+                          <th class="text-center noselectxtpqr" colspan="6">OTROS DATOS
+                          </th>
+                        </tr>
+                        <tr ng-if="dpqr.MACROMOTIVO">
+                          <th class="noselectxtpqr">Motivo</th>
+                          <td colspan="6">{{dpqr.MACROMOTIVO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA' && dpqr.AREACORRESPONDENCIA">
+                          <th class="text-center">AREA CORRESPONDENCIA</th>
+                          <td colspan="6">{{dpqr.AREACORRESPONDENCIA}}</td>
+                        </tr>
+                        <tr>
+                          <th colspan="8" class="text-center noselectxtpqr">RESPONSABLES
+                          </th>
+                        </tr>
+                        <tr ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA' && dpqr.RESPONSABLE1">
+                          <th>PRINCIPAL</th>
+                          <td colspan="6">{{dpqr.RESPONSABLE1}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA' && dpqr.RESPONSABLE2">
+                          <th>RESPONSABLE 2</th>
+                          <td colspan="6">{{dpqr.RESPONSABLE2}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA' && dpqr.RESPONSABLE3">
+                          <th>RESPONSABLE 3</th>
+                          <td colspan="6">{{dpqr.RESPONSABLE3}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA' && dpqr.TRAMITE">
+                          <th>TRAMITE</th>
+                          <td>{{dpqr.TRAMITE}}</td>
+                          <th class="text-center">TIPO CORRESPONDENCIA</th>
+                          <td colspan="2">{{dpqr.TIPOCORRESPOND}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Soporte</th>
+                          <td class="text-center noselectxtpqr">
+                            <a id="bt-ges" class="c-pointer mr-0" ng-click="descargafile(dpqr.RUTA,dpqr.FTP);">
+                              <i class="icon-download fs-20"></i>
+                            </a>
+                          </td>
+                          <th ng-if="dpqr.SOLICITUD!='CORRESPONDENCIA'" class="noselectxtpqr">
+                            Fecha Respuesta</th>
+                          <td ng-if="dpqr.SOLICITUD!='CORRESPONDENCIA'" colspan="6">
+                            {{dpqr.FECHAENT}}</td>
+                          <th ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA'" class="noselectxtpqr">
+                            Fecha Recibido</th>
+                          <td ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA'" colspan="6">
+                            {{dpqr.FECHAREC}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col s6">
+                <div class="row margin">
+                  <div class="card-content" style="padding: 10px;text-align: center">
+                    <span class="w-divTitle margin default-color"> MOVIMIENTOS </span>
+                  </div>
+                </div>
+                <div class="col s12">
+                  <form name="findnovedad" id="findnovedad">
+                    <div class="input-field col s5" style="float: right">
+                      <input id="with_icon" type="text" class="validate" ng-model="searchmov">
+                      <label for="with_icon" class="">Buscar:</label>
+                    </div>
+                </div>
+                </form>
+                <div class="timeline-page col s12 card" style="box-shadow:none;padding-top: 0;padding-bottom: 0;">
+                  <div class="timeline card-content white">
+                    <div class="scrollTableDefault" style="max-height: 50vh;overflow-y: auto;padding: 10px">
+                      <div class="timeline-event">
+                        <div class="timeline-content">
+                          <div class="content-box">
+                            <h6><small>RADICACION
+                                {{trazapqr.dataradicador.fecha_rad | date:'dd/MM/yyyy h:mma' }}</small>
+                            </h6>
+                            <p>
+                              <b>Radicador:</b> {{trazapqr.dataradicador.documento}} -
+                              {{trazapqr.dataradicador.radicador}}
+                            </p>
+                          </div>
+                        </div>
+                        <div class="timeline-badge timeline-badge1 white-text">
+                          <i class="icon-flag"></i>
+                        </div>
+                      </div>
+                      <div class="timeline-event">
+                        <div class="timeline-content">
+                          <div class="content-box">
+                            <h6><small>RESPONSABLE ACTUAL</small></h6>
+                            <p>
+                              <b>Responsable:</b>
+                              {{trazapqr.dataresponsable.documento}} -
+                              {{trazapqr.dataresponsable.responsable}}
+                            </p>
+                            <p> <b>Area:</b> {{trazapqr.dataresponsable.area}} </p>
+                          </div>
+                        </div>
+                        <div class="timeline-badge timeline-badge1 white-text">
+                          <i class="icon-user"></i>
+                        </div>
+                      </div>
+                      <div class="timeline-event" ng-repeat="t in trazapqr.traza | filter: searchmov">
+                        <div class="timeline-content">
+                          <div class="content-box">
+                            <h6><small>MOVIMIENTO
+                                {{t.fecha_mov | date:'dd/MM/yyyy h:mma '}}</small>
+                            </h6>
+                            <p>
+                              <b> Reponsable Acción:</b> {{t.resp_accion}} -
+                              <b>Area:</b>
+                              {{t.resp_area_acc}}
+                            </p>
+                            <p>
+                              <b> Reponsable Anterior:</b> {{t.resp_ante}} -
+                              <b>Area:</b>
+                              {{t.resp_area_ant}}
+                            </p>
+                            <p><b> Reponsable Nuevo:</b> {{t.resp_nuevo}} - <b>Area:</b>
+                              {{t.resp_area_nuev}}</p>
+
+                            <p><b> Comentario:</b> {{t.comentario}}</p>
+                          </div>
+                        </div>
+                        <div class="timeline-badge timeline-badge1 white-text">
+                          <i class="icon-calendar"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modalcorrespondencia" class="modal modal-trazapqr"
+    style="width: 70%!important; max-height: 100%;top: 5%!important;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text"> CORRESPONDENCIA -
+                {{detallecorrespondencia.consecutivo_correspondencia}}</h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalcorrespondencia')"
+                  class="material-icons white-text">close</i></h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+              <div class="col s12">
+                <div class="row mb-15">
+                  <!-- <div class="row default-color" style="text-align: center">
+                                        <span>DATOS {{detallecorrespondencia.consecutivo_correspondencia}}</span>
+                                    </div> -->
+                  <div class="row" style="height: 30em; overflow-y:auto">
+                    <table class="table-bordered">
+                      <tbody>
+                        <tr>
+                          <th class="noselectxtpqr">CONSECUTIVO</th>
+                          <td colspan="4">
+                            {{detallecorrespondencia.consecutivo_correspondencia}}</td>
+                          <th class="noselectxtpqr">Estado</th>
+                          <td colspan="4" style="text-transform: uppercase;text-align: center">
+                            <span
+                              class="status white-text {{detallecorrespondencia.clase_estado}}">{{detallecorrespondencia.estado}}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Tipo Solicitud</th>
+                          <td>CORRRSPONDENCIA</td>
+                          <th class="noselectxtpqr">Medio Recepcion</th>
+                          <td colspan="6">{{detallecorrespondencia.nommediorecepcion}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Fecha Recibido</th>
+                          <td colspan="4">{{detallecorrespondencia.fecha_recibido}}</td>
+                          <th class="noselectxtpqr">Fecha Radicación</th>
+                          <td colspan="4">{{detallecorrespondencia.fecha_radicacion}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Observaciones</th>
+                          <td colspan="6">
+                            <div class="scrollable">{{detallecorrespondencia.observaciones}}
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr ng-if="detallecorrespondencia.remitente">
+                          <th class="text-center noselectxtpqr" colspan="8">REMITENTE</th>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Documento</th>
+                          <td colspan="6">{{detallecorrespondencia.remitente}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Nombre</th>
+                          <td colspan="6">{{detallecorrespondencia.nom_remitente}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Dirección</th>
+                          <td colspan="6">{{detallecorrespondencia.direccion_remitente}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Telefono</th>
+                          <td colspan="6">{{detallecorrespondencia.telefono_remitente}}</td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Correo</th>
+                          <td colspan="6">{{detallecorrespondencia.correo_remitente}}</td>
+                        </tr>
+                        <tr>
+                          <th class="text-center noselectxtpqr" colspan="8">DESTINATARIO</th>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia==0">
+                          <th class="noselectxtpqr">Documento</th>
+                          <td colspan="6">{{detallecorrespondencia.destinatario}}</td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia==0">
+                          <th class="noselectxtpqr">Nombre</th>
+                          <td colspan="6">{{detallecorrespondencia.nom_destinatario}}</td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia==0">
+                          <th class="noselectxtpqr">Dirección</th>
+                          <td colspan="6">{{detallecorrespondencia.direccion_destinatario}}</td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia==0">
+                          <th class="noselectxtpqr">Telefono</th>
+                          <td colspan="6">{{detallecorrespondencia.telefono_destinatario}}</td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia==0">
+                          <th class="noselectxtpqr">Correo</th>
+                          <td colspan="6">{{detallecorrespondencia.correo_destinatario}}</td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia!=0">
+                          <th class="text-center">AREA CORRESPONDENCIA</th>
+                          <td colspan="6">{{detallecorrespondencia.area_correspondencia}} - {{detallecorrespondencia
+                            .nom_area_correspondencia}}</td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia!=0">
+                          <th colspan="8" class="text-center noselectxtpqr">RESPONSABLES
+                          </th>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia!=0">
+                          <th>PRINCIPAL</th>
+                          <td colspan="6">{{responsablesdetalles[0].Documento}} - {{responsablesdetalles[0].Nombre}}
+                          </td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia!=0">
+                          <th>RESPONSABLE 2</th>
+                          <td colspan="6">{{responsablesdetalles[0].Documento1}} - {{responsablesdetalles[0].Nombre1}}
+                          </td>
+                        </tr>
+                        <tr ng-show="detallecorrespondencia.area_correspondencia!=0">
+                          <th>RESPONSABLE 3</th>
+                          <td colspan="6">{{responsablesdetalles[0].Documento2}} - {{responsablesdetalles[0].Nombre2}}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="text-center noselectxtpqr" colspan="8">OTROS DATOS
+                          </th>
+                        </tr>
+
+                        <tr>
+                          <th>TRAMITE</th>
+                          <td colspan="4">REQUIRE</td>
+                          <th class="text-center">TIPO CORRESPONDENCIA</th>
+                          <td colspan="4">{{detallecorrespondencia.nom_tipo_correspondencia}}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">Soporte</th>
+                          <td class="text-center noselectxtpqr" colspan="4">
+                            <a id="bt-ges" class="c-pointer mr-0"
+                              ng-click="descargafile(detallecorrespondencia.pqrfile,detallecorrespondencia.ftp);">
+                              <i class="icon-download fs-20"></i>
+                            </a>
+                          </td>
+                          <th class="noselectxtpqr"># Folio</th>
+                          <td colspan="4">{{detallecorrespondencia.numero_folio}}</td>
+                        </tr>
+                        <tr>
+                          <th class="text-center noselectxtpqr" colspan="8">COURRIER
+                          </th>
+                        </tr>
+                        <tr>
+                          <th class="noselectxtpqr">NIT</th>
+                          <td colspan="4">{{detallecorrespondencia.nit_courrier}}</td>
+                          <th class="noselectxtpqr">NOMBRE</th>
+                          <td colspan="4">{{detallecorrespondencia.seleccion_courrier}}</td>
+                        </tr>
+                        <tr>
+                          <th class="text-center noselectxtpqr">GUIA
+                          </th>
+                          <td colspan="2">{{detallecorrespondencia.numero_guia}}</td>
+                          <th class="noselectxtpqr">RAD</th>
+                          <td>
+                            <a id="bt-ges" ng-if="detallecorrespondencia.gradfile" class="c-pointer mr-0"
+                              ng-click="descargafile(detallecorrespondencia.gradfile,detallecorrespondencia.ftp_gradfile);">
+                              <i class="icon-download fs-20"></i>
+                            </a>
+                          </td>
+                          <th class="noselectxtpqr">GES</th>
+                          <td>
+                            <a ng-if="detallecorrespondencia.ggesfile" id="bt-ges" class="c-pointer mr-0"
+                              ng-click="descargafile(detallecorrespondencia.ggesfile,detallecorrespondencia.ftp_ggesfile);">
+                              <i class="icon-download fs-20"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div id="modaltranferircorresp" class="modal modal-trazapqr"
+    style="width: 50%!important; max-height: 100%;top: 5%!important;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text">TRANSFERIR CORRESPONDENCIA - {{dpqr.CONSECUTIVO}}</h5>
+
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modaltranferircorresp')"
+                  class="material-icons white-text">close</i></h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+              <div class="col s12">
+                <div class="row mb-15">
+                  <div class="row" style="text-align: center">
+                    <div class="col s4">
+                      <span> <b>SELECCIONAR SEDE</b> </span>
+                    </div>
+                    <div class="col s8">
+                      <div class="switch">
+                        <label>
+                          NACIONAL
+                          <input type="checkbox" ng-init="check_option_sede = false" ng-model="check_option_sede"
+                            ng-change="changeAreas();">
+                          <span class="lever"></span>
+                          SECCIONAL
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style="height: 30em; overflow-y:auto">
+                    <div id="nacional" ng-hide="check_option_sede">
+                      <div class="row">
+                        <div class="col s12">
+                          <div class="col s12">
+                            <label class="c-pointer noselectxtpqr" for="area">Area a
+                              Direccionar
+                              Correspondencia</label>
+                            <select class="select-chosen-eps select pt-select-pqr" id="area"
+                              ng-model="nomareat.nomareat" ng-change="getArea(nomareat.nomareat,'T');">
+                              <option value="">SELECCIONAR</option>
+                              <option ng-repeat="a in areaspqr" ng-value="a.Codigo">
+                                {{a.Nombre}}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="seccional" ng-show="check_option_sede">
+                      <div class="row">
+                        <div class="col s12">
+                          <div class="col s12">
+                            <label class="c-pointer noselectxtpqr" for="secionalcorresp">Seccional a
+                              Direccionar
+                              Correspondencia</label>
+                            <select class="select-chosen-eps select pt-select-pqr" id="secionalcorresp"
+                              ng-model="pqrsecionalt" ng-change="getResSeccionalCod(pqrsecionalt);">
+                              <option value="">SELECCIONAR</option>
+                              <option ng-repeat="s in seccionalpqr | orderBy:'Nombre'" value="{{s.Codigo}}">{{s.Nombre}}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col s12" ng-if="responsablesareast.length>0">
+                        <div class="input-field col m12 s12">
+                          <label for="nom" class="noselectxtpqr">Reponsable 1 </label>
+                          <input id="nom" class="black-text" type="text" ng-model="responsablesareast[0].Nombre"
+                            ng-attr-title="{{responsablesareast[0].Nombre}}" ng-disabled="true">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col s12" ng-if="responsablesareast.length>0">
+                        <div class="input-field col m12 s12">
+                          <label for="nom" class="noselectxtpqr">Responsable 2</label>
+                          <input id="nom" class="black-text" type="text" ng-model="responsablesareast[0].Nombre1"
+                            ng-attr-title="{{responsablesareastt[0].Nombre1}}" ng-disabled="true">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col s12" ng-if="responsablesareast.length>0">
+                        <div class="input-field col m12 s12">
+                          <label for="nom" class="noselectxtpqr">Responsable 3</label>
+                          <input id="nom" class="black-text" type="text" ng-model="responsablesareast[0].Nombre2"
+                            ng-attr-title="{{responsablesareast[0].Nombre2}}" ng-disabled="true">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="float-none text-center">
+                      <a class="waves-effect waves-light btn white-text red"
+                        ng-click="closemodals('modaltranferircorresp')">CANCELAR</a>
+                      <a class="waves-effect waves-light btn white-text" ng-click="transferirCorrespondencia();">
+                        TRANSFERIR
+                      </a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modalpqcorrespondencia" class="modal modal-pq"
+    style="width: 95%!important;max-height: 100%;top: 5%!important;overflow: hidden;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text">PAQUETES DE CORRESPONDENCIA</h5>
+
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalpqcorrespondencia');"
+                  class="material-icons white-text">close</i></h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+              <div class="col s6">
+                <div class="row">
+                  <!--
+                                    <div class="col s4">
+                                        <span> <b>ESTADO PQ:</b> </span>
+                                    </div>
+                                    <div class="col s4">
+                                        <div class="btn-panel switch">
+                                            <label>
+                                                Activo
+                                                <input type="checkbox" ng-init="check_optionpq = false"
+                                                    ng-model="check_optionpq"
+                                                    ng-change="check_optionpq ? getPQ('P'):getPQ('A')">
+                                                <span class="lever"></span>
+                                                Procesado
+                                            </label>
+                                        </div>
+                                    </div>-->
+                  <div class="col s4">
+                    <div class="switch">
+                      <label>
+                        Activo
+                        <input type="checkbox" ng-init="check_optionpq = false" ng-model="check_optionpq"
+                          ng-change="filterAreas='';check_optionpq ? getPQ('P'):getPQ('A');">
+                        <span class="lever"></span>
+                        Procesado
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col s4">
+                    <div class="switch">
+                      <label>
+                        Enviada
+                        <input type="checkbox" ng-init="check_optiontpq = false" ng-model="check_optiontpq"
+                          ng-change="check_optionpq ? getPQ('P'):getPQ('A');">
+                        <span class="lever"></span>
+                        Recibida
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col s4 right">
+                    <input type="text" placeholder="FILTRAR PQ" ng-model="filterPQ">
+                  </div>
+                </div>
+                <div class="row" style="max-height: 50vh; overflow: auto;">
+                  <table class="striped table-bordered">
+                    <tbody>
+                      <tr>
+                        <!-- <th class="noselectxtpqr">CODIGO</th> -->
+                        <th class="noselectxtpqr">FECHA</th>
+                        <th class="noselectxtpqr">JORNADA</th>
+                        <th class="noselectxtpqr">PQ</th>
+                        <th class="noselectxtpqr">ACCION</th>
+                      </tr>
+                      <tr ng-repeat="p in pqcorrespondencia | filter: filterPQ   as resultpq">
+                        <!-- <td class="text-center">{{p.pqcodigo}}</td> -->
+                        <td class="text-center">
+                          {{p.fecha_cargue}}
+                        </td>
+                        <td class="text-center">{{p.jornada}}</td>
+                        <td>
+                          {{p.pqte}}
+                        </td>
+                        <td class="text-center noselectxtpqr">
+                          <label for="pqfile{{$index}}" ng-if="check_optionpq==false">
+                            <i id="bt-ges" class="icon-upload fs-20 c-pointer" title="SUBIR SOPORTE PQ"></i>
+                            <input type="file" name="adjunto" id="pqfile{{$index}}" class="input-pq"
+                              onchange="angular.element(this).scope().uploadImage(this)" data-param="{{p}}"
+                              style="display: none">
+                          </label>
+                          <i class="icon-upload fs-20 c-pointer" ng-click="actualizaSoporteCorresp(p)"
+                            title="ACTUALIZAR SOPORTE PQ"
+                            ng-if="check_optionpq==true && (cedulausuario == '1042454684' || cedulausuario == '1046816549' || cedulausuario == '1123637114' || cedulausuario == '1002142857')"></i>
+                          <i id="bt-ges" class="icon-eye fs-20 c-pointer" ng-if="check_optionpq==true"
+                            title="VER SOPORTE PQ" ng-click="showsoportepq(p);"></i>
+
+                          <i id="bt-print" class="icon-print fs-20 c-pointer" title="IMPRIMIR PQ"
+                            ng-click="printFormatoModal(p);"></i>
+                        </td>
+                      </tr>
+                      <tr ng-if="resultpq.length==0">
+                        <th colspan="5" class="text-center">NO HAY PQ</th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row text-center">
+                  <a class="waves-effect waves-light btn white-text float-none red"
+                    ng-click="closemodals('modalpqcorrespondencia');">
+                    CANCELAR
+                  </a>
+                  <a class="waves-effect waves-light btn white-text float-none" ng-click="adjuntarpq();"
+                    ng-hide="(soportepq.file==null && soportepq.nombre==null) || check_optionpq==true">
+                    ADJUNTAR
+                  </a>
+                  <a class="waves-effect waves-light btn white-text float-none"
+                    ng-hide="(soportepq.file==null && soportepq.nombre==null) || check_optionpq==true"
+                    ng-click="cancelfile();">
+                    CANCELAR ARCHIVO
+                  </a>
+
+                </div>
+              </div>
+              <div class="col s6 text-center">
+                <iframe ng-if="soportepq.file" ng-src="{{soportepq.file}}"
+                  style="width:100%; height: 65vh;margin-bottom: 1em;" frameborder="0"></iframe>
+                <h5 ng-hide="soportepq.file!=null">SOPORTE NO ADJUNTADO</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modaltercero" class="modal" style="overflow: hidden;width: 70%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0">
+            <div class="col s11">
+              <h5 class="white-text">Tercero</h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modaltercero')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+
+            <form ng-submit="searchTercero(btercero,bttipo)">
+              <div class="row">
+                <div class="col s6">
+                  <label class="c-pointer noselectxtpqr" for="idtipotercero">Tipo Tercero <span
+                      style="color:red;">*</span></label>
+                  <select class="select-chosen-eps select  pt-select-pqr" id="idtipotercero" ng-model="bttipo">
+                    <option value="">SELECCIONAR</option>
+                    <option ng-repeat="s in tiporad" ng-value="s.CODIGO">{{s.NOMBRE}}
+                    </option>
+                  </select>
+                </div>
+                <div class="col s6">
+                  <div class="input-list input-form" style="width: 100%;margin-top: 0;">
+                    <div class="input-field col s12">
+                      <input id="ipsinput" type="text" ng-model="btercero" required>
+                      <label for="ipsinput">Tercero:</label>
+                      <a href="javascript:void(0)" ng-click="searchTercero(btercero,bttipo)"><i
+                          style="position: absolute; top: 16px; right: 6px;"
+                          class="material-icons prefix">search</i></a>
+
+
+                    </div>
+                  </div>
+                </div>
+
+
+
+              </div>
+            </form>
+
+            <div class="row" ng-show="inactivetercero==false && inactiveterceronew==true">
+              <div class="col s12" style="max-height: 45vh;overflow-y: auto;">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">DOCUMENTO</th>
+                      <th>NOMBRE</th>
+                      <th>DIRECCION</th>
+                      <th style="text-align:center;"><a href="javascript:void(0)">SELECCIONAR
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="t in lisTerceros | filter:btercero as resultercero">
+                      <td style="text-align:center;">{{t.CODIGO}}</td>
+                      <td>{{t.NOMBRE}}</td>
+                      <td>{{t.DIRECCION}}</td>
+                      <td>
+                        <center>
+                          <i ng-click="seleccionartercero(t)" style="cursor:pointer;"
+                            class="material-icons prefix">check</i>
+                        </center>
+                      </td>
+                    </tr>
+                    <tr ng-if="resultercero.length==0">
+                      <th class="center-align" colspan="5">No hay Resultados</th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row" ng-show="inactivetercero == true &&  inactiveterceronew==false">
+              <div class="row" style="margin-bottom: 10px;">
+                <div class="col s4">
+                  <div class="input-field">
+                    <label for="documento" class="noselectxtpqr" style="left:0!important">Documento
+                      <span style="color:red;">*</span></label>
+                    <input id="documento" class="black-text" type="text" ng-model="pqrData.NewTercero.documento"
+                      ng-attr-title="{{pqrData.NewTercero.documento}}" style="cursor: pointer;">
+                  </div>
+                </div>
+
+                <div class="col s4">
+                  <div class="input-field col m12 s12">
+                    <label for="nom" class="noselectxtpqr">Nombre <span style="color:red;">*</span></label>
+                    <input id="nom" class="black-text" type="text" ng-model="pqrData.NewTercero.nombre"
+                      ng-attr-title="{{pqrData.NewTercero.nombre}}">
+                  </div>
+                </div>
+                <div class="col s4">
+                  <div class="col s12">
+                    <label class="c-pointer noselectxtpqr" for="idciudades">Ciudades <span
+                        style="color:red;">*</span></label>
+                    <select class="select-chosen-eps select  pt-select-pqr" id="idciudades"
+                      ng-model="pqrData.NewTercero.ubicacion">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="s in tempciudades" ng-value="s.CODIGO">{{s.NOMBRE}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="row" style="margin-bottom: 10px;">
+                                <div class="col s12">
+                                    <div class="input-field col m12 s12">
+                                        <label for="nom" class="noselectxtpqr">Barrio <span
+                                                style="color:red;">*</span></label>
+                                        <input id="nom" class="black-text" type="text"
+                                            ng-model="pqrData.NewTercero.barrio"
+                                            ng-attr-title="{{pqrData.NewTercero.barrio}}">
+                                    </div>
+                                </div>
+                            </div> -->
+              <div class="row">
+
+                <div id="coldireccionIps" class="col s4">
+                  <label for="direccionIps" class="c-pointer noselectxtpqr">Dirección <span
+                      style="color:red;">*</span></label>
+                  <input class="c-pointer" id="direccionIps" placeholder="CLICK PARA AGREGAR DIRECCION" type="text"
+                    ng-model="pqrData.NewTercero.direccion"
+                    ng-attr-title="{{pqrData.NewTercero.direccion? pqrData.NewTercero.direccion:'CLICK PARA AGREGAR DIRECCION'}}"
+                    maxlength="100" ng-click="showModalDireccion('NewTercero');" readonly="">
+                </div>
+                <div id="colemailIps" class="col s4">
+                  <div class="input-field col m12 s12">
+                    <label for="emailNTercero" class="c-pointer noselectxtpqr">Email</label>
+                    <input id="emailNTercero" type="text" ng-model="pqrData.NewTercero.correo"
+                      ng-attr-title="{{pqrData.NewTercero.correo}}">
+                  </div>
+                </div>
+                <div id="coltelefonIps" class="col s4">
+                  <div class="input-field col m12 s12">
+                    <label for="telefonIps" class="c-pointer noselectxtpqr">Telefono</label>
+                    <input id="telefonIps" type="text" ng-model="pqrData.NewTercero.telefono" maxlength="10">
+                  </div>
+                </div>
+              </div>
+              <div class="row text-center" ng-if="inactivetercero == true &&  inactiveterceronew==false">
+                <a class="waves-effect waves-light btn white-text " ng-click="inserta_tercero();">GUARDAR
+                  TERCERO</a>
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modalcourier" class="modal modal-trazapqr" style="width: 70%!important; max-height: 100%;top: 5%!important;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text">OPERADORES DE CORRESPONDENCIA</h5>
+
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalcourier')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+              <div class="row" ng-show="showNewOperador==true && showFields==true">
+                <div class="col s4 right">
+                  <input type="text" placeholder="FILTRAR OPERADORES" ng-model="filterCourier">
+                </div>
+
+              </div>
+              <div class="col s12" ng-if="showNewOperador==true &&  showFields==true">
+                <div style="max-height: 350px;overflow: auto;">
+                  <table id="tablePQR" class="striped table-bordered" style="position: relative;">
+                    <thead class="noselectxtpqr">
+                      <tr>
+                        <th class="text-center">CODIGO</th>
+                        <th class="text-center">NIT</th>
+                        <th class="text-center">NOMBRE</th>
+                        <th class="text-center">ACCION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="p in dataoperadores | filter:filterCourier as resultsP track by $index">
+                        <td class="text-center">{{p.CODIGO}}</td>
+                        <td class="text-center">{{p.DOCUMENTO}}</td>
+                        <td class="text-center">{{p.NOMBRE}}</td>
+                        <td class="text-center noselectxtpqr float-none">
+                          <a class="waves-effect waves-light btn-small" ng-click="seleccionarOperador(p);"
+                            title="SELECCIONAR OPERADOR {{p.NOMBRE}}">
+                            <i id="bt-ges" class=" icon-check-1 fs-25"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      <tr ng-if="resultsP.length==0">
+                        <td colspan="12" class="center-align white" style="padding: 100px;">
+                          <div class="results-lupa" style="cursor: pointer;">
+                            <i class="icon-plus" ng-click="showAddOperador();"></i>
+                          </div>
+                          <p class="text-center">
+                            No hay Operadores de Correspondencia Disponibles pero puedes
+                            crear uno nuevo
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+              <div class="row" ng-if="showNewOperador==false && showFields==true">
+                <div class="row">
+                  <div class="col s12">
+                    <h5>Crear nuevo Operador</h5>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s4">
+                    <div class="input-field">
+                      <label for="documento" class="noselectxtpqr" style="left:0!important">Documento
+                        <span style="color:red;">*</span></label>
+                      <input id="documento" class="black-text" type="text" ng-model="pqrData.NewOperador.documento"
+                        ng-attr-title="{{pqrData.NewOperador.documento}}" style="cursor: pointer;">
+                    </div>
+                  </div>
+
+                  <div class="col s4">
+                    <div class="input-field col m12 s12">
+                      <label for="nom" class="noselectxtpqr">Nombre <span style="color:red;">*</span></label>
+                      <input id="nom" class="black-text" type="text" ng-model="pqrData.NewOperador.nombre"
+                        ng-attr-title="{{pqrData.NewOperador.nombre}}">
+                    </div>
+                  </div>
+
+                  <div class="col s4">
+                    <div class="input-field col m12 s12">
+                      <label for="nom" class="noselectxtpqr">Telefono </label>
+                      <input id="nom" class="black-text" type="text" ng-model="pqrData.NewOperador.telefono"
+                        ng-attr-title="{{pqrData.NewOperador.telefono}}">
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col s4">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="idciudadesc">Ciudad <span
+                          style="color:red;">*</span></label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="idciudadesc"
+                        ng-model="pqrData.NewOperador.municipio">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="s in tempciudades" ng-value="s.NOMBRE">
+                          {{s.NOMBRE}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s4">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="idambito">Ambito <span
+                          style="color:red;">*</span></label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="idambito"
+                        ng-model="pqrData.NewOperador.ambito">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="s in tempambito" ng-value="s.Codigo">{{s.Nombre}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col s4">
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="idservicio">Servicio <span
+                          style="color:red;">*</span></label>
+                      <select class="select-chosen-eps select  pt-select-pqr" id="idservicio"
+                        ng-model="pqrData.NewOperador.servicio">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="s in tempservio" ng-value="s.Codigo">{{s.Nombre}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row text-center">
+                  <a class="waves-effect waves-light btn white-text " ng-click="inserta_operador();">GUARDAR
+                    OPERADOR</a>
+                </div>
+              </div>
+              <div class="row" ng-if="showFields==false">
+                <div class="row">
+                  <div class="col s4">
+                    <input id="numguia" type="text" ng-model="objectguia.numguia"
+                      ng-change="changeguia(objectguia.numguia,'R')" placeholder="NUMERO DE GUIA OPERADOR">
+                  </div>
+                </div>
+                <div class="row" ng-show="objectguia.numguia!=null">
+                  <div class="col s12">
+                    <div class="input-field col m2 w-auto">
+                      <p class="noselectxtpqr">
+                        Soporte guia Radicación</p>
+                    </div>
+                    <div class="input-field col m10 s12 w-100">
+                      <div class="file-field input-field">
+                        <div class="btn">
+                          <i class=" icon-file-image"></i>
+                          <input type="file" name="adjunto" id="gradfile" ng-model="filearray" select-files-pqr>
+                        </div>
+                        <div class="file-path-wrapper">
+                          <input id="inputFilePlaceHolderGrad" class="file-path" type="text"
+                            placeholder="Adjuntar archivo">
+                          <span ng-show="datagrad"
+                            ng-class="{'red-text': objectguia.gradfile==null, 'green-text': objectguia.gradfile!=null }">{{datagrad}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="float-none text-center">
+                  <a class="waves-effect waves-light btn white-text red" ng-click="cancelguia();">CANCELAR</a>
+                  <a class="waves-effect waves-light btn white-text" ng-click="saveguia();">
+                    GUARDAR GUIA
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modalsearchres" class="modal modal-trazapqr"
+    style="width: 70%!important; max-height: 100%;top: 5%!important;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text">BUSQUEDA DE FUNCIONARIOS</h5>
+
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalsearchres')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+
+
+
+            </div>
+            <div class="row">
+              <div class="row">
+                <div class="col s8">
+                  <form ng-submit="get_personas_area(filterFuncionarios)" name="findpro" id="findproa">
+                    <div class="input-field col s6">
+                      <input id="proinput" type="text" ng-model="filterFuncionarios" style="cursor: pointer;"
+                        class="clase-gray">
+                      <label for="proinput" style="cursor: pointer;">Buscar: <span style="color:red;">*</span></label>
+                      <a href="javascript:void(0)" ng-click="get_personas_area(filterFuncionarios)"> <i
+                          style="position: absolute; top: 16px; right: 0px;cursor: pointer;"
+                          class="material-icons prefix">search</i></a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="col s12" ng-hide="inactivefuncionario">
+                <div style="max-height: 350px;overflow: auto;">
+                  <table id="tablePQR" class="striped table-bordered" style="position: relative;">
+                    <thead class="noselectxtpqr">
+                      <tr>
+                        <th class="text-center">CODIGO</th>
+                        <th class="text-center">NOMBRE</th>
+                        <th class="text-center">CARGO</th>
+                        <th class="text-center">ACCION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="p in tempresponsables | filter:filterFuncionarios as resultsP track by $index">
+                        <td class="text-center">{{p.codigo}}</td>
+                        <td class="text-center">{{p.nombre}}</td>
+                        <td class="text-center">{{p.cargo}}</td>
+                        <td class="text-center noselectxtpqr float-none">
+                          <a class="waves-effect waves-light btn-small" ng-click="seleccionarfuncionario(p);"
+                            title="SELECCIONAR FUNCIONARIO {{p.nombre}}">
+                            <i id="bt-ges" class=" icon-check-1 fs-25"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      <tr ng-if="resultsP.length==0">
+                        <td colspan="12" class="center-align white" style="padding: 100px;">
+                          <div class="results-lupa">
+                            <i class="icon-search-4"></i>
+                          </div>
+                          <p class="text-center">
+                            No hay Funcionarios Disponibles
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="historicopqr" class="modal modal-trazapqr" style="width: 98%!important; max-height: 100%;top: 5%!important;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text">HISTORICO DE SOLICITUDES</h5>
+
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('historicopqr')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+              <div class="row">
+                <div class="col s4 right">
+                  <input type="text" placeholder="Filtrar PQR" ng-model="filterHPQRS">
+                </div>
+              </div>
+              <div class="col s12">
+                <div style="width: 100%;z-index: 10;overflow: hidden;">
+                  <div style="overflow: auto;">
+                    <table id="tablePQR" class="striped table-bordered" style="position: relative;">
+                      <thead class="noselectxtpqr">
+                        <tr>
+                          <th class="text-center">NUMERO SOLICITUD</th>
+                          <th class="text-center">FECHA RADICACION</th>
+                          <th class="text-center">FECHA VENCIMIENTO</th>
+                          <th class="text-center">DIAS HABILES RESTANTES</th>
+                          <th class="text-center">TIPO DE SOLICITUD</th>
+                          <th class="text-center">AREA DELEGADA</th>
+                          <th class="text-center">MEDIO RECEPCION SOLICITUD</th>
+                          <th class="text-center">ESTADO SOLICITUD</th>
+                          <th class="text-center">ACCION</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="p in datahistoricopqr | filter:filterHPQRS as resultsP track by $index">
+                          <td class="text-center">{{p.CODIGO2}}</td>
+                          <td class="text-center">{{p.FECHARAD}}</td>
+                          <td class="text-center">{{p.FECHAENT}}</td>
+                          <th class="text-center">
+                            <span class="status" ng-style="{ 'background':p.DIAS=='0' ? 'orange' : 'green' }"
+                              style="color:#fff">{{p.DIAS=='0' ? 'VENCIDA':p.DIAS}}</span>
+                          </th>
+                          <td class="text-center">{{p.SOLICITUD}}</td>
+                          <td class="text-center">
+                            {{p.AREA == 'S'? 'SALUD':'ASEGURAMIENTO'}}
+                          </td>
+                          <td class="text-center">{{p.NOMMEDIO}}</td>
+                          <td class="text-trans-up text-center">{{p.ESTADO}}</td>
+                          <td class="text-center noselectxtpqr float-none">
+                            <a class="waves-effect waves-light btn-small" ng-if="p.CORRESPONDENCIA=='N'"
+                              ng-click="showModalGestionar(p,p.AREA);" title="GESTIONAR {{p.SOLICITUD}}">
+                              <i id="bt-ges" class="icon-cogs fs-25"></i>
+                              <span ng-show="p.CANTIDAD>0" class="badge-green fs-10"
+                                style="left: 20px;bottom: 5px;">{{p.CANTIDAD}}</span>
+                            </a>
+                            <a class="waves-effect waves-light btn-small" ng-if="p.CORRESPONDENCIA=='S'"
+                              ng-click="openmodals('modalcorrespondencia',p);">
+                              <i id="bt-ges" class="icon-eye fs-25 c-pointer" title="DETALLE {{p.SOLICITUD}}"></i>
+                            </a>
+                            <br>
+                            <a class="waves-effect waves-light btn-small" ng-click="openmodals('trazapqr',p);"
+                              title="VER TRAZABILIDAD {{p.SOLICITUD}}">
+                              <i id="bt-ges" class="icon-road fs-25"></i>
+                            </a>
+                            <br>
+                            <a ng-if="p.RUTA" class="waves-effect waves-light btn-small"
+                              ng-click="descargafile(p.RUTA,p.FTP);" title="DESCARGAR ADJUNTO">
+                              <i id="bt-ges" class="icon-download-6 fs-25"></i>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr ng-if="resultsP.length==0">
+                          <td colspan="12" class="center-align white" style="padding: 100px;">
+                            <div class="results-lupa">
+                              <i class="icon-search-4"></i>
+                            </div>
+                            <p class="text-center" ng-if="!check_option && (resultsP.length==0)">
+                              No hay PQRS Activos Disponibles
+                            </p>
+                            <p class="text-center" ng-if="check_option && (resultsP.length==0)">
+                              No hay PQRS Procesados Disponibles
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modalvalidardocumento" class="modal" style="overflow: hidden;width: 70%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0">
+            <div class="col s11">
+              <h5 class="white-text">Validar Documento a Radicar</h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalvalidardocumento')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+            <div class="row">
+              <form ng-submit="validarDocumentoRadicar(docbtercero,bttipodocrad,docrad)">
+                <div class="row">
+                  <div class="col s4">
+                    <div class="input-list input-form" style="width: 100%;margin-top: 0;">
+                      <div class="input-field col s12">
+
+                        <input id="ipsinput" type="text" ng-model="docbtercero">
+                        <label for="ipsinput">Documento Tercero <span style="color:red;">*</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col s4">
+                    <label class="c-pointer noselectxtpqr" for="idtiporad">Tipo Documento Radicar <span
+                        style="color:red;">*</span></label>
+                    <select class="select-chosen-eps select  pt-select-pqr" id="idtiporad" ng-model="bttipodocrad">
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="s in pqr_documentos_radicar" ng-value="s.CODIGO">{{s.NOMBRE}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col s4">
+                    <div class="input-list input-form" style="width: 100%;margin-top: 0;">
+                      <div class="input-field col s12">
+                        <input id="ipsinput" type="text" ng-model="docrad">
+                        <label for="ipsinput">Documento Radicar <span style="color:red;">*</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <center>
+                      <a ng-click="limpiarValidaDoc();"
+                        class="waves-effect waves-light btn-large white-text red">Limpiar</a>
+
+                      <button class="waves-effect waves-light btn-large white-text" type="submit">Buscar</button>
+                    </center>
+
+                  </div>
+                </div>
+              </form>
+            </div>
+
+
+            <div class="row" ng-if="inactivedocumento==false">
+              <div class="col s12">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">CONSECUTIVO</th>
+                      <th style="text-align:center;">RECIBIDO</th>
+                      <th style="text-align:center;">RADICACION</th>
+                      <th style="text-align:center;">REMITENTE</th>
+                      <th style="text-align:center;">DESTINATARIO</th>
+                      <th style="text-align:center;">RADICADOR</th>
+                      <th style="text-align:center;">ESTADO</th>
+                      <th style="text-align:center;">ADJUNTO</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="text-align:center;">{{datadocumento.CONSECUTIVO}}</td>
+                      <td style="text-align:center;">{{datadocumento.FECHAREC}}</td>
+                      <td style="text-align:center;">{{datadocumento.FECHARAD}}</td>
+                      <td style="text-align:center;">{{datadocumento.REMITENTE}}</td>
+                      <td style="text-align:center;">{{datadocumento.DESTINATARIO}}</td>
+                      <td style="text-align:center;">{{datadocumento.RADICADOR}}</td>
+                      <td style="text-align:center;">
+                        <span class="status" ng-class="datadocumento.CLASE_ESTADO">
+                          <strong>{{datadocumento.ESTADO}}</strong>
+
+                        </span>
+                      </td>
+                      <td style="text-align:center;">
+                        <i ng-if="datadocumento.PQRFILE"
+                          ng-click="descargafile(datadocumento.PQRFILE,datadocumento.FTP);" title="DESCARGAR ADJUNTO"
+                          id="bt-ges" class="icon-download-6 fs-25 c-pointer"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modaldevolucion" class="modal" style="overflow: hidden;width: 70%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0">
+            <div class="col s11">
+              <h5 class="white-text">Devolución de Correspondencia - {{dpqr.CONSECUTIVO}}</h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modaldevolucion')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+            <div class="row">
+              <form ng-submit="saveDevolucion(motdevolucion,obsdevolucion)">
+                <div class="row">
+                  <div class="col s4">
+                    <label class="c-pointer noselectxtpqr" for="idtiporad">Motivos de Devolución
+                      <span style="color:red;">*</span></label>
+                    <select class="select-chosen-eps select  pt-select-pqr" id="idtiporad" ng-model="motdevolucion"
+                      required>
+                      <option value="">SELECCIONAR</option>
+                      <option ng-repeat="s in listMotivos" ng-value="s.CODIGO">
+                        {{s.NOMBRE}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <div class="input-field col m10 s12 w-100">
+                      <label for="obsdevolucion" class="noselectxtpqr">Observaciones</label>
+                      <textarea id="obsdevolucion" class="materialize-textarea" ng-model="obsdevolucion"
+                        required></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <center>
+                      <a ng-click="closemodals('modaldevolucion');"
+                        class="waves-effect waves-light btn-large white-text red">Cancelar</a>
+
+                      <button class="waves-effect waves-light btn-large white-text" type="submit">GUARDAR</button>
+                    </center>
+
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- //////////////////////////////////////////////////////////////////////modal admin correspondencia////////////////////////////////// -->
+  <div id="modalradicacion" class="modal" style="overflow: hidden;width: 70%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="col s12 m12 l12 card margin" style="padding-right: 0px; padding-left: 0px;">
+            <div class="foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Listado de usuarios con permisos para
+                  radicar correspondencia
+                  ({{Usuario.List.Listado.length}})</strong>
+                <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+                  <i class="icon-user-plus cursor-pointer" ng-click="Agregar_Usuario()"></i>
+                  <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar
+                    Usuario</span>
+                </div>
+                <div class="tooltip" style="margin-left: 465px;">
+                  <i style="cursor:pointer;" ng-click="closemodals('modalradicacion')"
+                    class="material-icons white-text">close</i>
+                  <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Cerrar</span>
+                </div>
+              </div>
+            </div>
+            <div class="col s3 no-padding label-new right"
+              style="width: 25%;display: inline-flex;margin-right: 4rem;margin-top: 0.35rem;">
+              <input class="margin border-none input-text-new black-text gray-input w-100 m-l" style="text-align:right;"
+                autocomplete="off" placeholder="Buscar..." ng-model="Usuario.List.Filtro">
+            </div>
+            <div class="card-action" id="card-action"
+              style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+              <!-- ELEGIR -->
+              <div class="col s12">
+                <div style="max-height: 55vh;overflow:auto;border: 2px solid;" class="default-color">
+                  <table id="tabla_modal_ENTREGA" class=" highlight" style="width:100%;color: black;">
+                    <thead class="default-linear-gradient">
+                      <th class="center" style="cursor:pointer">#</th>
+                      <th class="center" style="cursor:pointer">Cédula
+                        <span class="sortorder2"></span>
+                      </th>
+                      <th class="center" style="cursor:pointer">Funcionario
+                        <span class="sortorder2"></span>
+                      </th>
+                      <th class="center" style="cursor:pointer">Estado
+                        <span class="sortorder2"></span>
+                      </th>
+                    </thead>
+                    <tbody id="idpro">
+                      <tr class="cursor-pointer"
+                        ng-repeat="x in Usuario.List.Listado | filter:Usuario.List.Filtro | orderBy:propertyName2:reverse2">
+                        <td class="center">{{$index + 1}}</td>
+                        <td class="center">{{x.cedula}}</td>
+                        <td class="center">{{x.nombre}} <i class="color icon-pencil-alt-1" ng-show="x.FIRMA"
+                            title="Firma Digital"></i></td>
+
+                        <td class="center">
+                          <div class="tooltip" ng-if="x.estado == 'A' && x.DIOS == null ">
+                            <i class="icon-circle Con_pulse_A"
+                              style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                              ng-click="In_Ac_Usuario(x.cedula)"></i>
+                            <span class="tooltiptext"
+                              style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Activo</span>
+                          </div>
+                          <div class="tooltip" ng-if="x.estado == 'I' && x.DIOS == null">
+                            <i class="icon-circle Con_pulse_X"
+                              style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                              ng-click="In_Ac_Usuario(x.cedula)"></i>
+                            <span class="tooltiptext"
+                              style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- //-// -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    @media only screen and (max-width: 991px) and (min-width: 350px) {
+      #pqr .icon-help {
+        display: none !important;
+      }
+    }
+
+    .modal-trazapqr {
+      top: 5% !important;
+    }
+
+    .modal-pq {
+      top: 0% !important;
+    }
+
+    td {
+      word-break: break-all;
+    }
+
+    .color-green {
+      color: green !important;
+    }
+
+    .color-red {
+      color: red !important;
+    }
+
+    .color-normal {
+      color: #80868b !important;
+    }
+
+    .Con_pulse_A {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    /* /// */
+    .Con_pulse_X {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    .overflow-table_2 {
+      overflow: hidden;
+      height: 200px;
+      overflow-y: auto;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height: 43px;
+      background: #4daf7c;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</div>

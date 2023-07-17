@@ -1,0 +1,472 @@
+<div id="gestionmedicamentos" class="white newdesing position-relative">
+    <style>
+        .yellow {
+            background-color: #ffe27d !important;
+        }
+
+        .blue {
+            background-color: #19c5dc !important;
+        }
+
+        .red {
+            background-color: #d8514b !important;
+        }
+
+        .green {
+            background-color: #11d16b !important;
+        }
+
+        .purple {
+            background-color: #3623d996 !important;
+        }
+
+
+        .estado {
+            color: #ffffff;
+            font-size: 12px;
+            white-space: nowrap;
+            padding: 2px 5px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .newdesing input[type="date"]::-webkit-inner-spin-button,
+        .newdesing input[type="date"]::-webkit-calendar-picker-indicator,
+        .newdesing input[type="month"]::-webkit-inner-spin-button,
+        .newdesing input[type="month"]::-webkit-calendar-picker-indicator {
+            /* display: none; */
+            -webkit-appearance: none;
+        }
+
+        [type="radio"]:not(:checked)+label,
+        [type="radio"]:checked+label {
+            padding-right: 10px;
+        }
+
+        .PE.activo,
+        .PE:hover {
+            background-color: #ffe27d;
+            font-weight: bold;
+        }
+
+        .PA.activo,
+        .PA:hover {
+            background-color: #19c5dc;
+            font-weight: bold;
+        }
+
+        .TO.activo,
+        .TO:hover {
+            background-color: #11d16b;
+            font-weight: bold;
+        }
+
+        .CO.activo,
+        .CO:hover {
+            background-color: #3623d996;
+            font-weight: bold;
+        }
+
+        .AN.activo,
+        .AN:hover {
+            background-color: #3623d996;
+            font-weight: bold;
+        }
+
+        .card-btn-hover>div>.card:hover {
+            transform: scale(1.01);
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+/*         input[type=number] {
+            -moz-appearance: textfield;
+        } */
+    </style>
+    <div class="row section-header margin">
+        <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+                    Gestion de Medicamentos</h5>
+            </li>
+            <li>
+                <form class="form-input-icon-new" method="post" ng-submit="buscar_autorizacion(codigo_autorizacion)"
+                    autocomplete="off">
+                    <input ng-model="codigo_autorizacion" type="number" class="margin border-none"
+                        placeholder="Numero Autorización">
+                    <i ng-click="buscar_autorizacion(codigo_autorizacion)" class="icon-search"></i>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <div class="row dashboard-wrapper content-container white margin">
+        <div class="col s12 m12 l12 position-relative">
+            <div ng-show="medicamentos.vista==1"
+                class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+                Departamentos ({{array_seccionales.length}}):
+            </div>
+            <div ng-show="medicamentos.vista==1" class="row margin card-btn-hover">
+                <div ng-repeat="seccional in array_seccionales" class="col s12 m6 l3">
+                    <div ng-click="medicamentos.seccional=seccional.codigo;listar_municipios();medicamentos.vista=2"
+                        class="card cursor-pointer">
+                        <div class="card-content">
+                            <h5 title="Cantidad de Autorizaciones">{{seccional.cantidad}} <i
+                                    class="zmdi zmdi-globe-alt grey-text right"></i></h5>
+                            <div class="row">
+                                <h6>{{seccional.nombre}}</h6>
+                            </div>
+                            <div class="border-radius-none progress teal lighten-4" style="height: 6px;">
+                                <div class="determinate teal darken-2"
+                                    ng-style="calcular_porcentaje('array_seccionales',seccional.cantidad)"></div>
+                            </div>
+                            <p>
+                                <small>{{(calcular_porcentaje('array_seccionales',seccional.cantidad)).width}} de
+                                    las autorizaciones</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="medicamentos.vista==2"
+                class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+                Municipios ({{array_municipios.length}}):
+                <i ng-click="medicamentos.vista=1" class="icon-left-open-2 cursor-pointer default-color">Atras</i>
+            </div>
+            <div ng-show="medicamentos.vista==2" class="row margin card-btn-hover">
+                <div ng-repeat="municipio in array_municipios" class="col s12 m6 l3">
+                    <div ng-click="medicamentos.municipio=municipio.codigo;listar_ips();currentPage=0;medicamentos.vista=3"
+                        class="card cursor-pointer">
+                        <div class="card-content">
+                            <h5 title="Cantidad de Autorizaciones">{{municipio.cantidad}} <i
+                                    class="zmdi zmdi-pin grey-text right"></i></h5>
+                            <div class="row">
+                                <h6>{{municipio.nombre}}</h6>
+                            </div>
+                            <div class="border-radius-none progress orange lighten-4" style="height: 6px;">
+                                <div ng-style="calcular_porcentaje('array_municipios',municipio.cantidad)"
+                                    class="determinate orange darken-2"></div>
+                            </div>
+                            <p>
+                                <small>{{(calcular_porcentaje('array_municipios',municipio.cantidad)).width}} de
+                                    las autorizaciones</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="medicamentos.vista==3"
+                class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+                <span>{{titulo_ips(medicamentos.seccional,medicamentos.municipio)}} / LISTADO IPS:</span>
+                <!-- <input type="text" ng-model="q" class="margin border-none" style="height: auto;font-size: 13px;"
+                    placeholder="Nombre IPS"> -->
+                <input ng-model="q" type="text" class="margin border-none input-text-new"
+                    placeholder="Buscar en la tabla">
+                <i ng-click="medicamentos.vista=2" class="icon-left-open-2 cursor-pointer default-color">Atras</i>
+            </div>
+            <div ng-show="medicamentos.vista==3" class="position-relative">
+                <table id="array_autorizaciones" class="striped table-bordered white">
+                    <thead>
+                        <tr ng-init="medicamentos.orden=''" class="default-background white-text">
+                            <th class="border-none center-align">
+                                #{{(array_lista_ips.length==0)?'':array_lista_ips.length}}
+                            </th>
+                            <th class="border-none center-align">
+                                NIT
+                            </th>
+                            <th class="border-none">
+                                Nombre IPS
+                            </th>
+                            <th class="border-none center-align">
+                                <i class="icon-frown" style="font-size: 1rem;"></i>
+                                Pendiente
+                            </th>
+                            <th class="border-none center-align">
+                                <i class="icon-meh" style="font-size: 1rem;"></i>
+                                Parcial
+                            </th>
+                            <th class="border-none center-align">
+                                <i class="icon-smile" style="font-size: 1rem;"></i>
+                                Total
+                            </th>
+                            <th class="border-none center-align">
+                                <i class="icon-smiley-circled" style="font-size: 1rem;"></i>
+                                Confirmado
+                            </th>
+                            <th class="border-none center-align">
+                                Total Autorizaciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-if="array_lista_ips.length == 0">
+                            <td colspan="8" class="center-align">
+                                No hay datos para mostrar.
+                            </td>
+                        </tr>
+                        <tr
+                            ng-repeat="ips in array_lista_ips | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
+                            <td class="center-align">{{array_lista_ips.indexOf(ips)+1}}</td>
+                            <td class="center-align">
+                                {{ips.nit}}
+                            </td>
+                            <td>
+                                {{ips.nombreips}}
+                            </td>
+                            <td ng-click="ver_autorizaciones('PE',ips);q=''"
+                                class="center-align cursor-pointer PE {{(medicamentos.estado=='PE')?'activo':''}}"
+                                title="Ver entregas Pendiente">
+                                {{ips.pendiente}}
+                            </td>
+                            <td ng-click="ver_autorizaciones('PA',ips);q=''"
+                                class="center-align cursor-pointer PA {{(medicamentos.estado=='PA')?'activo':''}}"
+                                title="Ver entregas Parcial">
+                                {{ips.parcial}}
+                            </td>
+                            <td ng-click="ver_autorizaciones('TO',ips);q=''"
+                                class="center-align cursor-pointer TO {{(medicamentos.estado=='TO')?'activo':''}}">
+                                {{ips.total}}
+                            </td>
+                            <!-- ng-click="ver_autorizaciones('CO',ips)" -->
+                            <td class="center-align">
+                                {{ips.confirmado}}
+                            </td>
+                            <td class="center-align">
+                                {{ips.cantidad}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr id="loading" hidden>
+                            <td colspan="8" class="border-none no-padding">
+                                <div style="position: absolute;height: calc(100%);width: 100%;top: 0;left: 0;z-index: 1;flex-direction: column"
+                                    class="align-items-center d-flex justify-content-center white">
+                                    <!-- <i class="animation-rotate-infinite fa-2x icon-progress-4" style="height: 31px"></i> -->
+                                    <div class="loading">
+                                        <div class="default-background"></div>
+                                        <div class="default-background"></div>
+                                        <div class="default-background"></div>
+                                    </div>
+                                    <p style="font-weight: bold;">Cargando Página {{currentPage+1}}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div ng-show="medicamentos.vista==3"
+                class="black-text title-panel d-flex justify-content-between align-items-center"
+                style="margin-top: 15px;user-select: none">
+                <div class="switch">
+                    <label>
+                        <span class="{{(medicamentos.switchaut==false)?'activo':''}}">Procesado</span>
+                        <input ng-change="listar_ips()" type="checkbox" ng-model="medicamentos.switchaut">
+                        <span class="lever check-c"></span>
+                        <span class="{{(medicamentos.switchaut==true)?'activo':''}}">Anulado</span>
+                    </label>
+                </div>
+                <!-- <i class="icon-chart-bar cursor-pointer default-color"> Indicadores</i> -->
+                <select id="pageSize" ng-model="pageSize" class="gray-input select-default-new border-none"
+                    ng-change="currentPage=0" style="width: auto;max-width: 100px;">
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <div id="paginacion">
+                    <button class="btn btn-small border-radius-none no-padding" ng-disabled="currentPage == 0"
+                        ng-click="btns_paginacion(currentPage-1,'loading','currentPage')" style="box-shadow: none;">
+                        <i class="icon-left-small"></i>
+                    </button>
+                    <small style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                        Página {{currentPage+1}} de {{numberOfPages(array_lista_ips)}}
+                    </small>
+                    <button class="btn btn-small border-radius-none no-padding"
+                        ng-disabled="currentPage >= array_lista_ips.length/pageSize - 1"
+                        ng-click="btns_paginacion(currentPage+1,'loading','currentPage')" style="box-shadow: none;">
+                        <i class="icon-right-small"></i>
+                    </button>
+                </div>
+            </div>
+            <div ng-show="medicamentos.vista==4"
+                class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+                {{titulo_ips(medicamentos.seccional,medicamentos.municipio)}} / {{ips_select.nombreips}} (
+                {{ips_select.nit}}) / {{titulo_autorizaciones(medicamentos.estado).toUpperCase()}}
+                <i ng-click="listar_ips();currentPage=0;currentPage_2=0"
+                    class="icon-left-open-2 cursor-pointer default-color">Atras</i>
+            </div>
+            <div ng-show="medicamentos.vista==4"
+                class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+                <ul class="estados">
+                    <span class="estado PE activo black-text">Pendiente
+                        <b>{{ips_select.pendiente}}</b></span>
+                    <span class="estado PA activo black-text">Parcial
+                        <b>{{ips_select.parcial}}</b></span>
+                    <span class="estado TO activo black-text">Total
+                        <b>{{ips_select.total}}</b></span>
+                    <span class="estado CO activo black-text">Confirmado
+                        <b>{{ips_select.confirmado}}</b></span>
+                </ul>
+                <div class="switch">
+                    <label>
+                        <span class="{{(medicamentos.switch==false)?'activo':''}}">
+                            Todo
+                        </span>
+                        <input type="checkbox" ng-model="medicamentos.switch"
+                            ng-change="ver_autorizaciones(medicamentos.estado,array_lista_ips[0])">
+                        <span class="lever check-c"></span>
+                        <span class="{{(medicamentos.switch==true)?'activo':''}}">
+                            <input ng-model="medicamentos.fecha_mes"
+                                ng-change="change_medicamentos_fecha_mes(medicamentos.switch,medicamentos.fecha_mes)"
+                                id="fecha_mes" type="month"
+                                class="datepicker border-none input-date-new margin gray-input"
+                                style="width: 200px!important;outline: none;">
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div ng-show="medicamentos.vista==5"
+                class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+                Resultado de la búsqueda:
+                <i ng-click="listar_departamento();medicamentos.vista=1;codigo_autorizacion=''"
+                    class="icon-left-open-2 cursor-pointer default-color">Atras</i>
+            </div>
+            <div ng-show="medicamentos.vista==4 || medicamentos.vista==5" class="position-relative">
+                <table id="array_autorizaciones" class="striped table-bordered white">
+                    <thead>
+                        <tr class="default-background white-text">
+                            <th class="border-none center-align">
+                                #{{(array_autorizaciones.length==0)?'':array_autorizaciones.length}}
+                            </th>
+                            <th class="border-none center-align">
+                                Numero Autorización
+                            </th>
+                            <th ng-if="medicamentos.vista==5" class="border-none center-align">
+                                Ubicación Autorización
+                            </th>
+                            <th ng-if="medicamentos.vista==5" class="border-none center-align">
+                                Nombre IPS
+                            </th>
+                            <th class="border-none center-align">
+                                Fecha Autorización
+                            </th>
+                            <!-- <th class="border-none">
+                                IPS Solicitante
+                            </th>
+                            <th class="border-none">
+                                IPS Asignada
+                            </th> -->
+                            <th ng-if="medicamentos.estado!='PE'" class="border-none center-align">
+                                Fecha Entrega
+                            </th>
+                            <th class="border-none center-align">
+                                Estado Entrega
+                            </th>
+                            <th colspan="2" class="border-none center-align">
+                                Opciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-if="array_autorizaciones.length == 0">
+                            <td colspan="10" class="center-align">
+                                No hay datos para mostrar.
+                            </td>
+                        </tr>
+                        <tr
+                            ng-repeat="autorizacion in array_autorizaciones | startFrom:currentPage_2*pageSize | limitTo:pageSize">
+                            <td class="center-align">{{array_autorizaciones.indexOf(autorizacion)+1}}</td>
+                            <td class="center-align">{{autorizacion.ub_codigo}}</td>
+                            <td ng-if="medicamentos.vista==5" class="center-align">{{autorizacion.nombre_ubi_aut}}</td>
+                            <td ng-if="medicamentos.vista==5" class="center-align">{{autorizacion.nombre_ips}}</td>
+                            <td class="center-align">
+                                {{autorizacion.fecha_orden}}
+                            </td>
+                            <!-- <td>
+                                {{autorizacion.solicita}}
+                            </td>
+                            <td>
+                                {{autorizacion.asignada}}
+                            </td> -->
+                            <td ng-if="medicamentos.estado!='PE'" class="center-align">
+                                {{autorizacion.fecha_entrega}}
+                            </td>
+                            <td class="center-align black-text"
+                                ng-class="{'yellow':autorizacion.estado=='Pendiente','blue':autorizacion.estado=='Parcial','green':autorizacion.estado=='Total','purple':autorizacion.estado=='Confirmada','red':autorizacion.estado=='Anulado'}">
+                                <b>{{autorizacion.estado}}</b>
+                            </td>
+                            <td colspan="{{autorizacion.estado=='Pendiente'?2:1}}" class="center-align">
+                                <i ng-click="abrir_modal(2,autorizacion)" class="icon-clipboard-2 cursor-pointer"
+                                    title="Detalle de la autorizacion" style="font-size: 16px;"></i>
+                            </td>
+                            <td ng-if="autorizacion.estado=='Parcial' || autorizacion.estado=='Total'"
+                                class="center-align">
+                                <i ng-click="abrir_modal(4,autorizacion)" class="icon-docs cursor-pointer"
+                                    title="Ver soportes" style="font-size: 16px;"></i>
+                            </td>
+                            <td ng-if="autorizacion.estado=='Anulado'" class="center-align">
+                                <i ng-click="abrir_modal(5,autorizacion)" class="icon-loop-2 cursor-pointer"
+                                    title="Transferir de IPS" style="font-size: 16px;"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr id="loading2" hidden>
+                            <td colspan="10" class="border-none no-padding">
+                                <div style="position: absolute;height: calc(100%);width: 100%;top: 0;left: 0;z-index: 1;flex-direction: column"
+                                    class="align-items-center d-flex justify-content-center white">
+                                    <!-- <i class="animation-rotate-infinite fa-2x icon-progress-4" style="height: 31px"></i> -->
+                                    <div class="loading">
+                                        <div class="default-background"></div>
+                                        <div class="default-background"></div>
+                                        <div class="default-background"></div>
+                                    </div>
+                                    <p style="font-weight: bold;">Cargando Página {{currentPage_2+1}}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div ng-show="medicamentos.vista==4 || medicamentos.vista==5"
+                class="black-text title-panel d-flex justify-content-between align-items-center"
+                style="margin-top: 15px;user-select: none">
+                <div ng-show="medicamentos.vista!=5" class="switch">
+                    <label>
+                        <span class="{{(medicamentos.switchaut==false)?'activo':''}}">Procesado</span>
+                        <input type="checkbox" ng-model="medicamentos.switchaut"
+                            ng-change="ver_autorizaciones(medicamentos.estado,array_lista_ips[0])">
+                        <span class="lever check-c"></span>
+                        <span class="{{(medicamentos.switchaut==true)?'activo':''}}">Anulado</span>
+                    </label>
+                </div>
+                <!-- <i class="icon-chart-bar cursor-pointer default-color"> Indicadores</i> -->
+                <select id="pageSize" ng-model="pageSize" class="gray-input select-default-new border-none"
+                    ng-change="currentPage_2=0" style="width: auto;max-width: 100px;">
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <div id="paginacion">
+                    <button class="btn btn-small border-radius-none no-padding" ng-disabled="currentPage_2 == 0"
+                        ng-click="btns_paginacion(currentPage_2-1,'loading2','currentPage_2')"
+                        style="box-shadow: none;">
+                        <i class="icon-left-small"></i>
+                    </button>
+                    <small style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                        Página {{currentPage_2+1}} de {{numberOfPages(array_autorizaciones)}}
+                    </small>
+                    <button class="btn btn-small border-radius-none no-padding"
+                        ng-disabled="currentPage_2 >= array_autorizaciones.length/pageSize - 1"
+                        ng-click="btns_paginacion(currentPage_2+1,'loading2','currentPage_2')"
+                        style="box-shadow: none;">
+                        <i class="icon-right-small"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

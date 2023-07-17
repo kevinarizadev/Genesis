@@ -1,0 +1,473 @@
+<div id="gestionaut">
+    <div class="row">
+        
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s3" ng-click="detalles = false"><a class="active"
+                    href="javascript: void(0)">CARGUE</a></li>
+                    <li class="tab col s3" ng-click="detalles = true; get_consecutivos()
+                    ;"><a
+                        href="javascript: void(0)">DETALLES</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col s12 m12 l12 magazine margin widgets-tabs"  ng-hide="detalles" >
+                    <div class="card-panel widgets-tabs col l12 no-padding">
+                        
+                        
+                        <divclass="col  s12">
+                        <div class="row" >
+                            <div class="col s12">
+                                <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                                <h5>Cargue Afiliados Vacunados</h5>
+                            </div>
+                            <div class="col s12">
+                                
+                                <div class="col s12" ng-hide="false">
+                                    <div class="input-field col m11 s11">
+                                        <div class="input-field col m10 s12 w-100"
+                                        style="padding-left: 0px; padding-right: 0px;">
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <i class="material-icons">insert_drive_file</i>
+                                                <input type="file" ng-model="adjunto" name="adjunto" id="adjunto">
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input id="inputFilePlaceHolder" class="file-path" type="text"
+                                                placeholder="Adjuntar archivo PAIWEB Formato .CSV">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col s12 m12 l12">
+                                    <center>
+                                        <button title="Cargar Archivo" class="center btn  white-text" type="submit"
+                                        ng-click="enviaradj()" style="margin-top: 10px;">
+                                        Cargar Archivo
+                                    </button>
+                                </center>
+                            </div>
+                            
+                            
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+            
+            
+            
+        </div>
+        
+        <div class="col s12 m12 l12 magazine margin widgets-tabs"  ng-hide="!detalles" >
+            <div class="card-panel widgets-tabs col l12 no-padding">               
+                <div class="col s12">
+                    <div class="row" >
+                        <div class="col s12">
+                            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                            <h5>Resumen Cargues PAIWEB</h5>
+                        </div>
+                        <div class="col s12">
+                            <div class="input-list input-view-column">
+                                <label for="normal8">Consecutivo Cargue</label>
+                                <select class="select-chosen-eps" id="regimen" ng-model="consecutivo">
+                                    <option value="" disabled> Seleccionar</option>
+                                    <option ng-repeat="data in consecutivos" value="{{data.BREN_ID_CARGUE}}">Cargue # {{data.BREN_ID_CARGUE}}</option>                                   
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col s12 m12 l12">
+                            <center>
+                                <button title="Cargar Archivo" class="center btn  white-text" type="submit"
+                                ng-click="get_detalle()" style="margin-top: 10px;">
+                                Consultar Cargue
+                            </button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 m12 l12 magazine margin widgets-tabs"  ng-hide="detalle_error" >
+        <div class="card-panel widgets-tabs col l12 no-padding">               
+            <div class="row" >   
+                <div class=" widgets-tabs col l12 no-padding" style="display: flex; justify-self: space-around;">               
+                    <div class="col s12" style="display: flex;justify-content: space-around;">
+                        <div class="col s3 m3 l3" style="margin-left: 0%!important;">
+                            <div class="card" style="border-radius: .375rem;">
+                                <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                    <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                        Total Registros
+                                        <div class="right Con_pulse_A" style="background-color: #1a2e63!important; cursor: pointer;" ng-click="listaAfiliados('C')">
+                                            <i class="icon-eye white-text" style="padding: 10px;display: flex;" ng-click="filter('Activo')"></i>
+                                        </div>
+                                    </h6>
+                                    <div class="row" style="margin-bottom: 0;">
+                                        <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                            {{total_registros}}
+                                        </h6>
+                                    </div>
+                                    <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                        <div class="determinate teal darken-2" ng-style="{width: formatNumber((info.confirmados / info.total) * 100) + '%'}" style="width: 17.93%;">
+                                        </div>
+                                    </div>
+                                   <!--  <p>
+                                        <span class="green-text ng-binding">XX%</span>
+                                        <span style="color: #8898aa !important;"> del Total</span>
+                                    </p> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s3 m3 l3" style="margin-left: 0%!important;">
+                            <div class="card" style="border-radius: .375rem;">
+                                <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                    <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                        Total Registros Validos
+                                        <div class="right Con_pulse_A" style="background-color: rgb(37, 216, 34)!important; cursor: pointer;" ng-click="listaAfiliados('C')">
+                                            <i class="icon-eye white-text" style="padding: 10px;display: flex;" ng-click="filter('Activo')"></i>
+                                        </div>
+                                    </h6>
+                                    <div class="row" style="margin-bottom: 0;">
+                                        <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                           {{total_registros_validado}}
+                                        </h6>
+                                    </div>
+                                    <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                        <div class="determinate teal darken-2" ng-style="{width: formatNumber((info.confirmados / info.total) * 100) + '%'}" style="width: XX%;">
+                                        </div>
+                                    </div>
+                                   <!--  <p>
+                                        <span class="green-text ng-binding">XX%</span>
+                                        <span style="color: #8898aa !important;"> del Total</span>
+                                    </p> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s3 m3 l3" style="margin-left: 0%!important;">
+                            <div class="card" style="border-radius: .375rem;">
+                                <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                    <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                        Total Registros No Cruzan
+                                        <div class="right Con_pulse_A" style="background-color: rgb(255, 38, 0)!important; cursor: pointer;" ng-click="listaAfiliados('C')">
+                                            <i class="icon-eye white-text" style="padding: 10px;display: flex;" ng-click="filter('Activo')"></i>
+                                        </div>
+                                    </h6>
+                                    <div class="row" style="margin-bottom: 0;">
+                                        <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                            {{total_registros_no_validado}}
+                                        </h6>
+                                    </div>
+                                    <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                        <div class="determinate teal darken-2" ng-style="{width: formatNumber((info.confirmados / info.total) * 100) + '%'}" style="width: XX%;">
+                                        </div>
+                                    </div>
+                                   <!--  <p>
+                                        <span class="green-text ng-binding">XX%</span>
+                                        <span style="color: #8898aa !important;"> del Total</span>
+                                    </p> -->
+                                </div>
+                            </div>
+                        </div>
+                      
+                    </div>
+                </div>            
+              
+                
+            </div>
+            <div class="row" style="padding: 2vw;">   
+                <table id="result_censo" class="responsive-table striped table-bordered white animated"
+                style="position: relative;">
+                <thead>
+                    <tr class="white-text" style="background-color: #1a2e63!important;">
+                        <th class="center-align">Identificación</th>
+                        <th class="center-align">Nombre</th>
+                        <th class="center-align">Edad</th>
+                        <th class="center-align">Genero</th>
+                        <th class="center-align">Ubicación Vacunado</th>
+                        <!--<th class="center-align">Vacuna</th>
+                        <th class="center-align">Validado</th>-->
+                        <th class="center-align">Fecha Vacunado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="d in errores_cargue">
+                        <td class="center-align">{{d.tipo_identificacion}} - {{d.num_identificacion}}</td>
+                        <td class="center-align">{{d.nombres}}</td>
+                        <td class="center-align">{{d.edad}}</td>
+                        <td class="center-align">{{d.sexo}}</td>
+                        <td class="center-align">{{d.municipio}} - {{d.depto}} </td>
+                        <!--<td class="center-align">{{d.vacuna}}</td>
+                        <td class="center-align">{{d.validado}}</td>-->
+                        <td class="center-align">{{d.fecha}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        
+
+
+    </div>
+    
+    
+    <style>
+        .tab a:hover {
+            background-color: #ddd !important;
+            color: white !important;
+        }
+        
+        /* Style the active class (and buttons on mouse-over) */
+        .activebtn-step,
+        .activebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+        }
+        
+        .step-item {
+            height: 100px;
+            width: 100px;
+            border-radius: 100px;
+            padding: 0px;
+        }
+        
+        .donebtn-step,
+        .donebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+        }
+        
+        .steper {
+            width: 60%;
+            display: inline-flex;
+            text-align: center;
+            padding-bottom: 10px;
+            margin-left: 20%;
+        }
+        
+        .step-divider {
+            width: 100%;
+            position: relative;
+            top: 30px;
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 20px;
+        }
+        
+        .btn-step-content {
+            position: relative;
+            display: none;
+            height: calc(100% - 132px);
+            width: inherit;
+            overflow: visible;
+            margin-left: 41px;
+            margin-right: 24px;
+        }
+        
+        .step-option {
+            background: #eee;
+            height: 70px;
+            position: absolute;
+            bottom: -45px;
+            width: 100%;
+            margin-bottom: 6px;
+            left: 0px;
+            z-index: 2;
+        }
+        
+        .back-step,
+        .back-step:hover {
+            margin-top: 7px;
+            position: absolute;
+            right: 80px;
+            background: #ff4350 !important;
+        }
+        
+        .flex {
+            display: flex !important;
+        }
+        
+        .btn-step {
+            background-color: rgba(0, 0, 0, .3);
+            color: white;
+        }
+        
+        .hover-item:hover {
+            background-color: rgba(221, 221, 221, 0.45);
+        }
+        
+        .hover-item:active {
+            background-color: rgba(221, 221, 221, 0.45);
+        }
+        
+        .tabmenu>li:target>a {
+            background-color: rgba(221, 221, 221, 0.45);
+        }
+        
+        .requerido {
+            color: red !important;
+        }
+        
+        .tabactiva {
+            background-color: rgba(206, 206, 206, 0.71);
+        }
+        
+        .colorblack {
+            color: black;
+        }
+        
+        .itemsspam {
+            color: white !important;
+            border-radius: 12px !important;
+            box-shadow: 2px 2px 3px 0px #ccc !important;
+            position: relative !important;
+            top: 5px !important;
+            left: 11px !important;
+            cursor: pointer;
+        }
+        
+        .hovpanel:hover {
+            background: #32364c2b;
+            color: #ffa51b;
+            cursor: pointer;
+        }
+        
+        .mayus {
+            text-transform: uppercase;
+        }
+        
+        #header-fixed {
+            position: fixed;
+            top: 0px;
+            display: none;
+        }
+        
+        .cuadrado {
+            width: 25vh;
+            max-width: 240px;
+            height: 25vh;
+            max-height: 240px;
+            position: relative;
+            background: white;
+            box-shadow: 0 0 8px 1px #c7c7c7;
+        }
+        
+        .coloritem {
+            color: black !important;
+        }
+        
+        .autprocesada {
+            background-color: #4CAF50 !important;
+        }
+        
+        .autactiva {
+            background-color: #ff9800 !important;
+        }
+        
+        .switch label {
+            font-weight: 600;
+        }
+        
+        .switch label .lever.check-c {
+            background-color: #818181 !important;
+        }
+        
+        .switch label .lever.check-c:after {
+            background-color: #26a69a;
+        }
+        
+        .switch label>span.activo {
+            color: #26a69a !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        div#modaldetalle {
+            top: 1% !important;
+        }
+        
+        div#modalnovedades {
+            top: 1% !important;
+        }
+        
+        .outer {
+            width: 1px;
+            height: 100%;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .inner {
+            /* position: absolute; */
+            width: 100%;
+            height: 50vh;
+            background: grey;
+            top: 30%;
+            box-shadow: 0px 0px 30px 20px grey;
+        }
+        
+        .style-table-default {
+            height: 350px;
+            overflow: auto;
+        }
+        
+        /* Style Scroll */
+        .scrollTableDefault::-webkit-scrollbar {
+            /* width */
+            width: 5px;
+        }
+        
+        .scrollTableDefault::-webkit-scrollbar-track {
+            /* Track */
+            background: #f1f1f1;
+        }
+        
+        .scrollTableDefault::-webkit-scrollbar-thumb {
+            /* Handle */
+            background: #888;
+        }
+        
+        .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+            /* Handle on hover */
+            background: #555;
+        }
+        
+        .swal2-container {
+            z-index: 10000 !important;
+        }
+        
+        #tautorizaciones_length,
+        #tautorizaciones_filter,
+        #tautorizacionespro_length,
+        #tautorizacionespro_filter {
+            margin-top: -150px;
+        }
+        
+        #tautorizaciones_filter,
+        #tautorizacionespro_filter {
+            margin-right: 10px;
+        }
+        
+        #tautorizacionespro {
+            width: 100% !important;
+        }
+        
+        #tautorizaciones_paginate,
+        #tautorizacionespro_paginate {
+            margin-top: 15px;
+        }
+        
+        .clase-gray {
+            color: #736a6a !important;
+        }
+    </style>
+</div>
+</div>

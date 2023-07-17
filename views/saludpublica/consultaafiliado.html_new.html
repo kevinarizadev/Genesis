@@ -1,0 +1,982 @@
+<div class="row" style="background-color: transparent;"
+    ng-init="ValidaInformacion=false;EstadoInformacion=false;OcultarEvolucion=false;ListadoEvoluciones=false">
+    <style>
+        .columnas p {
+            position: absolute;
+            top: -38px;
+            width: 207px;
+            border: 1px solid #e5e6e6;
+            padding: 1px 10px;
+            border-radius: 0px 19px 0px 0px;
+        }
+
+        .dataTables_filter {
+            margin: 0 !important
+        }
+
+        .incla {
+            height: auto !important;
+            font-size: 1em !important;
+        }
+
+        .lb {
+            padding-left: 20px !important;
+            height: 20px !important;
+            transform: scale(.8) !important;
+        }
+
+        .medidas {
+            width: 33.3% !important;
+            margin-right: 0.4%;
+        }
+
+        .select-personalizado {
+            background-color: #bcbdbd;
+            padding: 0px !important;
+            height: 2em !important;
+            width: 15em !important;
+        }
+
+        p.titulo_card {
+            padding: 0.3em 1.2em;
+            margin: 0px;
+            background: #ffffff;
+            border: 1px solid #c4c4c4;
+            color: #818282;
+        }
+
+        hr {
+            height: 0px;
+            background-color: black;
+            padding: 0;
+            margin: 0;
+            margin-bottom: 0.2%;
+        }
+
+        table.dataTable {
+            width: 100% !important;
+        }
+
+        .medidas {
+            height: 12vh !important;
+            width: 100% !important;
+        }
+
+        @media only screen and (max-width: 1440px) {
+
+            #tabla_info th,
+            #tabla_info td {
+                font-size: 11px;
+            }
+
+            .medidas {
+                height: 18vh !important;
+                width: 100% !important;
+            }
+        }
+
+        .ngdialog-theme-default {
+            padding: 0 !important;
+            width: 100%;
+        }
+
+        .ngdialog-content {
+            width: 100% !important;
+        }
+
+        .estado-sospechoso {
+            background-color: rgb(255, 137, 2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .estado-probable {
+            background-color: rgb(255, 200, 2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .estado-confirmado {
+            background-color: rgb(255, 38, 0);
+            color: white;
+            font-weight: bold;
+        }
+
+        .estado-descartado {
+            background-color: rgb(3, 197, 20);
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+
+
+
+    <div class="row section-header" ng-init="obtenerDocumento();CargarSelect();"
+        style="margin: 0;background: #9897e81f;padding: 0px; margin-bottom: 0em;">
+        <ul class="left mailbox-custom-search list-inline"
+            style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+            <li id="inicio">
+                <h5>Consultar Afiliado</h5>
+            </li>
+            <li>
+                <div class="col input-field">
+                    <label class="active" style="color: black;margin-top: -3px;">Tipo de Documento</label>
+                    <select class="select-chosen-eps border-none input-text-new select-personalizado" ng-model="type">
+                        <option ng-repeat="documento in Documentos.Documento" ng-value="documento.Codigo">
+                            {{documento.Nombre}}</option>
+                    </select>
+                </div>
+                <div class="col input-field">
+                    <input type="text" class="border-none input-text-new" ng-model="id"
+                        placeholder="Número de identificación"
+                        style="background-color: #bcbdbd;width: 10em;margin-left: auto;">
+                </div>
+                <div class="input-field col">
+                    <a ng-click="ConsultarAfiliado()" class="btn btn-small"
+                        style="background-color: rgba(238, 64, 53, 0.8);">CONSULTAR</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row dashboard-wrapper content-container white ng-scope"
+        style="padding-bottom: 20px; margin-bottom: 0px;" ng-hide="ValidaInformacion === true">
+        <div class="card-content clearfix">
+            <div class="col s12 m12 l12" style="justify-content: center;">
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s2 m2 l2">
+                        <div class="card" style="border-radius: .375rem;">
+                            <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                    TOTAL
+                                </h6>
+                                <div class="row" style="margin-bottom: 0;">
+                                    <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                        {{ formatBigNumber(info.total) }}
+                                    </h6>
+                                </div>
+                                <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                    <div class="determinate teal darken-2"
+                                        ng-style="{width: '100%'}">
+                                    </div>
+                                </div>
+                                <p>
+                                    <span
+                                        class="green-text ng-binding">100%</span>
+                                    <span style="color: #8898aa !important;"> del Total</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s2 m2 l2">
+                        <div class="card" style="border-radius: .375rem;">
+                            <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                    CONFIRMADOS
+                                    <div class="right Con_pulse_A" style="background-color: rgb(255, 38, 0)!important; cursor: pointer;" ng-click="listaAfiliados('C')">
+                                        <i class="icon-eye white-text" style="padding: 10px;display: flex;"
+                                            ng-click="filter('Activo')"></i>
+                                    </div>
+                                </h6>
+                                <div class="row" style="margin-bottom: 0;">
+                                    <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                        {{ formatBigNumber(info.confirmados) }}
+                                    </h6>
+                                </div>
+                                <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                    <div class="determinate teal darken-2"
+                                        ng-style="{width: formatNumber((info.confirmados / info.total) * 100) + '%'}">
+                                    </div>
+                                </div>
+                                <p>
+                                    <span
+                                        class="green-text ng-binding">{{ formatNumber((info.confirmados / info.total === NaN ? 0 : info.confirmados / info.total) * 100) }}%</span>
+                                    <span style="color: #8898aa !important;"> del Total</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s2 m2 l2">
+                        <div class="card" style="border-radius: .375rem;">
+                            <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                    SOSPECHOSOS
+                                    <div class="right Con_pulse_A" style="background-color: rgb(255, 137, 2)!important; cursor: pointer;" ng-click="listaAfiliados('S')">
+                                        <i class="icon-eye white-text" style="padding: 10px;display: flex;"
+                                            ng-click="filter('Activo')"></i>
+                                    </div>
+                                </h6>
+                                <div class="row" style="margin-bottom: 0;">
+                                    <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                        {{ formatBigNumber(info.sospechosos) }}
+                                    </h6>
+                                </div>
+                                <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                    <div class="determinate teal darken-2"
+                                        ng-style="{width: formatNumber((info.sospechosos / info.total) * 100) + '%'}">
+                                    </div>
+                                </div>
+                                <p>
+                                    <span
+                                        class="green-text ng-binding">{{ formatNumber((info.sospechosos / info.total === NaN ? 0 : info.sospechosos / info.total) * 100) }}%</span>
+                                    <span style="color: #8898aa !important;"> del Total</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s2 m2 l2">
+                        <div class="card" style="border-radius: .375rem;">
+                            <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                    PROBABLES
+                                    <div class="right Con_pulse_A" style="background-color: rgb(255, 200, 2)!important; cursor: pointer;" ng-click="listaAfiliados('P')">
+                                        <i class="icon-eye white-text" style="padding: 10px;display: flex;"
+                                            ng-click="filter('Activo')"></i>
+                                    </div>
+                                </h6>
+                                <div class="row" style="margin-bottom: 0;">
+                                    <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                        {{ formatBigNumber(info.probable) }}
+                                    </h6>
+                                </div>
+                                <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                    <div class="determinate teal darken-2"
+                                        ng-style="{width: formatNumber((info.probable / info.total) * 100) + '%'}">
+                                    </div>
+                                </div>
+                                <p>
+                                    <span
+                                        class="green-text ng-binding">{{ formatNumber((info.probable / info.total) * 100) }}%</span>
+                                    <span style="color: #8898aa !important;"> del Total</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s2 m2 l2">
+                        <div class="card" style="border-radius: .375rem;">
+                            <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                    DESCARTADOS
+                                    <div class="right Con_pulse_A" style="background-color: rgb(3, 197, 20)!important; cursor: pointer;" ng-click="listaAfiliados('D')">
+                                        <i class="icon-eye white-text" style="padding: 10px;display: flex;"
+                                            ng-click="filter('Activo')"></i>
+                                    </div>
+                                </h6>
+                                <div class="row" style="margin-bottom: 0;">
+                                    <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                        {{ formatBigNumber(info.descartados) }}
+                                    </h6>
+                                </div>
+                                <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                    <div class="determinate teal darken-2"
+                                        ng-style="{width: formatNumber((info.descartados / info.total) * 100) + '%'}">
+                                    </div>
+                                </div>
+                                <p>
+                                    <span
+                                        class="green-text ng-binding">{{ formatNumber((info.descartados / info.total) * 100) }}%</span>
+                                    <span style="color: #8898aa !important;"> del Total</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s2 m2 l2">
+                        <div class="card" style="border-radius: .375rem;">
+                            <div class="card-content" style="padding: 0.5rem 0.8rem;">
+                                <h6 style="color: #8898aa !important;font-weight: 600 !important;font-size: 0.8125rem;">
+                                    SIN CRITERIOS
+                                    <div class="right Con_pulse_A" style="background-color: rgb(80, 80, 80)!important; cursor: pointer;" ng-click="listaAfiliados('X')">
+                                        <i class="icon-eye white-text" style="padding: 10px;display: flex;"
+                                            ng-click="filter('Activo')"></i>
+                                    </div>
+                                </h6>
+                                <div class="row" style="margin-bottom: 0;">
+                                    <h6 style="font-weight: 600!important;font-size: 1.25rem;" class="ng-binding">
+                                        {{ formatBigNumber(info.sin_criterio) }}
+                                    </h6>
+                                </div>
+                                <div class="progress teal lighten-4" style="margin-bottom: 0;height: 10px;">
+                                    <div class="determinate teal darken-2"
+                                        ng-style="{width: formatNumber((info.sin_criterio / info.total) * 100) + '%'}">
+                                    </div>
+                                </div>
+                                <p>
+                                    <span
+                                        class="green-text ng-binding">{{ formatNumber((info.sin_criterio / info.total) * 100) }}%</span>
+                                    <span style="color: #8898aa !important;"> del Total</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s12">
+                <!-- <div class="col s1 no-padding label-new m-b left" ng-show="!HojaAnticipo">
+                    <div
+                        class="select-wrapper select-new gray-input ng-valid initialized ng-touched ng-dirty ng-valid-parse">
+                        <span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true"
+                            data-activates="select-options-c5e2cbc1-4a2a-9db1-8afd-93e2a271c5e4" value="10">
+                        <ul id="select-options-c5e2cbc1-4a2a-9db1-8afd-93e2a271c5e4"
+                            class="dropdown-content select-dropdown ">
+                            <li class=""><span>10</span></li>
+                            <li class=""><span>20</span></li>
+                            <li class=""><span>50</span></li>
+                            <li class=""><span>100</span></li>
+                        </ul><select
+                            class="select-new gray-input ng-valid initialized ng-touched ng-dirty ng-valid-parse"
+                            style="box-shadow: none;" material-select="" watch="" ng-model="Mostrar_Sol"
+                            ng-change="initPaginacion2(Mostrar_Sol)">
+                            <option value="10" selected="">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                    <div style="line-height: 2;">
+                        <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                            title="Actualizar Tabla" ng-click="Listar_Solicitudes(1)"></i>
+                    </div>
+                </div> -->
+                <!-- ngIf: Rol_Cargo != 0 && Ubicacion != 0 -->
+                <div class="col s2 m2 l2">
+                    <h5 style="margin: 0;
+                    bottom: -34px;
+                    position: relative;">{{ listaSeleccionada }}</h5>
+                </div>
+                <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;"
+                    ng-show="!HojaAnticipo">
+                    <input
+                        class="margin border-none input-text-new gray-input w-100 m-l ng-pristine ng-untouched ng-valid"
+                        type="text" placeholder="Buscar" ng-model="filtro" ng-change="filtrarResultados()">
+                    <button class="btn" style="margin-left: 8px;" ng-click="descargarDatos()"><i class="icon-file-excel"></i></button>
+                </div>
+            </div>
+
+            <div style="width:100%;" ng-show="!HojaAnticipo">
+                <table class="striped table-bordered" style="width:100%;font-size:6px !important;">
+                    <thead class="default-background" style="color:white;">
+                        <tr>
+                            <th style="text-align: center;">TD</th>
+                            <th style="text-align: center;">DOCUMENTO</th>
+                            <th style="text-align: center;">NOMBRE</th>
+                            <th style="text-align: center;">MUNICIPIO</th>
+                            <th style="text-align: center;">EDAD</th>
+                            <th style="text-align: center;">GRUPO DE RIESGO</th>
+                            <th style="text-align: center;">GENERO</th>
+                            <th style="text-align: center;">HISTORIA CLINICA</th>
+                            <th style="text-align: center;">SISMUESTRAS</th>
+
+                            <th style="text-align: center;">ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="afiliado in paginar(listaTemp, listaInicio, listaFin)">
+                            <td  style="text-align: center;">{{ afiliado.TIPOD_DOC }}</td>
+                            <td   style="text-align: center;">{{ afiliado.DOC }}</td>
+                            <td   style="text-align: center;">{{ afiliado.NOMBRE_AFILIADO }}</td>
+                            <td   style="text-align: center;">{{ afiliado.MUNICIPIO }}</td>
+                            <!-- <td ng-style="{ 'background-color': afiliado.STYLE_COLOR, 'color': afiliado.STYLE_COLOR === 'blue' ? 'white' : 'black', 'text-align': 'center' }">{{ afiliado.EDAD }}</td> -->
+                            <td style="text-align: center;">{{ afiliado.EDAD }}</td>
+                            <td ng-style="{'text-align': 'center', 'color': afiliado.GRUPO_DE_RIEGOS === 'MAYORES DE 60 AÑOS' ? 'red' : 'green' }">{{ afiliado.GRUPO_DE_RIEGOS }}</td>
+                            
+                            <td  style="text-align: center;">{{ afiliado.GENERO }}</td>
+                            <td style="text-align: center;">
+                                <!-- <div ng-style="{'width': '12px', 'height': '12px', 'background-color': afiliado.SOPORTE_HISTORIA === 'SI' ? 'green' : 'red'}"></div> -->
+                                {{afiliado.SOPORTE_HISTORIA}}
+                            </td>
+                            <td style="text-align: center;">
+                                <!-- <div ng-style="{'width': '12px', 'height': '12px', 'background-color': afiliado.SOPORTE_SISMUESTRA === 'SI' ? 'green' : 'red'}"></div> -->
+                               {{afiliado.SOPORTE_SISMUESTRA}} 
+                            </td>
+                            <td  style="text-align: center;"><button class="btn" ng-click="consultaAfiliado(afiliado)">VER</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin:0;position: absolute;right: 4%;">
+                    <label for="normal" class="ng-binding">Total de afiliados: {{ formatBigNumber(listaTemp.length) }}</label>
+                </div>
+                <ul style="text-align: center;padding-top: 20px;" class="pagination">
+                    <li><button ng-disabled="currentPage == 0" class="btn-floating default-background"
+                            ng-click="anterior()" >«</button></li>
+                    <li>Registro {{ formatBigNumber(listaInicio + 1) }} hasta {{ formatBigNumber(listaFin) }}</li>
+                    <li><button ng-disabled="currentPage >= listDatosTemp.length/pageSize - 1"
+                            class="btn-floating default-background" ng-click="siguiente()">»</button></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-if="ValidaInformacion">
+        <h6><a href="javascript: void(0)" ng-click="mostrarInformacion(false)" style="padding-left: 12px;">Regresar</a></h6>
+        <div class="col s8 m8 l8">
+            <div class="card" id="card-datos">
+                <div class="card-content">
+                    <h5>Informacion Del Afiliado</h5>
+                </div>
+                <div class="card-content clearfix">
+                    <table id="tabla_info" class="responsive-table table-bordered striped">
+                        <tbody>
+                            <tr>
+                                <th>TIPO DOCUMENTO</th>
+                                <td colspan="1" align="center">{{afildato.tipo_documento}}</td>
+                                <th>NUMERO DOCUMENTO</th>
+                                <td colspan="1" align="center">{{afildato.documento}}</td>
+                            </tr>
+                            <tr>
+                                <th>NOMBRE AFILIADO</th>
+                                <td colspan="3" align="center">{{afildato.nombre_afiliado}}</td>
+                            </tr>
+                            <tr>
+                                <th>ESTADO AFILIADO</th>
+                                <td colspan="1" align="center">{{afildato.estado_afiliado}}</td>
+                                <th>ESTADO AFILIADO BDUA</th>
+                                <td colspan="1" align="center">{{afildato.estado_afiliado_bdua}}</td>
+                            </tr>
+                            <tr>
+                                <th>DEPARTAMENTO</th>
+                                <td colspan="1" align="center">{{afildato.departamento}}</td>
+                                <th>MUNICIPIO</th>
+                                <td colspan="1" align="center">{{afildato.municipio}}</td>
+                            </tr>
+                            <tr>
+                                <th>GENERO</th>
+                                <td colspan="1" align="center">{{afildato.genero}}</td>
+                                <th>FECHA NACIMIENTO</th>
+                                <td colspan="1" align="center">{{afildato.fecha_nacimiento}}</td>
+                            </tr>
+                            <tr>
+                                <th>DIRECCION</th>
+                                <td colspan="3" align="center">{{afildato.direccion}}</td>
+                            </tr>
+
+                            <tr>
+                                <th>CELULAR</th>
+                                <td colspan="1" align="center">{{afildato.celular}}</td>
+                                <th>CELULAR 2</th>
+                                <td colspan="1" align="center">{{afildato.celular2}}</td>
+                            </tr>
+                            <tr>
+                                <th>ZONA DEL AFILIADO</th>
+                                <td colspan="3" align="center">{{afildato.zona_afiliado_eafi}}</td>
+                                <!-- <th>ZONA DEL AFILIADO COVID-19</th>
+                                <td colspan="1" align="center">{{afildato.zona_afiliado_covid}}</td> -->
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <center ng-show="esNacional()">
+                    <a ng-click="EditarInformacion(afildato)" class="btn btn-small" style="background-color: #FF5722"><i
+                            class="icon-edit"></i> Editar Información</a>
+                    <a ng-click="ConfirmarAfiliado()" class="btn btn-small" style="background-color: #558a2f;"><i
+                            class="icon-person"></i> Actualizar Estado</a>
+                    <a ng-click="CrearEvolucion()" class="btn btn-small" style="background-color: #1a2e63;"><i
+                            class="icon-person"></i> Crear Evolución</a>
+                    <a ng-click="VerEvolucion('comenzar')" class="btn btn-small" style="background-color: #9C27B0;"><i
+                            class="icon-eye"></i> Ver Evolución</a>
+                    <a ng-click="verHistorico()" class="btn btn-small" style="background-color: gray;"><i
+                            class="icon-list"></i> Ver Historico</a>
+                </center>
+                <br>
+            </div>
+        </div>
+
+        <div class="col s4 m4 l4" ng-if="ValidaInformacion">
+            <div class="card" id="card-soportes">
+                <div class="card-content clearfix">
+                    <table id="tabla_info" class="responsive-table table-bordered striped" ng-show="soportes !== null">
+                        <tbody>
+                            <tr>
+                                <th>NOMBRE</th>
+                                <th>VER</th>
+                            </tr>
+                            <tr ng-repeat="archivo in soportes">
+                                <td>{{ archivo.NOMBRE_SOPORTE }}</td>
+                                <td><i class="fa fa-eye" ng-click="mostrarSoporte(archivo)"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p ng-show="soportes === null">El afiliado no cuenta con soportes en el sistema</p>
+
+                    <br>
+
+                    <table class="responsive-table table-bordered striped">
+                        <tbody>
+                            <tr>
+                                <th>ESTADO</th>
+                                <th>ULTIMA GESTION</th>
+                                <th>ULTIMA GESTION (DIAS)</th>
+                            </tr>
+                            <tr>
+                                <td
+                                    ng-class="afildato.estado === 'S' ? 'estado-sospechoso' : afildato.estado === 'C' ? 'estado-confirmado' : afildato.estado === 'D' ? 'estado-descartado' : afildato.estado === 'P' ? 'estado-probable' : ''">
+                                    {{ muestraEstado(afildato.estado)  }}</td>
+                                <td style="text-align: center;">
+                                    {{ informacion.fecha_inicial !== '' ? informacion.fecha_inicial : 'SIN DATOS' }}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{ informacion.fecha_inicial !== '' ? formatFechaRelativa(informacion.fecha_inicial) : 'SIN DATOS' }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m12 l12">
+        <div class="row" ng-if="EstadoInformacion">
+            <div class="col l12 m6 s12">
+                <div class="card">
+                    <div class="card-content" style="display: flex; justify-content: space-between;">
+                        <h5 style="display: flex;">Estado de Afiliado</h5>
+                        <div>
+                            <a href="javascript: void(0);"
+                                ng-click="historicoActual = historicoActual - 1; cambiarHistorico(historicoActual)"
+                                ng-show="historicoActual > 0">Anterior</a>
+                            <span>{{ historicoActual + 1}} de {{ historico.length }}</span>
+                            <a href="javascript: void(0);"
+                                ng-click="historicoActual = historicoActual + 1; cambiarHistorico(historicoActual)"
+                                ng-show="historicoActual < historico.length - 1">Siguiente</a>
+                        </div>
+
+                    </div>
+                    <div class="card-action">
+                        <div class="row">
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;">
+                                    <label for="simple-select" class="active">Fecha Seguimiento</label>
+                                    <input class="datepicker picker__input calendario uppercase" id="fecha_inicial"
+                                        placeholder="dd/mm/yyyy" ng-model="informacionHistorico.fecha_inicial"
+                                        class="datepicker_inicio picker__input" style=" background-color: white;"
+                                        readonly>
+                                </div>
+                                <div class="input-field col l1 m1 s1 margin">
+                                    <input id="ant_hta" name="ant_hta" type="checkbox"
+                                        ng-model="informacionHistorico.ant_hta" disabled />
+                                    <label for="ant_hta">HTA</label>
+                                </div>
+                                <div class="input-field col l1 m1 s1 margin">
+                                    <input id="ant_dm" name="ant_dm" type="checkbox"
+                                        ng-model="informacionHistorico.ant_dm" disabled />
+                                    <label for="ant_dm">DM</label>
+                                </div>
+                                <div class="input-field col l1 m1 s1 margin">
+                                    <input id="ant_cancer" name="ant_cancer" type="checkbox"
+                                        ng-model="informacionHistorico.ant_cancer" disabled />
+                                    <label for="ant_cancer">CÁNCER</label>
+                                </div>
+                                <div class="input-field col l1 m1 s1 margin">
+                                    <input id="ant_vih" name="ant_vih" type="checkbox"
+                                        ng-model="informacionHistorico.ant_vih" disabled />
+                                    <label for="ant_vih">VIH</label>
+                                </div>
+                                <div class="input-field col l1 m1 s1 margin">
+                                    <input id="ant_erc" name="ant_erc" type="checkbox"
+                                        ng-model="informacionHistorico.ant_erc" disabled />
+                                    <label for="ant_erc">ERC</label>
+                                </div>
+                                <div class="input-field col l1 m1 s1 margin">
+                                    <input id="ant_epoc" name="ant_epoc" type="checkbox"
+                                        ng-model="informacionHistorico.ant_epoc" disabled />
+                                    <label for="ant_epoc">EPOC</label>
+                                </div>
+                                <div class="input-field col l1 m1 s1 margin">
+                                    <input id="ant_asma" name="ant_asma" type="checkbox"
+                                        ng-model="informacionHistorico.ant_asma" disabled />
+                                    <label for="ant_asma">ASMA</label>
+                                </div>
+                            </div>
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Discapacidad</label>
+                                    <select id="discapacidad" name="discapacidad" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.discapacidad">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="dis in discapacidadData" disabled value="{{dis.codigo}}">
+                                            {{dis.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l4 m12 s12 margin">
+                                    <label class="labelper">Fuente de Reporte</label>
+                                    <select id="fuente" name="fuente" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.fuente">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="fue in FuenteData" disabled value="{{fue.codigo}}">
+                                            {{fue.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Estado</label>
+                                    <select id="estado" name="estado" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.estado">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="es in estadoData" disabled value="{{es.codigo}}">
+                                            {{es.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-hide="hde.FechaInicioSintomas">
+                                    <label for="simple-select" class="active">Fecha Inicio Sintomas</label>
+                                    <input class="datepicker picker__input calendario uppercase"
+                                        id="fecha_inicio_sintomas" placeholder="dd/mm/yyyy" readonly
+                                        ng-model="informacionHistorico.fecha_inicio_sintomas"
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-hide="hde.FechaConsultaInicial">
+                                    <label for="simple-select" class="active">Fecha Consulta Inicial</label>
+                                    <input class="datepicker picker__input calendario uppercase"
+                                        id="fecha_consulta_inicial" placeholder="dd/mm/yyyy" readonly
+                                        ng-model="informacionHistorico.fecha_consulta_inicial"
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                </div>
+                            </div>
+
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-hide="hde.FechaTomaMuestra">
+                                    <input class="datepicker picker__input calendario uppercase" id="fecha_toma_muestra"
+                                        placeholder="dd/mm/yyyy" readonly
+                                        ng-model="informacionHistorico.fecha_toma_muestra" 7
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                    <label for="simple-select" class="active">Fecha Toma Muestra</label>
+                                </div>
+
+
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-hide="hde.FechaInformeResultado">
+                                    <label for="simple-select" class="active">Fecha Informe Resultado</label>
+                                    <input class="datepicker picker__input calendario uppercase"
+                                        id="fecha_informe_resultado" placeholder="dd/mm/yyyy" readonly
+                                        ng-model="informacionHistorico.fecha_informe_resultado"
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                </div>
+
+                                <div class="input-field col l2 m12 s12 margin" ng-hide="hde.Resultado">
+                                    <label class="labelper">Resultado</label>
+                                    <select id="resultado" name="resultado" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.resultado">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="res in resultadoData" disabled value="{{res.codigo}}">
+                                            {{res.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-show="informacionHistorico.fecha_toma_muestra_2 !== '' && informacionHistorico.fecha_informe_resultado_2 !== ''">
+                                    <input class="datepicker picker__input calendario uppercase" id="fecha_toma_muestra"
+                                        placeholder="dd/mm/yyyy" readonly
+                                        ng-model="informacionHistorico.fecha_toma_muestra_2" 7
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                    <label for="simple-select" class="active">Fecha Toma Muestra 2</label>
+                                </div>
+
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-show="informacionHistorico.fecha_informe_resultado_2 !== ''">
+                                    <label for="simple-select" class="active">Fecha Informe Resultado 2</label>
+                                    <input class="datepicker picker__input calendario uppercase"
+                                        id="fecha_informe_resultado" placeholder="dd/mm/yyyy" readonly
+                                        ng-model="informacionHistorico.fecha_informe_resultado_2"
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                </div>
+                            </div>
+
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l4 m12 s12 margin">
+                                    <label class="labelper">Ente Reportante</label>
+                                    <select id="ente_reporta" name="ente_reporta" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.ente_reporta">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="er in entidadReportaData" disabled value="{{er.codigo}}">
+                                            {{er.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper" for="periodo">Días Toma Muestra</label>
+                                    <input id="periodo" type="text" readonly ng-model="informacionHistorico.periodo">
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Tipo de Caso</label>
+                                    <select id="tipo_caso" name="tipo_caso" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.tipo_caso">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="tc in tipoCasoData" disabled value="{{tc.codigo}}">
+                                            {{tc.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l3 m12 s12 margin">
+                                    <label class="labelper" for="pais_procedencia">País de Procedencia</label>
+                                    <input id="pais_procedencia" type="text" readonly
+                                        ng-model="informacionHistorico.pais_procedencia"
+                                        style="text-transform:uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l3 m12 s12 margin">
+                                    <label class="labelper">Tipo Atención</label>
+                                    <select id="tipo_atencion" name="tipo_atencion" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.tipo_atencion">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="ta in tipoAtencionData" value="{{ta.codigo}}" disabled>
+                                            {{ta.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l3 m12 s12 margin">
+                                    <label class="labelper" for="ips_atencion">IPS Atención</label>
+                                    <input id="ips_atencion" type="text" ng-model="informacionHistorico.ips_atencion"
+                                        style="text-transform:uppercase;" readonly>
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Estado Vital</label>
+                                    <select id="estado_vital" name="estado_vital" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.estado_vital">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="esvi in estadoVitalData" disabled value="{{esvi.codigo}}">
+                                            {{esvi.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-hide="hde.FechaMuerte">
+                                    <label for="simple-select" class="active">Fecha de Muerte</label>
+                                    <input class="datepicker picker__input calendario uppercase" id="fecha_muerte"
+                                        placeholder="dd/mm/yyyy" readonly ng-model="informacionHistorico.fecha_muerte"
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                </div>
+                            </div>
+
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Terminó Tratamiento</label>
+                                    <select id="termina_tratamiento" name="termina_tratamiento"
+                                        class="select-chosen-eps" ng-model="informacionHistorico.termina_tratamiento">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="tertr in terminaTratamientoData" disabled
+                                            value="{{tertr.codigo}}">
+                                            {{tertr.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin" style="padding: 8px !important;"
+                                    ng-hide="hde.FechaTerminacionTratamiento">
+                                    <label for="simple-select" class="active">Fecha Terminación Tratamiento</label>
+                                    <input class="datepicker picker__input calendario uppercase"
+                                        id="fecha_terminacion_tratamiento" placeholder="dd/mm/yyyy" readonly
+                                        ng-model="informacionHistorico.fecha_terminacion_tratamiento"
+                                        class="datepicker_inicio picker__input" style=" background-color: white;">
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Resultado Tratamiento</label>
+                                    <select id="resultado_tratamiento" name="resultado_tratamiento"
+                                        class="select-chosen-eps" ng-model="informacionHistorico.resultado_tratamiento">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="restr in resultadoTratamientoData" disabled
+                                            value="{{restr.codigo}}">
+                                            {{restr.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Condición Final</label>
+                                    <select id="condicion_final" name="condicion_final" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.condicion_final">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="cf in condicionFinalData" disabled value="{{cf.codigo}}">
+                                            {{cf.nombre}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-field col l2 m12 s12 margin">
+                                    <label class="labelper">Zona del Afiliado</label>
+                                    <select id="zona_afiliado" name="zona_afiliado" class="select-chosen-eps"
+                                        ng-model="informacionHistorico.zona_afiliado">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option value="R" disabled>RURAL</option>
+                                        <option value="U" disabled>URBANO</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col l12 m12 s12" style="margin-bottom: 40px;">
+                                <div class="input-field col l12 m12 s12">
+                                    <textarea id="tratamiento_medico" class="materialize-textarea  upperfont"
+                                        maxlength="4000" readonly ng-model="informacionHistorico.tratamiento_medico"
+                                        style="text-transform:uppercase;"></textarea>
+                                    <label for="tratamiento_medico">Tratamiento Médico</label>
+                                </div>
+                            </div>
+
+                            <div class="input-field col s12" ng-show="informacionHistorico.ruta_soporte === ''">
+                                <div class="file-field input-field">
+                                    <div class="btn">
+                                        <i class="icon-file-pdf"></i>
+                                        <input type="file" accept=".pdf" id="archivoHistoriaClinica"
+                                            ng-disabled="enProgreso">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input id="inputFilePlaceHolderMasive" class="file-path" type="text"
+                                            placeholder="Adjuntar historia clinica" ng-disabled="enProgreso">
+                                        <span ng-if="dataFile"
+                                            ng-class="{'red-text': filePqrs==null, 'green-text': filePqrs!=null }">{{dataFile}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-if="OcultarEvolucion">
+            <div class="col l12 m6 s12">
+                <div class="card">
+
+                    <div class="card-content">
+                        <h5 style="display: flex;">Crear Evoclución</h5>
+                    </div>
+                    <div class="card-action">
+                        <div class="row">
+                            <div class="col l12 m12 s12">
+                                <div class="input-field col l6 m12 s12">
+                                    <label for="simple-select" class="active">Fecha Sospecha</label>
+                                    <input class="datepicker picker__input calendario uppercase" id="fecha_evolucion"
+                                        ng-model="fecha_evolucion" class="datepicker_inicio picker__input"
+                                        style=" background-color: white;">
+                                </div>
+                            </div>
+                            <br>
+                            <textarea placeholder="Observación" ng-model="observacion"
+                                style="margin: 0px; height: 106px; width: 1097px;"></textarea>
+                            <br>
+                            <div class="input-button">
+                                <center>
+                                    <a ng-click="Crear(fecha_evolucion,observacion)" class="btn btn-small"
+                                        style="background-color: rgba(238, 64, 53, 0.8);">Crear</a>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-if="ListadoEvoluciones">
+            <div class="col l12 m12 s12">
+                <div class="card">
+                    <div class="card-content">
+                        <h5 style="display: flex;"><strong>Evoluciónes</strong></h5>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="card-content clearfix">
+                        <table class="responsive-table striped table-bordered" align="center" id="informacion"
+                            style="border-bottom: none;">
+                            <thead align="center">
+                                <tr>
+                                    <td><strong>#</strong></td>
+                                    <td><strong>DOCUMENTO</strong></td>
+                                    <td><strong>FECHA EVOLUCIÓN</strong></td>
+                                    <td><strong>OBSERVACION</strong></td>
+                                    <td><strong>RESPONSABLE</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody style="height: 40%; overflow: scroll;">
+                                <tr ng-repeat="listo in informacion">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{listo.tipo_documento}} - {{listo.documento}}</td>
+                                    <td>{{listo.fecha_evolucion}}</td>
+                                    <td>{{listo.observacion}}</td>
+                                    <td>{{listo.usuario_registro}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="modalactualizar" class="modal" style="width: 80%;">
+            <div class="modal-content">
+                <div style="width: 100%;margin: 0 auto;">
+                    <div class="card-content">
+                        <div class="row">
+                            <form>
+                                <blockquote><strong>ACTUALIZAR INFORMACION</strong></blockquote>
+                                <div class="col l12 m12 s12">
+
+                                    <div class="input-field col l3 m12 s12 margin">
+                                        <input id="documento" type="text" ng-model="p_tipo" disabled>
+                                        <label for="documento" class="">Tipo Documento</label>
+                                    </div>
+
+                                    <div class="input-field col l3 m12 s12 margin">
+                                        <input id="documento" type="text" ng-model="p_documento" disabled>
+                                        <label for="documento" class="">Documento</label>
+                                    </div>
+                                    <div class="input-field col l6 m12 s12 margin">
+                                        <input id="nombre" type="text" ng-model="p_nombre" disabled>
+                                        <label for="nombre" class="">Nombre Afiliado</nombre_aportante>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col l12 m12 s12">
+                            <div class="input-field col l6 m12 s12 margin">
+                                <div class="input-field col l6 m12 s12 margin">
+                                    <input id="celular" type="text" ng-model="p_celular">
+                                    <label for="celular" class="">Celular</label>
+                                </div>
+                                <div class="input-field col l6 m12 s12 margin">
+                                    <input id="celular" type="text" ng-model="p_celular2">
+                                    <label for="celular" class="">Celular 2</label>
+                                </div>
+                            </div>
+                            <div class="input-field col l6 m12 s12 margin">
+                                <div class="input-field col l6 m12 s12">
+                                    <input id="direccion" type="text" ng-model="p_direccion" disabled>
+                                    <label for="direccion" class="">Dirección</label>
+                                </div>
+                                <div class="input-field col l3 m12 s12">
+                                    <input id="direccion" type="text" ng-model="p_barrio" disabled>
+                                    <label for="direccion" class="">Barrio</label>
+                                </div>
+                                <div class="tooltip">
+                                    <label ng-click="AbrirModalDireccion()"><i class="material-icons">info</i></label>
+                                    <span class="tooltiptext">Click Para Actualizar Direccion</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <center>
+                            <a ng-click="ActualizarInfor()" class="btn btn-small" style="background-color: #558a2f;"><i
+                                    class="icon-save"></i>Actualizar Informacion</a>
+                        </center>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

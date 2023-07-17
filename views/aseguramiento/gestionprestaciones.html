@@ -1,0 +1,1446 @@
+    <div  class="liquidacion" style="zoom: 0.9;">
+
+    <div id="titulo">
+        <h5>Gestión de Prestaciones Económicas</h5>
+        <i ng-click="reversar()" ng-show="donde_guardo.valliq=='S'" class="icon-reply" style="margin-right: calc(12em + 200px)!important">Reversar</i>
+        <i ng-click="iniciar_componentes();tabla_activas('A');check_option_estado='true'" ng-hide="inicio" class=" icon-left-open-1" style="cursor:pointer !important">ATRAS</i>
+    </div>
+
+
+    <div ng-hide="!inicio">
+        <div class="contenido content-container marketing">
+            <div class="col l12 m12 s12">
+                <div class="row">
+                    <div class="col l2 m4 s6 listas_conceptos" ng-repeat="cantidad_concepto in cantidad_conceptos">
+                        <div class="card">
+                            <img src="assets/images/elip/{{cantidad_concepto.CODIGO}}.svg" style="width: 120px !important; height: 87px;" class="right">
+                            <p class="fontello-icon " style="font-size: 13px;    margin-bottom: 0px;">
+                                {{cantidad_concepto.NOMBRE}}</p>
+                            <div class="sin_border">
+                                <p class="blue-text  card_total sin_border"><small><i class="icon-ok-1"></i> Gestionadas:</small> </p>
+                                <p class="card_total con_border"><small></i> 
+                                            Hoy = {{cantidad_concepto.TOTAL_GESTIONADAS_HOY}} <i class="icon-minus-1"></i>Total = {{cantidad_concepto.TOTAL_GESTIONADAS}}</small> </p>
+                                <p class="red-text card_total sin_border"><small><i class="icon-cancel-2"></i> Anuladas </small> </p>
+                                <p class="card_total con_border"><small></i>
+                                    Hoy = {{cantidad_concepto.TOTAL_RECHAZADAS_HOY}} <i class="icon-minus-1"></i>Total = {{cantidad_concepto.TOTAL_RECHAZADAS}}</small> </p>
+                                <p class="green-text card_total sin_border"><small><i class="icon-info-2"></i> Activas</small> </p>
+                                <p class="card_total con_border"><small>
+                                    Hoy = {{cantidad_concepto.TOTAL_ACTIVAS_HOY}} <i class="icon-minus-1"></i>Total = {{cantidad_concepto.TOTAL_ACTIVAS}}</small> </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col l2 m4 s6 listas_conceptos">
+                        <div class="card">
+                            <img src="assets/images/elip/buscar.svg" style="width: 97px !important;
+                                        height: 90px;" class="right">
+                            <p style="margin-bottom: 0px;">BUSQUEDA POR RADICADO, AFILIADO Y NIT APORTANTE</p>
+                            <div style="height: 107px;
+                            padding: 3em 0px;">
+                                <form ng-submit="p_busqueda_prestaciones(buscar_radicado_consulta)">
+                                    <div class="col s12">
+                                        <input id="buscar_radicado_consulta" type="text" ng-model="buscar_radicado_consulta">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col l2 m4 s6 listas_conceptos" ng-show="donde_guardo.radica=='S'">
+                        <div class="card" ng-click="mostrar_registro(0)" style="height: 111px">
+                            <img src="assets/images/elip/nuevo.svg" style="width: 97px !important;
+                                height: 63px;" class="right">
+                            <p>NUEVO REGISTRO</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row graficas card " ng-show="donde_guardo.admin=='S' || donde_guardo.valliq=='S'">
+                <div class="col l12 m12 s12">
+                    <form>
+                        <div class="center-align row">
+                            <div class="col l4 m6 s12">
+                                <div class="input-field col l12 m12 s12">
+                                    <input id="fecha_recibido" type="date" ng-model="fecha_inicio">
+                                    <label for="fecha_recibido" class="active">Fecha inicio:</label>
+                                </div>
+                            </div>
+                            <div class="col l4 m6 s12">
+                                <div class="input-field col l12 m12 s12">
+                                    <input id="fecha_recibido" type="date" ng-model="fecha_fin">
+                                    <label for="fecha_recibido" class="active">Fecha Fin:</label>
+                                </div>
+                            </div>
+                            <div class="col l4 m6 s12">
+                                <div class="input-field col l12 m12 s12">
+                                    <button id="GUARDAR_RADICADO" class="btn" ng-click="buscar_graficas()">buscar
+                                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col l6 m6 s6 " ng-hide="busqueda_tabla_estado==1">
+                    <div style="margin: 1em">
+                        <div id="pie" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+                <div class="col l6 m6 s6 " ng-hide="busqueda_tabla_estado==1">
+                    <div style="margin: 1em">
+                        <div id="barra" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <div class=" inbox-element inbox-4 col l12 m12 s12">
+                <div class="row" ng-init="carga_listado_productos()">
+                    <div class="col s4 m4 l4" style="margin-left: 10px;border-radius: 12px;">
+                        <form ng-submit="filter(val)">
+                            <div class="input-field col s12">
+                                <input id="buscarautaa" ng-change="filter(val)" ; type="text" ng-model="val">
+                                <label for="buscarautaa" style="margin-left: 10px;">
+                                    <i class="icon-search-2"></i>
+                                    Filtrar:
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col s4 m4 l4">
+                        <div class="switch" style="margin-top: 23px; ">
+                            <label ng-show="busqueda_tabla_estado==0" ng-hide="donde_guardo.admin=='S'">
+                                <span ng-class="{'activo':!check_option_estado}" 
+                                    class="">Pendientes</span>
+                                <input type="checkbox" ng-init="check_option_estado = false;filtrarestado='Activo'"
+                                    ng-model="check_option_estado"
+                                    ng-change="(check_option_estado == true)?tabla_activas('P'):tabla_activas('A');"
+                                    class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                                <span class="lever check-c" style="background: #1a2e6359 !important;"></span>
+                                <span ng-class="{'activo':check_option_estado}"
+                                    class="activo">{{donde_guardo.radica=='S'?'Radicadas':'Gestionados'}}</span>
+                            </label>
+                            <i ng-click="buscar_radicado_consulta='';busqueda_tabla_estado=0;(check_option_estado == true)?tabla_activas('P'):tabla_activas('A');" ng-show="busqueda_tabla_estado==1" class=" icon-left-open-1" style="cursor:pointer !important">ATRAS</i>
+                        </div>
+                    </div>
+                    <div class="responsive" style="padding:20px">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="white-text default-background">
+                                <tr>
+                                    <th style="text-align:center;border:none;font-size: 14px">#</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;width: 9em;">FECHA RADICADO
+                                    </th>
+                                    <th style="text-align:center;border:none;font-size: 14px;width: 9em;">RADICADO</th>
+                                    <th style="text-align:center;border:none;font-size: 14px">DOCUMENTO DEL AFILIADO
+                                    </th>
+                                    <th style="text-align:center;border:none;font-size: 14px">AFILIADO</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">CONCEPTO</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">DIAGNOSTICO</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">FECHA INICIO</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">FECHA FINAL</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">DIAS</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">DIAS DE PRORROGA </th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">TERCERO</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">TIEMPO TRANSCURRIDO RAD</th>
+                                    <th style="text-align:center;border:none;font-size: 14px;">ESTADO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="tabla-body" ng-repeat="mda in reporteTemp  | inicio: currentPage * pageSize | limitTo: pageSize" ng-click="mostrar_registro(null, mda.NUMERO, mda.UBICACION,null, mda)">
+                                    <td>{{$index+1 + (currentPage * pageSize)}}</td>
+                                    <td>{{mda.FECHA_RADICADO}}</td>
+                                    <td>{{mda.CODIGO}}</td>
+                                    <td>{{mda.TIPO_DOCUMENTO}} - {{mda.DOCUMENTO}}</td>
+                                    <td>{{mda.AFILIADO}}</td>
+                                    <td>{{mda.CONCEPTO}}</td>
+                                    <td>{{mda.DIAGNOSTICO_CODIGO}} - {{mda.DIAGNOSTICO_NOMBRE}}</td>
+                                    <td>{{mda.FECHA_INICIO}}</td>
+                                    <td>{{mda.FECHA_FIN}}</td>
+                                    <td>{{mda.DURACION}}</td>
+                                    <td>{{mda.DIAS_PRORROGA}}</td>
+                                    <td>{{mda.PRESTADOR_NOMBRE}}</td>
+                                    <td>{{mda.RANGO_RADI}}</td>
+                                    <td>{{mda.STATUS | uppercase}}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <td colspan="12" ng-show="reporteTemp.length!=0">
+                                    <h6 class="center-align">Se ha encontrado una cantidad de {{reporte.length}} prestaciones </h6>
+                                </td>
+                                <td colspan="12" ng-show="reporteTemp.length==0">
+                                    <h6 class="center-align">No se encontraron Prestaciones</h6>
+                                </td>
+                            </tfoot>
+                        </table>
+                        <ul ng-if="reporteTemp" style="text-align: right;margin: 0px" class="pagination" ng-show="reporteTemp.length!=0">
+                            <li style="margin: 0px;padding: 0px"><button ng-disabled='currentPage == 0' class="btn default-background" ng-click="paso('back')">&laquo;</button></li>
+                            <li style="margin: 0px;padding: 0px" ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1' class="btn default-background" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                            <li style="margin: 0px;padding: 0px"><button ng-disabled='currentPage >= reporteTemp.length/pageSize - 1' class="btn default-background" ng-click="paso('next')">&raquo;</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contenido content-container marketing" ng-hide="inicio">
+        <!-- formulario de radicado -->
+        <div class="card formulario row">
+
+            <div class="card-title col l12 m12 s12">
+                <h5 class="titulo_card" ng-click="collapse(1)">
+                    <i class="icon-edit-3"></i>Radicado {{liquidacion.radicado}}
+                    <i ng-class="formulario_radicado==true?'icon-minus-outline':'icon-plus-outline'" class="right"></i>
+                </h5>
+            </div>
+            <div ng-show="formulario_radicado" class="card-body col l12 m12 s12">
+                <!-- fila 1 -->
+                <form id="formulario_radicador">
+
+                    
+                    
+                    
+                    
+                    
+                    <span ng-if="liquidacion.radicado" style="position: absolute;top:4em;left:2em;background: #e5e6e6; padding: 0.3em;color:red"><strong>Origen Afiliado: </strong>{{liquidacion.origen_afiliado}}</span>
+
+                     <span ng-if="liquidacion.radicado" style="position: absolute;top:4em;left:20em;background: #e5e6e6; padding: 0.3em;"
+                     ng-style="{'color':liquidacion.verificado=='SI'?'green':'red'}" ><strong>Aportante Verificado: </strong>{{liquidacion.verificado}}</span>
+
+                     <span ng-if="liquidacion.radicado" style="position: absolute;top:4em;left:37em;background: #e5e6e6; padding: 0.3em;"
+                     ng-style="{'color':liquidacion.verificado=='SI'?'green':'red'}" ><strong>Tiempo Transcurrido: </strong>{{liquidacion.rango_radi}}</span>
+
+
+                    <div class=" row ">
+                        <!-- <p class="default-background white-text"> <i class="icon-edit-3"></i>Radicado</p> -->
+                        <div ng-if="liquidacion.radicado">
+                            <div class="col l4 m12 s12">
+                                <div class="input-field col l12 s12 m12">
+                                    <input id="concepto" disabled type="text" ng-model="liquidacion.concepto_nombre">
+                                    <label for="concepto" class="active">Concepto:</label>
+
+                                </div>
+                            </div>
+                            <div class="col l3 m6 s12">
+                                <div class="input-field col l12 s12 m12">
+                                    <input id="motivo" disabled type="text" ng-model="liquidacion.motivo_nombre">
+                                    <label for="motivo" class="active">Motivo:</label>
+                                </div>
+                            </div>
+                            <div class="col l3 m6 s12">
+                                <div class="input-field col l12 s12 m12">
+                                    <input id="origen_radicacion_nombre" disabled type="text" ng-model="liquidacion.origen_radicacion_nombre">
+                                    <label for="origen_radicacion_nombre" class="active">Origen de Radicación:</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="!liquidacion.radicado">
+                            <div class="col l4 m12 s12">
+                                <div class="input-field col l12 s12 m12">
+                                    <label id="concepto" class="active">Concepto:</label>
+                                    <select ng-init="buscar_concepto()" for="concepto" class="select-chosen-eps" id="concepto" ng-change="buscar_motivo();buscar_archivos();liquidacion.concepto_nombre=(listar_concepto|filter:{CODIGO:liquidacion.concepto})[0].NOMBRE" ng-model="liquidacion.concepto">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="concepto in listar_concepto" value="{{concepto.CODIGO}}">
+                                            {{concepto.NOMBRE}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col l3 m6 s12">
+                                <div class="input-field col l12 s12 m12">
+                                    <label id="motivo" class="active">Motivo:</label>
+                                    <select for="motivo" class="select-chosen-eps" id="motivo" ng-model="liquidacion.motivo">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option ng-repeat="motivo in lista_motivo" value="{{motivo.CODIGO}}">
+                                            {{motivo.NOMBRE}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col l3 m12 s12">
+                                <div class="input-field col l12 s12 m12">
+                                    <label id="origen_radicacion" class="active">Origen de Radicación:</label>
+                                    <select  for="origen_radicacion" class="select-chosen-eps" id="origen_radicacion" ng-model="liquidacion.origen_radicacion">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option value="C">CORREO ELECTRONICO</option>
+                                        <option value="F">FISICA</option>
+                                        <option value="P">PLATAFORMA</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col l2 m6 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <input id="fecha_recibido" disabled type="date" ng-model="liquidacion.fecha_recibido">
+                                <label for="fecha_recibido" class="active">Fecha de radicación:</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fila 2 -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-users-1"></i>Afiliado</p>
+                        <div class="col l2 m6 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <label for="tipo_documento" class="active">Tipo de
+                                    Documento</label>
+                                <select ng-model="liquidacion.tipo_documento" ng-disabled="EDITAR_RADICADO_FORMULARIO" ng-change="buscar_afiliado()" class="select-chosen-eps"  id=tipo_documento>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="CC">CEDULA CIUDANANIA</option>
+                                    <option value="CE">CEDULA EXTRANJERA</option>
+                                    <option value="NIT">NIT</option>
+                                    <option value="TI">TARJETA DE IDENTIDAD</option>
+                                    <option value="SC">SALVO CONDUCTO</option>
+                                    <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                    <option value="PT">PERMISO POR PROTECCIÓN TEMPORAL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col l2 m6 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="documento" ng-disabled="EDITAR_RADICADO_FORMULARIO" ng-blur="buscar_afiliado()" type="text" ng-model="liquidacion.documento">
+                                <label for="documento" class="">Documento</label>
+                            </div>
+                        </div>
+                        <div class="col l3 m6 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="nombre" disabled type="text" ng-model="liquidacion.nombre">
+                                <label for="nombre" class="">Nombre</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m5 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="nacimiento" disabled type="text" ng-model="liquidacion.nacimiento">
+                                <label for="nacimiento" class="">Nacimiento</label>
+                            </div>
+                        </div>
+                        <div class="col l3 m5 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="sexo" disabled type="text" ng-model="liquidacion.sexo_nombre">
+                                <label for="sexo" class="">Genero</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fila 3 -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-bed"></i>Incapacidad</p>
+                        <!-- La fecha de incapacidad debe ser igual a la fecha de inicio de la prestacion economica -->
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="fecha_incapacidad" type="date" ng-disabled="EDITAR_RADICADO_FORMULARIO && EDITAR_DEVOLUCION" ng-change="cambio_fecha(liquidacion.fecha_incapacidad)" ng-model="liquidacion.fecha_incapacidad">
+                                <label for="fecha_incapacidad" class="active">Fecha Inicio</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="duracion" ng-disabled="EDITAR_RADICADO_FORMULARIO && EDITAR_DEVOLUCION" min="1" type="number" ng-change="cambio_fecha(liquidacion.fecha_incapacidad)" ng-model="liquidacion.duracion">
+                                <label for="duracion" class="">Duración de Dias</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="fecha_final_incapacidad" type="date" disabled ng-model="liquidacion.fecha_final_incapacidad">
+                                <label for="fecha_final_incapacidad" class="active">Fecha Fin</label>
+                            </div>
+                        </div>
+                        <div class="col l6 m12 s12">
+                            <div class="input-field col  l12 m12 s12" ng-click="buscar_tutelas()">
+                                <input id="radicado_tutela" disabled type="text" ng-model="liquidacion.radicado_tutela" ng-class="{'block':(EDITAR_RADICADO_FORMULARIO=='')}">
+                                <label for="radicado_tutela" class="">TUTELA</label>
+                                <i class="icon-search-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fila 4 -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-hospital"></i>Prestador</p>
+                        <div class="col l3 m12 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <!-- <input id="nombre_ips" disabled type="text" ng-model="liquidacion.nombre_ips"> -->
+                                <input id="nombre_ips" type="text" ng-disabled="EDITAR_RADICADO_FORMULARIO" ng-model="liquidacion.nombre_ips" autocomplete="off" title="Presione Enter para buscar" style="margin-bottom: 0;" ng-keyup="captura_evento_teclado($event,'I');" ng-blur="Blur_Ips()">
+                                <label for="nombre_ips" class="">IPS</label>
+                                <i class="icon-search-4"></i>
+                                <ul class="list-group" id="list-group-ips" style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                                    <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}" ng-repeat="x in Filter_Ips" ng-click="seleccionar_combo(x.CODIGO,x.NOMBRE,'I')">
+                                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <label for="tipo_documento_med" class="active">Tipo de Documento medico</label>
+                                <select ng-model="liquidacion.tipo_documento_med"  class="select-chosen-eps" ng-disabled="EDITAR_RADICADO_FORMULARIO"
+                                 id=tipo_documento_med>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="CC">CEDULA CIUDANANIA</option>
+                                    <option value="CE">CEDULA EXTRANJERA</option>
+                                    <option value="PT">PERMISO TEMPORAL DE PROTECCIÓN</option>                                                                        
+                                    <option value="SC">SALVO CONDUCTO</option>
+                                    <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="doc_medico" ng-disabled="EDITAR_RADICADO_FORMULARIO" type="text" ng-model="liquidacion.doc_medico">
+                                <label for="doc_medico" class="active">Documento Medico</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="nombre_medico" ng-disabled="EDITAR_RADICADO_FORMULARIO" type="text" ng-model="liquidacion.nombre_medico">
+                                <label for="nombre_medico" class="">Nombre Medico</label>
+                            </div>
+                        </div>
+                        <div class="col l3 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="nombre_especialidad" ng-disabled="EDITAR_RADICADO_FORMULARIO && EDITAR_MEDICO_FORMULARIO" type="text" ng-model="liquidacion.nombre_especialidad" autocomplete="off" title="Presione Enter para buscar" style="margin-bottom: 0;" ng-keyup="captura_evento_teclado($event,'E');"
+                                    ng-blur="borrar_listado()">
+                                <label for="nombre_especialidad" class="">Especialidad</label>
+                                <i class="icon-search-4"></i>
+                                <ul class="list-group" id="list-group-especialidad" style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                                    <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}" ng-repeat="x in filtroEspeciliadad" ng-click="seleccionar_combo(x.CODIGO,x.NOMBRE,'E')">
+                                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fila 5 -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-stethoscope"></i>Diagnostico</p>
+                        <!-- <div class="col l12 m12 s12" style=" margin-bottom: 1em;">  yordis-->
+                            <div class="col l5 m12 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="nombre_diagnostico" ng-disabled="EDITAR_RADICADO_FORMULARIO && EDITAR_MEDICO_FORMULARIO" type="text" ng-model="liquidacion.nombre_diagnostico" autocomplete="off" title="Presione Enter para buscar" style="margin-bottom: 0;" ng-keyup="captura_evento_teclado($event,'D');"
+                                    ng-blur="borrar_listado()">
+                                <label for="nombre_diagnostico" class="">Diagnostico</label>
+                                <i class="icon-search-4"></i>
+                                <ul class="list-group" id="list-group-diagnostico" style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                                    <li id="DM{{x.Codigo}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}" ng-repeat="x in filtroDiagnostico" ng-click="seleccionar_combo(x.Codigo,x.Nombre,'D')">
+                                        {{x.Codigo}} - {{x.Nombre}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col l2 m12 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <label for="grupo_servicio" class="active">Grupo de servicio</label>
+                                <select ng-model="liquidacion.grupo_servicio"  class="select-chosen-eps"  id=grupo_servicio>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="01">01.CONSULTA EXTERNA</option>
+                                    <option value="02">02.APOYO DIAGNOSTICO CLINICO</option>
+                                    <option value="03">03.INTERNACIÓN</option>                                                                        
+                                    <option value="04">04.QUIRÚRGICO</option>
+                                    <option value="05">05.ATENCIÓN INMEDIATA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col l3 m12 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <label for="mod_prestacion_servicio" class="active">Modalidad de la prestación del servicio</label>
+                                <select ng-model="liquidacion.mod_prestacion_servicio"  class="select-chosen-eps"  id=mod_prestacion_servicio>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="01">01.INTRAMURAL</option>
+                                    <option value="02">02.EXTRAMURAL UNIDAD MÓVIL</option>
+                                    <option value="03">03.EXTRAMURAL DOMICILIARIA </option>                                                                        
+                                    <option value="04">04.EXTRAMURAL JORNADA DE SALUD</option>
+                                    <option value="06">06.TELEMEDICINA INTERACTIVA </option>
+                                    <option value="07">07.TELEMEDICINA NO INTERACTIVA </option>
+                                    <option value="08">08.TELEMEDICINA TELEXPERTICIA </option>
+                                    <option value="09">09.TELEMEDICINA TELEMONITOREO</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col l2 m12 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <label for="incapacidad_retroactiva" class="active">Incapacidad Retroactiva</label>
+                                <select ng-model="liquidacion.incapacidad_retroactiva"  class="select-chosen-eps"  id=incapacidad_retroactiva>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="01">01.URGENCIA O INTERNACIÓN</option>
+                                    <option value="02">02.TRASTORNO DE MEMORIA</option>
+                                    <option value="03">03.EVENTO CATASTROFICO</option>
+                                    <option value="04">04.NO APLICA</option>
+                                   
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fila 6 yordis -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-shop-1"></i>Empleador</p>
+                        <div class="col l12 m12 s12">
+                            <div class="input-field col l12 m12 s12" ng-click="buscar_relacion_laboral()">
+                                <input id="tercero_nombre" disabled type="text" ng-model="liquidacion.tercero_nombre" ng-class="{'block':(EDITAR_RADICADO_FORMULARIO=='')}">
+                                <label for="tercero_nombre" class="">Empleador</label>
+                                <i class="icon-search-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fila invisible con accidente del trabajo -->
+                    <div ng-show="liquidacion.concepto=='AT'" class="row columnas">
+                        <p class="default-background white-text"> <i class="zmdi zmdi-card-travel"></i>Accidente de Trabajo
+                        </p>
+                        <div class="col l6 m6 s6">
+                            <div class="input-field col l12 m12 s12">
+                                <input id="fecha_accidente" ng-disabled="EDITAR_RADICADO_FORMULARIO" type="date" ng-model="liquidacion.fecha_accidente">
+                                <label for="fecha_accidente" class="active">Fecha del Accidente :</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FILA CAUSAL -->
+                    <div class="row " ng-hide="EDITAR_RADICADO_FORMULARIO">
+                        <div class="col l12 m12 s12">
+                            <div class="center col input-field l12 m12 s12">
+                                <input type="checkbox" id="estado_radica_adjunto" ng-model="liquidacion.estado_radica_adjunto" checked="checked" ng-disabled="EDITAR_RADICADO_FORMULARIO" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                                <label style="font-size: 1.45em !important;" for="estado_radica_adjunto">Subir adjuntos </label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- FILA ADJUNTO -->
+
+                    <div ng-hide="liquidacion.estado_radica_adjunto==false">
+                        <div class="row columnas" id="adjunto_medicos" ng-show="listar_archivos" ng-init="ver_ad_medicos=true">
+                            <p class="default-background white-text"> <i class="icon-folder-open-empty"></i>Adjunto Medicos
+                            </p><p style="
+    border: 0px;
+    width: 36em;
+    right: -1em;
+    top: -2.5em;
+"> Los archivos marcados con (*) deben ser cargados de manera obligatoria</p>
+
+                            <div class="adjunto col l6 m6 s6" ng-repeat="la in listar_archivos.ARCHIVOS_MEDICOS">
+                                <div class="file-field col  l12 m12 s12">
+                                    <div class="btn">
+                                        <span class="white-text"><i class=" icon-upload"></i></span>
+                                        <input type="file" id="adjunto{{$index}}_AM" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <label style="font-size: 10px !important;" for="fecha_accidente" class="active">{{la.nombre | uppercase}}  {{la.obligatorio=='S'?'(*)':''}}</label>
+                                        <input id="nombreadjunto" class="file-path" type="text" ng-change="obtenerBase('AM',$index)" ng-model="la.nombreadjunto">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FILA ADJUNTO -->
+                        <div class="row columnas" id="adjunto_contables" ng-show="listar_archivos" ng-init="ver_ad_contables=true">
+                            <p class="default-background white-text"> <i class="icon-folder-open-empty"></i>Adjunto Contables
+                            </p><p style="
+    border: 0px;
+    width: 36em;
+    right: -1em;
+    top: -2.5em;
+"> Los archivos marcados con (*) deben ser cargados de manera obligatoria</p>
+                            <div class="adjunto col l6 m6 s6" ng-repeat="la in listar_archivos.ARCHIVOS_CONTABLES">
+                                <div class="file-field col  l12 m12 s12">
+                                    <div class="btn">
+                                        <span class="white-text"><i class=" icon-upload"></i></span>
+                                        <input type="file" id="adjunto{{$index}}_AC" accept=".png,.jpg,.jpeg,.pdf,.doc">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <label style="font-size: 10px !important;" for="fecha_accidente" class="active">{{la.nombre | uppercase}} {{la.obligatorio=='S'?'(*)':''}}</label>
+                                        <input id="nombreadjunto" class="file-path" type="text" ng-change="obtenerBase('AC',$index)" ng-model="la.nombreadjunto">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                <!-- GUARDA EL RADICADO -->
+                <div class="card-footer col l12 m12 s12 center">
+                    <button ng-show="donde_guardo.radica=='S'&& !EDITAR_RADICADO_FORMULARIO" id="GUARDAR_RADICADO" class="btn" ng-click="guardar('R')">Guardar
+                    </button>
+                    <button ng-show="edito_adjunto=='S' && EDITAR_DEVOLUCION" id="adjunto_subir" class="btn" ng-click="subir_adjunto()">Subir Adjunto 
+                    </button>
+                    <button ng-hide="EDITAR_DEVOLUCION" id="adjunto_subir" class="btn" ng-click="guardar_devolucion()">Actualizar Datos
+                    </button>
+                    <button ng-show="liquidacion.radicado" id="imprimir" class="btn" ng-click="formato_radicado()">Formato Radicación 
+                        </button>
+                    <button ng-show="donde_guardo.radica=='S'&& !EDITAR_RADICADO_FORMULARIO" id="LIMPIAR_RADICADO" class="btn" ng-click="limpiar_liquidacion()">Limpiar</button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- tabla de adjunto -->
+        <div class="card formulario row" ng-hide="json_adjunto.length==0">
+            <div class="card-title col l12 m12 s12">
+                <h5 class="titulo_card" ng-click="collapse(6)">
+                    <i class="icon-folder-open"></i>Adjuntos
+                    <i ng-class="tabla_adjunto==true?'icon-minus-outline':'icon-plus-outline'" class="right"></i>
+                </h5>
+            </div>
+            <div ng-show="tabla_adjunto" class="card-body col l12 m12 s12">
+                <div class="scrollTableDefault style-table-default" style="overflow-x: hidden;">
+                    <table id="tbclas" style="cursor: pointer;" class="table-bordered">
+                        <thead class="default-background white-text">
+                            <tr>
+                                <td style="border: none"><b>RENGLON</b></td>
+                                <td style="border: none"><b>DESCRIPCION</b></td>
+                                <td style="border: none"><b>TIPO</b></td>
+                                <td style="border: none"><b>FECHA</b></td>
+                                <td style="border: none"><b>RESPONSABLE </b></td>
+                                <td style="border: none"><b>RESPONSABLE DE REVISION</b></td>
+                                <!-- <td style="border: none"><b>DESCARGAR</b></td> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="tabla-body" ng-repeat="dm in json_adjunto" ng-click="mostrar_adjunto(dm.RUTA);">
+                                <td style="text-align:center;width:134px">{{dm.RENGLON}}</td>
+                                <td style="text-align:left;">{{dm.DESCRIPCION}}</td>
+                                <td style="text-align:left;">{{dm.CLASIFICACION}}</td>
+                                <td style="text-align:left;">{{dm.FECHA_CARGUE}}</td>
+                                <td style="text-align:left;">{{dm.USUARIO}}</td>
+                                <td style="text-align:left;">{{dm.USUARIO_RECHAZO}}</td>
+                                <!-- <td style="text-align:left;">{{dm.RUTA}}</td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+          <!-- tabla de devolciones -->
+          <div class="card formulario row" ng-hide="json_observaciones.length==0" ng-init="devolucion==true">
+                <div class="card-title col l12 m12 s12">
+                    <h5 class="titulo_card" ng-click="collapse(7)">
+                        <i class="icon-back-in-time"></i>Historial de Observaciones
+                        <i ng-class="devolucion==true?'icon-minus-outline':'icon-plus-outline'" class="right"></i>
+                    </h5>
+                </div>
+                <div ng-show="devolucion" class="card-body col l12 m12 s12">
+                    <div class="scrollTableDefault style-table-default" style="overflow-x: hidden;">
+                        <table id="tbclas" style="cursor: pointer;" class="table-bordered">
+                            <thead class="default-background white-text">
+                                <tr>
+                                    <td style="border: none;"><b>CAUSAL</b></td>
+                                    <td style="border: none;    width: 30em;"><b>FUNCIONARIO</b></td>
+                                    <td style="border: none"><b>FECHA</b></td>
+                                    <td style="border: none"><b>OBSERVACION</b></td>
+    
+                                </tr>
+                            </thead>
+                            <!-- <tbody>
+                                <tr ng-repeat="dm in json_devoluciones">
+                                    <td style="text-align:center;">{{dm.causal}}</td>
+                                    <td style="text-align:center;width:134px">{{dm.responsable}}</td>
+                                    <td style="text-align:left;">{{dm.fecha}}</td>
+                                    <td style="text-align:left;">{{dm.observacion | uppercase}}</td>
+                                </tr>
+                            </tbody> -->
+                            <tbody>
+                                <tr ng-repeat="dm in json_observaciones">
+                                    <td style="text-align:center;">{{dm.CAUSAL == null ? 'No aplica' : dm.CAUSAL | uppercase}}</td>
+                                    <td style="text-align:center;width:134px">{{dm.FUNCIONARIO}}</td>
+                                    <td style="text-align:center;">{{dm.FECHA_AUDITORIA}}</td>
+                                    <td style="text-align:left;">{{dm.PRDC_OBSERVACION | uppercase}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <!-- formulario de validacion medica -->
+        <div class="card formulario row">
+            <form id="formulario_medico">
+                <div class="card-title col l12 m12 s12">
+                    <h5 class="titulo_card" ng-click="collapse(2)">
+                        <i class="icon-stethoscope"></i>Validación Medica
+                        <i ng-class="formulario_medico==true?'icon-minus-outline':'icon-plus-outline'" class="right"></i>
+                    </h5>
+                </div>
+                <div ng-show="formulario_medico" class="card-body col l12 m12 s12">
+                    <!-- FILA EMBARAZO -->
+                    <div ng-show="liquidacion.concepto=='LM'||liquidacion.concepto=='LP' ||liquidacion.concepto=='LA'" class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-heartbeat"></i>Parto {{liquidacion.fecha_incapacidad | date : "dd/MM/y" }}</p>
+                        <div class="col l3 m6 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <input id="fecha_posible_parto" type="date" ng-disabled="EDITAR_MEDICO_FORMULARIO" ng-change="formula_embarazos('',liquidacion.fecha_ultima_mestruacion)" ng-model="liquidacion.fecha_ultima_mestruacion">
+                                <label for="fecha_posible_parto" class="active">Fecha de la Ultima Mestruación</label>
+                            </div>
+                        </div>
+                        <div class="col l3 m6 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <input id="fecha_posible_parto" type="date" ng-disabled="EDITAR_MEDICO_FORMULARIO" ng-change="formula_embarazos(liquidacion.fecha_posible_parto,'')" ng-model="liquidacion.fecha_posible_parto">
+                                <label for="fecha_posible_parto" class="active">Fecha Probable de Parto:</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="semana_gestacion" min="1" type="text" disabled ng-model="liquidacion.semana_gestacion">
+                                <label for="semana_gestacion" class="">Semanas de Gestación </label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="dias_prematuros" type="text" disabled ng-model="liquidacion.dias_prematuros">
+                                <label for="dias_prematuros" class="">Dias Prematuro </label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12">
+                            <div class="center col input-field l12 m12 s12">
+                                <input type="checkbox" id="requisito" ng-disabled="EDITAR_MEDICO_FORMULARIO" ng-model="liquidacion.partomul" checked="checked" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                                <label for="requisito">Parto Multiple</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- FILA DE PRORONGA -->
+                    <div ng-hide="liquidacion.concepto=='LM'||liquidacion.concepto=='LP' ||liquidacion.concepto=='LA'" class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-heartbeat"></i>Prorroga</p>
+                        <div class="col l6 m6 s6">
+                            <div class="input-field col l12 m12 s12" ng-click="buscar_historial()">
+                                <input id="prorroga" type="text" disabled ng-model="liquidacion.prorroga_descripcion" ng-class="{'block':(EDITAR_MEDICO_FORMULARIO=='')}">
+                                <label for="prorroga" class="active">Prestación asociada</label>
+                            </div>
+                        </div>
+                        <div class="col l3 m3 s3">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="dias_prorroga" min="1" disabled type="number" ng-model="liquidacion.dias_prorroga">
+                                <label for="dias_prorroga" class="">Días de Prorroga</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- FILA CAUSAL -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-check"></i>Estado de Validación</p>
+                        <div class="col l12 m12 s12">
+                            <div class="center col input-field l12 m12 s12">
+                                <input type="checkbox" id="medico" ng-init="liquidacion.aprovacion_medico=true" ng-model="liquidacion.aprovacion_medico" checked="checked" ng-disabled="EDITAR_MEDICO_FORMULARIO" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                                <label style="font-size: 1.45em !important;" for="medico">Aprobación médica</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <!-- ESTADO -->
+                    <div class="row columnas" ng-hide="liquidacion.aprovacion_medico">
+                        <p class="default-background white-text"> <i class="icon-clipboard"></i>Justificación</p>
+                        <div class="col l6 m6 s6">
+                            <div class="input-field col l12 m12 s12">
+                                <label class="active">Causal</label>
+                                <select class="select-chosen-eps" id="causal" ng-change="adjunto_devolver=''"   
+                                 ng-disabled="EDITAR_MEDICO_FORMULARIO" ng-model="liquidacion.causal_medica">
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="a in listado_causales_medicas" value="{{a.codigo}}">{{a.nombre}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col l6 m6 s6" style=" margin-bottom: 1em;" ng-show="liquidacion.causal_medica==708">
+                            <div class="input-field col l12 m12 s12">
+                                <label class="active">Adjunto a Cambiar</label>
+                                <select class="select-chosen-eps" id="adjunto_devolver" ng-change="adjunto_devolver=(json_adjunto|filter:{RENGLON:liquidacion.adjunto_devolver})[0].DESCRIPCION"
+                                ng-disabled="EDITAR_MEDICO_FORMULARIO" ng-model="liquidacion.adjunto_devolver">
+                                            <option value="" disabled>SELECCIONAR</option>
+                                            <option ng-repeat="a in json_adjunto" value="{{a.RENGLON}}">{{a.DESCRIPCION | uppercase}}
+                                            </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OBSERVACION -->
+                    <div class="row " id="observacion">
+                        <div class="col l12 m12 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <label class="active">Observación:</label>
+                                <textarea rows="4" ng-disabled="EDITAR_MEDICO_FORMULARIO" ng-model="liquidacion.observacion_medica" cols="50" placeholder=""></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- BOTON DE GUARDAR MEDICO -->
+                    <div class="card-footer col l12 m12 s12 center">
+                        <button ng-show="donde_guardo.valmed=='S' && !EDITAR_MEDICO_FORMULARIO" id="GUARDAR_VALMED" class="btn" ng-click="guardar('M')">Guardar
+                        </button>
+                        <button id="imprimir" class="btn" ng-click="formato_radicado2()">Formato Transcripciones 
+                    </button>
+                    </div>
+                    
+                </div>
+            </form>
+        </div>
+
+
+        <!-- formulario de liquidacio  -->
+        <div class="card formulario row">
+            <form id="formulario_liquidacion">
+                <div class="card-title col l12 m12 s12">
+                    <h5 class="titulo_card" ng-click="collapse(3)">
+                        <i class=" icon-list-alt"></i>Liquidación
+                        <i ng-class="formulario_liquidacion==true?'icon-minus-outline':'icon-plus-outline'" class="right"></i>
+                    </h5>
+                </div>
+                <div ng-show="formulario_liquidacion" class="card-body col l12 m12 s12">
+                    <!-- FILA LIQUIDACION -->
+                    <div class="row">
+                        <div ng-hide="EDITAR_LIQUIDACION_FORMULARIO" class="card-footer col l12 m12 s12 center">
+                            <button type="button" class="btn btn-primary" ng-click="abrirmodalcaldulo()">Calcular</button>
+                        </div>
+                        <div ng-show="liquidacion.concepto=='LM'||liquidacion.concepto=='LP' ||liquidacion.concepto=='LA'" class="col l3 m6 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <label for="tipo_licencia" class="active">Tipo de Licencia
+                                </label>
+                                <select ng-model="liquidacion.tipo_licencia" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO" class="select-chosen-eps" id="tipo_licencia">
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="lc in listados_tipo_licencias" value="{{lc.codigo}}">
+                                        {{lc.nombre}}</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col l3 m6 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <!-- <input id="ibc" min="1" type="text" ng-model="liquidacion.ibc" ng-keyup="FormatPesoID('ibc')" maxlength="16" readonly> -->
+                                <input id="ibc" min="1" type="text" ng-model="liquidacion.ibc" ng-keyup="FormatPesoID('ibc')" maxlength="16" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO || !liquidacion.aprovacion_liquidacion">
+                                <label for="ibc" class="">IBC </label>
+                            </div>
+                        </div>
+                        <div class="col l3 m6 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <!-- <input id="liquidacion_valor" type="text" ng-model="liquidacion.valor" ng-keyup="FormatPesoID('liquidacion_valor')" maxlength="16" readonly> -->
+                                <input id="liquidacion_valor" type="text" ng-model="liquidacion.valor" ng-keyup="FormatPesoID('liquidacion_valor')" maxlength="16" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO || !liquidacion.aprovacion_liquidacion">
+                                <label for="liquidacion_valor" class="">Valor</label>
+                            </div>
+                        </div>
+                        <div class="col l1 m6 s12">
+                            <div class="input-field col  l12 m12 s12">
+                                <!-- <input id="dias_prematuros" min="1" type="number" ng-model="liquidacion.dias_pago" readonly> -->
+                                <input id="dias_prematuros" min="1" type="number" required ng-model="liquidacion.dias_pago" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO || !liquidacion.aprovacion_liquidacion">
+                                <label for="dias_prematuros" class="">Dias Pagados</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m6 s12">
+                            <div class="center col input-field l12 m12 s12">
+                                <input type="checkbox" id="ibc_variable" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO || !liquidacion.aprovacion_liquidacion" ng-model="liquidacion.ibc_variable" checked="checked" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                                <label for="ibc_variable">IBC Variable</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-bottom: 30px;">
+                        <div class="col l2 m6 s12">
+                            <div class="center col input-field l12 m12 s12">
+                                <input type="checkbox" id="chk_fecha_opcional" ng-model="liquidacion.chk_fecha_opcional" checked="checked" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                                <label for="chk_fecha_opcional">Fecha Opcional</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12" ng-show="liquidacion.chk_fecha_opcional == true">
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="fecha_opcional_liquidacion" type="date" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO && liquidacion.fecha_opcional_liquidacion != ''" ng-model="liquidacion.fecha_opcional_liquidacion">
+                                <label for="fecha_opcional_liquidacion" class="active">Fecha</label>
+                            </div>
+                        </div>
+                          <div class="col l6 m6 s6" style=" margin-bottom: 1em;">
+                            <div class="input-field col l12 m12 s12">
+                                <label class="active">Tipo de cuenta</label>
+                                <select class="select-chosen-eps" 
+                                ng-disabled="EDITAR_LIQUIDACION_FORMULARIO" ng-model="liquidacion.tipo_cuenta">
+                                            <option value="" disabled>SELECCIONAR</option>
+                                            <option value="0" >NO TIENE</option>
+                                            <option value="1" >CUENTA AHORRO O CORRIENTE</option>
+                                            <option value="2" >AHORRO A LA MANO</option>
+                                            <option value="3" >NEQUI</option>
+                                            <option value="4" >DAVIPLATA</option>
+                                            
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>   
+                    <!-- EPACIO DEL CHECK -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-check"></i>Estado de Validación</p>
+                        <div class="col l12 m12 s12">
+                            <div class="center col input-field l12 m12 s12">
+                                <input type="checkbox" id="liquidacion_check" ng-change="funcion_listas_causales_liquidacion(liquidacion.aprovacion_liquidacion)" ; ng-init="liquidacion.aprovacion_liquidacion=true;funcion_listas_causales_liquidacion(true)" ng-model="liquidacion.aprovacion_liquidacion"
+                                    checked="checked" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                                <label style="font-size: 1.45em !important;" for="liquidacion_check">Aprobado desde
+                                    Liquidacion</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <!-- FILA CAUSAL -->
+                    <div class="row columnas">
+                        <p class="default-background white-text"> <i class="icon-clipboard"></i>Justificación</p>
+                        <div class="col l12 m12 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <label class="active">Causal</label>
+                                <select class="select-chosen-eps" id="causal" ng-model="liquidacion.causal_economicas" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO">
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="a in listado_causales_economicas" value="{{a.codigo}}">
+                                        {{a.nombre}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fila 3 -->
+                    <div class="row " id="observacion">
+                        <div class="col l12 m12 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <label class="active">Observación:</label>
+                                <textarea rows="4" ng-model="liquidacion.observacion_liquidacion" cols="50" placeholder="" ng-disabled="EDITAR_LIQUIDACION_FORMULARIO"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- BOTON DE GUARDAR LIQUIDACION -->
+                    <div ng-show="donde_guardo.valliq=='S'" class="card-footer col l12 m12 s12 center">
+                        <button id="GUARDAR_VALLIQ" class="btn" ng-click="guardar('L')">Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+<!-- <<<<<<<<<<<<<<<<<<<<  modal para calcular las incapacidades creado por yordis >>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+<div id="modalcalcularincapacidades" class="modal" style="width: 80%!important; max-height: 90%;top:3%!important">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="row">
+            <div class="col s11">
+              <h5 class="white-text"><span><b>Calcular Incapacidades y Licencias</b> </span></h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals()"
+                  class="material-icons white-text">close</i></h5>
+            </div>
+          </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row">
+              <div class="col s12">
+                <div class="col s6">
+                <div class="tableWrap">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <!-- <th style="text-align:center;">#</th> -->
+                            <th style="text-align:center;">IBC</th>
+                            <th style="text-align:center;">APORTANTE</th>
+                            <th style="text-align:center;">DIAS</th>
+                            <!-- <th style="text-align:center;">COTIZACION</th> -->
+                            <th style="text-align:center;">ESTADO</th>
+                            <th style="text-align:center;">PERIODO</th>
+                            <th style="text-align:center;">AÑO</th>
+                            <th style="text-align:center;">TARIFA</th>
+                            <th style="text-align:center;">TIPO AFILIADO</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="dat in datoselic">
+                            <!-- <td style="text-align:center;">{{$index + 1}}</td> -->
+                            <td style="text-align:center;">{{dat.IBC}}</td>
+                            <td style="text-align:center;">{{dat.APORTANTE}}</td>
+                            <td style="text-align:center;">{{dat.DIAS}}</td>
+                            <!-- <td style="text-align:center;">{{dat.COTIZACION}}</td> -->
+                            <td style="text-align:center;">{{dat.ESTADO}}</td>
+                            <td style="text-align:center;">{{dat.PERIODO}}</td>
+                            <td style="text-align:center;">{{dat.ANNO}}</td>
+                            <td style="text-align:center;">{{dat.TARIFA}}</td>
+                            <td style="text-align:center;">{{dat.TIPO_AFILIADO}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+                </div>
+                <div ng-show="liquidacion.concepto=='LM'||liquidacion.concepto=='LP' ||liquidacion.concepto=='LA'" class="col s6">
+                    <div class="row">
+                        <div class="col l6 m6 s6">
+                            <div class="input-field col  l12 m12 s12">
+                                <input disabled id="salarioibc" type="text" ng-model="salarioibc" ng-keyup="FormatPesoID('salarioibc')" maxlength="16">
+                                <label for="salarioibc" class="">IBC</label>
+                            </div>
+                        </div>
+                        <div class="col l6 m6 s6">
+                            <div class="input-field col l12 m12 s12">
+                                <label class="active">Tipo Cotizante</label>
+                                <select disabled class="select-chosen-eps"  ng-model="liquidacion.tipo_tipo_cotizante">
+                                            <option value="" disabled>SELECCIONAR</option>
+                                            <option value="D" >Dependiente</option>
+                                            <option value="I" >Independiente</option>
+                                </select>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="row">
+                        <div class="col l4 m4 s4">
+                            <div class="input-field col  l12 m12 s12">
+                                <input disabled id="liquidaciondias_prematuros" type="text" ng-model="liquidacion.dias_prematuros"  maxlength="16">
+                                <label for="liquidaciondias_prematuros" class="">Dias Nacimiento Prematuro</label>
+                            </div>
+                        </div>
+                        <div class="col l4 m4 s4">
+                            <div class="input-field col  l12 m12 s12">
+                                <input disabled id="liquidacionsemana_gestacion" type="text" ng-model="liquidacion.semana_gestacion" >
+                                <label for="liquidacionsemana_gestacion" class="">Semanas de Gestacion</label>
+                            </div>
+                        </div>
+                        <div class="col l2 m4 s12">
+                            <div class="center col input-field l12 m12 s12">
+                                <input type="checkbox" id="requisito"  ng-model="liquidacion.partomul" checked="checked" class="ng-valid ng-touched ng-dirty ng-valid-parse ng-pristine" disabled="disabled">
+                                <label for="requisito">Parto Multiple</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col l4 m4 s4">
+                            <div class="input-field col  l12 m12 s12">
+                                <input disabled id="diascotizados" type="text" ng-model="diascotizados"  maxlength="16">
+                                <label for="diascotizados" class="">Dias Cotizados</label>
+                            </div>
+                        </div>
+                        <!-- <div class="col l4 m4 s4">
+                            <div class="input-field col  l12 m12 s12">
+                                <input disabled id="diasproporcionallpm" type="text" ng-model="diasproporcionallpm"  maxlength="16">
+                                <label for="diascotizados" class="">Dias Proporcional</label>
+                            </div>
+                        </div> -->
+                        <div class="col l4 m4 s4" >
+                            <div class="input-field col  l12 m12 s12">
+                                <input id="liquidacionfecha_incapacidad" disabled type="date" ng-model="liquidacion.fecha_incapacidad">
+                                <label for="liquidacionfecha_incapacidad" class="active">Fecha Inicio Licencia</label>
+                            </div>
+                        </div>
+                        <div class="col l4 m4 s4">
+                            <div class="input-field col  l12 m12 s12">
+                                <input disabled id="diasgestacion" type="text" ng-model="diasgestacion" maxlength="16">
+                                <label for="diasgestacion" class="">Dias de Gestacion</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer col l12 m12 s12 center">
+                        <button type="button" class="btn btn-danger" ng-click="closemodals()">Cerrar</button>
+                    </div>
+                    <br>
+                    <p style="font-family: cursive;"> IBC Variable: {{elibcesvariable}}</p>
+                    <p style="font-family: cursive;"> Calculo IBC Diario: $ {{calculoibcdiariolp | number : 0}}</p>
+                    <p style="font-family: cursive;"> Meses de Validacion: {{mesesvalidacion}}</p>
+                    <p style="font-family: cursive;"> Calculo Dias Autorizados: {{diasautorizadoslp}}</p>
+                    <p style="font-family: cursive;"> Total A pagar: $ {{totalpagarlp | number : 0}}</p>
+                </div>
+                <div ng-hide="liquidacion.concepto=='LM'||liquidacion.concepto=='LP' ||liquidacion.concepto=='LA'" class="col s6">
+                    <div class="col l6 m6 s6" >
+                        <div class="input-field col  l12 m12 s12">
+                            <input id="fechainicioliquidar" disabled type="date" ng-model="fechainicioliquidar">
+                            <label for="fechainicioliquidar" class="active">Fecha Inicio</label>
+                        </div>
+                    </div>
+                    <div class="col l6 m6 s6" >
+                        <div class="input-field col  l12 m12 s12">
+                            <input id="fechafinliquidar" disabled type="date" ng-model="fechafinliquidar">
+                            <label for="fechafinliquidar" class="active">Fecha Fin</label>
+                        </div>
+                    </div>
+                      <div class="col l6 m6 s6" style=" margin-bottom: 1em;">
+                        <div class="input-field col l12 m12 s12">
+                            <label class="active">Tipo Cotizante</label>
+                            <select class="select-chosen-eps" disabled  ng-model="esdependienteoindependiente">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option value="D" >Dependiente</option>
+                                        <option value="I" >Independiente</option>
+                            </select>
+                        </div>
+                    </div>  
+                      <div class="col l6 m6 s6" style=" margin-bottom: 1em;">
+                        <div class="input-field col l12 m12 s12">
+                            <label class="active">Prorroga</label>
+                            <select class="select-chosen-eps" disabled ng-model="tieneprorroga">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option value="S" >SI TIENE</option>
+                                        <option value="N" >NO TIENE</option>
+                            </select>
+                        </div>
+                    </div>  
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col  l12 m12 s12">
+                            <input disabled id="salarioIBCmesanterior" type="text" ng-model="salarioIBCmesanterior" ng-keyup="FormatPesoID('salarioIBCmesanterior')" maxlength="16">
+                            <label for="salarioIBCmesanterior" class="">IBC</label>
+                        </div>
+                    </div>
+                    <div class="card-footer col l12 m12 s12 center">
+                        <button type="button" class="btn btn-danger" ng-click="closemodals()">Cerrar</button>
+                    </div>
+                    <br>
+                    <!-- <p style="font-family: cursive;"> IBC Variable: {{elibcesvariable}}</p> -->
+                    <p style="font-family: cursive;"> Pagar: $ {{datocalculado | number : 0}}</p>
+                    <p style="font-family: cursive;"> Dias: {{diasapagar}}</p>
+                    <p style="font-family: cursive;"> Valor Diario: $ {{valordiario | number : 0}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- <<<<<<<<<<<<<<<<<<<<  modal para calcular las incapacidades creado por yordis >>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+        <!-- formulario de pagaduria contable -->
+        <!-- <div class="card formulario row" id="formulario_contable">
+            <div class="card-title col l12 m12 s12">
+                <h5 class="titulo_card" ng-click="collapse(4)">
+                    <i class="icon-money-1"></i>Contable y Pagaduria
+                    <i ng-class="formulario_contable==true?'icon-minus-outline':'icon-plus-outline'" class="right"></i>
+                </h5>
+            </div>
+        </div> -->
+
+
+      
+        <!-- tabla de traza -->
+        <div class="card formulario row" ng-hide="json_tarea.length==0">
+            <div class="card-title col l12 m12 s12">
+                <h5 class="titulo_card" ng-click="collapse(5)">
+                    <i class="icon-slideshare-1"></i>Tarea
+                    <i ng-class="traza==true?'icon-minus-outline':'icon-plus-outline'" class="right"></i>
+                </h5>
+            </div>
+            <div ng-show="traza" class="card-body col l12 m12 s12">
+                <div class="scrollTableDefault style-table-default" style="overflow-x: hidden;">
+                    <table id="tbclas" style="cursor: pointer;" class="table-bordered">
+                        <thead class="default-background white-text">
+                            <tr>
+                                <td style="border: none;    width: 30em;"><b>FUNCIONARIO</b></td>
+                                <td style="border: none"><b>OBSERVACION</b></td>
+                                <td style="border: none"><b>FECHA</b></td>
+                                <td style="border: none"><b>HORA </b></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dm in json_tarea">
+                                <td style="text-align:center;width:134px">{{dm.FUNCIONARIO}}</td>
+                                <td style="text-align:left;">{{dm.OBSERVACION}}</td>
+                                <td style="text-align:left;">{{dm.FECHA}}</td>
+                                <td style="text-align:left;">{{dm.HORA}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <style type="text/css">
+       .card.graficas.row {
+            margin: 1em;
+            background: #f1f3f4;
+        }
+        li.active_list {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        rect.highcharts-background {
+            fill: #f1f3f4;
+        }
+        
+        #buscar_radicado_consulta {
+            background: #f7f7f7;
+            border: 1px solid #ac82bd;
+            /* margin-top: -20px; */
+        }
+        
+        tr.tabla-body:hover {
+            background: #ddd;
+            cursor: pointer;
+        }
+        
+        p.card_total {
+            margin: 1px;
+            cursor: pointer;
+        }
+        
+        .con_border {
+            border-bottom: 0.5px solid #aba9a9c2;
+            color: #889c96;
+            padding-left: 10px;
+        }
+        /* .sin_border {
+            border-bottom: 0.5px solid #aba9a9c2;
+        } */
+        
+        .listas_conceptos .card:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+        
+        .text_hover:hover {
+            background: #6a1b990f;
+        }
+        
+        #titulo i {
+            cursor: pointer !important;
+            float: right !important;
+            margin-right: 12em !important;
+            margin-top: -34px;
+            font-size: 1.25em;
+        }
+        
+        a.active {
+            border-bottom: 1px solid;
+        }
+        
+        li.tab.col.s4 {
+            cursor: pointer;
+            border: 1px solid #e5e6e6;
+        }
+        
+        i {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        h5.titulo_card {
+            padding: 0.3em 1.2em;
+            margin: 0px;
+            background: #e5e6e6;
+            border: 1px solid #c4c4c4;
+            color: #818282;
+        }
+        
+        .card-title.col.l12.m12.s12 {
+            padding: 0px !important;
+            margin: 0px !important;
+        }
+        
+        .card.formulario.row {
+            box-shadow: none;
+            border: 1px solid #81828278;
+        }
+        
+        .card-body.col.l12.m12.s12 {
+            padding: 2em !important;
+        }
+        
+        .card-footer.center.col.l12.m12.s12 {
+            padding: 1em !important;
+        }
+        
+        div#titulo {
+            background: #fff !important;
+            padding: 10px;
+            margin: 0px;
+            box-shadow: 1px 2px 2px -1px rgba(0, 0, 0, 0.12);
+        }
+        
+        #titulo h5 {
+            font-family: 'Product Sans', Arial, sans-serif;
+            font-size: 22px;
+            line-height: 22px;
+            margin-left: 2em;
+        }
+        
+        .formulario label {
+            font-weight: 400;
+            font-size: 12px !important;
+            margin-left: -11px;
+        }
+        
+        .formulario select {
+            /* background: #E5E6E6; */
+            margin-top: 7px;
+            padding: 0px;
+            border: 1px solid #e5e6e6;
+            border-radius: 4px;
+            font-size: 12px !important;
+        }
+        
+        .formulario .col {
+            padding: 0px 8px 0px 0px !important;
+            margin-top: 10px !important;
+        }
+        
+        .formulario input {
+            /* background: #e5e6e6;
+            background: #E5E6E6; */
+            margin-top: 7px;
+            padding: 0px;
+            border: 1px solid #e5e6e6;
+            border-radius: 4px;
+            font-size: 12px !important;
+        }
+        
+        input:disabled {
+            background: #E5E6E6;
+        }
+        
+        select:disabled {
+            color: rgba(0, 0, 0, 0.3);
+            background: #e5e6e6;
+        }
+        
+        textarea:disabled {
+            color: rgba(0, 0, 0, 0.3);
+            background: #e5e6e6 !important;
+        }
+        
+        .block:disabled {
+            background: #fff;
+        }
+        
+        .adjunto label {
+            margin-left: 0.5em;
+        }
+        
+        .adjunto .btn {
+            margin-top: 1.5em;
+        }
+        
+        button#historial {
+            margin-top: 0.8em;
+        }
+        
+        div#col1 {
+            margin-top: 20px;
+        }
+        
+        div.columnas {
+            /* border-bottom: 1px solid #e5e6e6; */
+            border-top: 1px solid #e5e6e6;
+            position: relative;
+        }
+        
+        .columnas p {
+            position: absolute;
+            top: -38px;
+            width: 207px;
+            border: 1px solid #e5e6e6;
+            padding: 1px 10px;
+            border-radius: 0px 19px 0px 0px;
+        }
+        
+        .columnas .ocultar_adjuntos {
+            position: absolute;
+            right: 1em;
+            cursor: pointer;
+            top: -1em;
+            border: 1px solid #1a2e63;
+            border-radius: 2em;
+            background: #fff;
+        }
+        
+        #adjunto_contables {
+            margin-top: 4em !important;
+            position: relative !important;
+        }
+        
+        #adjunto_contables {
+            position: relative !important;
+        }
+        
+        #observacion textarea {
+            background: #ffffff;
+            border: 1px solid #919d9f80;
+            margin: 7px;
+            height: 5em;
+        }
+        
+        span.tooltiptext {
+            background: #bbc8ec !important;
+            color: #191919 !important;
+            border-bottom: 1px solid !important;
+        }
+        
+        input {
+            text-transform: uppercase;
+        }
+        
+        input:disabled {
+            color: #111 !important;
+        }
+        
+        i.icon-search-4 {
+            position: absolute;
+            top: 20px;
+            right: 0.5em;
+        }
+        /* adjunto */
+        
+        .file-path-wrapper input {
+            padding-left: 19px !important;
+        }
+        
+        .file-field .file-path-wrapper {
+            overflow: hidden !important;
+            margin: -8px !important;
+            padding: 0px !important;
+            top: 0px !important;
+        }
+        /* tab 2 */
+        
+        .validacion_medica {
+            margin-top: 1em;
+        }
+        
+        .listas_conceptos .card {
+            padding: 10px;
+            background: #f1f3f4;
+        }
+        /* LISTAS */
+        
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .list-group-item:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+        
+        .list-group-item:hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+.tableWrap {
+  height: 500px;
+  border: 2px solid black;
+  overflow: auto;
+}
+/* thead tr th {
+  position: sticky;
+  top: 0;
+}
+table {
+ border-collapse: collapse;
+}
+
+table {
+  width: 100%;
+  font-family: sans-serif;
+}
+tbody tr {
+    border-bottom: 2px solid #e8e8e8;
+} */
+/* table td {
+  padding: 16px;
+} */
+    </style>
+</div>

@@ -1,0 +1,896 @@
+<div id="gestionaut">
+    <div class="row">
+        <div class="col s12 m12 l12 magazine margin widgets-tabs">
+            <div class="card-panel widgets-tabs col l12 no-padding">
+                <ul tabs reload="allTabContentLoaded" style="box-shadow: 0px 2px 2px #f3f3f3;">
+                    <li class="tab col s6" style="cursor: pointer;" ng-class="activeIcolor"><a style="border-top:0"
+                            ng-click="setTab(1);sumPrint = 0;" ng-class="activeI">Consultar Tutelas</a></li>
+                    <li class="tab col s6" style="cursor: pointer;" ng-class="activeIIcolor"><a style="border-top:0"
+                            ng-click="setTab(2)" ng-class="activeII">Consultar Junta Profesional
+                        </a></li>
+                    <li class="tab col s6" ng-hide="true" style="cursor: pointer;" ng-class="activeIIIcolor"><a style="border-top:0"
+                        ng-click="setTab(3)" ng-class="activeIII">Consultar Reporte Entrega
+                    </a></li>
+                </ul>
+                <div ng-show="tabI" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+
+                            <div class="col s7">
+                                <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                                <h5>Consultar Tutelas </h5>
+                            </div>
+                            <div class="col s5" style="text-align: right; margin-top: 15px;">
+                                <div class="btn-panel switch">
+                                    <label>
+                                        Fecha
+                                        <input type="checkbox" ng-click="hide_serchdir()">
+                                        <span class="lever"></span>
+                                        No. Precripcion
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- -->
+                        </div>
+                        <!--Panel de busqueda-->
+                        <div class="col s12" ng-hide="vw_dir">
+                            <form>
+                                <div class="col s12">
+                                    <div class="input-list input-form margin">
+
+                                        <div class="input-list input-view-column">
+                                            <label for="normal8">Fecha Inicio</label>
+                                            <input id="normal8" ng-model="fecha_i" type="date" required>
+                                            <!--required-->
+                                            <label for="normal8">Fecha Fin</label>
+                                            <input id="normal8" ng-model="fecha_f" type="date" required>
+                                        </div>
+                                     
+                                        <div class="input-list input-view-column">
+                                            <label for="normal8">Regimen Afiliado</label>
+                                            <select class="select-chosen-eps" id="regimen" ng-model="regimen">
+                                                <option value="" disabled> Seleccionar</option>
+                                                <option value="S">Subsidiado</option>
+                                                <option value="C">Contributivo</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-field col">
+                                            <button class="btn white-text" ng-click="search_tutela()" type="submit"
+                                                style="padding-right: 5px; padding-left: 5px; margin-top: 10px;">
+                                                <i style="position: relative;" class="material-icons prefix">search</i>
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col s12" ng-hide="!vw_dir">
+                            <div class="col s5 " ng-hide="check_option">
+                                <div class="input-field col m12 s12">
+                                    <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                                    <input id="with_icon2" type="text" ng-model="no_pres"
+                                        ng-required="!check_option? true:false">
+                                    <label for="with_icon2">Numero Prescripcion</label>
+                                </div>
+                            </div>
+                            <div class="col s5" ng-hide="check_option">
+                                <div class="input-list input-view-column">
+                                    <select class="select-chosen-eps" id="regimen" ng-model="regimen">
+                                        <option value="" disabled> Seleccionar Régimen</option>
+                                        <option value="S">Subsidiado</option>
+                                        <option value="C">Contributivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col s2">
+                                <div class="input-field col">
+                                    <button class="btn white-text" ng-click="search_tutela()" type="submit"
+                                        style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                            style="position: relative;"
+                                            class="material-icons prefix">search</i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Fin panel de busqueda-->
+                    </div>
+                    <div class="col s12" ng-hide="vertutelas">
+                        <!-- <div class="col s4 offset-s8">
+                                    <div class="input-list input-view-column">
+                                        <label for="filter">Buscar</label>
+                                        <input id="filter" ng-model="filter" type="text">
+                                    </div>
+                                </div> -->
+                        <div class="charts">
+                            <div class="card-content foot4"
+                                style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                                <div class="col s2">
+                                    <h5 class="white-text">Tutelas</h5>
+                                </div>
+
+                                <div class="offset-s9 col s1">
+                                    <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                            ng-click="vertutelas = !vertutelas"
+                                            class="material-icons white-text">close</i></h5>
+                                </div>
+                            </div>
+                            <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+                                <div class="row">
+                                    <div class="responsive" ng-hide="switchtable">
+                                        <table class="table table-bordered table-striped" id="table_tutela">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <!-- <th style="text-align: center;">Direccionar</th> -->
+                                                    <th style="text-align: center;">No. Tutela</th>
+                                                    <th style="text-align: center;">Fecha Tutela</th>
+                                                    <!-- <th style="text-align: center;">Detalle</th> -->
+                                                    <th style="text-align: center;">Medicamentos</th>
+                                                    <th style="text-align: center;">Procedimientos</th>
+                                                    <th style="text-align: center;">Dispositivos</th>
+                                                    <th style="text-align: center;">Productos <br> Nutricionales</th>
+                                                    <th style="text-align: center;">Servicios <br> Complementarios</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr ng-repeat="data in tutelas | inicio: currentPage * pageSize | limitTo: pageSize"
+                                                    ng-hide="tutelas.length == 0">
+
+                                                    <!-- <tr ng-repeat="data in newarray | filter:filter"> -->
+                                                    <th style="text-align:center;">
+                                                        {{$index + 1 + (currentPage * pageSize) }}</th>
+
+                                                    <td style="text-align: center;"> <a
+                                                            ng-click="open_modal('det',data)"
+                                                            style="cursor: pointer;">{{data.NoTutela}}</a> </td>
+                                                    <td style="text-align: center;">{{data.FTutela}}</td>
+                                                    <!-- <td>
+                                                                <center>
+                                                                    <button
+                                                                        class="btn-floating default-background waves-effect waves-light"
+                                                                        ng-click="open_modal('med',data.tutela)" title="Detalle Tutela">
+                                                                        <i
+                                                                            class="material-icons">question_answer</i></button>
+                                                                </center>
+                                                        </td> -->
+                                                    <!-- <td style="text-align: center;">{{data.EstPres}}</td> -->
+                                                    <!-- <td style="text-align: center;">{{data.Medicamentos}}</td>
+                                                      <td style="text-align: center;">{{data.Procedimientos}}</td>
+                                                      <td style="text-align: center;">{{data.Dispositivos}}</td>
+                                                      <td style="text-align: center;">{{data.ProductosNutricionales}}</td>
+                                                      <td style="text-align: center;">{{data.ServiciosComplementarios}}</td> -->
+                                                    <td>
+                                                        <center>
+                                                            <button
+                                                                class="btn-floating default-background waves-effect waves-light"
+                                                                ng-click="open_modal('med',data.medicamentos)"
+                                                                ng-disabled="data.actmedicamentos" title="Medicamentos">
+                                                                <i
+                                                                    class="material-icons">add_circle_outline</i></button>
+                                                        </center>
+                                                    </td>
+                                                    <td>
+                                                        <center>
+                                                            <button
+                                                                class="btn-floating default-background waves-effect waves-light"
+                                                                ng-click="open_modal('proc', data.procedimientos)"
+                                                                ng-disabled="data.actprocedimientos"
+                                                                title="Procedimientos">
+                                                                <i class="material-icons">healing</i></button>
+                                                        </center>
+                                                    </td>
+                                                    <td>
+                                                        <center>
+                                                            <button
+                                                                class="btn-floating default-background waves-effect waves-light"
+                                                                ng-click="open_modal('dis',data.dispositivos)"
+                                                                ng-disabled="data.actdispositivos" title="Dispositivos">
+                                                                <i class="material-icons">devices_other</i></button>
+                                                        </center>
+                                                    </td>
+
+                                                    <td>
+                                                        <center>
+                                                            <button
+                                                                class="btn-floating default-background waves-effect waves-light"
+                                                                ng-click="open_modal('prod',data.productosnutricionales)"
+                                                                ng-disabled="data.actproductosnutricionales"
+                                                                title="ProductosNutricionales">
+                                                                <i class="material-icons">local_dining</i></button>
+                                                        </center>
+                                                    </td>
+
+                                                    <td>
+                                                        <center>
+                                                            <button
+                                                                class="btn-floating default-background waves-effect waves-light"
+                                                                ng-click="open_modal('ser',data.serviciosComplementarios)"
+                                                                ng-disabled="data.actserviciosComplementarios"
+                                                                title="ServiciosComplementarios">
+                                                                <i class="material-icons">merge_type</i></button>
+                                                        </center>
+                                                    </td>
+
+                                                    <!-- <td> {{data.FecDireccionamiento}} </td> -->
+                                                    <!-- <td> {{data.EstDireccionamiento}} </td> -->
+                                                    <!-- <td> {{data.FecAnulacion}} </td> -->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <ul ng-hide="tutelas.length == 0" style="text-align: center;" class="pagination"
+                                            ng-hide="tutelas.length > 0">
+                                            <li><button ng-disabled='currentPage == 0' class="btn-floating default-background" 
+                                                    ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+                                            <li ng-repeat='page in pages'><button
+                                                    ng-disabled='currentPage == page.no - 1' class="btn-floating default-background"
+                                                    ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                                            <li><button ng-disabled='currentPage >= tutelas.length/pageSize - 1'
+                                                    class="btn-floating default-background"
+                                                    ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="tabII" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+
+                            <div class="col s7">
+                                <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                                <h5>Consultar Junta Profesional</h5>
+                            </div>
+                            <div class="col s5" style="text-align: right; margin-top: 15px;">
+                                <div class="btn-panel switch">
+                                    <label>
+                                        Fecha
+                                        <input type="checkbox" ng-click="hide_serchjp()">
+                                        <span class="lever"></span>
+                                        No. Precripcion
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- -->
+                        </div>
+                        <!--Panel de busqueda-->
+                        <div class="col s12" ng-hide="vw_jp">
+                            <form>
+                                <div class="col s12">
+                                    <div class="input-list input-form margin">
+
+                                        <div class="input-list input-view-column">
+                                            <label for="normal8">Fecha</label>
+                                            <input id="normal8" ng-model="fechajp" type="date">
+                                            <!--required-->
+                                        </div>
+                                        <div class="input-list input-view-column">
+                                            <label for="normal8">Regimen Afiliado</label>
+                                            <select class="select-chosen-eps" id="regimen" ng-model="regimen">
+                                                <option value="" disabled> Seleccionar</option>
+                                                <option value="S">Subsidiado</option>
+                                                <option value="C">Contributivo</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-field col">
+                                            <button class="btn white-text" ng-click="search_jp()" type="submit"
+                                                style="padding-right: 5px; padding-left: 5px; margin-top: 10px;">
+                                                <i style="position: relative;" class="material-icons prefix">search</i>
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col s12" ng-hide="!vw_jp">
+                            <div class="col s5 " ng-hide="check_option">
+                                <div class="input-field col m12 s12">
+                                    <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                                    <input id="with_icon2" type="text" ng-model="no_presjp"
+                                        ng-required="!check_option? true:false">
+                                    <label for="with_icon2">Numero Prescripcion</label>
+                                </div>
+                            </div>
+                            <div class="col s5" ng-hide="check_option">
+                                <div class="input-list input-view-column">
+                                    <select class="select-chosen-eps" id="regimen" ng-model="regimen">
+                                        <option value="" disabled> Seleccionar Régimen</option>
+                                        <option value="S">Subsidiado</option>
+                                        <option value="C">Contributivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col s2">
+                                <div class="input-field col">
+                                    <button class="btn white-text" ng-click="search_jp()" type="submit"
+                                        style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                            style="position: relative;"
+                                            class="material-icons prefix">search</i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Fin panel de busqueda-->
+                    </div>
+                    <div class="col s12" ng-hide="verjp">
+                        <!-- <div class="col s4 offset-s8">
+                                    <div class="input-list input-view-column">
+                                        <label for="filter">Buscar</label>
+                                        <input id="filter" ng-model="filter" type="text">
+                                    </div>
+                                </div> -->
+                        <div class="charts" style="margin-bottom: 0px;width: 99%;">
+                            <div class="card-content foot4"
+                                style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                                <div class="col s5">
+                                    <h5 class="white-text">Junta Profesional</h5>
+                                </div>
+
+                                <div class="offset-s6 col s1">
+                                    <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="verjp = !verjp"
+                                            class="material-icons white-text">close</i></h5>
+                                </div>
+                            </div>
+                            <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+                                <div class="row">
+                                    <div class="responsive" ng-hide="switchtable">
+                                    
+                                        <table id="med_table" class="striped table-bordered white animated" style="position: relative;">
+
+                                            <tbody>
+                                                <!-- <td ng-repeat="modificacion in info"> -->
+                                                <tr>
+                                                    <td> <b>NoPrescripcion</b> </td>
+                                                    <td>{{modificacion.NoPrescripcion}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>Datos Paciente</b> </td>
+                                                    <td>{{modificacion.TipoIDPaciente}} - {{modificacion.NroIDPaciente}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>FPrescripcion</b> </td>
+                                                    <td>{{modificacion.FPrescripcion}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>TipoTecnologia</b> </td>
+                                                    <td>{{modificacion.TipoTecnologia}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>Consecutivo</b> </td>
+                                                    <td>{{modificacion.Consecutivo}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>EstJM</b> </td>
+                                                    <td>{{modificacion.EstJM}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>CodEntProc</b> </td>
+                                                    <td>{{modificacion.CodEntProc}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>Observaciones</b> </td>
+                                                    <td>{{modificacion.Observaciones}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>JustificacionTecnica</b> </td>
+                                                    <td>{{modificacion.JustificacionTecnica}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>Modalidad </b> </td>
+                                                    <td>{{modificacion.Modalidad}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>NoActa</b> </td>
+                                                    <td>{{modificacion.NoActa}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>FechaActa</b> </td>
+                                                    <td>{{modificacion.FechaActa}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> <b>FProceso</b> </td>
+                                                    <td>{{modificacion.FProceso}}</td>
+                                                </tr>
+                                           
+                                             
+                                                <tr>
+                                                    <td> <b>CodEntJM</b> </td>
+                                                    <td>{{modificacion.CodEntJM}}</td>
+                                                </tr>
+                    
+                                            </tbody>
+                                        </table>
+                    
+                                    </div>
+
+                                </div>
+                                <div class="" style="text-align: center; justify-content: space-between; display: flex;">
+
+                 
+                                    <div class="col s12 bt" style="text-align: center; margin-right: 0px; margin-top: 15px;">
+                    
+                                    
+                    
+                    
+                                        <div class="tooltip" style="margin-top: 2px;">
+                                            <a class="btn-floating btn waves-effect waves-light mt-5"
+                                                ng-class="actual == 0 ? 'desactivado' : 'amarillo'"
+                                                ng-click="verModificaciones(actual,'back')"><i class="material-icons dp48"
+                                                    style="transform: rotate(180deg)">trending_flat</i></a>
+                                            <span style="margin-right: 4px;" class="tooltiptext">Anterior</span>
+                                        </div>
+                                        <span style="margin-left: 10px; margin-right: 10px;">{{actual + 1}} de
+                                            {{total}}</span>
+                                        <div class="tooltip" style="margin-top: 2px;">
+                                            <a class="btn-floating btn waves-effect waves-light mt-5"
+                                                ng-class="actual + 1 == total ? 'desactivado' : 'amarillo'"
+                                                ng-click="verModificaciones(actual,'next')"><i
+                                                    class="material-icons dp48">trending_flat</i></a>
+                                            <span style="margin-right: 4px;" class="tooltiptext">Siguiente</span>
+                                        </div>
+                    
+                                    </div>
+                                                     
+                                    <style>
+                                        .card-body-title {
+                                            font-size: initial;
+                                            border-bottom: 1px solid #eaeaea;
+                                            padding-bottom: 8px;
+                                        }
+                    
+                                        .desactivado {
+                                            background-color: gray;
+                                            /* color:black; */
+                                        }
+                                    </style>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="tabIII" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+
+                            <div class="col s7">
+                                <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                                <h5>Consultar Reporte Entrega</h5>
+                            </div>
+                            <div class="col s5" style="text-align: right; margin-top: 15px;">
+                                <div class="btn-panel switch">
+                                    <label>
+                                        Fecha
+                                        <input type="checkbox" ng-click="hide_serchdir()">
+                                        <span class="lever"></span>
+                                        No. Precripcion
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- -->
+                        </div>
+                        <!--Panel de busqueda-->
+                        <div class="col s12" ng-hide="vw_dir">
+                            <form>
+                                <div class="col s12">
+                                    <div class="input-list input-form margin">
+
+                                        <div class="input-list input-view-column">
+                                            <label for="normal8">Fecha Inicio</label>
+                                            <input id="normal8" ng-model="fecha_i" type="date" required>
+                                            <!--required-->
+                                            <label for="normal8">Fecha Fin</label>
+                                            <input id="normal8" ng-model="fecha_f" type="date" required>
+                                        </div>
+                                     
+                                        <div class="input-list input-view-column">
+                                            <label for="normal8">Regimen Afiliado</label>
+                                            <select class="select-chosen-eps" id="regimen" ng-model="regimen">
+                                                <option value="" disabled> Seleccionar</option>
+                                                <option value="S">Subsidiado</option>
+                                                <option value="C">Contributivo</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-field col ">
+                                            <button class="btn white-text" ng-click="search_entrega()" type="submit"
+                                                style="padding-right: 5px; padding-left: 5px; margin-top: 10px;">
+                                                <i style="position: relative;" class="material-icons prefix">search</i>
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col s12" ng-hide="!vw_dir">
+                            <div class="col s5 " ng-hide="check_option">
+                                <div class="input-field col m12 s12">
+                                    <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                                    <input id="with_icon2" type="text" ng-model="no_entrega"
+                                        ng-required="!check_option? true:false">
+                                    <label for="with_icon2">Numero Prescripcion</label>
+                                </div>
+                            </div>
+                            <div class="col s5" ng-hide="check_option">
+                                <div class="input-list input-view-column">
+                                    <select class="select-chosen-eps" id="regimen" ng-model="regimen">
+                                        <option value="" disabled> Seleccionar Régimen</option>
+                                        <option value="S">Subsidiado</option>
+                                        <option value="C">Contributivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col s2">
+                                <div class="input-field col">
+                                    <button class="btn white-text" ng-click="search_entregano()" type="submit"
+                                        style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                            style="position: relative;"
+                                            class="material-icons prefix">search</i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Fin panel de busqueda-->
+                    </div>
+                    <div class="col s12" ng-hide="verentregas">
+                        <div class="charts" style="margin-top: 5em; margin-bottom: 0px;width: 99%;">
+                            <div class="card-content foot4"
+                                style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                                <div class="col s5">
+                                    <h5 class="white-text">Reporte de Entrega</h5>
+                                </div>
+
+                                <div class="offset-s6 col s1">
+                                    <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                            ng-click="verentregas = !verentregas"
+                                            class="material-icons white-text">close</i></h5>
+                                </div>
+                            </div>
+                            <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+                                <div class="row">
+                                    <div class="responsive" ng-hide="switchtable">
+                                        <table class="table table-bordered table-striped" id="table_tutela">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th> ID</th>
+                                                    <th> ID <br> Entrega</th>
+                                                    <th> No Prescripcion</th>
+                                                    <th> Tipo</th>
+                                                    <th> Con <br> Tec</th>
+                                                    <th> Afiliado</th>
+                                                    <th> No<br>Entrega</th>
+                                                    <th> Estado Entrega</th>
+                                                    <!-- <th> Causa <br> NoEntrega</th> -->
+                                                    <th> Valor</th>
+                                                    <th> Codigo <br>Tecnico</th>
+                                                    <th> Cant<br>Total</th>
+                                                    <!-- <th> No Lote</th> -->
+                                                    <th>Fecha<br>Entrega</th>
+                                                    <th>Fecha<br>Entrega</th>
+                                                    <th> Estado<br>Entrega</th>
+                                                    <!-- <th> FecAnulacion</th> -->
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr ng-repeat="data in entregas | inicio: currentPage * pageSize | limitTo: pageSize"
+                                                    ng-hide="entregas.length == 0">
+
+                                                    <!-- <tr ng-repeat="data in newarray | filter:filter"> -->
+                                                    <th style="text-align:center;">
+                                                        <button class="btn-floating default-background" ng-click='open_modal("S",data)'>S</button>
+                                                    </th>
+
+                                                    <td style="text-align: center;"> 
+                                                           {{data.ID}} </td>
+                                                    <td style="text-align: center;">{{data.IDReporteEntrega}}</td>
+                                                    <td>{{data.NoPrescripcion}} </td>
+                                                    <td>{{data.TipoTec}} </td>
+                                                    <td>{{data.ConTec}} </td>
+                                                    <td>{{data.TipoIDPaciente}}-{{data.NoIDPaciente}}  </td>
+                                                    <!-- <td></td> -->
+                                                    <td>{{data.NoEntrega}} </td>
+                                                    <td>{{data.EstadoEntrega}} </td>
+                                                    <!-- <td>{{data.CausaNoEntrega}} </td> -->
+                                                    <td>${{data.ValorEntregado}} </td>
+                                                    <td>{{data.CodTecEntregado}} </td>
+                                                    <td>{{data.CantTotEntregada}} </td>
+                                                    <!-- <td>{{data.NoLote}} </td> -->
+                                                    <td>{{data.FecEntrega}} </td>
+                                                    <td>{{data.FecRepEntrega}} </td>
+                                                    <td>{{data.EstRepEntrega}} </td>
+                                                    <!-- <td>{{data.FecAnulacion}} </td> -->
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                        <ul ng-hide="entregas.length == 0" style="text-align: center;" class="pagination"
+                                            ng-hide="entregas.length > 0">
+                                            <li><button ng-disabled='currentPage == 0' class="btn-floating default-background" 
+                                                    ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+                                            <li ng-repeat='page in pages'><button
+                                                    ng-disabled='currentPage == page.no - 1' class="btn-floating default-background"
+                                                    ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                                            <li><button ng-disabled='currentPage >= entregas.length/pageSize - 1'
+                                                    class="btn-floating default-background"
+                                                    ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <style>
+            .tab a:hover {
+                background-color: #ddd !important;
+                color: white !important;
+            }
+
+            /* Style the active class (and buttons on mouse-over) */
+            .activebtn-step,
+            .activebtn-step:hover {
+                background-color: #2196f3 !important;
+                color: white !important;
+            }
+
+            .step-item {
+                height: 100px;
+                width: 100px;
+                border-radius: 100px;
+                padding: 0px;
+            }
+
+            .donebtn-step,
+            .donebtn-step:hover {
+                background-color: #2196f3 !important;
+                color: white !important;
+            }
+
+            .steper {
+                width: 60%;
+                display: inline-flex;
+                text-align: center;
+                padding-bottom: 10px;
+                margin-left: 20%;
+            }
+
+            .step-divider {
+                width: 100%;
+                position: relative;
+                top: 30px;
+                margin-left: 0px;
+                margin-right: 0px;
+                margin-top: 20px;
+            }
+
+            .btn-step-content {
+                position: relative;
+                display: none;
+                height: calc(100% - 132px);
+                width: inherit;
+                overflow: visible;
+                margin-left: 41px;
+                margin-right: 24px;
+            }
+
+            .step-option {
+                background: #eee;
+                height: 70px;
+                position: absolute;
+                bottom: -45px;
+                width: 100%;
+                margin-bottom: 6px;
+                left: 0px;
+                z-index: 2;
+            }
+
+            .back-step,
+            .back-step:hover {
+                margin-top: 7px;
+                position: absolute;
+                right: 80px;
+                background: #ff4350 !important;
+            }
+
+            .flex {
+                display: flex !important;
+            }
+
+            .btn-step {
+                background-color: rgba(0, 0, 0, .3);
+                color: white;
+            }
+
+            .hover-item:hover {
+                background-color: rgba(221, 221, 221, 0.45);
+            }
+
+            .hover-item:active {
+                background-color: rgba(221, 221, 221, 0.45);
+            }
+
+            .tabmenu>li:target>a {
+                background-color: rgba(221, 221, 221, 0.45);
+            }
+
+            .requerido {
+                color: red !important;
+            }
+
+            .tabactiva {
+                background-color: rgba(206, 206, 206, 0.71);
+            }
+
+            .colorblack {
+                color: black;
+            }
+
+            .itemsspam {
+                color: white !important;
+                border-radius: 12px !important;
+                box-shadow: 2px 2px 3px 0px #ccc !important;
+                position: relative !important;
+                top: 5px !important;
+                left: 11px !important;
+                cursor: pointer;
+            }
+
+            .hovpanel:hover {
+                background: #32364c2b;
+                color: #ffa51b;
+                cursor: pointer;
+            }
+
+            .mayus {
+                text-transform: uppercase;
+            }
+
+            #header-fixed {
+                position: fixed;
+                top: 0px;
+                display: none;
+            }
+
+            .cuadrado {
+                width: 25vh;
+                max-width: 240px;
+                height: 25vh;
+                max-height: 240px;
+                position: relative;
+                background: white;
+                box-shadow: 0 0 8px 1px #c7c7c7;
+            }
+
+            .coloritem {
+                color: black !important;
+            }
+
+            .autprocesada {
+                background-color: #4CAF50 !important;
+            }
+
+            .autactiva {
+                background-color: #ff9800 !important;
+            }
+
+            .switch label {
+                font-weight: 600;
+            }
+
+            .switch label .lever.check-c {
+                background-color: #818181 !important;
+            }
+
+            .switch label .lever.check-c:after {
+                background-color: #26a69a;
+            }
+
+            .switch label>span.activo {
+                color: #26a69a !important;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+
+            div#modaldetalle {
+                top: 1% !important;
+            }
+
+            div#modalnovedades {
+                top: 1% !important;
+            }
+
+            .outer {
+                width: 1px;
+                height: 100%;
+                margin: auto;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .inner {
+                /* position: absolute; */
+                width: 100%;
+                height: 50vh;
+                background: grey;
+                top: 30%;
+                box-shadow: 0px 0px 30px 20px grey;
+            }
+
+            .style-table-default {
+                height: 350px;
+                overflow: auto;
+            }
+
+            /* Style Scroll */
+            .scrollTableDefault::-webkit-scrollbar {
+                /* width */
+                width: 5px;
+            }
+
+            .scrollTableDefault::-webkit-scrollbar-track {
+                /* Track */
+                background: #f1f1f1;
+            }
+
+            .scrollTableDefault::-webkit-scrollbar-thumb {
+                /* Handle */
+                background: #888;
+            }
+
+            .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+                /* Handle on hover */
+                background: #555;
+            }
+
+            .swal2-container {
+                z-index: 10000 !important;
+            }
+
+            #tautorizaciones_length,
+            #tautorizaciones_filter,
+            #tautorizacionespro_length,
+            #tautorizacionespro_filter {
+                margin-top: -150px;
+            }
+
+            #tautorizaciones_filter,
+            #tautorizacionespro_filter {
+                margin-right: 10px;
+            }
+
+            #tautorizacionespro {
+                width: 100% !important;
+            }
+
+            #tautorizaciones_paginate,
+            #tautorizacionespro_paginate {
+                margin-top: 15px;
+            }
+
+            .clase-gray {
+                color: #736a6a !important;
+            }
+        </style>
+    </div>
+</div>

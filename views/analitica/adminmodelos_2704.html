@@ -1,0 +1,223 @@
+<div id="paneladmin" class="white newdesing" style="position:relative">
+  <style>
+    i {
+      cursor: pointer;
+    }
+
+    .select-input-new.select-chosen-eps {
+      height: 2rem !important;
+      padding: 0 0.5rem !important;
+      border-bottom: none !important;
+      box-shadow: 0 1px 0 0 #dadce0;
+      padding-right: 1rem !important;
+      border-radius: 0;
+    }
+
+    .newdesing .section-header ul>li>h5 {
+      font-family: 'Product Sans', Arial, sans-serif;
+      font-size: 22px;
+      line-height: 22px;
+      opacity: .54;
+      margin: 9px 0;
+    }
+
+    .newdesing td,
+    th {
+      font-size: 13px;
+      border-radius: 0;
+      padding: 5px 10px;
+    }
+
+    .select-iconos {
+      top: auto !important;
+      right: 100%;
+      bottom: 100%;
+      width: 254px !important;
+      min-width: 125px;
+      text-align: center;
+      overflow: auto;
+      height: 500px;
+      padding: 5px;
+    }
+
+    .select-iconos>ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    .select-iconos>ul>li {
+      width: 40px;
+      float: left;
+      font-size: 16px;
+    }
+
+    .select-iconos>input {
+      height: auto;
+      font-size: 13px !important;
+      padding: 0 .5em;
+      width: 85%;
+      margin-bottom: 5px !important;
+    }
+  </style>
+
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Configurar:</h5>
+      </li>
+      <li style="display:flex;align-items: center;">
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!switch_view}">Modelos</span>
+            <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view"
+              ng-change="(switch_view == true)?viewType(true):viewType(false);moduloTitle=''">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':switch_view}">Permisos</span>
+          </label>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div class="col s12">
+      <div ng-hide="switch_view" id="modelos">
+        <div class="row">
+          <div class="col s6" ng-show="tab.number==1">
+            <span style="cursor: pointer;" ng-click="nuevo();">Nuevo <i class="icon-plus"></i></span>
+          </div>
+          <div  class="col s6" ng-show="tab.number==1">
+                   <div class="row">
+                  <div class="col s6 margin no-padding right">
+                    <div class="input-field col m12 s12 margin">
+                      <label for="filtertablero">Buscar</label>
+                      <input name="filtertablero" required id="filtertablero" type="text" ng-model="filtertablero">
+                    </div>
+                  </div>
+                </div>
+          </div>
+          <div class="col s6" ng-show="tab.number==2">
+            <i class="icon-left-open-2" ng-click="tab.number=1;" style="cursor: pointer">Atras</i>
+          </div>
+        </div>
+        <div class="row" ng-show="tab.number==1">
+          <div class="col s12">
+            <table class="striped table-bordered white">
+              <thead>
+                <tr class="default-background white-text">
+                  <th class="text-center">#</th>
+                  <th class="text-center">Codigo</th>
+                  <th class="text-center">Nombre</th>
+                  <th class="text-center">Area</th>
+                  <th class="text-center">Creación</th>
+                  <th class="text-center">Privacidad</th>
+                  <th class="text-center">Estado</th>
+                  <th class="text-center">Acción</th>
+                </tr>
+
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in tableros | filter: filtertablero as result">
+                  <td class="text-center">{{$index+1}}</td>
+                  <td class="text-center">{{item.TABN_ID}}</td>
+                  <td class="text-center">{{item.TABC_NOMBRE}}</td>
+                  <td class="text-center">{{item.NOMBRE_AREA}}</td>
+                  <td class="text-center">{{item.TABF_FECHA_PUBLICACION}}</td>
+                  <td class="text-center">{{item.PRIVACIDAD}}</td>
+                  <td class="text-center">{{item.NOMBRE_ESTADO}}</td>
+                  <td class="text-center" style="font-size: 20px;">
+                    <i title="Editar modelo" ng-click="edit(item);" class="icon-edit orange-text"></i>
+                    <i title="{{item.TABC_ESTADO=='A' ? 'Eliminar modelo' :'Activar modelo'}}" ng-click="delete(item);"
+                      ng-class="{ 'icon-trash red-text':item.TABC_ESTADO=='A', 'icon-check-1 green-text':item.TABC_ESTADO=='I' }"></i>
+                    <i title="Ver modelo" ng-click="showModelo(item);" class="icon-chart-bar purple-text"></i>
+                    <i title="Cambiar privacidad" ng-click="changeprivacidad(item);"
+                      ng-class="{'icon-lock blue-text': item.TABC_PUBLICO=='N', 'icon-lock-open green-text': item.TABC_PUBLICO=='S' }"></i>
+                  </td>
+                </tr>
+                <tr ng-if="result.length==0">
+                  <td colspan="8" class="text-center">
+                    <p><b>NO SE ENCONTRARON RESULTADOS</b></p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+        <div class="row" ng-show="tab.number==2">
+          <form ng-submit="saveModel();">
+            <div class="row">
+              <div class="col s6">
+                <div class="row">
+                  <div class="col s12 margin no-padding">
+                    <div class="input-field col m12 s12 margin">
+                      <label for="nombre">Nombre</label>
+                      <input name="nombre" required id="nombre" type="text" ng-model="tablero.nombre">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12 margin no-padding">
+                    <div class="input-field col m12 s12 margin">
+                      <textarea name="iframe" required id="iframe" ng-model="tablero.iframe"
+                        class="materialize-textarea"></textarea>
+                      <label for="iframe">Iframe</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12 margin no-padding">
+                    <div class="input-field col m12 s12 margin">
+                      <textarea name="descripcion" required id="descripcion" ng-model="tablero.descripcion"
+                        class="materialize-textarea"></textarea>
+                      <label for="descripcion">Descripción</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12 margin no-padding">
+
+                    <div class="col s12">
+                      <label class="c-pointer noselectxtpqr" for="area">
+                        Área
+                      </label>
+                      <select required class="select-chosen-eps select pt-select-pqr" id="area" ng-model="tablero.area">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-selected="item.AREN_CODIGO == tablero.area" ng-value="item.AREN_CODIGO"
+                          ng-repeat="item in areas">{{item.AREC_NOMBRE}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col s6">
+                <div id="vistaprevia" style="padding: 20px;padding-top: 0;">
+                  <h5 ng-show="tablero.nombre" class="text-center">
+                    {{tablero.nombre}}</h5>
+                  <p ng-show="tablero.descripcion">Descripción: <br> {{tablero.descripcion}}</p>
+                  <p ng-show="tablero.area">Área: <br>
+                    {{getArea(tablero.area)}}
+                  </p>
+                  <p ng-show="tablero.iframe">Tablero:</p>
+                  <iframe ng-show="tablero.iframe" ng-src="{{trustSrc(tablero.iframe)}}" frameborder="0"
+                    style="width: 60vh;height: 40vh;"></iframe>
+                </div>
+
+              </div>
+            </div>
+            <div class="row text-center">
+              <button type="submit" class="waves-effect waves-light btn-large white-text pink">
+                Guardar</button>
+
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div ng-show="switch_view" id="permisos">
+        <h1>Asignar permisos</h1>
+      </div>
+
+    </div>
+  </div>
+</div>

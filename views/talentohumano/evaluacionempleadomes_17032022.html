@@ -1,0 +1,522 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer"
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+          onclick="location.reload();">
+          Evaluación de Empleados (Mes - {{Mes}})
+        </h5>
+      </li>
+      <li ng-if="Mostrar_Descargar">
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="Descarga_Historial()" href class="active">Descargar Encuestas
+              <i class="icon-download-1"></i></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <div class="row dashboard-wrapper content-container white" style="height: 90vh;">
+    <div class="col l12 m12 s12 center">
+      <div style="position: absolute;margin-top: 6em;margin-left: 23em;">
+        <div id="Imagen_back">
+          <img src="images\\talentohumano\evaluacion.svg" style="width:75vh;" alt="Imagen">
+        </div>
+      </div>
+    </div>
+    <!-- //// -->
+    <div class="card-content clearfix card" style="width: 30%;margin: 1rem auto auto auto;border-radius: 15px;"
+      ng-show="Form.Status == 0">
+      <div class="row" style="margin-bottom: 0;margin-top: 1rem;">
+        <div class="col s12 no-padding label-new m-b">
+          <input type="text" id="Modal_Func" class="margin border-none input-text-new w-100 m-l "
+            style="text-transform:uppercase;margin-right: 8px !important;" autocomplete="off" ng-model="Modal_Func"
+            ng-keyup="Complete_Listado_Func($event,Modal_Func);KeyFind_ObFunc($event);"
+            ng-click="Busqueda.Func.Filtro = Busqueda.Func.Listado">
+          <label id="Modal_Func_Label">Cedula/Nombre del Funcionario</label>
+          <ul class="list-group m-l Clase_Listar_Func Func_Scroll">
+            <li class="list-group-item {{MesAno == x.ULTIMA_ENCUESTA ? 'red-text' : ''}}" id="Func{{$index}}" ng-repeat="x in Busqueda.Func.Filtro"
+              ng-click="FillTextbox_Listado_Func(x)" ng-class="($index == Busqueda.Func.Seleccion ? 'hover' : ''); ">
+              {{x.DOCUMENTO}} - {{x.NOMBRE}}</li>
+          </ul>
+          <!-- MesAno == x.ULTIMA_ENCUESTA ? 'red-text' : '' -->
+        </div>
+      </div>
+    </div>
+    <!-- ///// -->
+    <div id="Form" class="card-content clearfix card"
+      style="width: 90%;margin: 1rem auto auto auto;border-radius: 15px;" ng-show="Form.Status == 1">
+      <div class="Anim_Show Form_Desactivados" style="margin: auto;width: 90;">
+        <div class="row" style="margin-bottom: 0;width: 98%;margin-top: 1rem;">
+          <div class="foot4 divcardcustom default-linear-gradient border-none" style="margin-bottom: 2vh;">
+            <div class="text-al divcardcustom2">
+              <strong style="font-weight:600">Información del Funcionario</strong>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="col s5 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+              id="Form_Nombre_Usu" ng-model="Form.Nombre_Usu">
+            <label>Nombre del Funcionario</label>
+          </div>
+          <div class="col s4 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off" id="Form_Oficina"
+              ng-model="Form.Oficina">
+            <label>Oficina del Funcionario</label>
+          </div>
+          <div class="col s3 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off" id="Form_Area"
+              ng-model="Form.Area">
+            <label>Area del Funcionario</label>
+          </div>
+          <div class="col s5 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off" id="Form_Jefe"
+              ng-model="Form.Jefe">
+            <label>Jefe</label>
+          </div>
+          <!-- <div class="col s3 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off" id="Form_Cal_Final"
+              ng-model="Form.Cal_Final" value="">
+            <label>Calificación Final</label>
+          </div> -->
+          <!-- // -->
+        </div>
+        <!-- ////////////////////////////// -->
+        <div class="row" style="margin:2vh 1vw">
+          <blockquote class="default-color">1. ORGANIZACIÓN</blockquote>
+          <div class="col s3 m3 l3">
+            <p><strong>1.1. - Planificación*</strong></p>
+            <p><strong>1.2. - Asistencia y Puntualidad*</strong></p>
+          </div>
+          <div class="col s6 m6 l6" style="margin-top:2vh">
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group11" type="radio" id="radio11"
+                ng-click="Form.Radios[0].Preguntas[0].Calificacion=1;Sum_SubTotal('1')" />
+              <label for="radio11">(1)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group11" type="radio" id="radio112"
+                ng-click="Form.Radios[0].Preguntas[0].Calificacion=2;Sum_SubTotal('1')" />
+              <label for="radio112">(2)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group11" type="radio" id="radio113"
+                ng-click="Form.Radios[0].Preguntas[0].Calificacion=3;Sum_SubTotal('1')" />
+              <label for="radio113">(3)</label>
+            </div>
+          </div>
+          <div class="col s6 m6 l6" style="margin-top:1vh">
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group12" type="radio" id="radio121"
+                ng-click="Form.Radios[0].Preguntas[1].Calificacion=1;Sum_SubTotal('1')" />
+              <label for="radio121">(1)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group12" type="radio" id="radio122"
+                ng-click="Form.Radios[0].Preguntas[1].Calificacion=2;Sum_SubTotal('1')" />
+              <label for="radio122">(2)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group12" type="radio" id="radio123"
+                ng-click="Form.Radios[0].Preguntas[1].Calificacion=3;Sum_SubTotal('1')" />
+              <label for="radio123">(3)</label>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="col s12 m12 l12">
+            <strong>SUBTOTAL: ({{Form.Radios[0].Subtotal}})</strong>
+          </div>
+          <div class="col s12 m12 l12">
+            <div class="col s12 no-padding label-new m-b">
+              <textarea id="Form_Con_1" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+                autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                ng-keyup="FormatTexto('Form_Con_1')" ng-model="Form.Radios[0].Consideracion"
+                title="Se permiten un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+              <label>Consideraciones - Caracteres: {{Form.Radios[0].Consideracion.length}} - Máximo: 1000</label>
+            </div>
+          </div>
+        </div>
+        <!-- ////////////////////////////// -->
+        <div class="row" style="margin:10vh 1vw">
+          <blockquote class="default-color">2. PRESENTACIÓN</blockquote>
+          <div class="col s3 m3 l3">
+            <p><strong>2.1. - Dotación*</strong></p>
+          </div>
+          <div class="col s6 m6 l6" style="margin-top:2vh">
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group21" type="radio" id="radio211"
+                ng-click="Form.Radios[1].Preguntas[0].Calificacion=1;Sum_SubTotal('2')" />
+              <label for="radio211">(1)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group21" type="radio" id="radio212"
+                ng-click="Form.Radios[1].Preguntas[0].Calificacion=2;Sum_SubTotal('2')" />
+              <label for="radio212">(2)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group21" type="radio" id="radio213"
+                ng-click="Form.Radios[1].Preguntas[0].Calificacion=3;Sum_SubTotal('2')" />
+              <label for="radio213">(3)</label>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="col s12 m12 l12">
+            <strong>SUBTOTAL: ({{Form.Radios[1].Subtotal}})</strong>
+          </div>
+          <div class="col s12 m12 l12">
+            <div class="col s12 no-padding label-new m-b">
+              <textarea id="Form_Con_2" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+                autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                ng-keyup="FormatTexto('Form_Con_2')" ng-model="Form.Radios[1].Consideracion"
+                title="Se permiten un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+              <label>Consideraciones - Caracteres: {{Form.Radios[1].Consideracion.length}} - Máximo: 1000</label>
+            </div>
+          </div>
+        </div>
+        <!-- ////////////////////////////// -->
+        <div class="row" style="margin:10vh 1vw">
+          <blockquote class="default-color">3. RESPONSABILIDAD Y COMPROMISO</blockquote>
+          <div class="col s3 m3 l3">
+            <p><strong>3.1. - Responsabilidad*</strong></p>
+            <p><strong>3.2. - Compromiso*</strong></p>
+          </div>
+          <div class="col s6 m6 l6" style="margin-top:2vh">
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group31" type="radio" id="radio311"
+                ng-click="Form.Radios[2].Preguntas[0].Calificacion=1;Sum_SubTotal('3')" />
+              <label for="radio311">(1)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group31" type="radio" id="radio312"
+                ng-click="Form.Radios[2].Preguntas[0].Calificacion=2;Sum_SubTotal('3')" />
+              <label for="radio312">(2)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group31" type="radio" id="radio313"
+                ng-click="Form.Radios[2].Preguntas[0].Calificacion=3;Sum_SubTotal('3')" />
+              <label for="radio313">(3)</label>
+            </div>
+          </div>
+          <div class="col s6 m6 l6" style="margin-top:1vh">
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group32" type="radio" id="radio321"
+                ng-click="Form.Radios[2].Preguntas[1].Calificacion=1;Sum_SubTotal('3')" />
+              <label for="radio321">(1)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group32" type="radio" id="radio322"
+                ng-click="Form.Radios[2].Preguntas[1].Calificacion=2;Sum_SubTotal('3')" />
+              <label for="radio322">(2)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group32" type="radio" id="radio323"
+                ng-click="Form.Radios[2].Preguntas[1].Calificacion=3;Sum_SubTotal('3')" />
+              <label for="radio323">(3)</label>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="col s12 m12 l12">
+            <strong>SUBTOTAL: ({{Form.Radios[2].Subtotal}})</strong>
+          </div>
+          <div class="col s12 m12 l12">
+            <div class="col s12 no-padding label-new m-b">
+              <textarea id="Form_Con_3" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+                autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                ng-keyup="FormatTexto('Form_Con_3')" ng-model="Form.Radios[2].Consideracion"
+                title="Se permiten un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+              <label>Consideraciones - Caracteres: {{Form.Radios[2].Consideracion.length}} - Máximo: 1000</label>
+            </div>
+          </div>
+        </div>
+        <!-- ////////////////////////////// -->
+        <div class="row" style="margin:10vh 1vw">
+          <blockquote class="default-color">4. COOPERACIÓN Y LÍDERAZGO</blockquote>
+          <div class="col s3 m3 l3">
+            <p><strong>4.1. - Cooperación*</strong></p>
+            <p><strong>4.2. - Líderazgo*</strong></p>
+          </div>
+          <div class="col s6 m6 l6" style="margin-top:2vh">
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group41" type="radio" id="radio411"
+                ng-click="Form.Radios[3].Preguntas[0].Calificacion=1;Sum_SubTotal('4')" />
+              <label for="radio411">(1)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group41" type="radio" id="radio412"
+                ng-click="Form.Radios[3].Preguntas[0].Calificacion=2;Sum_SubTotal('4')" />
+              <label for="radio412">(2)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group41" type="radio" id="radio413"
+                ng-click="Form.Radios[3].Preguntas[0].Calificacion=3;Sum_SubTotal('4')" />
+              <label for="radio413">(3)</label>
+            </div>
+          </div>
+          <div class="col s6 m6 l6" style="margin-top:1vh">
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group42" type="radio" id="radio421"
+                ng-click="Form.Radios[3].Preguntas[1].Calificacion=1;Sum_SubTotal('4')" />
+              <label for="radio421">(1)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group42" type="radio" id="radio422"
+                ng-click="Form.Radios[3].Preguntas[1].Calificacion=2;Sum_SubTotal('4')" />
+              <label for="radio422">(2)</label>
+            </div>
+            <div class="col s2 m2 l3 input-padding">
+              <input class="with-gap" name="group42" type="radio" id="radio423"
+                ng-click="Form.Radios[3].Preguntas[1].Calificacion=3;Sum_SubTotal('4')" />
+              <label for="radio423">(3)</label>
+            </div>
+          </div>
+          <!-- // -->
+          <div class="col s12 m12 l12">
+            <strong>SUBTOTAL: ({{Form.Radios[3].Subtotal}})</strong>
+          </div>
+          <div class="col s12 m12 l12">
+            <div class="col s12 no-padding label-new m-b">
+              <textarea id="Form_Con_4" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+                autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                ng-keyup="FormatTexto('Form_Con_4')" ng-model="Form.Radios[3].Consideracion"
+                title="Se permiten un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+              <label>Consideraciones - Caracteres: {{Form.Radios[3].Consideracion.length}} - Máximo: 1000</label>
+            </div>
+          </div>
+        </div>
+        <!-- ////////////////////////////// -->
+        <!-- <div class="row" style="margin-top:1vh;">
+          <div class="col s12 center">
+            <div class="tooltip">
+              <i class="icon-cog-outline cursor-pointer" style="font-size: 1.5em;" ng-click="Cambiar_Rol()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Cambiar Rol</span>
+            </div>
+            <div class="tooltip">
+              <i class="icon-key-outline cursor-pointer" style="font-size: 1.5em;" ng-click="Cambiar_Pass()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Cambiar Contraseña</span>
+            </div>
+            <div class="tooltip">
+              <i class="icon-users-3 cursor-pointer" style="font-size: 1.5em;" ng-click="Cambiar_Permisos()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Cambiar Permisos</span>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="row" style="margin-top:1vh;">
+          <div class="col s12 center">
+
+            <!-- <input class="btn white-text default-linear-gradient" type="submit" value="Test" ng-click="Validar();"> -->
+            <input class="btn white-text default-linear-gradient" type="submit" value="Guardar"
+              ng-click="Validar();">
+            <input class="btn white-text red"
+              style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit" value="Cerrar"
+              ng-click="Volver();">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /////////// -->
+  </div>
+  <!-- ///// -->
+
+
+  <style>
+    [type="radio"]:not(:checked)+label {
+      height: 25px !important;
+    }
+
+    .textarea2 {
+      padding: 0.5rem !important;
+      width: calc(100% - 0rem) !important;
+      /* background-color: #cbcdce; */
+      background-color: #f1f3f4;
+      resize: none;
+      height: 7rem;
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+      margin-bottom: 0;
+    }
+
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    @keyframes Anim_Show {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .Anim_Show {
+      animation-name: Anim_Show;
+      animation-duration: 1s;
+    }
+
+    #Imagen_back {
+      margin: auto;
+      opacity: .4;
+    }
+
+    .card-panel,
+    .card,
+    .btn {
+      box-shadow: 0 2px 5px 0 rgb(197 208 239), 0 2px 10px 0 rgb(197 208 239) !important;
+      /* box-shadow: rgb(0 0 0 / 25%) 0px 0px 50px 11px !important; */
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+    #Diag_3 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      font-size: 0.9em;
+    }
+
+    .list-group {
+      font-size: 14px;
+      overflow: auto;
+      max-height: 39vh;
+      position: absolute;
+      margin: 0;
+      width: inherit;
+      margin-top: 2.2em;
+      z-index: 3;
+    }
+
+    .tabla_estilo_0 th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+    .label-new>label {
+      display: table;
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+
+    ul::-webkit-scrollbar {
+      width: 6px;
+      background-color: #F5F5F5;
+    }
+
+    .select-wrapper input.select-dropdown:disabled {
+      color: black;
+    }
+
+    .Green_Est {
+      background-color: green !important;
+    }
+
+    .Red_Est {
+      background-color: red !important;
+    }
+
+    .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+    }
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

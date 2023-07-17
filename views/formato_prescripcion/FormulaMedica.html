@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="GenesisApp">
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Genesis</title>
+        <link rel="icon" href="../../assets/images/icon.ico" />
+        <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet">
+        <script src="../../bower_components/angular/angular.js"></script>
+        <script src="../../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../../scripts/controllers/formato_prescripcion/formatPrescripcionController.js"></script>
+        <script src="../../js/jQuery.print.min.js"></script>
+        <script src="../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../bower_components/sweetalert/css/sweetalert2.css">
+
+        <style>
+                <!--
+                /* Font Definitions */
+                @font-face {
+                        font-family: "Cambria Math";
+                        panose-1: 2 4 5 3 5 4 6 3 2 4;
+                        mso-font-charset: 0;
+                        mso-generic-font-family: roman;
+                        mso-font-pitch: variable;
+                        mso-font-signature: 3 0 0 0 1 0;
+                }
+
+                /* Style Definitions */
+                p.MsoNormal,
+                li.MsoNormal,
+                div.MsoNormal {
+                        mso-style-unhide: no;
+                        mso-style-qformat: yes;
+                        mso-style-parent: "";
+                        margin: 0cm;
+                        margin-bottom: .0001pt;
+                        mso-pagination: none;
+                        text-autospace: none;
+                        font-size: 11.0pt;
+                        font-family: "Arial", sans-serif;
+                        mso-fareast-font-family: Arial;
+                        mso-ansi-language: ES;
+                        mso-fareast-language: EN-US;
+                }
+
+                p.MsoBodyText,
+                li.MsoBodyText,
+                div.MsoBodyText {
+                        mso-style-priority: 1;
+                        mso-style-unhide: no;
+                        mso-style-qformat: yes;
+                        margin-top: 2.0pt;
+                        margin-right: 0cm;
+                        margin-bottom: 0cm;
+                        margin-left: 8.0pt;
+                        margin-bottom: .0001pt;
+                        mso-pagination: none;
+                        text-autospace: none;
+                        font-size: 8.0pt;
+                        font-family: "Arial", sans-serif;
+                        mso-fareast-font-family: Arial;
+                        mso-ansi-language: ES;
+                        mso-fareast-language: EN-US;
+                        font-weight: bold;
+                }
+
+                p.MsoListParagraph,
+                li.MsoListParagraph,
+                div.MsoListParagraph {
+                        mso-style-priority: 1;
+                        mso-style-unhide: no;
+                        mso-style-qformat: yes;
+                        margin: 0cm;
+                        margin-bottom: .0001pt;
+                        mso-pagination: none;
+                        text-autospace: none;
+                        font-size: 11.0pt;
+                        font-family: "Arial", sans-serif;
+                        mso-fareast-font-family: Arial;
+                        mso-ansi-language: ES;
+                        mso-fareast-language: EN-US;
+                }
+
+                p.TableParagraph,
+                li.TableParagraph,
+                div.TableParagraph {
+                        mso-style-name: "Table Paragraph";
+                        mso-style-priority: 1;
+                        mso-style-unhide: no;
+                        mso-style-qformat: yes;
+                        margin: 0cm;
+                        margin-bottom: .0001pt;
+                        mso-pagination: none;
+                        text-autospace: none;
+                        font-size: 11.0pt;
+                        font-family: "Arial", sans-serif;
+                        mso-fareast-font-family: Arial;
+                        mso-ansi-language: ES;
+                        mso-fareast-language: EN-US;
+                }
+
+                span.SpellE {
+                        mso-style-name: "";
+                        mso-spl-e: yes;
+                }
+
+                span.GramE {
+                        mso-style-name: "";
+                        mso-gram-e: yes;
+                }
+
+                .MsoChpDefault {
+                        mso-style-type: export-only;
+                        mso-default-props: yes;
+                        font-family: "Calibri", sans-serif;
+                        mso-ascii-font-family: Calibri;
+                        mso-ascii-theme-font: minor-latin;
+                        mso-fareast-font-family: Calibri;
+                        mso-fareast-theme-font: minor-latin;
+                        mso-hansi-font-family: Calibri;
+                        mso-hansi-theme-font: minor-latin;
+                        mso-bidi-font-family: "Times New Roman";
+                        mso-bidi-theme-font: minor-bidi;
+                        mso-ansi-language: EN-US;
+                        mso-fareast-language: EN-US;
+                }
+
+                .MsoPapDefault {
+                        mso-style-type: export-only;
+                        mso-pagination: none;
+                        text-autospace: none;
+                }
+
+                @page WordSection1 {
+                        size: 792.0pt 612.0pt;
+                        mso-page-orientation: landscape;
+                        margin: 5.0pt 15.0pt 14.0pt 15.0pt;
+                        mso-header-margin: 36.0pt;
+                        mso-footer-margin: 36.0pt;
+                        mso-paper-source: 0;
+                }
+
+                div.WordSection1 {
+                        page: WordSection1;
+                }
+                -->
+        </style>
+        <!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Tabla normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:none;
+	text-autospace:none;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;
+	mso-ansi-language:EN-US;
+	mso-fareast-language:EN-US;}
+table.TableNormal
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:2;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 0cm 0cm 0cm;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:none;
+	text-autospace:none;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;
+	mso-ansi-language:EN-US;
+	mso-fareast-language:EN-US;}
+</style>
+<![endif]-->
+
+</head>
+
+<body ng-controller="formatPrescripcionController">
+
+        <div class=WordSection1>
+
+                <table class=TableNormal border=1 cellspacing=0 cellpadding=0 style='margin-left:
+ 6.25pt;border-collapse:collapse;mso-table-layout-alt:fixed;border:none;
+ mso-border-alt:solid black .5pt;mso-yfti-tbllook:480;mso-padding-alt:0cm 0cm 0cm 0cm;
+ mso-border-insideh:.5pt solid black;mso-border-insidev:.5pt solid black'>
+                        <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes;height:21.5pt'>
+                                <td width=400 colspan=6 rowspan=4 valign=top style='width:300.1pt;border:
+  solid black 1.0pt;mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;
+  height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:.3pt'><span style='font-family:"Times New Roman",serif;mso-hansi-font-family:Arial;
+  mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph style='margin-left:75.0pt'><span style='font-size:10.0pt;mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;
+  mso-hansi-font-family:Arial;mso-bidi-font-family:Arial;mso-no-proof:yes'>
+                                                        <![if !vml]><img width=198 height=47
+                                                                src="../../assets/images/minsalud.png"
+                                                                v:shapes="image1.jpeg">
+                                                        <![endif]></span><span style='font-size:10.0pt;
+  mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;mso-hansi-font-family:
+  Arial;mso-bidi-font-family:Arial'>
+                                                        <o:p></o:p>
+                                                </span></p>
+                                </td>
+                                <td width=400 colspan=8 rowspan=4 valign=top style='width:300.15pt;
+  border:solid black 1.0pt;border-left:none;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph><span style='font-size:10.0pt;mso-bidi-font-size:
+  11.0pt;font-family:"Times New Roman",serif;mso-hansi-font-family:Arial;
+  mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph style='margin-top:.15pt'><span style='font-size:12.5pt;mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;
+  mso-hansi-font-family:Arial;mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph align=center style='margin-top:0cm;margin-right:107.25pt;
+  margin-bottom:0cm;margin-left:107.4pt;margin-bottom:.0001pt;text-align:center'><b
+                                                        style='mso-bidi-font-weight:normal'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>FORMULA MÉDICA<o:p></o:p></span></b></p>
+                                </td>
+                                <td width=200 colspan=2 valign=top style='width:150.05pt;border:solid black 1.0pt;
+  border-left:none;mso-border-left-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:27.65pt;
+  margin-bottom:0cm;margin-left:1.7pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><b style='mso-bidi-font-weight:normal'><span
+                                                                style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Fecha
+                                                                y Hora de
+                                                                Expedición (AAAA-MM-DD)<o:p></o:p></span></b></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:1;'>
+                                <td width=200 colspan=2 valign=top style='width:150.05pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph style='margin-top:2.05pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:1.7pt;margin-bottom:.0001pt;line-height:9.45pt;mso-line-height-rule:
+  exactly'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{datosFormato.DatosBasico.fecha_expedicion}}<o:p>
+                                                        </o:p>
+                                                </span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:2;'>
+                                <td width=200 colspan=2 valign=top style='width:150.05pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph style='margin-top:2.05pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:1.7pt;margin-bottom:.0001pt;line-height:9.45pt;mso-line-height-rule:
+  exactly'><b style='mso-bidi-font-weight:normal'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Nro.
+                                                                Prescripción<o:p></o:p></span></b></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:3;'>
+                                <td width=200 colspan=2 valign=top style='width:150.05pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph style='margin-top:2.05pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:1.7pt;margin-bottom:.0001pt;line-height:9.45pt;mso-line-height-rule:
+  exactly'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{datosFormato.DatosBasico.noprescripcion}}
+                                                        <o:p></o:p>
+                                                </span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:4;'>
+                                <td width=1000 colspan=16 valign=top style='width:750.3pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  background:#7F7F7F;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph align=center style='margin-top:2.05pt;margin-bottom:2.05pt;
+  text-align:center;line-height:9.45pt;mso-line-height-rule:exactly'><b style='mso-bidi-font-weight:normal'><span
+                                                                lang=ES style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt;color:black;mso-color-alt:windowtext'>DATOS DEL
+                                                                PRESTADOR</span></b><b
+                                                        style='mso-bidi-font-weight:normal'><span
+                                                                style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>
+                                                                <o:p></o:p>
+                                                        </span></b></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:5;height:21.5pt'>
+                                <td width=400 colspan=6 valign=top style='width:300.1pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:227.95pt;
+  margin-bottom:0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Departamento:<o:p></o:p></span></p>
+                                        <p class=TableParagraph style='margin-top:0cm;margin-right:227.95pt;
+  margin-bottom:0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>{{datosFormato.DatosBasico.dpto_ips}}<o:p></o:p></span></p>
+                                </td>
+                                <td width=400 colspan=8 valign=top style='width:300.15pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:228.1pt;
+  margin-bottom:0cm;margin-left:1.85pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Municipio:<o:p></o:p></span></p>
+                                        <p class=TableParagraph style='margin-top:0cm;margin-right:228.1pt;
+  margin-bottom:0cm;margin-left:1.85pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>{{datosFormato.DatosBasico.municipio_ips}}<o:p></o:p></span></p>
+                                </td>
+                                <td width=200 colspan=2 valign=top style='width:150.05pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:66.8pt;
+  margin-bottom:0cm;margin-left:1.7pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Código Habilitación: {{datosFormato.DatosBasico.codigo_hab_ips}}<o:p></o:p></span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:6;height:21.5pt'>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:256.05pt;
+  margin-bottom:0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Documento de identificación: {{datosFormato.DatosBasico.nit_prestador}}<o:p></o:p></span>
+                                        </p>
+                                </td>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:6.55pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:1.8pt;margin-bottom:.0001pt'><span style='font-size:
+  9.0pt;mso-bidi-font-size:11.0pt'>Nombre Prestador de Servicios de Salud:
+                                                        {{datosFormato.DatosBasico.nombre_prestador}}<o:p></o:p>
+                                                </span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:7;height:21.5pt'>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:2.05pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.65pt;mso-line-height-rule:
+  exactly'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Dirección:<o:p></o:p></span></p>
+                                        <p class=TableParagraph style='margin-left:2.0pt;line-height:8.75pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>{{datosFormato.DatosBasico.direccion_ips}}<o:p></o:p></span></p>
+                                </td>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:335.15pt;
+  margin-bottom:0cm;margin-left:1.8pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Teléfono:<o:p></o:p></span></p>
+                                        <p class=TableParagraph style='margin-top:0cm;margin-right:335.15pt;
+  margin-bottom:0cm;margin-left:1.8pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>{{datosFormato.DatosBasico.telefono_ips}}<o:p></o:p></span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:8;'>
+                                <td width=1000 colspan=16 valign=top style='width:750.3pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  background:#7F7F7F;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph align=center style='margin-top:2.05pt;margin-bottom:2.05pt;
+  text-align:center;line-height:9.45pt;mso-line-height-rule:exactly'><b style='mso-bidi-font-weight:normal'><span
+                                                                lang=ES style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt;color:black;mso-color-alt:windowtext'>DATOS DEL
+                                                                PACIENTE</span></b><b
+                                                        style='mso-bidi-font-weight:normal'><span
+                                                                style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>
+                                                                <o:p></o:p>
+                                                        </span></b></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:9;height:21.5pt'>
+                                <td width=200 colspan=2 valign=top style='width:150.05pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:30.95pt;
+  margin-bottom:0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Documento de identificación: {{datosFormato.DatosBasico.id_paciente}}<o:p></o:p></span>
+                                        </p>
+                                </td>
+                                <td width=200 colspan=4 valign=top style='width:150.05pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:83.1pt;
+  margin-bottom:0cm;margin-left:1.9pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Primer Apellido: {{datosFormato.DatosBasico.afic_primer_apellido}}</span></p>
+                                </td>
+                                <td width=200 colspan=4 valign=top style='width:150.1pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:73.6pt;
+  margin-bottom:0cm;margin-left:1.9pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Segundo Apellido: {{datosFormato.DatosBasico.afic_segundo_apellido}}<o:p></o:p></span></p>
+                                </td>
+                                <td width=200 colspan=4 valign=top style='width:150.05pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:83.2pt;
+  margin-bottom:0cm;margin-left:1.8pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Primer Nombre: {{datosFormato.DatosBasico.afic_primer_nombre}}<o:p></o:p></span></p>
+                                </td>
+                                <td width=200 colspan=2 valign=top style='width:150.05pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:75.25pt;
+  margin-bottom:0cm;margin-left:1.7pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Segundo nombre: {{datosFormato.DatosBasico.afic_segundo_nombre}}<o:p></o:p></span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:10;height:21.5pt'>
+                                <td width=250 colspan=4 valign=top style='width:187.6pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:86.55pt;
+  margin-bottom:0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Número Historia Clínica: {{datosFormato.DatosBasico.numero_hist_clinica}}<o:p></o:p>
+                                                </span></p>
+                                </td>
+                                <td width=250 colspan=4 valign=top style='width:187.55pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:78.05pt;
+  margin-bottom:0cm;margin-left:1.9pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Diagnóstico Principal: {{datosFormato.DatosBasico.dx_ppal}}<o:p></o:p></span></p>
+                                </td>
+                                <td width=250 colspan=4 valign=top style='width:187.55pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:112.15pt;
+  margin-bottom:0cm;margin-left:1.85pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Usuario Régimen: {{datosFormato.DatosBasico.regimen}}<o:p></o:p></span></p>
+                                </td>
+                                <td width=250 colspan=4 valign=top style='width:187.6pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:69.2pt;
+  margin-bottom:0cm;margin-left:4.3pt;margin-bottom:.0001pt;text-indent:-2.5pt;
+  line-height:9.0pt;mso-line-height-rule:exactly'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Ámbito de
+                                                        atención: {{datosFormato.DatosBasico.ambito}}
+                                                        <o:p></o:p>
+                                                </span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:11;'>
+                                <td width=1000 colspan=16 valign=top style='width:750.3pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  background:#7F7F7F;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph align=center style='margin-top:2.05pt;margin-bottom:2.05pt;
+  text-align:center;line-height:9.45pt;mso-line-height-rule:exactly'><b style='mso-bidi-font-weight:normal'><span
+                                                                lang=ES style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt;color:black;mso-color-alt:windowtext'>MEDICAMENTOS / PRODUCTOS NUTRICIONALES</span></b><b
+                                                        style='mso-bidi-font-weight:normal'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>
+                                                                <o:p></o:p>
+                                                        </span></b></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:12;height:30.5pt'>
+                                <td width=111 valign=top style='border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:.1pt'><span style='font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;
+  mso-hansi-font-family:Arial;mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph style='margin-left:10.9pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Tipo
+                                                        prestación<o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='width:83.4pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;mso-border-right-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph align=center style='margin-top:3.3pt;margin-right:
+  1.75pt;margin-bottom:0cm;margin-left:2.35pt;margin-bottom:.0001pt;text-align:
+  center;line-height:9.0pt;mso-line-height-rule:exactly'><span class=SpellE><span
+                                                                style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>NombreMedicamen</span></span><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'> <span
+                                                                class=SpellE>to</span> /Forma Farmacéutica<o:p>
+                                                        </o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  mso-border-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:.1pt'><span style='font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;
+  mso-hansi-font-family:Arial;mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph align=center style='margin-top:0cm;margin-right:29.0pt;
+  margin-bottom:0cm;margin-left:29.15pt;margin-bottom:.0001pt;text-align:center'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Dosis<o:p>
+                                                        </o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:.1pt'><span style='font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;
+  mso-hansi-font-family:Arial;mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph style='margin-left:4.05pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Vía
+                                                        Administración<o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='width:83.4pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;mso-border-right-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:7.65pt;margin-right:.7pt;
+  margin-bottom:0cm;margin-left:29.3pt;margin-bottom:.0001pt;text-indent:-27.3pt;
+  line-height:86%'><span class=SpellE><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt;line-height:86%'>FrecuenciaAdminist</span></span><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt;line-height:86%'>
+                                                        ración<o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  mso-border-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:7.65pt;margin-right:15.35pt;
+  margin-bottom:0cm;margin-left:20.1pt;margin-bottom:.0001pt;text-indent:-3.8pt;
+  line-height:86%'><span style='font-size:9.0pt;mso-bidi-font-size:
+  11.0pt;line-height:86%'>Indicaciones especiales<o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:7.65pt;margin-right:17.85pt;
+  margin-bottom:0cm;margin-left:18.95pt;margin-bottom:.0001pt;text-indent:4.5pt;
+  line-height:86%'><span style='font-size:9.0pt;mso-bidi-font-size:
+  11.0pt;line-height:86%'>Duración tratamiento<o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='width:83.4pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;mso-border-right-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:.1pt'><span style='font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;
+  mso-hansi-font-family:Arial;mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph style='margin-left:4.15pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Recomendaciones
+                                                        <o:p></o:p></span></p>
+                                </td>
+                                <td width=111 valign=top style='border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  mso-border-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:7.65pt;margin-right:12.45pt;
+  margin-bottom:0cm;margin-left:13.25pt;margin-bottom:.0001pt;text-indent:5.2pt;
+  line-height:86%'><span style='font-size:9.0pt;mso-bidi-font-size:
+  11.0pt;line-height:86%'>Cantidades farmacéuticas<o:p></o:p></span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:13;height:111.5pt' ng-repeat="servicio in datosFormato.Servicios">
+                                <td width=111 valign=top style='border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph style='margin-left:2.0pt'>
+                                                <span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{servicio.tipo_prestacion}}
+                                                        <o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='width:83.4pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;mso-border-right-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph><span style='font-size:10.0pt;mso-bidi-font-size:
+  11.0pt;font-family:"Times New Roman",serif;mso-hansi-font-family:Arial;
+  mso-bidi-font-family:Arial'>{{servicio.nombre_medicamento}}<o:p>&nbsp;</o:p></span></p>
+
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  mso-border-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph style='margin-left:1.75pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{servicio.cant_dosis}}
+                                                        <o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph style='margin-left:1.9pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{servicio.via_admon}}
+                                                        <o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='width:83.4pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;mso-border-right-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph style='margin-left:1.85pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{servicio.frecuencia}}
+                                        </p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  mso-border-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;'>
+                                        <p class=TableParagraph style='margin-top:0cm;margin-right:24.5pt;margin-bottom:
+  0cm;margin-left:1.65pt;margin-bottom:.0001pt;line-height:86%'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt;line-height:86%'>{{servicio.indicaciones_especiales}}
+                                                        <o:p></o:p></span></p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph style='margin-left:1.75pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{servicio.duracion_trat}}
+                                        </p>
+                                </td>
+                                <td width=111 colspan=2 valign=top style='width:83.4pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;mso-border-right-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph style='margin-top:3.15pt;margin-right:5.0pt;
+  margin-bottom:0cm;margin-left:1.75pt;margin-bottom:.0001pt;line-height:86%'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt;line-height:86%'>{{servicio.recomendaciones}}
+                                        </p>
+                                </td>
+                                <td width=111 valign=top style='border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  mso-border-alt:solid black .5pt;mso-border-left-alt:solid black .75pt;
+  padding:0cm 0cm 0cm 0cm;height:111.5pt;vertical-align: middle;text-align: center;'>
+                                        <p class=TableParagraph style='margin-left:1.55pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>{{servicio.cant_farmaceutica}}
+                                                        <o:p></o:p></span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:14;'>
+                                <td width=1000 colspan=16 valign=top style='width:750.3pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  background:#7F7F7F;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph align=center style='margin-top:2.05pt;margin-bottom:2.05pt;
+  text-align:center;line-height:9.45pt;mso-line-height-rule:exactly'><b style='mso-bidi-font-weight:normal'><span
+                                                                lang=ES style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt;color:black;mso-color-alt:windowtext'>PROFESIONAL
+                                                                TRATANTE</span></b><b
+                                                        style='mso-bidi-font-weight:normal'><span
+                                                                style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>
+                                                                <o:p></o:p>
+                                                        </span></b></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:15;height:21.5pt'>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:3.3pt;margin-right:255.55pt;
+  margin-bottom:0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.0pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>Documento de Identificación: {{datosFormato.DatosBasico.id_profesional_salud}}<o:p></o:p>
+                                                </span></p>
+                                </td>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:21.5pt'>
+                                        <p class=TableParagraph style='margin-top:2.05pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:1.85pt;margin-bottom:.0001pt;line-height:9.65pt;mso-line-height-rule:
+  exactly'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Nombre:<o:p></o:p></span></p>
+                                        <p class=TableParagraph style='margin-left:1.85pt;line-height:8.75pt;
+  mso-line-height-rule:exactly'><span style='font-size:9.0pt;
+  mso-bidi-font-size:11.0pt'>{{datosFormato.DatosBasico.nombre_profesional_salud}}<o:p></o:p></span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:16;height:30.5pt'>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph style='margin-top:.1pt'><span style='font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:"Times New Roman",serif;
+  mso-hansi-font-family:Arial;mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph style='margin-left:2.0pt'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Registro
+                                                        profesional:
+                                                        {{datosFormato.DatosBasico.registro_profesional}}<o:p></o:p>
+                                                        </span></p>
+                                </td>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;height:30.5pt'>
+                                        <p class=TableParagraph><span style='font-size:10.0pt;mso-bidi-font-size:
+  11.0pt;font-family:"Times New Roman",serif;mso-hansi-font-family:Arial;
+  mso-bidi-font-family:Arial'>
+                                                        <o:p>&nbsp;</o:p>
+                                                </span></p>
+                                        <p class=TableParagraph align=center style='margin-top:8.55pt;margin-right:
+  174.8pt;margin-bottom:0cm;margin-left:174.8pt;margin-bottom:.0001pt;
+  text-align:center;line-height:9.45pt;mso-line-height-rule:exactly'><span
+                                                        style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Firma<o:p>
+                                                        </o:p></span></p>
+                                </td>
+                        </tr>
+                        <tr style='mso-yfti-irow:17;mso-yfti-lastrow:yes;'>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border:solid black 1.0pt;
+  border-top:none;mso-border-top-alt:solid black .5pt;mso-border-alt:solid black .5pt;
+  padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph style='margin-top:2.05pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:2.0pt;margin-bottom:.0001pt;line-height:9.45pt;mso-line-height-rule:
+  exactly'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Especialidad:<o:p></o:p></span></p>
+                                </td>
+                                <td width=500 colspan=8 valign=top style='width:375.15pt;border-top:none;
+  border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  mso-border-top-alt:solid black .5pt;mso-border-left-alt:solid black .5pt;
+  mso-border-alt:solid black .5pt;padding:0cm 0cm 0cm 0cm;'>
+                                        <p class=TableParagraph style='margin-top:2.05pt;margin-right:0cm;margin-bottom:
+  0cm;margin-left:1.85pt;margin-bottom:.0001pt;line-height:9.45pt;mso-line-height-rule:
+  exactly'><span style='font-size:9.0pt;mso-bidi-font-size:11.0pt'>Cod
+                                                        Ver:<o:p></o:p></span></p>
+                                </td>
+                        </tr>
+                        <![if !supportMisalignedColumns]>
+                        <tr height=0>
+                                <td width=111 style='border:none'></td>
+                                <td width=89 style='border:none'></td>
+                                <td width=22 style='border:none'></td>
+                                <td width=28 style='border:none'></td>
+                                <td width=83 style='border:none'></td>
+                                <td width=66 style='border:none'></td>
+                                <td width=44 style='border:none'></td>
+                                <td width=56 style='border:none'></td>
+                                <td width=56 style='border:none'></td>
+                                <td width=44 style='border:none'></td>
+                                <td width=67 style='border:none'></td>
+                                <td width=83 style='border:none'></td>
+                                <td width=28 style='border:none'></td>
+                                <td width=22 style='border:none'></td>
+                                <td width=89 style='border:none'></td>
+                                <td width=111 style='border:none'></td>
+                        </tr>
+                        <![endif]>
+                </table>
+
+                <p class=MsoBodyText><span>La vigencia de la prescripción es la
+                                establecida en la Resolución 1885 de 2018.Art <span class=GramE>13.Númeral</span>
+                                8.</span></p>
+
+
+
+               
+
+        </div>
+
+        <footer style="position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 100px;
+        width: 100%;">
+                <p class=MsoBodyText>Copia generada desde el PORTAL GENESIS - Fecha de impresión: {{fechageneracion | date:'yyyy-MM-dd HH:mm:ss a'}} </span></p>
+        </footer>
+             
+</body>
+
+</html>

@@ -1,0 +1,290 @@
+<div class="row">
+  <ul class="tabs nav nav-pills nav-stacked tabmenu">
+    <li ng-class="{ active: isSet(1) }" class="tab col s3 hover-item tabI tabactiva"><a href ng-click="setTab(1)" class="active"><strong
+          style="font-weight: bold;">Radicación</strong></a></li>
+    <!-- <li ng-class="{ active: isSet(2) }" class="tab col s3 hover-item tabII"><a href ng-click="setTab(2); actualizartabla()"><strong style="font-weight: bold;">Lista</strong></a></li>
+    <li ng-class="{ active: isSet(3) }" class="tab col s3 hover-item tabIII"><a href ng-click="setTab(3); actualizagrafica()"><strong
+          style="font-weight: bold;">Indicadores</strong></a></li> -->
+  </ul>
+  <div class="col s12 m12 l12" ng-show="isSet(1)">
+
+    <div class="card">
+      <div class="card-content">
+        <div style="display:flex; justify-content:space-around">
+            <h5 style="display: flex;">Radicación Cuenta Alto Costo ERC</h5>
+            <h5>Información de validaciones</h5>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="card-content">
+        <div class="row">
+          <div class="col l12 m12 s12">
+
+            <div class="input-field col l5 m12 s12">
+              <blockquote>
+                Periodo actual {{opciones_periodo.nombre}}
+              </blockquote>                         
+              
+            </div>
+            <div>
+              
+            </div>
+            <div class="col l6 m12 s12" id="archivo">
+
+              <table class="striped">
+                <tr ng-repeat="validacion in validacionesTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+                  <td>
+                    <b>{{validacion.codigo}} -</b><span> {{validacion.nombre}}</span>
+                    <div class="tooltip" style="float:right">
+                      <i class="material-icons" style="cursor:help;">info_outline</i>
+                      <span class="tooltiptext" style="font-size:10px;">{{validacion.info}}</span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <ul style="text-align: center;" class="pagination">
+               
+                
+                <li><button ng-disabled='currentPage == 0' class="btn-floating btn waves-effect waves-light" ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+                <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1' class="btn-floating btn waves-effect waves-light"
+                    ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                <li><button ng-disabled='currentPage >= validacionesTemp.length/pageSize - 1' class="btn-floating btn waves-effect waves-light"
+                    ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+                    <li>   <div class="tooltip" style="float:right">
+                      <a class="btn-floating btn waves-effect waves-light no-padding" href="views/ERCIPS/plantilla_guia.TXT" download="Plantilla_Guia">
+                        <i class="material-icons" style="font-size:1.6em">file_download</i>
+                      </a>
+                      <span class="tooltiptext" style="font-size:10px;">Descargar Plantilla</span>
+                    </div></li>
+                    <li>   <div class="tooltip" style="float:right">
+                      <a class="btn-floating btn waves-effect waves-light no-padding" href="views/ERCIPS/20181019_Plantilla 2463_PSS_SALUD PUBLICA.xlsx" download="Ayuda">
+                        <i class="material-icons" style="font-size:1.6em">help_outline</i>
+                      </a>
+                      <span class="tooltiptext" style="font-size:10px;">Documento Ayuda</span>
+                    </div></li>
+              </ul>
+            </div>
+            <div class="col s11 m5 l5">
+              <div>
+                <label for="h1solicitante">NIT o Nombre IPS</label>
+                <input id="h1solicitante" type="text" style="text-transform:uppercase;margin:0;" autocomplete="off"
+                    required title="Presione Enter para buscar" ng-model="h1solicitante"
+                    ng-keyup="Complete_H1_Solicitante(h1solicitante);Find_Solicitante_enter($event);"
+                    ng-blur="Blur_H1_Solicitante()" >
+                  <ul class="list-group" id="list-group-solicitante"
+                    style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit; z-index: 100;">
+                    <li class="list-group-item" ng-repeat="x in Filter_H1_Solicitante"
+                      ng-click="FillTextbox_H1_Solicitante(x.Solicitante.CODIGO,x.Solicitante.NOMBRE)">
+                      {{x.Solicitante.CODIGO}} - {{x.Solicitante.NOMBRE}}</li>
+                  </ul>
+              </div>
+              
+                <!--<div id="idips">
+                    <form ng-submit="searchIps();" autocomplete="off" >
+                        <div class="input-field col m12 s12">
+                            <a href="javascript:void(0)" ng-click="searchIps()" style="position: absolute;top: 16px;right: 10px;">
+                                <i class="material-icons styleIconSearch noselectxtpqr">search</i>
+                            </a>-->
+                            <!-- <div ng-hide="data.carga" class="img-loading-pqr">
+                                <img src="assets\images\loadingpqr.gif">
+                            </div> -->
+                            <!--<label for="nitIps" class="c-pointer noselectxtpqr">Nit</label>
+                            <input id="nitIps" type="text" ng-model="pqrData.Ips.nit" >
+                        </div>
+                    </form>
+                    <div ng-hide = "hidenombre">  
+                      <p>{{nombreips}}</p>
+                    </div>-->
+                    <!-- <button ng-click="showModalIps();">
+                        search
+                    </button> -->
+              <!--  </div>-->
+              <div class="input-field col m2 w-auto">
+                <p class="noselectxtpqr"></p>
+              </div>
+              <div class="input-field col m10 s12 w-100" style="padding-left: 0px; padding-right: 0px;">
+                <div class="file-field input-field">
+                  <div class="btn">
+                    <i class="material-icons">insert_drive_file</i>
+                    <input type="file" name="adjunto" id="adjunto">
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input id="inputFilePlaceHolder" class="file-path" type="text" placeholder="Adjuntar archivo">
+                    <span ng-if="data" ng-class="{'red-text':!ok, 'green-text': ok }">{{data}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+      <div class="card-action">
+        <center>
+          <!-- <a class="waves-effect btn negative-top-margin-5 ">Errores</a> -->
+          <a class="waves-effect btn negative-top-margin-5" ng-click="enviar()">Enviar</a>
+          <!--7*ng-disabled="enviar_disabled"-->
+        </center>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col s12 m12 l12" ng-show="isSet(2)">
+    <div class="card">
+      <div class="card-content" style="display: flex; justify-content: space-between">
+        <h5 >Listado Poblacional Cuenta Alto Costo ERC</h5>
+      </div>
+      <div class="divider"></div>
+      <div class="card-content">
+        <div class="row">
+          <div class="col l12 m12 s12" style="position: relative;">
+            <div class="col s12" style="justify-content: center;display: flex;position: absolute;top: 30px; z-index: 9999;">
+                  <div class="switch">
+                      <div class="col s12">
+                          <p>                            
+                              <label>
+                                  No Registrados
+                                  <input ng-model="checkpobl" ng-change ="poblacion()" type="checkbox">
+                                  <span class="lever"></span>
+                                  Registrados
+                              </label>
+                          </p>
+                      </div>
+                  </div>
+            </div>
+            <div ng-hide="view_table">
+              
+                <table id="lista_asociados" class="responsive-table display dataTable" style="width:100%!important">
+                    <thead>
+                      <tr>
+                        <th>Tipo Documento</th>
+                        <th>No. Documento</th>
+                        <th>Nombres</th>
+                        <th>Teléfono</th>
+                        <!-- <th>ERC</th> -->
+                      </tr>
+                    </thead>
+                    <tfoot>
+                      <tr>
+                        <th>Tipo Documento</th>
+                        <th>No. Documento</th>
+                        <th>Nombres</th>
+                        <th>Teléfono</th>
+                        <!-- <th>ERC</th> -->
+                      </tr>
+                    </tfoot>
+                  </table>
+                  <a class="btn-floating btn waves-effect waves-light no-padding" ng-click="download_xls()" download="Plantilla_Guia">
+                    <i class="material-icons" style="font-size:1.6em">file_download</i>
+                  </a>
+            </div>
+            
+           <div ng-hide="!view_table">
+              <table id="lista_asociados_validados" class="responsive-table display dataTable" style="width:100%!important">
+                  <thead>
+                    <tr>
+                      <th>Tipo Documento</th>
+                      <th>No. Documento</th>
+                      <th>Nombres</th>
+                      <th>Teléfono</th>
+                      <!-- <th>ERC</th> -->
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>Tipo Documento</th>
+                      <th>No. Documento</th>
+                      <th>Nombres</th>
+                      <th>Teléfono</th>
+                      <!-- <th>ERC</th> -->
+                    </tr>
+                  </tfoot>
+              </table>
+           </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col s12 m12 l12" ng-show="isSet(3)">
+    <div class="card">
+      <div class="card-content">
+        <h5 style="display: flex;">Indicador meta poblacional cuenta alto costo ERC</h5>
+      </div>
+      <div class="divider"></div>
+      <div class="card-content">
+        <div class="row">
+          <div class="col l12 m12 s12">
+            <blockquote>
+              Graficos indicadores poblacion con ERC
+            </blockquote>
+            <div class="col l12 m12 s12">
+              <div ng-init="pietickets()">
+                <center>
+                  <div class="card charts">
+                    <div class="card-content">
+                      <h5>Balance CAC {{yyyy}}</h5>
+                    </div>
+                    <div class="card-action" style="height: 441px;">
+                      <div id="pietickets"></div>
+                    </div>
+                  </div>
+                </center>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    #archivo {
+      float: right;
+      border-width: 1px;
+      border-color: gray;
+    }
+
+    [type="checkbox"].filled-in:checked+label:after {
+      border: 2px solid #1a2e63;
+      background-color: #1a2e63 !important;
+    }
+
+    [type="checkbox"].filled-in:not(:checked)+label:after {
+      border: 2px solid #1a2e63;
+    }
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+  </style>
+</div>

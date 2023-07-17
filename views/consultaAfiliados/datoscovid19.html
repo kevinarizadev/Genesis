@@ -1,0 +1,222 @@
+<div class="row" style="background-color: transparent;"
+    ng-init="ValidaInformacion=false;EstadoInformacion=false;OcultarEvolucion=false;ListadoEvoluciones=false">
+    <style>
+
+main {
+                padding-left:0px;
+            }
+    
+           aside > ul{
+                display: none;
+            }
+
+        .columnas p {
+            position: absolute;
+            top: -38px;
+            width: 207px;
+            border: 1px solid #e5e6e6;
+            padding: 1px 10px;
+            border-radius: 0px 19px 0px 0px;
+        }
+
+        .dataTables_filter {
+            margin: 0 !important
+        }
+
+        .incla {
+            height: auto !important;
+            font-size: 1em !important;
+        }
+
+        .lb {
+            padding-left: 20px !important;
+            height: 20px !important;
+            transform: scale(.8) !important;
+        }
+
+        .medidas {
+            width: 33.3% !important;
+            margin-right: 0.4%;
+        }
+
+        .select-personalizado {
+            background-color: #bcbdbd;
+            padding: 0px !important;
+            height: 2em !important;
+            width: 15em !important;
+        }
+
+        p.titulo_card {
+            padding: 0.3em 1.2em;
+            margin: 0px;
+            background: #ffffff;
+            border: 1px solid #c4c4c4;
+            color: #818282;
+        }
+
+        hr {
+            height: 0px;
+            background-color: black;
+            padding: 0;
+            margin: 0;
+            margin-bottom: 0.2%;
+        }
+
+        table.dataTable {
+            width: 100% !important;
+        }
+
+        .medidas {
+            height: 12vh !important;
+            width: 100% !important;
+        }
+
+        @media only screen and (max-width: 1440px) {
+
+            #tabla_info th,
+            #tabla_info td {
+                font-size: 11px;
+            }
+
+            .medidas {
+                height: 18vh !important;
+                width: 100% !important;
+            }
+        }
+
+        .estado-confirmado {
+			background-color: rgb(255, 38, 0);
+			color: white;
+		}
+
+		.estado-sospechoso {
+			background-color: rgb(255, 137, 2);
+		}
+
+		.estado-probable {
+			background-color: rgb(255, 200, 2);
+		}
+
+		.estado-descartado {
+			background-color: rgb(3, 197, 20);
+		}
+        
+        body {
+            background-color: white;
+        }
+    </style>
+
+    <!-- <div class="col s8 m8 l8" ng-if="ValidaInformacion">
+        <div class="card">
+            <div class="card-content">
+                <h5>Informacion Del Afiliado</h5>
+            </div>
+            <div class="card-content clearfix">
+                <table id="tabla_info" class="responsive-table table-bordered striped">
+                    <tbody>
+                        <tr>
+                            <th>TIPO DOCUMENTO</th>
+                            <td colspan="1" align="center">{{afildato.tipo_documento}}</td>
+                            <th>NUMERO DOCUMENTO</th>
+                            <td colspan="1" align="center">{{afildato.documento}}</td>
+                        </tr>
+                        <tr>
+                            <th>NOMBRE AFILIADO</th>
+                            <td colspan="3" align="center">{{afildato.nombre_afiliado}}</td>
+                        </tr>
+                        <tr>
+                            <th>ESTADO AFILIADO</th>
+                            <td colspan="1" align="center">{{afildato.estado_afiliado}}</td>
+                            <th>ESTADO AFILIADO BDUA</th>
+                            <td colspan="1" align="center">{{afildato.estado_afiliado_bdua}}</td>
+                        </tr>
+                        <tr>
+                            <th>DEPARTAMENTO</th>
+                            <td colspan="1" align="center">{{afildato.departamento}}</td>
+                            <th>MUNICIPIO</th>
+                            <td colspan="1" align="center">{{afildato.municipio}}</td>
+                        </tr>
+                        <tr>
+                            <th>GENERO</th>
+                            <td colspan="1" align="center">{{afildato.genero}}</td>
+                            <th>FECHA NACIMIENTO</th>
+                            <td colspan="1" align="center">{{afildato.fecha_nacimiento}}</td>
+                        </tr>
+                        <tr>
+                            <th>DIRECCION</th>
+                            <td colspan="3" align="center">{{afildato.direccion}}</td>
+                        </tr>
+
+                        <tr>
+                            <th>CELULAR</th>
+                            <td colspan="1" align="center">{{afildato.celular}}</td>
+                            <th>CELULAR 2</th>
+                            <td colspan="1" align="center">{{afildato.celular2}}</td>
+                        </tr>
+                        <tr>
+                            <th>ZONA DEL AFILIADO</th>
+                            <td colspan="3" align="center">{{afildato.zona_afiliado_eafi}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="col s12 m12 l12" ng-show="soportes !== null && ValidaInformacion === false" style="height: calc(100vh - 94px); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <img src="/images/saludpublica/covid/lab.png" width="500">
+        <h2 style="font-size: 1.5em;">¡Ya están disponible los resultados de su prueba!</h2>
+        <h2 style="font-size: 1.25em;">Para visualizar haga <a href="javascript: void(0)" ng-click="muestraResultado()">clic aqui</a></h2>
+    </div>
+
+    <div class="col s12 m12 l12" ng-show="soportes === null" style="height: calc(100vh - 94px); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <img src="/images/saludpublica/covid/doctors.png" width="500">
+        <h2 style="font-size: 1.5em;">Afiliado no registra muestra realizada</h2>
+    </div>
+
+    <div class="col s12 m12 l12" ng-if="ValidaInformacion && soportes !== null">
+        <div class="card" id="card-soportes">
+            <div class="card-content clearfix">
+                <table id="tabla_info" class="responsive-table table-bordered striped" ng-show="soportes !== null">
+                    <tbody>
+                        <tr>
+                            <th>FECHA CARGUE</th>
+                            <th>NOMBRE</th>
+                            <th>VER</th>
+                        </tr>
+                        <tr ng-repeat="archivo in soportes">
+                            <td>{{ archivo.FECHA_CARGUE }}</td>
+                            <td>{{ archivo.NOMBRE_SOPORTE }}</td>
+                            <td><a href="javascript: void(0)"  style="color: orange;" ng-click="mostrarSoporte(archivo)"><i class="fa fa-eye"></i> Ver soporte</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- <p ng-show="soportes === null">El afiliado no cuenta con soportes en el sistema</p>
+
+                <br>
+
+                <table class="responsive-table table-bordered striped">
+                    <tbody>
+                        <tr>
+                            <th>ESTADO</th>
+                            <th>ULTIMA GESTION</th>
+                            <th>ULTIMA GESTION (DIAS)</th>
+                        </tr>
+                        <tr>
+                            <td
+                                ng-class="afildato.estado === 'S' ? 'estado-sospechoso' : afildato.estado === 'C' ? 'estado-confirmado' : afildato.estado === 'D' ? 'estado-descartado' : afildato.estado === 'P' ? 'estado-probable' : ''">
+                                {{ muestraEstado(informacion.estado)  }}</td>
+                            <td style="text-align: center;">
+                                {{ informacion.fecha_inicial !== '' ? informacion.fecha_inicial : 'SIN DATOS' }}
+                            </td>
+                            <td style="text-align: center;">
+                                {{ informacion.fecha_inicial !== '' ? formatFechaRelativa(informacion.fecha_inicial) : 'SIN DATOS' }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,223 @@
+<div class="row margin">
+  <div class="col s12 m12 l12">
+    <div class="card">
+      <!-- Titulo App -->
+      <div class="card-content">
+        <div class="row">
+          <div class="col s12">
+            <div class="col s12 m6 l6">
+              <spam><h4>Confirmacion Programada</h4></spam>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-action">
+        <div class="card-content clearfix">
+          <div class="col s12">
+            <div class="row">
+              <div class="col l3 m10 s12">
+                <div style="height: 78px; background: linear-gradient(to right, rgb(54, 122, 189) 50%, rgba(54, 122, 189, 0.8) 50%); box-shadow: 2px 2px 8px 0px darkgrey;">
+                  <div class="col l5 m5 s5">
+                    <div><center><i style="font-size: 48px;margin-top: 15px;color: white;" class="large material-icons">history</i></center></div>
+                  </div>
+                  <div class="col l7 m7 s7" style="color: white;">
+                    <center><p style="color: white;"><strong style="font-family: unset;">Pendiente</strong></p></center>
+                    <center><h5 class="ng-binding">{{pendientes.length}}</h5></center>
+                  </div>
+                </div>
+              </div>
+              <div class="col l3 m10 s12">
+                <div style="height: 78px; background:  linear-gradient(to right, rgb(136, 197, 66) 50%, rgba(136, 197, 66, 0.8) 50%); box-shadow: 2px 2px 8px 0px darkgrey;">
+                  <div class="col l5 m5 s5">
+                    <div><center><i style="font-size: 48px;margin-top: 15px;color: white;" class="large material-icons">done</i></center></div>
+                  </div>
+                  <div class="col l7 m7 s7" style="color: white;">
+                    <center><p style="color: white;"><strong style="font-family: unset;">Procesado</strong></p></center>
+                    <center><h5 class="ng-binding">{{cant_exitoso}}</h5></center>
+                  </div>
+                </div>
+              </div>
+              <div class="col l3 m10 s12" style="color: white;">
+                <div style="/* background: linear-gradient(to right, rgb(251, 140, 0) 50%, rgba(255, 152, 0, 0.75) 50%); */height: 78px;background: linear-gradient(to right, rgb(243, 165, 48) 50%, rgba(243, 165, 48, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                  <div class="col l5 m5 s5">
+                    <div><center><i style="font-size: 48px; margin-top: 15px;" class="large material-icons">info_outline</i></center></div>
+                  </div>
+                  <div class="col l7 m7 s7" style="color: white;">
+                    <center><p><strong>Error</strong></p></center>
+                    <center><h5 class="ng-binding">{{cant_error}}</h5></center>
+                  </div>
+                </div>
+              </div>
+              <div class="col l3 m10 s12" style="color: white;">
+                <div style="height: 78px; background: linear-gradient(to right, #ff4350 50%, #ff4350c9 50%);">
+                  <div class="col l5 m5 s5">
+                    <div><center><i style="font-size: 48px; margin-top: 15px;" class="large material-icons">close</i></center></div>
+                  </div>
+                  <div class="col l7 m7 s7" style="color: white;">
+                    <center><p><strong>Anulado</strong></p></center>
+                    <center><h5 class="ng-binding">{{cant_negado}}</h5></center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col s12">
+            <div class="col s12 part2_1">
+              <div class="s6 m2 l2 part2_1_1">
+                <ul>
+                  <li ng-class="{ active: isSet(1) }" ng-click="setTab(1)" style="height: 40px;" class="col s5 offset-s1 large waves-effect waves-pink tabI"><center>Procesados</center></li>
+                  <li ng-class="{ active: isSet(2) }" ng-click="setTab(2)" style="height: 40px;" class="col s5 large waves-effect waves-pink tabII"><center>Pendientes</center></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col s12">
+              <div class="col s12 part2_1">
+                <div class="card">
+                  <div class="card-content">
+                    <h5>{{Title}}</h5>
+                  </div>
+                  <div class="card-action" style="z-index: auto;">
+                    <div class="row">
+                      <div class="col s12" ng-show="isSet(1)">
+                        <div class="row">
+                          <div class="col s12">
+                            <div class="col s6">
+                              <form ng-submit="buscar_archivo()">
+                                <label for="simple-select hide-on-med-and-down" class="active">Buscar</label>
+                                <input id="normal8" ng-model="buscar"  type="text">
+                              </form>
+                            </div>
+                            <div class="col s6">
+                              <label for="simple-select hide-on-med-and-down" class="active">Filtro</label>
+                              <input id="normal8" ng-model="filtro" type="text">
+                            </div>
+                          </div>
+                          <div class="col s12 ng-hide" ng-hide="inactive2" style="margin-top: 30px;">
+                            <center><img src="assets\images\cargando2.gif" alt="Cargando..."></center>
+                          </div>
+                          <div class="col s12" ng-hide="!inactive2">
+                            <div style="height: 400px; overflow: auto;">
+                              <table class="responsive-table table-bordered striped" style="height:100px;">
+                                  <thead>
+                                    <tr>
+                                      <th class="center-align" data-field="Codigo">Consecutivo</th>
+                                      <th class="center-align" data-field="Fecha">Documento</th>
+                                      <th data-field="Ubicación">Fecha Proceso</th>
+                                      <th data-field="Servicio">Estado Ejecucion</th>
+                                      <th data-field="Prestador">Operacion</th>
+                                      <th data-field="Tercero">Tercero</th>
+                                      <th data-field="Factura">Factura</th>
+                                      <th class="center-align" data-field="Altocosto">Cantidad Detalle</th>
+                                      <th class="center-align" data-field="Estado">Estado Documento</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr ng-repeat="con2 in procesados | filter:filtro">
+                                      <td class="center-align">{{con2.consecutivo}}</td>
+                                      <td class="center-align">{{con2.registro}}</td>
+                                      <td>{{con2.fecha_proceso}}</td>
+                                      <td>{{con2.estado_ejecucion}}</td>
+                                      <td>{{con2.operacion}}</td>
+                                      <td>{{con2.tercero}}</td>
+                                      <td>{{con2.num_factura}}</td>
+                                      <td class="center-align">{{con2.cantidad_detalle}}</td>
+                                      <td class="center-align"  ng-show="{{con2.estado}}"><a style="cursor:pointer; margin-right: 0px;" ng-click="ver_detalle(con2)">{{con2.estado_documento}}</a></td>
+                                      <td class="center-align" ng-hide="{{con2.estado}}">{{con2.estado_documento}}</td>
+                                    </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col s12" ng-show="isSet(2)">
+                        <div class="row">
+                          <div class="col s12">
+                            <div style="height: 400px; overflow: auto;">
+                              <table class="responsive-table table-bordered striped" style="height:100px;">
+                              <thead>
+                                <tr>
+                                  <th class="center-align" data-field="Codigo">Consecutivo</th>
+                                  <th class="center-align" data-field="Fecha">Documento</th>
+                                  <th data-field="Ubicación">Fecha Proceso</th>
+                                  <th data-field="Servicio">Estado Ejecucion</th>
+                                  <th data-field="Prestador">Operacion</th>
+                                  <th data-field="Tercero">Tercero</th>
+                                  <th data-field="Factura">Factura</th>
+                                  <th class="center-align" data-field="Altocosto">Cantidad Detalle</th>
+                                  <th class="center-align" data-field="Estado">Estado Documento</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr ng-repeat="con in pendientes">
+                                  <td class="center-align">{{con.consecutivo}}</td>
+                                  <td class="center-align">{{con.registro}}</td>
+                                  <td>{{con.fecha_proceso}}</td>
+                                  <td>{{con.estado_ejecucion}}</td>
+                                  <td>{{con.operacion}}</td>
+                                  <td>{{con.tercero}}</td>
+                                  <td>{{con.num_factura}}</td>
+                                  <td class="center-align">{{con.cantidad_detalle}}</td>
+                                  <td class="center-align">{{con.estado_documento}}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div id="modal12" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h3>Errores</h3>
+    <div style="height: 400px; overflow: auto;">
+      <table class="responsive-table table-bordered striped" style="height:100px;">
+      <thead>
+        <tr>
+          <th data-field="Consecutivo" class="center-align">Consecutivo</th>
+          <th data-field="Documento" class="center-align">Documento</th>
+          <th data-field="Numero" class="center-align">Numero</th>
+          <th data-field="Renglon" class="center-align">Renglon</th>
+          <th data-field="Observacion" class="center-align">Observacion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="err in errores">
+          <td class="order-th center-align">{{err.consecutivo}}</td>
+          <td class="order-th center-align">{{err.registro}}</td>
+          <td class="order-th center-align">{{err.renglon}}</td>
+          <td class="order-th center-align">{{err.fila}}</td>
+          <td class="order-th center-align">{{err.msjerror}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Ok!</a>
+  </div>
+</div>
+
+<style>
+.hover-item:hover {background-color: rgba(221, 221, 221, 0.45);}
+.hover-item:active {background-color: rgba(221, 221, 221, 0.45);}
+.tabmenu>li:target>a {background-color: rgba(221, 221, 221, 0.45);}
+.requerido{color:red !important;}
+.tabactiva{background-color: rgba(206, 206, 206, 0.71);}
+.mayus{text-transform: uppercase;}
+#header-fixed {
+    position: fixed;
+    top: 0px; display:none;
+}
+</style>

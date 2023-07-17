@@ -1,0 +1,1264 @@
+<div class="row margin" id="view-demandas">
+   <div class="row section-header" style="padding-bottom: 0px;" id="panelListado">
+      <div class="col s12 m12 s12">
+         <div class="col l6 m6 s6 prod-title-div no-padding">
+            <blockquote>
+               <h4>Gestión de Demandas</h4>
+            </blockquote>
+         </div>
+         <div class="col s6 search-top-bar hide-on-med-and-down">
+            <div class="tooltip" style="float: right;">
+               <i class="material-icons" style="color: #3e3e3e; font-size: 3rem; position: initial;"
+                  ng-click="verDemandas()">search</i>
+               <span class="tooltiptext tooltiptablas">Ver Demandas</span>
+            </div>
+            <div class="tooltip" style="float: right;">
+               <i class="material-icons" style="color: #3e3e3e; font-size: 3rem; position: initial;"
+                  ng-click="btnRegistrarDemanda()">note_add</i>
+               <span class="tooltiptext tooltiptablas">Registrar Nueva Demanda</span>
+            </div>
+            <!-- <div class="tooltip" style="float: right;">
+               <i class="material-icons" style="color: #3e3e3e; font-size: 3rem; right: 5px;" ng-click="dwinforme()" ng-hide="btnDwnInformes">file_download</i>
+               <span class="tooltiptext tooltiptablas" style="margin-left: -88px;">Descargar Informe Demandas</span>
+            </div> -->
+         </div>
+         <div class="card-action" ng-hide="hdeTablaResultados">
+            <table id="resultDemandas" class="highlight responsive-table" style="width:100%; cursor:pointer;">
+               <thead>
+                  <tr>
+                     <th>Código</th>
+                     <th>Radicado</th>
+                     <th>Demandante</th>
+                     <th>Municipio</th>
+                     <th>Jurisdicción</th>
+                     <th>Tipo Proceso</th>
+                     <th>Cuantía</th>
+                     <th>Estado</th>
+                     <th>Responsable</th>
+                     <th>Medida Cautelar</th>
+                     <th>Probabilidad</th>
+                     <th>Provisión</th>
+                  </tr>
+               </thead>
+            </table>
+         </div>
+      </div>
+   </div>
+   <fieldset style="border: none;" ng-hide="hdebtnblockform">
+      <div class="col s12 m12 l12">
+         <div class="col s12 m12 l2">
+            <div class="card" style="margin: 0;box-shadow: none;background-color: transparent;">
+               <div class="card-content" style="padding: 10px;">
+                  <div class="tooltip">
+                     <div class="switch">
+                        <label><input type="checkbox" ng-model="BlockForm" ng-change="validaInput()"><span class="lever"></span></label>
+                     </div>
+                     <span class="tooltiptext tooltiptablas">Permitir Actualizar Demanda</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- <div class="input-field col l3 m12 s12">
+            <label class="labelper">Estado</label>
+            <select id="estado_demanda" name="estado_demanda" class="select-chosen-eps" style="background-color: transparent;" ng-model="registro.estado">
+               <option value="" disabled>SELECCIONAR</option>
+               <option value="A">ACTIVO</option>
+               <option value="S">SUSPENDIDO</option>
+               <option value="T">TERMINADO</option>
+            </select>
+         </div> -->
+      </div>
+   </fieldset>
+   <fieldset style="border: none;" ng-disabled="dsbRegistro" ng-hide="hdeRegistro">
+      <div class="col s12 m12 l12">
+         <div class="card">
+            <form ng-submit="registrarDemanda('I')" name="myForm" oncopy="return false" onpaste="return false"> 
+               <div class="card-content">
+                  <div class="row" style="margin-bottom: 0px;">
+                     <div class="col l8 m8 s8">
+                        <blockquote>
+                           <h5>Registro de Demanda {{registro.codigo_demanda}}</h5>
+                        </blockquote>
+                     </div>
+                     <!-- <div class="input-field col l3 m4 s4" style="margin-top: 0px;" ng-hide="hdeModalEstadoTutela">
+                        <input type="checkbox" class="filled-in" 
+                              ng-model="ModalEstadoTutela" id="estadoTutela"
+                              ng-click="abrirModal('1')">
+                        <label for="estadoTutela">Estado Tutela</label>
+                     </div> -->
+                  </div>
+               </div>
+               <div class="card-action">
+                  <div class="row">
+                     <div class="col l12 m12 s12">
+                        <div class="input-field col l2 m12 s12">
+                           <input id="radicado" type="text" ng-focus="formatTextVacio()" ng-model="registro.radicacion"
+                              ng-blur="validaCons()" mask="9" repeat="5" required>
+                           <label for="radicado">Radicado</label>
+                        </div>
+                        <div class="input-field col l1 m12 s12" style="width: 0px !important;">
+                           <p><b>-</b></p>
+                        </div>
+                        <div class="input-field col l1 m12 s12">
+                           <input id="anoradicado" class="" type="text" ng-model="registro.anioradicado"
+                              minlength="4" maxlength="4" required>
+                           <label for="anoradicado">Año</label>
+                        </div>
+                        <div class="input-field col l7 m12 s12" ng-init="nomJuzgado();">
+                           <input id="juzgado" style="cursor: pointer;" type="text" ng-model="juzgado.seleccion"
+                              ng-click="modalJuzgados()" title="{{juzgado.seleccion}}" readonly required>
+                           <label for="juzgado" class="active">Juzgado</label>
+                        </div>
+                     </div>
+                     <div class="col l12 m12 s12">
+                        <div class="input-field col l3 m12 s12">
+                           <label class="labelper">Departamento</label>
+                           <select id="departamentos" name="departamentos" class="select-chosen-eps "
+                              ng-model="registro.ubicdepartamento" ng-change="listaMunicipios(registro.ubicdepartamento)" required>
+                              <option value="" disabled>SELECCIONAR</option>
+                              <option ng-repeat="departamento in Departamentos"
+                                 ng-selected="departamento.codigo == registro.ubicdepartamento"
+                                 ng-value="departamento.codigo">{{departamento.nombre}}</option>
+                           </select>
+                        </div>
+                        <div class="input-field col l3 m12 s12">
+                           <label class="labelper">Municipio</label>
+                           <select id="municipios" class="select-chosen-eps " ng-model="registro.ubicmunicipio"
+                              required>
+                              <option value="" disabled>SELECCIONAR</option>
+                              <option ng-repeat="municipio in Municipios"
+                                 ng-selected="municipio.codigo == registro.ubicmunicipio" ng-value="municipio.codigo">
+                                 {{municipio.nombre}}</option>
+                           </select>
+                        </div>
+                        <div class="input-field col l2 m12 s12">
+                           <label class="labelper">Jurisdicción</label>
+                           <select id="tipojurisdiccion" class="select-chosen-eps "
+                              ng-model="registro.tipojurisdiccion" ng-change="listaTiposProcesos(registro.tipojurisdiccion)" required>
+                              <option value="" disabled>SELECCIONAR</option>
+                              <option ng-repeat="tipojurisdiccion in TiposJurisdiccion"
+                                 ng-selected="tipojurisdiccion.codigo == registro.tipojurisdiccion" ng-value="tipojurisdiccion.codigo">{{tipojurisdiccion.nombre}}</option>
+                           </select>
+                        </div>
+                        <div class="input-field col l3 m12 s12" ng-hide="hdeIdafiliado">
+                           <label class="labelper">Tipo de Proceso</label>
+                           <!-- ng-change="validaEmbargo()"  -->
+                           <select id="tipoproceso" class="select-chosen-eps " ng-model="registro.tipoproceso" required>
+                              <option value="" disabled>SELECCIONAR</option>
+                              <option ng-repeat="tipoproceso in TipoProcesos"
+                               ng-selected="tipoproceso.codigo == registro.tipoproceso" ng-value="tipoproceso.codigo">{{tipoproceso.nombre}}</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="col l12 m12 s12" style="margin-top: 15px;">
+                        <div class="input-field col l2 m12 s12">
+                           <input id="cuantia" class="" type="text" ng-model="registro.tempcuantia" required
+                              ng-keyup="formatcurrency(1)">
+                           <label for="cuantia">Cuantía $</label>
+                        </div>
+                        <!-- <div class="input-field col l3 m12 s12">
+                           <input id="probabilidad" name="probabilidad" class="" type="text" min="1" max="100"
+                              maxlength="3" ng-model="registro.probabilidad" ng-keyup="formatcurrency(3)"
+                              pattern="^\d{1,3}$" required>
+                           <label for="probabilidad">Probabilidad de Perdida %<span class="error"
+                                 ng-show="myForm.probabilidad.$error.pattern">
+                                 - Solo números</span></label>
+                        </div> -->
+                        <div class="input-field col l2 m12 s12">
+                           <label class="labelper">Probabilidad</label>
+                           <select class="select-chosen-eps " ng-model="registro.probabilidad_n">
+                              <option value="" disabled>SELECCIONAR</option>
+                              <option value="1">ALTO</option>
+                              <option value="2">MEDIO ALTO</option>
+                              <option value="3">MEDIO BAJO</option>
+                              <option value="4">BAJO</option>
+                           </select>
+                        </div>
+                        <!-- <div class="input-field col l3 m12 s12">
+                           <input id="resultado" name="resultado" class="" type="text" min="1" max="100"
+                              maxlength="3" ng-model="registro.resultado" ng-keyup="formatcurrency(3)"
+                              pattern="^\d{1,3}$" required>
+                           <label for="resultado">Resultado %<span class="error"
+                                 ng-show="myForm.resultado.$error.pattern">
+                                 - Solo números</span></label>
+                        </div> -->
+                        <div class="input-field col l3 m12 s12">
+                           <input id="resultado" name="resultado" type="text" ng-keyup="formatcurrency(5, 'resultado')" 
+                           ng-model="registro.resultado" required>
+                           <label for="resultado">Resultado %</label>
+                        </div>
+                        <div class="input-field col l2 m12 s12">
+                           <input id="provision" type="text" ng-keyup="formatcurrency(5, 'provision')" ng-model="registro.provision">
+                           <label for="provision">Provisión</label>
+                        </div> 
+                     </div>
+                     <div class="col l12 m12 s12" style="margin-bottom: 15px;">
+                        <div class="input-field col l12 m12 s12" style="margin-bottom: 15px;">
+                           <textarea id="desc_demanda" class="materialize-textarea upperfont" maxlength="4000"
+                              ng-model="registro.descripcion"></textarea>
+                           <label for="desc_demanda">Descripción</label>
+                        </div>
+                        <hr style="margin-bottom: 15px;border-top: 1px solid rgba(160, 160, 160, 0.2);">
+                     </div>
+                     <div class="divtest" ng-hide="hdeInfoDemandante">
+                        <div class="col l12 m12 s12">
+                           <blockquote style="font-size: 1.24rem;">Demandantes</blockquote>
+                        </div>
+                        &nbsp;
+                        <div class="col l12 m12 s12">
+                           <div class="input-field col l2 m12 s12">
+                              <label class="labelper">Tipo de Persona</label>
+                              <select class="select-chosen-eps " ng-model="tipodemandante"
+                                 ng-change="validaInput()">
+                                 <option value="" disabled>SELECCIONAR</option>
+                                 <option value="N">NATURAL</option>
+                                 <option value="J">JURIDICA</option>
+                              </select>
+                           </div>
+                           <div class="input-field col l3 m12 s12" ng-hide="hdereprelegal">
+                              <input id="repre_legal" class=" upperfont" type="text"
+                                 ng-model="reprelegaldemandante">
+                              <label for="repre_legal">Representante Legal</label>
+                           </div>
+                           <div class="input-field col l3 m12 s12">
+                              <label class="labelper">Tipo de Identificación</label>
+                              <select class="select-chosen-eps " ng-model="tipodocdemandante" ng-disabled="test == false">
+                                 <option value="" disabled>SELECCIONAR</option>
+                                 <option value="CC">CEDULA DE CIUDADANÍA</option>
+                                 <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                                 <option value="NI">NIT</option>
+                              </select>
+                           </div>
+                           <div class="input-field col l3 m12 s12"
+                              title="Digite # a consultar ó escriba el # a guardar.">
+                              <input id="doc_demandante" class="" type="text" ng-model="iddemandante"
+                                 ng-blur="BuscarDemandante()" title="Digite # a consultar ó escriba el # a guardar.">
+                              <label for="doc_demandante">Número Identificación</label>
+                           </div>
+                        </div>
+                        <div class="col l12 m12 s12" style="margin-bottom: 15px;">
+                           <div class="input-field col l4 m12 s12">
+                              <input id="nombre_demandante" class=" upperfont" type="text"
+                                 ng-model="nombredemandante" title="{{dataDemandantes.nombre_dem}}"
+                                 value="{{dataDemandantes.nombre_dem}}" ng-disabled="dsbDataDemandante">
+                              <label for="nombre_demandante">Nombre Completo</label>
+                           </div>
+                           <div class="input-field col l2 m12 s12">
+                              <input id="tel_demandante" class="" type="text" ng-model="telefonodemandante"
+                                 title="{{dataDemandantes.telefono_dem}}" value="{{dataDemandantes.telefono_dem}}"
+                                 ng-disabled="dsbDataDemandante">
+                              <label for="tel_demandante">Teléfono</label>
+                           </div>
+                           <div class="input-field col l4 m12 s12">
+                              <input id="email_demandante" class=" upperfont" type="email"
+                                 ng-model="emaildemandante" title="{{dataDemandantes.email_dem}}"
+                                 value="{{dataDemandantes.email_dem}}" ng-disabled="dsbDataDemandante">
+                              <label for="email_demandante">Correo Electrónico</label>
+                           </div>
+                           <div class="input-field col l4 m12 s12">
+                              <!-- <input id="dir_demandante" class=" upperfont" type="text"
+                                 ng-model="direcciondemandante" title="{{dataDemandantes.direccion}}"
+                                 value="{{dataDemandantes.direccion}}" ng-disabled="dsbDataDemandante">
+                              <label for="dir_demandante">Dirección</label> -->
+                              <!-- <input id="dir_demandante" class=" upperfont" type="text" ng-model="direcciondemandante"
+                                 title="{{dataDemandantes.direccion}}" value="{{dataDemandantes.direccion}}" 
+                                 ng-disabled="dsbDataDemandante" ng-click="modaldir('direcciondemandante')" readonly>
+                              <label for="dir_demandante">Dirección</label> -->
+                              <input id="dir_demandante" class=" upperfont" type="text" ng-model="direcciondemandante"
+                                 title="{{dataDemandantes.direccion}}" value="{{dataDemandantes.direccion}}" ng-disabled="dsbDataDemandante"
+                                 ng-click="modaldir('1')" readonly>
+                              <label for="dir_demandante">Dirección</label>
+                           </div>
+                        </div>
+                        <center>
+                           <div class="col l12 m12 s12">
+                              <div class="input-field" ng-show="hdeBtnAddEditDdte">
+                                 <div class="tooltip">
+                                    <a class="btn btn-primary" ng-click="addNuevoDemandante()" ng-disabled="dsbbtnsave"><i
+                                          class="material-icons dp48">playlist_add</i>
+                                       Agregar</a>
+                                    <span class="tooltiptext tooltiptablas">Agregar Demandante</span>
+                                 </div>
+                              </div>
+                              <div class="input-field" ng-hide="hdeBtnAddEditDdte">
+                                 <div class="tooltip">
+                                    <a class="btn btn-primary" ng-click="updateDemandante()"><i
+                                          class="material-icons dp48">playlist_add</i>
+                                       Actualizar</a>
+                                    <span class="tooltiptext tooltiptablas">Actualizar Datos</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </center>
+                        &nbsp;
+                        <div class="col l12 m12 s12" style="margin-bottom: 15px;" ng-hide="hdeTableAddDemte">
+                           <div class="card card-default">
+                              <div class="card-content clearfix">
+                                 <table id="tabledmte" class="responsive-table striped">
+                                    <thead>
+                                       <tr>
+                                          <th>Tipo Identificación</th>
+                                          <th># Identificación</th>
+                                          <th>Nombre Completo</th>
+                                          <th>Teléfono</th>
+                                          <th>Correo Electrónico</th>
+                                          <th>Dirección</th>
+                                          <th>Tipo</th>
+                                          <th>Representante Legal</th>
+                                          <th colspan="2">Opciones</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       <tr ng-repeat="demandante in demandantes">
+                                          <td>{{demandante.tipo_documento}}</td>
+                                          <td>{{demandante.documento}}</td>
+                                          <td>{{demandante.nombre}}</td>
+                                          <td>{{demandante.telefono}}</td>
+                                          <td>{{demandante.email}}</td>
+                                          <td>{{demandante.direccion}}</td>
+                                          <td>{{demandante.tipo_persona}}</td>
+                                          <td>{{demandante.representante}}</td>
+                                          <td>
+                                             <div class="tooltip">
+                                                <a class="btn-floating btn waves-effect waves-light"
+                                                   ng-click="editDemandante(demandante.tipo_documento,demandante.documento,demandante.nombre,demandante.telefono,demandante.email,demandante.direccion,demandante.tipo_persona,demandante.representante)" ng-disabled="dsbbtnsave"><i
+                                                      class="material-icons dp48">mode_edit</i></a>
+                                                <span class="tooltiptext tooltiptablas">Modificar Demandante</span>
+                                             </div>
+                                             <div class="tooltip">
+                                                <a class="btn-floating btn waves-effect waves-light"
+                                                   ng-click="eliminarDemandante($index)" ng-disabled="dsbbtnsave"><i
+                                                      class="material-icons dp48">delete</i></a>
+                                                <span class="tooltiptext tooltiptablas">Eliminar Demandante</span>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <hr style="margin-bottom: 15px;border-top: 1px solid rgba(160, 160, 160, 0.2);">
+                     <div ng-hide="hdeInfoApoderado">
+                        <div class="col l12 m12 s12">
+                           <blockquote style="font-size: 1.24rem;">Información del Apoderado Demandante</blockquote>
+                           <div class="input-field col l3 m12 s12">
+                              <label class="labelper">Tipo de Documento</label>
+                              <select class="select-chosen-eps " ng-model="registro.tipoidapoderado" disabled>
+                                 <option value="CC">CEDULA DE CIUDADANÍA</option>
+                              </select>
+                           </div>
+                           <div class="input-field col l2 m12 s12">
+                              <input id="doc_apoderado" class="" type="text" ng-model="registro.idapoderado"
+                                 maxlength="20" minlength="6">
+                              <label for="doc_apoderado">Número Identificación</label>
+                           </div>
+                           <div class="input-field col l6 m12 s12">
+                              <input id="nombre_apoderado" class=" upperfont" type="text"
+                                 ng-model="registro.nombreapoderado">
+                              <label for="nombre_apoderado">Nombre Completo</label>
+                           </div>
+                        </div>
+                        <div class="col l12 m12 s12" style="margin-bottom: 15px;">
+                           <div class="input-field col l3 m12 s12">
+                              <input id="tel_apoderado" class=" upperfont" type="text"
+                                 ng-model="registro.telefonoapoderado">
+                              <label for="tel_apoderado">Teléfono</label>
+                           </div>
+                           <div class="input-field col l3 m12 s12">
+                              <input id="email_apoderado" class=" upperfont" type="email" ng-model="registro.emailapoderado">
+                              <label for="email_apoderado">Correo Electrónico</label>
+                           </div>
+                           <!-- <div class="input-field col l3 m12 s12">
+                              <input id="dir_demandante" class=" upperfont" type="text"
+                                 ng-model="registro.direccionapoderado">
+                              <label for="dir_demandante">Dirección</label>
+                           </div> -->
+                           <div class="input-field col l3 m12 s12">
+                              <input id="dir_apodemandante" class=" upperfont" type="text" ng-model="registro.direccionapoderado"
+                                 ng-click="modaldir('2')" readonly>
+                              <label for="dir_apodemandante">Dirección</label>
+                           </div>
+                        </div>
+                     </div>
+                     <hr style="margin-bottom: 15px;border-top: 1px solid rgba(160, 160, 160, 0.2);">
+                     <div ng-hide="hdeInfoDemandado" id="items">
+                        <div class="col l12 m12 s12">
+                           <blockquote style="font-size: 1.24rem;">Demandados</blockquote>
+                        </div>
+                        &nbsp;
+                        <div class="col l12 m12 s12">
+                           <div class="input-field col l3 m12 s12">
+                              <label class="labelper">Tipo de Documento</label>
+                              <select id="tipoiddemandado" class="select-chosen-eps "
+                                 ng-model="tipoiddemandado">
+                                 <option value="" disabled>SELECCIONAR</option>
+                                 <option value="CC">CEDULA DE CIUDADANÍA</option>
+                                 <option value="NI">NIT</option>
+                              </select>
+                           </div>
+                           <div class="input-field col l2 m12 s12">
+                              <input id="doc_demandado" class="" type="text" ng-model="iddemandado" ng-blur="BuscarDemandado()">
+                              <label for="doc_demandado">Número Identificación</label>
+                           </div>
+                           <div class="input-field col l5 m12 s12">
+                              <input id="nombre_demandado" class=" upperfont" type="text"
+                                 ng-model="nombredemandado">
+                              <label for="nombre_demandado">Nombre Completo</label>
+                           </div>
+                        </div>
+                        <div class="col l12 m12 s12" ng-show="tipoiddemandado == 'NI' && iddemandado == '890102044'">
+                           <!-- <div class="input-field col l3 m12 s12">
+                              <label class="labelper">Tipo de Documento</label>
+                              <select id="tipoiddemandado" class="select-chosen-eps "
+                                 ng-model="tipoiddemandado">
+                                 <option value="" disabled>SELECCIONAR</option>
+                                 <option value="CC">CEDULA DE CIUDADANÍA</option>
+                                 <option value="NI">NIT</option>
+                              </select>
+                           </div> -->
+                           <div class="col l12 m12 s12">
+                              <blockquote style="font-size: 1rem;">Apoderado Demandado</blockquote>
+                           </div>
+                           <div class="input-field col l4 m12 s12">
+                              <input id="doc_apoderadoDemandado" class="" type="text" ng-model="idApoderadoDemandado" ng-blur="BuscarApoderadoDemandado()">
+                              <label for="doc_apoderadoDemandado">Número Identificación</label>
+                           </div>
+                           <div class="input-field col l5 m12 s12">
+                              <input id="nombre_apoderadoDemandado" class=" upperfont" type="text"
+                                 ng-model="NombreApoderadoDemandado">
+                              <label for="nombre_apoderadoDemandado">Nombre Completo</label>
+                           </div>
+                        </div>
+                        <center>
+                           <div class="col l12 m12 s12">
+                              <div class="input-field" ng-show="hdeBtnAddEditDdo">
+                                 <div class="tooltip">
+                                    <a class="btn btn-primary" ng-click="addNuevoDemandado()" ng-disabled="dsbbtnsave"><i
+                                          class="material-icons dp48">playlist_add</i>
+                                       Agregar</a>
+                                    <span class="tooltiptext tooltiptablas">Agregar Demandado</span>
+                                 </div>
+                              </div>
+                              <div class="input-field" ng-hide="hdeBtnAddEditDdo">
+                                 <div class="tooltip">
+                                    <a class="btn btn-primary" ng-click="updateDemandado()"><i
+                                          class="material-icons dp48">playlist_add</i>
+                                       Actualizar</a>
+                                    <span class="tooltiptext tooltiptablas">Actualizar Datos</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </center>
+                        &nbsp;
+                        <div class="col l12 m12 s12" ng-hide="hdeTableAddDem">
+                           <div class="card card-default">
+                              <div class="card-content clearfix">
+                                 <table class="responsive-table striped">
+                                    <thead>
+                                       <tr>
+                                          <th>Tipo de Identificación</th>
+                                          <th>Número Identificación</th>
+                                          <th>Nombre Completo</th>
+                                          <th>Apoderado Demandado</th>
+                                          <th>Nombre Apoderado Demandado</th>
+                                          <th colspan="2">Opciones</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       <tr ng-repeat="demandado in demandados">
+                                          <td>{{demandado.tipo_documento}}</td>
+                                          <td>{{demandado.documento}}</td>
+                                          <td>{{demandado.nombre}}</td>
+                                          <td>{{demandado.apoderado != '' ? demandado.apoderado : 'No Aplica'}}</td>
+                                          <td>{{demandado.nombre_apoderado != '' ? demandado.nombre_apoderado : 'No Aplica'}}</td>
+                                          <td>
+                                             <div class="tooltip" ng-hide="demandado.documento != '890102044'">
+                                                <a class="btn-floating btn waves-effect waves-light"
+                                                   ng-click="editDemandado(demandado)" ng-disabled="dsbbtnsave"><i
+                                                      class="material-icons dp48">mode_edit</i></a>
+                                                <span class="tooltiptext tooltiptablas">Modificar Demandado</span>
+                                             </div>
+                                             <div class="tooltip">
+                                                <a class="btn-floating btn waves-effect waves-light"
+                                                   ng-click="eliminarDemandado($index)" ng-disabled="dsbbtnsave"><i
+                                                      class="material-icons dp48">delete</i></a>
+                                                <span class="tooltiptext tooltiptablas">Eliminar Demandado</span>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- <hr style="margin-bottom: 15px;border-top: 1px solid rgba(160, 160, 160, 0.2);">
+                     <div ng-hide="hdeEmbargos">
+                        <div class="col l12 m12 s12">
+                           <blockquote>Embargos</blockquote>
+                           <div class="input-field col l3 m12 s12">
+                              <input id="dteFechaEmbargo" class="datepicker picker__input uppercase"
+                                 style="width: 100%;" ng-model="tempFechaRecEmbargo" type="text"
+                                 placeholder="dd/mm/aaaa">
+                              <label for="dteFechaEmbargo" class="labelper" style="margin-top: -30px;">Fecha de
+                                 Recepción de Embargo</label>
+                           </div>
+                           <div class="input-field col l3 m12 s12">
+                              <input id="valorembargo" class="" type="text" ng-model="registro.tempembargo"
+                                 ng-keyup="formatcurrency(2)">
+                              <label for="valorembargo">Valor de Embargo</label>
+                           </div>
+                           <div class="input-field col l3 m12 s12">
+                              <input id="dteFechaDesembargo" class="datepicker picker__input uppercase"
+                                 style="width: 100%;" ng-model="tempFechaDesembargo" type="text"
+                                 placeholder="dd/mm/aaaa">
+                              <label for="dteFechaDesembargo" class="labelper" style="margin-top: -30px;">Fecha de
+                                 Desembargo</label>
+                           </div>
+                        </div>
+                        &nbsp;
+                        <hr style="margin-bottom: 15px;border-top: 1px solid rgba(160, 160, 160, 0.2);">
+                     </div> -->
+                     <div class="col l12 m12 s12" ng-hide="hdeAdjuntarfile">
+                        <div class="input-field col l12 m12 s12">
+                           <center>
+                              <button class="btn btn-primary" type="submit" ng-disabled="dsbbtnsave">Guardar</button>
+                           </center>
+                        </div>
+                     </div>
+                     <div class="col l12 m12 s12" ng-hide="hdebtnActualizarDemanda">
+                        <div class="input-field col l12 m12 s12">
+                           <center>
+                              <input type="button" class="btn btn-primary" ng-click="ActualizarDemanda('U')"
+                                 value="Actualizar">
+                           </center>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+      </div>
+   </fieldset>
+
+   <fieldset style="border: none;" ng-hide="hdeActuaciones">
+      <div class="col s12 m12 l12">
+         <div class="card">
+            <form ng-submit="registrarActuacion('I')">
+               <div class="card-content" id="panelActuacion">
+                  <blockquote>
+                     <h5>Actuaciones del Proceso</h5>
+                  </blockquote>
+               </div>
+               <div class="card-action">
+                  <div class="row">
+                     <div class="col l12 m12 s12">
+                        <div class="input-field col l2 m12 s12">
+                           <input id="dteFechaActuacion" class="datepicker picker__input uppercase"
+                              ng-model="fecha_actuacion" style="width: 100%;" type="text" placeholder="dd/mm/aaaa"
+                              required>
+                           <label for="dteFechaActuacion" class="labelper" style="margin-top: -30px;">Fecha de
+                              Actuación</label>
+                        </div>
+                        <div class="input-field col l2 m12 s12">
+                           <label class="labelper">Tipo de Evidencia</label>
+                           <select class="select-chosen-eps " ng-model="tipoevidencia" ng-change="validaInput()"
+                              required>
+                              <option value="" disabled>SELECCIONAR</option>
+                              <option value="A">ARCHIVO</option>
+                              <option value="L">URL</option>
+                           </select>
+                        </div>
+                        <div class="input-field col l7 m12 s12" style="margin-top: 0px;" ng-hide="hdeEvidencia">
+                           <div class="file-field input-field">
+                              <div class="btn">
+                                 <span class="white-text">Archivo</span>
+                                 <input id="archivodemanda" type="file" name="archivodemanda" accept="application/pdf">
+                              </div>
+                              <div class="file-path-wrapper">
+                                 <input id="archivodemanda2" class="file-path " type="text"
+                                    ng-model="archivodemanda" placeholder="Adjuntar Archivo" ng-change="obtenerBase('archivodemanda')">
+                              </div>
+                           </div>
+                        </div>
+                        <div class="input-field col l7 m12 s12" ng-show="hdeEvidenciaU">
+                           <input id="urlactuacion" class="" type="text" ng-model="urlactuacion">
+                           <label for="urlactuacion">URL</label>
+                        </div>
+                        <div class="input-field col l11 m12 s12">
+                           <input id="actuaciondemanda" class="" type="text" ng-model="actuaciondemanda"
+                              required>
+                           <label for="actuaciondemanda">Actuación</label>
+                        </div>
+                        <div class="input-field col l11 m12 s12">
+                           <textarea id="descripcionactuacion" class="materialize-textarea"
+                              ng-model="descripcionactuacion"></textarea>
+                           <label for="descripcionactuacion">Descripción</label>
+                        </div>
+                        <div class="col l12 m12 s12" ng-show="hdeAdjuntarfile">
+                           <div class="input-field col l12 m12 s12">
+                              <center>
+                                 <button class="btn btn-primary" type="submit">Guardar</button>
+                              </center>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+            </form>
+         </div>
+      </div>
+   </fieldset>
+
+   <!-- <div class="fixed-action-btn horizontal" ng-hide="hdeBtnPanelActuaciones">
+      <div class="tooltip">
+         <a class="btn-floating btn-large waves-effect waves-light" data-toggle="modal" ng-click="ImprimirInforme()">
+            <i class="zmdi zmdi-print"></i>
+         </a>
+         <span class="tooltiptext">Imprimir Demanda</span>
+      </div>
+      <div class="tooltip">
+         <a class="btn-floating btn-large waves-effect waves-light" data-toggle="modal"
+            ng-click="openPanelActuaciones(codigo_demanda)">
+            <i class="zmdi zmdi-file zmdi-hc-fw"></i>
+         </a>
+         <span class="tooltiptext">Actuaciones Registradas</span>
+      </div>
+   </div> -->
+
+   <div class="col s12">
+      <div id="modal1" class="modal modaldireccion" style="max-height: 80%;width: 40% !important;">
+         <div class="card " style="padding:10px;margin-bottom: 0;">
+            <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+               ng-click="salir()"></div>
+            <div class="card-content default-background">
+               <h5 style="margin-bottom:6px;font-weight:600;color:white;padding-left:30px">Dirección</h5>
+            </div>
+            <div class="row">
+               <!--viaPrincipal Numero/nombre Letra-->
+               <div class="col s12">
+                  <div class="col s4">
+                     <label for="via-principal" class="c-pointer">Via Principal</label>
+                     <select id="via-principal" class="select-chosen-eps pt-select-pqr" ng-model="selectViap">
+                        <option ng-repeat="viap in viaprincipal.Viaprincipal" ng-value="viap.Codigo">{{viap.Nombre}}
+                        </option>
+                     </select>
+                  </div>
+                  <div class="col s4">
+                     <label for="normal" class="c-pointer">Numero/Nombre</label>
+                     <input ng-disabled="saved" id="normal" type="text" class="" ng-model="numeroN">
+                  </div>
+                  <div class="col s4">
+                     <label for="letra-calle" class="c-pointer">Letra</label>
+                     <select class="select-chosen-eps pt-select-pqr format-list" id="letra-calle" ng-model="selectLetra">
+                        <option ng-repeat="letra in letras.Letra" ng-value="letra.Codigo">{{letra.Nombre}}</option>
+                     </select>
+                  </div>
+               </div>
+               <!--Letra Bis y Cuadrante-->
+               <div class="col s12">
+                  <div class="col s4">
+                     <label for="number" class="c-pointer">Numero</label>
+                     <input id="number" type="text" class="" ng-model="selectnumero" min="1" max="9" maxlength="1"
+                        autocomplete="off">
+                  </div>
+                  <div class="col s4 mt-50">
+                     <input type="checkbox" id="checkboxBIS" ng-model="bis" ng-change="changebis()" />
+                     <label for="checkboxBIS">Bis</label>
+                  </div>
+                  <div class="col s4">
+                     <label for="cuadrante" class="c-pointer">Cuadrante</label>
+                     <select class="select-chosen-eps pt-select-pqr format-list" id="cuadrante" ng-model="selectcuadrante">
+                        <option ng-repeat="cuadrante in Cuadrantes.Cuadrante" ng-value="cuadrante.Codigo">
+                           {{cuadrante.Nombre}}</option>
+                     </select>
+                  </div>
+               </div>
+               <!--NumeroVG y letraVG Numero de placa-->
+               <div class="col s12">
+                  <div class="col s4">
+                     <label for="num-vg" class="c-pointer"> Numero VG</label>
+                     <input id="num-vg" type="text" class="" ng-model="numeroNVG">
+                  </div>
+                  <div class="col s4">
+                     <label for="letra-vg" class="c-pointer">Letra VG</label>
+                     <select class="select-chosen-eps pt-select-pqr" id="letra-vg" ng-model="selectLetraVG">
+                        <option ng-repeat="letravg in letras.Letra" ng-value="letravg.Codigo">{{letravg.Nombre}}</option>
+                     </select>
+                  </div>
+                  <div class="col s4">
+                     <label for="placa" class="c-pointer">Numero Placa</label>
+                     <input id="placa" type="text" class="" ng-model="numeroplaca">
+                  </div>
+               </div>
+               <!--CuadranteVG Complemento Direccion-->
+               <div class="col s12">
+                  <div class="col s4">
+                     <label for="cuadrante-vg" class="c-pointer">Cuadrante VG</label>
+                     <select class="select-chosen-eps pt-select-pqr" id="cuadrante-vg" ng-model="selectcuadranteVG">
+                        <option ng-repeat="cuadrantevg in Cuadrantes.Cuadrante" ng-value="cuadrantevg.Codigo">
+                           {{cuadrantevg.Nombre}}</option>
+                     </select>
+                  </div>
+                  <div class="col s8">
+                     <label for="complemento" class="c-pointer">Complemento</label>
+                     <input id="complemento" type="text" class=" text-trans-up" ng-model="complemento"
+                        onkeyup="javascript:this.value=this.value.toUpperCase();">
+                  </div>
+               </div>
+               <div class="col s12">
+                  <div class="col s12">
+                     <label>Direccion</label>
+                     <input readonly id="direccionmodal" type="text"
+                        value="{{selectViap}} {{numeroN }} {{selectLetra}} {{selectnumero}} {{bistext}} {{selectcuadrante}} {{numeroNVG}} {{selectLetraVG}} {{numeroplaca}} {{selectcuadranteVG}} {{complemento}}"
+                        class="requerido text-trans-up" name="direccion">
+                  </div>
+               </div>
+               <div class="col s12">
+                  <center>
+                     <a class="waves-effect waves-light btn-large white-text" ng-click="cargardir(control)">
+                        Guardar
+                     </a>
+                  </center>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="fabs" style="margin-right: 40px;" ng-hide="hdeBtnPanelActuaciones">
+		<a ng-click="ImprimirInforme()" target="" class="fab cyan" tooltip="Imprimir Demanda"><i
+			class="sec zmdi zmdi-print zmdi-hc-fw animated"></i></a>
+		<a ng-click="openPanelActuaciones(codigo_demanda)" target="_blank" class="fab red" tooltip="Actuaciones"><i
+				class="sec zmdi zmdi-assignment-alert zmdi-format-valign-bottom animated"></i></a>
+		<a ng-click="abrirModal('2')" target="" class="fab amber" tooltip="Estado Actual"><i
+				class="sec zmdi zmdi-assignment zmdi-assignment-valign-bottom animated"></i></a>
+		<a ng-click="abrirModal('3')" target="" class="fab green" tooltip="Medida Cautelar"><i
+				class="sec zmdi zmdi-balance zmdi-work-valign-bottom animated"></i></a>
+		<a target="_blank" class="fab blue-dark" tooltip="Opciones"><i class="prime zmdi animated rotateIn zmdi-plus"></i></a>
+	</div>
+
+   <div class="col s12 m12 l12">
+		<div id="modalEstadoTutela" class="modal" style="max-height: 80%;width: 50% !important;">
+		   <div class="card " style="padding:10px;margin-bottom: 0;">
+				<div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+					ng-click="cerrarModal('1')"></div>
+				<div class="card-content default-background">
+					<h5 style="margin-bottom:6px;font-weight:600;color:white;padding-left:30px">Estado de Tutela</h5>
+				</div>
+				<div class="row">
+					<!-- <div class="col s12 m12 l12">
+						<div class="input-field col l3 m12 s12">
+                     <label class="labelper">Estado Actual</label>
+                     <select id="estados" name="estados" class="select-chosen-eps"
+                        ng-model="estadoActual" required>
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-repeat="es in estados"
+                           ng-selected="es.codigo == estadoActual"
+                           ng-value="es.codigo">{{es.nombre}}</option>
+                     </select>
+                  </div>
+					</div> -->
+					<div class="col s12 m12 l12">
+						<center>
+						<a class="waves-effect waves-light btn-large white-text" ng-click="registrarEstadoTutela()" ng-disabled="btn.GuardaRegistro">
+							Guardar
+						</a>
+						</center>
+					</div>
+				</div>
+		   </div>
+		</div>
+	</div>
+
+   <div class="col s12 m12 l12">
+		<div id="modalMedidaCautelar" class="modal" style="max-height: 80%;width: 70% !important;">
+		   <div class="card " style="padding:10px;margin-bottom: 0;">
+				<div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+					ng-click="cerrarModal('2')"></div>
+				<div class="card-content default-background">
+					<h5 style="margin-bottom:6px;font-weight:600;color:white;">Medida Cautelar</h5>
+				</div>
+				<div class="row">
+               <div class="row section-header margin white">
+                  <ul id="tabs-list" class="align-items-center d-flex justify-content-between left list-inline w-100">
+                     <li style="margin: auto">
+                        <ul class="tabs transparent">
+                        <li class="tab col w-auto">
+                           <a id="tab_3" ng-click="seleccionar(3)" ng-class="{'active':tabs.select==3}"
+                              href="javascript:void(0)">Registrar <i class="icon-list-add"></i></a>
+                        </li>
+                        <li class="tab col w-auto">
+                           <a id="tab_4" ng-click="seleccionar(4)" ng-class="{'active':tabs.select==4}"
+                              href="javascript:void(0)">Ver Bitacora <i class="icon-doc-text-inv"></i></a>
+                        </li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+               <!-- <label for="descripcionMedidaCautelar">Medida Cautelar <span style="color: red;">*</span></label> -->
+               <div ng-show="tabs.select==3" id="registrar_medida">
+                  <div class="col s12 m12 l12" style="border: 1px solid;padding: 3% 0;">
+                     <div class="input-field col l6 m12 s12" style="margin: 0px;" ng-repeat="me in medidasCautelares">
+                        <input type="checkbox" class="filled-in" id="tipo_{{me.codigo}}" 
+                        ng-click="checkedTiposMedidas($index)" ng-checked="me.checked == true">
+                        <label for="tipo_{{me.codigo}}">{{me.nombre}}</label>
+                     </div>
+                  </div>
+                  <div class="col l12 m12 s12" style="margin-top: 15px;">
+                     <div class="input-field col l6 m6 s6">
+                        <!-- ng-disabled="detalleMedidaCautelar.length != 0"
+                        ng-disabled="detalleMedidaCautelar.length != 0" -->
+                        <input id="MontoMedidaCautelar" class="" type="text" ng-model="tempMontoMedidaCautelar" required ng-keyup="formatcurrency(4)">
+                        <label for="MontoMedidaCautelar">Monto de Medida Cautelar <span style="color: red;">*</span></label>
+                     </div>
+                     <div class="input-field col l2 m12 s12">
+                        <label class="labelper">Estado <span style="color: red;">*</span></label>
+                        <select class="select-chosen-eps" ng-model="estadoMedidaCautelar">
+                           <option value="" disabled>SELECCIONAR</option>
+                           <option value="V">VIGENTE</option>
+                           <option value="N">NO VIGENTE</option>
+                        </select>
+                     </div>
+                     <!-- <div class="input-field col l2 m12 s12" ng-show="detalleMedidaCautelar.length != 0">
+                        <a ng-click="descargafile(detalleMedidaCautelar[0].ruta,1,'FTP3')" target="_blank" 
+                        class="fab amber" tooltip="Ver Adjunto" style="width: 46px; height: 46px;margin: 0;">
+                        <i class="sec zmdi zmdi-archive zmdi-archive-valign-bottom animated" style="line-height: 45px;"></i></a>
+                     </div> -->
+                  </div>
+                  <div class="col l12 md12 m12">
+                     <!-- ng-hide="detalleMedidaCautelar.length != 0" -->
+                     <div class="input-field col m12 s12 margin no-padding">
+                        <div class="default-background file-field input-field"
+                           style="display: flex;margin: 0;color: white;">
+                           <div>
+                              <i class="material-icons dp48" style="margin-top: 10px;">attach_file</i>
+                              <input type="file" id="archivoMedidaCautelar" accept=".pdf">
+                           </div>
+                           <div class="file-path-wrapper" style="width: 100%;">
+                              <input class="file-path validate valid" type="text" id="archivoMedidaCautelar"
+                                 placeholder="Seleccionar un adjunto *" ng-model="archivoMedidaCautelar"
+                                 style="margin: 0;border: none;" ng-change="obtenerBase('archivoMedidaCautelar')">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col l12 md12 m12 no-padding">
+                        <label for="descripcionMedidaCautelar">Descripción<span style="color: red;">*</span> : {{descripcionMedidaCautelar.length}}</label>
+                        <textarea class="border-radius-none upperfont"
+                           placeholder="Observación..." ng-model="descripcionMedidaCautelar" rows="4" cols="50" maxlength="400"
+                           style="margin: 0px 0px 10px;border-radius: 3px;padding: 1em;max-width: 100%;width: 100%;height: 90px;outline: none;">
+                        </textarea>
+                     </div>
+                  </div>
+                  <div class="col s12 m12 l12">
+                     <center>
+                        <!-- ng-hide="detalleMedidaCautelar.length != 0" -->
+                     <a class="waves-effect waves-light btn-large white-text" ng-click="registrarMedidaCautelar('I')" >
+                        Guardar
+                     </a>
+                     <!-- <a class="waves-effect waves-light btn-large white-text" ng-click="registrarMedidaCautelar('A')" 
+                     ng-show="detalleMedidaCautelar.length != 0">
+                        Actualizar
+                     </a> -->
+                     </center>
+                  </div>
+               </div>
+					<div ng-show="tabs.select==4" id="ver_bitacora_medida">
+                  <div class="col l12 m12 s12" style="position:relative">
+                     <div class="black-text title-panel"
+                         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+                         <input type="text" class="margin border-none input-text-new" ng-model="filtrar" ng-change="cloneHeadFixed()"
+                             placeholder="Buscar en la tabla">
+                     </div>
+                     <div class="scroll_x" style="position: absolute;width: calc(100% - 32.5px);z-index: 10;overflow: hidden;">
+                         <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+             
+                         </table>
+                     </div>
+                     <div id="tabla_scroll" class="scroll_x" style="overflow: auto;height: auto">
+                         <table id="tablaBitacoraMedida" class="striped table-bordered white" style="position: relative;">
+                             <thead>
+                                 <tr class="default-background white-text">
+                                     <th class="border-none center-align">#</th>
+                                     <th class="border-none center-align" data-field="Date">Estado</th>
+                                     <th class="border-none center-align" data-field="Date">Descripción</th>
+                                     <th class="border-none center-align" data-field="Numeroth">Responsable</th>
+                                     <th class="border-none center-align" data-field="Ubicacion">Fecha Registro</th>
+                                     <th class="border-none center-align" data-field="Opciones">Opciones</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr data-ng-repeat="bim in bitacoraMedida | filter:filtrar | filter:{ESTADO:filtrarestado}">
+                                     <td class="center-align">{{($index+1)}}</td>
+                                     <td>{{bim.estado}}</td>
+                                     <td>{{bim.descripcion}}</td>
+                                     <td>{{bim.usuario_cedula}} - {{bim.usuario_nombre}}</td>
+                                     <td>{{bim.fecha_registro}}</td>
+                                     <td> 
+                                       <div class="tooltip">
+                                          <i class="icon-th-list" ng-click="detalle_bitacora_medida(bim.detalle)" style="font-size: 16px;"></i>
+                                          <span class="tooltiptext"
+                                            style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Ver Detalle</span>
+                                       </div>
+                                       <div class="tooltip" ng-show="bim.ruta != ''">
+                                          <i class="icon-eye" ng-click="descargafile(bim.ruta,1,'FTP3')" style="font-size: 16px;"></i>
+                                          <span class="tooltiptext"
+                                            style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Ver Adjunto
+                                          </span>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr ng-hide="msjTableBitacoraMedida">
+                                     <td colspan="6">
+                                         No se encontraron datos.
+                                     </td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+               </div>
+				</div>
+		   </div>
+		</div>
+	</div>
+
+   <div class="col s12 m12 l12">
+		<div id="modalBitacora" class="modal" style="max-height: 80%;width: 50% !important;">
+		   <div class="card " style="padding:10px;margin-bottom: 0;">
+				<div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+					ng-click="cerrarModal('3')"></div>
+				<div class="card-content default-background">
+					<h5 style="margin-bottom:6px;font-weight:600;color:white;">Bitacora Estados</h5>
+				</div>
+				<div class="row">
+               <div class="row section-header margin white">
+                  <ul id="tabs-list" class="align-items-center d-flex justify-content-between left list-inline w-100">
+                     <li style="margin: auto">
+                        <ul class="tabs transparent">
+                        <li class="tab col w-auto">
+                           <a id="tab_1" ng-click="seleccionar(1)" ng-class="{'active':tabs.select==1}"
+                              href="javascript:void(0)">Registrar <i class="icon-list-add"></i></a>
+                        </li>
+                        <li class="tab col w-auto">
+                           <a id="tab_2" ng-click="seleccionar(2)" ng-class="{'active':tabs.select==2}"
+                              href="javascript:void(0)">Ver Bitacora <i class="icon-doc-text-inv"></i></a>
+                        </li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+               <div ng-show="tabs.select==1" id="registrar_estado">
+                  <div class="col s12 m12 l12 mb-20">
+                     <div class="input-field col l3 m12 s12">
+                        <label class="labelper">Estado Actual</label>
+                        <select id="estados" name="estados" class="select-chosen-eps"
+                           ng-model="estadoActual" required>
+                           <option value="" disabled>SELECCIONAR</option>
+                           <!-- ng-selected="es.codigo == estadoActual" -->
+                           <option ng-repeat="es in estados"
+                              ng-value="es.codigo">{{es.nombre}}</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col s12 m12 l12">
+                     <center>
+                     <a class="waves-effect waves-light btn-large white-text" ng-click="registrarEstadoDemanda()" ng-disabled="btn.GuardaRegistro">
+                        Guardar
+                     </a>
+                     </center>
+                  </div>
+               </div>
+               <div ng-show="tabs.select==2" id="ver_bitacora">
+                  <div class="col l12 m12 s12" style="position:relative">
+                     <div class="black-text title-panel"
+                         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+                         <input type="text" class="margin border-none input-text-new" ng-model="filtrar" ng-change="cloneHeadFixed()"
+                             placeholder="Buscar en la tabla">
+                     </div>
+                     <div class="scroll_x" style="position: absolute;width: calc(100% - 32.5px);z-index: 10;overflow: hidden;">
+                         <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+             
+                         </table>
+                     </div>
+                     <div id="tabla_scroll" class="scroll_x" style="overflow: auto;height: auto">
+                         <table id="tablaBitacora" class="striped table-bordered white" style="position: relative;">
+                             <thead>
+                                 <tr class="default-background white-text">
+                                     <th class="border-none center-align">#</th>
+                                     <th class="border-none center-align" data-field="Date">Estado</th>
+                                     <th class="border-none center-align" data-field="Numeroth">Responsable</th>
+                                     <th class="border-none center-align" data-field="Ubicacion">Fecha</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr data-ng-repeat="bi in bitacora | filter:filtrar | filter:{ESTADO:filtrarestado}">
+                                     <td class="center-align">{{($index+1)}}</td>
+                                     <td>{{bi.codigo_estado}} - {{bi.nombre_estado}}</td>
+                                     <td>{{bi.usuario_cedula}} - {{bi.usuario_nombre}}</td>
+                                     <td>{{bi.fecha_registro}}</td>
+                                 </tr>
+                                 <tr ng-hide="msjTableBitacora">
+                                     <td colspan="4">
+                                         No se encontraron datos.
+                                     </td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+               </div>
+				</div>
+		   </div>
+		</div>
+	</div>
+
+   <style>
+      #view-demandas .dt-buttons button.buttons-html5 {
+         border: none;
+         border-radius: 2px;
+         padding: 0 2rem;
+         text-transform: uppercase;
+         height: 36px;
+         line-height: 36px;
+         /* background-color: #1a2e63 !important; */
+         color: #ffffff;
+         background-image: none;
+         transition: .2s ease-out;
+      }
+
+      #view-demandas .dt-buttons button.buttons-html5:hover {
+         background-color: #de538e !important;
+         box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+      }
+
+      #view-demandas table th,
+      td {
+         text-align: center;
+      }
+
+      #tabledmte td {
+         padding: 10px 2px;
+      }
+
+      .upperfont {
+         text-transform: uppercase;
+      }
+
+      #view-demandas tbody{
+         text-transform: uppercase;
+      }
+
+      .fabs {
+			bottom: 0;
+			position: fixed;
+			margin: 1em;
+			right: 0;
+			z-index: 1000;
+		}
+
+		.fab {
+			display: block;
+			width: 56px;
+			height: 56px;
+			border-radius: 50%;
+			text-align: center;
+			color: white;
+			margin: 20px auto 0;
+			box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 0px 4px 12px -7px rgba(0, 0, 0, 0.15);
+			cursor: pointer;
+			-webkit-transition: all .1s ease-out;
+			transition: all .1s ease-out;
+			position: relative;
+		}
+
+		.fab>i {
+			font-size: 28px;
+			line-height: 60px;
+			transition: all .2s ease-in-out;
+			transition-delay: 2s;
+		}
+
+		.fab.red {
+			background: #F44336;
+		}
+
+		.fab:active,
+		.fab:focus,
+		.fab:hover {
+			box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+		}
+
+		.fab:not(:last-child) {
+			width: 36px;
+			height: 36px;
+			margin: 20px auto 0;
+			opacity: 0;
+		}
+
+		.fab:not(:last-child)>i {
+			font-size: 18px;
+			line-height: 40px;
+			transition: all .3s ease-in-out;
+		}
+
+		.fabs:hover .fab:not(:last-child) {
+			opacity: 1;
+			width: 40px;
+			height: 40px;
+			margin: 15px auto 0;
+		}
+
+		.fab:nth-last-child(1) {
+			-webkit-transition-delay: 25ms;
+			transition-delay: 25ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(2) {
+			-webkit-transition-delay: 20ms;
+			transition-delay: 20ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(3) {
+			-webkit-transition-delay: 40ms;
+			transition-delay: 40ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(4) {
+			-webkit-transition-delay: 60ms;
+			transition-delay: 60ms;
+		}
+
+		.fab:not(:last-child):nth-last-child(5) {
+			-webkit-transition-delay: 80ms;
+			transition-delay: 80ms;
+		}
+
+		[tooltip]:before {
+			font-family: 'Roboto';
+			font-weight: 600;
+			-webkit-border-radius: 2px;
+			-moz-border-radius: 2px;
+			border-radius: 7px;
+			background-color: #000000;
+			color: #fff;
+			content: attr(tooltip);
+			font-size: 12px;
+			visibility: hidden;
+			opacity: 0;
+			padding: 5px 7px;
+			margin-right: 10px;
+			position: absolute;
+			right: 100%;
+			bottom: 25%;
+			white-space: nowrap;
+		}
+
+		.fab.red {
+			background: #F44336;
+		}
+
+		.fab.pink {
+			background: #E91E63;
+		}
+
+		.fab.purple {
+			background: #9C27B0;
+		}
+
+		.fab.deep-purple {
+			background: #673AB7;
+		}
+
+		.fab.indigo {
+			background: #3F51B5;
+		}
+
+		.fab.blue {
+			background: #2196F3;
+		}
+
+		.fab.light-blue {
+			background: #03A9F4;
+		}
+
+		.fab.cyan {
+			background: #00BCD4;
+		}
+
+		.fab.teal {
+			background: #009688;
+		}
+
+		.fab.green {
+			background: #4CAF50;
+		}
+
+		.fab.light-green {
+			background: #8BC34A;
+		}
+
+		.fab.lime {
+			background: #CDDC39;
+		}
+
+		.fab.yellow {
+			background: #FFEB3B;
+		}
+
+		.fab.amber {
+			background: #FFC107;
+		}
+
+		.fab.orange {
+			background: #FF9800;
+		}
+
+		.fab.deep-orange {
+			background: #FF5722;
+		}
+
+		.fab.blue-dark {
+			background: #1a2e63;
+		}
+
+		.fab.grey {
+			background: #9E9E9E;
+		}
+
+		.fab.blue-grey {
+			background: #607D8B;
+		}
+
+		[tooltip]:hover:before,
+		[tooltip]:hover:after {
+			visibility: visible;
+			opacity: 1;
+		}
+
+      .tabs .tab a {
+         font-size: 11px;
+      }
+
+      li.tab.col.w-auto {
+         line-height: 28px;
+         height: 28px;
+      }
+
+      ul.tabs.transparent {
+         height: 28px;
+      }
+
+      #tabs-list {
+         overflow-x: hidden;
+         padding-bottom: 5px;
+         margin-bottom: 0px;
+      }
+      
+      #tabs-list:hover {
+         overflow-x: auto;
+         margin-bottom: 0;
+      }
+   </style>
+</div>

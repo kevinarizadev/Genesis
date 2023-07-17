@@ -1,0 +1,159 @@
+<div id="gestionpqr" class="row margin" style="position: relative;">
+
+  <div class="w-100">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="foot4 divcardcustom">
+          <div class="text-al switch">
+            <strong>BASE DE DATOS PRESTADORES</strong>
+          </div>
+        </div>
+        <div class="card-content" style="height: auto;">
+          <div class="row">
+            <div class="col s12">
+              <div class="col s3">
+                <div class="col s12">
+                  <label class="c-pointer noselectxtpqr" for="periodo">Periodo</label>
+                  <select class="select-chosen-eps select  pt-select-pqr" id="periodo" ng-model="selectedperiodo">
+                    <option value="">SELECCIONAR</option>
+                    <option ng-repeat="s in listPeriodos" value="{{s.PERIODO}}">{{s.PERIODO}}</option>
+                  </select>
+                </div>
+
+              </div>              
+              <div class="col s1">
+                <div class="input-field col m12 s12">
+                  <button class="btn white-text" ng-click="filtroPeriodo()"
+                    style="padding-right: 5px; padding-left: 5px; margin-top: 15px;"><i style="position: relative;"
+                      class="material-icons prefix">search</i></button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div id="listitems" style="margin-top: 5vh;">
+            <table id="tableITEMS" class="responsive-table striped table-bordered" style="height:100px;"
+              ng-hide="showlist">
+              <thead class="noselectxtpqr">
+                <tr>
+                  <th class="text-center">PERIODO</th>
+                  <th class="text-center">TIPO CONTRATO</th>
+                  <th class="text-center">CONTRATO</th>
+                  <th class="text-center">REGIMEN</th>
+                  <th class="text-center">UBICACION</th>
+                  <th class="text-center">CANTIDAD</th>
+                  <th class="text-center">ESTADO DESCARGA</th>
+                  <th class="text-center">ACCION</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in listitems">
+                  <td class="text-center">{{item.PERIODOV}}</td>
+                  <td class="text-center">{{item.TIPO_CONTRATO}}</td>
+                  <td class="text-center">{{item.CONTRATO}}</td>
+                  <td class="text-center" style="text-transform: uppercase;">{{item.REGIMEN=='S' ?
+                    'SUBSIDIADO':'CONTRIBUTIVO'}}</td>
+                  <td class="text-center">{{item.DEPARTAMENTO}} - {{item.MUNICIPIO}}</td>
+                  <td class="text-center">{{item.CANTIDAD}}</td>
+                  <td class="text-center">{{item.ESTADO}}</td>
+                  <td class="text-center">
+                    <a title="VER HISTORICO" class="waves-effect waves-light btn-small"
+                      ng-click="openmodals('modalhistorico', item);">
+                      <i id="bt-ges" class="icon-road fs-25"></i>
+                    </a>
+
+                    <a class="waves-effect waves-light btn-small" ng-click="downloadCapita(item);"
+                      title="DESCARGAR ADJUNTO">
+                      <i id="bt-ges" class="icon-download-6 fs-25"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr ng-if="resultsP.length==0">
+                  <td colspan="12" class="center-align white" style="padding: 100px;">
+                    <div class="results-lupa">
+                      <i class="icon-search-4"></i>
+                    </div>
+                    <p class="text-center" ng-if="!check_option && (resultsP.length==0)">
+                      No hay PQRS Activos Disponibles
+                    </p>
+                    <p class="text-center" ng-if="check_option && (resultsP.length==0)">
+                      No hay PQRS Procesados Disponibles
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalhistorico" class="modal modal-trazapqr"
+    style="width: 70%!important; max-height: 100%;top: 5%!important;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding: 0;text-align: center;">
+            <div class="col s11">
+              <h5 class="white-text">HISTORICO</h5>
+            </div>
+            <div class="col s1">
+              <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalhistorico')"
+                  class="material-icons white-text">close</i>
+              </h5>
+            </div>
+          </div>
+          <div class="card-action" style="border-top: 0">
+            <div class="row dashboard-wrapper content-container">
+              <div class="timeline-page col s12">
+                <div class="timeline card-content white">
+                  <div class="timeline-milestone">
+                    <span class="milestone-title white-text">Descargas</span>
+                  </div>
+                  <div class="timeline-event" ng-repeat="item in listhistorico">
+                    <div class="timeline-content">
+                      <div class="content-box">
+                        <h6>{{item.PRESTADOR}} <small>{{item.AREF_FECHA_REGISTRO}}</small></h6>
+                        <p>Contrato : <b> {{item.CONTRATO}} </b></p>
+                        <p>Ubicación contrato : <b>{{item.UBI_CONTRANTO}}</b></p>
+                        <p>Responsable : <b> {{item.USUARIO}} </b></p>
+                        <p>
+                          Estado : <b>Descargado</b>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="timeline-badge timeline-badge1 white-text">
+                      <i class="zmdi zmdi-time"></i>
+                    </div>
+                  </div>
+                  <div class="text-center" ng-if="listhistorico.length==0">
+                    <img style="height: 40%;width: 40%;" src="images/undraw_No_data_re_kwbl.png">
+                    <p style="font-size: 20px;">No hay descargas realizadas</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .table-responsive {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background-color: white;
+    }
+
+    #tablePQRIPS_wrapper {
+      overflow: hidden;
+    }
+
+    #tablePQRIPSP_wrapper {
+      overflow: hidden;
+    }
+  </style>
+</div>

@@ -1,0 +1,173 @@
+<div id="modal_versionamiento" class="close-none newdesing_modal">
+    <style>
+        .ngdialog-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        #modal_versionamiento {
+            width: 75%;
+        }
+
+        .newdesing_modal {
+            margin: auto;
+        }
+
+        .newdesing_modal>div {
+            height: auto;
+            border-radius: 0;
+            background-color: #e5e6e6;
+        }
+
+        #modal_versionamiento figure.effect-zoe>figcaption>.file-field.input-field>.btn {
+            float: initial;
+            height: 100%;
+            width: 100%;
+            line-height: 2em;
+            border-radius: 0;
+        }
+
+        #modal_versionamiento figure.effect-zoe>figcaption {
+            padding: 0 !important;
+            height: 2em !important;
+        }
+
+        figure.effect-zoe.margin {
+            max-width: 100%;
+            min-width: 100%;
+            max-height: 50vh;
+            text-align: center;
+        }
+
+        figure.effect-zoe>img {
+            height: 50vh;
+            width: auto;
+            opacity: 1;
+            margin: auto;
+        }
+
+        #modal_versionamiento figure.effect-zoe:hover>i {
+            display: block !important;
+        }
+    </style>
+    <div class="col s12 m6 l6 card margin">
+        <div class="card-content" style="border-bottom: 5px solid #4CAF50">
+            <h5 style="max-width: 85%;">{{titulo}}</h5>
+            <div title="Cerrar" class="ngdialog-close" style="margin-left: auto;"></div>
+        </div>
+        <div class="card-action border-none">
+            <!-- ---------------------------------------------------------------------------Crear y editar notificaciones------------------------------------------------------------------------------ -->
+            <div ng-if="case == 0 || case == 1" class="row margin">
+                <div class="col l12 m12 s12 no-padding">
+                    <div class="margin row" style="max-height: 100%;overflow: auto;">
+                        <div class="col l5 m12 s12">
+                            <div class="input-field col no-padding margin">
+                                <div class="mgrid no-padding w-100 margin">
+                                    <figure class="effect-zoe margin default-background-dark">
+                                        <i ng-if="imgtag.src.length || modal.img_url.length" ng-click="delete_img()"
+                                            class="zmdi icon-trash-empty"
+                                            style="display: none;position:absolute;right: 0;top: 5px;color: black;z-index: 10;cursor: pointer;"></i>
+                                        <img id="imgModal"
+                                            ng-src="{{modal.img_url == null?'assets/images/versionamiento/null.jpg': modal.img_url != ''?modal.img_url:'assets/images/versionamiento/null.jpg'}}">
+                                        <figcaption class="default-background">
+                                            <div class="file-field input-field margin">
+                                                <div class="btn default-background">
+                                                    <p>Subir Imagen</p>
+                                                    <input id="fileModal" type="file" accept="image/*" select-ng-files
+                                                        ng-model="fileArray">
+                                                </div>
+                                            </div>
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                                <input ng-model="modal.img_url" id="lblImg" type="text"
+                                    class="border-none white input-text-new input-w-p w-100 m-b"
+                                    placeholder="Url de la imagen(624 x 870)" style="box-sizing: border-box;">
+                            </div>
+                        </div>
+                        <div class="col l7 m12 s12">
+                            <div class="col s12 no-padding label-new m-b">
+                                <input ng-model="modal.title" id="modal_title" type="text"
+                                    class="margin border-none white input-text-new input-w-p w-100">
+                                <label for="modal_title">Título</label>
+                            </div>
+                            <div class="col s6 no-padding label-new m-b">
+                                <input ng-model="modal.date_ori" id="modal_date_ori" type="date"
+                                    class="datepicker border-none input-date-new white">
+                                <label for="modal_date_ori">Fecha</label>
+                            </div>
+                            <div class="col s6 no-padding label-new m-b">
+                                <input ng-model="modal.hour" id="modal_hour" type="time"
+                                    class="datepicker border-none input-date-new white m-l">
+                                <label for="modal_hour">Hora</label>
+                            </div>
+                            <div class="col s12 no-padding label-new m-b">
+                                <input ng-model="modal.responsable" id="modal_responsable" type="text"
+                                    class="margin border-none white input-text-new input-w-p w-100"
+                                    placeholder="name 1, name 2, name 3">
+                                <label for="modal_responsable">Responsable</label>
+                            </div>
+                            <div class="col s12 no-padding label-new m-b" style="height: auto">
+                                <textarea ng-model="modal.description" id="modal_description" rows="5" cols="5"
+                                    class="materialize-textarea input-w-p border-none textarea-new white margin"
+                                    style="max-height: 6rem;min-height: 6rem;overflow: auto;"></textarea>
+                                <label for="modal_description">Descripción</label>
+                            </div>
+                            <div class="col s12 no-padding label-new m-b">
+                                <select ng-model="modal.area" id="modal_area" class="select-default-new white"
+                                    style="box-shadow: none;">
+                                    <option value="" ng-selected>{{case == 0?'Seleccionar':name_area}}</option>
+                                    <option value="{{a.codigo}}" ng-repeat="a in areas | orderBy:'nombre'">{{a.nombre}}
+                                    </option>
+                                </select>
+                                <label for="modal_area">Área Impacto</label>
+                            </div>
+                        </div>
+                    </div>
+                    <input class="waves-effect waves-light btn white-text default-background w-100" type="submit"
+                        ng-click="versionamiento_form(modal)"
+                        value="{{case == 0?'Guardar ':'Actualizar '}} Notificación">
+                </div>
+            </div>
+            <!-- ---------------------------------------------------------------------------Ver notificaciones------------------------------------------------------------------------------ -->
+            <div ng-if="case == 2" class="row margin">
+                <div class="col l12 m12 s12 no-padding">
+                    <div class="margin row" style="max-height: 100%;overflow: auto;">
+                        <div class="col l5 m12 s12 center-align">
+                            <img ng-src="{{notification.img_url}}" alt="imagen" style="max-height: 73vh;min-height: 50vh;">
+                        </div>
+                        <div class="col l7 m12 s12">
+                            <div class="col s12 no-padding label-new m-b h-auto">
+                                <label>Descripción:</label>
+                                <p ng-bind-html="notification.description" class="margin m-l"
+                                    style="max-height: 30vh;overflow: auto;"></p>
+                            </div>
+                            <div class="col s6 no-padding label-new m-b h-auto">
+                                <label>Fecha:</label>
+                                <p class="margin m-l">{{notification.date}}</p>
+                            </div>
+                            <div class="col s6 no-padding label-new m-b h-auto">
+                                <label>Hora:</label>
+                                <p class="margin m-l">{{notification.hour}}</p>
+                            </div>
+                            <div class="col s12 no-padding label-new m-b h-auto">
+                                <label>Responsables:</label>
+                                <b>
+                                    <div class="chip white" ng-repeat="res in (notification.responsable).split(',')">
+                                        {{res}}
+                                    </div>
+                                </b>
+                            </div>
+                            <div class="col s12 no-padding label-new m-b h-auto">
+                                <label>Area Impacto:</label>
+                                <b class="margin m-l">{{notification.name_area}}</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

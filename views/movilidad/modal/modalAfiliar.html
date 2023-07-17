@@ -1,0 +1,143 @@
+<style type="text/css">
+   .upper{
+      text-transform:uppercase;
+   }
+   .pointer{
+      cursor: pointer;
+   }
+</style>
+<div style="width: 80%; margin: 0 auto; padding-top: 50px;">
+   <div class="col s12 m6 l6 card">
+      <div class="ngdialog-close" style="float: right; font-size: 40px; padding-right: 20px;"></div>
+      <div class="card-content">
+         <h5>Registro del Afiliado</h5>
+      </div>
+      <div class="card-action">
+         <form id="dataNewAfiliado" ng-submit="subirInformacion()">
+            <div class="row">
+               <div class="col l12 m12 s12">
+                  <blockquote>
+                     En este formulario deberá ingresar los datos del empleado que desea afiliar con CajacopiEPS: Los campos marcados con * son <b>obligatorios</b>
+                  </blockquote>
+                  <div class="input-field col l3 m12 s12">
+                     <label for="tipo_documento" class="active" >Tipo de Documento (*)</label>
+                     <select class="select-chosen-eps" ng-model="new.tipo_documento" required>
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="CC">CEDULA DE CIUDADANÍA</option>
+                        <option value="TI">TARJETA DE IDENTIDAD</option>
+                        <option value="RC">REGISTRO CIVIL</option>
+                        <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                        <option value="PA">PASAPORTE</option>
+                        <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                        <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                        <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                        <option value="CD">CARNET DIPLOMÁTICO</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="documento" type="text" ng-model="new.documento" required minlength="6" maxlength="20" autocomplete="off" required>
+                     <label for="documento" class="">Número de Documento (*)</label>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l3 m12 s12">
+                     <input id="primer_nombre" type="text" ng-model="new.primer_nombre" class="upper" autocomplete="off" required>
+                     <label for="primer_nombre" class="">Primer Nombre (*)</label>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="segundo_nombre" type="text" ng-model="new.segundo_nombre" class="upper" autocomplete="off">
+                     <label for="segundo_nombre" class="">Segundo Nombre</label>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="primero_apellido" type="text" ng-model="new.primero_apellido" class="upper" autocomplete="off" required>
+                     <label for="primero_apellido" class="">Primer Apellido (*)</label>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="segundo_apellido" type="text" ng-model="new.segundo_apellido" class="upper" autocomplete="off">
+                     <label for="segundo_apellido" class="">Segundo Apellido</label>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l2 m12 s12">
+                     <label class="active">Género (*)</label>
+                     <select class="select-chosen-eps" ng-model="new.genero" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option value="F">FEMENINO</option>
+                        <option value="M">MASCULINO</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <label class="active">Departamento (*)</label>
+                     <select class="select-chosen-eps" ng-model="new.departamento" ng-change="filterMunicipio()" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option ng-repeat="dato in Departamentos" value="{{dato.CODIGO}}">{{dato.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <label class="active">Municipio (*)</label>
+                     <select class="select-chosen-eps" ng-model="new.municipio" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option ng-repeat="dato in Municipios" value="{{dato.CODIGO}}">{{dato.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="fecha_nacimiento" class="datepicker picker__input uppercase" type="date" ng-model="new.fecha_nacimiento" autocomplete="off" required>
+                     <label for="fecha_nacimiento" class="labelper">Fecha de Nacimiento (*)</label>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <blockquote>
+                     A continuación ingrese los datos de contacto del afiliado:
+                  </blockquote>
+                  <div class="input-field col l2 m12 s12">
+                     <label for="telefono" class="active">Teléfono</label>
+                     <input numbers-only mask='9999999' id="telefono" type="text" ng-model="new.telefono" autocomplete="off">
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <label for="celular" class="active">Teléfono Móvil</label>
+                     <input numbers-only mask='9999999999' id="celular" type="text" ng-model="new.celular" autocomplete="off" ng-required="(new.telefono === undefined || new.telefono =='')">
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <label for="correo" class="active">Correo Electrónico</label>
+                     <input id="correo" type="email" ng-model="new.correo" autocomplete="off">
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <label for="direccion" class="active">Dirección (*)</label>
+                     <input id="direccion" type="text" ng-model="new.direccion" placeholder="Click para digitar dirección" ng-click="regDireccion()" class="upper pointer" autocomplete="off" required>
+                  </div>
+               </div>
+               <div class="input-field col l12 m12 s12">
+                  <blockquote style="border-left: 5px solid #000000 !important">
+                     Adjunte el archivo comprimido (.ZIP) con los documentos requeridos (Máximo 7MB):
+                  </blockquote>
+               </div>
+               <input type="input" name="tipo_documento" ng-model="new.tipo_documento" style="display: none">
+               <input type="input" name="documento" ng-model="new.documento" style="display: none">
+               <div class="col s6 m6 l6" style="margin-top: 20px;">
+                  <div class="file-field input-field">
+                     <div class="btn">
+                        <span class="white-text">Archivo</span>
+                        <input id="files_afiliado" name="archivo" accept=".zip,.rar" type="file" required="">
+                     </div>
+                     <div class="file-path-wrapper">
+                        <input id="nombreadjunto" class="file-path validate" type="text" placeholder="Adjunte archivos en formato comprimido" ng-model="nombreadjunto" >
+                     </div>
+                  </div>
+                  <div class="file-field input-field">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Seleccione el asesor al cual realizará la solicitud
+                     </blockquote>
+                     <select id="idasesor" class="select-chosen-eps" ng-model="asesor_modal" name="asesor" required>
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="asesor in asesores track by $index" ng-value="asesor.CODIGO">{{asesor.NOMBRE}}</option>
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <br>
+            <center><input class="waves-effect waves-light btn white-text success" type="submit"></center>
+         </form>
+      </div>
+      <br>
+   </div>
+</div>

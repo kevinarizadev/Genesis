@@ -1,0 +1,245 @@
+
+<div class="row" >
+  <div class="col s12">
+    <div class="row section-header">
+      <h4 class="page-title">MESA DE CONTROL Movilidad  <span style="font-size:30px;cursor:pointer; position: absolute; right: 48px;" ng-click="openNav()"><i class="Small material-icons" ng-click="openNav()">pages</i></span></h4>
+    </div>
+  </div>
+
+  <!-- fullscream -->
+  <div id="mesa" class="overlay" style="overflow: scroll;">
+    <a href="javascript:void(0)" class="closebtn" ng-click="closeNav()">&times;</a>
+    <div class="overlay-content">
+      <div class="col s12" style="position: relative; top: -72px;">
+        <div class="row section-header">
+          <h4 class="page-title">MESA DE CONTROL Movilidad</h4>
+        </div>
+        <div class="col s12">
+          <div class="row">
+            <div class="col l4 m10 s12">
+              <div style="height: 78px; background: linear-gradient(to right, rgb(54, 122, 189) 50%, rgba(54, 122, 189, 0.8) 50%); box-shadow: 2px 2px 8px 0px darkgrey;">
+                <div class="col l5 m5 s5">
+                  <div><center><i style="font-size: 48px;margin-top: 15px;color: white;" class="large material-icons">done</i></center></div>
+                </div>
+                <div class="col l7 m7 s7" style="color: white;">
+                  <center><p style="color: white;"><strong style="font-family: unset;">Total</strong></p></center>
+                  <center><h5 class="ng-binding">{{casosconsolidados.total}}</h5></center>
+                </div>
+              </div>
+            </div>
+            <div class="col l4 m10 s12" style="color: white;">
+              <div style="/* background: linear-gradient(to right, rgb(251, 140, 0) 50%, rgba(255, 152, 0, 0.75) 50%); */height: 78px;background: linear-gradient(to right, rgb(243, 165, 48) 50%, rgba(243, 165, 48, 0.8) 50%);box-shadow: 2px 2px 8px 0px darkgrey;">
+                <div class="col l5 m5 s5">
+                  <div><center><i style="font-size: 48px; margin-top: 15px;" class="large material-icons">lock_open</i></center></div>
+                </div>
+                <div class="col l7 m7 s7" style="color: white;">
+                  <center><p><strong>Abiertos</strong></p></center>
+                  <center><h5 class="ng-binding">{{casosconsolidados.abiertos}}</h5></center>
+                </div>
+              </div>
+            </div>
+            <div class="col l4 m10 s12" style="color: white;">
+              <div style="height: 78px; background: linear-gradient(to right, rgb(136, 197, 66) 50%, rgba(136, 197, 66, 0.8) 50%); box-shadow: 2px 2px 8px 0px darkgrey;">
+                <div class="col l5 m5 s5">
+                  <div><center><i style="font-size: 48px; margin-top: 15px;" class="large material-icons">lock_outline</i></center></div>
+                </div>
+                <div class="col l7 m7 s7" style="color: white;">
+                  <center><p><strong>Cerrado</strong></p></center>
+                  <center><h5 class="ng-binding">{{casosconsolidados.cerrados}}</h5></center>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col l6 m12 s12" ng-init="pieincidencias()">
+          <div class="card charts">
+            <div class="card-content">
+              <h5>Incidencias {{mes}} de {{yyyy}}</h5>
+            </div>
+            <div class="card-action" style="height: 441px;">
+              <div id="pieincidencias"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col l6 m12 s12" ng-init="tendencia()">
+          <div class="card charts">
+            <div class="card-content">
+              <h5>Consolidado Semestral</h5>
+            </div>
+            <div class="card-action" style="height: 442px !important;">
+              <div id="tendencia"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col l8 m12 s12">
+          <div class="card charts">
+            <div class="col s1" style="position: relative; top: 10px; z-index: 1000;">
+              <img src="assets/images/live.gif" alt="live">
+            </div>
+            <div  class="card-content" style="padding-bottom: 10px; padding-top: 10px;">
+              <div class="row" style="margin-bottom: 0px;">
+                <div class="col s2" style="position: relative; top: 11px; left: -21px;">
+                  <img src="assets/images/live3.gif" alt="live">
+                </div>
+                <spam style="position: absolute; right: 27px; font-size: large; font-family: unset;">Total Acas del {{fechahoy | date : 'd/M/yyyy'}}: <strong style="font-size: x-large;">{{casosconsolidados.hoy}}</strong></spam>
+              </div>
+            </div>
+            <div class="card-action" style="height: 500px;">
+              <div id="tableroacasenvivo">
+                <div style="height: 500px;">
+                  <div class="input-field col l8 m12 s12" >
+                    <i class="material-icons prefix">search</i>
+                    <input id="with_icon" type="text" ng-model="filter" class="validate">
+                    <label for="with_icon">Filtro</label>
+                  </div>
+
+                  <div class="col s12" id="ecran" style="overflow:auto; height: 80%;">
+                    <table class="table responsive-table striped table-bordered" align="center" style="cursor: pointer !important;">
+                      <thead align="center">
+                        <tr>
+                          <!-- <td><strong>#</strong></td> -->
+                          <td><strong>CODIGO</strong></td>
+                          <td><strong>EMISOR</strong></td>
+                          <td><strong>CONCEPTO</strong></td>
+                          <td><strong>DESCRIPCION</strong></td>
+                          <td><strong>CIUDAD</strong></td>
+                          <td><strong>ASUNTO</strong></td>
+                          <td><strong>RECEPTOR</strong></td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="caso in casos | filter:filter">
+                          <!-- <td style="text-align:center;">{{$index + 1}}</td> -->
+                          <td style="text-align:center;">
+                            {{caso.numero}}</td>
+                            <td>{{caso.nombre}}</td>
+                            <td>{{caso.concepto}}</td>
+                            <td>{{caso.descripcion}}</td>
+                            <td>{{caso.ciudad}}</td>
+                            <td>{{caso.asunto}}</td>
+                            <td>{{caso.nombre_autoriza}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col l4 m12 s12">
+            <div class="card charts">
+              <div class="card-content">
+                <h5>Mis Solicitudes</h5>
+              </div>
+              <div class="card-action" style="height: 500px;">
+                <div id="tableroequipos">
+                  <!-- <div class="preloader-wrapper active" ng-hide="inactiveacaspropios">
+                    <div class="spinner-layer spinner-red-only">
+                      <div class="circle-clipper left">
+                        <div class="circle"></div>
+                      </div><div class="gap-patch">
+                        <div class="circle"></div>
+                      </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                      </div>
+                    </div>
+                  </div> -->
+                <!--  <div class="customer-logos" >-->
+                    <div class="slide l3 col s6" ng-repeat="inrt in infopertic" ng-hide="inactiveacaspropios2">
+                        <!--<div class="author-image" style="margin-left: 6px;">
+                          <img src="assets\images\thumbnail_avatar.jpg" alt="avatar profile" class="circle responsive-img">
+                        </div>-->
+                        <div>
+                          <div class="card">
+                            <div class="card-content" style="height: 180px;">
+                              <h6>{{inrt.NOMBRE}}</h6>
+                              <div class="divider"></div>
+                              <p style="margin-right: 50px; padding-top: 4px;"><strong>Abiertos:</strong>  <span style="color: white; border-radius: 12px; box-shadow: 2px 2px 3px 0px #ccc; right: 19% !important;" class="badge red">{{inrt.ACTIVO}}</span></p>
+                              <br>
+                              <p style="margin-right: 50px;"><strong>Cerrados:</strong>  <span style="color: white; border-radius: 12px; box-shadow: 2px 2px 3px 0px #ccc; right: 19% !important;" class="badge green">{{inrt.PROCESADO}}</span></p>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                <!--  </div>-->
+                  <!-- <div class="row">
+                    <div class="col s12" id="soporte1" style="margin-top: 10px; display:inline-block">
+                      <div ng-repeat="inrt in infopertic" class="col s3">
+                        <div class="author-image" style="margin-left: 6px;">
+                          <img src="assets\images\thumbnail_avatar.jpg" alt="avatar profile" class="circle responsive-img">
+                        </div>
+                        <div>
+                          <div class="card">
+                            <div class="card-content" style="height: 180px;">
+                              <h6>{{inrt.NOMBRE}}</h6>
+                              <div class="divider"></div>
+                              <p style="margin-right: 50px; padding-top: 4px;"><strong>Abiertos:</strong>  <span style="color: white; border-radius: 12px; box-shadow: 2px 2px 3px 0px #ccc; right: 19% !important;" class="badge red">{{inrt.ACTIVO}}</span></p>
+                              <br>
+                              <p style="margin-right: 50px;"><strong>Cerrados:</strong>  <span style="color: white; border-radius: 12px; box-shadow: 2px 2px 3px 0px #ccc; right: 19% !important;" class="badge green">{{inrt.PROCESADO}}</span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+  .body{
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+  }
+  .hide{display: none}
+  .overlay {
+    height: 0%;
+    width: 100%;
+    position: fixed;
+    z-index: 10000000;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgb(247, 247, 247);
+    overflow-y: hidden;
+    transition: 0.5s;
+  }
+  .overlay-content {
+    position: relative;
+    top: 5%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  .overlay .closebtn {
+    position: absolute;
+    top: 0px;
+    right: 45px;
+    font-size: 60px;
+    z-index: 1;
+  }
+  @media screen and (max-height: 450px) {
+    .overlay {overflow-y: auto;}
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+      font-size: 40px;
+      top: 15px;
+      right: 35px;
+    }
+    }</style>

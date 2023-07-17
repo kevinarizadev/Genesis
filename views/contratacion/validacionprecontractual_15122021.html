@@ -1,0 +1,1316 @@
+<div class="newdesing" style="position:relative">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Validación Precontractual</h5>
+      </li>
+      <li id="inicio2">
+        <button ng-show="mostrar_consulta==true" class=" btn waves-effect waves-light"
+          ng-click="limpiar();mostrar_consulta=false;consulta_validacion() "
+          style="background: #f1f3f4;border: 1px solid #1a2e63;color: #1a2e63;">
+          <i class=" icon-search-7"></i>Consulta </button>
+        <button ng-hide="mostrar_consulta==true" class=" btn waves-effect waves-light"
+          ng-click="limpiar();mostrar_consulta=true;"
+          style="background: #f1f3f4;border: 1px solid #1a2e63;color: #1a2e63;">
+          <i class="  icon-upload-1"></i>Subir Archivo de Validacion </button>
+      </li>
+    </ul>
+  </div>
+  <div ng-show="mostrar_consulta==true" ng-show="paso_validor==0">
+    <div class="row content-container elements mb-0" ng-show="paso_validor==0">
+      <div class="col m9 s12">
+        <div class="card contentcard" style="min-height: 541px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Subir Archivo de Validación</small></h5>
+            </div>
+          </div>
+          <!-- BUSQUEDA INICIAL -->
+          <div class="col s12 mt-20">
+            <div class="col s12" style="height: 394px;" ng-hide="json_contratos">
+              <div class="center">
+                <small>Favor Buscar Por Campo Valido!</small>
+              </div>
+              <div class="center">
+                <img src="assets/images/contratos/gestion_contratos/buscar.svg" style="width: 368px;">
+              </div>
+            </div>
+            <div class="col s12 scroll" style="height: 394px;" ng-show="json_contratos">
+              <div class="responsive">
+                <table class="table table-bordered striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">CONTRATO</th>
+                      <th style="text-align:center;">PRESTADOR</th>
+                      <th style="text-align:center;">REGIMEN</th>
+                      <th style="text-align:center;">CONCEPTO</th>
+                      <th style="text-align:center;">MOTIVO</th>
+                      <th style="text-align:center;">ASUNTO</th>
+                      <th style="text-align:center;">DEPARTAMENTO MUNICIPIO</th>
+                      <th style="text-align:center;">ESTADO</th> 
+                      <th style="text-align:center;">ACCION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in json_contratos">
+                      <td style="text-align:center; ">{{x.numero}}</td>
+                      <td style="text-align:center; ">{{x.nit}} {{x.ips}}</td>
+                      <td style="text-align:center; ">{{x.regimen}}</td>
+                      <td style="text-align:center; ">{{x.nombre}}</td>
+                      <td style="text-align:center; ">{{x.nombre_motivo}}</td>
+                      <td style="text-align:center; ">{{x.nombre_asunto}}</td>
+                      <td style="text-align:center; ">{{x.departamento}} {{x.municipio}}</td>
+                      <td style="text-align:center; " class="white-text" >
+                        <span ng-class="x.color" style="padding: 5px;">{{x.estado | uppercase}}</span>
+                      </td>
+                      <td style="text-align:center; ">
+                        <div class="tooltip">
+                          <i class="material-icons pointer" ng-click="mostrar_formulario_validador(x)">visibility</i>
+                          <span class="tooltiptext">Gestionar Contrato</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col s12" ng-hide="json_contratos">
+            <div class="col s12 bt ">
+              <button class=" btn waves-effect waves-light  right"
+              ng-click="mostrar_formulario_validador()"
+              style="background: #f1f3f4;border: 1px solid #1a2e63;color: #1a2e63;">
+              <i class="  icon-upload-1"></i>validación Nuevos Contratos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+       <!-- BUSQUEDA DE CONTRATO SIEMPRE DEBE ESTAR ACTIVA -->
+       <div class="col  m3 s12">
+        <div class="card contentcard" style="min-height: 543px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Busqueda de Contrato</small></h5>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12">
+              <form>
+                <div class="col s12 label-new no-p-l">
+                  <label for="numero">Número</label>
+                  <input id="numero" type="number" ng-model="busqueda.numero"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="regimen">Regimen</label>
+                  <select id="regimen" ng-model="busqueda.regimen" class="select-new gray-input  select-chosen-eps"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="">SELECCIONAR</option>
+                    <option value="KS">SUBSIDIADO</option>
+                    <option value="KC">CONTRIBUTIVO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="departamento">Estado</label>
+                  <select id="departamento" ng-model="busqueda.estado" class="select-new gray-input"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="A">ACTIVO</option>
+                    <option value="X">ANULADO</option>
+                    <option value="T">TERMINADO</option>
+                    <option value="L">LIQUIDADO</option>
+                    <option value="P">PROCESADO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador">NIT Prestador</label>
+                  <input id="prestador" ng-model="busqueda.prestador" autocomplete="off"
+                    ng-blur="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador">Prestador</label>
+                  <input id="prestador" ng-model="busqueda.prestador_nombre" autocomplete="off"
+                    ng-keyup="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                  <ul class="list-group" id="list-group-prestador"
+                    style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                    <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}"
+                      ng-repeat="x in json_prestador" ng-click="seleccion_opcion(x.CODIGO,x.NOMBRE)"> {{x.CODIGO}} -
+                      {{x.NOMBRE}}</li>
+                  </ul>
+                </div>
+                <div class="col s12 mt-20 center">
+                  <button class="waves-effect waves-light btn white-text light-blue" ng-click="buscar()">Buscar</button>
+                </div>
+                <div class="col s12 mt-20 center">
+                  <button ng-click="borrar_busqueda_contrato()"
+                  class="btn red waves-effect waves-light white-text">Borrar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row content-container elements mb-0"
+      ng-show="paso_validor==1">
+      <div class="row">
+        <!-- CONTENIDO -->
+        <div class="col m12 s12">
+          <div class="card contentcard" style="min-height: 80vh;">
+            <div class="col s12">
+              <div class="col s10 bb">
+                <h5><small>Subir Archivo de Producto</small></h5>
+              </div>
+              <div class="col s2">
+                <h5>
+                  <i class="font16 icon-reply-3 right" ng-click="limpiar()">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <!-- BUSQUEDA INICIAL -->
+            <div class="col s12 mt-20">
+              <div class="row">
+                <div class="col s12 m12 l6" >
+                  <div class="row    fila_diseño">
+                    <div class="col s6" ng-show="objeto=='N'">
+                      <div>
+                        <label for="prestador">Prestador</label>
+                        <input id="prestador" ng-model="v_ptercero_nombre" autocomplete="off"
+                          ng-keyup="buscar_listado_select()" type="text"
+                          class="margin border-none white input-w-p gray-input w-100">
+                        <ul class="list-group" id="list-group-prestador"
+                          style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                          <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}"
+                            ng-repeat="x in json_prestador" ng-click="seleccion_opcion(x.codigo,x.nombre,x)"> {{x.codigo}}
+                            {{x.nombre}}</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col s6" ng-show="objeto=='N'">
+                      <div>
+                        <label for="regimen">Regimen</label>
+                        <select id="regimen" ng-model="v_pregimen"
+                          class="gray-input  select-chosen-eps  select-input-new  select-new" style="padding-top: 0;">
+                          <option value="">SELECCIONAR</option>
+                          <option value="S">SUBSIDIADO</option>
+                          <option value="C">CONTRIBUTIVO</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="row fila_diseño">
+                    <div class="col s4">
+                      <div>
+                        <label for="v_tarifa">Tarifa Base</label>
+                        <select id="v_tarifa" ng-model="v_ptarifa"
+                          class="gray-input  select-chosen-eps  select-input-new  select-new" style="padding-top: 0;">
+                          <option value="" disabled>SELECCIONAR</option>
+                          <option ng-repeat="x  in listado_tarifas" value="{{x.codigo}}"> {{x.nombre}} </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s4">
+                      <div>
+                        <label for="regimen">Operador</label>
+                        <select id="regimen" ng-model="v_poperador"
+                          class="gray-input  select-chosen-eps  select-input-new  select-new" style="padding-top: 0;">
+                          <option value="" disabled>SELECCIONAR</option>
+                          <option value="S">SUMA</option>
+                          <option value="R">RESTA</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s4">
+                      <div> 
+                        <label for="tipo">{{v_poperador=='S'?'Incremento':'Disminución'}}</label>
+                        <input id="porcentaje" type="number" ng-model="v_pporcentaje"
+                          class="margin border-none white input-w-p gray-input w-100">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col s12 m12 l6" >
+                  
+                  <div class="row fila_diseño">
+                    <div class="col s12">
+                      <div class="col s12" style="border-bottom: 1pxsolid #e6e6e6; padding-left:0px;">
+                        <p class="title-1 foot4    white-text">Prestador</p>
+                      </div>
+                      <div class="col s12" style="border: 1px solid    gainsboro; height: 6em;"
+                        ng-show="infoContrato.codigo!=undefined">
+                        <h6 class="mb-0" ng-show="objeto == 'A'"><small><b>Regimen: </b>{{regimen_nombre}}</small>
+                        </h6>
+                        <h6 class="mb-0"><small><b>IPS: </b>{{infoContrato.codigo}} {{infoContrato.nombre}}</small>
+                        </h6>
+                        <h6 class="mt-0 mb-0"><small><b>UBI: </b>{{infoContrato.ubicacion}}</small><small><b> TEL: </b>{{infoContrato.telefono}}</small></h6>
+                        <h6 class="mt-0 mb-0"><small><b>DIR: </b>{{infoContrato.direccion}}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+             <div class="row">
+              <div class="col s12 m12 l6" style="height: 25em;overflow-y: auto;overflow-x: hidden;">
+                <table class="striped table-bordered">
+                  <thead>
+                    <tr style="position: sticky;top: 0;z-index: 9;background-color: white;">
+                      <th style="text-align:center;" >SERVICIOS HABILITADOS</th>
+                      <th style="text-align:center;" colspan="2" > <input id="buscar_ser_hab" ng-model="buscar_ser_hab" autocomplete="off"
+                         type="text" class="margin border-none white input-w-p gray-input w-100" placeholder="Filtrar"></th>
+                    </tr>
+                    <tr>
+                      <th style="text-align:center;">CLASIFICACION</th>
+                      <th style="text-align:center;">NOMBRE</th>
+                      <th  style="text-align:center;"> 
+                         <input type="checkbox" class="filled-in"
+                          ng-model="checktodos_ser" id="filled-in-box-producheck1"
+                          ng-change="eligir_ser_habilitacion(-1)" />
+                          <label for="filled-in-box-producheck1"></label> 
+                          
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in listar_ser_habilitacion  | filter: buscar_ser_hab">
+                      <td style="text-align:center;">{{x.Clasificacion}}</td>
+                      <td style="text-align:center;">{{x.Nombre}}</td>
+                      <td style="text-align:center;">
+                        <div class="tooltip">
+                          <input type="checkbox" ng-disabled="x.estado_nuevo==true" ng-model="x.estado" class="filled-in producheck" id="codmun{{x.Clasificacion}}"
+                            ng-change="eligir_ser_habilitacion(x.Clasificacion)" />
+                          <label for="codmun{{x.Clasificacion}}"></label>
+                          <span class="tooltiptext">Seleccionar</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col s12 m12 l6" style="height: 25em;overflow-y: auto;overflow-x: hidden;">
+                <table class="striped table-bordered">
+                  <thead>
+                    <tr style="position: sticky;top: 0;z-index: 9;background-color: white;">
+                      <th style="text-align:center;" >MUNICIPIO DE PRESTACIÓN</th>
+                      <th style="text-align:center;" colspan="2" > 
+                        <input id="buscar_mun" ng-model="buscar_mun" autocomplete="off"
+                        type="text" class="margin border-none white input-w-p gray-input w-100" placeholder="Filtrar">
+                      </th>
+                    </tr>
+                    <tr>
+                      <th style="text-align:center;">CODIGO</th>
+                      <th style="text-align:center;">DESCRIPCION</th>
+                      <th  style="text-align:center;"> <input type="checkbox" class="filled-in"
+                          ng-model="checktodos" id="filled-in-box-producheck"
+                          ng-change="eligir_cod_habilitacion(-1)" />
+                          <label for="filled-in-box-producheck"></label>
+                          
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in listar_cod_habilitacion  | filter: buscar_mun">
+                      <td style="text-align:center;">{{x.ubicacion}}</td>
+                      <td style="text-align:center;">{{x.nombre_ubicacion}}</td>
+                      <td style="text-align:center;">
+                        <div class="tooltip">
+                          <input type="checkbox" ng-model="x.estado" class="filled-in producheck" id="codmun{{x.ubicacion}}"
+                            ng-change="eligir_cod_habilitacion(x.ubicacion)" />
+                          <label for="codmun{{x.ubicacion}}"></label>
+                          <span class="tooltiptext">Seleccionar</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+             </div>
+             
+            <div class="row">
+              <div class="col s6">
+                <div class="pad-10">
+                  <form class="form">
+                    <div class="file-upload-wrapper" data-text="Subir Archivo">
+                      <input name="file-upload-field" id="AM" type="file" class="file-upload-field" value="">
+                    </div>
+                  </form>
+                </div>
+              </div>
+                <div class="col s6 mt-20" ng-hide='mostrar_guardar==false'>
+                  <div style="position: relative;text-align: center;" class="col s12">
+                    <a class="modal-action modal-close waves-effect waves-green btn" ng-click="guardar()">Guardar &
+                      Validar</a>
+                  </div>
+                </div>
+            </div>
+            
+            </div>
+          </div>
+        </div>
+        <!-- CONTENIDO -->
+      </div>
+    </div>
+    <div class="row content-container elements mb-0"  ng-show="paso_validor==2">
+      <div class="row">
+        <!-- CONTENIDO -->
+        <div class="col m12 s12">
+          <div class="card contentcard" style="min-height: 541px;">
+            <div class="row" style="margin: 0;padding-left: 1.5em;padding-right: 1.5em;">
+              <div class="col s4">
+                <h5><small>Resumen de Errores</small></h5>
+              </div>
+              <div class="col s3">
+                <h5 style="color: #03a9f4;"><small><i class=" icon-hospital"></i>{{lista_errores[0].Nit}}</small></h5>
+              </div>
+              <div class="col s3">
+                <h5 style="color: #56b949;"><small><i class="  icon-tasks"></i>{{lista_errores[0].Proceso}}</small></h5>
+              </div>
+              <div class="col s2">
+                <h5>
+                  <i class="font16 icon-reply-3 right" ng-click="limpiar()">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <!-- BUSQUEDA INICIAL -->
+            <div class="col s12 mt-20">
+              <div class="col s12">
+                <div class="row    fila_diseño">
+                  <div class="col s12" style="margin-bottom: 1em;">
+                    <button ng-show="mostrar_consulta==true" class=" btn waves-effect waves-light"
+                    ng-click="descarga(1,lista_errores,'Errores',true)"
+                    style="background: #f1f3f4;border: 1px solid #56b949;color: #1a2e63;">
+                    <i class="icon-file-excel"></i>CSV </button>
+                    <!-- <button ng-show="mostrar_consulta==true" class=" btn waves-effect waves-light"
+                    ng-click="descarga(2,lista_errores,'Errores',true)"
+                    style="background: #f1f3f4;border: 1px solid #ff4350;color: #1a2e63;">
+                    <i class="  icon-file-pdf"></i>PDF</button>
+                    <button ng-show="mostrar_consulta==true" class=" btn waves-effect waves-light"
+                    ng-click="descarga(3,lista_errores,'Errores',true)"
+                    style="background: #f1f3f4;border: 1px solid #03a9f4;color: #1a2e63;">
+                    <i class=" icon-doc-text"></i>PLANO</button> -->
+                  </div>
+                  <div class="col s12" style="    overflow: auto;height: 23em;">
+                    <table id="error" class="table  table-bordered  table-striped striped" style="height: auto;">
+                      <thead>
+                        <tr>
+                          <th style="text-align:center;">DESCRIPCION</th>
+                          <th style="text-align:center;">CODIGO</th>
+                          <th style="text-align:center;">NOMBRE</th>
+                          <th style="text-align:center;">FILA</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="r in lista_errores  track by $index" ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                          <td style="text-align:left;"> {{r.Error}} </td>
+                          <td style="text-align:center;"> {{r.Dato_errado}} </td>
+                          <td style="text-align:left;"> {{(r.Descripcion_dato_errado==null||r.Descripcion_dato_errado=='')?'DATO NO VALIDO':r.Descripcion_dato_errado}} </td>
+                          <td style="text-align:center;"> {{r.Fila}} </td> 
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- CONTENIDO -->
+      </div>
+    </div>
+    <div class="row content-container elements mb-0"  ng-show="paso_validor==3">
+      <div class="row">
+        <div class="col m12 s12">
+          <div class="card contentcard" style="min-height: 541px;">
+            <div class="row" style="margin: 0;padding-left: 1.5em;padding-right: 1.5em;">
+              <div class="col s4">
+                <h5><small>Resumen del Archivo</small></h5>
+              </div>
+              <div class="col s3">
+                <h5 style="color: #03a9f4;"><small><i
+                      class=" icon-hospital"></i>{{listado_datos_validos[0].nit}}</small></h5>
+              </div>
+              <div class="col s3">
+                <h5 style="color: #56b949;"><small><i
+                      class="  icon-tasks"></i>{{listado_datos_validos[0].proceso}}</small></h5>
+              </div>
+              <div class="col s2">
+                <h5>
+                  <i class="font16 icon-reply-3 right" ng-click="limpiar()">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="col s12 mt-20">
+              <div class="col s12" style="height: 394px;">
+                <div class="row    fila_diseño">
+                  <div class="col s12" style="    overflow: auto;max-height: 29em;">
+                    <table class="table  table-bordered  table-striped striped">
+                      <thead>
+                        <tr>
+                          <th style="text-align:center;" rowspan="2">TIPO</th>
+                          <th style="text-align:center;" rowspan="2">PRODUCTO</th>
+                          <th style="text-align:center;" rowspan="2">DESCRIPCIÓN</th>
+                          <th style="text-align:center;" rowspan="2">SUB CATEGORIA</th>
+                          <th style="text-align:center;" rowspan="1" colspan="4">DATOS DE ARCHIVOS</th>
+                          <th style="text-align:center;" rowspan="1" colspan="3">DATOS CALCULADOS</th>
+                        </tr>
+                        <tr>
+                          <th style="text-align:center;">TARIFA</th>
+                          <th style="text-align:center;">OPERADOR</th>
+                          <th style="text-align:center;">PORCENTAJE</th>
+                          <th style="text-align:center;">VALOR</th>
+
+                          <th style="text-align:center;">TARIFA</th>
+                          <th style="text-align:center;">OPERADOR</th>
+                          <th style="text-align:center;">PORCENTAJE</th>
+                          <th style="text-align:center;">OBSERVACIÓN</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="r in listado_datos_validos | filter: buscar_tabla2  track by $index"
+                         >
+
+
+                          <td style="text-align:center;"> {{r.tipo_producto}} </td>
+                          <td style="text-align:center;"> {{r.producto}}</td>
+                          <td style="text-align:center;"> {{r.nombre_producto}} </td>
+                          <td style="text-align:center;"> {{r.subcategoria}}</td>
+                          <td style="text-align:center;"> {{r.nombre_tarifa}} </td>
+                          <td style="text-align:center;"> {{r.operador_orig}} </td>
+                          <td style="text-align:center;"> {{r.porcentaje}} </td>
+                          <td style="text-align:center;">
+                            {{(r.vr_coincide_tarifa=='S')?r.vr_calculado:r.valor}} </td>
+                            <td style="text-align:center;"> 
+                                {{(r.vr_coincide_tarifa=='S')?'':r.nombre_tarifa}} 
+                            </td>
+                            <td style="text-align:center;">
+                                 {{(r.vr_coincide_tarifa=='S')?'':r.operador}}
+                               </td>
+                            <td style="text-align:center;"> 
+                                {{(r.vr_coincide_tarifa=='S')?'':r.porcentaje_calculado}} 
+                            </td>
+                            <td style="text-align:center; font-weight: 400;"  class="color_rojo" ng-hide="(r.vr_coincide_tarifa=='S')"> 
+                              {{(r.vr_coincide_tarifa=='S')?'':"EL PORCENTAJE DIGITADO NO CORRESPONDE AL VALOR Y TARIFA PARA EL PRODUCTO"}}
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-hide="mostrar_consulta==true">
+    <div class="row content-container elements mb-0" ng-show="listado_datos.length==0">
+      <div class="row">
+        <!-- CONTENIDO -->
+        <div class="col m12 s12">
+          <div class="card contentcard" style="min-height: 541px;">
+            <div class="col s12 bb">
+              <div class="col s4">
+                <h5><small>Consulta de Archivos Validados</small></h5>
+              </div>
+              <div class="col s7 m-t">
+                <input id="buscar_tabla" type="text" placeholder="Buscar" ng-model="buscar_tabla"
+                  class="margin border-none white input-w-p gray-input w-100">
+              </div>
+            </div>
+
+
+            <div class="col s12 mt-20">
+              <div class="col s12" style="height: 394px;">
+
+                <div class="row" ng-hide="lista_archivos.length==0">
+                  <div class="col s12" style="overflow: auto;max-height: 30em;">
+                    <table class="table  table-bordered  table-striped striped">
+                      <thead>
+                        <tr>
+                          <th style="text-align:center;" ng-click="sortBy('regimen')">
+                            REGIMEN
+                            <i ng-show="propertyName=='regimen'"
+                              ng-class="{'icon-sort-name-down':(reverse==true),'  icon-sort-name-up':(reverse==false)}"></i>
+                          </th>
+                          <th style="text-align:center;" ng-click="sortBy('nombre_ips')">
+                            IPS
+                            <i ng-show="propertyName=='nombre_ips'"
+                              ng-class="{'icon-sort-name-down':(reverse==true),' icon-sort-name-up':(reverse==false)}"></i>
+                          </th>
+                          <th style="text-align:center;" ng-click="sortBy('fecha')">
+                            FECHA
+                            <i ng-show="propertyName=='fecha'"
+                              ng-class="{'icon-sort-name-down':(reverse==true),'  icon-sort-name-up':(reverse==false)}"></i>
+                          </th>
+                          <th style="text-align:center;" ng-click="sortBy('proceso')">
+                            PROCESO
+                            <i ng-show="propertyName=='proceso'"
+                              ng-class="{'icon-sort-number-down':(reverse==true),' icon-sort-number-up':(reverse==false)}"></i>
+                          </th>
+                          <th style="text-align:center;" ng-click="sortBy('proceso')">
+                            ESTADO
+                            <i ng-show="propertyName=='estado_registro'"
+                              ng-class="{'icon-sort-number-down':(reverse==true),' icon-sort-number-up':(reverse==false)}"></i>
+                          </th>
+                            <th style="text-align:center;" ng-click="sortBy('proceso')">
+                            ACCION
+                          </th>
+
+                          <th style="text-align:center;"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="r in lista_archivos | filter: buscar_tabla | orderBy:propertyName:reverse"
+                          ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                          <td style="text-align:center;">{{r.regimen}} </td>
+                          <td style="text-align:center;"> {{r.nit}}-{{r.nombre_ips}} </td>
+                          <td style="text-align:center;"> {{r.fecha}} {{r.hora}}</td>
+                          <td style="text-align:center;"> {{r.proceso}} </td>
+                           <td style="text-align:center;">  {{r.estado_registro=='PR'?'NO DISPONIBLE':'DISPONIBLE'}} </td>
+                           <td style="text-align:center;"> {{r.accion=='A'?'ADICION':'NUEVO'}} </td>
+                          <td style="text-align:center;" ng-click="p_listar_produc_validado(r)"> <i
+                              class="icon-eye-6"></i></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="row" ng-show="lista_archivos.length==0">
+                  <div class="col s12 center">
+                    <img src="assets/images/contratos/gestion_contratos/modificaciones/nada.svg"
+                            style="max-width: 55%;" >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- CONTENIDO -->
+      </div>
+    </div>
+    <div class="row content-container elements mb-0" ng-hide="listado_datos.length==0">
+      <div class="row">
+        <!-- CONTENIDO -->
+        <div class="col m12 s12">
+          <div class="card contentcard" style="min-height: 541px;">
+            <div class="row" style="margin: 0;padding-left: 1.5em;padding-right: 1.5em;">
+              <div class="col s10">
+                <h5><small>Resumen del Archivo</small></h5>
+              </div>
+              <div class="col s2">
+                <h5>
+                  <i class="font16 icon-reply-3 right" ng-click="listado_datos.length=0">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="s12">
+              <div class="row" style="padding-left: 1.5em;">
+                <div class="col l3 s12">
+                  <h6>
+                    <strong> <i class="icon-box"></i>REGIMEN:</strong>
+                    {{seleccionado.regimen}}
+                  </h6>
+                </div>
+                <div class="col l9 s12">
+                  <h6>
+                    <strong><i class="icon-hospital"></i> IPS:</strong>
+                    {{seleccionado.nit}} {{seleccionado.nombre_ips}}
+                  </h6>
+                </div>
+                <div class="col l3 s12">
+                  <h6>
+                    <strong> <i class="icon-tasks"></i>PROCESO:</strong>
+                    {{seleccionado.proceso}}
+                  </h6>
+                </div>
+                <div class="col l5 s12">
+                  <h6>
+                    <strong> <i class="icon-calendar"></i>FECHA:</strong>
+                    {{seleccionado.fecha}} {{seleccionado.hora}}
+                  </h6>
+                </div>
+                <div class="col l3 s6">
+                  <h6>
+                    <strong> <i class="  icon-ok-outline"></i>ESTADO:</strong>
+                    <strong style="    color: #56b949;
+                    font-weight: 900;">VALIDADO</strong>
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div class="col s12 bb">
+              <div class="col s7" style="margin: 0 0 1em 1em;">
+                <input id="buscar_tabla2" type="text" placeholder="Buscar" ng-model="buscar_tabla2"
+                  class="margin border-none white input-w-p gray-input w-100">
+              </div>
+            </div>
+            <div class="col s12 mt-20">
+              <div class="col s12" style="height: 394px;">
+                <div class="row    fila_diseño">
+                  <div class="col s12" style="    overflow: auto;max-height: 22em;">
+                    <table class="table  table-bordered  table-striped striped">
+                      <thead>
+                        <tr>
+                          <th style="text-align:center;" rowspan="2">TIPO</th>
+                          <th style="text-align:center;" rowspan="2">PRODUCTO</th>
+                          <th style="text-align:center;" rowspan="2">DESCRIPCION</th>
+                          <th style="text-align:center;" rowspan="2">SUB CATEGORIA</th>
+                          <th style="text-align:center;" rowspan="1" colspan="4">DATOS DE ARCHIVOS</th>
+                          <th style="text-align:center;" rowspan="1" colspan="3">DATOS CALCULADOS</th>
+                          <th style="text-align:center;" rowspan="2">OBSERVACION</th>
+
+                        </tr>
+                        <tr>
+                          <th style="text-align:center;">TARIFA</th>
+                          <th style="text-align:center;">OPERADOR</th>
+                          <th style="text-align:center;">PORCENTAJE</th>
+                          <th style="text-align:center;">VALOR</th>
+
+                          <th style="text-align:center;">TARIFA</th>
+                          <th style="text-align:center;">OPERADOR</th>
+                          <th style="text-align:center;">PORCENTAJE</th>
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="r in listado_datos | filter: buscar_tabla2  track by $index">
+
+
+                          <td style="text-align:center;"> {{r.tipo_producto}} </td>
+                          <td style="text-align:center;"> {{r.producto}}</td>
+                          <td style="text-align:center;"> {{r.nombre_producto}} </td>
+                          <td style="text-align:center;"> {{r.subcategoria}}</td>
+                          <td style="text-align:center;"> {{r.nombre_tarifa}} </td>
+                          <td style="text-align:center;"> {{r.operador_orig}} </td>
+                          <td style="text-align:center;"> {{r.porcentaje}} </td>
+                          <td style="text-align:center;">
+                            {{(r.vr_coincide_tarifa=='S')?r.vr_calculado:r.valor}} </td>
+                            <td style="text-align:center;"> 
+                                {{(r.vr_coincide_tarifa=='S')?'':r.nombre_tarifa}} 
+                            </td>
+                            <td style="text-align:center;">
+                                 {{(r.vr_coincide_tarifa=='S')?'':r.operador}}
+                               </td>
+                            <td style="text-align:center;"> 
+                                {{(r.vr_coincide_tarifa=='S')?'':r.porcentaje_calculado}} 
+                            </td>
+                            <td style="text-align:center; font-weight: 400;" class="color_rojo" ng-hide="(r.vr_coincide_tarifa=='S')"> 
+                              {{(r.vr_coincide_tarifa=='S')?'':"EL PORCENTAJE DIGITADO NO CORRESPONDE AL VALOR Y TARIFA PARA EL PRODUCTO"}}
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- CONTENIDO -->
+      </div>
+    </div>
+  </div>
+  <style>
+    .bt {
+    padding: 1em !important;
+    border-top: 1px solid #d2d2d2;
+    }
+    .color_rojo{
+      background-color: red;
+      color:#fff
+    }
+    .color_verde{
+      color:green;
+    }
+    .rojo_tr {
+      background: #ff434c52 !important;
+    }
+
+    .icono_etiqueta {
+      right: 1em;
+      position: absolute;
+    }
+
+    .etiquita {
+      background: #e5e6e6;
+      border-radius: 1em;
+      padding-left: 1em;
+      position: relative;
+      margin: 1px;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .seleccion_contrato_t {
+      padding: 0.5em;
+      margin: 0px;
+    }
+
+    .seleccion_contrato {
+      margin: 0px;
+      padding: 0.5em 1.5em;
+      background: #e0e0e0;
+    }
+
+    .tabactiva {
+      background: #e5e6e6;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .verde {
+      background-color: #8BC34A !important;
+    }
+
+    .rojo {
+      background-color: #FF5722 !important;
+    }
+
+    .amarillo {
+      background-color: #FFC107 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 540px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+    .card-divider {
+      color: #FFC107;
+      width: 100%;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    div.columnas {
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 128px;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    }
+
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input.input-text-new {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .tab-color {
+      background: #1565c033;
+    }
+
+    .tab-no-color {
+      background: #c5c7c7a6;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    div.columnas {
+      /* border-bottom: 1px solid #e5e6e6; */
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::before,
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::after {
+      right: -77px;
+      border-top-left-radius: .25rem !important;
+      border-bottom-left-radius: .25rem !important;
+    }
+
+    .content-box {
+      background-color: #f7f7f7;
+      border-bottom-right-radius: .50rem !important;
+      border-bottom-left-radius:
+        .50rem !important;
+      border-bottom: 30px solid #ebecec !important;
+      padding-top: 37px !important;
+      box-shadow:
+        none !important;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height:
+        43px;
+      background: #4daf7c;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* disabled */
+    .file-upload-wrapper2 {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper2:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper2:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height: 43px;
+      background: #919292;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper2:hover:before {
+      background: #919292;
+    }
+
+    .file-upload-wrapper2 input {
+      opacity: 0;
+      position:
+        absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: not-allowed !important;
+      width: 100%;
+    }
+  </style>
+</div>

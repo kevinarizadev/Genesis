@@ -1,0 +1,536 @@
+<div style="background: #fff;">
+    <div id="my_menu" class="row section-header" style="background: #9897e81f;margin-bottom: 0">
+        <div class="col l12">
+            <ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                <li>
+                    <h5 style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                    Registro de Afiliacion de Nacimientos</h5>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row content-container server" ng-if="Parte1">
+        <div class="col s12 m12 l12">
+            <div class="row margin">
+                <div class="card-content" style="box-shadow: none;border: 0px solid #ebebf5; background: #fff;">
+                    <div class="card-content clearfix">
+
+                        <div class="col s12 l12 m12">
+                            <div class="row">
+                                <div class="col l12 m12 s12">
+                                    <h5>
+                                        <i class="icon-doc-text left"></i> Consultar Afiliado
+                                    </h5>
+                                </div>
+                            </div> 
+                            <div class="row"> 
+                                <div class="col s12">
+                                    <form ng-submit="Consultar()">
+                                        <div class="col s12 m5 l5">
+                                            <label for="simple-select">Tipo Documento Cabeza</label>
+                                            <select id="simple-select" ng-model="info.type" material-select watch ng-change="CambioDocumento()">
+                                                <option value="">SELECCIONAR</option>
+                                                <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Form.Tipo_Doc" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col s12 m4 l4">
+                                            <label for="simple-select">Número Documento Cabeza </label>
+                                            <input id="normal" type="text" class="validate" ng-model="info.numero" ng-change="CambioDocumento()">
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn" type="submit" style="margin-top: 2em;">  <i class="icon-search-7"></i> Buscar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row" ng-if="CargueCabeza">
+                                <div class="col s12">
+                                    <p style="text-align: center;font-size: 20px;color: red;"> <strong>Subir Documento
+                                        De
+                                    Identidad Del Cabeza</strong> </p>
+                                    <div class="col s8 offset-s1">
+                                        <label for="simple-select">Tipo Documental</label>
+                                        <select id="simple-select" material-select watch ng-model="TipoDocumentalCabeza">
+                                            <option value="0">SELECCIONAR</option>
+                                            <option ng-repeat="l in listadodocumento" value="{{l.codigo}}">{{l.nombre}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col s8 offset-s1">
+                                        <label for="simple-select">Tipo Documento</label>
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <span class="white-text">Archivo</span>
+                                                <input type="file" id="adjuntocab" accept=".pdf,.jpg" required>
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input id="nombreadjunto" class="file-path" type="text" placeholder="Seleccione Archivo" ng-model="NombreAbjuntoCabeza">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col s2">
+                                        <button ng-click="SubirSoporteCabeza(TipoDocumentalCabeza)" class="btn btn-floating white-text" type="submit" style="margin-top: 3em;">
+                                            <i style="position: relative;font-size: 25px;"
+                                            class="material-icons prefix">save_alt</i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" ng-hide="OcultarTablaInformacion">
+                                    <div class="col s12">
+                                        <div class="col s10 offset-s1 ">
+                                            <table class="responsive-table striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="text-align:center" data-field="Order ID">TIPO DOCUMENTO
+                                                        </th>
+                                                        <th style="text-align:center" data-field="Product">DOCUMENTO</th>
+                                                        <th style="text-align:center" data-field="Buyer">NOMBRE COMPLETO
+                                                        </th>
+                                                        <th style="text-align:center" data-field="Buyer">GENERO</th>
+                                                        <th style="text-align:center" data-field="Buyer">FECHA NACIMIENTO
+                                                        </th>
+                                                        <th style="text-align:center" data-field="Buyer">REGIMEN
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="x in respuesta">
+                                                        <td style="text-align:center">{{x.tipo_documento}}</td>
+                                                        <td style="text-align:center">{{x.documento}}</td>
+                                                        <td style="text-align:center">{{x.nombre_completo}}</td>
+                                                        <td style="text-align:center">{{x.nombre_genero}}</td>
+                                                        <td style="text-align:center">{{x.fecha_nacmiento}}</td>
+                                                        <td style="text-align:center">{{x.regimen}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" ng-hide="OcultarTipoReportes">
+                                    <div class="col s12">
+                                        <div class="col s10 offset-s1" ng-hide="TipoReporte">
+                                            <label for="simple-select">Tipo Reporte</label>
+                                            <select id="simple-select" ng-model="info.reportes" material-select watch>
+                                                <option value="0">SELECCIONAR</option>
+                                                <option value="N">NACIMIENTO</option>
+                                                <!--  <option value="I">INCOSISTENCIA</option> !-->
+                                            </select>
+                                        </div>
+                                        <div class="col s10 offset-s1" ng-hide="TipoReporte2">
+                                            <label for="simple-select">Tipo Reporte</label>
+                                            <select id="simple-select" ng-model="info.reportes2" material-select watch>
+                                                <option value="NE">NO EXISTE</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col s12">
+                                        <div class="col s10"></div>
+                                        <div class="input-field col m12 s12 right-align">
+                                            <button ng-disabled="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Siguiente('0')"> <i class="icon-forward-outline"></i>Siguiente</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row content-container server" ng-if="Parte2">
+            <div class="col s12 m12 l12">
+                <div class="row margin">
+                    <div class="card-content" style="box-shadow: none;border: 0px solid #ebebf5; background: #fff;">
+                        <div class="card-content clearfix">
+                            <div class="col s12 m12 s12">
+                                <div class="row">
+                                    <div class="col l12 m12 s12">
+                                        <h5>
+                                            <i class="icon-doc-text left"></i>{{nombre}}
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="row" ng-if="Nacimiento">
+                                    <div class="col s12">
+                                        <div class="input-field">
+                                            <div class="input-list input-form">
+                                                <div class="input-list input-view-column input-padding">
+                                                    <label style=" margin-top: -20px;">Tipo de Documento</label>
+                                                    <select class="select-chosen-eps" ng-model="datos.tipodocumento" ng-change="AgregarNombre(datos.tipodocumento)">
+                                                        <option value="" selected>SELECCIONAR</option>
+                                                        <option value="RC">REGISTRO CIVIL</option>
+                                                        <option value="CN">CERTIFICADO NACIDO VIVO</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="input-list input-view-column">
+                                                    <input id="normal8" ng-model="datos.numero" type="text" class="validate">
+                                                    <label for="normal8" class="">Número</label>
+                                                </div>
+                                            </div>
+                                            <div class="input-list input-form">
+                                                <div class="input-list input-view-column input-padding">
+                                                    <input id="normal1" type="text" ng-model="datos.primer_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" ng-disabled="Campos">
+                                                    <label for="normal1" class="">1er Nombre</label>
+                                                </div>
+                                                <div class="input-list input-view-column">
+                                                    <input id="normal3" type="text" ng-model="datos.segundo_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" ng-disabled="Campos">
+                                                    <label for="normal3" class="">2do Nombre</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-list input-form">
+                                                <div class="input-list input-view-column input-padding">
+                                                    <input id="normal2" ng-model="datos.primer_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" ng-disabled="Campos">
+                                                    <label for="normal2" class="">1er Apellido</label>
+                                                </div>
+                                                <div class="input-list input-view-column">
+                                                    <input id="normal4" ng-model="datos.segundo_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" ng-disabled="Campos">
+                                                    <label for="normal4" class="">2do Apellido</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-list input-form">
+                                                <label style="margin-top: -20px;">Fecha Nacimiento</label>
+                                                <div class="input-list input-view-column">
+                                                    <i class="material-icons prefix">perm_contact_calendar</i>
+                                                    <input ng-model="datos.nacimiento" type="date" id="datepicker" max="{{maxDate}}" class="datepicker" />
+                                                </div>
+
+                                                <div class="input-list input-view-column" ng-init="obtenerSexo()">
+                                                    <label style="margin-top: -20px;">Género</label>
+                                                    <select class="select-chosen-eps" id="sexoBeneficiario" ng-model="datos.sexo">
+                                                        <option value="" selected>SELECCIONAR</option>
+                                                        <option value="M">MASCULINO</option>
+                                                        <option value="F">FEMENINO</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="input-list input-form">
+                                                <div class="input-list input-view-column">
+                                                    <div class="">
+                                                        <label style="margin-top: -20px;">Celular</label>
+                                                        <input pattern="\d*" maxlength="10" minlength="7" ng-model="datos.telefono" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                                    </div>
+                                                </div>
+                                                <div class="input-list input-view-column">
+                                                    <div class="">
+                                                        <label style="margin-top: -20px;">Correo Electronico</label>
+                                                        <input id="normal1" type="email" ng-model="datos.correo" validate style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="input-list input-form">
+                                                <div class="input-list input-view-column">
+                                                    <div class="">
+                                                        <label style="margin-top: -20px;">Dirreción</label>
+                                                        <input id="normal1" type="text" ng-model="datos.dirrecion" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="tooltip">
+                                                    <label ng-click="AbrirModalDireccion()">
+                                                        <i class="material-icons"  style="cursor: pointer !important; color: #f50000;">info</i></label>
+                                                        <span class="tooltiptext">Click Para Digitar La Direccion</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col s12 m12 l12 right-align">
+                                            <button ng-disabled="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Regresar('0')"> <i class=" icon-reply-outline"></i>Regresar</button>
+                                            <button ng-disabled="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Siguiente('1')"> <i class="icon-forward-outline"></i>Siguiente</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-if="AfliadoNoExiste">
+                                        <div class="col s12">
+                                            <div class="input-field">
+                                                <div class="input-list input-form">
+                                                    <div class="input-list input-view-column input-padding">
+                                                        <input id="normal1" type="text" ng-model="datos.primer_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                        <label for="normal1" class="">1er Nombre</label>
+                                                    </div>
+                                                    <div class="input-list input-view-column">
+                                                        <input id="normal3" type="text" ng-model="datos.segundo_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                        <label for="normal3" class="">2do Nombre</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-list input-form">
+                                                    <div class="input-list input-view-column input-padding">
+                                                        <input id="normal2" ng-model="datos.primer_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                        <label for="normal2" class="">1er Apellido</label>
+                                                    </div>
+                                                    <div class="input-list input-view-column">
+                                                        <input id="normal4" ng-model="datos.segundo_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                        <label for="normal4" class="">2do Apellido</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-list input-form">
+                                                    <div class="input-list input-view-column input-padding">
+                                                        <label style=" margin-top: -20px;">Tipo de Documento</label>
+                                                        <select class="select-chosen-eps" ng-model="datos.tipodocumento">
+                                                            <option value="" selected>SELECCIONAR</option>
+                                                            <option value="CC">CEDULA DE CIUDADANÍA</option>
+                                                            <option value="TI">TARJETA DE IDENTIDAD</option>
+                                                            <option value="RC">REGISTRO CIVIL</option>
+                                                            <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                                                            <option value="PA">PASAPORTE</option>
+                                                            <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                                            <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                                                            <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                                                            <option value="CD">CARNET DIPLOMÁTICO</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="input-list input-view-column">
+                                                        <input id="normal8" ng-model="datos.numero" type="text" class="validate">
+                                                        <label for="normal8" class="">Número</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-list input-form">
+                                                    <div class="input-list input-view-column">
+                                                        <i class="material-icons prefix">perm_contact_calendar</i>
+                                                        <input ng-model="datos.nacimiento" type="date" id="datepicker" class="datepicker" />
+                                                    </div>
+
+                                                    <div class="input-list input-view-column" ng-init="obtenerSexo()">
+                                                        <label style="margin-top: -20px;">Género</label>
+                                                        <select class="select-chosen-eps" id="sexoBeneficiario" ng-model="datos.sexo">
+                                                            <option value="" selected>SELECCIONAR</option>
+                                                            <option value="M">MASCULINO</option>
+                                                            <option value="F">FEMENINO</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-list input-form">
+                                                    <div class="s12 input-list input-form">
+                                                        <div class="input-list input-view-column">
+                                                            <div class="" ng-init="obtenerSexo()">
+                                                                <label style="margin-top: -20px;">Departamento</label>
+                                                                <select class="select-chosen-eps" ng-model="datos.departamento" ng-change="BuscoMunicipio(datos.departamento)">
+                                                                    <option value="" selected="">SELECCIONAR</option>
+                                                                    <option ng-repeat="d2 in Depto" ng-value="d2.CODIGO">
+                                                                    {{d2.NOMBRE}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-list input-view-column">
+                                                            <div class="">
+                                                                <label style="margin-top: -20px;">Municipio</label>
+                                                                <select class="select-chosen-eps" ng-model="datos.municipio">
+                                                                    <option value="" selected="">SELECCIONAR</option>
+                                                                    <option ng-repeat="m in Mun" ng-value="m.CODIGO">
+                                                                    {{m.NOMBRE}}</option>
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-list input-view-column">
+                                                            <div class="">
+                                                                <label style="margin-top: -20px;">Barrio</label>
+                                                                <input type="text" ng-model="datos.barrio" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-list input-view-column">
+                                                            <div class="">
+                                                                <label style="margin-top: -20px;">Dirrecion</label>
+                                                                <input id="normal1" type="text" ng-model="datos.dirrecion" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tooltip">
+                                                            <label ng-click="AbrirModalDireccion()"><i
+                                                                class="material-icons">info</i></label>
+                                                                <span class="tooltiptext">Click Para Digitar La Direccion</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col s12 m12 s12 right-align">
+                                                <button ng-disabled="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Regresar('0')">  <i class=" icon-reply-outline"></i> Regresar</button>
+                                                <button ng-disabled="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Siguiente('1')">  <i class="icon-forward-outline"></i> Siguiente</button>
+                                            </div>
+                                        </div>
+                                        <div class="row" ng-if="Incosistencia">
+                                            <div class="col s12">
+                                                <div class="input-field">
+                                                    <div class="input-list input-form">
+                                                        <div class="input-list input-view-column input-padding">
+                                                            <input id="normal1" type="text" ng-model="datos.primer_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                            <label for="normal1" class="">1er Nombre</label>
+                                                        </div>
+                                                        <div class="input-list input-view-column">
+                                                            <input id="normal3" type="text" ng-model="datos.segundo_nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                            <label for="normal3" class="">2do Nombre</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="input-list input-form">
+                                                        <div class="input-list input-view-column input-padding">
+                                                            <input id="normal2" ng-model="datos.primer_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                            <label for="normal2" class="">1er Apellido</label>
+                                                        </div>
+                                                        <div class="input-list input-view-column">
+                                                            <input id="normal4" ng-model="datos.segundo_apellido" type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                                            <label for="normal4" class="">2do Apellido</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="input-list input-form">
+                                                        <div class="input-list input-view-column input-padding">
+                                                            <label style=" margin-top: -20px;">Tipo de Documento</label>
+                                                            <select class="select-chosen-eps" ng-model="datos.tipodocumento">
+                                                                <option value="" selected>SELECCIONAR</option>
+                                                                <option value="CC" ng-selected="datos.tipodocumento == 'CC'  ">
+                                                                CEDULA DE CIUDADANÍA</option>
+                                                                <option value="TI" ng-selected="datos.tipodocumento == 'TI'  ">
+                                                                TARJETA DE IDENTIDAD</option>
+                                                                <option value="RC" ng-selected="datos.tipodocumento == 'RC'  ">
+                                                                REGISTRO CIVIL</option>
+                                                                <option value="CE" ng-selected="datos.tipodocumento == 'CE'  ">
+                                                                CEDULA DE EXTRANJERÍA</option>
+                                                                <option value="PA" ng-selected="datos.tipodocumento == 'PA'  ">
+                                                                PASAPORTE</option>
+                                                                <option value="PE" ng-selected="datos.tipodocumento == 'PE'  ">
+                                                                PERMISO ESPECIAL DE PERMANENCIA</option>
+                                                                <option value="AS" ng-selected="datos.tipodocumento == 'AS'  ">
+                                                                ADULTO SIN IDENTIFICACIÓN</option>
+                                                                <option value="MS" ng-selected="datos.tipodocumento == 'MS'  ">MENOR
+                                                                SIN IDENTIFICACIÓN</option>
+                                                                <option value="CD" ng-selected="datos.tipodocumento == 'CD'  ">
+                                                                CARNET DIPLOMÁTICO</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="input-list input-view-column">
+                                                            <input id="normal8" ng-model="datos.numero" type="text" class="validate">
+                                                            <label for="normal8" class="">Número</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="input-list input-form">
+                                                        <div class="input-list input-view-column">
+                                                            <i class="material-icons prefix">perm_contact_calendar</i>
+                                                            <input ng-model="datos.nacimiento" type="date" id="datepicker" class="datepicker" />
+                                                        </div>
+
+                                                        <div class="input-list input-view-column" ng-init="obtenerSexo()">
+                                                            <label style="margin-top: -20px;">Género</label>
+                                                            <select class="select-chosen-eps" id="sexoBeneficiario" ng-model="datos.sexo">
+                                                                <option value="" selected>SELECCIONAR</option>
+                                                                <option value="M" ng-selected="datos.sexo == 'M'">MASCULINO
+                                                                </option>
+                                                                <option value="F" ng-selected="datos.sexo == 'F'">FEMENINO
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col s12">
+                                                <div class="col s8"></div>
+                                                <div class="col s4">
+                                                    <div class="input-field col m5 s5">
+                                                        <button ng-disabled="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Regresar('0')">  <i class=" icon-reply-outline"></i>Regresar</button>
+                                                    </div>
+                                                    <div class="input-field col m5 s5">
+                                                        <button ng-disabled="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Siguiente('1')"> <i class="icon-forward-outline"></i>Siguiente</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row content-container server" ng-show="Parte3">
+                    <div class="col s12 m12 l12">
+                        <div class="row margin">
+                            <div class="card-content" style="box-shadow: none;border: 0px solid #ebebf5; background: #fff;">
+                                <div class="card-content clearfix">
+                                    <div class="ccol s12 m12 s12">
+                                        <div class="row">
+                                            <div class="col l12 m12 s12">
+                                                <h5>
+                                                    <i class="icon-doc-text left"></i>Subir Documentos
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <div class="col s10 offset-s1">
+                                                    <label for="simple-select">Tipo Documental</label>
+                                                    <select id="simple-select" material-select watch ng-change="BuscarTipoDocumental(TipoDocumental)" ng-model="TipoDocumental">
+                                                        <option value="0">SELECCIONAR</option>
+                                                        <option ng-repeat="l in listadodocumento" value="{{l.codigo}}">{{l.nombre}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col s8 offset-s1" ng-hide="OcultarCargue">
+                                                    <label for="simple-select">Tipo Documento</label>
+                                                    <div class="file-field input-field">
+                                                        <div class="btn">
+                                                            <span class="white-text">Archivo</span>
+                                                            <input type="file" id="adjunto" accept=".pdf,.doc" required>
+                                                        </div>
+                                                        <div class="file-path-wrapper">
+                                                            <input id="nombreadjunto" class="file-path" type="text" placeholder="Seleccione Archivo" ng-model="nombreadjunto">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col s2" ng-hide="OcultarCargue">
+                                                    <button ng-click="SubirSoporte()" class="btn btn-floating white-text" type="submit" style="margin-top: 3em;">
+                                                        <i style="position: relative;font-size: 25px;"
+                                                        class="material-icons prefix">save_alt</i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <div class="col s10 offset-s1 ">
+                                                        <table class="responsive-table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="text-align:center">#</th>
+                                                                    <th style="text-align:center">NOMBRE ARCHIVO</th>
+                                                                    <th style="text-align:center">OPCION</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="ls in ListadoSeleccionado">
+                                                                    <td style="text-align:center">{{$index+1}}</td>
+                                                                    <td style="text-align:center">{{ls.nombre}}</td>
+                                                                    <td style="text-align:center"><i ng-click="removeItem(ls.codigo)" class="material-icons" style="margin-top: -1px;">delete</i>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot ng-show="ListadoSeleccionado.length==0">
+                                                                <tr>
+                                                                    <td colspan="3" style="text-align: center;">
+                                                                        <h6> <strong>NO HAY ARCHIVOS SUBIDOS </strong></h6>
+                                                                    </td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col s12 m12 l12 right-align">
+                                                    <button class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Regresar('1')"><i class=" icon-reply-outline"></i>Regresar</button>
+                                                    <button ng-hide="Boton" class="btn white-text" type="submit" style="margin-top: 10px;" ng-click="Guardar()"><i class="icon-floppy"></i>Guardar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>

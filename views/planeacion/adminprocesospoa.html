@@ -1,0 +1,277 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+
+    .content-container {
+      padding: 0 20px;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="Inicio()"></i>
+          Administración - Procesos POA
+        </h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1)" id="Sol" href class="active">Permisos Usuarios
+              <i class="icon-users"></i></a>
+          </li>
+          <!-- <li class="tab col w-auto">
+            <a ng-click="SetTab(2);" id="Nueva" href>Causas<i class="icon-pen"></i></a>
+          </li> -->
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==1">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de usuarios con permisos en el módulo
+          ({{List.listadoFuncionarios.length}})</strong>
+
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="agregarUsuario()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoFuncs()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="Hoja1.Filtro">
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>#</th>
+          <th>Cédula</th>
+          <th>Funcionario</th>
+          <th>Cargo</th>
+          <th>Tipo Usuario</th>
+          <th>Estado</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in List.listadoFuncionarios | filter:Hoja1.Filtro">
+            <td>{{$index + 1}}</td>
+            <td>{{x.TERV_CODIGO}}</td>
+            <td>
+              <span class="{{ x.TERC_ESTADO_EMPLEADO == 'R' ? 'orange status white-text': ''}}" title="{{ x.TERC_ESTADO_EMPLEADO == 'R' ? 'Usuario Retirado': ''}}">
+                {{x.TERC_NOMBRE}}</span>
+            </td>
+            <td>{{x.CARC_NOMBRE}}</td>
+            <td>
+              <span class="status default-background c-pointer"
+                ng-click="editarUsuario(x)">{{obtenerTipoUsuario(x.TERC_TIPO_ADMIN_PLANEACION)}}</span>
+            </td>
+
+            <td class="center">
+              <div class="tooltip" ng-if="x.TERC_ESTADO_ADMIN_PLANEACION == 'A'">
+                <i class="icon-circle Con_pulse_A"
+                  style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                  ng-click="editarUsuario(x)"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Activo</span>
+              </div>
+              <div class="tooltip" ng-if="x.TERC_ESTADO_ADMIN_PLANEACION == 'I'">
+                <i class="icon-circle Con_pulse_X"
+                  style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                  ng-click="editarUsuario(x)"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+  </div>
+  <!-- ///// -->
+  <!-- /////////////////////////////////////////MODAL ADMIN///////////////////////////////////////// -->
+  <div id="modalUsuario" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="card-content default-linear-gradient border-radius-none white-text">
+        <div class="col s11">
+          <h5 class="margin">Permisos del Usuario</h5>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12 m12 l12">
+          <!-- CAMPOS -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" readonly
+              ng-model="modalUsuario.nombre">
+            <label>Funcionario</label>
+          </div>
+          <!-- <div class="col l12 m12 s12 row"> -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+              ng-model="modalUsuario.estado">
+              <option value="" disabled>SELECCIONAR</option>
+              <option value="A">Activo</option>
+              <option value="I">Inactivo</option>
+            </select>
+            <label>Estado</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b select_maxheigth" style="margin-bottom:3rem;">
+            <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+              ng-model="modalUsuario.tipoUsuario">
+              <option value="AS">Administrador del Sistema</option>
+              <option value="AM">Administrador del Módulo</option>
+              <option value="US">Usuario</option>
+              <!-- <option value="UP">Usuario Sin Permiso De Edicion</option> -->
+              <option value="IN">Invitado</option>
+            </select>
+            <label>Tipo Usuario</label>
+          </div>
+          <!-- </div> -->
+          <!-- <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" readonly
+              ng-model="modalUsuario.fechaRegistro">
+            <label>Fecha de registro</label>
+          </div> -->
+
+          <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+            <button style="border-radius: 20px;" class="btn" ng-click="modificarUsuario(modalUsuario)">Actualizar
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+  <!-- ///// -->
+
+
+  <style>
+    table th,
+    table td {
+      text-align: center;
+    }
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_X {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    select:disabled {
+      color: black;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    .text-upper {
+      text-transform: uppercase !important;
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+
+    .label-new>label {
+      display: table;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    #toast-container .success {
+      background: linear-gradient(to bottom left, #0fda00, #007217, #0fda00);
+    }
+
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

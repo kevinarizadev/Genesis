@@ -1,0 +1,1524 @@
+<header id="header">
+  <div class="navbar">
+    <!-- Nav Original -->
+    <nav ng-show="verOriginal">
+      <a href="#" data-activates="nav-mobile"
+        class="button-collapse top-nav full waves-effect waves-light hide-on-large-only">
+        <i class="material-icons">menu</i>
+      </a>
+      <a href="#/inicioafiliados" data-activates="nav-mobile"
+        class="top-nav full waves-effect waves-light hide-on-large-only" ng-click="name = home_user"
+        ui-sref="mara.inicioafiliados">
+        <i class="material-icons">home</i>
+      </a>
+      <div class="nav-wrapper" style="list-style-type: none;">
+        <ul class="left" style="height: 100%;">
+          <li style="line-height: initial;height: 100%;">
+            <img src="assets/images/mara.png" alt="GENESIS"
+              style="width: 240px;height: auto;margin-left: 18px;margin-top: 7px;">
+          </li>
+        </ul>
+        <ul class="right hide-on-med-and-down" visit="mara.pages-profile">
+          <!-- Icon notification -->
+          <li id="notification_genesis" class="button-dropdown" ng-show="notificacion_funcionario">
+            <a ng-click="notification_click()" class="dropdown-toggle">
+              <div class="i-notifications" style="animation: swing 2s;"></div>
+              <span ng-show="notif_num != 0" class="badge-green">{{notif_num}}</span>
+            </a>
+            <div id="notifications_dropdown" class="dropdown-menu">
+              <div
+                style="font-size: 14px;font-weight: 600;line-height: 14px;top: 14px;width: 100%;text-align: center;margin: 1em 0 .5em 0;"
+                class="default-color">Novedades de Genesis</div>
+              <a id="{{notification.id}}" ng-click="see_notifi(notification.id);"
+                ng-class="notification.visto == 'N'? 'active':'' "
+                ng-repeat="notification in notifications track by $index">
+                <i class="zmdi {{notification.icon}}"></i>
+                <div class="notifi-text">
+                  <p>{{notification.title}}</p>
+                  <span>{{notification.date}} - {{notification.name_area}}</span>
+                </div>
+              </a>
+              <a ng-if="notifications.length == 0" class="disabled"
+                style="display: flow-root;text-align: center;color: rgb(170, 170, 170);font-size: 14px;padding: 50px 16px;line-height: 10px;">No
+                hay notificaciones.</a>
+              <button ng-show="!mara.versionamiento" ui-sref="mara.versionamiento" class="default-background"
+                style="width: 100%;border: none;line-height: normal;display: block;height: 2.5em;">
+                Ver mas
+              </button>
+            </div>
+          </li>
+          <!-- Icon home -->
+          <li>
+            <a href="javascript:void(0)" class="icon-label" ng-click="name = home_user" ui-sref="mara.{{home_user}}">
+              <i class="material-icons">home</i>
+            </a>
+          </li>
+          <!-- Name user -->
+          <li class="button-dropdown">
+            <a href="javascript:void(0)" class="dropdown-toggle" ng-click="viewMenu = false;viewContact = false"
+              style="display: flex;">
+              <span class="profile-img-ribbon ng-binding" style="padding-right: 10px;">
+                {{ nombre }}
+              </span>
+              <img class="responsive-img profile-img"
+                src="{{sesdata.imagen == null?'assets/images/users/default-user.png': sesdata.imagen != ''?sesdata.imagen:'assets/images/users/default-user.png'}}"
+                alt="perfil">
+            </a>
+            <div id="profile_dropdown" class="dropdown-menu">
+              <a class="disabled" href="javascript:void(0)" ng-if="!viewMenu">
+                <i class="icon-vcard" class="black-text"></i>
+                <div class="notifi-text">
+                  <p ng-hide="!inactivehome">{{nombre}}</p>
+                  <p>{{result_perfil.cargo}}</p>
+                  <p>{{result_perfil.ubicacion}}</p>
+                  <p>{{result_perfil.f_nacimiento}}</p>
+                  <p ng-if="home_user == 'inicio'">Ubicación Laboral: {{result_perfil.ubicacion_acceso}}</p>
+                </div>
+              </a>
+              <a ng-click="configProfile()" ng-if="codigorol == 'Funcionario'" class="other"
+                ng-class="{'active':viewMenu}">
+                <i class="black-text" ng-class="viewMenu?' icon-cancel':'icon-cog-2'"></i>
+                <div class="notifi-text">
+                  <p>{{!viewMenu?'Configurar cuenta':'Cancelar cambios'}}</p>
+                </div>
+              </a>
+              <form id="edit_profile_dropdown" ng-if="viewMenu" class="black-text" method="post"
+                ng-submit="saveChanges(configureProfile)" autocomplete="off">
+                <p>Subir una foto de perfil:</p>
+                <div class="content-img default-background">
+                  <!-- <i ng-click="deleteImg()" class="zmdi icon-trash-empty white-text"></i> -->
+                  <div>
+                    <img id="profile-img"
+                      ng-src="{{sesdata.imagen == null?'assets/images/users/default-user.png': sesdata.imagen != ''?sesdata.imagen:'assets/images/users/default-user.png'}}"
+                      alt="{{imgtag.title}}">
+                    <i class="icon-camera">
+                      <input type="file" accept="image/*" select-ng-files-img ng-model="fileImg">
+                    </i>
+                  </div>
+                </div>
+                <p>Cambiar la contraseña:</p>
+                <div class="content-data" ng-class="{'active':alerts.n1}" data-tip="{{alerts.mensaje}}">
+                  <input class="margin" type="{{inputType.current}}" ng-model="configureProfile.passwordCurrent"
+                    ng-focus="alerts.n1=false;alerts.n2=false;alerts.n3=false;" placeholder="Contraseña actual">
+                  <i class="icon-eye-6" ng-class="{'icon-eye-off-1':inputType.current == 'text'}"
+                    ng-click="inputType.current = (inputType.current == 'password'?'text':'password')"></i>
+                </div>
+                <div class="content-data" ng-class="{'active':alerts.n2}" data-tip="{{alerts.mensaje}}">
+                  <input class="margin" type="{{inputType.new}}" ng-model="configureProfile.passwordNew"
+                    ng-focus="alerts.n2=true;alerts.n1=false;alerts.n3=false;alerts.mensaje = 'La nueva contraseña debe tener como mínimo 6 caracteres e incluir por lo menos 1 letra en mayúscula, 1 número y 1 carácter especial (~!$%^&*_=+.@/-)';"
+                    ng-blur="alerts.n2=false" placeholder="Nueva contraseña">
+                  <i class="icon-eye-6" ng-class="{'icon-eye-off-1':inputType.new == 'text'}"
+                    ng-click="inputType.new = (inputType.new == 'password'?'text':'password')"></i>
+                </div>
+                <div class="content-data" ng-class="{'active':alerts.n3}" data-tip="{{alerts.mensaje}}">
+                  <input class="margin" type="{{inputType.verify}}" ng-model="configureProfile.passwordVerify"
+                    ng-focus="alerts.n1=false;alerts.n2=false;alerts.n3=false;"
+                    placeholder="Confirma la nueva contraseña">
+                  <i class="icon-eye-6" ng-class="{'icon-eye-off-1':inputType.verify == 'text'}"
+                    ng-click="inputType.verify = (inputType.verify == 'password'?'text':'password')"></i>
+                </div>
+                <input class="btn white-text default-background margin other" type="submit"
+                  ng-click="saveChanges(configureProfile)" value="Guardar Cambios">
+              </form>
+
+
+              <a ng-click="descargaVolante()" ng-if="mostrarVolantes == '1'" class="black-text" ng-if="!viewMenu">
+                <i class="icon-print-3"></i>
+                <div class="notifi-text">
+                  <p>Volantes de Pago</p>
+                </div>
+              </a>
+              <a ng-if="codigorol == 'Funcionario' && !viewMenu" href="docs\directorio\Directorio_Telefonico.pdf"
+                target="_blank">
+                <i class="black-text icon-contacts"></i>
+                <div class="notifi-text">
+                  <p>Directorio</p>
+                </div>
+              </a>
+              <a ng-click="listado()" ng-if="codigorol == 'Funcionario' && !viewMenu">
+                <i class="icon-book-3" class="black-text"></i>
+                <div class="notifi-text">
+                  <p>Documentos Institucionales</p>
+                </div>
+              </a>
+              <!--Instructivos Empresas-->
+              <div class="btn-hover" ng-if="!viewMenu && inactivehome && inst_ips">
+                <i class="black-text icon-book-3"></i>
+                <div class="notifi-text">
+                  <p style="margin: 0 0 .2em;color: #000000de;line-height: 1.4em;">Instructivos</p>
+                </div>
+                <div class="menu-hover">
+                  <a href="docs/instructivos_empresa/GTIC-015-FR -  Instructivo - Registro e Ingreso a Genesis (Opcion Empresa).pdf"
+                    target="_blank" rel="noopener noreferrer">
+                    <i class="icon-file-pdf black-text"></i>
+                    <div class="notifi-text" style="width: 100%;padding: 0 1em;">
+                      <p class="black-text" style="margin: 0 0 .2em;color: #000000de;line-height: 1.4em;">Registro e
+                        Ingreso a Genesis</p>
+                    </div>
+                  </a>
+                  <a href="docs/instructivos_empresa/GTIC-015-FR -  Instructivo - ACTUALIZACION DE DATOS DE LA EMPRESA (NOVEDADES).pdf"
+                    target="_blank" rel="noopener noreferrer">
+                    <i class="icon-file-pdf black-text"></i>
+                    <div class="notifi-text" style="width: 100%;padding: 0 1em;">
+                      <p class="black-text" style="margin: 0 0 .2em;color: #000000de;line-height: 1.4em;">Actualizacion
+                        de Datos de la Empresa</p>
+                    </div>
+                  </a>
+                  <a href="docs/instructivos_empresa/GTIC-015-FR -  Instructivo - EMPRESAS - NOVEDADES & REGISTRO DE AFILIADOS.pdf"
+                    target="_blank" rel="noopener noreferrer">
+                    <i class="icon-file-pdf black-text"></i>
+                    <div class="notifi-text" style="width: 100%;padding: 0 1em;">
+                      <p class="black-text" style="margin: 0 0 .2em;color: #000000de;line-height: 1.4em;">Novedades y
+                        Registro de Afiliados</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <!-- <a ng-click="cambiarcontrasena()" ng-if="!viewMenu">
+              <i class="icon-key-1" class="black-text"></i>
+              <div class="notifi-text">
+                <p>Cambio de Contraseña</p>
+              </div>
+            </a> -->
+              <a ui-sref="mara.logout" href="#/" ng-if="!viewMenu">
+                <i class="icon-logout-3" class="black-text"></i>
+                <div class="notifi-text">
+                  <p>Cerrar Sesion</p>
+                </div>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Nav Hallowen -->
+    <nav ng-show="!verOriginal">
+      <a href="#" data-activates="nav-mobile"
+        class="button-collapse top-nav full waves-effect waves-light hide-on-large-only">
+        <i class="material-icons">menu</i>
+      </a>
+      <a href="#/inicioafiliados" data-activates="nav-mobile"
+        class="top-nav full waves-effect waves-light hide-on-large-only" ng-click="name = home_user"
+        ui-sref="mara.inicioafiliados">
+        <i class="material-icons">home</i>
+      </a>
+      <!-- Inicio codigo de activacion de arañas cayendo -->
+      <!-- <div class="col s12 confetti_corazon" ng-if="true">
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/teraraña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña2.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/teraraña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña2.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/teraraña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña2.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/teraraña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña2.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/teraraña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña2.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/teraraña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña2.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/araña.svg" style="width: 40px" />
+          </div>
+          <div class="confetti_corazon-piece">
+            <img src="assets/images/teraraña.svg" style="width: 40px" />
+          </div>
+        </div> -->
+      <!-- FINcodigo de activacion de arañas cayendo -->
+
+
+      <!-- inicio hallowen -->
+      <div class="nav-wrapper" style="list-style-type: none" data-activates="nav-mobile">
+        <ul class="left" style="height: 100%">
+          <li style="line-height: initial; height: 100%">
+            <div id="banner_hallowen">
+              <div id="estrellas">
+                <div id="fantasmas">
+                  <div id="luna">
+                    <div id="brujas">
+                      <div id="nubes">
+                        <div id="arboles2">
+                          <div id="arboles1">
+                            <div id="suelo">
+                              <div id="bruja"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex" style="position: relative">
+              <span id="tituloGenesis">GENESIS</span>
+              <!-- <img src="assets/images/mara.png" alt="GENESIS"
+                  style="width: 240px;height: auto;margin-left: 18px;margin-top: 7px;" /> -->
+              <!-- //// hallowen calabeza///// -->
+              <div class="container_hallowen" style="max-width: 62px">
+                <svg width="291" height="272" viewBox="0 0 291 272" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g id="pumpkin">
+                    <g id="pumpkin-body" filter="url(#filter0_ddi)">
+                      <ellipse id="Ellipse 12" cx="116.5" cy="134.5" rx="55.5" ry="86.5" fill="url(#paint0_radial)" />
+                      <ellipse id="Ellipse 13" cx="172.5" cy="138.5" rx="55.5" ry="86.5" fill="url(#paint1_radial)" />
+                      <g id="Vector 62" filter="url(#filter1_i)">
+                        <path
+                          d="M170.5 77.1094C138.9 63.9094 166.667 26.9428 184.5 10.1094C186.167 8.60942 186.6 4.90942 175 2.10942C163.4 -0.690578 126.833 50.9428 110 77.1094H170.5Z"
+                          fill="url(#paint2_linear)" />
+                      </g>
+                      <ellipse id="Ellipse 8" cx="211.256" cy="156.339" rx="71.2557" ry="96.3391"
+                        fill="url(#paint3_radial)" />
+                      <ellipse id="Ellipse 9" cx="185.256" cy="164.339" rx="71.2557" ry="96.3391"
+                        fill="url(#paint4_radial)" />
+                      <ellipse id="Ellipse 11" cx="75.2557" cy="148.339" rx="71.2557" ry="96.3391"
+                        fill="url(#paint5_radial)" />
+                      <ellipse id="Ellipse 10" cx="94.2557" cy="156.339" rx="71.2557" ry="96.3391"
+                        fill="url(#paint6_radial)" />
+                      <ellipse id="Ellipse 5" cx="141.114" cy="166.962" rx="71.2557" ry="96.3391"
+                        fill="url(#paint7_radial)" />
+                    </g>
+                    <g id="face">
+                      <g id="eyes">
+                        <g id="Vector 60" filter="url(#filter2_i)">
+                          <path
+                            d="M85.66 143.786C50.6055 95.1616 76.6003 88.1166 88.2005 91.8505C92.2648 106.107 116.48 119.938 123 115.27C123 142.004 95.7551 157.789 85.66 143.786Z" />
+                        </g>
+                        <g id="Vector 61" filter="url(#filter3_i)">
+                          <path
+                            d="M209.624 143.786C242.129 95.1616 218.025 88.1166 207.269 91.8505C203.5 106.107 181.046 119.938 175 115.27C175 142.004 200.263 157.789 209.624 143.786Z" />
+                        </g>
+                      </g>
+                      <g id="nostrils">
+                        <g id="Polygon 6" filter="url(#filter4_i)">
+                          <path
+                            d="M137.124 149.923C137.768 151.665 140.232 151.665 140.876 149.923L144.933 138.943C145.416 137.637 144.449 136.25 143.057 136.25H134.943C133.551 136.25 132.584 137.637 133.067 138.943L137.124 149.923Z" />
+                        </g>
+                        <g id="Polygon 7" filter="url(#filter5_i)">
+                          <path
+                            d="M159.124 149.923C159.768 151.665 162.232 151.665 162.876 149.923L166.933 138.943C167.416 137.637 166.449 136.25 165.057 136.25H156.943C155.551 136.25 154.584 137.637 155.067 138.943L159.124 149.923Z" />
+                        </g>
+                      </g>
+                      <g id="mouth">
+                        <g id="Vector 63" filter="url(#filter6_ddi)">
+                          <path
+                            d="M74.4291 177.596C67.7297 196.422 36.4662 172.367 32 167.661L53.7728 193.807V206.881L69.4046 213.679C68.6602 207.578 67.6181 195.899 69.4046 197.991C71.1911 200.083 85.7807 203.394 92.8522 204.789V216.294H112.392L111.275 204.789C118.868 208.972 124.488 206.532 126.349 204.789L124.116 221H156.496L154.263 204.789C161.409 208.972 172.128 206.532 176.594 204.789V216.294H197.808L196.692 204.789H220.698L218.465 213.679H238.563L236.888 204.789C246.378 206.358 268.16 164.821 260.335 174.459C257.788 177.596 242.471 193.284 227.397 185.44L230.747 175.505L208.416 174.459C208.416 178.642 211.207 176.028 211.207 185.44C211.207 192.842 191.667 187.532 185.526 185.44L187.759 174.459H162.079C160.962 176.55 164.312 185.44 164.312 185.44C164.312 185.44 141.981 187.532 134.165 185.44L136.398 164H110.159L111.275 185.44C97.4301 190.461 93.2244 187.532 92.8522 185.44L94.5271 164H74.4291V177.596Z" />
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                  <defs>
+                    <filter id="filter0_ddi" x="0" y="-2" width="290.511" height="273.301" filterUnits="userSpaceOnUse"
+                      color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feColorMatrix in="SourceAlpha" type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+                      <feOffset dy="4" />
+                      <feGaussianBlur stdDeviation="2" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+                      <feColorMatrix in="SourceAlpha" type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+                      <feOffset dx="4" dy="2" />
+                      <feGaussianBlur stdDeviation="2" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                      <feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                      <feOffset dy="-4" />
+                      <feGaussianBlur stdDeviation="2" />
+                      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                      <feBlend mode="normal" in2="shape" result="effect3_innerShadow" />
+                    </filter>
+                    <filter id="filter1_i" x="110" y="-2" width="75.3757" height="79.1094" filterUnits="userSpaceOnUse"
+                      color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                      <feOffset dy="-6" />
+                      <feGaussianBlur stdDeviation="2" />
+                      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                      <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+                    </filter>
+                    <filter id="filter2_i" x="68" y="91" width="55" height="63" filterUnits="userSpaceOnUse"
+                      color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                      <feOffset dy="5" />
+                      <feGaussianBlur stdDeviation="2.5" />
+                      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.99 0" />
+                      <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+                    </filter>
+                    <filter id="filter3_i" x="175" y="91" width="51" height="63" filterUnits="userSpaceOnUse"
+                      color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                      <feOffset dy="5" />
+                      <feGaussianBlur stdDeviation="2.5" />
+                      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.99 0" />
+                      <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+                    </filter>
+                    <filter id="filter4_i" x="132.941" y="136.25" width="12.1176" height="17.9797"
+                      filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                      <feOffset dy="3" />
+                      <feGaussianBlur stdDeviation="1.5" />
+                      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.99 0" />
+                      <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+                    </filter>
+                    <filter id="filter5_i" x="154.941" y="136.25" width="12.1176" height="17.9797"
+                      filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                      <feOffset dy="3" />
+                      <feGaussianBlur stdDeviation="1.5" />
+                      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.99 0" />
+                      <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+                    </filter>
+                    <filter id="filter6_ddi" x="28" y="164" width="238" height="65" filterUnits="userSpaceOnUse"
+                      color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feColorMatrix in="SourceAlpha" type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+                      <feOffset dy="2" />
+                      <feGaussianBlur stdDeviation="1" />
+                      <feColorMatrix type="matrix"
+                        values="0 0 0 0 0.737255 0 0 0 0 0.34902 0 0 0 0 0.121569 0 0 0 1 0" />
+                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+                      <feColorMatrix in="SourceAlpha" type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+                      <feOffset dy="4" />
+                      <feGaussianBlur stdDeviation="2" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                      <feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                      <feOffset dy="6" />
+                      <feGaussianBlur stdDeviation="4" />
+                      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" />
+                      <feBlend mode="normal" in2="shape" result="effect3_innerShadow" />
+                    </filter>
+                    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(120.306 61.3576) rotate(91.3998) scale(159.42 102.307)">
+                      <stop stop-color="#D18122" />
+                      <stop offset="1" stop-color="#624224" />
+                    </radialGradient>
+                    <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(176.306 65.3576) rotate(91.3998) scale(159.42 102.307)">
+                      <stop stop-color="#D18122" />
+                      <stop offset="1" stop-color="#624224" />
+                    </radialGradient>
+                    <linearGradient id="paint2_linear" x1="148" y1="20" x2="166" y2="77" gradientUnits="userSpaceOnUse">
+                      <stop offset="0.0001" stop-color="#7C8B20" />
+                      <stop offset="1" stop-color="#38433A" />
+                    </linearGradient>
+                    <radialGradient id="paint3_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(216.142 74.877) rotate(91.6135) scale(177.57 131.337)">
+                      <stop stop-color="#D1B522" />
+                      <stop offset="0.354167" stop-color="#D18122" />
+                      <stop offset="0.776042" stop-color="#D15522" />
+                      <stop offset="0.963542" stop-color="#95683D" />
+                      <stop offset="1" stop-color="#624224" />
+                    </radialGradient>
+                    <radialGradient id="paint4_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(190.142 82.877) rotate(91.6135) scale(177.57 131.337)">
+                      <stop stop-color="#D1B522" />
+                      <stop offset="0.354167" stop-color="#D18122" />
+                      <stop offset="0.776042" stop-color="#D15522" />
+                      <stop offset="0.963542" stop-color="#95683D" />
+                      <stop offset="1" stop-color="#624224" />
+                    </radialGradient>
+                    <radialGradient id="paint5_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(80.1416 66.877) rotate(91.6135) scale(177.57 131.337)">
+                      <stop stop-color="#D1B522" />
+                      <stop offset="0.354167" stop-color="#D18122" />
+                      <stop offset="0.776042" stop-color="#D15522" />
+                      <stop offset="0.963542" stop-color="#95683D" />
+                      <stop offset="1" stop-color="#624224" />
+                    </radialGradient>
+                    <radialGradient id="paint6_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(99.1416 74.877) rotate(91.6135) scale(177.57 131.337)">
+                      <stop stop-color="#D1B522" />
+                      <stop offset="0.354167" stop-color="#D18122" />
+                      <stop offset="0.776042" stop-color="#D15522" />
+                      <stop offset="0.963542" stop-color="#95683D" />
+                      <stop offset="1" stop-color="#624224" />
+                    </radialGradient>
+                    <radialGradient id="paint7_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(146 85.5) rotate(91.6135) scale(177.57 131.337)">
+                      <stop offset="0.0104167" stop-color="#D1B522" />
+                      <stop offset="0.078125" stop-color="#D1B522" />
+                      <stop offset="0.354167" stop-color="#D18122" />
+                      <stop offset="0.776042" stop-color="#D15522" />
+                      <stop offset="0.963542" stop-color="#95683D" />
+                      <stop offset="1" stop-color="#624224" />
+                    </radialGradient>
+                    <radialGradient id="paint8_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(95.5 120) rotate(90) scale(29 27.5)">
+                      <stop stop-color="#FDB832" />
+                      <stop offset="1" stop-color="#271D19" />
+                    </radialGradient>
+                    <radialGradient id="paint9_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(200.5 120) rotate(90) scale(29 25.5)">
+                      <stop stop-color="#FDB832" />
+                      <stop offset="1" stop-color="#271D19" />
+                    </radialGradient>
+                    <radialGradient id="paint10_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(139 142.5) rotate(-90) scale(12.5 8)">
+                      <stop stop-color="#FDB832" />
+                      <stop offset="1" stop-color="#271D19" />
+                    </radialGradient>
+                    <radialGradient id="paint11_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(161 142.5) rotate(-90) scale(12.5 8)">
+                      <stop stop-color="#FDB832" />
+                      <stop offset="1" stop-color="#271D19" />
+                    </radialGradient>
+                    <radialGradient id="paint12_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                      gradientTransform="translate(147 192.5) rotate(90) scale(28.5 115)">
+                      <stop stop-color="#FDB832" />
+                      <stop offset="1" stop-color="#271D19" />
+                    </radialGradient>
+                  </defs>
+                </svg>
+              </div>
+              <!--  -->
+              <div class="bat-overlay">
+                <!-- Bats -->
+                <svg version="1.1" id="Lager_1" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 600 400"
+                  style="enable-background: new 0 0 600 400" xml:space="preserve">
+                  <g class="bat3">
+                    <path
+                      d="M306.9,145.4l-7.3,7.3l-7.3-7.3c-0.6-0.6-1.6-0.2-1.6,0.6v7.9h7.6h2.5h7.6V146C308.5,145.2,307.5,144.8,306.9,145.4z" />
+                    <path class="wing" d="M408.4,167.5c-3.3-2.7-7.6-4.4-12.2-4.4c-9.3,0-17.1,6.6-18.9,15.4c-2.8-1.6-6.1-2.5-9.6-2.5c-8.5,0-15.7,5.5-18.3,13.1
+      c-3-6.6-9.7-11.3-17.5-11.3c-7.7,0-14.4,4.6-17.5,11.1c-6.9-4.7-11-10.7-11-17.1c0-2.4,0.6-4.7,1.6-6.9c0.2,0,0.4,0,0.7,0
+      c24.7,0,45.4-9,51.2-21.1C383,144.1,404.5,154.3,408.4,167.5z" />
+
+                    <path class="wing1" d="M191.6,167.5c3.3-2.7,7.6-4.4,12.2-4.4c9.3,0,17.1,6.6,18.9,15.4c2.8-1.6,6.1-2.5,9.6-2.5c8.5,0,15.7,5.5,18.3,13.1
+      c3-6.6,9.7-11.3,17.5-11.3c7.7,0,14.4,4.6,17.5,11.1c6.9-4.7,11-10.7,11-17.1c0-2.4-0.6-4.7-1.6-6.9c-0.2,0-0.4,0-0.7,0
+      c-24.7,0-45.4-9-51.2-21.1C217,144.1,195.5,154.3,191.6,167.5z" />
+                    <path
+                      d="M312.3,158.2c0,5.2-6,27.3-12.9,27.3c-7,0-12.3-22.1-12.3-27.3s5.7-9.5,12.6-9.5C306.6,148.8,312.3,153,312.3,158.2z" />
+
+                    <ellipse class="eye" cx="295.2" cy="161.8" rx="1.5" ry="3" />
+                    <ellipse class="eye" cx="304.2" cy="161.8" rx="1.5" ry="3" />
+
+                    <g class="shadow">
+                      <path class="wing" d="M387.8,238.6c-2.7-2.2-6.1-3.5-9.9-3.5c-7.5,0-13.8,5.4-15.3,12.5c-2.3-1.3-4.9-2.1-7.8-2.1c-6.9,0-12.7,4.4-14.8,10.6
+      c-2.5-5.4-7.9-9.1-14.2-9.1c-6.3,0-11.7,3.7-14.1,9c-5.6-3.8-8.9-8.6-8.9-13.8c0-1.9,0.5-3.8,1.3-5.6c0.2,0,0.4,0,0.6,0
+      c20,0,36.7-7.3,41.4-17.1C367.3,219.6,384.7,227.8,387.8,238.6z" />
+                      <path class="wing1" d="M212.2,238.6c2.7-2.2,6.1-3.5,9.9-3.5c7.5,0,13.8,5.4,15.3,12.5c2.3-1.3,4.9-2.1,7.8-2.1c6.9,0,12.7,4.4,14.8,10.6
+      c2.5-5.4,7.9-9.1,14.2-9.1c6.3,0,11.7,3.7,14.1,9c5.6-3.8,8.9-8.6,8.9-13.8c0-1.9-0.5-3.8-1.3-5.6c-0.2,0-0.4,0-0.6,0
+      c-20,0-36.7-7.3-41.4-17.1C232.7,219.6,215.3,227.8,212.2,238.6z" />
+                      <ellipse cx="299" cy="242.2" rx="9.3" ry="17" />
+                    </g>
+                  </g>
+                  <g class="bat1">
+                    <path
+                      d="M306.9,145.4l-7.3,7.3l-7.3-7.3c-0.6-0.6-1.6-0.2-1.6,0.6v7.9h7.6h2.5h7.6V146C308.5,145.2,307.5,144.8,306.9,145.4z" />
+                    <path class="wing" d="M408.4,167.5c-3.3-2.7-7.6-4.4-12.2-4.4c-9.3,0-17.1,6.6-18.9,15.4c-2.8-1.6-6.1-2.5-9.6-2.5c-8.5,0-15.7,5.5-18.3,13.1
+      c-3-6.6-9.7-11.3-17.5-11.3c-7.7,0-14.4,4.6-17.5,11.1c-6.9-4.7-11-10.7-11-17.1c0-2.4,0.6-4.7,1.6-6.9c0.2,0,0.4,0,0.7,0
+      c24.7,0,45.4-9,51.2-21.1C383,144.1,404.5,154.3,408.4,167.5z" />
+
+                    <path class="wing1" d="M191.6,167.5c3.3-2.7,7.6-4.4,12.2-4.4c9.3,0,17.1,6.6,18.9,15.4c2.8-1.6,6.1-2.5,9.6-2.5c8.5,0,15.7,5.5,18.3,13.1
+      c3-6.6,9.7-11.3,17.5-11.3c7.7,0,14.4,4.6,17.5,11.1c6.9-4.7,11-10.7,11-17.1c0-2.4-0.6-4.7-1.6-6.9c-0.2,0-0.4,0-0.7,0
+      c-24.7,0-45.4-9-51.2-21.1C217,144.1,195.5,154.3,191.6,167.5z" />
+                    <path
+                      d="M312.3,158.2c0,5.2-6,27.3-12.9,27.3c-7,0-12.3-22.1-12.3-27.3s5.7-9.5,12.6-9.5C306.6,148.8,312.3,153,312.3,158.2z" />
+
+                    <ellipse class="eye" cx="295.2" cy="161.8" rx="1.5" ry="3" />
+                    <ellipse class="eye" cx="304.2" cy="161.8" rx="1.5" ry="3" />
+
+                    <g class="shadow">
+                      <path class="wing" d="M387.8,238.6c-2.7-2.2-6.1-3.5-9.9-3.5c-7.5,0-13.8,5.4-15.3,12.5c-2.3-1.3-4.9-2.1-7.8-2.1c-6.9,0-12.7,4.4-14.8,10.6
+      c-2.5-5.4-7.9-9.1-14.2-9.1c-6.3,0-11.7,3.7-14.1,9c-5.6-3.8-8.9-8.6-8.9-13.8c0-1.9,0.5-3.8,1.3-5.6c0.2,0,0.4,0,0.6,0
+      c20,0,36.7-7.3,41.4-17.1C367.3,219.6,384.7,227.8,387.8,238.6z" />
+                      <path class="wing1" d="M212.2,238.6c2.7-2.2,6.1-3.5,9.9-3.5c7.5,0,13.8,5.4,15.3,12.5c2.3-1.3,4.9-2.1,7.8-2.1c6.9,0,12.7,4.4,14.8,10.6
+      c2.5-5.4,7.9-9.1,14.2-9.1c6.3,0,11.7,3.7,14.1,9c5.6-3.8,8.9-8.6,8.9-13.8c0-1.9-0.5-3.8-1.3-5.6c-0.2,0-0.4,0-0.6,0
+      c-20,0-36.7-7.3-41.4-17.1C232.7,219.6,215.3,227.8,212.2,238.6z" />
+                      <ellipse cx="299" cy="242.2" rx="9.3" ry="17" />
+                    </g>
+                  </g>
+                  <g class="bat2">
+                    <path
+                      d="M306.9,145.4l-7.3,7.3l-7.3-7.3c-0.6-0.6-1.6-0.2-1.6,0.6v7.9h7.6h2.5h7.6V146C308.5,145.2,307.5,144.8,306.9,145.4z" />
+                    <path class="wing" d="M408.4,167.5c-3.3-2.7-7.6-4.4-12.2-4.4c-9.3,0-17.1,6.6-18.9,15.4c-2.8-1.6-6.1-2.5-9.6-2.5c-8.5,0-15.7,5.5-18.3,13.1
+      c-3-6.6-9.7-11.3-17.5-11.3c-7.7,0-14.4,4.6-17.5,11.1c-6.9-4.7-11-10.7-11-17.1c0-2.4,0.6-4.7,1.6-6.9c0.2,0,0.4,0,0.7,0
+      c24.7,0,45.4-9,51.2-21.1C383,144.1,404.5,154.3,408.4,167.5z" />
+
+                    <path class="wing1" d="M191.6,167.5c3.3-2.7,7.6-4.4,12.2-4.4c9.3,0,17.1,6.6,18.9,15.4c2.8-1.6,6.1-2.5,9.6-2.5c8.5,0,15.7,5.5,18.3,13.1
+      c3-6.6,9.7-11.3,17.5-11.3c7.7,0,14.4,4.6,17.5,11.1c6.9-4.7,11-10.7,11-17.1c0-2.4-0.6-4.7-1.6-6.9c-0.2,0-0.4,0-0.7,0
+      c-24.7,0-45.4-9-51.2-21.1C217,144.1,195.5,154.3,191.6,167.5z" />
+                    <path
+                      d="M312.3,158.2c0,5.2-6,27.3-12.9,27.3c-7,0-12.3-22.1-12.3-27.3s5.7-9.5,12.6-9.5C306.6,148.8,312.3,153,312.3,158.2z" />
+
+                    <ellipse class="eye" cx="295.2" cy="161.8" rx="1.5" ry="3" />
+                    <ellipse class="eye" cx="304.2" cy="161.8" rx="1.5" ry="3" />
+
+                    <g class="shadow">
+                      <path class="wing" d="M387.8,238.6c-2.7-2.2-6.1-3.5-9.9-3.5c-7.5,0-13.8,5.4-15.3,12.5c-2.3-1.3-4.9-2.1-7.8-2.1c-6.9,0-12.7,4.4-14.8,10.6
+      c-2.5-5.4-7.9-9.1-14.2-9.1c-6.3,0-11.7,3.7-14.1,9c-5.6-3.8-8.9-8.6-8.9-13.8c0-1.9,0.5-3.8,1.3-5.6c0.2,0,0.4,0,0.6,0
+      c20,0,36.7-7.3,41.4-17.1C367.3,219.6,384.7,227.8,387.8,238.6z" />
+                      <path class="wing1" d="M212.2,238.6c2.7-2.2,6.1-3.5,9.9-3.5c7.5,0,13.8,5.4,15.3,12.5c2.3-1.3,4.9-2.1,7.8-2.1c6.9,0,12.7,4.4,14.8,10.6
+      c2.5-5.4,7.9-9.1,14.2-9.1c6.3,0,11.7,3.7,14.1,9c5.6-3.8,8.9-8.6,8.9-13.8c0-1.9-0.5-3.8-1.3-5.6c-0.2,0-0.4,0-0.6,0
+      c-20,0-36.7-7.3-41.4-17.1C232.7,219.6,215.3,227.8,212.2,238.6z" />
+                      <ellipse cx="299" cy="242.2" rx="9.3" ry="17" />
+                    </g>
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul class="right hide-on-med-and-down" visit="mara.pages-profile">
+          <!-- Icon notification -->
+          <li id="notification_genesis" class="button-dropdown" ng-show="notificacion_funcionario">
+            <!-- Hallowen -->
+            <!-- <a ng-click="notification_click()" class="dropdown-toggle tag-a-fastamita">
+              <div class="i-fastamita" style="animation: swing 6s">
+                <img src="./assets/images/fantasmita.png" alt="">
+              </div>
+              <span ng-show="notif_num != 0" class="badge-green">{{notif_num}}</span>
+            </a> -->
+            <div id="notifications_dropdown" class="dropdown-menu">
+              <div style="
+                    font-size: 14px;
+                    font-weight: 600;
+                    line-height: 14px;
+                    top: 14px;
+                    width: 100%;
+                    text-align: center;
+                    margin: 1em 0 0.5em 0;" class="default-color">Novedades de Genesis
+              </div>
+              <a id="{{notification.id}}" ng-click="see_notifi(notification.id);"
+                ng-class="notification.visto == 'N'? 'active':'' "
+                ng-repeat="notification in notifications track by $index">
+                <i class="zmdi {{notification.icon}}"></i>
+                <div class="notifi-text">
+                  <p>{{notification.title}}</p>
+                  <span>{{notification.date}} - {{notification.name_area}}</span>
+                </div>
+              </a>
+              <a ng-if="notifications.length == 0" class="disabled" style="
+                    display: flow-root;
+                    text-align: center;
+                    color: rgb(170, 170, 170);
+                    font-size: 14px;
+                    padding: 50px 16px;
+                    line-height: 10px;
+                  ">No hay notificaciones.</a>
+              <button ng-show="!mara.versionamiento" ui-sref="mara.versionamiento" class="default-background" style="
+                    width: 100%;
+                    border: none;
+                    line-height: normal;
+                    display: block;
+                    height: 2.5em;
+                  ">
+                Ver mas
+              </button>
+            </div>
+          </li>
+          <!-- Icon home -->
+          <li>
+            <img src="https://cdn-icons-png.flaticon.com/512/284/284448.png" alt="" ng-click="name = home_user"
+              ui-sref="mara.{{home_user}}" href="javascript:void(0)" class="iconHouse">
+            <!-- <a href="javascript:void(0)" class="icon-label" style="position: relative" ng-click="name = home_user"
+              ui-sref="mara.{{home_user}}">
+              <i class="material-icons">home</i>
+            </a> -->
+          </li>
+          <!-- Name user -->
+          <li class="button-dropdown">
+            <a href="javascript:void(0)" class="dropdown-toggle" ng-click="viewMenu = false;viewContact = false"
+              style="display: flex">
+              <span class="profile-img-ribbon ng-binding"
+                style="padding-right: 10px;text-transform: uppercase;font-family: CFHalloween !important;">
+                {{ nombre }}
+              </span>
+              <img class="responsive-img profile-img"
+                src="{{sesdata.imagen == null?'assets/images/users/casa_hallowen.png': sesdata.imagen != ''?sesdata.imagen:'assets/images/users/casa_hallowen.png'}}"
+                alt="perfil" />
+            </a>
+            <div id="profile_dropdown" class="dropdown-menu">
+              <a class="disabled" href="javascript:void(0)" ng-if="!viewMenu">
+                <i class="icon-vcard" class="black-text"></i>
+                <div class="notifi-text">
+                  <p ng-hide="!inactivehome">{{nombre}}</p>
+                  <p>{{result_perfil.cargo}}</p>
+                  <p>{{result_perfil.ubicacion}}</p>
+                  <p>{{result_perfil.f_nacimiento}}</p>
+                  <p ng-if="home_user == 'inicio'">
+                    Ubicación Laboral: {{result_perfil.ubicacion_acceso}}
+                  </p>
+                </div>
+              </a>
+              <a ng-click="configProfile()" ng-if="codigorol == 'Funcionario'" class="other"
+                ng-class="{'active':viewMenu}">
+                <i class="black-text" ng-class="viewMenu?' icon-cancel':'icon-cog-2'"></i>
+                <div class="notifi-text">
+                  <p>{{!viewMenu?'Configurar cuenta':'Cancelar cambios'}}</p>
+                </div>
+              </a>
+              <form id="edit_profile_dropdown" ng-if="viewMenu" class="black-text" method="post"
+                ng-submit="saveChanges(configureProfile)" autocomplete="off">
+                <p>Subir una foto de perfil:</p>
+                <div class="content-img default-background">
+                  <!-- <i ng-click="deleteImg()" class="zmdi icon-trash-empty white-text"></i> -->
+                  <div>
+                    <img id="profile-img"
+                      ng-src="{{sesdata.imagen == null?'assets/images/users/casa_hallowen.png': sesdata.imagen != ''?sesdata.imagen:'assets/images/users/casa_hallowen.png'}}"
+                      alt="{{imgtag.title}}" />
+                    <i class="icon-camera">
+                      <input type="file" accept="image/*" select-ng-files-img ng-model="fileImg" />
+                    </i>
+                  </div>
+                </div>
+                <p>Cambiar la contraseña:</p>
+                <div class="content-data" ng-class="{'active':alerts.n1}" data-tip="{{alerts.mensaje}}">
+                  <input class="margin" type="{{inputType.current}}" ng-model="configureProfile.passwordCurrent"
+                    ng-focus="alerts.n1=false;alerts.n2=false;alerts.n3=false;" placeholder="Contraseña actual" />
+                  <i class="icon-eye-6" ng-class="{'icon-eye-off-1':inputType.current == 'text'}"
+                    ng-click="inputType.current = (inputType.current == 'password'?'text':'password')"></i>
+                </div>
+                <div class="content-data" ng-class="{'active':alerts.n2}" data-tip="{{alerts.mensaje}}">
+                  <input class="margin" type="{{inputType.new}}" ng-model="configureProfile.passwordNew"
+                    ng-focus="alerts.n2=true;alerts.n1=false;alerts.n3=false;alerts.mensaje = 'La nueva contraseña debe tener como mínimo 6 caracteres e incluir por lo menos 1 letra en mayúscula, 1 número y 1 carácter especial (~!$%^&*_=+.@/-)';"
+                    ng-blur="alerts.n2=false" placeholder="Nueva contraseña" />
+                  <i class="icon-eye-6" ng-class="{'icon-eye-off-1':inputType.new == 'text'}"
+                    ng-click="inputType.new = (inputType.new == 'password'?'text':'password')"></i>
+                </div>
+                <div class="content-data" ng-class="{'active':alerts.n3}" data-tip="{{alerts.mensaje}}">
+                  <input class="margin" type="{{inputType.verify}}" ng-model="configureProfile.passwordVerify"
+                    ng-focus="alerts.n1=false;alerts.n2=false;alerts.n3=false;"
+                    placeholder="Confirma la nueva contraseña" />
+                  <i class="icon-eye-6" ng-class="{'icon-eye-off-1':inputType.verify == 'text'}"
+                    ng-click="inputType.verify = (inputType.verify == 'password'?'text':'password')"></i>
+                </div>
+                <input class="btn white-text default-background margin other" type="submit"
+                  ng-click="saveChanges(configureProfile)" value="Guardar Cambios" />
+              </form>
+
+              <a ng-click="descargaVolante()" ng-if="mostrarVolantes == '1'" class="black-text" ng-if="!viewMenu">
+                <i class="icon-print-3"></i>
+                <div class="notifi-text">
+                  <p>Volantes de Pago</p>
+                </div>
+              </a>
+              <a ng-if="codigorol == 'Funcionario' && !viewMenu" href="docs\directorio\Directorio_Telefonico.pdf"
+                target="_blank">
+                <i class="black-text icon-contacts"></i>
+                <div class="notifi-text">
+                  <p>Directorio</p>
+                </div>
+              </a>
+              <a ng-click="listado()" ng-if="codigorol == 'Funcionario' && !viewMenu">
+                <i class="icon-book-3" class="black-text"></i>
+                <div class="notifi-text">
+                  <p>Documentos Institucionales</p>
+                </div>
+              </a>
+              <!--Instructivos Empresas-->
+              <div class="btn-hover" ng-if="!viewMenu && inactivehome && inst_ips">
+                <i class="black-text icon-book-3"></i>
+                <div class="notifi-text">
+                  <p style="
+                        margin: 0 0 0.2em;
+                        color: #000000de;
+                        line-height: 1.4em;
+                      ">
+                    Instructivos
+                  </p>
+                </div>
+                <div class="menu-hover">
+                  <a href="docs/instructivos_empresa/GTIC-015-FR -  Instructivo - Registro e Ingreso a Genesis (Opcion Empresa).pdf"
+                    target="_blank" rel="noopener noreferrer">
+                    <i class="icon-file-pdf black-text"></i>
+                    <div class="notifi-text" style="width: 100%; padding: 0 1em">
+                      <p class="black-text" style="
+                            margin: 0 0 0.2em;
+                            color: #000000de;
+                            line-height: 1.4em;
+                          ">
+                        Registro e Ingreso a Genesis
+                      </p>
+                    </div>
+                  </a>
+                  <a href="docs/instructivos_empresa/GTIC-015-FR -  Instructivo - ACTUALIZACION DE DATOS DE LA EMPRESA (NOVEDADES).pdf"
+                    target="_blank" rel="noopener noreferrer">
+                    <i class="icon-file-pdf black-text"></i>
+                    <div class="notifi-text" style="width: 100%; padding: 0 1em">
+                      <p class="black-text" style="
+                            margin: 0 0 0.2em;
+                            color: #000000de;
+                            line-height: 1.4em;
+                          ">
+                        Actualizacion de Datos de la Empresa
+                      </p>
+                    </div>
+                  </a>
+                  <a href="docs/instructivos_empresa/GTIC-015-FR -  Instructivo - EMPRESAS - NOVEDADES & REGISTRO DE AFILIADOS.pdf"
+                    target="_blank" rel="noopener noreferrer">
+                    <i class="icon-file-pdf black-text"></i>
+                    <div class="notifi-text" style="width: 100%; padding: 0 1em">
+                      <p class="black-text" style="
+                            margin: 0 0 0.2em;
+                            color: #000000de;
+                            line-height: 1.4em;
+                          ">
+                        Novedades y Registro de Afiliados
+                      </p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <!-- <a ng-click="cambiarcontrasena()" ng-if="!viewMenu">
+                <i class="icon-key-1" class="black-text"></i>
+                <div class="notifi-text">
+                  <p>Cambio de Contraseña</p>
+                </div>
+              </a> -->
+              <a ui-sref="mara.logout" href="#/" ng-if="!viewMenu">
+                <i class="icon-logout-3" class="black-text"></i>
+                <div class="notifi-text">
+                  <p>Cerrar Sesion</p>
+                </div>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- final hallowen -->
+    </nav>
+    <style>
+      @font-face {
+        font-family: CFHalloween;
+        src: url("assets/fonts/CFHalloween-Regular.ttf") format('truetype');
+      }
+
+      #tituloGenesis {
+        font-family: CFHalloween !important;
+        animation: animationColorHalloween 8s infinite ease-in-out !important;
+        font-size: 3rem;
+        margin: 0.3rem;
+      }
+
+      @keyframes animationColorHalloween {
+        from {
+          color: #fdb832;
+          -webkit-text-stroke: 1px black;
+        }
+
+        50% {
+          color: black;
+          -webkit-text-stroke: 1px #fdb832;
+        }
+
+        to {
+
+          color: #fdb832;
+          -webkit-text-stroke: 1px black;
+        }
+      }
+
+      /* fantasma de hallowen */
+      .i-fastamita img {
+        width: 3rem;
+        vertical-align: sub;
+      }
+
+      .iconHouse {
+        width: 2rem;
+        position: relative;
+        border-radius: 30px;
+        cursor: pointer;
+        padding-top: 1.1rem;
+      }
+
+      .tag-a-fastamita:hover {
+        background-color: rgba(0, 0, 0, 0) !important;
+      }
+
+      /***** Variables para COLORES *****/
+      :root {
+        --colorVioleta8: #1b1824;
+      }
+
+      #banner_hallowen {
+        background: var(--colorVioleta8);
+        position: absolute;
+        width: 100%;
+      }
+
+      /* ===== BRUJA ===== */
+      #bruja {
+        width: 200px;
+        height: 150px;
+        position: relative;
+        top: 125px;
+        left: 50px;
+        background: url(https://raw.githubusercontent.com/saraygm/prueba/master/witch2.png) repeat-x;
+
+        animation: walk 0.75s steps(8) infinite;
+      }
+
+      /* Animación Bruja caminando */
+      @keyframes walk {
+        0% {
+          background-position: 0;
+        }
+
+        100% {
+          background-position: -1600px;
+        }
+      }
+
+      /* ===== ARBOLES ===== */
+      #arboles1 {
+        background: url(https://raw.githubusercontent.com/saraygm/prueba/master/arb1.png) repeat-x;
+        height: 320px;
+
+        animation: fondo 22s linear infinite;
+      }
+
+      #arboles2 {
+        background: url(https://raw.githubusercontent.com/saraygm/prueba/master/trees3.png) repeat-x;
+        height: 320px;
+
+        animation: fondo 25s linear infinite;
+      }
+
+      /* ===== SUELO ===== */
+      #suelo {
+        background: url(https://raw.githubusercontent.com/saraygm/prueba/master/rocas.png) repeat-x;
+        height: 320px;
+
+        animation: fondo 18s linear infinite;
+      }
+
+      /* ===== NUBES ===== */
+      #nubes {
+        background: url(https://raw.githubusercontent.com/saraygm/prueba/master/nubes8.png) repeat-x;
+        height: 320px;
+
+        animation: fondo 40s linear infinite;
+        zoom: 0.2;
+      }
+
+      /* ===== ESTRELLAS ===== */
+      #estrellas {
+        background: url(https://raw.githubusercontent.com/saraygm/prueba/master/estrellas2.png) repeat-x;
+        height: 65px;
+
+        animation: fondo 50s linear infinite;
+      }
+
+      /* ===== FANTASMAS ===== */
+      /* #fantasmas {
+    
+          background: url("assets/images/fantasmas.png") repeat-x;
+          height: 65px;
+  
+          animation: fondo 50s linear infinite;
+        } */
+
+      /* ===== LUNA ===== */
+      #luna {
+        background: url("assets/images/luna.png") repeat-x;
+        height: 64px;
+
+        animation: luna 500s linear infinite;
+      }
+
+      #brujas {
+        background: url("assets/images/moon.png") repeat-x;
+        height: 77px;
+
+        animation: brujas 55s linear infinite;
+      }
+
+      /* Animación Luna */
+      @keyframes luna {
+        0% {
+          background-position: 0;
+        }
+
+        100% {
+          background-position: 2220px;
+        }
+      }
+
+      @keyframes brujas {
+        0% {
+          background-position: 0;
+        }
+
+        100% {
+          background-position: 2220px;
+        }
+      }
+
+      /* ===== ANIMACION FONDOS =====*/
+      @keyframes fondo {
+        0% {
+          background-position: 2220px;
+        }
+
+        100% {
+          background-position: 0;
+        }
+      }
+
+      /* /// CALABAZA /// */
+      #face {
+        fill: #271d19;
+        animation: light 4s ease-in-out infinite alternate;
+      }
+
+      #pumpkin-body {
+        animation: darken 4s ease-in-out infinite alternate;
+      }
+
+      @keyframes light {
+        from {
+          fill: #271d19;
+        }
+
+        to {
+          fill: #fdb832;
+        }
+      }
+
+      @keyframes darken {
+        to {
+          opacity: 0.3;
+        }
+      }
+
+      @keyframes darken-background {
+        to {
+          background: #0e0701;
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+        .container_hallowen {
+          top: 15%;
+          left: 10%;
+        }
+      }
+
+      :root {
+        --basecolor: hsl(20, 70%, 40%);
+      }
+
+      /* Murcielago */
+      .bat-overlay {
+        position: absolute;
+        z-index: 10;
+        pointer-events: none;
+        margin-left: 10vw;
+      }
+
+      /* Bats*/
+      .bat-overlay>svg {
+        /* width: 100%; */
+        height: 14vw;
+        width: 30vw;
+        display: none;
+      }
+
+      .container_hallowen:hover+.bat-overlay>svg {
+        display: block;
+      }
+
+      .eye {
+        fill: var(--basecolor);
+      }
+
+      .shadow {
+        -webkit-filter: blur(6px);
+        filter: blur(6px);
+        opacity: 0.2;
+      }
+
+      .bat1 {
+        animation-direction: normal;
+        animation: move1 15s infinite;
+        animation-timing-function: ease-in-out;
+        transform-origin: 50% 50%;
+      }
+
+      .bat2 {
+        animation-direction: normal;
+        animation: move2 15s infinite;
+        animation-timing-function: ease-in-out;
+        transform-origin: 50% 50%;
+      }
+
+      .bat3 {
+        animation-direction: normal;
+        animation: move3 15s infinite;
+        animation-timing-function: ease-in-out;
+        transform-origin: 50% 50%;
+      }
+
+      .bat4 {
+        animation-direction: normal;
+        animation: move4 15s infinite;
+        animation-timing-function: ease-in-out;
+        transform-origin: 50% 50%;
+      }
+
+      .wing {
+        transform-origin: 50% 50%;
+        animation-direction: normal;
+        animation: wing 1s infinite;
+        animation-timing-function: ease-in-out;
+      }
+
+      .wing1 {
+        transform-origin: 50% 50%;
+        animation-direction: normal;
+        animation: wing1 1s infinite;
+        animation-timing-function: ease-in-out;
+      }
+
+
+      @keyframes move1 {
+        0% {
+          transform: translate(-140px, -70px) rotate(-10deg);
+        }
+
+        25% {
+          transform: translate(0px, -50px) rotate(10deg);
+        }
+
+        50% {
+          transform: translate(150px, 50px) rotate(-10deg);
+        }
+
+        75% {
+          transform: translate(-100px, 30px) rotate(10deg);
+        }
+
+        85% {
+          transform: translate(-110px, 90px) rotate(10deg);
+        }
+
+        100% {
+          transform: translate(-140px, -70px) rotate(-10deg);
+        }
+      }
+
+      @keyframes move2 {
+        0% {
+          transform: translate(150px, -70px) scale(1) rotate(10deg);
+        }
+
+        25% {
+          transform: translate(160px, -90px) scale(0.7) rotate(-10deg);
+        }
+
+        50% {
+          transform: translate(170px, -100px) scale(0.7) rotate(10deg);
+        }
+
+        75% {
+          transform: translate(105px, -80px) scale(1) rotate(-10deg);
+        }
+
+        100% {
+          transform: translate(150px, -70px) scale(1) rotate(10deg);
+        }
+      }
+
+      @keyframes move3 {
+        0% {
+          transform: translate(150px, 90px) rotate(10deg);
+        }
+
+        25% {
+          transform: translate(-150px, 90px) rotate(-10deg);
+        }
+
+        50% {
+          transform: translate(-160px, -80px) rotate(10deg);
+        }
+
+        75% {
+          transform: translate(-140px, -100px) rotate(-10deg);
+        }
+
+        100% {
+          transform: translate(150px, 90px) rotate(10deg);
+        }
+      }
+
+      @keyframes wing {
+        0% {
+          transform: translate(0px, 0px) scale(1) rotate(0deg);
+        }
+
+        50% {
+          transform: translate(0px, 0px) scaleX(0.5) rotate(-25deg);
+        }
+
+        100% {
+          transform: translate(0px, 0px) scale(1) rotate(0deg);
+        }
+      }
+
+      @keyframes wing1 {
+        0% {
+          transform: translate(0px, 0px) scale(1) rotate(0deg);
+        }
+
+        50% {
+          transform: translate(0px, 0px) scaleX(0.5) rotate(25deg);
+        }
+
+        100% {
+          transform: translate(0px, 0px) scale(1) rotate(0deg);
+        }
+      }
+
+      /* // style para hacer que caiga las arañas */
+      /* .confetti_corazon {
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          width: 100%;
+          height: 200px;
+          overflow: hidden;
+        }
+        .confetti_corazon-piece {
+          position: absolute;
+          top: 0;
+          opacity: 0;
+          z-index: 1;
+        }
+        .confetti_corazon-piece:nth-child(1) {
+          left: 4.7%;
+          -webkit-transform: rotate(38deg);
+          transform: rotate(38deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 473ms;
+          animation-delay: 473ms;
+          -webkit-animation-duration: 805ms;
+          animation-duration: 805ms;
+        }
+        .confetti_corazon-piece:nth-child(2) {
+          left: 9.4%;
+          -webkit-transform: rotate(76deg);
+          transform: rotate(76deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 151ms;
+          animation-delay: 151ms;
+          -webkit-animation-duration: 908ms;
+          animation-duration: 908ms;
+        }
+        .confetti_corazon-piece:nth-child(3) {
+          left: 14.1%;
+          -webkit-transform: rotate(67deg);
+          transform: rotate(67deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 145ms;
+          animation-delay: 145ms;
+          -webkit-animation-duration: 1044ms;
+          animation-duration: 1044ms;
+        }
+        .confetti_corazon-piece:nth-child(4) {
+          left: 18.8%;
+          -webkit-transform: rotate(9deg);
+          transform: rotate(9deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 56ms;
+          animation-delay: 56ms;
+          -webkit-animation-duration: 736ms;
+          animation-duration: 736ms;
+        }
+        .confetti_corazon-piece:nth-child(5) {
+          left: 23.5%;
+          -webkit-transform: rotate(-56deg);
+          transform: rotate(-56deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 209ms;
+          animation-delay: 209ms;
+          -webkit-animation-duration: 1032ms;
+          animation-duration: 1032ms;
+        }
+        .confetti_corazon-piece:nth-child(6) {
+          left: 28.2%;
+          -webkit-transform: rotate(-77deg);
+          transform: rotate(-77deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 24ms;
+          animation-delay: 24ms;
+          -webkit-animation-duration: 1034ms;
+          animation-duration: 1034ms;
+        }
+        .confetti_corazon-piece:nth-child(7) {
+          left: 32.9%;
+          -webkit-transform: rotate(-69deg);
+          transform: rotate(-69deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 198ms;
+          animation-delay: 198ms;
+          -webkit-animation-duration: 1034ms;
+          animation-duration: 1034ms;
+        }
+        .confetti_corazon-piece:nth-child(8) {
+          left: 37.6%;
+          -webkit-transform: rotate(74deg);
+          transform: rotate(74deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 256ms;
+          animation-delay: 256ms;
+          -webkit-animation-duration: 1002ms;
+          animation-duration: 1002ms;
+        }
+        .confetti_corazon-piece:nth-child(9) {
+          left: 42.3%;
+          -webkit-transform: rotate(-80deg);
+          transform: rotate(-80deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 239ms;
+          animation-delay: 239ms;
+          -webkit-animation-duration: 1172ms;
+          animation-duration: 1172ms;
+        }
+        .confetti_corazon-piece:nth-child(10) {
+          left: 47%;
+          -webkit-transform: rotate(-79deg);
+          transform: rotate(-79deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 39ms;
+          animation-delay: 39ms;
+          -webkit-animation-duration: 1043ms;
+          animation-duration: 1043ms;
+        }
+        .confetti_corazon-piece:nth-child(11) {
+          left: 51.7%;
+          -webkit-transform: rotate(-50deg);
+          transform: rotate(-50deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 457ms;
+          animation-delay: 457ms;
+          -webkit-animation-duration: 730ms;
+          animation-duration: 730ms;
+        }
+        .confetti_corazon-piece:nth-child(12) {
+          left: 56.4%;
+          -webkit-transform: rotate(41deg);
+          transform: rotate(41deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 257ms;
+          animation-delay: 257ms;
+          -webkit-animation-duration: 746ms;
+          animation-duration: 746ms;
+        }
+        .confetti_corazon-piece:nth-child(13) {
+          left: 61.1%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        }
+        .confetti_corazon-piece:nth-child(14) {
+          left: 65.8%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        }
+        .confetti_corazon-piece:nth-child(15) {
+          left: 70.5%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        }
+        .confetti_corazon-piece:nth-child(16) {
+          left: 75.2%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        }
+        .confetti_corazon-piece:nth-child(17) {
+          left: 79.9%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        }
+        .confetti_corazon-piece:nth-child(18) {
+          left: 84.6%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        }
+        .confetti_corazon-piece:nth-child(19) {
+          left: 89.3%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        }
+        .confetti_corazon-piece:nth-child(20) {
+          left: 94%;
+          -webkit-transform: rotate(-17deg);
+          transform: rotate(-17deg);
+          -webkit-animation: makeItRain 1000s infinite linear;
+          animation: makeItRain 1000s infinite linear;
+          -webkit-animation-delay: 388ms;
+          animation-delay: 388ms;
+          -webkit-animation-duration: 1009ms;
+          animation-duration: 1009ms;
+        } 
+        .confetti_corazon-piece:nth-child(4n) {
+          width: 20px;
+          height: 12px;
+          -webkit-animation-duration: 2000ms;
+          animation-duration: 2000ms;
+        }
+        .confetti_corazon-piece:nth-child(3n) {
+          width: 30px;
+          height: 10px;
+          -webkit-animation-duration: 2500ms;
+          animation-duration: 2500ms;
+          -webkit-animation-delay: 1000ms;
+          animation-delay: 1000ms;
+        }
+        @-webkit-keyframes makeItRain {
+          from {
+            opacity: 0;
+          }
+  
+          50% {
+            opacity: 1;
+          }
+  
+          to {
+            -webkit-transform: translateY(200px);
+            transform: translateY(200px);
+          }
+        }
+        @keyframes makeItRain {
+          from {
+            opacity: 0;
+          }
+  
+          50% {
+            opacity: 1;
+          }
+  
+          to {
+            -webkit-transform: translateY(200px);
+            transform: translateY(200px);
+          }
+        } */
+      /* // style para hacer que caiga las arañas */
+    </style>
+  </div>
+</header>

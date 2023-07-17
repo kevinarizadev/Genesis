@@ -1,0 +1,1053 @@
+<div id="gestionaut">
+    <div class="row" ng-init="validador_De_fecha()">
+        <div class="col s12 m12 l12 magazine margin widgets-tabs">
+            <div class="card-panel widgets-tabs col l12"
+                style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+                <div class="col s12 l12">
+                    <div class="row" ng-show="verAutorizaciones==true">
+                        <div class="col s4">
+                            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                            <h5>Consultar Censo</h5>
+                        </div>
+                        <div class="col s8" style="text-align: right; margin-top: 15px;">
+                            <div class="col s12 input-padding">
+                                Tipos de busqueda :
+                                <span>
+                                    <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences"
+                                        value="AFILIADO" id="afiliado" />
+                                    <label for="afiliado" ng-class="{'default-color': filterOptions=='AFILIADO' }"
+                                        style="height: 0!important">AFILIADO </label>
+                                </span>
+
+                                <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences"
+                                        value="AVANZADO" id="avanzado" />
+                                    <label style="height: 25px!important"
+                                        ng-class="{'default-color': filterOptions=='AVANZADO'}"
+                                        for="avanzado">No. CENSO</label>
+                                </span>
+
+                                <!-- <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences"
+                                        value="AUTORIZACION" id="autorizacion" />
+                                    <label style="height: 0!important"
+                                        ng-class="{'default-color': filterOptions=='AUTORIZACION' }"
+                                        for="autorizacion">DESCARGAR CENSO</label>
+                                </span> -->
+
+                                <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences"
+                                        value="AVANZADOS" id="avanzados" />
+                                    <label style="height: 25px!important"
+                                        ng-class="{'default-color': filterOptions=='AVANZADOS'}"
+                                        for="avanzados">AVANZADA</label>
+                                </span>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col s10">
+                            <!-- <form ng-submit="buscarAutorizaciones()"> -->
+                            <div>
+                                <div class="col s12" ng-show="filterOptions=='AFILIADO'">
+
+                                    <blockquote>
+                                        Ingrese tipo y número de documento del afiliado.
+                                    </blockquote>
+                                    <br>
+                                    <form ng-submit="buscarcenso()">
+                                        <div class="col s4">
+                                            <label style=" margin-top: -20px;">Tipo de documento</label>
+                                            <select id="tipodocumento" ng-model="tipodocumento"
+                                                class="select-chosen-eps " style="margin-top: -6px; padding-top: 5px;">
+                                                <option value="" disabled>SELECCIONAR</option>
+                                                <!--<option value="CC">CEDULA DE CIUDADANÍA</option>
+                                                <option value="TI">TARJETA DE IDENTIDAD</option>
+                                                <option value="RC">REGISTRO CIVIL</option>
+                                                <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                                                <option value="PA">PASAPORTE</option>
+                                                <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                                <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                                                <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                                                <option value="CD">CARNET DIPLOMÁTICO</option>
+                                                <option value="CN">NACIDO VIVO</option>
+                                                <option value="SC">SALVO CONDUCTO</option>-->
+                                                  <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == tipodocumento" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                                            </select>
+
+                                        </div>
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="documento" maxlength="15" type="text"
+                                                    class="form-control validate valid " ng-model="documento" ng-change="FormatSoloNumero2(documento)">
+                                                <a href="javascript:void(0)" id="buscarDocumentoLink"
+                                                    ng-click="buscarcenso()"><i
+                                                        style="position: absolute; top: 16px; right: 6px;"
+                                                        class="default-color fa fa-address-card"></i></a>
+                                                <label for="documento">Numero de documento</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col s1 right">
+                                            <div class="input-field col m12 s12">
+                                                <button class="btn white-text"
+                                                    style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                                        style="position: relative;" type="submit"
+                                                        class="material-icons prefix">search</i></button>
+                                            </div>
+                                        </div>
+
+
+
+
+                                    </form>
+
+
+
+
+                                </div>
+
+
+                                <div class="col row " ng-show="filterOptions=='AUTORIZACION'">
+                                    <div class="row">
+                                        <div class="col l12 m12 s12">
+                                            <h5>
+                                                <i class="icon-download"></i> Seleccionar el rango de fechas que desea
+                                                descargar
+                                            </h5>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col s4 no-padding label-new m-b">
+                                            <input required type="date"
+                                                class="margin border-none input-text-new w-100 m-l"
+                                                style="text-transform:uppercase" autocomplete="off"
+                                                ng-model="F_Inicio">
+                                            <label id="F_Inicio">Fecha Inicio</label>
+                                        </div>
+
+
+                                        <div class="col s4 no-padding label-new m-b">
+                                            <input required type="date"
+                                                class="margin border-none input-text-new w-100 m-l"
+                                                style="text-transform:uppercase" autocomplete="off"
+                                                ng-model="F_Fin" max = "{{sysdate | date : 'yyyy-MM-dd'}}">
+                                            <label id="F_Fin">Fecha Final</label>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col s12 m12 l12">
+                                        <div class="row center">
+                                            <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+                                                ng-click="descargar_censo()">DESCARGAR EXCEL</button>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+
+
+
+
+                                <div class="col s12" style="padding: 20px;" ng-show="filterOptions=='AVANZADO'">
+                                    <form ng-submit="buscarcensocodigo()">
+
+                                    <blockquote>
+                                        Ingrese número de censo.
+                                    </blockquote>
+                                    <br>
+
+                                    <div class="col s6">
+                                        <div class="input-field col m12 s12">
+                                            <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                                            <input id="codigocenso" type="text" ng-model="codigocenso" ng-change="FormatSoloNumero(codigocenso)">
+                                            <label for="codigocenso">Numero</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="col s4">
+                                        <div class="input-field col m12 s12">
+                                            <i class="material-icons prefix" style="margin-top: 10px;">location_on</i>
+                                            <input id="censo_ubicacion" type="text" ng-model="censo_ubicacion">
+                                            <label for="censo_ubicacion">Ubicación</label>
+                                        </div>
+                                    </div> -->
+
+                                    <div class="col s2" ng-show="filterOptions=='AVANZADO'">
+                                        <div class="input-field col m12 s12">
+                                            <button class="btn white-text"
+                                                style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                                    style="position: relative;" ng-click="buscarcensocodigo()"
+                                                    class="material-icons prefix">search</i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s12" style="padding: 20px;" ng-show="filterOptions=='AVANZADOS'">
+                        <ul class="StepProgress">
+                            <li class="StepProgress-item s">
+                                <strong class="noselectxtpqr">Busquedad avanzada</strong>
+                                <div class="row" id="seccion1">
+
+                                    <div class="row">
+                                        <div class="col l12 m12 s12">
+                                            <h5>
+                                                <i class="icon-download"></i> Seleccionar el rango de fechas que desea
+                                                descargar
+                                            </h5>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col s4 no-padding label-new m-b">
+                                            <input required type="date"
+                                                class="margin border-none input-text-new w-100 m-l"
+                                                style="text-transform:uppercase" autocomplete="off"
+                                                ng-model="F_Inicioa" max = "{{sysdate | date : 'yyyy-MM-dd'}}" ng-change="ValFecha('F_Inicioa')">
+                                            <label id="F_Inicioa">Fecha Inicio</label>
+                                        </div>
+
+
+                                        <div class="col s4 no-padding label-new m-b">
+                                            <input required type="date"
+                                                class="margin border-none input-text-new w-100 m-l"
+                                                style="text-transform:uppercase" autocomplete="off"
+                                                ng-model="F_Fina" max = "{{sysdate | date : 'yyyy-MM-dd'}}" ng-change="ValFecha('F_Fina')">
+                                            <label id="F_Fina">Fecha Final</label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </li>
+
+
+                            <li class="StepProgress-item s">
+                                <strong class="noselectxtpqr">Sección 2</strong>
+
+                                <div id="seccion2">
+
+                                    <div class="row">
+
+                                        <div class="col  s6">
+                                            <div class="row" style="margin: 0">
+                                                <label for="with_icon" style="margin-top: -20px;">NIT</label>
+                                            </div>
+                                            <input id="with_icon1" type="text" ng-model="nita" placeholder="Nit">
+                                        </div>
+
+                                        <div class="col  s6">
+                                            <div class="row" style="margin: 0">
+                                                <label for="with_icon" style="margin-top: -20px;">Responsable</label>
+                                            </div>
+                                            <input id="with_icon1" type="text" ng-model="responsablea"
+                                                placeholder="Documento">
+                                        </div>
+
+                                    </div>
+
+                                    <br>
+
+                                    <div class="row">
+
+                                        <div class="col l12 m12 s12">
+
+                                            <div class="col l3 m4 s12">
+                                                <label class="active">Regimen</label>
+                                                <select class="select-chosen-eps" ng-model="regimena">
+                                                    <option disabled value=''>SELECCIONAR</option>
+                                                    <option value="S">SUBSIDIADO </option>
+                                                    <option value="C">CONTRIBUTIVO</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col l3 m4 s12">
+                                                <label class="active">Estado</label>
+                                                <select class="select-chosen-eps" ng-model="estadoa">
+                                                    <option disabled value=''>SELECCIONAR</option>
+                                                    <option value="A">ACTIVOS </option>
+                                                    <option value="P">PROCESADOS</option>
+                                                    <option value="X">ANULADOS</option>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="col l3 m4 s12">
+                                                <label class="active">Departamento</label>
+                                                <select class="select-chosen-eps" ng-model="departamento"
+                                                    ng-change="filterMunicipio()">
+                                                    <option value="" ng-disabled="true">SELECCIONAR</option>
+                                                    <option ng-repeat="dato in Departamentos" value="{{dato.CODIGO}}">
+                                                        {{dato.NOMBRE}}</option>
+                                                </select>
+                                            </div>
+
+
+
+                                            <div class="col l3 m4 s12">
+                                                <label class="active">Municipio</label>
+                                                <select class="select-chosen-eps" ng-model="municipio">
+                                                    <option value="" ng-disabled="true">SELECCIONAR</option>
+                                                    <option ng-repeat="dato in Municipios" value="{{dato.CODIGO}}">
+                                                        {{dato.NOMBRE}}</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <br>
+
+                                </div>
+
+                                <div class="col s12 m12 l12">
+                                    <div class="row center">
+                                        <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+                                            ng-click="consulta_avanzada()">Descargar excel</button>
+                                    </div>
+
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                    <div
+                        ng-show="verAutorizaciones==false && (filterOptions=='AFILIADO' || filterOptions=='AUTORIZACION' || filterOptions=='AVANZADO')">
+                        <div class="col s12" style="margin-bottom: 15px">
+                            <div class="col s5">
+                                <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                                <h5>Información del Afiliado</h5>
+                            </div>
+                            <div class="col s12">
+                                <table class="responsive-table table-bordered" style="height:100px;">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                                            <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                                            <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO
+                                            </th>
+                                            <th data-field="GENERO" class="center-align">GENERO</th>
+                                            <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                                            <th data-field="EDAD" class="center-align">EDAD</th>
+
+                                            <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">
+                                                AFILIADO</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <!-- <tr data-ng-repeat="data in historico_censos"> -->
+
+                                            <td class="center-align">{{historico_censos[0].AFILIADO}}</td>
+                                            <td class="center-align">{{historico_censos[0].CENC_TIPO_DOCUMENTO}} -
+                                                {{historico_censos[0].CENC_AFILIADO}}
+                                            </td>
+                                            <td class="center-align">{{historico_censos[0].FECHA_NACIMIENTO}}</td>
+                                            <td class="center-align">{{historico_censos[0].GENERO}}</td>
+                                            <td class="center-align">{{historico_censos[0].REGIMEN}}</td>
+                                            <td class="center-align">{{historico_censos[0].EDAD}} </td>
+
+                                            <td class="center-align"><span
+                                                    class="status green">{{historico_censos[0].ESTADO_AFILIADO}}</span>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+                    <div class="row dashboard-wrapper content-container white" ng-show="filterOptions=='AVANZADO' "
+                        style="padding-bottom: 20px;margin-bottom: 0;">
+
+                        <div ng-show="vercodigocenso">
+                            <div class="col l12 m12 s12" style="position:relative">
+                                <div class="row margin">
+
+                                    <div class="col s12" style="padding: 0">
+                                        <div class="row">
+                                            <div class="col s12 default-background">
+                                                <span class="white-text"> <b>CONSULTA CENSOS
+                                                    </b></span>
+                                                <!-- <span class="white-text right"><b> IPS - {{aut.NOMBREIPS}}</b></span> -->
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <table class="striped table-bordered">
+                                        <thead>
+                                            <th class="text-center">CODIGO</th>
+                                            <th class="text-center">DATOS AFILIADO</th>
+                                            <th class="text-center">DIAGNOSTICO</th>
+                                            <th class="text-center">NIT</th>
+
+                                            <th class="text-center">IPS</th>
+
+
+                                            <!-- <th class="text-center">FECHA REGISTRADO</th> -->
+                                            <th class="text-center">FECHA DE INGRESO </th>
+                                            <th class="text-center">FECHA DE EGRESO</th>
+                                            <th class="text-center">DIAS DE ESTANCIA</th>
+                                            <!-- <th class="text-center">ESTADO</th> -->
+
+                                            <th class="text-center">RESPONSABLE</th>
+                                            <th class="text-center">EVOLUCIONES</th>
+
+
+                                        </thead>
+
+
+                                        <tbody>
+                                            <tr ng-repeat="data in historico_censos">
+                                                <td class="text-center">{{data.CENN_NUMERO}}</td>
+                                                <td> {{data.AFILIADO}}</td>
+                                                <td class="text-center">{{data.DIAC_NOMBRE}}</td>
+                                                <td class="text-center">{{data.NIT}}</td>
+                                                <td class="text-center">{{data.PRESTADOR}}</td>
+
+                                                <!-- <td class="text-center">{{data.CENF_FECHA_INGRESO}}</td> -->
+
+
+
+                                                <!-- <td> {{data.CENF_FECHA}}</td> -->
+                                                <td class="text-center">{{data.CENF_FECHA_INGRESO}}</td>
+                                                <td class="text-center">{{data.CENF_FECHA_EGRESO}}</td>
+                                                <td class="text-center">{{data.DIAESTANCIA}}</td>
+                                                <td class="text-center">{{data.RESPONSABLE}}</td>
+                                                <td class="text-center">
+                                                    <button class="blue btn-floating waves-effect waves-light"
+                                                        ng-click="detail(data.CENN_NUMERO, data.CENN_UBICACION)"><i
+                                                            class="material-icons">add_circle_outline</i></button>
+                                                </td>
+
+
+
+                                            </tr>
+
+                                        </tbody>
+                                        <tfoot ng-if="aut.historico_censos.length>0">
+                                            <tr>
+                                                <th class="center-align"> <b>Total: </b></th>
+                                                <th class="center-align">-</th>
+                                                <th class="center-align">-</th>
+                                                <th class="center-align">-</th>
+                                                <th class="center-align">${{getTotal(aut) }}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+
+
+                                </div>
+
+
+                                <!-- boton guardar actualizar-->
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- /////////////////////////////////////////////////////////////////////////  VER TABLA DE DATOS ////////////////////////////////////// -->
+                    <div class="col s12" style="padding-left: 0px; padding-right: 0px;" ng-hide="verAutorizaciones">
+                        <div class="charts" style="margin-bottom: 0px;width: 99%;">
+                            <div class="row">
+                                <div class="col s12 right">
+                                    <div class="input-field col s4 right">
+                                        <input id="buscarpro" type="text" ng-model="filtaut" ng-change="filter(filtaut)"
+                                            required>
+                                        <label for="buscarpro">Buscar:</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col l6 m6 s6" style="margin-bottom: 1em;">
+                                <div> Un resultado de <strong> {{historico_censos.length}} Censo, por el filtro
+                                        Anterior</strong>
+                                </div>
+
+                            </div>
+                            <div class="card-content foot4"
+                                style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                                <div class="col s11">
+                                    <h5 class="white-text">CONSULTA CENSO</h5>
+                                </div>
+                                <div class="col s1">
+                                    <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="limpiar()"
+                                            class="material-icons white-text">close</i></h5>
+                                </div>
+                            </div>
+                            <div class="card-action"  ng-repeat="d in listarAutorizacionesTemp | inicio: currentPage * pageSize | limitTo: pageSize ">
+                                <div class="row" style="margin-bottom: 0" ng-hide="showcenso == $index">
+                                    <div class="col s12" style="padding: 0">
+                                        <div class="row">
+                                            <div class="col s12 default-background">
+                                                
+                                                <span class="white-text"> <b> No. CENSO {{d.CENN_NUMERO}} - UBICACION {{d.CENN_UBICACION}}
+                                                    </b></span>
+                                                <!-- <span class="white-text right"><b> IPS - {{aut.NOMBREIPS}}</b></span> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <!-- <p><b>Diagnóstico Ingreso:</b> - {{aut.DIAGNOSTICO}}</p> -->
+                                            <div class="row">
+                                                <table class="striped table-bordered">
+                                                    <thead>
+                                                        <!-- <th class="text-center">No. CENSO</th> -->
+                                                        <th class="text-center">DIAGNOSTICO</th>
+                                                        <th class="text-center">NIT</th>
+                                                        <th class="text-center">IPS</th>
+                                                        <th class="text-center">FECHA DE INGRESO</th>
+                                                        <th class="text-center">FECHA DE EGRESO</th>
+                                                        <th class="text-center">DIAS DE ESTANCIA</th>
+                                                        <th class="text-center">RESPONSABLE</th>
+                                                        <th class="text-center">ESTADO</th>
+                                                        <th class="text-center">EVOLUCIONES</th>
+                                                        <th class="text-center">DETALLE DE GLOSAS</th>
+                                                        <th ng-if="ocultar_fecha" class="text-center">EDITAR FECHAS</th>
+                                                         <th ng-if="ocultar_fecha" class="text-center">EDITAR PRESTADOR</th>
+
+                                                    </thead>
+
+
+                                                    <tbody>
+                                                        <tr
+                                                            >
+                                                            <!-- <td class="text-center">{{d.CENN_NUMERO}}</td> -->
+                                                            <td> {{d.COD_DX}} - {{d.DIAC_NOMBRE}}</td>
+                                                            <td class="text-center">{{d.NIT}}</td>
+
+                                                            <td class="text-center">{{d.PRESTADOR}}</td>
+
+
+
+
+                                                            <!-- <td> {{d.CENF_FECHA}}</td> -->
+                                                            <td class="text-center">
+                                                                {{d.CENF_FECHA_INGRESO}}</td>
+                                                            <td class="text-center">
+                                                                {{d.CENF_FECHA_EGRESO}}</td>
+                                                            <td class="text-center">{{d.DIAESTANCIA}}</td>
+                                                            <td class="text-center">{{d.RESPONSABLE}}</td>
+                                                            <td class="text-center">{{d.ESTADO_CENSO}}</td>
+                                                            <td class="text-center">
+                                                                <button
+                                                                    class="blue btn-floating waves-effect waves-light"
+                                                                    ng-click="detail(d.CENN_NUMERO, d.CENN_UBICACION)"><i
+                                                                        class="material-icons">add_circle_outline</i></button>
+                                                            </td>
+
+                                                            
+                                                            <td class="text-center">
+                                                                <button
+                                                                    class="blue btn-floating waves-effect waves-light"
+                                                                    title="Descargar Formato"
+                                                                    ng-click="historial_glosa(d.CENN_NUMERO, d.CENN_UBICACION)" ng-disabled="d.CENV_TOTAL=='0'">
+                                                                    <i class="material-icons">comment</i>
+                                                                </button>
+                                                            </td>
+
+                                                            <td ng-if="ocultar_fecha" class="text-center">
+                                                                <button
+                                                                    class="btn-floating waves-effect waves-light red"
+                                                                    ng-click="abrirModal(d)" ng-disabled="d.CENF_FECHA_EGRESO == null">
+                                                                    <i class="material-icons">create</i></button>
+
+                                                            </td>
+                                                               <td ng-if="ocultar_fecha" class="text-center">
+                                                                <button
+                                                                    class="btn-floating waves-effect waves-light red"
+                                                                    ng-click="actualiza_prestador(d)" ng-disabled="d.CENF_FECHA_EGRESO == null">
+                                                                    <i class="material-icons">create</i></button>
+
+                                                            </td>
+
+
+
+                                                        </tr>
+
+                                                    </tbody>
+                                                    <tfoot ng-if="aut.historico_censos.length>0">
+                                                        <tr>
+                                                            <th class="center-align"> <b>Total: </b></th>
+                                                            <th class="center-align">-</th>
+                                                            <th class="center-align">-</th>
+                                                            <th class="center-align">-</th>
+                                                            <th class="center-align">${{getTotal(aut) }}</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                            <div class="row" ng-if="aut.ESTADO=='ANULADA' || aut.STATUS=='ANULADA'"
+                                                style="text-align: center;">
+                                                <span><b ng-if="aut.MOTIVO_ANULACION"> Motivo Anulación:</b>
+                                                    {{aut.MOTIVO_ANULACION ? aut.MOTIVO_ANULACION:'SIN MOTIVO DE ANULACIÓN'}}</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div ng-show="showcenso == $index">
+                                    <div class="row">
+                                        <div class="col s12 orange">
+                                            <span class="white-text"> <i class="icon-left-open-2" ng-click="backAut();"
+                                                    style="cursor: pointer;"></i> <b> AUTORIZACIÓN - {{tempaut.NUMERO}}
+                                                    -
+                                                    UBICACIÓN -
+                                                    {{tempaut.UBICACION}} </b></span>
+                                            <span class="white-text right"><b> IPS - {{tempaut.IPS}}</b></span>
+                                        </div>
+                                    </div>
+                                    <div style="padding: 20px">
+                                        <table class="striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">No. CENSO</th>
+                                                    <th class="text-center">AFILIADO</th>
+                                                    <th class="text-center">DIAGNOSTICO</th>
+                                                    <th class="text-center">IPS</th>
+                                                    <th class="text-center">RESPONSABLE</th>
+                                                    <th class="text-center">REGISTRO</th>
+                                                    <th class="text-center">INGRESO ESTANCIA</th>
+                                                    <th class="text-center">ESTADO</th>
+                                                    <th class="text-center">HISTORICO EVOLUCION MEDICA</th>
+                                                    <th class="text-center">HISTORICO CHAT ADMINISTRATIVO</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="s in censos">
+                                                    <td class="text-center">{{s.CODIGOCENSO}}</td>
+                                                    <td class="text-center">{{s.NOMBREAFILIADO}}</td>
+                                                    <td class="text-center">{{s.DIAGNOSTICO}}</td>
+                                                    <td class="text-center">{{s.NOMBREIPS}}</td>
+                                                    <td class="text-center">{{s.RESPONSABLE}}</td>
+                                                    <td class="text-center">{{s.FECHA}}</td>
+                                                    <td class="text-center">{{s.FECHAINGRESO}}</td>
+                                                    <td class="text-center" style="text-transform: uppercase;">
+                                                        <b style="color: {{s.ESTADO_CLASE}}">{{s.ESTADO}}</b>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <i ng-click="detail_censo(s.CODIGOCENSO,s.UBICACION);"
+                                                            class="icon-eye"
+                                                            style="font-size: 20px;cursor: pointer;"></i>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <i ng-click="openmodals('modalhistoricochat',s);"
+                                                            class="icon-chat-1"
+                                                            style="font-size: 20px;cursor: pointer;"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="listarAutorizacionesTemp.length==0" class="text-center"
+                                style="border: 1px solid #ddd">
+                                <h5 class="default-color"> No hay coincidencias encontradas</h5>
+                            </div>
+                            <ul ng-hide="inactivepro" style="text-align: center;" class="pagination">
+                                <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                                        ng-click="paso('back')">&laquo;</button></li>
+                                <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                                        class="btn-floating default-background"
+                                        ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                                <li><button ng-disabled='currentPage >= listarAutorizacionesTemp.length/pageSize - 1'
+                                        class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+
+                    <!-- MODAL CONTROL DE SEGUIMIENTO SEMANA AMBULATORIA -->
+                    <div id="modalfecha" class="modal" style="margin-top: 10%;">
+                        <div class="modal-content" style="padding: 0 !important;  ">
+                            <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                                <div class="card charts" style="margin-top: 0px;  margin-bottom: 0px;">
+
+                                    <div class="card-content foot4" style="padding: 0">
+                                        <div class="col s11">
+                                            <h5 class="white-text">Editar fecha de ingreso y egreso</h5>
+                                        </div>
+                                        <div class="col s1">
+                                            <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                                    ng-click="cerrarModal()" class="material-icons white-text">close</i>
+                                            </h5>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col s4 no-padding label-new m-b">
+                                            <input required type="date"
+                                                class="margin border-none input-text-new w-100 m-l"|
+                                                autocomplete="off"
+                                                ng-model="F_ingreso" max = "{{sysdate | date : 'yyyy-MM-dd'}}">
+                                            <label id="F_ingreso">Fecha Ingreso</label>
+                                        </div>
+
+
+                                        <div class="col s4 no-padding label-new m-b">
+                                            <input required type="date"
+                                                class="margin border-none input-text-new w-100 m-l"
+                                                 autocomplete="off"
+                                                ng-model="F_egreso" max = "{{sysdate | date : 'yyyy-MM-dd'}}" ng-hide="ocultaegreso">
+                                            <label id="F_egreso" ng-hide="ocultaegreso">Fecha Egreso</label>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <!-- final -->
+                                    <div class="row">
+
+                                        <div class="col s12">
+                                            <div class="input-button"
+                                                style="display: flex;justify-content: center;align-items: center;height: 76px;">
+                                                <center>
+                                                    <button class="btn btn-primary"
+                                                        style="height: 45px;line-height: 45px;"
+                                                        ng-click="editarfechas()" type="submit">GUARDAR CAMBIO</button>
+                                                </center>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="modal12" class="modal">
+                        <div class="modal-content">
+                          <h2 align="center">Resultados De Información</h2>
+                          <div class="row">
+                            <span ng-click="close()" class="close" title="Cerrar">&times;</span>
+                               <div>
+                                <table class="striped table-bordered">
+                                    <thead>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">NUMERO CENSO</th>
+                                        <th class="text-center">TIPO DOCUMENTO</th>
+                                        <th class="text-center">DOCUMENTO</th>
+                                        <th class="text-center">NOMBRE AFILIADO</th>
+                                        <th class="text-center">UBICACIÓN</th>
+                                        <th class="text-center">OPCION</th>
+                                        
+                                    </thead>
+
+
+                                    <tbody>
+                                        <tr ng-repeat="q in informaciondata">
+                                            <td class="text-center">{{$index+1}}</td>
+                                            <td class="text-center">{{q.CENN_NUMERO}}</td>
+                                            <td class="text-center">{{q.CENC_TIPO_DOCUMENTO}}</td>
+                                            <td class="text-center">{{q.CENC_AFILIADO}}</td>
+                                            <td class="text-center">{{q.AFILIADO}}</td>
+                                            <td class="text-center">{{q.DEPARTAMENTO}} - {{q.MUNICIPIO}} </td>
+                                            <td class="text-center"> 
+
+                                                <div class="tooltip">
+                                                    <i ng-click="SeleccionarData(q)" style="cursor: pointer;"
+                                                       class="Medium material-icons">remove_red_eye</i>
+                                                    <span class="tooltiptext">Elegir Censo</span>
+                                                 </div>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                               </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+
+                </div>
+
+
+
+                <style>
+                    .close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+  cursor: pointer;
+}
+                    .tab a:hover {
+                        background-color: #ddd !important;
+                        color: white !important;
+                    }
+
+                    /* Style the active class (and buttons on mouse-over) */
+                    .activebtn-step,
+                    .activebtn-step:hover {
+                        background-color: #2196f3 !important;
+                        color: white !important;
+                    }
+
+                    .step-item {
+                        height: 100px;
+                        width: 100px;
+                        border-radius: 100px;
+                        padding: 0px;
+                    }
+
+                    .donebtn-step,
+                    .donebtn-step:hover {
+                        background-color: #2196f3 !important;
+                        color: white !important;
+                    }
+
+                    .steper {
+                        width: 60%;
+                        display: inline-flex;
+                        text-align: center;
+                        padding-bottom: 10px;
+                        margin-left: 20%;
+                    }
+
+                    .step-divider {
+                        width: 100%;
+                        position: relative;
+                        top: 30px;
+                        margin-left: 0px;
+                        margin-right: 0px;
+                        margin-top: 20px;
+                    }
+
+                    .btn-step-content {
+                        position: relative;
+                        display: none;
+                        height: calc(100% - 132px);
+                        width: inherit;
+                        overflow: visible;
+                        margin-left: 41px;
+                        margin-right: 24px;
+                    }
+
+                    .step-option {
+                        background: #eee;
+                        height: 70px;
+                        position: absolute;
+                        bottom: -45px;
+                        width: 100%;
+                        margin-bottom: 6px;
+                        left: 0px;
+                        z-index: 2;
+                    }
+
+                    .back-step,
+                    .back-step:hover {
+                        margin-top: 7px;
+                        position: absolute;
+                        right: 80px;
+                        background: #ff4350 !important;
+                    }
+
+                    .flex {
+                        display: flex !important;
+                    }
+
+                    .btn-step {
+                        background-color: rgba(0, 0, 0, .3);
+                        color: white;
+                    }
+
+                    .hover-item:hover {
+                        background-color: rgba(221, 221, 221, 0.45);
+                    }
+
+                    .hover-item:active {
+                        background-color: rgba(221, 221, 221, 0.45);
+                    }
+
+                    .tabmenu>li:target>a {
+                        background-color: rgba(221, 221, 221, 0.45);
+                    }
+
+                    .requerido {
+                        color: red !important;
+                    }
+
+                    .tabactiva {
+                        background-color: rgba(206, 206, 206, 0.71);
+                    }
+
+                    .colorblack {
+                        color: black;
+                    }
+
+                    .itemsspam {
+                        color: white !important;
+                        border-radius: 12px !important;
+                        box-shadow: 2px 2px 3px 0px #ccc !important;
+                        position: relative !important;
+                        top: 5px !important;
+                        left: 11px !important;
+                        cursor: pointer;
+                    }
+
+                    .hovpanel:hover {
+                        background: #32364c2b;
+                        color: #ffa51b;
+                        cursor: pointer;
+                    }
+
+                    .mayus {
+                        text-transform: uppercase;
+                    }
+
+                    #header-fixed {
+                        position: fixed;
+                        top: 0px;
+                        display: none;
+                    }
+
+                    .cuadrado {
+                        width: 25vh;
+                        max-width: 240px;
+                        height: 25vh;
+                        max-height: 240px;
+                        position: relative;
+                        background: white;
+                        box-shadow: 0 0 8px 1px #c7c7c7;
+                    }
+
+                    .coloritem {
+                        color: black !important;
+                    }
+
+                    .autprocesada {
+                        background-color: #4CAF50 !important;
+                    }
+
+                    .autactiva {
+                        background-color: #ff9800 !important;
+                    }
+
+                    .switch label {
+                        font-weight: 600;
+                    }
+
+                    .switch label .lever.check-c {
+                        background-color: #818181 !important;
+                    }
+
+                    .switch label .lever.check-c:after {
+                        background-color: #26a69a;
+                    }
+
+                    .switch label>span.activo {
+                        color: #26a69a !important;
+                    }
+
+                    .text-center {
+                        text-align: center;
+                    }
+
+                    div#modaldetalle {
+                        top: 1% !important;
+                    }
+
+                    div#modalnovedades {
+                        top: 1% !important;
+                    }
+
+                    .outer {
+                        width: 1px;
+                        height: 100%;
+                        margin: auto;
+                        position: relative;
+                        overflow: hidden;
+                    }
+
+                    .inner {
+                        /* position: absolute; */
+                        width: 100%;
+                        height: 50vh;
+                        background: grey;
+                        top: 30%;
+                        box-shadow: 0px 0px 30px 20px grey;
+                    }
+
+                    .style-table-default {
+                        height: 350px;
+                        overflow: auto;
+                    }
+
+                    /* Style Scroll */
+                    .scrollTableDefault::-webkit-scrollbar {
+                        /* width */
+                        width: 5px;
+                    }
+
+                    .scrollTableDefault::-webkit-scrollbar-track {
+                        /* Track */
+                        background: #f1f1f1;
+                    }
+
+                    .scrollTableDefault::-webkit-scrollbar-thumb {
+                        /* Handle */
+                        background: #888;
+                    }
+
+                    .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+                        /* Handle on hover */
+                        background: #555;
+                    }
+
+                    .swal2-container {
+                        z-index: 10000 !important;
+                    }
+
+                    .clase-gray {
+                        color: #736a6a !important;
+                    }
+
+                    .textFactura {
+                        color: blue;
+                        font-size: 10px;
+                        font-weight: bold;
+                    }
+
+                    .text_Tutela {
+                        color: red;
+                        font-weight: bold;
+                    }
+                </style>
+            </div>
+        </div>

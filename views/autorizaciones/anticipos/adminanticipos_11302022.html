@@ -1,0 +1,1554 @@
+<div class="white newdesing position-relative" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer"
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+          onclick="location.reload();">
+          Administración - Anticipos
+        </h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1)" id="Sol" href class="active">Permisos
+              <i class="icon-users"></i></a>
+          </li>
+          <li class="tab col w-auto" ng-if="Quitar_NuevoSol">
+            <a ng-click="SetTab(2);" id="Nueva" href>Firma<i class="icon-pen"></i></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <div class="col s12 m6 l6 card margin" ng-show="Tabs==1">
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de usuarios con permisos en el módulo
+          ({{Usuario.List.Listado.length}})</strong>
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="Agregar_Usuario()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="Listar_Usuarios()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+      </div>
+    </div>
+    <div class="col s3 no-padding label-new right"
+      style="width: 25%;display: inline-flex;margin-right: 4rem;margin-top: 0.35rem;">
+      <input class="margin border-none input-text-new black-text gray-input w-100 m-l" style="text-align:right;"
+        autocomplete="off" placeholder="Buscar..." ng-model="Usuario.List.Filtro">
+    </div>
+    <div class="card-action" id="card-action"
+      style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+      <!-- ELEGIR -->
+      <div class="col s12">
+        <div style="max-height: 60vh;overflow:auto;border: 2px solid;" class="default-color">
+          <table id="tabla_modal_ENTREGA" class=" highlight" style="width:100%;color: black;">
+            <thead class="default-linear-gradient">
+              <th class="center" style="cursor:pointer">#</th>
+              <th class="center" style="cursor:pointer" ng-click="sortBy2('CEDULA')">Cédula
+                <span class="sortorder2" ng-show="propertyName2 == 'CEDULA'" ng-class="{reverse2: reverse2}"></span>
+              </th>
+              <th class="center" style="cursor:pointer" ng-click="sortBy2('NOMBRE')">Funcionario
+                <span class="sortorder2" ng-show="propertyName2 == 'NOMBRE'" ng-class="{reverse2: reverse2}"></span>
+              </th>
+              <th class="center" style="cursor:pointer" ng-click="sortBy2('CARGO_NOM')">Cargo
+                <span class="sortorder2" ng-show="propertyName2 == 'CARGO_NOM'" ng-class="{reverse2: reverse2}"></span>
+              </th>
+              <th class="center" style="cursor:pointer" ng-click="sortBy2('UBICACION')">Ubicación
+                <span class="sortorder2" ng-show="propertyName2 == 'UBICACION'" ng-class="{reverse2: reverse2}"></span>
+              </th>
+              <!-- <th class="center" style="cursor:pointer">Fecha</th> -->
+              <th class="center" style="cursor:pointer" ng-click="sortBy2('ACCION')">Crear
+                Anticipos
+                <span class="sortorder2" ng-show="propertyName2 == 'ACCION'" ng-class="{reverse2: reverse2}"></span>
+              </th>
+              <th class="center" style="cursor:pointer" ng-click="sortBy2('ESTADO')">Estado
+                <span class="sortorder2" ng-show="propertyName2 == 'ESTADO'" ng-class="{reverse2: reverse2}"></span>
+              </th>
+            </thead>
+            <tbody id="idpro">
+              <tr class="cursor-pointer"
+                ng-repeat="x in Usuario.List.Listado | filter:Usuario.List.Filtro | orderBy:propertyName2:reverse2">
+                <td class="center" ng-click="Abrir_Modal_Usuario(x)">{{$index + 1}}</td>
+                <td class="center" ng-click="Abrir_Modal_Usuario(x)">{{x.CEDULA}}</td>
+                <td class="center" ng-click="Abrir_Modal_Usuario(x)">{{x.NOMBRE}} <i class="color icon-pencil-alt-1"
+                    ng-show="x.FIRMA" title="Firma Digital"></i></td>
+                <td class="center" ng-click="Abrir_Modal_Usuario(x)">{{x.CARGO_NOM}}</td>
+                <td class="center" ng-click="Abrir_Modal_Usuario(x)">{{x.UBICACION}}</td>
+                <td class="center" ng-click="Abrir_Modal_Usuario(x)">
+                  <div class="tooltip" ng-if="x.ACCION == '1' && x.DIOS == null">
+                    <i class="icon-ok-circle default-color" style="font-size: 16px;"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Si</span>
+                  </div>
+                  <div class="tooltip" ng-if="x.ACCION == '0' && x.DIOS == null">
+                    <i class="icon-cancel-circled2 default-color" style="font-size: 16px;"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">No</span>
+                  </div>
+                </td>
+                <td class="center">
+                  <div class="tooltip" ng-if="x.ESTADO == 'A' && x.DIOS == null ">
+                    <i class="icon-circle Con_pulse_A"
+                      style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                      ng-click="In_Ac_Usuario(x)"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Activo</span>
+                  </div>
+                  <div class="tooltip" ng-if="x.ESTADO == 'I' && x.DIOS == null">
+                    <i class="icon-circle Con_pulse_X"
+                      style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                      ng-click="In_Ac_Usuario(x)"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- //-// -->
+    </div>
+  </div>
+
+  <div class="col s12 m6 l6 card margin" ng-show="Tabs==2">
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">Registro de Firma
+        <strong class="switch" style="font-weight:600"></strong>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="Hoja2_Limpiar()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card-action" id="card-action"
+      style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+      <div class="row" style="margin-bottom: 0;height: 20vh;">
+        <div class="col s4 no-padding label-new m-b">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off" id="Hoja2_Numero"
+            ng-model="Hoja2.Documento" ng-keyup="FormatSoloNumero('Hoja2_Numero');KeyFind_Usuario($event)">
+          <label ng-show="Hoja2.Nombre == '' ">Documento</label>
+          <label ng-show="Hoja2.Nombre != ''">Documento - ({{Hoja2.Nombre}})</label>
+          <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+            ng-click="Hoja2_Buscar_Usuario()"></i>
+        </div>
+
+        <div class="col s4 no-padding label-new m-b select_maxheigth" ng-show="Hoja2.Status >= 1">
+          <select class="select-new-style gray-input m-l" style="box-shadow: none;" ng-model="Hoja2.Cargo"
+            ng-change="Hoja2_SelCargo()">
+            <option value="" disabled>SELECCIONAR</option>
+            <option value="34">Auditor Médico Regional</option>
+            <option value="82">Gerente Regional</option>
+            <option value="87">Especialista Nacional De Autorizaciones</option>
+            <option value="70">Coordinador Nacional De Autorizaciones</option>
+            <option value="101">Subdirector Nacional de Salud</option>
+            <option value="83">Director De Salud</option>
+          </select>
+          <label>Cargo del funcionario</label>
+        </div>
+
+        <div class="col s4 no-padding label-new m-b" ng-show="Hoja2.Status >= 2">
+          <label class="m-l" style="width: max-content;">Firma</label>
+          <div class="file-field input-field gray-input m-l" style="margin: 0;width: -webkit-fill-available;">
+            <div class="right">
+              <span class="black-text"><i class="icon-folder-open-1 default-color"
+                  style="line-height: 2rem;"></i></span>
+              <input type="file" id="Hoja2_Input">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path" type="text" placeholder="Adjunte un archivo (pdf)" readonly
+                style="border-radius: 0;height: 2rem;border-bottom: 0;" id="Hoja2_Input_Text" ng-model="Hoja2.Archivo"
+                ng-change="loadFile()">
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 center" ng-show="Hoja2.Status >= 3">
+          <button style="margin: auto;padding: 0rem 3rem;" class="btn default-linear-gradient" ng-click="Hoja2_Ver_Formato()">Ver
+            Formato
+          </button>
+          <button style="margin: auto;padding: 0rem 3rem;" class="btn default-linear-gradient" ng-click="Hoja2_Guardar_Firma()">Guardar Firma
+          </button>
+        </div>
+
+      </div>
+
+      <div class="col s6 center" id="tab2" ng-show="Hoja2.Status >= 3" style="max-height: 50vh;overflow-y: auto;">
+        <table id="table1" width="100%" style="border: #FFF;font-family: Open Sans, sans-serif; margin:auto;">
+
+          <tr style="font-weight:600;">
+            <td colspan="1" rowspan="3" style="text-align: center;width:20%">
+              <img src="https://genesis.cajacopieps.com//assets/images/cajacopi.png" width=80px; height="40px">
+            </td>
+            <td colspan="6" rowspan="2" style="width: 60%;text-align: center;font-weight:600;padding:0.1% 0%;">FORMATO
+              DE SOLICITUD DE ANTICIPO</td>
+            <td colspan="2">
+              Código GPB-FR-04-AU
+            </td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="2">Version: 01</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="6" style="text-align: center;padding:1% 0%;">
+              PROCEDIMIENTO DE ANTICIPOS PARA PRESTADORES DE SERVICIOS DE SALUD</td>
+            <td colspan="2">Fecha: Mayo 2019</td>
+          </tr>
+          <tr style="font-weight:600;border-bottom: 12px solid #1a2e63;">
+            <td colspan="1" style="border-right:white">
+              FECHA DE SOLICITUD:</td>
+            <td colspan="3" style="border-left:white;text-align: center;">XXX</td>
+            <td colspan="1" style="width:9%;text-align: center;">SECCIONAL:</td>
+            <td colspan="2" style="text-align: center;">XXX</td>
+            <td colspan="1" style="width:5%;">CONSECUTIVO</td>
+            <td colspan="1" style="width:14%;text-align: center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" rowspan="2" style="background-color:#1a2e63;color:white;padding:1% 0%;">PARA</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;">NOMBRE DEL USUARIO</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;">IDENTIFICACIÓN</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">MUNICIPIO DE RESIDENCIA</td>
+            <td colspan="6">XXX</td>
+            <td colspan="1">CÓDIGO DANE</td>
+            <td colspan="1" style="text-align:center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">MUNICIPIO DE ATENCIÓN DEL
+              PACIENTE</td>
+            <td colspan="6">XXX</td>
+            <td colspan="1">CÓDIGO DANE</td>
+            <td colspan="1" style="text-align:center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">COBERTURA</td>
+            <td colspan="1" style="width:10%">INCLUIDA EN EL PBS</td>
+            <td colspan="2" style="text-align:center;width:18%;">X</td>
+            <td colspan="1" style="width:12%">NO INCLUIDA EN EL PBS</td>
+            <td colspan="1" style="text-align:center;">X</td>
+            <td colspan="2" style="width:17%">NÚMERO DE PRESCRIPCIÓN MIPRES</td>
+            <td colspan="1" style="text-align:center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" rowspan="2" style="background-color:#1a2e63;color:white;padding:1% 0%;">CUMPLIMIENTO A:</td>
+            <td colspan="1">TUTELA</td>
+            <td colspan="2" style="text-align:center;">X</td>
+            <td colspan="1">MEDIDA PROVISIONAL</td>
+            <td colspan="1" style="text-align:center;">X</td>
+            <td colspan="2">DEFICIT DE RED</td>
+            <td colspan="1" style="text-align:center;">X</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1">INCIDENTE DE DESACATO</td>
+            <td colspan="7" style="text-align:center;">X</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">FECHA DE RADICACIÓN DEL SERVICIO
+              SOLICITADO</td>
+            <td colspan="8" style="text-align:center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;">TIPO DE SERVICIO</td>
+            <td colspan="1" style="">PROCEDIMIENTOS</td>
+            <td colspan="1" style="text-align:center;width: 16%;">X</td>
+            <td colspan="1" style="">CONSULTAS</td>
+            <td colspan="1" style="text-align:center;">X</td>
+            <td colspan="1" style="">MEDICAMENTOS</td>
+            <td colspan="1" style="text-align:center;width:16%;">X</td>
+            <td colspan="1" style="">TRANSPORTE</td>
+            <td colspan="1" style="text-align:center;width:19%;">X</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">DESCRIPCIÓN DEL SERVICIO
+              SOLICITADO</td>
+            <td colspan="8" style="text-align:center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">DIAGNÓSTICO:</td>
+            <td colspan="8" style="text-align:center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">JUSTIFICACIÓN TÉCNICO CIENTÍFICA
+              DEL SERVICIO SOLICITADO</td>
+            <td colspan="8" style="text-align:center;">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;padding:1% 0%;">VALOR DEL ANTICIPO</td>
+            <td colspan="8" style="text-align:center;">$XXX</td>
+          </tr>
+          <tr style="font-weight:600;text-align:center;">
+            <td colspan="9" style="background-color:#1a2e63;color:white;">DATOS DEL PRESTADOR</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:whitE;">NIT</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:whitE;">NOMBRE DE LA IPS A LA QUE SE LE AUTORIZA EL
+              SERVICIO</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:whitE;">BANCO</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:whitE;">NOMBRE DE LA CUENTA</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:whitE;">No DE CUENTA</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:whitE;">TIPO DE CUENTA</td>
+            <td colspan="3" style="text-align:center;">AHORRO</td>
+            <td colspan="1" style="text-align:center;">X</td>
+            <td colspan="3" style="text-align:center;">CORRIENTE</td>
+            <td colspan="3" style="text-align:center;">X</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:whitE;">MEDIO DE PAGO</td>
+            <td colspan="3" style="text-align:center;">CONSIGNACIÓN</td>
+            <td colspan="1" style="text-align:center;">X</td>
+            <td colspan="1" style="text-align:center;">TRANSFERENCIA</td>
+            <td colspan="1" style="text-align:center;">X</td>
+            <td colspan="1" style="text-align:center;">OTRO</td>
+            <td colspan="1" style="text-align:center;">X</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1" style="background-color:#1a2e63;color:white;">SE ANEXAN LOS SIGUIENTES SOPORTES</td>
+            <td colspan="8">SOLICITUD DE SERVICIO, COPIA DE HISTORIA CLINICA, FORMATO MIPRES, FOTOCOPIA DE CEDULA DE
+              CIUDADANIA, FOTOCOPIA DEL ADRES ACTUALIZADO, COTIZACIONES, COPIA DE LA TUTELA, INCIDENTE O MEDIDA
+              PROVISIONAL (SI ES EL CASO), CERTIFICACIÓN BANCARIA, RUT, CERTIFICACIÓN DE EXISTENCIA Y REPRESENTACIÓN
+              LEGAL, HABILITACIÓN (ESTAS DOS ULTIMAS APLICAN PARA PSS NUEVOS EN LA EPS)</td>
+          </tr>
+          <tr style="font-weight:600;">
+            <td colspan="1">OBSERVACIONES:</td>
+            <td colspan="8">XXX</td>
+          </tr>
+          <tr style="font-weight:600;text-align:center;">
+            <td colspan="4" style="height: 10px;border-right:white;">
+              <div class="Firma" style="background-image:url({{Hoja2.Cargos.Archivo_Url_34}});"></div>
+            </td>
+            <td colspan="5" style="height: 10px;border-left:white;">
+              <div class="Firma" style="background-image:url({{Hoja2.Cargos.Archivo_Url_82}});"></div>
+            </td>
+          </tr>
+          <tr style="font-weight:600;background-color:#1a2e63;color:white;text-align:center;margin-top: -40px;">
+            <td colspan="4">APROBADO DEL AUDITOR MÉDICO SECCIONAL</td>
+            <td colspan="5">APROBADO DEL COORDINADOR SECCIONAL</td>
+          </tr>
+
+          <tr style="font-weight:500;text-align:center;">
+            <td colspan="4" style="height: 65px;border-right:white;">
+              <div class="Firma" style="background-image:url({{Hoja2.Cargos.Archivo_Url_87}});"></div>
+            </td>
+            <td colspan="5" style="height: 65px;border-left:white;">
+              <div class="Firma" style="background-image:url({{Hoja2.Cargos.Archivo_Url_70}}); width: 300px;"></div>
+            </td>
+          </tr>
+          <tr style="font-weight:600;background-color:#1a2e63;color:white;text-align:center;">
+            <td colspan="4">APROBADO DEL ESPECIALISTA NACIONAL DE AUTORIZACIONES</td>
+            <td colspan="5">APROBADO DEL COORDINADOR NACIONAL DE AUTORIZACIONES</td>
+          </tr>
+          <tr style="font-weight:600;text-align:center;">
+            <td colspan="4" style="height: 65px;border-right:white;">
+              <div class="Firma" style="background-image:url({{Hoja2.Cargos.Archivo_Url_101}});"></div>
+            </td>
+            <td colspan="5" style="height: 65px;border-left:white;">
+              <div class="Firma" style="background-image:url({{Hoja2.Cargos.Archivo_Url_83}});"></div>
+            </td>
+          </tr>
+          <tr style="font-weight:600;background-color:#1a2e63;color:white;text-align:center;">
+            <td colspan="4">APROBADO DEL SUBDIRECTOR NACIONAL DE SERVICIOS DE SALUD</td>
+            <td colspan="5">APROBADO DEL DIRECTOR DE SALUD</td>
+          </tr>
+        </table>
+      </div>
+      <!-- //-// -->
+    </div>
+  </div>
+
+
+  <div id="modal_signature" class="modal"
+    style="margin: 0 auto;width: 320px;top:0px !important;height: 209px;overflow: hidden;">
+    <div class="card-content clearfix">
+      <div class="foot4 divcardcustom">
+        <div class="text-al divcardcustom2" style="text-align: center;">
+          Firma Digital
+        </div>
+        <div class="col s12 m12 s12" style="background-color: white;margin-bottom: -20px;">
+          <div class="col s12 m12 s12">
+            <div class="preview center">
+              <canvas></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- //////////// -->
+        <div class="foot4 divcardcustom" style="position: fixed;">
+          <div class="text-al divcardcustom2" style="text-align: center;">
+            <span id="Estado_Firma"></span>
+          </div>
+        </div>
+        <!-- //////////// -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- /////////////////////////////////////////MODAL ADMIN///////////////////////////////////////// -->
+  <div id="modal_Usuario" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="card-content default-linear-gradient border-radius-none white-text">
+        <div class="col s11">
+          <h5 class="margin">Permisos</h5>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12 m12 l12">
+          <!-- CAMPOS -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" readonly
+              ng-model="Usuario.Form.Nombre">
+            <label>Funcionario</label>
+          </div>
+          <div class="col s12 m12 l12">
+            <div class="col s6 no-padding label-new m-b select_maxheigth"
+              style="margin-bottom:3rem;background-color: #f1f3f4;">
+              <select class="select-new-style gray-input m-l m-b" style="box-shadow: none;" watch
+                ng-model="Usuario.Form.Func_Ubi">
+                <option value="8001">Atlántico</option>
+                <option value="13001">Bolivar</option>
+                <option value="15001">Boyacá</option>
+                <option value="20001">Cesar</option>
+                <option value="23001">Cordoba</option>
+                <option value="44001">Guajira</option>
+                <option value="47001">Magdalena</option>
+                <option value="50001">Meta</option>
+                <option value="70001">Sucre</option>
+                <option value="1">Nacional</option>
+              </select>
+              <label>Ubicación del Funcionario</label>
+            </div>
+            <div class="col s6 no-padding label-new m-b select_maxheigth"
+              style="margin-bottom:3rem;background-color: #f1f3f4;">
+              <select class="select-new-style gray-input m-l m-b" style="box-shadow: none;" watch
+                ng-model="Usuario.Form.Func_Cargo">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="26">Asistente Seccional De Autorizaciones</option>
+                <option value="34">Auditor Médico Seccional</option>
+                <option value="82">Coordinador Seccional</option>
+                <option value="6">Asistente Nacional De Autorizaciones</option>
+                <option value="87">Especialista Nacional De Autorizaciones</option>
+                <option value="70">Coordinador Nacional De Autorizaciones</option>
+                <option value="101">Subdirector Nacional de Salud</option>
+                <option value="83">Director De Salud</option>
+                <option value="14">Asistente Nacional De Pagaduria</option>
+              </select>
+              <label>Cargo del Funcionario</label>
+            </div>
+          </div>
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" ng-model="Usuario.Form.Correo"
+              title="Este correo es solo para notificarle la gestión realizada de cada anticipo, este correo no cambia al que tiene actualmente en Genesis">
+            <label>Correo de Notificación</label>
+          </div>
+          <!-- <div class="col l12 m12 s12 row"> -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;background-color: #f1f3f4;"
+            ng-show="Usuario.Form.Cargo == '26' || Usuario.Form.Cargo == '141' || Usuario.Form.Cargo == '34'">
+            <select class="select-new-style gray-input m-l m-b" style="box-shadow: none;" watch
+              ng-model="Usuario.Form.Crear">
+              <option value="" disabled>SELECCIONAR</option>
+              <option value="1">SI</option>
+              <option value="0">NO</option>
+            </select>
+            <label>Crear Anticipos</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b select_maxheigth"
+            style="margin-bottom:3rem;background-color: #f1f3f4;" ng-show="Mostrar_Ubi_Sub">
+            <select class="select-new-style gray-input m-l m-b" style="box-shadow: none;" watch
+              ng-model="Usuario.Form.Subd">
+              <option value="8" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==8">Atlántico</option>
+              <option value="13" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==13">Bolivar</option>
+              <option value="15" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==15">Boyacá</option>
+              <option value="20" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==20">Cesar</option>
+              <option value="23" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==23">Cordoba</option>
+              <option value="44" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==44">Guajira</option>
+              <option value="47" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==47">Magdalena</option>
+              <option value="50" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==50">Meta</option>
+              <option value="70" ng-show="Rol_Ubicacion_N==1 || Rol_Ubicacion_N==70">Sucre</option>
+              <option value="XXX">Ninguno</option>
+            </select>
+            <label>Ubicación de la Seccional</label>
+          </div>
+          <!-- </div> -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" readonly
+              ng-model="Usuario.Form.Fecha_Agregado">
+            <label>Fecha de registro</label>
+          </div>
+
+          <div class="col l12" style="text-align:center;margin-bottom: 20px;" ng-show="Btn_Actualizar_Usu">
+            <button style="border-radius: 20px;" class="btn default-linear-gradient" ng-click="Modificar_Usuario()"><i
+                class="icon-down-circled"></i>Actualizar<i class="icon-down-circled"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+  <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+
+  <style>
+    #table1,
+    #table1 tr th,
+    #table1 tr td {
+      border: .5px solid black;
+      border-collapse: collapse;
+      font-size: 7px;
+      border-spacing: 0 0 !important;
+    }
+
+    .Firma {
+      background-size: cover;
+      width: 200px;
+      height: 85px;
+      margin: auto;
+      background-position-y: 0;
+      filter: grayscale(100%);
+    }
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+    .label-new>label {
+      display: table;
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+
+    .swal2-image {
+      filter: grayscale(100%) !important;
+    }
+
+    /* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  */
+    #tabla_modal_ENTREGA th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+
+    .Capitalize_Text-new:first-letter {
+      text-transform: uppercase !important;
+    }
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    .input-file-radius-cargado {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      background-color: #03c5146e !important;
+    }
+
+    .input-file-radius-cargado2 {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      background-color: #03c5146e !important;
+    }
+
+
+    .input-file-radius-obligatorio {
+      background-color: #f54b4bb0 !important;
+    }
+
+    .input-file-radius-opcional {
+      background-color: #0000004f !important;
+    }
+
+    .input-file-radiu {
+      border-radius: 10px;
+    }
+
+    .salidaefe {
+      animation: slide2 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) 0s 1 normal both running;
+    }
+
+    @keyframes slide2 {
+
+      0% {
+        -webkit-transform: scaleY(0);
+        transform: scaleY(1);
+        -webkit-transform-origin: 100% 0%;
+        transform-origin: 100% 0%;
+        opacity: 1;
+      }
+
+      100% {
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0);
+        -webkit-transform-origin: 100% 0%;
+        transform-origin: 100% 0%;
+        opacity: 0;
+      }
+    }
+
+    .selctt:hover {
+      background-color: rgba(0, 0, 0, 0.13);
+    }
+
+    .pulse2 {
+      display: block;
+      border-radius: 50%;
+      background: '';
+      /* cursor: pointer; */
+      box-shadow: 0 0 0 rgba(67, 160, 71, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+      }
+
+      50% {
+        transform: scale3d(1.25, 1.25, 1.25);
+      }
+
+      100% {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+      }
+    }
+
+    .avchat {
+      padding: 0 !important;
+      width: 40px !important;
+      height: 40px !important;
+    }
+
+    .avletra {
+      color: #ffffff;
+      font-size: xx-large;
+      margin-top: 25%;
+    }
+
+    .avtitle {
+      /* margin-top: 20px; */
+      margin: 0px 0px 0px -20px;
+      line-height: normal;
+      position: fixed;
+      /* display: list-item; */
+      margin-left: -10px !important;
+      font-size: 13px !important;
+      color: black !important;
+    }
+
+    .switch label .lever {
+      background-color: #1a2e63;
+      width: 60px;
+      height: 29px;
+    }
+
+    .switch label .lever:after {
+      left: 4px;
+      top: 4px;
+      background-color: #fff !important;
+    }
+
+    .switch label .lever.check-c {
+      background-color: #1a2e63 !important;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      left: 35px;
+    }
+
+    /* // */
+    .lever.check-c:hover span.lever.check-c:after {
+      width: 100px !important;
+    }
+
+    /* // */
+
+    .react-tagsinput-tag a:before {
+      content: "\f00d";
+      font-family: FontAwesome;
+    }
+
+    .react-tagsinput-tag:hover {
+      padding-left: 8px;
+      padding-right: 16px;
+    }
+
+    .react-tagsinput-tag:hover a {
+      opacity: 1;
+      padding-right: 4px;
+    }
+
+    .react-tagsinput-tag {
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      margin: 3px 10px 5px 0;
+      padding: 2px 12px;
+      border: 1px solid #2196f3;
+      border-radius: 3px;
+      color: #2196f3;
+      font-weight: 500;
+      font-size: 12px;
+      text-transform: uppercase;
+      display: inline-block;
+      vertical-align: middle;
+      font-weight: 700;
+    }
+
+    .react-tagsinput-remove {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .react-tagsinput-tag a {
+      color: #F00;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 0;
+      position: absolute;
+      right: 0;
+      opacity: 0;
+      text-align: right;
+      text-decoration: none;
+      top: 0;
+      width: 100%;
+      z-index: 2;
+    }
+
+    .chip:hover i {
+      opacity: 1 !important;
+    }
+
+
+    .Ani_Down {
+      animation: slide 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) normal both;
+      /* animation: slide 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) 0s 1 normal both running; */
+      /* animation-iteration-count: 1; */
+    }
+
+    @keyframes slide {
+      0% {
+        filter: blur(1px);
+        opacity: 0;
+      }
+
+      100% {
+        filter: blur(0px);
+        opacity: 1;
+      }
+    }
+
+
+    /* @keyframes slide {
+      0% {
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0);
+        -webkit-transform-origin: 100% 0%;
+        transform-origin: 100% 0%;
+        opacity: 0;
+      }
+
+      100% {
+        -webkit-transform: scaleY(0);
+        transform: scaleY(1);
+        -webkit-transform-origin: 100% 0%;
+        transform-origin: 100% 0%;
+        opacity: 1;
+      }
+    } */
+
+    #H1_Tabla td,
+    #H1_Tabla th {
+      font-size: 11px !important;
+      text-align: center !important;
+    }
+
+
+
+    .VistaFile .Iframe {
+      visibility: hidden;
+      /* width: 24.5vw; */
+      /* width: auto; */
+      height: 50vh;
+      color: #fff;
+      text-align: center;
+      margin-bottom: -0.6rem;
+      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: calc(100% + 6px);
+      right: 0;
+      opacity: 0;
+      transition: opacity 1s;
+      border: 3px solid #333333;
+    }
+
+    .VistaFile:hover .Iframe {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .Iframe:hover {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .textarea2 {
+      padding: 0.5rem !important;
+      width: calc(100% - 0rem) !important;
+      /* background-color: #cbcdce; */
+      background-color: #f1f3f4;
+      resize: none;
+      height: 7rem;
+    }
+
+    /* /////////////////////////////////// */
+
+    input[type=checkbox]:not(:disabled)~.lever:active:after,
+    input[type=checkbox]:not(:disabled).tabbed:focus~.lever::after {
+      box-shadow: 0 1px 3px 1px rgb(0, 0, 0, 0.4), 0 0 0 15px rgba(68, 125, 247, 0.24) !important;
+    }
+
+    input[type=checkbox]:not(:disabled)~.lever:active:after,
+    input[type=checkbox]:not(:disabled).tabbed:focus~.lever::after {
+      box-shadow: 0 1px 3px 1px rgb(0, 0, 0, 0.4), 0 0 0 15px rgba(68, 125, 247, 0.24) !important;
+    }
+
+    .currency-input {
+      position: relative;
+    }
+
+    .currency {
+      padding-left: -22px;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      left: 8px;
+      font-size: 21px;
+    }
+
+    /* ////////////////////////////////////////////////////////////////// */
+    /* ////////////////////////////////////////////////////////////////// */
+    /* ////////////////////////////////////////////////////////////////// */
+
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
+    /* tr:nth-child(even) {
+      background-color: #f2f2f2;
+    } */
+
+    .sortorder:after {
+      content: '\25bc';
+    }
+
+    .sortorder.reverse:after {
+      content: '\25b2';
+    }
+
+    .sortorder2:after {
+      content: '\25bc';
+    }
+
+    .sortorder2.reverse2:after {
+      content: '\25b2';
+    }
+
+    .iconopr {
+      width: 30px;
+    }
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .list-group {
+      font-size: 14px;
+    }
+
+    #toast-container .toast {
+      border-radius: 25px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    #H1_Tabla tbody tr:hover {
+      background-color: #f2f2f2;
+    }
+
+
+    html body .default-border {
+      border-color: #1a2e63;
+    }
+
+    html body.blue-scheme .default-border {
+      border-color: #1654A2;
+    }
+
+    html body.cyan-scheme .default-border {
+      border-color: #008ea2;
+    }
+
+    html body.green-scheme .default-border {
+      border-color: #3a6c2d;
+    }
+
+    html body.purple-scheme .default-border {
+      border-color: #4e1a7b;
+    }
+
+    html body.yellow-scheme .default-border {
+      border-color: #f0a42f !important;
+    }
+
+    html body.black-scheme .default-border {
+      border-color: #1a1a1a;
+    }
+
+    html body.yellow-scheme .default-color {
+      color: #f0a42f !important;
+    }
+
+    /* //////////////// */
+    html body.blue-scheme blockquote {
+      border-left: 5px solid #1654A2;
+    }
+
+    html body.cyan-scheme blockquote {
+      border-left: 5px solid #008ea2;
+    }
+
+    html body.green-scheme blockquote {
+      border-left: 5px solid #3a6c2d;
+    }
+
+    html body.purple-scheme blockquote {
+      border-left: 5px solid #4e1a7b;
+    }
+
+    html body.yellow-scheme blockquote {
+      border-left: 5px solid #f0a42f;
+    }
+
+    html body.dark-scheme blockquote {
+      border-left: 5px solid #1a1a1a;
+    }
+
+    /* //////////////// */
+    html body.blue-scheme .switch label .lever {
+      background-color: #1654A2 !important;
+    }
+
+    html body.cyan-scheme .switch label .lever {
+      background-color: #008ea2 !important;
+    }
+
+    html body.green-scheme .switch label .lever {
+      background-color: #3a6c2d !important;
+    }
+
+    html body.purple-scheme .switch label .lever {
+      background-color: #4e1a7b !important;
+    }
+
+    html body.yellow-scheme .switch label .lever {
+      background-color: #f0a42f !important;
+    }
+
+    html body.dark-scheme .switch label .lever {
+      background-color: #1a1a1a !important;
+    }
+
+    ul::-webkit-scrollbar {
+      width: 6px;
+      background-color: #F5F5F5;
+    }
+
+    .select-wrapper input.select-dropdown:disabled {
+      color: black;
+    }
+
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+    .steps-container {
+      overflow: hidden;
+      margin: 0px;
+      padding: 0px;
+      white-space: nowrap;
+      width: 100%;
+      counter-reset: steps;
+      font-size: 0.71vw;
+      text-align: center;
+      margin-top: 15px;
+      margin-bottom: -10px;
+      z-index: 5;
+      position: relative;
+    }
+
+    .steps {
+      position: relative;
+      display: inline-block;
+      left: -10px;
+      height: 30px;
+      line-height: 30px;
+      margin-left: 0px;
+      margin-right: 0px;
+      counter-increment: steps;
+      transition: background 1s;
+      min-height: 20px;
+    }
+
+    .steps:after,
+    .steps:before {
+      position: absolute;
+      content: '';
+      left: 0px;
+      height: 50%;
+      width: 100%;
+      background: #1a2e6347;
+    }
+
+    .steps:before {
+      transform: skew(45deg);
+      top: 0px;
+      border-bottom: none;
+      transform-origin: top left;
+    }
+
+    .steps:after {
+      transform: skew(-45deg);
+      bottom: 0px;
+      border-top: none;
+      transform-origin: bottom left;
+    }
+
+    .steps span {
+      display: block;
+      padding-left: 23px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      height: 75%;
+    }
+
+    .steps span:before {
+      content: counter(steps) ". ";
+    }
+
+    .steps.active span {
+      font-weight: bold;
+      /* animation-name: example; */
+      /* animation-duration: 5s; */
+      /* animation: 5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s 1 normal both running example; */
+      /* animation: 2s cubic-bezier(0.55, 0.085, 0.68, 0.53) 0s 1 normal both running example; */
+      animation: example 2s both;
+    }
+
+    @keyframes example {
+      0% {
+        /* letter-spacing: 1em; */
+        /* transform: translateZ(300px); */
+        filter: blur(12px);
+        opacity: 0;
+      }
+
+      100% {
+        /* transform: translateZ(0); */
+        filter: blur(0.01);
+        opacity: 1;
+      }
+
+      /* 0% {
+  transform: rotate(0deg);
+}
+
+33% {
+  transform: rotate(4deg);
+}
+
+66% {
+  transform: rotate(-4deg);
+}
+
+100% {
+  transform: rotate(0deg);
+} */
+
+    }
+
+    .steps.active:before,
+    .steps.active:after {
+      background: #1a2e6391;
+    }
+
+    html body.cyan-scheme .steps.active:before,
+    html body.cyan-scheme .steps.active:after {
+      background: #00abc091 !important;
+    }
+
+    html body.cyan-scheme .steps:after,
+    html body.cyan-scheme .steps:before {
+      background: #00abc047 !important;
+    }
+
+    html body.blue-scheme .steps.active:before,
+    html body.blue-scheme .steps.active:after {
+      background: #1565c091 !important;
+    }
+
+    html body.blue-scheme .steps:before,
+    html body.blue-scheme .steps:after {
+      background: #1565c047 !important;
+    }
+
+    html body.green-scheme .steps.active:before,
+    html body.green-scheme .steps.active:after {
+      background: #558A2F91 !important;
+    }
+
+    html body.green-scheme .steps:before,
+    html body.green-scheme .steps:after {
+      background: #558A2F47 !important;
+    }
+
+    html body.purple-scheme .steps.active:before,
+    html body.purple-scheme .steps.active:after {
+      background: #6A1B9991 !important;
+    }
+
+    html body.purple-scheme .steps:before,
+    html body.purple-scheme .steps:after {
+      background: #6A1B9947 !important;
+    }
+
+    html body.yellow-scheme .steps.active:before,
+    html body.yellow-scheme .steps.active:after {
+      background: #FDA62691 !important;
+    }
+
+    html body.yellow-scheme .steps:before,
+    html body.yellow-scheme .steps:after {
+      background: #FDA62647 !important;
+    }
+
+    html body.dark-scheme .steps.active:before,
+    html body.dark-scheme .steps.active:after {
+      background: #00000091 !important;
+    }
+
+    html body.dark-scheme .steps:before,
+    html body.dark-scheme .steps:after {
+      background: #00000047 !important;
+    }
+
+
+
+    .pulsate {
+      /* animation: heartbeat 1.5s ease-in-out 0s infinite normal both running; */
+    }
+
+    @keyframes heartbeat {
+      0% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        -webkit-transform-origin: center center;
+        transform-origin: center center;
+        -webkit-animation-timing-function: ease-out;
+        animation-timing-function: ease-out;
+      }
+
+      10% {
+        -webkit-transform: scale(.91);
+        transform: scale(.91);
+        -webkit-animation-timing-function: ease-in;
+        animation-timing-function: ease-in;
+      }
+
+      17% {
+        -webkit-transform: scale(.98);
+        transform: scale(.98);
+        -webkit-animation-timing-function: ease-out;
+        animation-timing-function: ease-out;
+      }
+
+      33% {
+        -webkit-transform: scale(.87);
+        transform: scale(.87);
+        -webkit-animation-timing-function: ease-in;
+        animation-timing-function: ease-in;
+      }
+
+      45% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        -webkit-animation-timing-function: ease-out;
+        animation-timing-function: ease-out;
+      }
+    }
+
+
+    .icon-docs:before {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .Con_pulse_A {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    /* /// */
+    .Con_pulse_P {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_P 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_P {
+      0% {
+        box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.7), 0 0 0 0 rgba(71, 71, 165, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 15px rgba(71, 71, 165, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0);
+      }
+    }
+
+    /* /// */
+    .Con_pulse_D {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_D 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_D {
+      0% {
+        box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.7), 0 0 0 0 rgba(235, 156, 5, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(235, 156, 5, 0.0), 0 0 0 0 rgba(235, 156, 5, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.0), 0 0 0 15px rgba(235, 156, 5, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.0), 0 0 0 0 rgba(235, 156, 5, 0);
+      }
+    }
+
+    /* /// */
+    .Con_pulse_X {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+
+    .rotate90 {
+      transform: rotate(90deg) scale(0.6);
+    }
+
+    .rotate180 {
+      transform: rotate(180deg);
+    }
+
+    .rotate270 {
+      transform: rotate(270deg) scale(0.6);
+    }
+
+    /* ///////////////////////////////////////////// */
+    .select-css {
+      display: block;
+      font-size: 16px;
+      font-family: sans-serif;
+      font-weight: 700;
+      color: #444;
+      line-height: 1.3;
+      padding: .6em 1.4em .5em .8em;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      border: 1px solid #aaa;
+      box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+      border-radius: .5em;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      background-color: #fff;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+        linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+      background-repeat: no-repeat, repeat;
+      background-position: right 50% top 95%, 0 0;
+      background-size: .65em auto, 100%;
+    }
+
+    .select-css::-ms-expand {
+      display: none;
+    }
+
+    .select-css:hover {
+      border-color: #888;
+    }
+
+    .select-css:focus {
+      border-color: #aaa;
+      box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+      box-shadow: 0 0 0 3px -moz-mac-focusring;
+      color: #222;
+      outline: none;
+    }
+
+    .select-css option {
+      font-weight: normal;
+    }
+
+
+
+    /* ////////////////////////////////////////////////// */
+    html body.cyan-scheme .vamous {
+      color: #00abc0 !important;
+    }
+
+    html body.cyan-scheme .vamous:hover,
+    html body.cyan-scheme .vamous:focus {
+      border-color: #00abc0 !important;
+      box-shadow: inset 0 0 0 2em #00abc0 !important;
+      color: white !important;
+    }
+
+    html body.blue-scheme .vamous {
+      color: #1565c0 !important;
+    }
+
+    html body.blue-scheme .vamous:hover,
+    html body.blue-scheme .vamous:focus {
+      border-color: #1565c0 !important;
+      box-shadow: inset 0 0 0 2em #1565c0 !important;
+      color: white !important;
+    }
+
+    html body.green-scheme .vamous {
+      color: #558A2F !important;
+    }
+
+    html body.green-scheme .vamous:hover,
+    html body.green-scheme .vamous:focus {
+      border-color: #558A2F !important;
+      box-shadow: inset 0 0 0 2em #558A2F !important;
+      color: white !important;
+    }
+
+    html body.purple-scheme .vamous {
+      color: #6A1B99 !important;
+    }
+
+    html body.purple-scheme .vamous:hover,
+    html body.purple-scheme .vamous:focus {
+      border-color: #6A1B99 !important;
+      box-shadow: inset 0 0 0 2em #6A1B99 !important;
+      color: white !important;
+    }
+
+    html body.yellow-scheme .vamous {
+      color: #FDA626 !important;
+    }
+
+    html body.yellow-scheme .vamous:hover,
+    html body.yellow-scheme .vamous:focus {
+      border-color: #FDA626 !important;
+      box-shadow: inset 0 0 0 2em #FDA626 !important;
+      color: white !important;
+    }
+
+    html body.dark-scheme .vamous {
+      color: #111 !important;
+    }
+
+    html body.dark-scheme .vamous:hover,
+    html body.dark-scheme .vamous:focus {
+      border-color: #111 !important;
+      box-shadow: inset 0 0 0 2em #111 !important;
+      color: white !important;
+    }
+
+    .vamous:hover,
+    .vamous:focus {
+      border-color: #1a2e63;
+      color: white !important;
+      box-shadow: inset 0 0 0 2em #1a2e63;
+    }
+
+    .vamous {
+      color: #1a2e63;
+      background: none;
+      border: 5px solid;
+      font: inherit;
+      font-weight: 600;
+      border-radius: 10px;
+      /* line-height: 1; */
+      margin: 0.1em;
+      padding: 1em 2.5em;
+      transition: 0.25s;
+      -webkit-transition: 0.25s;
+    }
+
+
+    .table_border,
+    .table_border th,
+    .table_border td {
+      border: 1px solid #c2c2c2;
+    }
+
+    .table_center_align,
+    .table_center_align th,
+    .table_center_align td {
+      text-align: center;
+    }
+  </style>
+</div>

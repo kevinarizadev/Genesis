@@ -1,0 +1,820 @@
+<div id="RadicacionRIPS" class="row" style="background-color: white;max-width: 1400px;">
+    <div class="row section-header"
+        style="box-shadow: 1px 2px 2px -1px rgba(0, 0, 0, 0.12);background-color: #f7f7f7;padding-left: 34px;padding-right: 34px;">
+        <ul class="left mailbox-custom-search list-inline"
+            style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+            <li>
+                <h5>Radicacion de RIPS</h5>
+            </li>
+            <li style="width: 60%;">
+                <div class="steper">
+                    <div class="step paso1">Requisición</div>
+                    <hr class="step-divider">
+                    <div class="step paso2">Cargue</div>
+                    <hr class="step-divider">
+                    <div class="step paso3">Resumen</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="row dashboard-wrapper content-container white ng-scope" style="padding-bottom: 20px;margin-bottom: 0;padding-right: 0; padding-left: 0">
+        <div class="col s12 m12 l12">
+            <div ng-show="activo_ips" class="row">
+                <!-- registro de datos basicos -->
+                <div class="col s12 content-step1 no-padding" ng-hide="inactivepaso1"
+                    style="min-height: calc(100vh - 283px);">
+                    <div class="step-content">
+                        <blockquote>Informacion de solicitud</blockquote>
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="row">
+                                    <div class="col m4 s12">
+                                        <label id="habilitacion" class="valid" for="habilitacion">Codigo
+                                            Habilitación</label>
+                                        <select class="select-chosen-eps" id="simple-select"
+                                            ng-model="rip.habilitacion">
+                                            <option value="">Seleccionar Codigo Habilitacion</option>
+                                            <option ng-repeat="hab in listHabilitacion" ng-value="hab.CODIGO">
+                                                {{hab.NOMBRE}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col m4 s12">
+                                        <label id="contrato" class="valid" for="contrato">Contratos   
+                                        </label>
+                                        <select class="select-chosen-eps" id="simple-select" ng-model="rip.contrato"
+                                            ng-change="obtenerRegimen(rip.contrato)">
+                                            <option value="">Seleccionar contrato</option>
+                                            <option ng-repeat="con in listcontratos" value="{{con.CODIGO}}">
+                                                {{con.NOMBRE}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col m2 s12" ng-show="rip.contrato!=''">
+                                        <label for="vigcontrato">Vigencia Contrato</label>
+                                        <input id="vigcontrato" style="font-size: 14px" type="text" ng-model="rip.vigcontrato" readonly>
+                                    </div>
+                                    <div class="col m2 s12 ">
+                                        <label id="regimen" class="valid" for="regimen">Regimen</label>
+                                        <select class="select-chosen-eps" id="simple-select" ng-model="rip.regimen">
+                                            <option value="">Seleccionar Regimen</option>
+                                            <option ng-selected="regimen" ng-repeat="reg in listRegimen"
+                                                ng-value="reg.CODIGO">{{reg.NOMBRE}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col m4 s12" style="margin-top: 30px;">
+                                        <button class="btn white-text pink w-100" type="button"
+                                            ng-click="obtenerTipoContrato()">buscar</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div ng-hide="inactivecampos">
+                                        <div class="col m3 s12">
+                                            <label id="tipocontrato" class="valid" for="tipocontrato">Tipo
+                                                Contrato</label>
+                                            <select class="select-chosen-eps" ng-model="rip.tipocontrato">
+                                                <option value="">Seleccionar Tipo de Contrato</option>
+                                                <option ng-selected="rip.tipocontrato == con.CODIGO"
+                                                    ng-repeat="con in listtipoContrato" ng-value="con.CODIGO">
+                                                    {{con.NOMBRE}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col m3 s12" ng-hide="inactiveperiodo">
+                                            <label id="anno" class="valid" for="anno">Año</label>
+                                            <select class="select-chosen-eps" id="simple-select" ng-model="rip.anno"
+                                                ng-change="cargarMes(rip.anno)">
+                                                <option value="">Seleccionar Año</option>
+                                                <option ng-repeat="year in listanno" ng-value="year.CODIGO">
+                                                    {{year.CODIGO}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col m3 s12" ng-hide="inactiveperiodo">
+                                            <label id="mes" class="valid" for="mes">Mes</label>
+                                            <select class="select-chosen-eps" id="simple-select" ng-model="rip.mes">
+                                                <option value="">Seleccionar mes</option>
+                                                <option ng-repeat="mes in listmes" ng-value="mes.CODIGO">{{mes.NOMBRE}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col m3 s12" ng-hide="inactivemodalidad">
+                                            <label id="modalidad" class="valid" for="modalidad">Modalidad</label>
+                                            <select class="select-chosen-eps" id="simple-select"
+                                                ng-model="rip.modalidad">
+                                                <option value="">Seleccionar Modalidad</option>
+                                                <option ng-repeat="mod in listModalidad" ng-value="mod.CODIGO">
+                                                    {{mod.NOMBRE}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col m3 s12">
+                                            <label id="recibo" class="valid" for="recibo">Recibo</label>
+                                            <input id="recibo" type="text" ng-model="rip.recibo" class="validate"
+                                                placeholder="Numero de Recibo" numbers-only maxlength="6" minlength="6">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Cargue de archivos -->
+                <div class="col s12 content-step2 no-padding" ng-hide="inactivepaso2"
+                    style="min-height: calc(100vh - 283px);">
+                    <div class="step-content">
+                        <div class="col l12 m12 s12 no-padding">
+                            <blockquote>Usted debe cargar el RIPS para el contrato de <b>{{nombreTipoContrato}}</b> con
+                                el Recibo No <b>{{rip.recibo}}</b></blockquote>
+                            <div class="card charts">
+                                <div class="card-content">
+                                    <h5>Archivos</h5>
+                                </div>
+                                <div class="card-action">
+                                    <div class="row archivos">
+                                        <!-- CT -->
+                                        <div class="col s6">
+                                            <div ng-show="ct" class="row">
+                                                <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                    <div class="input-group">
+                                                        <input type="checkbox" id="checkct" ng-model="inactivect"
+                                                            ng-init="inactivect=true" disabled />
+                                                        <label for="checkct"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="col s10">
+                                                    <form class="form" ng-show="inactivect">
+                                                        <div class="file-upload-wrapper" data-text="Archivo (CT)">
+                                                            <input name="file-upload-field" id="CT" type="file"
+                                                                class="file-upload-field" value="">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="col s1" ng-show="inactivect"
+                                                    style="position: relative; right: 20px; top: 9px;">
+                                                    <div class="tooltip">
+                                                        <i class="material-icons" style="cursor:help;">info_outline</i>
+                                                        <span class="tooltiptext"
+                                                            style="width: 200px; margin-left: -100px;">Espacio para
+                                                            cargar el archivo de control (CT)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-hide="switcharchivos">
+                                            <!-- AH -->
+                                            <div class="col s6">
+                                                <div ng-show="ah" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkah" ng-model="inactiveah"
+                                                                ng-init="inactiveah=true" />
+                                                            <label for="checkah"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveah">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AH)">
+                                                                <input name="file-upload-field" id="AH" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form no-cursor" ng-hide="inactiveah">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (AH) Desactivado">
+                                                                <input disabled name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveah"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de hospitalizaciones (AH)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- AF -->
+                                            <div class="col s6">
+                                                <div ng-show="af" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkaf" ng-model="inactiveaf"
+                                                                ng-init="inactiveaf=true" disabled />
+                                                            <label for="checkaf"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveaf">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AF)">
+                                                                <input name="file-upload-field" id="AF" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveaf"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de facturas (AF)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- AU -->
+                                            <div class="col s6">
+                                                <div ng-show="au" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkau" ng-model="inactiveau"
+                                                                ng-disabled="modurgencia" ng-init="inactiveau=true" />
+                                                            <label for="checkau"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveau">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AU)">
+                                                                <input name="file-upload-field" id="AU" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form no-cursor" ng-hide="inactiveau">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (AU) Desactivado">
+                                                                <input disabled name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveau"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de urgencias (AU)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- US -->
+                                            <div class="col s6">
+                                                <div ng-show="us" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkus" ng-model="inactiveus"
+                                                                ng-init="inactiveus=true" disabled />
+                                                            <label for="checkus"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveus">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (US)">
+                                                                <input name="file-upload-field" id="US" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form" ng-hide="inactiveus">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (US) Desactivado">
+                                                                <input name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveus"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de usuarios (US)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- AM -->
+                                            <div class="col s6">
+                                                <div ng-show="am" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkam" ng-model="inactiveam"
+                                                                ng-init="inactiveam=true" />
+                                                            <label for="checkam"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveam">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AM)">
+                                                                <input name="file-upload-field" id="AM" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form no-cursor" ng-hide="inactiveam">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (AM) Desactivado">
+                                                                <input disabled name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveam"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de medicamentos (AM)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- AC -->
+                                            <div class="col s6">
+                                                <div ng-show="ac" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkac" ng-model="inactiveac"
+                                                                ng-disabled="modurgencia" ng-init="inactiveac=true" />
+                                                            <label for="checkac"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveac">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AC)">
+                                                                <input name="file-upload-field" id="AC" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form no-cursor" ng-hide="inactiveac">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (AC) Desactivado">
+                                                                <input disabled name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveac"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de consultas (AC)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- AN -->
+                                            <div class="col s6">
+                                                <div ng-show="an" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkan" ng-model="inactivean"
+                                                                ng-init="inactivean=true" />
+                                                            <label for="checkan"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactivean">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AN)">
+                                                                <input name="file-upload-field" id="AN" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form no-cursor" ng-hide="inactivean">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (AN) Desactivado">
+                                                                <input disabled name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactivean"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de recien nacidos (AN)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- AP -->
+                                            <div class="col s6">
+                                                <div ng-show="ap" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkap" ng-model="inactiveap"
+                                                                ng-init="inactiveap=true" />
+                                                            <label for="checkap"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveap">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AP)">
+                                                                <input name="file-upload-field" id="AP" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form no-cursor" ng-hide="inactiveap">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (AP) Desactivado">
+                                                                <input disabled name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveap"
+                                                        style="position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar el archivo de procedimientos (AP)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- AT -->
+                                            <div class="col s6">
+                                                <div ng-show="at" class="row">
+                                                    <div class="col s1" style="width: 30.25px; margin-top: 20px;">
+                                                        <div class="input-group">
+                                                            <input type="checkbox" id="checkat" ng-model="inactiveat"
+                                                                ng-init="inactiveat=true" />
+                                                            <label for="checkat"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s10">
+                                                        <form class="form" ng-show="inactiveat">
+                                                            <div class="file-upload-wrapper" data-text="Archivo (AT)">
+                                                                <input name="file-upload-field" id="AT" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                        <form class="form no-cursor" ng-hide="inactiveat">
+                                                            <div class="file-upload-wrapper2"
+                                                                data-text="Archivo (AT) Desactivado">
+                                                                <input disabled name="file-upload-field" type="file"
+                                                                    class="file-upload-field" value="">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col s1" ng-show="inactiveat"
+                                                        style="cursor:help; position: relative; right: 20px; top: 9px;">
+                                                        <div class="tooltip">
+                                                            <i class="material-icons"
+                                                                style="cursor:help;">info_outline</i>
+                                                            <span class="tooltiptext"
+                                                                style="width: 200px; margin-left: -100px;">Espacio para
+                                                                cargar otros Servicios (AT)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Resumen del Cargue -->
+                <div class="col s12 content-step3 no-padding" ng-hide="inactivepaso3"
+                    style="min-height: calc(100vh - 283px);">
+                    <div class="step-content">
+                        <div class="col m8 offset-m2 col s12 offset-s3">
+                            <div class="card charts">
+                                <div class="card-content">
+                                    <h5 ng-click="agregarValor(ips)">Resumen de la solicitud</h5>
+                                </div>
+                                <div class="card-action" style="padding-bottom: 3px;">
+                                    <div class="row">
+                                        <blockquote>los archivos cargados con el recibo N° <b>{{rip.recibo}}</b> para el
+                                            codigo de habilitacion <b>{{rip.habilitacion}}</b> Se registraron
+                                            correctamente.</blockquote>
+                                        <div class="col s6">
+                                            <div class="responsive">
+                                                <table class="striped table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="text-align:center; border-right-width: 0px;"
+                                                                colspan="1">RESUMEN DEL CARGUE</th>
+                                                            <th style="text-align:center; border-left-width: 0px;"
+                                                                colspan="1"></th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th style="text-align:center;">Archivo</th>
+                                                            <th style="text-align:center;">Cantidad</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="res in listct">
+                                                            <td style="text-align:center;">{{res.nombre}}</td>
+                                                            <td style="text-align:center;">{{res.cantidad}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col s6">
+                                            <blockquote>N° de Validación: <b>{{validacion}}</b></blockquote>
+                                            <blockquote>Fecha de Radicación: <b>{{fecha}}</b></blockquote>
+                                            <blockquote>Validaciones pendientes: <b>{{turnos}}</b></blockquote>
+                                            <blockquote>Su solicitud esta siendo valida dentro de unos 15 min verifique
+                                                el estado de su solicitud.</blockquote>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <input type="file" name="file" id="file">-->
+
+                    </div>
+                </div>
+                <div class="step-option">
+                    <button ng-if="!inactivepaso1" class="btn-large white-text pink" type="button"
+                        ng-click="wizardstep('paso1','next')">Siguiente</button>
+                    <button ng-if="!inactivepaso2" class="btn-large white-text pink" type="button"
+                        ng-click="wizardstep('paso2','back')">Atras</button>
+                    <button ng-if="!inactivepaso2" class="btn-large white-text pink" type="button"
+                        ng-click="wizardstep('paso2','next')">Procesar</button>
+                    <button ng-if="!inactivepaso3" class="btn-large white-text pink" type="button"
+                        ng-click="wizardstep('paso3','finish')">Finalizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalpopUp" class="modal">
+        <div class="modal-content" style="background: white;">
+            <div class="row">
+                <div class="col-s12">
+                    <img src="assets/images/V1A.png" alt="">
+                </div>
+
+                <div class="col s12">
+                    <h6 style="font-size: x-large;">Descarga <a
+                            href="https://www.minsalud.gov.co/sites/rid/Lists/BibliotecaDigital/RIDE/VP/RBC/tablas-referencia-2019.zip">Aqui</a>
+                        los archivos que relacionan CUPS vs Diagnosticos </h6>
+                    <blockquote>Fuente - <a href="https://www.minsalud.gov.co/Paginas/default.aspx"
+                            target="_blank">MinSalud</a></blockquote>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <style media="screen">
+        /*.activebtn-step, .activebtn-step:hover {
+        background-color: #2196f3 !important;
+        color: white !important;
+      }*/
+
+        #modalpopUp {
+            max-height: 100% !important;
+            border-radius: 0 !important;
+            background-color: transparent !important;
+            width: 800px !important;
+        }
+
+        #modalpopUp>div {
+            display: flex;
+            padding: 0;
+            width: 800px !important;
+        }
+
+        .ng-animate,
+        .ng-enter-active,
+        .ng-enter,
+        .ng-leave-active {
+            transition: all 0s;
+        }
+
+        .step {
+            background-color: #9e9e9e;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0.5em 1em;
+            border-radius: 5%;
+            cursor: default;
+            user-select: none;
+        }
+
+        .step-item {
+            width: auto;
+            border-radius: 5%;
+            padding: 0 1em;
+        }
+
+        .steper {
+            width: 100%;
+            display: inline-flex;
+            text-align: center;
+        }
+
+        .step-divider {
+            width: 100%;
+            margin: auto;
+        }
+
+        .btn-step-content {
+            position: relative;
+            display: none;
+            height: calc(100% - 132px);
+            width: inherit;
+            overflow: visible;
+            margin-left: 41px;
+            margin-right: 24px;
+        }
+
+        .step-option {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .step-option>button {
+            height: auto;
+            padding: 0.5em 1em;
+            line-height: normal;
+            display: inline-flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 5em;
+        }
+
+        .back-step,
+        .back-step:hover {
+            margin-top: 7px;
+            position: absolute;
+            right: 80px;
+            background: #ff4350 !important;
+        }
+
+        .btn-step {
+            background-color: rgba(0, 0, 0, .3);
+            color: white;
+        }
+
+        .no-cursor {
+            cursor: not-allowed;
+        }
+
+        @import url(https://fonts.googleapis.com/css?family=Lato:400,700,300);
+
+        .file-upload-wrapper {
+            position: relative;
+            width: 100%;
+            height: 44px;
+            border: 1px solid #eeeeee;
+            z-index: 1;
+        }
+
+        .file-upload-wrapper:after {
+            content: attr(data-text);
+            font-size: 18px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff;
+            padding: 10px 15px;
+            display: block;
+            width: calc(100% - 40px);
+            pointer-events: none;
+            z-index: 20;
+            height: 40px;
+            line-height: 24px;
+            color: #999;
+            border-radius: 5px 10px 10px 5px;
+            font-weight: 300;
+        }
+
+        .file-upload-wrapper:before {
+            content: "Adjuntar";
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: inline-block;
+            height: 43px;
+            background: #4daf7c;
+            color: #fff;
+            font-weight: 700;
+            z-index: 25;
+            font-size: 16px;
+            line-height: 44px;
+            padding: 0 15px;
+            text-transform: uppercase;
+            pointer-events: none;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .file-upload-wrapper:hover:before {
+            background: #3d8c63;
+        }
+
+        .file-upload-wrapper input {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 99;
+            height: 43px;
+            margin: 0;
+            padding: 0;
+            display: block;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* disabled */
+
+        .file-upload-wrapper2 {
+            position: relative;
+            width: 100%;
+            height: 44px;
+            border: 1px solid #eeeeee;
+            z-index: 1;
+        }
+
+        .file-upload-wrapper2:after {
+            content: attr(data-text);
+            font-size: 18px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff;
+            padding: 10px 15px;
+            display: block;
+            width: calc(100% - 40px);
+            pointer-events: none;
+            z-index: 20;
+            height: 40px;
+            line-height: 24px;
+            color: #999;
+            border-radius: 5px 10px 10px 5px;
+            font-weight: 300;
+        }
+
+        .file-upload-wrapper2:before {
+            content: "Adjuntar";
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: inline-block;
+            height: 43px;
+            background: #919292;
+            color: #fff;
+            font-weight: 700;
+            z-index: 25;
+            font-size: 16px;
+            line-height: 44px;
+            padding: 0 15px;
+            text-transform: uppercase;
+            pointer-events: none;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .file-upload-wrapper2:hover:before {
+            background: #919292;
+        }
+
+        .file-upload-wrapper2 input {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 99;
+            height: 43px;
+            margin: 0;
+            padding: 0;
+            display: block;
+            cursor: not-allowed !important;
+            width: 100%;
+        }
+
+        .invalid {
+            color: red;
+        }
+    </style>
+    <form hidden id="TheForm" method="post" action="php/cuentasmedicas/rips/error_rips_new.php" target="TheWindow">
+        <input type="hidden" name="archivo" value="" />
+        <input type="hidden" name="recibo" value="" />
+    </form>
+</div>

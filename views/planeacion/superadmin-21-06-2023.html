@@ -1,0 +1,367 @@
+<div class="row margin" id="view-alta-gerencia">
+    <style>
+        .table_border,
+        .table_border th,
+        .table_border td {
+            border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+            text-align: center;
+        }
+
+        table tbody tr {
+            cursor: pointer;
+        }
+
+        table tbody tr:hover {
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        #H1_Tabla>thead,
+        #H1_Tabla>tbody {
+            font-size: 1em;
+            /* border: 3px; */
+            border-width: medium;
+            border-style: solid;
+            border-radius: .375rem;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-cancel {
+            background: #c0c0c0 !important;
+            color: #000 !important;
+        }
+
+        .resultados {
+            position: absolute;
+            background: #f5f5f5;
+            top: 3.1em;
+            width: 100%;
+            z-index: 999999;
+            border: 1px solid #c0c0c0;
+            border-radius: 5px;
+            max-height: 120px;
+            overflow: auto;
+        }
+
+        .items {
+            border-bottom: 1px solid #c0c0c0;
+            font-size: 13px;
+            padding: 5px;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        input:disabled {
+            color: #000 !important;
+            font-weight: 400;
+        }
+    </style>
+    <div class="row section-header" style="padding-bottom: 0px;" id="panelListado">
+        <div class="col s12 m12 s12">
+            <div class="col l12 m12 s12 prod-title-div no-padding">
+                <blockquote>
+                    <h4>Super admin</h4>
+                </blockquote>
+            </div>
+
+            <div class="col l12 m12 s12">
+                <div class="row">
+                    <div class="col l4 m4 s4">
+                        <button class="btn btn-primary" type="button"
+                            ng-click="crear ? regresar() : crearComite()">{{crear ? 'Regresar' : 'Crear comité'}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding: 20px; padding-top: 0;" id="panelListado" ng-if="!crear">
+        <div class="col s12 m12 l12 no-padding" style="margin-top: 10px;">
+            <div class="card">
+                <div class="card-action">
+
+                    <div class="row">
+                        <div class="col l12 m12 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <input id="buscarComites" style="text-transform: uppercase;" type="text"
+                                    ng-keyup="buscarComite($event)">
+                                <label for="buscarComites">Buscar comite</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-over-box m-b" style="max-height: calc(100vh - 262px);overflow: auto;">
+                        <table id="H1_Tabla" class="bordered table_center_align"
+                            style="width:100%;font-size:6px !important;">
+                            <thead class="center-align default-background default-border white-text">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre del comité</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="comites.length==0">
+                                    <td colspan="13">No hay contenido.</td>
+                                </tr>
+                                <tr ng-repeat="comite in comites | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize track by $index"
+                                    ng-click="verDetalle(comite)">
+                                    <td>{{comite.Codigo}}</td>
+                                    <td>{{comite.Descripcion}}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="13" class="border-none no-padding" style="user-select: none">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p style="font-size: 12px">Registros Filtrados: {{listDatosTemp.length}}</p>
+                                            <p style="font-size: 12px">Registros Totales: {{comites.length}}</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="13" class="border-none no-padding" style="user-select: none">
+                                        <div class="black-text title-panel d-flex justify-content-between align-items-center"
+                                            style="margin-top: 15px;">
+                                            <select id="pageSize" ng-model="pageSize"
+                                                class="gray-input select-default-new border-none"
+                                                ng-change="currentPage=0" style="width: auto;max-width: 100px;">
+                                                <option value="10" selected>10</option>
+                                                <option value="15">15</option>
+                                                <option value="20">20</option>
+                                            </select>
+                                            <div>
+                                                <button class="btn btn-small border-radius-none no-padding"
+                                                    ng-disabled="currentPage == 0"
+                                                    ng-click="btns_paginacion(currentPage-1)" style="box-shadow: none;">
+                                                    <i class="icon-left-small"></i>
+                                                </button>
+                                                <small
+                                                    style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                                                    Página {{currentPage+1}} de {{numberOfPages()}}
+                                                </small>
+                                                <button class="btn btn-small border-radius-none no-padding"
+                                                    ng-disabled="currentPage >= getData().length/pageSize - 1"
+                                                    ng-click="btns_paginacion(currentPage+1)" style="box-shadow: none;">
+                                                    <i class="icon-right-small"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-if="detalle">
+        <div class="col s12 m12 l12">
+            <div class="card">
+                <div class="card-content">
+
+                    
+                    <div class="row" style="margin-bottom: 0px;">
+
+                   
+                        
+                        <div class="col l8 m8 s8">
+                            <blockquote>
+                                <h5>Nombre del comité: {{nombreComite}}</h5>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-action">
+                    <div class="row">
+                        <div class="table-over-box m-b" style="max-height: calc(100vh - 262px);overflow: auto;">
+                            <table id="H1_Tabla" class="bordered table_center_align"
+                                style="width:100%;font-size:6px !important;">
+                                <thead class="center-align default-background default-border white-text">
+                                    <tr>
+                                        <!-- <th>Tipo asignación</th> -->
+                                        <th>Cédula</th>
+                                        <th>Nombre</th>
+                                        <th>Cargo</th>
+                                        <th>Correo</th>
+                                        <th>Administrador</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="listado in detalleComite">
+                                        <!-- <td>{{cargarAsignacion(listado.asignacion)}}</td> -->
+                                        <td>{{listado.Cedula}}</td>
+                                        <td>{{listado.Nombre}}</td>
+                                        <td>{{listado.Cargo}}</td>
+                                        <td>{{listado.Correo}}</td>
+                                        <td>
+                                            <button class="btn btn-primary" ng-if="listado.Admin === 'N'"
+                                                ng-click="asignarAdmin(listado)">Asignar</button>
+
+                                            <label ng-if="listado.Admin === 'S'">Es Administrador</label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="padding: 20px; padding-top: 0;" ng-if="crear">
+        <div class="card">
+            <div class="card-action">
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                    
+                        <div class="input-field col l12 m12 s12">
+                            <input id="nombreComite" type="text" ng-model="registrarComite.nombreComite" required>
+                            <label for="nombreComite">Nombre del comité<span class="red-text">*</span></label>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="input-field col m10 s12 s12">
+                            <label for="detalleComite" class="noselectxtpqr">Detalle del comité<span
+                                    class="red-text">*</span></label>
+                            <textarea id="detalleComite" class="materialize-textarea"
+                                ng-model="registrarComite.detalleComite" cols="30" rows="10"></textarea>
+                        </div>
+
+
+                        <div class="input-field col l3 m12 s12">
+                            <label class="labelper">Visibilidad<span class="red-text">*</span></label>
+                            <select id="visibilidad" name="visibilidad" class="select-chosen-eps"
+                                ng-model="registrarAgenda.visibilidad" required>
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="visibilidad in visibilidades" ng-value="visibilidad.Codigo">
+                                    {{visibilidad.Descripcion}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col l3 m12 s12">
+                            <label class="labelper">Asignación<span class="red-text">*</span></label>
+                            <select id="asignacion" name="asignacion" class="select-chosen-eps"
+                                ng-model="registrarAsignaciones.asignacion"
+                                ng-change="validarAsignacion(registrarAsignaciones.asignacion)" required>
+                                <option value="" disabled>SELECCIONAR</option>
+                                <option ng-repeat="asignacion in asignaciones" ng-value="asignacion.Codigo">
+                                    {{asignacion.Descripcion}}</option>
+                            </select>
+                        </div>
+                        <form ng-submit="buscarAsignacion(buscar.nombre)">
+                            <div class="input-field col l6 m12 s12" ng-if="labelAsigancion === 'INTERNOS'">
+                                <input id="buscar" type="text" ng-model="buscar.nombre" required>
+                                <label for="buscar">Ingrese el nombre</label>
+                                <a class="btn-link" href="javascript:void(0)" ng-click="buscarAsignacion(buscar.nombre)"
+                                    style="position: absolute; margin-top: 0.6em; margin-left: -1.5em; color: #1a2e63;">
+                                    <i class="fas fa-search styleIconSearch"></i>
+                                </a>
+
+                                <div class="resultados">
+                                    <div ng-repeat="resultado in resultadoBuscar" class="items"
+                                        ng-click="seleccionarItem(resultado)">
+                                        {{resultado.Documento + '-' + resultado.Nombre + ' ' + resultado.Apellido}}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field col l3 m12 s12"
+                            ng-if="labelAsigancion === 'INTERNOS' || labelAsigancion === 'EXTERNOS'">
+                            <input id="cedula" type="text" ng-model="registrarAsignaciones.cedula"
+                                ng-disabled="labelAsigancion === 'INTERNOS'" required>
+                            <label for="cedula">Cédula<span class="red-text">*</span></label>
+                        </div>
+                        <div class="input-field col l3 m12 s12"
+                            ng-if="labelAsigancion === 'INTERNOS' || labelAsigancion === 'EXTERNOS'">
+                            <input id="nombre" type="text" ng-model="registrarAsignaciones.nombre"
+                                ng-disabled="labelAsigancion === 'INTERNOS'" required
+                                style="text-transform: uppercase;">
+                            <label for="nombre">Nombres<span class="red-text">*</span></label>
+                        </div>
+                        <div class="input-field col l3 m12 s12"
+                            ng-if="labelAsigancion === 'INTERNOS' || labelAsigancion === 'EXTERNOS'">
+                            <input id="apellidos" type="text" ng-model="registrarAsignaciones.apellidos"
+                                ng-disabled="labelAsigancion === 'INTERNOS'" required
+                                style="text-transform: uppercase;">
+                            <label for="apellidos">Apellidos<span class="red-text">*</span></label>
+                        </div>
+                        <div class="input-field col l5 m12 s12" ng-if="labelAsigancion === 'EXTERNOS'">
+                            <input id="correo" type="text" ng-model="registrarAsignaciones.correo"
+                                ng-disabled="labelAsigancion === 'INTERNOS'" required
+                                style="text-transform: lowercase;">
+                            <label for="correo">Correo electrónico<span class="red-text">*</span></label>
+                        </div>
+                        <div class="input-field col l5 m12 s12" ng-if="labelAsigancion === 'INTERNOS'">
+                            <input id="cargo" type="text" ng-model="registrarAsignaciones.cargo"
+                                ng-disabled="labelAsigancion === 'INTERNOS'" required>
+                            <label for="cargo">Cargo</label>
+                        </div>
+                        <div class="input-field col l2 m12 s12"
+                            ng-if="labelAsigancion === 'INTERNOS' || labelAsigancion === 'EXTERNOS'">
+                            <button class="btn btn-primary" type="button"
+                                ng-click="guardarAsignacion()">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div style="display: flex; justify-content: space-around;">
+                        <button class="btn btn-primary" type="button" ng-click="guardarComite()">Guardar
+                            comité</button>
+                    </div>
+                </div>
+   
+                <div class="row" ng-if="listadoAsignaciones.length">
+                    <div class="table-over-box m-b" style="max-height: calc(100vh - 262px);overflow: auto;">
+                        <table id="H1_Tabla" class="bordered table_center_align"
+                            style="width:100%;font-size:6px !important;">
+                            <thead class="center-align default-background default-border white-text">
+                                <tr>
+                                    <th>Tipo asignación</th>
+                                    <th>Cédula</th>
+                                    <th>Nombre</th>
+                                    <th>Apellidos</th>
+                                    <th>Cargo</th>
+                                    <th>Correo</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="listado in listadoAsignaciones">
+                                    <td>{{cargarAsignacion(listado.asignacion)}}</td>
+                                    <td>{{listado.cedula}}</td>
+                                    <td style="text-transform: uppercase;">{{listado.nombre}}</td>
+                                    <td style="text-transform: uppercase;">{{listado.apellidos}}</td>
+                                    <td style="text-transform: uppercase;">{{listado.cargo}}</td>
+                                    <td>{{listado.correo}}</td>
+                                    <td>
+                                        <a class="btn-floating btn waves-effect waves-light"
+                                            ng-click="eliminarAsignacion(listado.id)"><i
+                                                class="material-icons dp48">delete</i></a>
+                                        <span class="tooltiptext tooltiptablas">Eliminar</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

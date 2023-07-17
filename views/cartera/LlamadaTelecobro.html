@@ -1,0 +1,417 @@
+<div id="llamadastelecobro" class="white newdesing" style="position:relative" ng-init="ListarGestionCartera();CantidadPorPersona();TipoGestion('D','GESTION DIARIA');">
+   <style>
+      .tiempo {
+         position: absolute;
+         right: 55px;
+         font-size: 30px;
+         font-family: monospace;
+         padding: 10px;
+         border: 2px solid #4CAF50;
+         z-index: 100;
+         border-radius: 5px;
+         background-color: rgb(242, 255, 242);
+         color: #000000;
+         top: 5%;
+      }
+      div.columnas {
+         border-top: 1px solid #e5e6e6;
+         position: relative;
+      }
+      .columnas p {
+         position: absolute;
+         top: -38px;
+         width: 207px;
+         border: 1px solid #e5e6e6;
+         padding: 1px 10px;
+         border-radius: 0px 19px 0px 0px;
+      }
+      .btn {
+         background-color: #88C542;
+      }
+      .tiempo {
+         position: absolute;
+         right: 55px;
+         font-size: 30px;
+         font-family: monospace;
+         padding: 10px;
+         border: 2px solid #4CAF50;
+         z-index: 100;
+         border-radius: 5px;
+         background-color: rgb(242, 255, 242);
+         color: #000000;
+         top: 49%;
+      }
+      .columnas .ocultar_adjuntos {
+         position: absolute;
+         right: 1em;
+         cursor: pointer;
+         top: -1em;
+         border: 1px solid #1a2e63;
+         border-radius: 2em;
+         background: #fff;
+      }
+      p{
+         margin-top: 0px !important;
+         font-size: 15px !important;
+         margin-bottom: 0px !important;
+      }
+   </style>
+   <div class="row section-header">
+      <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+         <h5>Gestion Llamadas Telecobro - {{title}}</h5>
+      </li>
+      <li ng-show="VisualEstado">
+         <div class="switch">
+            <label>
+               <a ng-click="TipoGestion('D','GESTION DIARIA')" class="btn" style="background-color: #5bc34d;">GESTION DIARIA</a>
+               <a ng-click="TipoGestion('R','RECORDATORIO')" class="btn" style="background-color: #eb7b2d;">RECORDATORIO</a>
+            </label>
+         </div>
+      </li>
+      <li ng-show="reloj">
+         <div for="duracion" id="duracion" value="0" class="tiempo">{{info.duracion}}</div>
+      </li>
+   </ul>
+</div>
+<div class="row white newdesing section-header" ng-show="BotonRegistroLlamada">
+   <div class="row margin">
+      <div class="general row">
+         <div class="col l6 m6 s12 scc no-padd" ng-repeat="duplicarse in duplicar" >
+            <div class="card small-chart margin" id="small-chart{{$index+1}}" style="height:120px;;width: 98%;">
+               <div class="col l3 m3 s3 scc no-padd" style="display: inline-table;">
+                  <h4> <strong>{{duplicarse.porcentaje_meta}}% </strong></h4>
+                  <h2><strong>DE LA META </strong></h2>
+               </div>
+               <div class="col l9 m9 s9 sct no-padd">
+                  <h2 style="margin-bottom: 2%;margin-top: 2%;"><strong> {{duplicarse.nombre_funcionario}} </strong></h2>
+                  <div class="col l6 m6 s6 sct no-padd">
+                     <div class="justify-align">
+                        <p><strong>Rango Cartera: </strong> {{duplicarse.segmento_cartera}}</p>
+                        <p><strong>Meta a Recuperar: </strong> ${{duplicarse.meta_x_recuperar}}</p>
+                        <p><strong>Numero De Aportante: </strong> {{duplicarse.cantidad_aportante}}</p>
+                     </div>
+                  </div>
+                  <div class="col l6 m6 s6 sct no-padd">
+                     <div class="justify-align">
+                        <p><strong>Valor De Mora: </strong> ${{duplicarse.mora_x_cobrar}}</p>
+                        <p><strong>Valor Recuperado: </strong> ${{duplicarse.gestion_mora_recuperada}}</p>
+                        <p><strong>Cantidad Registro: </strong> {{duplicarse.cantidad_registro}}</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col l3 m6 s12 scc no-padd">
+            <div class="card small-chart margin" id="small-chart3" style="height:120px;;width: 98%;">
+               <h2 style="margin-bottom: 2%;"><strong> MOTIVOS DE TELECOBRO </strong></h2>
+               <div class="col l8 m8 s8 scc no-padd">
+                  <div class="justify-align">
+                     <p style="margin: 0;"><i class="icon-right-open-5"></i>DEPURACION</p>
+                     <p style="margin: 0;"><i class="icon-right-open-5"></i>RECUPERACION</p>
+                     <p style="margin: 0;"><i class="icon-right-open-5"></i>INCOSISTENCIA</p>
+                     <p style="margin: 0;"><i class="icon-right-open-5"></i>NO CONTESTADO</p>
+                  </div>
+               </div>
+               <div class="col l4 m4 s4 scc no-padd">
+                  <div class="justify-align">
+                     <p style="margin: 0;"><strong>{{idata.depuracion}}</strong></p>
+                     <p style="margin: 0;"><strong>{{idata.recuperacion}}</strong></p>
+                     <p style="margin: 0;"><strong>{{idata.incosistencia}}</strong></p>
+                     <p style="margin: 0;"><strong>{{idata.nocontestado}}</strong></p>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col l3 m6 s12">
+            <div class="card small-chart margin" id="small-chart1" style="height:120px;;width: 98%; background: linear-gradient(to right, rgb(243, 165, 48) 30%, rgba(243, 165, 48, 0.8) 50%);">
+               <div class="col l2 m8 s8 scc">
+                  <div class="justify-align">
+                     <i class="small material-icons" style="font-size: 3rem;" >perm_phone_msg</i>
+                  </div>
+               </div>
+               <div class="col l10 m8 no-padd s8 sct">
+                  <h4 style="font-size: 23px;">RECORDATORIO DE LLAMADAS</h4>
+                  <h5> <strong>{{pendiente}} </strong></h5>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="row white newdesing section-header" ng-if="VisualizacionListadoPendiente">
+   <div class="row margin">
+      <table class="responsive-table striped table-bordered display dataTable" id="callpend" style="border-bottom: none; width: 100%">
+         <thead align="center">
+            <tr>
+               <td class="center-align"><strong>NIT</strong></td>
+               <td class="center-align"><strong>APORTANTE</strong></td>
+               <td><strong>CANTIDAD REGISTRO</strong></td>
+               <td><strong>A 3O DÍAS</strong></td>
+               <td><strong>A 6O DÍAS</strong></td>
+               <td><strong>A 9O DÍAS</strong></td>
+               <td><strong>MAS DE 9O DÍAS</strong></td>
+               <td><strong>TOTAL CARTERA</strong></td>
+               <td><strong>SEGMENTO CARTERA</strong></td>
+               <td><strong>ULTIMA LLAMADA</strong></td>
+               <td><strong>OPCION</strong></td>
+            </tr>
+         </thead>
+         <tbody style="height: 40%; overflow: scroll;">
+            <tr ng-repeat="call in callpendiente">
+               <td>{{call.NIT}}</td>
+               <td>{{call.APORTANTE}}</td>
+               <td>{{call.CANTIDAD_REGISTRO}} </td>
+               <td> $ {{call.A_30_DIAS}}</td>
+               <td> $ {{call.A_60_DIAS}}</td>
+               <td> $ {{call.A_90_DIAS}}</td>
+               <td> $ {{call.MAS_DE_90_DIAS}}</td>
+               <td> $ {{call.TOTAL_CARTERA}}</td>
+               <td>{{call.SEGMENTO_CARTERA}}</td>
+               <td>{{call.ULTIMA_LLAMADA}}</td>
+               <td class="center-align">
+                  <div class="tooltip">
+                     <i ng-click="Consultar(call)"  style="cursor: pointer"
+                     class="Medium material-icons">call</i>
+                     <span class="tooltiptext">Registrar Llamada</span>
+                  </div>
+                  <div class="tooltip">
+                     <i ng-click="VerDetalle(call)"  style="cursor: pointer"
+                     class="Medium material-icons">remove_red_eye</i>
+                     <span class="tooltiptext">Ver Detalle</span>
+                  </div>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+</div>
+<div class="row white newdesing section-header" ng-if="VisualizacionListadoRecordatorio">
+   <div class="row margin">
+      <table class="responsive-table striped table-bordered display dataTable" id="callpendrecord" style="border-bottom: none; width: 100%">
+         <thead align="center">
+            <tr>
+               <td class="center-align"><strong>NIT</strong></td>
+               <td class="center-align"><strong>APORTANTE</strong></td>
+               <td><strong>FECHA REGISTRO</strong></td>
+               <td><strong>OBSERVACIÓN</strong></td>
+               <td><strong>OPCION</strong></td>
+            </tr>
+         </thead>
+         <tbody style="height: 40%; overflow: scroll;">
+            <tr ng-repeat="callre in callrecordatorio">
+               <td>{{callre.nit}}</td>
+               <td>{{callre.razon_social}}</td>
+               <td>{{callre.fecha_registro}}</td>
+               <td>{{callre.observacion}}</td>
+               <td class="center-align">
+                  <div class="tooltip">
+                     <i ng-click="Consultar(callre)"  style="cursor: pointer"
+                     class="Medium material-icons">call</i>
+                     <span class="tooltiptext">Registrar Llamada</span>
+                  </div>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+</div>
+
+<div class="row section-header white" ng-show="FormularioDeLlamada">
+   <div class="col l8 m8 s8 no-padd">
+      <div class="col l12 m12 s12">
+         <div class="row">
+            <div class="col l12 m12 s12">
+               <div class="col l4 m12 s12">
+                  <div class="input-field">
+                     <input id="fecha" type="text" class="" ng-model="datos.fechatemporal" disabled>
+                     <label for="fecha" class="">Fecha Registro</label>
+                  </div>
+               </div>
+               <div class=" col l4 m12 s12">
+                  <div class="input-field">
+                     <input id="hora" type="text" class="" ng-model="datos.hora" disabled>
+                     <label for="hora" class="">Hora Registro</label>
+                  </div>
+               </div>
+            </div>
+            <div class="col l12 m12 s12">
+               <div class="col l4 m12 s12">
+                  <div class="input-field">
+                     <label class="active">Tipo de Documento (*)</label>
+                     <select class="select-chosen-eps" ng-model="datos.tipodocumento" disabled>
+                        <option value="0">SELECCIONAR</option>
+                        <option value="N">NIT</option>
+                        <option value="C">CEDULA DE CIUDADANÍA</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="col l4 m12 s12">
+                  <div class="input-field">
+                     <input id="id" type="text"  ng-model="datos.documento" disabled>
+                     <label for="id" class="">Número de identificación (*)</label>
+                  </div>
+               </div>
+               <div class="col l4 m12 s12">
+                  <div class="input-field">
+                     <label for="razon" class="active">Nombre o Razon Social</label>
+                     <input id="razon" type="text"  ng-model="datos.razonsocial" disabled>
+                  </div>
+               </div>
+            </div>
+            <div class="col l12 m12 s12">
+               <div class="col l3 m12 s12">
+                  <div class="input-field">
+                     <label class="active">Departamento (*)</label>
+                     <select class="select-chosen-eps" id="deptos" ng-model="datos.departamento" ng-options="deptos.codigo as deptos.nombre for deptos in depto" ng-change="BuscoMunicipio()"> 
+                     </select>
+                  </div>
+               </div>
+               <div class="col l3 m12 s12">
+                  <div class="input-field">
+                     <label class="active">Municipio (*)</label>
+                     <select id="municipio" class="select-chosen-eps" ng-model="datos.municipio" ng-options="mun.CODIGO as (mun.NOMBRE) for mun in muni">
+                     </select>
+                  </div>
+               </div>
+               <div class=" col l3 m12 s12">
+                  <div class="input-field">
+                     <input id="telefono" type="text" class="validate" ng-model="datos.telefono">
+                     <label for="telefono" class="">Telefono (*)</label>
+                  </div>
+               </div>
+               <div class="col l3 m12 s12">
+                  <div class="input-field">
+                     <label for="celular" class="active">Celular</label>
+                     <input id="celular" type="text" class="validate valid" ng-model="datos.celular">
+                  </div>
+               </div>
+            </div>
+            <div class="col l12 m12 s12">
+               <div class="col l6 m12 s12">
+                  <div class="input-field">
+                     <input id="dirrecion" type="text" class="validate" ng-model="datos.direccion">
+                     <label for="dirrecion" class="">Dirección</label>
+                  </div>
+               </div>
+               <div class="col l1 m12 s12">
+                  <div class="tooltip">
+                     <label ng-click="AbrirModalDireccion()"><i class="material-icons"
+                        style="margin-top:30px;">info</i></label>
+                        <span class="tooltiptext">Click Para Actualizar Direccion</span>
+                     </div>
+                  </div>
+                  <div class=" col l5 m12 s12">
+                     <div class="input-field">
+                        <input id="correo" type="text" class="validate" ng-model="datos.correo">
+                        <label for="correo" class="">Correo Electronico</label>
+                     </div>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <div class="col l6 m12 s12">
+                     <div class="input-field">
+                        <label class="active">Motivos</label>
+                        <select class="select-chosen-eps" ng-model="datos.motivo"
+                        ng-change="BuscarSubMotivos(datos.motivo)">
+                        <option value="0">SELECCIONAR</option>
+                        <option ng-repeat="lm in lmotivos" ng-value="lm.codigo">{{lm.nombre}}</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="col l6 m12 s12">
+                  <div class="input-field">
+                     <label class="active">Submotivos</label>
+                     <select class="select-chosen-eps" ng-model="datos.submotivo"
+                     ng-change="MostrarFecha(datos.submotivo)">
+                     <option value="0">SELECCIONAR</option>
+                     <option ng-repeat="ls in lsubmotivos" ng-value="ls.codigo">{{ls.nombre}}</option>
+                  </select>
+               </div>
+            </div>
+         </div>
+         <div class="col l12 m12 s12">
+            <div class="col l6 m12 s12">
+               <div class="input-field">
+                  <input type="checkbox" id="checkbox2"  ng-change="CambiarRecordatorio()" ng-model="ActivarRecordatorio">
+                  <label for="checkbox2">Activar Recordatorio</label>
+               </div>
+            </div>
+            <div class="col l6 m12 s12" ng-if="OcultarFecha">
+               <div class="input-field">
+                  <label for="fechamotivo" class="active">Fecha Recordatorio</label>
+                  <input id="fechamotivo" type="date" min="{{maxDate}}" class="validate valid"
+                  ng-model="datos.fechamotivo">
+               </div>
+            </div>
+         </div>
+         <div class="col l12 m12 s12">
+            <div class="col l6 m12 s12">
+               <div class="input-field">
+                  <textarea class="validate valid" placeholder="Observacion" id="observacion" cols="30"
+                  rows="10" ng-model="datos.observacion"
+                  style="margin: 0px; width: 855px; height: 122px;"></textarea>
+               </div>
+            </div>
+         </div>
+         <div class="col l12 m12 s12" style="margin-top: 20px;">
+            <center>
+               <button class="btn white-text primary-button margin-bottom-10" ng-click="FinalizarLlamadas()">
+                  <i class="icon-call"></i>Finalizar Llamadas </button>
+               </center>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="col l4 m4 s4" ng-if ="TablaDetalleAfil">
+      <div class="row margin">
+         <table class="responsive-table striped table-bordered display dataTable" id="infoafiliado"  >
+            <thead>
+               <td class="center-align"><strong>DOCUMENTO</strong></td>
+               <td class="center-align"><strong>AFILIADO</strong></td>
+               <td class="center-align"><strong>PERIODO</strong></td>
+               <td class="center-align"><strong>VALOR</strong></td>
+               <td class="center-align"><strong>SEGEMENTO</strong></td>
+            </thead>
+            <tbody>
+               <tr data-ng-repeat="row in myObj">
+                  <td>{{ row.documento_afiliado }}</td>
+                  <td>{{ row.nombre_afiliado }}</td>
+                  <td>{{ row.periodo_adecuado }}</td>
+                  <td>${{ row.valor_adecuado }}</td>
+                  <td>{{ row.segmento_cartera }}</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+  <div id="modaltabla" class="modal" style="width: 80%;">
+    <div class="modal-content" style="padding: 2em;">
+      <div class="card-action">
+        <div class="row">
+          <p class="default-background white-text"> <i class="icon-users-1"></i> {{ titulo }} </p>
+          <table class="responsive-table striped table-bordered display dataTable" id="infoafiliado"  >
+            <thead>
+              <td class="center-align"><strong>DOCUMENTO</strong></td>
+              <td class="center-align"><strong>AFILIADO</strong></td>
+              <td class="center-align"><strong>PERIODO</strong></td>
+              <td class="center-align"><strong>VALOR</strong></td>
+              <td class="center-align"><strong>SEGEMENTO</strong></td>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="r in listado">
+                <td>{{ r.documento_afiliado }}</td>
+                <td>{{ r.nombre_afiliado }}</td>
+                <td>{{ r.periodo_adecuado }}</td>
+                <td>${{ r.valor_adecuado }}</td>
+                <td>{{ r.segmento_cartera }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

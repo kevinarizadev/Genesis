@@ -1,0 +1,259 @@
+<div id="miscarguesrips" class="white newdesing" style="position:relative">
+  <style>
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .radicado {
+      background-color: #8BC34A !important;
+    }
+
+    .error {
+      background-color: #FF5722 !important;
+    }
+
+    .pendiente {
+      background-color: #FFC107 !important;
+    }
+
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    #tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+  </style>
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Cargues</h5>
+      </li>
+      <li style="display:flex;align-items: center;">
+        Errores <i ng-click="graficarErrores()" class="fontello-icon icon-chart-bar"
+          style="cursor: pointer;margin-right: 1em;font-size: 20px;"></i>
+        Actualizar <i ng-click="cargarrips()" class="fontello-icon icon-cw-1"
+          style="cursor: pointer;margin-right: 1em;font-size: 20px;"></i>
+        <div>
+          <ul style="text-align: center;" class="pagination">
+            <span style="cursor: pointer;" ng-click="filter('PENDIENTE')" class="status pendiente">PENDIENTE
+              <strong>{{pen}}</strong></span>
+            <span style="cursor: pointer;" ng-click="filter('VALIDADO')" class="status light-blue">VALIDADO
+              <strong>{{val}}</strong></span>
+            <span style="cursor: pointer;" ng-click="filter('RADICADO')" class="status green radicado">RADICADO
+              <strong>{{rad}}</strong></span>
+            <span style="cursor: pointer;" ng-click="filter('ERROR')" class="status red error">ERROR
+              <strong>{{err}}</strong></span>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <!-- Contenido -->
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        Listado de Radicaciones
+        <input type="text" class="margin border-none input-text-new" ng-keyup="filter(filtro)" ng-model="filtro"
+          placeholder="Buscar en la tabla">
+      </div>
+      <div id="tabla_scroll" class="scroll_x">
+        <div class="responsive" ng-hide="inactiveipstable">
+          <table class="striped table-bordered white">
+            <thead>
+              <tr>
+                <th rowspan="2" style="text-align:center;"><b>#</b></th>
+                <th rowspan="2" style="text-align:center;">ID PROCESO</th>
+                <th rowspan="2" style="text-align:center;">RECIBO</th>
+                <th rowspan="2" style="text-align:center;">FECHA INGRESO AL SISTEMA</th>
+                <th colspan="3" style="text-align:center;">FECHA DE VALIDACION</th>
+                <th colspan="3" style="text-align:center;">FACTURAS</th>
+                <!-- <th rowspan="2" style="text-align:center;">FACTURAS</th>
+                    <th rowspan="2" style="text-align:center;">RADICADAS</th>
+                    <th rowspan="2" style="text-align:center;">DEVUELTAS</th> -->
+                <th rowspan="2" style="text-align:center;">ESTADO</th>
+                <th rowspan="2" colspan="3" style="text-align:center;">ACCIÓN</th>
+              </tr>
+              <tr>
+                <th style="text-align:center;">INICIO</th>
+                <th style="text-align:center;">FIN</th>
+                <th style="text-align:center;">DURACIÓN</th>
+                <th style="text-align:center;">CANTIDAD</th>
+                <th style="text-align:center;">RADICADAS</th>
+                <th style="text-align:center;">DEVUELTAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="rip in listaRIPSTemp | inicio: currentPage * pageSize | limitTo: pageSize"
+                ng-hide="listaRIPSTemp.length == 0">
+                <th style="text-align:center;">{{$index + 1 + (currentPage * pageSize) }}</th>
+                <td style="text-align:center;">{{rip.codigo}}</td>
+                <td style="text-align:center;">{{rip.recibo}}</td>
+                <td style="text-align:center;">{{rip.fecha}}</td>
+                <td style="text-align:center;">{{rip.fecha_ini}}</td>
+                <td style="text-align:center;">{{rip.fecha_fin}}</td>
+                <td style="text-align:center;">{{rip.duracion}}</td>
+                <td style="text-align:center;">{{rip.facturas}}</td>
+                <td style="text-align:center;">{{rip.radicadas}}</td>
+                <td style="text-align:center;">{{rip.devueltas}}</td>
+                <td style="text-align:center;"><span class="{{rip.clase}}">{{rip.estado}}</span></td>
+                <td style="text-align:center;"
+                  ng-if="rip.estado == 'VALIDADO' || rip.estado == 'RADICADO' || rip.estado == 'ERROR'">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;width: 25px;" ng-click="verdetalle(rip.codigo,rip)"
+                      class="material-icons">chrome_reader_mode</i>
+                    <span class="tooltiptext">Detalle</span>
+                  </div>
+                </td>
+                <td style="text-align:center;" colspan="{{(rip.estado == 'VALIDADO')?2:1}}"
+                  ng-if="rip.estado == 'VALIDADO' || rip.estado == 'RADICADO'">
+                  <div class="tooltip">
+                    <img src="assets\images\qrcode.png" alt="" style="cursor:pointer;min-width: 20px;"
+                      ng-click="print(rip)">
+                    <span class="tooltiptext">Acta</span>
+                  </div>
+                </td>
+                <!-- new -->
+                <td style="text-align:center;" ng-if="rip.estado == 'RADICADO'">
+                  <div class="tooltip">
+                    <!-- <img src="assets\images\qrcode.png" alt="" style="cursor:pointer;" ng-click="print(rip)"> -->
+                    <i class="icon-clipboard-2 cursor-pointer" ng-click="print_sin_radicar(rip)"
+                      style="font-size: 18px;"></i>
+                    <span class="tooltiptext">Facturas devueltas</span>
+                  </div>
+                </td>
+                <!-- new -->
+                <!-- <td style="text-align:center;" ng-if="rip.estado == 'ERROR'">
+                      <div class="tooltip">
+                        <i style="cursor:pointer;width: 25px;" ng-click="verdetalle(rip.codigo,rip)"
+                          class="material-icons">chrome_reader_mode</i>
+                        <span class="tooltiptext">Detalle</span>
+                      </div>
+                    </td> -->
+                <td style="text-align:center;" colspan="{{(rip.estado == 'ERROR')?2:1}}" ng-if="rip.estado  == 'ERROR'">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;" ng-click="descargarErrores(rip.codigo,'NA','GENERALES')"
+                      class="material-icons">vertical_align_bottom</i>
+                    <span class="tooltiptext">Errores</span>
+                  </div>
+                </td>
+                <td style="text-align:center;" colspan="3" ng-if="rip.estado == 'PENDIENTE'">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;" ng-click="verdetalle(rip.codigo)"
+                      class="material-icons">chrome_reader_mode</i>
+                    <span class="tooltiptext">Detalle</span>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-show="listaRIPSTemp.length == 0">
+                <th colspan="12">
+                  <center>No hay cargues para mostrar</center>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ul ng-hide="listaRIPSTemp.length == 0" style="text-align: center;" class="pagination"
+          ng-hide="listaRIPSTemp.length > 0">
+          <li><button ng-disabled='currentPage == 0' class="btn"
+              ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+          <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1' class="btn"
+              ng-click='setPage(page.no)'>{{page.no}}</button></li>
+          <li><button ng-disabled='currentPage >= listaRIPSTemp.length/pageSize - 1' class="btn"
+              ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- modal detalle  -->
+  <div id="modalarchivosdetalle" class="modal">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h5 class="white-text">Detalle</h5>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="padding-bottom: 3px;">
+            <div class="row">
+              <div class="responsive" ng-hide="inactiveipstable">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;"><b>#</b></th>
+                      <th style="text-align:center;">NOMBRE</th>
+                      <th style="text-align:center;">CANTIDAD</th>
+                      <th style="text-align:center;">ESTADO</th>
+                      <th style="text-align:center;">ACCIÓN</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="arc in listarArchivos">
+                      <th style="text-align:center;">{{$index + 1}}</th>
+                      <td style="text-align:center;">{{arc.nombre}}</td>
+                      <td style="text-align:center;">{{arc.cantidad}}</td>
+                      <td style="text-align:center;"><span class="{{arc.clase}}">{{arc.estado}}</span></td>
+                      <td style="text-align:center;">
+                        <div class="tooltip" ng-show="arc.estado == 'ERROR'">
+                          <i style="cursor:pointer;" ng-click="descargarErrores(arc.codigo,arc.archivo,'EN ARCHIVO')"
+                            class="material-icons red-text">vertical_align_bottom</i>
+                          <span class="tooltiptext">Descargar</span>
+                        </div>
+                        <div class="tooltip" ng-show="arc.estado == 'PENDIENTE'">
+                          <i style="cursor:pointer;" class="material-icons">av_timer</i>
+                          <span class="tooltiptext">Por Validar</span>
+                        </div>
+                        <div class="tooltip" ng-show="arc.estado == 'EXITOSO'">
+                          <i style="cursor:pointer;" class="material-icons">done</i>
+                          <span class="tooltiptext">Exitoso</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modal grafica errores-->
+  <div id="modalhistoricoerrores" class="modal">
+    <div class="modal-content" style="padding: 0px !important;position: relative;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h5 class="white-text">Top de errores frecuentes</h5>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="padding-bottom: 3px;">
+            <div class="row" style="position: relative;">
+              <div id="consolidadoerror"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

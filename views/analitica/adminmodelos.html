@@ -1,0 +1,297 @@
+<div id="pantalla" class="white newdesing" style="position:relative">
+  <style>
+    i {
+      cursor: pointer;
+    }
+
+    #tabla_nueva_1 th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      cursor: pointer;
+      text-align: center;
+      background-color: #fff !important;
+    }
+
+    #tabla_nueva_1>thead {
+      font-size: 1em;
+      /* border: 3px; */
+      border-width: medium;
+      border-style: solid;
+      border-radius: .375rem;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    #tabla_nueva_1 td {
+      text-align: center;
+    }
+
+    .Diag_3 {
+      border-bottom-left-radius: 0px !important;
+      border-bottom-right-radius: 0px !important;
+    }
+  </style>
+
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Configurar:</h5>
+      </li>
+      <li style="display:flex;align-items: center;">
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!switch_view}">Modelos</span>
+            <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':switch_view}">Permisos</span>
+          </label>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div class="col s12">
+      <div ng-hide="switch_view" id="modelos">
+        <div class="row">
+          <div class="col s6" ng-show="tab.number==1">
+            <span style="cursor: pointer;" ng-click="nuevo();">Nuevo <i class="icon-plus"></i></span>
+          </div>
+          <!-- <div class="col s6" ng-show="tab.number==1">
+            <div class="row">
+              <div class="col s6 margin no-padding right">
+                <div class="input-field col m12 s12 margin">
+                  <label for="filtertablero">Buscar</label>
+                  <input name="filtertablero" required id="filtertablero" type="text" ng-model="filtertablero">
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <div class="col s6" ng-show="tab.number==2">
+            <i class="icon-left-open-2" ng-click="tab.number=1;" style="cursor: pointer">Atras</i>
+          </div>
+        </div>
+        <div class="row" ng-show="tab.number==1">
+          <div class="col s12" style="max-height: 75vh;overflow:auto;" class="default-color">
+            <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Tableros
+                  ({{List_tableros.length}})</strong>
+                <div class="tooltip">
+                  <i class="icon-cw-circle cursor-pointer" ng-click="Obtener_Tableros()"></i>
+                  <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+                </div>
+                <div class="col s3 no-padding label-new right"
+                  style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                  <input class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text"
+                    style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="filtertablero">
+                </div>
+              </div>
+            </div>
+            <table id="tabla_nueva_1" class="bordered highlight" style="width:100%;color: black;border:3px solid;">
+              <thead class="default-border default-color">
+                <th class="text-center">#</th>
+                <th class="text-center">Codigo</th>
+                <th class="text-center">Nombre</th>
+                <th class="text-center">Area</th>
+                <th class="text-center">Creación</th>
+                <th class="text-center">Privacidad</th>
+                <th class="text-center">Estado</th>
+                <th class="text-center">Acción</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in List_tableros | filter: filtertablero as result">
+                  <td class="text-center">{{$index+1}}</td>
+                  <td class="text-center">{{item.TABN_ID}}</td>
+                  <td class="text-center">{{item.TABC_NOMBRE}}</td>
+                  <td class="text-center">{{item.NOMBRE_AREA}}</td>
+                  <td class="text-center">{{item.TABF_FECHA_PUBLICACION}}</td>
+                  <td class="text-center">{{item.PRIVACIDAD}}</td>
+                  <td class="text-center">{{item.NOMBRE_ESTADO}}</td>
+                  <td class="text-center" style="font-size: 20px;">
+                    <i title="Editar modelo" ng-click="edit(item);" class="icon-edit orange-text"></i>
+                    <i title="{{item.TABC_ESTADO=='A' ? 'Eliminar modelo' :'Activar modelo'}}" ng-click="delete(item);"
+                      ng-class="{ 'icon-trash red-text':item.TABC_ESTADO=='A', 'icon-check-1 green-text':item.TABC_ESTADO=='I' }"></i>
+                    <i title="Ver modelo" ng-click="showModelo(item);" class="icon-chart-bar purple-text"></i>
+                    <i title="Cambiar privacidad" ng-click="changeprivacidad(item);"
+                      ng-class="{'icon-lock blue-text': item.TABC_PUBLICO=='N', 'icon-lock-open green-text': item.TABC_PUBLICO=='S' }"></i>
+                  </td>
+                </tr>
+                <tr ng-if="result.length==0">
+                  <td colspan="8" class="text-center">
+                    <p><b>NO SE ENCONTRARON RESULTADOS</b></p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row" ng-show="tab.number==2">
+          <form ng-submit="saveModel();">
+            <div class="row">
+              <div class="col s12 m6 l6">
+                <div class="col s12 no-padding label-new m-b">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                    autocomplete="off" ng-model="tablero.nombre" required>
+                  <label>Nombre</label>
+                </div>
+                <div class="col s12 no-padding label-new m-b">
+                  <select class="select-default-new input-out-new m-l" ng-model="tablero.area" required>
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option ng-selected="item.AREN_CODIGO == tablero.area" ng-value="item.AREN_CODIGO"
+                      ng-repeat="item in areas">{{item.AREC_NOMBRE}}</option>
+                  </select>
+                  <label>Area</label>
+                </div>
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 5.5rem;">
+                  <textarea id="HojaAnt_Justificacion"
+                    class="margin border-none input-text-new input-w-p input-out-new w-100 m-l" maxlength="1000"
+                    autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                    ng-model="tablero.iframe" required></textarea>
+                  <label>Iframe</label>
+                </div>
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 5.5rem;">
+                  <textarea id="HojaAnt_Justificacion"
+                    class="margin border-none input-text-new input-w-p input-out-new w-100 m-l" maxlength="1000"
+                    autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                    ng-model="tablero.descripcion" required></textarea>
+                  <label>Descripción</label>
+                </div>
+              </div>
+              <div class="col s12 m6 l6">
+                <div id="vistaprevia" style="padding: 20px;padding-top: 0;">
+                  <strong>Tablero:</strong>
+                  <iframe ng-src="{{trustSrc(tablero.iframe)}}" frameborder="0"
+                    style="width:100%;height: 50vh;"></iframe>
+                </div>
+              </div>
+            </div>
+            <div class="row text-center">
+              <button id="buton" class="btn" type="submit">
+                Guardar
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div ng-show="switch_view" id="permisos">
+        <div class="row margin">
+          <form ng-submit="Obtener_Funcionario();">
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" style="text-transform: uppercase;"
+                id="funcionario_buscar" autocomplete="off" ng-model="funcionario.buscar"
+                ng-keyup="FormatSoloTextoNumero('funcionario_buscar')" ng-change="Change_Func_Buscar()" maxlength="50" placeholder="{{List_funcs.length == 0 ? 'Buscar...' : 'Seleccione el funcionario'}}"
+                list="List_funcs" name="myBrowser">
+              <datalist id="List_funcs" open="open">
+                <option value="{{x.NOMBRE_FUNCIONARIO}}" ng-repeat="x in List_funcs">
+              </datalist>
+              <label>Funcionario: <i class="icon-search" ng-click="Obtener_Funcionario();"></i></label>
+            </div>
+          </form>
+        </div>
+        <div class="row" ng-show="funcionario.cedula != ''">
+          <div class="col s6 m-b">
+            <i class="icon-left-open-2" ng-click="Atras_Func()" style="cursor: pointer">Atras</i>
+          </div>
+          <table class="bordered highlight" style="width:100%;color: black;border:3px solid;">
+            <thead class="default-border default-color">
+              <th class="text-center">Cedula</th>
+              <th class="text-center">Nombre</th>
+              <th class="text-center">Area</th>
+              <th class="text-center">Cargo</th>
+              <th class="text-center">Regional</th>
+              <th class="text-center">Ubicacion_laboral</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center">{{funcionario.cedula}}</td>
+                <td class="text-center">{{funcionario.nombre}}</td>
+                <td class="text-center">{{funcionario.area}}</td>
+                <td class="text-center">{{funcionario.cargo}}</td>
+                <td class="text-center">{{funcionario.regional}}</td>
+                <td class="text-center">{{funcionario.ubicacion_laboral}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row" ng-show="funcionario.cedula != ''">
+          <div class="col s5 no-padding label-new m-b m-l" style="width: 49%;overflow: auto;min-height: 40vh;display:block;">
+            <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Tableros No Asignados
+                  ({{Cont_Tab_Asigs}})</strong>
+                <div class="col s3 no-padding label-new right"
+                  style="width: 40%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                  <input class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text"
+                    style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="filter_tableros_funcionario_general">
+                </div>
+              </div>
+            </div>
+            <table class="highlight tabla_nueva_resp" style="width:100%;color: black;border:3px solid;">
+              <thead class="default-color">
+                <tr>
+                  <!-- <th style="width:5%;"><i class="icon-search"
+                      ng-click="Activar_Filtrar_Responsable=!Activar_Filtrar_Responsable;"></i></th>
+                  <th ng-show="Activar_Filtrar_Responsable" style="width:10%;">
+                    <input class="margin border-none white input-text-new input-w-p input-out-new"
+                      style="height: 1.2rem;" autocomplete="off" type="text" ng-model="filtro_tablero_total"
+                      placeholder="Buscar..."> 
+                  </th>-->
+                  <th>Area</th>
+                  <th class="center">Tablero</th>
+                  <th>-</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="cursor-pointer" ng-repeat="x in List_tableros_funcionario_general | filter: filter_tableros_funcionario_general"
+                  ng-click="Seleccionar_Tablero(x,$index)" title="Agregar" ng-show="!x.seleccionado">
+                  <td>{{x.area}}</td>
+                  <td>{{x.tablero}}</td>
+                  <td><i class="icon-list-add"></i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col s5 no-padding label-new m-b m-l" style="width: 49%;overflow: auto;min-height: 40vh;display:block;">
+            <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Tableros Asignados
+                  ({{List_tableros_funcionario.length}})</strong>
+                <div class="col s3 no-padding label-new right"
+                  style="width: 40%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                  <input class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text"
+                    style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="filter_tableros_funcionario">
+                </div>
+              </div>
+            </div>
+            <table class="highlight tabla_nueva_resp" style="width:100%;color: black;border:3px solid;" title="Quitar">
+              <thead class="default-color">
+                <tr>
+                  <th>Area</th>
+                  <th class="center">Tablero</th>
+                  <th>-</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="cursor-pointer" ng-repeat="x in List_tableros_funcionario | filter: filter_tableros_funcionario"
+                  ng-click="Quitar_Tablero(x,$index)">
+                  <td>{{x.area}}</td>
+                  <td>{{x.tablero}}</td>
+                  <td><i class="icon-trash"></i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row text-center">
+            <button id="buton" class="btn" type="submit" ng-click="Guardar_Tablero_Func()">
+              Guardar Tableros
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

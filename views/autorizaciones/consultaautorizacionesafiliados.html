@@ -1,0 +1,698 @@
+<div id="gestionaut">
+  <div class="row">
+    <div class="col s12 m12 l12 magazine margin widgets-tabs">
+      <div class="card-panel widgets-tabs col l12" style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+        <div class="card" ng-if="afildata.length > 1">
+          <div class="card-content">
+            <h5 style="display: flex;">Núcleo Familiar</h5>
+          </div>
+          <div class="divider"></div>
+          <div class="card-content clearfix">
+            <blockquote style="border-left: 5px solid #000000 !important">
+              Sr.(a) afiliado, seleccione el miembro del nucleo familiar del cual quiera ver información.
+            </blockquote>
+            <table class="highlight responsive-table bordered" align="center" id="tablanucleo"
+              style="cursor: pointer !important;">
+              <thead align="center">
+                <tr>
+                  <td><strong>TIPO</strong></td>
+                  <td><strong>DOCUMENTO</strong></td>
+                  <td><strong>NOMBRE</strong></td>
+                  <td><strong>TIPO AFILIADO</strong></td>
+                </tr>
+              </thead>
+              <tbody style="height: 40%; overflow: scroll;">
+                <tr data-ng-repeat="data in afildata track by $index" ng-click="getAfiliado(data)">
+                  <td>{{data.TIPODOCUMENTO}}</td>
+                  <td>{{data.DOCUMENTO}}</td>
+                  <td>{{data.NOMBRECOMPLETO}}</td>
+                  <td>{{data.TIPO + (data.PARENTESCO ? '-':'') + data.PARENTESCO}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="col s12" style="margin-bottom: 15px">
+            <div class="col s12">
+              <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+              <h5>Información del Afiliado</h5>
+            </div>
+            <div class="col s12" ng-show="verAutorizaciones==false && filterOptions=='AFILIADO'">
+              <table class="responsive-table table-bordered">
+                <thead>
+                  <tr>
+                    <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                    <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                    <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO</th>
+                    <th data-field="UBICACION" class="center-align">UBICACION</th>
+                    <th data-field="GENERO" class="center-align">GENERO</th>
+                    <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                    <th data-field="EDAD" class="center-align">EDAD</th>
+                    <th data-field="IPS ANTERIOR" class="center-align"
+                      ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                    <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} - {{infoafiliadoautedit.Documento}}
+                    </td>
+                    <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                    <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                    <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                      <span class="status purple"
+                        style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                    </td>
+                    <td class="center-align"><span class="status green">{{infoafiliadoautedit.Estado}}</span></td>
+
+                    <td ng-show="infoafiliadoautedit.SINIESTRO == 'true'" class="center-align"><span
+                        class="status orange">ALTO
+                        COSTO</span></td>
+                    <td ng-show="infoafiliadoautedit.TUTELA == 'true'" class="center-align"><span
+                        class="status red">TUTELA</span></td>
+                    <td ng-show="infoafiliadoautedit.PORTABILIDAD=='S'">
+                      <span class="status light-blue">PORTABILIDAD</span>
+                    </td>
+                    <td ng-show="infoafiliadoautedit.ERROR_50=='true'" class="center-align">
+                      <span class="status black" style="color:#fff">ERROR_50</span>
+                    </td>
+                    <td ng-if="infoafiliadoautedit.AFIC_T045=='S'" class="center-align">
+                      <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;" ng-hide="verAutorizaciones">
+          <div class="charts" style="margin-bottom: 0px;width: 99%;">
+            <div class="row">
+              <div class="col s12" style="margin-bottom: 1em;">
+                <div class="col s12 m6 right">
+                  <input type="text" placeholder="Buscar" ng-model="filtaut" ng-change="check_option_2 ?  filterSol(filtaut): filter(filtaut)">
+                </div>
+
+              </div>
+            </div>
+            <div class="col s12" style="margin-bottom: 1em;">
+              <div> Un resultado de <strong> {{check_option_2 ? listarSolicitudesTemp.length + " Solicitudes" :
+                  listarAutorizacionesTemp.length + " Autorizaciones"}} , por el filtro
+                  Anterior</strong>
+              </div>
+            </div>
+            <div class="card-content foot4"
+              style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+              <div class="col s4">
+                <h5 class="white-text">{{nameaut}}</h5>
+              </div>
+              <div class="col s8" style="text-align: center;">
+                <div class="btn-panel switch" style="margin-top: 14px;">
+                  <label class="white-text">
+                    Autorizaciones
+                    <input type="checkbox" ng-init="check_option_2 = false; nameaut = 'Autorizaciones'"
+                      ng-model="check_option_2" ng-change="validarAutorizaciones()">
+                    <span class="lever"></span>
+                    Solicitudes
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div id="autorizaciones" ng-hide="check_option_2">
+              <div class="card-action"
+                style="padding-bottom: 3px;border-top: 0;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); margin: 10px"
+                ng-repeat="aut in listarAutorizacionesTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+                <div class="row" style="margin-bottom: 0">
+                  <div class="col s12" style="padding: 0">
+                    <div class="row">
+                      <div class="col s12 default-background">
+                        <span class="white-text"> <b> AUTORIZACIÓN - {{aut.AUT_MANUAL}}</b></span>
+                        <span class="white-text right"><b> IPS - {{aut.IPS}}</b></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col s12 m8">
+                      <p>SERVICIO - {{aut.CLASIFICACION}} - {{aut.SERVICIO}}</p>
+                      <div class="row">
+                        <table class="striped table-bordered">
+                          <thead>
+                            <th class="text-center">CODIGO</th>
+                            <th class="text-center">NOMBRE</th>
+                            <th class="text-center">CANTIDAD</th>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="d in aut.DETALLES as rsult">
+                              <td class="text-center">{{d.cod_producto}}</td>
+                              <td> {{d.nombre_producto}}</td>
+                              <td class="text-center">{{d.cantidad}}</td>
+                            </tr>
+                            <tr ng-if="rsult.length==0">
+                              <td class="text-center" colspan="5">SIN DETALLE</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div class="row" ng-if="aut.ESTADO=='APROBADA'" style="display: flex;
+                      justify-content: center;
+                      align-items: center;">
+                        <div style="display: flex;
+                      justify-content: center;
+                      align-items: center; cursor: pointer;" ng-click="printAut(aut.NUMERO,aut.UBICACION)">
+
+                          <i style="font-size: 30px;" class="material-icons prefix default-color">print</i> <span
+                            style="margin-left: 5px">IMPRIMIR</span>
+                        </div>
+                      </div>
+                      <div class="row" ng-if="aut.MOTIVO_ANULACION" style="display: flex;
+                      justify-content: center;
+                      align-items: center;">
+                        <span><b> Motivo Rechazo:</b> {{aut.MOTIVO_ANULACION}}</span>
+                      </div>
+                    </div>
+                    <div class="col s12 m4">
+                      <div class="row margin">
+                        <div class="col s6"
+                          style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                          <div class="text-center">
+                            <b> CONFIRMACIÓN</b>
+                          </div>
+                          <div class="text-center">
+                            <span> {{aut.FECHA}}</span>
+                          </div>
+                        </div>
+                        <div class="col s6" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                          <div class="text-center">
+                            <b>ORDEN</b>
+                          </div>
+                          <div class="text-center">
+                            <span> {{aut.FECHAORDEN}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" style="margin-bottom: 0">
+                        <div class="col s6"
+                          style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                          <div class="text-center">
+                            <b>UBICACIÓN</b>
+                          </div>
+                          <div class="text-center">
+                            <span>{{aut.UBICACION_PACIENTE}}</span>
+                          </div>
+                        </div>
+                        <div class="col s6" style="font-size: 12px;padding-bottom: 10px;border-bottom: 1px solid #ddd;">
+                          <div class="text-center">
+                            <b>DX</b>
+                          </div>
+                          <div class="text-center">
+                            {{aut.DX}}
+                            </i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" style="margin-bottom: 0">
+                        <div class="col s6"
+                          style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;border-bottom: 1px solid #ddd;">
+                          <div class="text-center">
+                            <b>TUTELA</b>
+                          </div>
+                          <div class="text-center">
+                            <span ng-class="{'text_Tutela': aut.TUTELA!='0'}"> {{aut.TUTELA}}</span>
+                          </div>
+                        </div>
+                        <div class="col s6" style="font-size: 12px;padding-bottom: 10px;border-bottom: 1px solid #ddd;">
+                          <div class="text-center">
+                            <b>MIPRES</b>
+                          </div>
+                          <div class="text-center">
+                            <span ng-class="{'textFactura': aut.MIPRES!='0'}"> {{aut.MIPRES}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" style="margin-bottom: 0">
+                        <div class="col s6"
+                          style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;border-bottom: 1px solid #ddd">
+                          <div class="text-center">
+                            <b>ESTADO</b>
+                          </div>
+                          <div class="text-center">
+                            <span style="color: {{aut.ESTADO_CLASE}}"> <b>
+                                {{aut.ESTADO =='' ? '-': aut.ESTADO}}</b></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="listarAutorizacionesTemp.length==0" class="text-center" style="border: 1px solid #ddd">
+                <h5 class="default-color"> No hay coincidencias encontradas</h5>
+              </div>
+              <ul ng-if="listarAutorizacionesTemp.length > 0" style="text-align: center;" class="pagination">
+                <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                    ng-click="paso('back')">&laquo;</button></li>
+                <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                    class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                <li><button ng-disabled='currentPage >= listarAutorizacionesTemp.length/pageSize - 1'
+                    class="btn-floating default-background" ng-click="paso('next')">&raquo;</button></li>
+              </ul>
+            </div>
+            <div id="solicitudes" ng-show="check_option_2">
+              <div class="card-action"
+                style="padding-bottom: 3px;border-top: 0;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); margin: 10px"
+                ng-repeat="aut in listarSolicitudesTemp | inicio: currentPageSol * pageSizeSol | limitTo: pageSizeSol">
+                <div class="row" style="margin-bottom: 0">
+                  <div class="col s12" style="padding: 0">
+                    <div class="row">
+                      <div class="col s12 default-background">
+                        <span class="white-text"> <b> SOLICITUD - {{aut.NUMERO}}
+                          </b></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col s12 m8">
+                      <p style="text-align: justify;"><b>JUSTIFICACION</b> <br> {{aut.JUSTIFICACION}}</p>                                          
+                      <div class="row" ng-if="aut.UBICACION_AUT && aut.NUMERO_AUT" style="display: flex;
+                      justify-content: center;
+                      align-items: center;">
+
+                        <div style="display: flex;
+                      justify-content: center;
+                      align-items: center; cursor: pointer;" ng-click="printAut(aut.NUMERO_AUT,aut.UBICACION_AUT)">
+
+                          <i style="font-size: 30px;" class="material-icons prefix default-color">print</i> <span
+                            style="margin-left: 5px">IMPRIMIR</span>
+                        </div>
+                      </div>
+                      <!-- <div class="row" ng-if="aut.JUSTIFICACION_ANULACION" style="display: flex;
+                      justify-content: center;
+                      align-items: center;">
+                        <span><b> Motivo Anulación:</b> {{aut.JUSTIFICACION_ANULACION}}</span>
+                      </div> -->
+                    </div>
+                    <div class="col s12 m4">
+                      <div class="row margin" style="padding: 10px;">
+                        <div class="col s6"
+                          style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                          <div class="text-center">
+                            <b> CREACIÓN</b>
+                          </div>
+                          <div class="text-center">
+                            <span> {{aut.FECHA}}</span>
+                          </div>
+                        </div>
+                        <div class="col s6"
+                          style="font-size: 12px;border-right: 0;padding-bottom: 10px;border-bottom: 1px solid #ddd">
+                          <div class="text-center">
+                            <b>ESTADO</b>
+                          </div>
+                          <div class="text-center">
+                            <span style="color: {{aut.ESTADO_CLASE}}"> <b>
+                                {{aut.ESTADO =='' ? '-': aut.ESTADO}}</b></span>
+                          </div>
+                        </div>
+                        <div ng-if="aut.ESTADO=='RECHAZADA'" class="col s12"
+                          style="font-size: 12px;border-right: 0;padding-bottom: 10px;border-bottom: 1px solid #ddd">
+                          <div class="text-center">
+                            <b>MOTIVO RECHAZO</b>
+                          </div>
+                          <div class="text-center">
+                            <div style="display: flex;
+                      justify-content: center;
+                      align-items: center; cursor: pointer;" ng-click="vermotivoanulacion(aut.JUSTIFICACION_ANULACION)">
+
+                          <i style="font-size: 30px;" class="material-icons prefix default-color">visibility</i> <span style="margin-left: 5px">VER</span>
+                        </div>
+                          </div>
+                        </div>
+                      </div>                    
+                      <div class="row margin" ng-if="aut.NUMERO_MANUAL" style="padding: 10px;">
+                        <div class="col s12"
+                        style="font-size: 12px;border-right: 0;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b> AUTORIZACIÓN</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.NUMERO_MANUAL}}</span>
+                        </div>
+                      </div>
+                      </div>
+                      <div class="row margin" ng-if="aut.IPS" style="padding: 10px;">
+                        <div class="col s12"
+                        style="font-size: 12px;border-right: 0;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b> PRESTADOR DE SERVICIO</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.IPS}} - {{aut.NOMBRE_IPS}}</span>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="listarSolicitudesTemp.length==0" class="text-center" style="border: 1px solid #ddd">
+                <h5 class="default-color"> No hay coincidencias encontradas</h5>
+              </div>
+              <ul ng-if="listarSolicitudesTemp.length > 0" style="text-align: center;" class="pagination">
+                <li><button ng-disabled='currentPageSol == 0' class="btn-floating default-background"
+                    ng-click="pasoSol('back')">&laquo;</button></li>
+                <li ng-repeat='page in pagesSol'><button ng-disabled='currentPageSol == page.no - 1'
+                    class="btn-floating default-background" ng-click='setPageSol(page.no)'>{{page.no}}</button></li>
+                <li><button ng-disabled='currentPageSol >= listarSolicitudesTemp.length/pageSizeSol - 1'
+                    class="btn-floating default-background" ng-click="pasoSol('next')">&raquo;</button></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        <div class="col s12" ng-show="verAutorizacionesEdit==true && verAutorizaciones==true"
+          style="margin-bottom: 15px">
+          <div class="col s5">
+            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+            <h5>Información del Afiliado</h5>
+          </div>
+          <div class="col s12">
+            <table class="responsive-table table-bordered" style="height:100px;">
+              <thead>
+                <tr>
+                  <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                  <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                  <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO</th>
+                  <th data-field="UBICACION" class="center-align">UBICACION</th>
+                  <th data-field="GENERO" class="center-align">GENERO</th>
+                  <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                  <th data-field="EDAD" class="center-align">EDAD</th>
+                  <th data-field="IPS ANTERIOR" class="center-align"
+                    ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                  <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>
+                  <th data-field="NOVEDADES" class="center-align"><i class="icon-dot-3"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} - {{infoafiliadoautedit.Documento}}
+                  </td>
+                  <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                  <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                  <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                    <span class="status purple"
+                      style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                  </td>
+                  <td class="center-align"><span class="status green">{{infoafiliadoautedit.Estado}}</span></td>
+
+                  <td ng-show="infoafiliadoautedit.SINIESTRO == 'true'" class="center-align"><span
+                      class="status orange">ALTO
+                      COSTO</span></td>
+                  <td ng-show="infoafiliadoautedit.TUTELA == 'true'" class="center-align"><span
+                      class="status red">TUTELA</span></td>
+                  <td ng-show="infoafiliadoautedit.PORTABILIDAD=='S'">
+                    <span class="status light-blue">PORTABILIDAD</span>
+                  </td>
+                  <td ng-show="infoafiliadoautedit.ERROR_50=='true'" class="center-align">
+                    <span class="status black" style="color:#fff">ERROR_50</span>
+                  </td>
+                  <td ng-if="infoafiliadoautedit.AFIC_T045=='S'" class="center-align">
+                    <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                  </td>
+                  <td> <i class="icon-info-circled" ng-click="openmodals('modalnovedades')"
+                      title="Información adicional y Novedades"
+                      style="cursor: pointer;font-size: 2em;justify-content: center;display: flex; align-items: center;"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+      </div>
+
+
+
+      <style>
+  main {
+            padding-left:0px;
+        }
+
+       aside > ul{
+            display: none;
+        }
+
+        .tab a:hover {
+          background-color: #ddd !important;
+          color: white !important;
+        }
+
+        /* Style the active class (and buttons on mouse-over) */
+        .activebtn-step,
+        .activebtn-step:hover {
+          background-color: #2196f3 !important;
+          color: white !important;
+        }
+
+        .step-item {
+          height: 100px;
+          width: 100px;
+          border-radius: 100px;
+          padding: 0px;
+        }
+
+        .donebtn-step,
+        .donebtn-step:hover {
+          background-color: #2196f3 !important;
+          color: white !important;
+        }
+
+        .steper {
+          width: 60%;
+          display: inline-flex;
+          text-align: center;
+          padding-bottom: 10px;
+          margin-left: 20%;
+        }
+
+        .step-divider {
+          width: 100%;
+          position: relative;
+          top: 30px;
+          margin-left: 0px;
+          margin-right: 0px;
+          margin-top: 20px;
+        }
+
+        .btn-step-content {
+          position: relative;
+          display: none;
+          height: calc(100% - 132px);
+          width: inherit;
+          overflow: visible;
+          margin-left: 41px;
+          margin-right: 24px;
+        }
+
+        .step-option {
+          background: #eee;
+          height: 70px;
+          position: absolute;
+          bottom: -45px;
+          width: 100%;
+          margin-bottom: 6px;
+          left: 0px;
+          z-index: 2;
+        }
+
+        .back-step,
+        .back-step:hover {
+          margin-top: 7px;
+          position: absolute;
+          right: 80px;
+          background: #ff4350 !important;
+        }
+
+        .flex {
+          display: flex !important;
+        }
+
+        .btn-step {
+          background-color: rgba(0, 0, 0, .3);
+          color: white;
+        }
+
+        .hover-item:hover {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .hover-item:active {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .tabmenu>li:target>a {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .requerido {
+          color: red !important;
+        }
+
+        .tabactiva {
+          background-color: rgba(206, 206, 206, 0.71);
+        }
+
+        .colorblack {
+          color: black;
+        }
+
+        .itemsspam {
+          color: white !important;
+          border-radius: 12px !important;
+          box-shadow: 2px 2px 3px 0px #ccc !important;
+          position: relative !important;
+          top: 5px !important;
+          left: 11px !important;
+          cursor: pointer;
+        }
+
+        .hovpanel:hover {
+          background: #32364c2b;
+          color: #ffa51b;
+          cursor: pointer;
+        }
+
+        .mayus {
+          text-transform: uppercase;
+        }
+
+        #header-fixed {
+          position: fixed;
+          top: 0px;
+          display: none;
+        }
+
+        .cuadrado {
+          width: 25vh;
+          max-width: 240px;
+          height: 25vh;
+          max-height: 240px;
+          position: relative;
+          background: white;
+          box-shadow: 0 0 8px 1px #c7c7c7;
+        }
+
+        .coloritem {
+          color: black !important;
+        }
+
+        .autprocesada {
+          background-color: #4CAF50 !important;
+        }
+
+        .autactiva {
+          background-color: #ff9800 !important;
+        }
+
+        .switch label {
+          font-weight: 600;
+        }
+
+        .switch label .lever.check-c {
+          background-color: #818181 !important;
+        }
+
+        .switch label .lever.check-c:after {
+          background-color: #26a69a;
+        }
+
+        .switch label>span.activo {
+          color: #26a69a !important;
+        }
+
+        .text-center {
+          text-align: center;
+        }
+
+        div#modaldetalle {
+          top: 1% !important;
+        }
+
+        div#modalnovedades {
+          top: 1% !important;
+        }
+
+        .outer {
+          width: 1px;
+          height: 100%;
+          margin: auto;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .inner {
+          /* position: absolute; */
+          width: 100%;
+          height: 50vh;
+          background: grey;
+          top: 30%;
+          box-shadow: 0px 0px 30px 20px grey;
+        }
+
+        .style-table-default {
+          height: 350px;
+          overflow: auto;
+        }
+
+        /* Style Scroll */
+        .scrollTableDefault::-webkit-scrollbar {
+          /* width */
+          width: 5px;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-track {
+          /* Track */
+          background: #f1f1f1;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-thumb {
+          /* Handle */
+          background: #888;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+          /* Handle on hover */
+          background: #555;
+        }
+
+        .swal2-container {
+          z-index: 10000 !important;
+        }
+
+        .clase-gray {
+          color: #736a6a !important;
+        }
+
+        .textFactura {
+          color: blue;
+          font-size: 10px;
+          font-weight: bold;
+        }
+
+        .text_Tutela {
+          color: red;
+          font-weight: bold;
+        }
+      </style>
+    </div>
+  </div>

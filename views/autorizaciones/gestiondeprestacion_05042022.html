@@ -1,0 +1,959 @@
+<div id="listausuarios" class="white newdesing" style="position:relative;background: ;">
+    <div class="row section-header">
+        <ul class="left mailbox-custom-search list-inline"
+            style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+            <li id="inicio">
+                <h5
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                    Gestión de prestación de servicios</h5>
+            </li>
+
+            <li ng-show="vista.form">
+                <i ng-click="agregarUser(false)" class="icon-left-open-2">Atras</i>
+            </li>
+        </ul>
+    </div>
+    <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+        <div class="row">
+            <div class="row" ng-show="verAutorizaciones">
+                <div class="col s3 cursor-pointer">
+                    <label for="1" class="radio-card">
+                        <input ng-model="filterOptions" value="1" type="radio" name="radio-card" id="1" checked />
+                        <div class="card-content-wrapper" style="border: 1px solid #dddd;">
+                            <span class="check-icon"></span>
+                            <div class="card-content text-center">
+                                <img src="images/undraw_Online_calendar_re_wk3t.svg" style="height: 50px;">
+                                <h4 style="margin-top: 0;margin-bottom: 5px;">Consulta Autorizaciones</h4>
+                               <h5> Sin fecha efectiva de prestación</h5>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <div class="col s3 cursor-pointer" ng-hide="nitIps=='0' ? false:true">
+                    <label for="2" class="radio-card">
+                        <input ng-model="filterOptions" value="2" type="radio" name="radio-card" id="2" />
+                        <div class="card-content-wrapper" style="border: 1px solid #dddd;">
+                            <span class="check-icon"></span>
+                            <div class="card-content text-center">
+                                <img src="images/undraw_date_picker_gorr.svg" style="height: 50px;">
+                                <h4 style="margin-top: 0;margin-bottom: 5px;">Consulta Autorizaciones</h4>
+                               <h5> Con fecha efectiva de prestación</h5>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            <!--     <div class="col s3 cursor-pointer">
+                    <label for="3" class="radio-card">
+                        <input ng-model="filterOptions" value="3" type="radio" name="radio-card" id="3" />
+                        <div class="card-content-wrapper" style="border: 1px solid #dddd;">
+                            <span class="check-icon"></span>
+                            <div class="card-content text-center">
+                                <img src="images/undraw_Booking_re_gw4j.svg" style="height: 50px;">
+                                <h4 style="margin-top: 0;margin-bottom: 5px;">Consulta Autorizaciones</h4>
+                                <h5> Radicadas</h5>
+                            </div>
+                        </div>
+                    </label>               
+                </div>
+                <div class="col s3 cursor-pointer">
+                    <label for="4" class="radio-card">
+                        <input ng-model="filterOptions" value="4" type="radio" name="radio-card" id="4" />
+                        <div class="card-content-wrapper" style="border: 1px solid #dddd;">
+                            <span class="check-icon"></span>
+                            <div class="card-content text-center">
+                                <img src="images/undraw_cancel_u1it.svg" style="height: 50px;">
+                                <h4 style="margin-top: 0;margin-bottom: 5px;">Consulta Autorizaciones</h4>
+                                <h5> Anuladas</h5>
+                            </div>
+                        </div>
+                    </label>
+                </div> -->
+            </div>
+         
+            <div class="col s12 m12 l12 magazine margin widgets-tabs no-padding">
+                <div class="widgets-tabs col l12 no-padding">
+                    <div class="col no-padding" style="width: 100%;">
+                        <div class="col no-padding" style="width: 100%;">
+                            <div class="col s12">
+                                <!-- <div class="card"> -->
+                                <div class="card-content">
+                                    <div class="row">
+
+                                        <div class="col m12 s12 no-padding">
+                                            <div class="col m12 s12 no-padding" style="margin-top: 0px; margin-bottom: 5px;">
+                                                <div class="row" ng-show="verAutorizaciones">                                                    
+                                                    <div ng-if="nitIps!=0 && filterOptions!='1'" class="col s4" style="float: left;">
+                                                        <span style="cursor: pointer;" ng-click="ultimomes();">Ver top 100 último mes <i
+                                                            class="icon-search"></i></span>          
+                                                    </div>
+                                                    <div class="col s4" style="float: right;" ng-hide="nitIps=='0' ? false:true">
+                                                        <div class="btn-panel switch">
+                                                            <label>
+                                                                Autorizacion
+                                                                <input type="checkbox" ng-init="check_option = false"
+                                                                    ng-model="check_option">
+                                                                <span class="lever"></span>
+                                                                Documento
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+
+                                                    <div ng-show="verAutorizaciones">
+                                                        <div class="col s12">
+                                                            <form ng-submit="obtenerAutorizaciones()"
+                                                                name="namesearchaut">
+                                                                <div class="row">
+                                                                    <div ng-hide="check_option">
+                                                                        <div class="col s12">
+                                                                            <div class="input-field col s6">
+                                                                                <i class="material-icons prefix"
+                                                                                    style="margin-top: 10px;">dialpad</i>
+                                                                                <input id="searchaut" type="text"
+                                                                                    ng-model="tempnummanual">
+                                                                                <label for="searchaut">Numero de
+                                                                                    Autorización:</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div ng-show="check_option">
+                                                                        <div class="col s12">
+                                                                            <div class="col s5">
+                                                                                <div class="input-field col m12 s12">
+                                                                                    <i class="material-icons prefix"
+                                                                                        style="margin-top: 10px;">view_list</i>
+                                                                                    <select id="simple-select chosen"
+                                                                                        ng-model="temptipodoc"
+                                                                                        material-select watch>
+                                                                                        <option value="">SELECCIONAR</option> 
+                                                                                        <option value="{{x.CODIGO}}" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                                                                                    </select>
+                                                                                    <label
+                                                                                        for="simple-select hide-on-med-and-down">Tipo
+                                                                                        de Documento</label>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col s5">
+                                                                                <div class="input-field col m12 s12">
+                                                                                    <i class="material-icons prefix"
+                                                                                        style="margin-top: 10px;">dialpad</i>
+                                                                                    <input id="with_icon" type="text"
+                                                                                        ng-model="tempdocumento"
+                                                                                        class="validate">
+                                                                                    <label for="with_icon"
+                                                                                        class="">Documento</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col s12">
+                                                                        <center>
+                                                                            <!-- <a ng-click="limpiar();" class="waves-effect waves-light btn-large white-text red"
+                                            >Limpiar</a> -->
+
+                                                                            <button
+                                                                                class="waves-effect waves-light btn-large white-text"
+                                                                                type="submit">Buscar</button>
+                                                                        </center>
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div ng-hide="infoafiliadoautedit==''">
+                                                            <div class="col s12" style="margin-bottom: 15px">
+                                                                <div class="col s5">
+                                                                    <i class="material-icons left"
+                                                                        style="margin-top: 14px;">more_vert</i>
+                                                                    <h5>Información del Afiliado</h5>
+                                                                </div>
+                                                                <div class="col s12">
+                                                                    <table class="responsive-table table-bordered"
+                                                                        style="height:100px;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th data-field="NOMBRE"
+                                                                                    class="center-align">NOMBRE</th>
+                                                                                <th data-field="Nombre"
+                                                                                    class="center-align">IDENTIFICACIÓN
+                                                                                </th>
+                                                                                <th data-field="NACIMIENTO de Nacimiento"
+                                                                                    class="center-align">NACIMIENTO</th>
+                                                                                <th data-field="UBICACION"
+                                                                                    class="center-align">UBICACION</th>
+                                                                                <th data-field="GENERO"
+                                                                                    class="center-align">GENERO</th>
+                                                                                <th data-field="REGIMEN"
+                                                                                    class="center-align">REGIMEN</th>
+                                                                                <th data-field="EDAD"
+                                                                                    class="center-align">
+                                                                                    EDAD</th>                                                                              
+                                                                                <th colspan="{{afirownumIV}}"
+                                                                                    data-field="AFILIADO"
+                                                                                    class="center-align">AFILIADO</th>                                                                                
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td class="center-align">
+                                                                                    {{infoafiliadoautedit.NombreCompleto}}
+                                                                                </td>
+                                                                                <td class="center-align">
+                                                                                    {{infoafiliadoautedit.TipoDocumento}}
+                                                                                    -
+                                                                                    {{infoafiliadoautedit.Documento}}
+                                                                                </td>
+                                                                                <td class="center-align">
+                                                                                    {{infoafiliadoautedit.FechaNacimiento}}
+                                                                                </td>
+                                                                                <td class="center-align">
+                                                                                    {{infoafiliadoautedit.Municipio}}
+                                                                                </td>
+                                                                                <td class="center-align">
+                                                                                    {{infoafiliadoautedit.Sexo}}</td>
+                                                                                <td class="center-align">
+                                                                                    {{infoafiliadoautedit.Regimen}}</td>
+                                                                                <td class="center-align">{{edadautedit}}
+                                                                                    {{cantidadanosautedit}}</td>                                                  
+                                                                                <td class="center-align"><span
+                                                                                        class="status green">{{infoafiliadoautedit.Estado}}</span>
+                                                                                </td>
+                                                                                <td ng-show="infoafiliadoautedit.ERROR_50=='true'"
+                                                                                    class="center-align">
+                                                                                    <span class="status black"
+                                                                                        style="color:#fff">ERROR_50</span>
+                                                                                </td>                                           
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s12" style="padding-left: 0px; padding-right: 0px;"
+                                                        ng-hide="verAutorizaciones">
+                                                        <div class="charts" style="margin-bottom: 0px;width: 99%;">
+                                                            <div class="row">
+                                                                <div class="col s12 right">
+                                                                    <div class="input-field col s4 right">
+                                                                        <input id="buscarpro" type="text"
+                                                                            ng-model="filtaut"
+                                                                            ng-change="filter(filtaut)" required>
+                                                                        <label for="buscarpro">Buscar:</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col s12" style="margin-bottom: 1em;">
+                                                                <div style="float: left;"> Un resultado de <strong>
+                                                                        {{listarAutorizacionesTemp.length}}
+                                                                        Autorizaciones,
+                                                                        por el filtro
+                                                                        Anterior</strong>
+                                                                </div>
+                                                                <div style="float: right;" ng-hide="showexcel">
+                                                                    <button type="button" class="btn white-text"
+                                                                        ng-click="JSONToCSVConvertor('LISTADO DE AUTORIZACIONES', true);">Descargar
+                                                                        <i class=" icon-file-excel"></i> </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-content foot4"
+                                                                style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                <div class="col s11">
+                                                                    <h5 class="white-text">{{nameaut}}</h5>
+                                                                </div>
+                                                                <div class="col s1">
+                                                                    <h5 style="text-align: end;"><i
+                                                                            style="cursor:pointer;" ng-click="limpiar()"
+                                                                            class="material-icons white-text">close</i>
+                                                                    </h5>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-action"
+                                                                style="padding-bottom: 3px;border-top: 0;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); margin: 10px"
+                                                                ng-repeat="aut in listarAutorizacionesTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+                                                                <div class="row" style="margin-bottom: 0"
+                                                                    ng-hide="showcenso == $index">
+                                                                    <div class="col s12" style="padding: 0">
+                                                                        <div class="row">
+                                                                            <div class="col s12 default-background">
+                                                                                <span class="white-text"> <b>
+                                                                                        AUTORIZACIÓN -
+                                                                                        {{aut.NUMERO}} - UBICACIÓN -
+                                                                                        {{aut.UBICACION}}
+                                                                                    </b></span>
+                                                                                <span class="white-text right"><b> IPS -
+                                                                                        {{aut.IPS}}</b></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col s7">
+                                                                            <p>AFILIADO - {{aut.TIPO_DOC}}-{{aut.DOCUMENTO}}-{{aut.NOMBRE_AFI}}</p>
+                                                                            <p>SERVICIO - {{aut.CLASIFICACION}} -
+                                                                                {{aut.SERVICIO}}</p>
+                                                                            <div class="row">
+                                                                                <table class="striped table-bordered">
+                                                                                    <thead>
+                                                                                        <th class="text-center">CODIGO
+                                                                                        </th>
+                                                                                        <th class="text-center">NOMBRE
+                                                                                        </th>
+                                                                                        <th class="text-center">CANTIDAD
+                                                                                        </th>
+                                                                                        <!-- <th class="text-center">VALOR</th> -->
+                                                                                        <!-- <th class="text-center">TOTAL</th> -->
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <tr
+                                                                                            ng-repeat="d in aut.DETALLES as rsult">
+                                                                                            <td class="text-center">
+                                                                                                {{d.cod_producto}}</td>
+                                                                                            <td> {{d.nombre_producto}}
+                                                                                            </td>
+                                                                                            <td class="text-center">
+                                                                                                {{d.cantidad}}</td>
+                                                                                            <!-- <td class="text-center">{{d.valor}}</td> -->
+                                                                                            <!-- <td class="text-center">{{d.total_cf}}</td> -->
+                                                                                        </tr>
+                                                                                        <tr ng-if="rsult.length==0">
+                                                                                            <td class="text-center"
+                                                                                                colspan="5">SIN DETALLE
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                    <!-- <tfoot ng-if="aut.DETALLES.length>0">
+                                                  <tr>
+                                                    <th class="center-align"> <b>Total: </b></th>
+                                                    <th class="center-align">-</th>
+                                                    <th class="center-align">-</th>
+                                                    <th class="center-align">-</th>
+                                                    <th class="center-align">${{getTotal(aut) }}</th>
+                                                  </tr>
+                                                </tfoot> -->
+                                                                                </table>
+                                                                            </div>
+
+                                                                            <div class="row"
+                                                                                ng-if="aut.ESTADO=='ANULADA' || aut.STATUS=='ANULADA'"
+                                                                                style="text-align: center;">
+                                                                                <span><b ng-if="aut.MOTIVO_ANULACION">
+                                                                                        Motivo Anulación:</b>
+                                                                                    {{aut.MOTIVO_ANULACION ?
+                                                                                    aut.MOTIVO_ANULACION:'SIN MOTIVO DE
+                                                                                    ANULACIÓN'}}</span>
+                                                                            </div>
+
+                                                                            <div class="row"
+                                                                                ng-if="aut.ESTADO=='PROCESADA' && aut.STATUS=='NORMAL'"
+                                                                                style="display: flex;
+                                            justify-content: center;
+                                            align-items: center;">
+                                                                                <!-- <div style="display: flex;
+                                            justify-content: center;
+                                            align-items: center; cursor: pointer;"
+                                                                                    ng-click="printAut(aut.NUMERO,aut.UBICACION)">
+
+                                                                                    <i style="font-size: 30px;"
+                                                                                        class="material-icons prefix default-color">print</i>
+                                                                                    <span
+                                                                                        style="margin-left: 5px">IMPRIMIR</span>
+                                                                                </div> -->
+
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="col s5">
+                                                                            <div class="row margin">
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                                                                                    <div class="text-center">
+                                                                                        <b> CONFIRMACIÓN</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span> {{aut.FECHA}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                                                                                    <div class="text-center">
+                                                                                        <b>ORDEN</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span> {{aut.FECHAORDEN}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                                                                                    <div class="text-center">
+                                                                                        <b>RESPONSABLE</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span style="font-size: 10px">
+                                                                                            {{aut.RESPONSABLE}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row" style="margin-bottom: 0">
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                                                                                    <div class="text-center">
+                                                                                        <b>ESOA</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span> {{aut.NUM_ESOA =='' ?
+                                                                                            '-':aut.NUM_ESOA}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;border-bottom: 1px solid #ddd">
+                                                                                    <div class="text-center">
+                                                                                        <b>ESTADO</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span
+                                                                                            style="color: {{aut.ESTADO_CLASE}}">
+                                                                                            <b>
+                                                                                                {{aut.ESTADO =='' ? '-':
+                                                                                                aut.ESTADO}}</b></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                                                                                    <div class="text-center">
+                                                                                        <b>UBICACIÓN</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span>{{aut.UBICACION_PACIENTE}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row" style="margin-bottom: 0">
+
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                                                                                    <div class="text-center">
+                                                                                        <b>CONTRATO</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span>{{aut.CONTRATO}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;border-bottom: 1px solid #ddd;border-right: 1px solid #ddd;padding-bottom: 10px;">
+                                                                                    <div class="text-center">
+                                                                                        <b>ANTICIPO</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        {{aut.ANTICIPO}}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;padding-bottom: 10px;border-bottom: 1px solid #ddd;">
+                                                                                    <div class="text-center">
+                                                                                        <b>TUTELA</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span
+                                                                                            ng-class="{'text_Tutela': aut.TUTELA!='0'}">
+                                                                                            {{aut.TUTELA}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row" style="margin-bottom: 0">
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;padding-bottom: 10px;border-right: 1px solid #ddd;border-bottom: 0;">
+                                                                                    <div class="text-center">
+                                                                                        <b>MIPRES</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        <span
+                                                                                            ng-class="{'textFactura': aut.MIPRES!='0'}">
+                                                                                            {{aut.MIPRES}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                    style="font-size: 12px;padding-bottom: 10px;border-bottom: 0;border-right: 1px solid #ddd;">
+                                                                                    <div class="text-center">
+                                                                                        <b>DX</b>
+                                                                                    </div>
+                                                                                    <div class="text-center">
+                                                                                        {{aut.DX}}                                                                                        
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col s4"
+                                                                                style="font-size: 12px;padding-bottom: 10px;border-bottom: 0;border-right: 0;" >
+                                                                                <div class="text-center">
+                                                                                    <b>FECHA PRESTACIÓN</b>
+                                                                                </div>
+                                                                                <div class="text-center" ng-if="filterOptions=='1'">
+                                                                                    <i ng-click="openmodals('modalfechaprestacion', aut);" id="bt-ges" class="icon-cogs fs-25"></i>
+                                                                                </div>
+                                                                                <div class="text-center">
+                                                                                    {{aut.FECHA_PRESTACION}}                                                                                        
+                                                                                </div>
+                                                                            </div>
+                                                                            </div>
+                                                                            <!-- <div class="row" style="margin-bottom: 0">
+                                              <div class="col s4" style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;">
+                                                <div class="text-center">
+                                                  <b>CENSO</b>
+                                                </div>
+                                                <div class="text-center">
+                                                  <i style="font-size: 20px;cursor:pointer;" ng-click="obtenercenso(aut, $index)"
+                                                    class="icon-medkit"></i>
+                                                </div>
+                                              </div>
+                                              <div class="col s4" style="font-size: 12px;padding-bottom: 10px;border-right: 1px solid #ddd">
+                                                <div class="text-center">
+                                                  <b>FACTURA</b>
+                                                </div>
+                                                <div class="text-center">
+                                                  <span ng-class="{'textFactura': aut.FACTURA!='0'}"> {{aut.FACTURA}}</span>
+                                                </div>
+                                              </div>
+                                              <div class="col s4" style="font-size: 12px;padding-bottom: 10px;">
+                                                <div class="text-center">
+                                                  <b>ACCIÓN</b>
+                                                </div>
+                                                <div class="text-center">
+                                                  <i style="cursor:pointer;" ng-click="openmodals('modaldetalle',aut);sumPrint = 0;"
+                                                    class="material-icons">assignment_turned_in</i>
+                                                </div>
+                                              </div>
+                                            </div> -->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div ng-show="showcenso == $index">
+                                                                    <div class="row">
+                                                                        <div class="col s12 orange">
+                                                                            <span class="white-text"> <i
+                                                                                    class="icon-left-open-2"
+                                                                                    ng-click="backAut();"
+                                                                                    style="cursor: pointer;"></i> <b>
+                                                                                    AUTORIZACIÓN - {{tempaut.NUMERO}} -
+                                                                                    UBICACIÓN
+                                                                                    -
+                                                                                    {{tempaut.UBICACION}} </b></span>
+                                                                            <span class="white-text right"><b> IPS -
+                                                                                    {{tempaut.IPS}}</b></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style="padding: 20px">
+                                                                        <table class="striped table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th class="text-center">CODIGO</th>
+                                                                                    <th class="text-center">AFILIADO
+                                                                                    </th>
+                                                                                    <th class="text-center">DX</th>
+                                                                                    <th class="text-center">IPS</th>
+                                                                                    <th class="text-center">RESPONSABLE
+                                                                                    </th>
+                                                                                    <th class="text-center">REGISTRO
+                                                                                    </th>
+                                                                                    <th class="text-center">INGRESO
+                                                                                        ESTANCIA
+                                                                                    </th>
+                                                                                    <th class="text-center">ESTADO</th>
+                                                                                    <th class="text-center">HISTORICO
+                                                                                        EVOLUCION MEDICA</th>
+                                                                                    <th class="text-center">HISTORICO
+                                                                                        CHAT
+                                                                                        ADMINISTRATIVO</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr ng-repeat="s in censos">
+                                                                                    <td class="text-center">
+                                                                                        {{s.CODIGOCENSO}}</td>
+                                                                                    <td class="text-center">
+                                                                                        {{s.NOMBREAFILIADO}}</td>
+                                                                                    <td class="text-center">
+                                                                                        {{s.DIAGNOSTICO}}</td>
+                                                                                    <td class="text-center">
+                                                                                        {{s.NOMBREIPS}}
+                                                                                    </td>
+                                                                                    <td class="text-center">
+                                                                                        {{s.RESPONSABLE}}</td>
+                                                                                    <td class="text-center">{{s.FECHA}}
+                                                                                    </td>
+                                                                                    <td class="text-center">
+                                                                                        {{s.FECHAINGRESO}}</td>
+                                                                                    <td class="text-center"
+                                                                                        style="text-transform: uppercase;">
+                                                                                        <b
+                                                                                            style="color: {{s.ESTADO_CLASE}}">{{s.ESTADO}}</b>
+                                                                                    </td>
+                                                                                    <td class="text-center">
+                                                                                        <i ng-click="detail_censo(s.CODIGOCENSO,s.UBICACION);"
+                                                                                            class="icon-eye"
+                                                                                            style="font-size: 20px;cursor: pointer;"></i>
+                                                                                    </td>
+                                                                                    <td class="text-center">
+                                                                                        <i ng-click="openmodals('modalhistoricochat',s);"
+                                                                                            class="icon-chat-1"
+                                                                                            style="font-size: 20px;cursor: pointer;"></i>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div ng-if="listarAutorizacionesTemp.length==0"
+                                                                class="text-center" style="border: 1px solid #ddd">
+                                                                <h5 class="default-color"> No hay coincidencias
+                                                                    encontradas
+                                                                </h5>
+                                                            </div>
+                                                            <ul ng-hide="inactivepro" style="text-align: center;"
+                                                                class="pagination">
+                                                                <li><button ng-disabled='currentPage == 0'
+                                                                        class="btn-floating default-background"
+                                                                        ng-click="paso('back')">&laquo;</button></li>
+                                                                <li ng-repeat='page in pages'><button
+                                                                        ng-disabled='currentPage == page.no - 1'
+                                                                        class="btn-floating default-background"
+                                                                        ng-click='setPage(page.no)'>{{page.no}}</button>
+                                                                </li>
+                                                                <li><button
+                                                                        ng-disabled='currentPage >= listarAutorizacionesTemp.length/pageSize - 1'
+                                                                        class="btn-floating default-background"
+                                                                        ng-click="paso('next')">&raquo;</button></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+                        <div id="modaldetalle" class="modal">
+                            <div class="modal-content">
+                                <h3>Detalle de Servicios</h3>
+                                <br>
+                                <blockquote>JUSTIFICACION: {{justificacion}}</blockquote>
+                                <table class="responsive-table table-bordered" style="height:100px;">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="PRODUCTO" class="center-align">PRODUCTO</th>
+                                            <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                                            <th data-field="CANTIDAD" class="center-align">CANTIDAD</th>
+                                            <th data-field="ESTADO" class="center-align">ESTADO</th>
+                                            <th data-field="OBSERVACION" class="center-align">OBSERVACION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="det in resumendetalle">
+                                            <td class="order-th center-align">{{det.CODIGO}}</td>
+                                            <td class="order-th center-align">{{det.NOMBRE}}</td>
+                                            <td class="order-th center-align">{{det.CANTIDAD}}</td>
+                                            <td class="order-th center-align">{{det.STATUS}}</td>
+                                            <td class="order-th center-align">{{det.DESCRIPCION}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="javascript:void(0)"
+                                    class="modal-action modal-close waves-effect waves-green btn-flat">Ok!</a>
+                            </div>
+                        </div>
+
+     
+                    </div>
+
+                </div>
+            </div>
+        </div>
+                   
+        <div id="modalfechaprestacion" class="modal"
+        style="width: 50%!important; max-height: 100%;top: 5%!important;">
+        <div class="modal-content" style="padding: 0px !important;">
+          <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+            <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+              <div class="card-content foot4" style="padding: 0;text-align: center;">
+                <div class="col s11">
+                  <h5 class="white-text"> Agregar Fecha prestación</h5>
+  
+                </div>
+                <div class="col s1">
+                  <h5 style="text-align: end;"><i style="cursor:pointer;"
+                      ng-click="closemodals('modalfechaprestacion')"
+                      class="material-icons white-text">close</i></h5>
+                </div>
+              </div>
+              <div class="card-action" style="border-top: 0">
+                <div class="row" style="margin-bottom: 0;">
+                  <div class="col s12">
+                    <div class="row">
+                      <div class="col s12">
+                        <div class="col s12">
+                          <label for="idfechaprestacion">Fecha De Prestación:<span
+                              style="color:red;">*</span>
+                            </label>
+                          <input min="{{minDate}}" max="{{maxDate}}" id="idfechaprestacion" type="date" ng-model="fechaprestacion" class="cursor-pointer">
+                        </div>
+                      </div>
+                    </div>                   
+                    <div class="row" style=" display: flex;justify-content: center;" ng-click="gestionaraut();">
+                      <a class="waves-effect waves-light btn white-text primary-button">GESTIONAR</a>
+                    </div>
+                  </div>             
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <style>
+            .ax-accesos__list {
+                position: relative;
+                display: flex;
+                width: 100%;
+            }
+
+            /* .ax-accesos__item:hover {
+                box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+            } */
+            .ax-accesos__item:nth-child(1) {
+                background: #0045AB;
+            }
+
+            .ax-accesos__item:nth-child(2) {
+                background: #008AD8;
+            }
+
+            .ax-accesos__item:nth-child(3) {
+                background: #61D2BF;
+            }
+
+            .ax-accesos__item:nth-child(4) {
+                background: #61D2BF;
+            }
+
+            .check-icon {
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                border: solid 2px #e3e3e3;
+                border-radius: 50%;
+                /* transition: $transition; */
+                position: relative;
+            }
+
+            .check-icon:before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg width='12' height='9' viewBox='0 0 12 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.93552 4.58423C0.890286 4.53718 0.854262 4.48209 0.829309 4.42179C0.779553 4.28741 0.779553 4.13965 0.829309 4.00527C0.853759 3.94471 0.889842 3.88952 0.93552 3.84283L1.68941 3.12018C1.73378 3.06821 1.7893 3.02692 1.85185 2.99939C1.91206 2.97215 1.97736 2.95796 2.04345 2.95774C2.11507 2.95635 2.18613 2.97056 2.2517 2.99939C2.31652 3.02822 2.3752 3.06922 2.42456 3.12018L4.69872 5.39851L9.58026 0.516971C9.62828 0.466328 9.68554 0.42533 9.74895 0.396182C9.81468 0.367844 9.88563 0.353653 9.95721 0.354531C10.0244 0.354903 10.0907 0.369582 10.1517 0.397592C10.2128 0.425602 10.2672 0.466298 10.3112 0.516971L11.0651 1.25003C11.1108 1.29672 11.1469 1.35191 11.1713 1.41247C11.2211 1.54686 11.2211 1.69461 11.1713 1.82899C11.1464 1.88929 11.1104 1.94439 11.0651 1.99143L5.06525 7.96007C5.02054 8.0122 4.96514 8.0541 4.90281 8.08294C4.76944 8.13802 4.61967 8.13802 4.4863 8.08294C4.42397 8.0541 4.36857 8.0122 4.32386 7.96007L0.93552 4.58423Z' fill='white'/%3E%3C/svg%3E%0A");
+                background-repeat: no-repeat;
+                background-size: 12px;
+                background-position: center center;
+                transform: scale(1.6);
+                /* transition: $transition; */
+                opacity: 0;
+            }
+
+
+            .ax-accesos__item:nth-child(5) {
+                background: #00A288;
+            }
+
+            .ax-accesos__item {
+                position: relative;
+                flex: 1;
+                padding: 25px 40px;
+                /* transform: skewX(-15deg); */
+                overflow: hidden;
+            }
+
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            i {
+                cursor: pointer;
+            }
+
+            .h-auto {
+                height: auto;
+            }
+
+            .tabla-1 {
+                overflow: auto;
+                height: calc(100vh - 265px) !important;
+                margin-bottom: 20px !important;
+            }
+
+            .gray-input {
+                background-color: #e5e6e6 !important;
+            }
+
+            .newdesing td,
+            th {
+                font-size: 13px;
+            }
+
+            #listausuarios .scroll-tbody-2 tr:not(.active)+tr>.panel {
+                display: none;
+            }
+
+            #listausuarios td,
+            th {
+                border-radius: 0;
+            }
+
+            #listausuarios .active.dropdown-toggle-angular~div#modulo_dropdown {
+                display: block !important;
+            }
+
+            #listausuarios #modulo_dropdown {
+                top: 30px;
+                width: 400px;
+            }
+
+
+            /* SCSS */
+
+            @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap');
+
+            .container {
+                max-width: 99vw;
+                margin: 15px auto;
+                padding: 0 15px;
+            }
+
+            .top-text-wrapper {
+                margin: 20px 0 30px 0;
+            }
+
+            .top-text-wrapper h4 {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .top-text-wrapper code {
+                font-size: 0.85em;
+                background: linear-gradient(90deg, #fce3ec, #ffe8cc);
+                color: #f20;
+                padding: 0.1rem 0.3rem 0.2rem;
+                border-radius: 0.2rem;
+            }
+
+            .tab-section-wrapper {
+                padding: 30px 0;
+            }
+
+            .grid-wrapper {
+                display: grid;
+                grid-gap: 30px;
+                place-items: center;
+                place-content: center;
+            }
+
+            .grid-col-auto {
+                grid-auto-flow: column;
+                grid-template-rows: auto;
+            }
+
+            /* ******************* Main Styeles : Radio Card */
+            label.radio-card {
+                cursor: pointer;
+            }
+         
+
+            label.radio-card .card-content-wrapper {
+                background: #fff;
+                border-radius: 5px;
+                /* max-width: 280px; */
+                /* min-height: 330px; */
+                padding: 10px;
+                display: grid;
+                box-shadow: 0 2px 4px 0 rgba(219, 215, 215, 0.04);
+                transition: 200ms linear;
+            }
+
+            label.radio-card .check-icon {
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                border: solid 2px #e3e3e3;
+                border-radius: 50%;
+                transition: 200ms linear;
+                position: relative;
+            }
+
+            label.radio-card .check-icon:before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg width='12' height='9' viewBox='0 0 12 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.93552 4.58423C0.890286 4.53718 0.854262 4.48209 0.829309 4.42179C0.779553 4.28741 0.779553 4.13965 0.829309 4.00527C0.853759 3.94471 0.889842 3.88952 0.93552 3.84283L1.68941 3.12018C1.73378 3.06821 1.7893 3.02692 1.85185 2.99939C1.91206 2.97215 1.97736 2.95796 2.04345 2.95774C2.11507 2.95635 2.18613 2.97056 2.2517 2.99939C2.31652 3.02822 2.3752 3.06922 2.42456 3.12018L4.69872 5.39851L9.58026 0.516971C9.62828 0.466328 9.68554 0.42533 9.74895 0.396182C9.81468 0.367844 9.88563 0.353653 9.95721 0.354531C10.0244 0.354903 10.0907 0.369582 10.1517 0.397592C10.2128 0.425602 10.2672 0.466298 10.3112 0.516971L11.0651 1.25003C11.1108 1.29672 11.1469 1.35191 11.1713 1.41247C11.2211 1.54686 11.2211 1.69461 11.1713 1.82899C11.1464 1.88929 11.1104 1.94439 11.0651 1.99143L5.06525 7.96007C5.02054 8.0122 4.96514 8.0541 4.90281 8.08294C4.76944 8.13802 4.61967 8.13802 4.4863 8.08294C4.42397 8.0541 4.36857 8.0122 4.32386 7.96007L0.93552 4.58423Z' fill='white'/%3E%3C/svg%3E%0A");
+                background-repeat: no-repeat;
+                background-size: 12px;
+                background-position: center center;
+                transform: scale(1.6);
+                transition: 200ms linear;
+                opacity: 0;
+            }
+
+            label.radio-card input[type='radio'] {
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+            }
+
+            label.radio-card input[type='radio']:checked+.card-content-wrapper {
+                box-shadow: 0 2px 4px 0 rgba(219, 215, 215, 0.5), 0 0 0 2px #3057d5;
+            }
+
+            label.radio-card input[type='radio']:checked+.card-content-wrapper .check-icon {
+                background: #3057d5;
+                border-color: #3057d5;
+                transform: scale(1.2);
+            }
+
+            label.radio-card input[type='radio']:checked+.card-content-wrapper .check-icon:before {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            label.radio-card input[type='radio']:focus+.card-content-wrapper .check-icon {
+                box-shadow: 0 0 0 4px rgba(48, 86, 213, 0.2);
+                border-color: #3056d5;
+            }
+
+            label.radio-card .card-content img {
+                margin-bottom: 10px;
+            }
+
+            label.radio-card .card-content h4 {
+                font-size: 16px;
+                letter-spacing: -0.24px;
+                text-align: center;
+                color: #1f2949;
+                margin-bottom: 10px;
+            }
+
+            label.radio-card .card-content h5 {
+                font-size: 14px;
+                line-height: 1.4;
+                text-align: center;
+                color: #686d73;
+            }
+        </style>
+    </div>

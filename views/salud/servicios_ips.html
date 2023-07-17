@@ -1,0 +1,170 @@
+<div id="serviciosips" class="white newdesing position-relative">
+    <style>
+        .content-container {
+            min-height: calc(100vh - 124px);
+            padding-top: 20px;
+        }
+
+        .content-container .card-panel:hover {
+            transform: scale(1.05);
+        }
+
+        #buscar {
+            padding: 0;
+            top: 35px;
+            width: 400px;
+            overflow: auto;
+            max-height: 70vh;
+        }
+
+        #serviciosips .card-panel>div {
+            height: 11vh;
+        }
+
+        .teal_animation {
+            transition: background-color 500ms ease-in;
+            background-color: #26a69a !important;
+        }
+    </style>
+    <!-- Titulo -->
+    <div class="row section-header margin">
+        <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+                    Servicios prestados por las IPS
+                </h5>
+            </li>
+            <li class="d-flex align-items-center">
+                <div class="switch">
+                    <label>
+                        <span class="{{(filtro.tipo==false)?'activo':''}}">Producto</span>
+                        <input type="checkbox" ng-model="filtro.tipo">
+                        <span class="lever check-c"></span>
+                        <span class="{{(filtro.tipo==true)?'activo':''}}">Clasificacion</span>
+                    </label>
+                </div>
+            </li>
+            <li>
+                <form class="form-input-icon-new" method="post" ng-submit="buscar(filtro.tipo,texto)"
+                    autocomplete="off">
+                    <input ng-model="texto"
+                        ng-change="(texto.length==0)?filtro.boton=false:texto=texto.toLowerCase();listar_resultado=[]"
+                        type="text" class="margin border-none" placeholder="Buscar código o nombre...">
+                    <i ng-click="buscar(filtro.tipo,texto)"
+                        class="icon-search dropdown-toggle-angular {{(filtro.boton)?'active':''}}"></i>
+                    <div id="buscar" class="dropdown-menu">
+                        <a ng-click="listar_departamento(filtro.tipo,resultado.codigo,resultado.nombre);"
+                            ng-repeat="resultado in listar_resultado | orderBy:'nombre'"
+                            href="javascript:void(0)">{{resultado.nombre}}
+                            ({{resultado.codigo}})</a>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <!-- Contenido -->
+    <div ng-click="filtro.boton=false" class="row dashboard-wrapper content-container white"
+        style="padding-bottom: 20px;margin-bottom: 0;">
+        <div class="col l12 m12 s12 position-relative">
+            <div ng-if="departamentos.length > 0"
+                class="black-text title-panel d-flex justify-content-between align-items-center"
+                style="margin-bottom: 15px;font-size: 13px;font-style: italic;font-weight: 600;">
+                {{titulo}}
+            </div>
+            <!-- Subtitulo -->
+            <div ng-if="departamentos.length > 0"
+                class="black-text title-panel d-flex justify-content-between align-items-center"
+                style="margin-bottom: 15px;">
+                <input ng-if="departamentos.length>0 || municipios.length>0 || datos_ips.length>0" type="text"
+                    class="margin border-none input-text-new" ng-model="filtro.datos" placeholder="Filtrar...">
+                {{contenido.titulo}}
+                <i ng-if="contenido.activo == 2 || contenido.activo == 3" ng-click="atras(contenido.activo)"
+                    class="icon-left-open-2 cursor-pointer">Atras</i>
+            </div>
+            <!-- Departamentos -->
+            <div class="row margin" ng-if="contenido.activo == 1">
+                <div class="col s12 m12 l12 no-padding">
+                    <div ng-repeat="departamento in departamentos | filter:filtro.datos | orderBy:'nombre'"
+                        class="col s12 m6 l2">
+                        <div ng-click="listar_municipios(filtro.tipo,filtro.codigo,departamento.codigo,departamento.nombre)"
+                            class="card-panel center-align white-text no-padding cursor-pointer">
+                            <div class="black-text d-flex justify-content-center"
+                                style="font-size: 14px;background-color: #0096881c;border: 1px solid #818181;">
+                                <div class="w-100" style="display: grid;font-weight: bold">
+                                    <h6
+                                        style="font-weight: bold;background-color: #26a69a;margin: 0;display: flex;align-items: center;text-align: left;padding: 0 8px;">
+                                        {{departamento.nombre}}
+                                    </h6>
+                                    <h5 class="d-flex justify-content-between white"
+                                        style="margin: 0;align-items: center;padding: 0 10px;">
+                                        <i class="icon-location-5" style="margin-left: -8px;"></i>
+                                        {{departamento.cantidad}}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="departamentos.length==0"
+                        class="col s12 m12 l12 d-flex justify-content-center align-items-center" style="height: 100%;">
+                        <i class="icon-clipboard-2" style="font-size: 8em;"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Municipios -->
+            <div class="row margin" ng-if="contenido.activo == 2">
+                <div class="col s12 m12 l12 no-padding">
+                    <div ng-repeat="municipio in municipios | filter:filtro.datos | orderBy:'nombre'"
+                        class="col s12 m6 l2">
+                        <div ng-click="listar_ips(filtro.tipo,filtro.codigo,municipio.codigo,municipio.nombre)"
+                            class="card-panel center-align white-text no-padding cursor-pointer">
+                            <div class="black-text d-flex justify-content-center"
+                                style="font-size: 14px;background-color: #0096881c;border: 1px solid #818181;">
+                                <div class="w-100" style="display: grid;font-weight: bold">
+                                    <h6
+                                        style="font-weight: bold;background-color: #26a69a;margin: 0;display: flex;align-items: center;text-align: left;padding: 0 8px;">
+                                        {{municipio.nombre}}
+                                    </h6>
+                                    <h5 class="d-flex justify-content-between white"
+                                        style="margin: 0;align-items: center;padding: 0 10px;">
+                                        <i class="icon-home-4" style="margin-left: -8px;"></i>
+                                        {{municipio.cantidad}}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- IPS -->
+            <div ng-if="contenido.activo == 3" class="row margin position-relative">
+                <div style="overflow: auto;height: calc(100vh - 257px);">
+                    <table class="striped table-bordered white position-relative">
+                        <thead>
+                            <tr class="default-background white-text">
+                                <th class="border-none center-align">#</th>
+                                <th class="border-none">Nit</th>
+                                <th class="border-none">Contrato</th>
+                                <th class="border-none">Nombre</th>
+                                <th class="border-none">Telefono</th>
+                                <th class="border-none">Direccion</th>
+                                <th class="border-none">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="ips in datos_ips | filter:filtro.datos | orderBy:'nombre'">
+                                <td class="center-align">{{$index + 1}}</td>
+                                <td>{{ips.nit}}</td>
+                                <td>{{ips.contrato}}</td>
+                                <td>{{ips.nombre}}</td>
+                                <td>{{ips.telefono}}</td>
+                                <td>{{ips.direccion}}</td>
+                                <td>${{ips.valor}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

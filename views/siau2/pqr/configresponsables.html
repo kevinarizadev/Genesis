@@ -1,0 +1,236 @@
+<div id="accionescorrespondencia" class="row margin" style="position: relative;">
+    <div class="w-100">
+      <div class="col s12 m12 l12">
+        <div class="card charts">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s12">
+                <div class="col m12 s12">
+                  <div class="display-flex" style="justify-content: center">
+                    <h5 class="w-divTitle noselectxtpqr" style="text-align: center">CONFIGURACION DE RESPONSBLES CORRESPONDENCIA</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="noselectxtpqr">
+                <div class="col s3 margin no-padding w-20">
+                  <p style="margin-top: 15px;display: flex;
+                  justify-content: center;
+                  align-items: center;"> <b>SELECCIONE LA SEDE</b> </p>
+                </div>
+                <div class="col s3 margin w-20">
+                  <div class="switch">
+                    <label>
+                        Nacional
+                        <input type="checkbox" ng-init="check_sede = false" ng-model="check_sede"
+                            ng-change="changesede();">
+                        <span class="lever"></span>
+                        Seccional
+                    </label>
+                </div>
+                </div>
+                <div ng-show="hideedicion" class="col s3 margin no-padding w-20 right">
+                  <input type="text" placeholder="Buscar" ng-model="filterCorresp">
+              </div>
+              </div>
+            </div>
+            <div class="row">
+              <div ng-show="hideedicion" style="width: 100%;z-index: 10;overflow: hidden;">
+                <div style="overflow: auto;">
+                  <table id="tablePQR" class="striped table-bordered" style="position: relative;">
+                    <thead class="noselectxtpqr">
+                      <tr>                      
+                        <th class="text-center">CODIGO AREA</th>
+                        <th class="text-center">NOMBRE AREA</th>
+                        <th class="text-center">RESPONSABLE 1</th>
+                        <th class="text-center">RESPONSABLE 2</th>
+                        <th class="text-center">RESPONSABLE 3</th>
+                        <th class="text-center">ACCION</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="p in listarespnsables | filter: filterCorresp">                      
+                        <th class="text-center">{{p.CODIGO_AREA}}</th>  
+                        <th class="text-center">{{p.NOM_AREA}}</th>     
+                        <th class="text-center">{{p.NOMRES1}}</th>     
+                        <th class="text-center">{{p.NOMRES2}}</th>     
+                        <th class="text-center">{{p.NOMRES3}}</th>
+                        <th class="text-center"><i id="bt-ges" class="icon-edit-alt fs-25 c-pointer" ng-click="showeditarresponsables(p);"></i></th>
+                                                                                                                                                                                                
+                      </tr>
+                      <tr ng-if="result.length==0">
+                        <td colspan="6" class="text-center">
+                          NO HAY RESPONSABLES                   
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>               
+              </div>
+              <div ng-hide="hideedicion">
+                <div class="row">
+                  <h5>Area de Correspondencia  {{tempresponsable.NOM_AREA}} <i ng-click="back_list_areas();" class="icon-left-open-2 ng-scope" style="cursor: pointer;float: right;">Atras</i></h5>
+                </div>
+                <div class="row">
+                  <table id="tablePQR" class="striped table-bordered" style="position: relative;">
+                    <thead class="noselectxtpqr">
+                      <tr>                                            
+                        <th class="text-center">RESPONSABLE</th>
+                        <th class="text-center">DOCUMENTO</th>
+                        <th class="text-center">NOMBRE</th>
+                        <th class="text-center">ACCION</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr  ng-repeat=" item in arrayresptemp">                                            
+                        <th class="text-center">{{item.cod}}</th>     
+                        <th class="text-center">{{item.res}}</th>     
+                        <th class="text-center">{{item.nomres}}</th>
+                        <th class="text-center">
+                          <i id="bt-ges" class="icon-edit-alt fs-25 c-pointer" ng-click="openmodals('modalselecresponsable',item);"></i>
+                          <i ng-show="item.res!=null && item.nomres!=null" id="bt-ges" class="icon-trash fs-25 c-pointer" ng-click="removeresponsable(item);"></i>
+                          
+                        </th>
+                                                                                                                                                                                                
+                      </tr>
+                      <tr ng-if="result.length==0">
+                        <td colspan="6" class="text-center">
+                          NO HAY RESPONSABLES                   
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+               
+                <div class="row">
+                  <div class="col s12" style="text-align: center">
+                    <button id="btn-solicitudtabI" class="btn white-text red" type="button"
+                      ng-click="back_list_areas();"
+                      style="margin-left: 10px">CANCELAR</button>
+                    <button id="btn-solicitudtabI" class="btn white-text" type="button"
+                      ng-click="saveEdicionResponsables();">GUARDAR</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+<div id="modalselecresponsable" class="modal modal-trazapqr"
+style="width: 70%!important; max-height: 100%;top: 5%!important;">
+<div class="modal-content" style="padding: 0px !important;">
+    <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+            <div class="card-content foot4" style="padding: 0;text-align: center;">
+                <div class="col s11">
+                    <h5 class="white-text">BUSQUEDA DE FUNCIONARIOS</h5>
+
+                </div>
+                <div class="col s1">
+                    <h5 style="text-align: end;"><i style="cursor:pointer;"
+                            ng-click="closemodals('modalselecresponsable')" class="material-icons white-text">close</i>
+                    </h5>
+                </div>
+            </div>
+            <div class="card-action" style="border-top: 0">
+                <div class="row">
+                    <div class="row">
+                      <div class="col s12">
+                        <form ng-submit="buscarfuncionario(funcioario)">
+                          <div class="input-list input-form">
+                            <div class="input-field col s12">
+                              <a href="javascript:void(0)" ng-click="buscarfuncionario(funcioario)"><i
+                                  style="position: absolute; top: 16px; right: 6px;"
+                                  class="material-icons prefix">search</i></a>
+                              <input id="funcinput" type="text" ng-model="funcioario" required>
+                              <label for="funcinput">Funcionario:</label>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="col s12" ng-hide="inactivefuncionario">
+                        <div style="max-height: 350px;overflow: auto;">
+                            <table id="tablePQR" class="striped table-bordered" style="position: relative;">
+                                <thead class="noselectxtpqr">
+                                    <tr>
+                                        <th class="text-center">CODIGO</th>
+                                        <th class="text-center">NOMBRE</th>
+                                        <th class="text-center">CARGO</th>
+                                        <th class="text-center">ESTADO</th>
+                                        <th class="text-center">ACCION</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        ng-repeat="p in tempresponsables | filter:funcioario as resultsP track by $index">
+                                        <td class="text-center">{{p.codigo}}</td>
+                                        <td class="text-center">{{p.nombre}}</td>
+                                        <td class="text-center">{{p.cargo}}</td>
+                                        <td class="text-center">{{p.estado}}</td>
+                                        <td class="text-center noselectxtpqr float-none">
+                                            <a class="waves-effect waves-light btn-small"
+                                                ng-click="seleccionarfuncionario(p);"
+                                                title="SELECCIONAR FUNCIONARIO {{p.nombre}}">
+                                                <i id="bt-ges" class=" icon-check-1 fs-25"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="resultsP.length==0">
+                                        <td colspan="12" class="center-align white" style="padding: 100px;">
+                                            <div class="results-lupa">
+                                                <i class="icon-search-4"></i>
+                                            </div>
+                                            <p class="text-center">
+                                                No hay Funcionarios Disponibles
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    <style>
+      .switch label .lever {
+        background-color: #84c7c1;
+      }
+  
+      .switch label>span.activo {
+        color: #26a69a !important;
+      }
+  
+      .switch label .lever.check-c:after {
+        background-color: #26a69a;
+      }
+  
+      #accionescorrespondencia .ng-leave-active,
+      #accionescorrespondencia .active-add,
+      #accionescorrespondencia .ng-hide-add-active,
+      #accionescorrespondencia .ng-hide-remove,
+      #accionescorrespondencia .ng-hide-add-active {
+        transition: all 0s !important;
+      }
+  
+      #accionescorrespondencia .styleIconSearch {
+        position: absolute;
+        top: 20px;
+        right: 10px;
+      }
+      #tablePQR_filter{
+        margin-top: 20px
+      }
+    </style>
+  </div>

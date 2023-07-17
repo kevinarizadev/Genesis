@@ -1,0 +1,401 @@
+<div ng-controller="informesentesController">
+   <div class="row">
+      <div class="col l12 m12 s12">
+         <div class="card">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch" style="display:flex;">
+                  <center><strong>Informes Internos Cajacopi</strong></center>
+               </div>
+            </div>
+            <div class="card-content clearfix">
+               <div class="input-field col l3 m12 s12">
+                  <label style=" margin-top: -20px;">Tipo de Reporte:</label>
+
+                  <!-- nombre de los reportes  rp 26022018-->
+                  <select class="select-chosen-eps" ng-model="tiporeporte" ng-change="buscaReporte()">
+                    <option value="0">Seleccionar</option>
+                      <option ng-repeat="reporte in Reportes" ng-value="reporte.CODIGO">{{reporte.NOMBRE}}</option>
+                     <!-- <option value="1">Registro Ausentismo</option>
+                     <option value="2">Reporte Incapacidades</option>
+                     <option value="3">Relación Nomina</option>
+                     <option value="4">Relacion Libranzas</option>
+                     <option value="5">Relacion Embargos</option>
+                     <option value="6">Plan de Cargo</option> -->
+                     <!--<option value="7">Costo Menor a Mayor</option>
+                     <option value="8">Auxiliar por Tercero (Krat)</option>-->
+                  </select>
+               </div>
+            </div>
+            <!-- <div class="input-button" style="padding-bottom: 15px !important;">
+               <center><a class="waves-effect waves-light btn white-text" ng-click="buscaReporte()">Buscar</a></center><br>
+            </div> -->
+         </div>
+      </div>
+   </div>
+   <div class="row" ng-show="shw_parametros">
+      <div class="col l12 m12 s12">
+         <div class="card">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch" style="display:flex;">
+                  <center><strong>Criterios de Consulta</strong></center>
+               </div>
+            </div>
+            <div class="col s12">
+               <div class="input-field col l2 m12 s12" ng-show="shw_regimen">
+                  <label style=" margin-top: -20px;">Régimen:</label>
+                  <select class="select-chosen-eps" ng-model="regimen">
+                     <option value="X">SELECCIONAR</option>
+                     <option value="KC">CONTRIBUTIVO</option>
+                     <option value="KS">SUBSIDIADO</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-init="cargaAnnos()" ng-show="shw_annos">
+                  <label style=" margin-top: -20px;">Año:</label>
+                  <select class="select-chosen-eps" ng-model="anno" ng-change="cargaCiclos()">
+                     <option ng-repeat="anno in Annos" ng-value="anno.ANNO">{{anno.ANNO}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_ciclo">
+                  <label style=" margin-top: -20px;">Ciclo:</label>
+                  <select class="select-chosen-eps" ng-model="ciclo" ng-disabled="true">
+                     <option ng-repeat="ciclo in Ciclos" ng-value="ciclo.IDE">{{ciclo.NOMBRE}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_trimestre">
+                  <label style=" margin-top: -20px;">Trimestre:</label>
+                  <select class="select-chosen-eps" ng-model="trimestre">
+                     <option ng-repeat="trimestre in Trimestre" ng-value="trimestre.CICN_NUMERO">{{trimestre.CICN_NUMERO}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_periodo">
+                  <label style=" margin-top: -20px;">Periodo:</label>
+                  <select class="select-chosen-eps" ng-model="periodo">
+                     <option ng-repeat="periodo in Periodos" ng-value="periodo.IDE">{{periodo.NOMBRE}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l3 m12 s12" ng-show="shw_nit">
+                  <input id="nit" type="text" ng-model="nit">
+                  <label for="nit" class="">Nit:</label>
+               </div>
+               <!-- aqui se coloco lo de nomina-->
+               <div class="input-field col l3 m12 s12" ng-show="shw_nomina">
+                  <input id="nomina" type="text" ng-model="nomina">
+                  <label for="nomina" class="">No Nomina:</label>
+               </div>
+
+               <!-- aqui se coloco lo de contartacion-->
+               <div class="input-field col l3 m12 s12" ng-show="shw_contrato">
+                  <input id="contrato" type="text" ng-model="contrato">
+                  <label for="contrato" class="">No contrato:</label>
+               </div>
+
+               <!-- aqui se coloco lo de contartacion-->
+               <div class="input-field col l3 m12 s12" ng-show="shw_producto">
+                  <input id="producto" type="text" ng-model="producto">
+                  <label for="producto" class="">Producto:</label>
+               </div>
+
+               <div class="input-field col l3 m12 s12" ng-init="obtenerDepartamentos()" ng-show="shw_departamento">
+                  <label style=" margin-top: -20px;">Departamento</label>
+                  <select class="select-chosen-eps" ng-model="departamento" ng-change="obtenerMunicipios()">
+                     <option value="0">SELECCIONAR</option>
+                     <option ng-repeat="depa in Departamentos track by $index" ng-value="depa.CODIGO">{{depa.NOMBRE}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l3 m12 s12" ng-show="shw_municipio">
+                  <label style=" margin-top: -20px;">Municipio</label>
+                  <select class="select-chosen-eps" ng-model="municipio">
+                     <option value="0">SELECCIONAR</option>
+                     <option ng-repeat="municipio in Municipios track by $index" ng-value="municipio.CODIGO">{{municipio.NOMBRE}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_fecha_inicio">
+                  <label style=" margin-top: -20px;">Fecha de Inicio</label>
+                  <input type="date" name="" ng-model="fecha_inicio">
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_fecha_final">
+                  <label style=" margin-top: -20px;">Fecha de Final</label>
+                  <input type="date" name="" ng-model="fecha_final">
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_tipo_cuenta">
+                  <label style=" margin-top: -20px;">Tipo Cuenta:</label>
+                  <select class="select-chosen-eps" ng-model="tipo_cuenta">
+                     <option value="0">SELECCIONAR</option>
+                     <option value="1">Anticipo</option>
+                     <option value="2">Glosa</option>
+                     <option value="3">Aautorizacion</option>
+                     <option value="4">Cuentas por pagar</option>
+                     <option value="5">Todas</option>
+                  </select>
+               </div>
+
+               <div class="input-field col l2 m12 s12" ng-show="shw_fecha">
+                  <label style=" margin-top: -20px;">Fecha</label>
+                  <input type="date" name="" ng-model="fecha">
+               </div>
+            </div>
+
+            <!-- boton generar-->
+            <div class="input-button" >
+               <center><a class="waves-effect waves-light btn white-text" ng-click="generaReporte()">Generar</a></center><br>
+            </div>
+
+			<div class="col s12" ng-hide="inactive2" style="margin-top: 30px;">
+				<center><img src="assets\images\cargando2.gif" alt="Cargando..."></center>
+          </div>
+            <div class="row" ng-show="shw_funcionarios_aut">
+               <div class="col l12 m12 s12">
+                <table class="responsive-table table-bordered" style="height:100px;">
+                  <thead>
+                    <tr>
+                      <th data-field="Fecha" class="center-align">#</th>
+                      <th data-field="Fecha" class="center-align">Fecha</th>
+                      <th data-field="Hora" class="center-align">Hora</th>
+                      <th data-field="Departamento" class="center-align">Departamento</th>
+                      <th data-field="Municipio" class="center-align">Municipio</th>
+                      <th data-field="Cantidad Autorizaciones" class="center-align">Cantidad Autorizaciones</th>
+                      <th data-field="Cantidad Responsables" class="center-align">Cantidad Responsables</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="doc in documentos track by $index">
+                      <td class="center-align ng-binding"><a style="cursor:pointer;" ng-click="buscarDocumentoDet(doc)">{{$index + 1}}</a></td>
+                      <td class="center-align ng-binding">{{doc.FECHA}}</td>
+                      <td class="center-align ng-binding">{{doc.HORA}}</td>
+                      <td class="center-align ng-binding">{{doc.DEPARTAMENTO}}</td>
+                      <td class="center-align ng-binding">{{doc.MUNICIPIO}}</td>
+                      <td class="center-align ng-binding">{{doc.CANTIDAD_AUT}}</td>
+                      <td class="center-align ng-binding">{{doc.CANTIDAD_REP}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row" ng-show="shw_funcionarios_aut_det">
+               <div class="col l12 m12 s12">
+                <table class="responsive-table table-bordered" style="height:100px;">
+                  <thead>
+                    <tr>
+                      <th data-field="Fecha" class="center-align">#</th>
+                      <th data-field="Fecha" class="center-align">Documento</th>
+                      <th data-field="Hora" class="center-align">Responsable</th>
+                      <th data-field="Departamento" class="center-align">Cantidad Autorizaciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="doc2 in documentos_det track by $index">
+                      <td class="center-align ng-binding">{{$index + 1}}</td>
+                      <td class="center-align ng-binding">{{doc2.DOCUMENTO}}</td>
+                      <td class="center-align ng-binding">{{doc2.RESPONSABLE}}</td>
+                      <td class="center-align ng-binding">{{doc2.CANTIDAD_AUT}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+         </div>
+      </div>
+   </div>
+
+
+   <!--nuevo TEMA DE IMPRESION DENTRO DEL MISMO FORMULARIO-->
+   <div class="row" ng-hide="!consproductos">
+     <div class="col l12 m12 s12">
+        <div class="card">
+           <div class="foot4 divcardcustom">
+              <div class="text-al switch divcardcustom2" style="display:flex;">
+                 <center><strong>Resultado de la Consulta</strong></center>
+              </div>
+           </div>
+           <div class="card-content clearfix">
+
+              <table class="highlight responsive-table bordered" align="center" id="tablanucleo" style="cursor: pointer !important;">
+                 <thead align="center">
+                    <tr>
+                       <td><strong>CONTRATO</strong></td>
+                       <td><strong>PRODUCTO</strong></td>
+                       <td><strong>CLASIFICACION CONTRATO</strong></td>
+                       <td><strong>CLASIFICACION PRODUCTO</strong></td>
+                    </tr>
+                 </thead>
+                 <tbody style="height: 40%; overflow: scroll;">
+                    <tr data-ng-repeat="data in Productos track by $index">
+                       <td>{{data.CNDN_NUMERO}}</td>
+                       <td>{{data.CNDC_PRODUCTO}}</td>
+                       <td>{{data.CNDN_CLASIFICACION}}</td>
+                       <td>{{data.PRON_CLASIFICACION}}</td>
+                    </tr>
+                 </tbody>
+              </table>
+           </div>
+        </div>
+     </div>
+   </div>
+   <!--aqui terminas-->
+
+   <!--nuevo TEMA DE IMPRESION DENTRO DEL MISMO FORMULARIO
+        MESA DE AYUDA AUTORIZACIONES-->
+   <div class="row" ng-hide="!consmayudaaut">
+     <div class="col l12 m12 s12">
+        <div class="card">
+           <div class="foot4 divcardcustom">
+              <div class="text-al switch divcardcustom2" style="display:flex;">
+                 <center><strong>Resultado de la Consulta</strong></center>
+              </div>
+           </div>
+           <div class="card-content clearfix">
+
+              <table class="responsive-table striped table-bordered" align="center" id="tablanucleo" style="cursor: pointer !important;">
+                 <thead align="center">
+
+                    <tr>
+                      <th rowspan="2" style="text-align: center;">DIA</th>
+                      <th rowspan="1" colspan="3" style="text-align: center;">GESTIONADOS</th>
+                      <th rowspan="2" style="text-align: center;">TOTAL</th>
+                    </tr>
+                    <tr>
+                      <th style="text-align: center;">ACTIVOS</th>
+                      <th style="text-align: center;">PROCESADOS</th>
+                      <th style="text-align: center;">ANULADOS</th>
+                    </tr>
+
+                 </thead>
+                 <tbody style="height: 40%; overflow: scroll;">
+                    <tr data-ng-repeat="data in mesaayudaaut track by $index">
+                       <td style="text-align: center;">{{data.DIA}}</td>
+                       <td style="text-align: center;">{{data.ACTIVOS}}</td>
+                       <td style="text-align: center;">{{data.PROCESADOS}}</td>
+                       <td style="text-align: center;">{{data.ANULADOS}}</td>
+                       <td style="text-align: center;"><strong>{{data.TOTAL}}</strong></td>
+                    </tr>
+                    <tr >
+                       <th style="text-align: center;">TOTAL</th>
+                       <th style="text-align: center;">{{contActivo}}</th>
+                       <th style="text-align: center;">{{contProc}}</th>
+                       <th style="text-align: center;">{{contRech}}</th>
+                       <th style="text-align: center;"><strong>{{contTotal}}</strong></th>
+                    </tr>
+
+
+                 </tbody>
+              </table>
+           </div>
+        </div>
+     </div>
+   </div>
+   <!--aqui terminas-->
+
+   <!--nuevo TEMA DE IMPRESION DENTRO DEL MISMO FORMULARIO
+        MESA DE AYUDA AUTORIZACIONES-->
+   <div class="row" ng-hide="!consmovempresa">
+     <div class="col l12 m12 s12">
+        <div class="card">
+           <div class="foot4 divcardcustom">
+              <div class="text-al switch divcardcustom2" style="display:flex;">
+                 <center><strong>Resultado de la Consulta</strong></center>
+              </div>
+           </div>
+           <div class="card-content clearfix">
+
+              <table class="responsive-table striped table-bordered" align="center" id="tablanucleo" style="cursor: pointer !important;">
+                  <thead align="center">
+                  <!-- <tr>
+                       <td><strong>DOC ASESOR</strong></td>
+                       <td><strong>NOMBRE ASESOR</strong></td>
+                       <td><strong>ACTIVO</strong></td>
+                       <td><strong>PROCESADO</strong></td>
+                       <td><strong>RECHAZADO</strong></td>
+                       <td><strong>TOTAL</strong></td>
+                    </tr> -->
+                    <tr>
+                      <th rowspan="2" style="text-align: center;">DOC ASESOR</th>
+                      <th rowspan="2" style="text-align: center;">NOMBRE ASESOR</th>
+                      <th rowspan="1" colspan="3" style="text-align: center;">GESTIONADOS</th>
+                      <th rowspan="2" style="text-align: center;">TOTAL</th>
+                    </tr>
+                    <tr>
+                      <th style="text-align: center;">ACTIVO</th>
+                      <th style="text-align: center;">PROCESADO</th>
+                      <th style="text-align: center;">RECHAZADO</th>
+                    </tr>
+                 </thead>
+                 <tbody style="height: 40%; overflow: scroll;">
+                    <tr ng-repeat="data in empresasmovilidad">
+                       <td>{{data.MOSV_ASESOR}}</td>
+                       <td>{{data.TERC_NOMBRE}}</td>
+                       <td style="text-align: center;">{{data.ACTIVO}}</td>
+                       <td style="text-align: center;">{{data.PROCESADO}}</td>
+                       <td style="text-align: center;">{{data.RECHAZADO}}</td>
+                       <td style="text-align: center;"><strong>{{data.TOTAL}}</strong></td>
+                    </tr>
+                    <tr>
+                       <th colspan="2" style="text-align: center;">TOTAL</th>
+                       <th style="text-align: center;">{{contActivo}}</th>
+                       <th style="text-align: center;">{{contProc}}</th>
+                       <th style="text-align: center;">{{contRech}}</th>
+                       <th style="text-align: center;"><strong>{{contTotal}}</strong></th>
+                    </tr>
+
+                 </tbody>
+             </table>
+           </div>
+        </div>
+     </div>
+   </div>
+   <!--aqui terminas-->
+
+    <!-- Mesa de Ayuda -->
+      <div class="row" ng-hide="!consmesaayudacas">
+     <div class="col l12 m12 s12">
+        <div class="card">
+           <div class="foot4 divcardcustom">
+              <div class="text-al switch divcardcustom2" style="display:flex;">
+                 <center><strong>Resultado de la Consulta</strong></center>
+              </div>
+           </div>
+           <div class="card-content clearfix">
+              <a ng-click="descdetalleacas()"; href="javascript:void(0)">Descargar Detalle</a>
+              <table class="responsive-table striped table-bordered" align="center" id="tablanucleo" style="cursor: pointer !important;">
+                  <thead align="center">
+
+                    <tr>
+                      <th rowspan="2" style="text-align: center;">SECCIONAL</th>
+                      <th rowspan="1" colspan="3" style="text-align: center;">GESTIONADOS</th>
+                      <th rowspan="2" style="text-align: center;">TOTAL</th>
+                    </tr>
+                    <tr>
+                      <th style="text-align: center;">ACTIVO</th>
+                      <th style="text-align: center;">PROCESADO</th>
+                      <th style="text-align: center;">ANULADOS</th>
+                    </tr>
+                 </thead>
+                 <tbody style="height: 40%; overflow: scroll;">
+                    <tr ng-repeat="data in mesadeayudaacasa">
+                       <td>{{data.SECCIONAL}}</td>
+                       <td style="text-align: center;">{{data.ACTIVO}}</td>
+                       <td style="text-align: center;">{{data.PROCESADO}}</td>
+                       <td style="text-align: center;">{{data.RECHAZADO}}</td>
+                       <td style="text-align: center;"><strong>{{data.TOTAL}}</strong></td>
+                    </tr>
+                    <tr>
+                       <th  style="text-align: center;">TOTAL</th>
+                       <th style="text-align: center;">{{contActivo}}</th>
+                       <th style="text-align: center;">{{contProc}}</th>
+                       <th style="text-align: center;">{{contRech}}</th>
+                       <th style="text-align: center;"><strong>{{contTotal}}</strong></th>
+                    </tr>
+
+                 </tbody>
+             </table>
+           </div>
+        </div>
+     </div>
+   </div>
+   <!--aqui terminas-->
+
+
+</div>

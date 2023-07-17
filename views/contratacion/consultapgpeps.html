@@ -1,0 +1,342 @@
+<div id="pantalla" class="white newdesing" style="position:relative">
+    <!-- Contenido  -->
+    <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+        <div class="col l12 m12 s12" style="position:relative">
+            <!-- /////////////////////////////////////////////// -->
+            <div class="row">
+                <div class="col s4">
+                    <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                    <h5>Consultar Actividades PGP</h5>
+                </div>
+                <div class="col s8" style="text-align: right; margin-top: 15px;">
+                    <div class="col s12 input-padding">
+                        Tipos de busqueda :
+                        <span> <input class="with-gap" type="radio" ng-model="Tabs" name="occurrences" value="HOJA1"
+                                id="HOJA1" />
+                            <label style="height: 0!important" ng-class="{'default-color': Tabs=='HOJA1' }" for="HOJA1"
+                                ng-click="SetTab('HOJA1')">NIT</label>
+                        </span>
+                        <span> <input class="with-gap" type="radio" ng-model="Tabs" name="occurrences" value="HOJA2"
+                                id="HOJA2" />
+                            <label style="height: 0!important" ng-class="{'default-color': Tabs=='HOJA2' }" for="HOJA2"
+                                ng-click="SetTab('HOJA2')">Documento</label>
+                        </span>
+                        <span> <input class="with-gap" type="radio" ng-model="Tabs" name="occurrences" value="HOJA3"
+                                id="HOJA3">
+                            <label style="height: 25px!important" ng-class="{'default-color': Tabs=='HOJA3'}"
+                                for="HOJA3" ng-click="SetTab('HOJA3')">Avanzado</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col s12">
+                    <!-- <form ng-submit="KeyFind()"> -->
+                    <div class="col s11" ng-show="Tabs=='HOJA1'">
+                        <div class="row margin">
+                            <div class="col offset-s6" style="margin-top: 2.5vh;">
+                                <i class="material-icons prefix" style="margin-top: 10px;font-size: 4vh;">dialpad</i>
+                            </div>
+                            <div class="col s5">
+                                <div class="row" style="margin: 0">
+                                    <label for="with_icon" style="margin-top: -20px;">Nit(*)</label>
+                                </div>
+                                <input id="Vista1_Nit" type="text" autocomplete="off" style="margin: 0;" ng-model="Vista1.Nit"
+                                    ng-keyup="Complete_Listado_Ips('Vista1',$event,Vista1.Nit);KeyFind_Ips('Vista1',$event);"
+                                    ng-blur="Blur_Ips('Vista1')">
+                                <i class="icon-search cursor-pointer default-color"
+                                    style="margin-left: -1.45em;position: absolute;font-size: 2vh;margin-top: 1em;"
+                                    title="Buscar" ng-click="Buscar_Ips('Vista1')"></i>
+                                <ul class="list-group m-l Clase_Listar_Ips"
+                                    style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin: 0px !important;z-index: 3;">
+                                    <li class="list-group-item" style="font-size: 0.7em;" id="Vista1_Ips{{$index}}"
+                                        ng-repeat="x in Vista1.Busqueda.Ips.Filtro"
+                                        ng-click="FillTextbox_Listado_Ips('Vista1',x.CODIGO,x.NOMBRE)"
+                                        ng-class="$index == Vista1.Busqueda.Ips.Seleccion ? 'hover' : ''">
+                                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s11" ng-show="Tabs=='HOJA2'">
+                        <div class="row margin">
+                            <div class="col offset-s3" style="margin-top: 2.5vh;">
+                                <i class="material-icons prefix"
+                                    style="margin-top: 10px;font-size: 4vh;">assignment_ind</i>
+                            </div>
+                            <div class="col s4">
+                                <div class="row" style="margin: 0">
+                                    <label for="with_icon" style="margin-top: -20px;">Tipo de Documento(*)</label>
+                                </div>
+                                <select class="select-chosen-eps" ng-model="Vista2.Tipo_Doc">
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Vista2.Tipo_Doc" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                                    <!-- <option value="CC">Cédula de Ciudadanía</option>
+                                    <option value="TI">Tarjeta de Identidad</option>
+                                    <option value="RC">Registro Civil</option>
+                                    <option value="CE">Cédula de Extranjería</option>
+                                    <option value="CN">Certificado Nacido Vivo</option>
+                                    <option value="SC">Salvoconducto</option>
+                                    <option value="PA">Pasaporte</option>
+                                    <option value="PE">Permiso Especial de Permanencia</option>
+                                    <option value="AS">Adulto sin Identificación</option>
+                                    <option value="MS">Menor sin Identificación</option>
+                                    <option value="CD">Carnet Diplomático</option> -->
+                                </select>
+                            </div>
+                            <div class="col s4">
+                                <div class="row" style="margin: 0">
+                                    <label for="with_icon" style="margin-top: -20px;">Numero de Documento(*)</label>
+                                </div>
+                                <input id="Num_Doc" type="text" autocomplete="off" ng-model="Vista2.Num_Doc"
+                                    ng-change="FormatSoloNumero('Num_Doc')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s11" ng-show="Tabs=='HOJA3'">
+                        <div class="row margin">
+                            <div class="col offset-s2" style="margin-top: 2.5vh;">
+                                <i class="material-icons prefix" style="margin-top: 10px;font-size: 4vh;">dialpad</i>
+                            </div>
+                            <div class="col s9">
+                                <div class="col s5" style="margin-top: 1.3vh;padding: 0;">
+                                    <div class="row" style="margin: 0">
+                                        <label for="with_icon" style="margin-top: -20px;">Nit(*)</label>
+                                    </div>
+                                    <input id="Vista3_Nit" type="text" autocomplete="off" style="margin: 0;" ng-model="Vista3.Nit"
+                                        ng-keyup="Complete_Listado_Ips('Vista3',$event,Vista3.Nit);KeyFind_Ips('Vista3',$event);"
+                                        ng-blur="Blur_Ips('Vista3')">
+                                    <i class="icon-search cursor-pointer default-color"
+                                        style="margin-left: -1.45em;position: absolute;font-size: 2vh;margin-top: 1em;"
+                                        title="Buscar" ng-click="Buscar_Ips('Vista3')"></i>
+                                    <ul class="list-group m-l Clase_Listar_Ips"
+                                        style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin: 0px !important;z-index: 3;">
+                                        <li class="list-group-item" style="font-size: 0.7em;" id="Vista3_Ips{{$index}}"
+                                            ng-repeat="x in Vista3.Busqueda.Ips.Filtro"
+                                            ng-click="FillTextbox_Listado_Ips('Vista3',x.CODIGO,x.NOMBRE)"
+                                            ng-class="$index == Vista3.Busqueda.Ips.Seleccion ? 'hover' : ''">
+                                            {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                                    </ul>
+                                </div>
+                                <div class="col s7">
+                                    <div class="row" style="margin-bottom: 10px">
+                                        <label for="with_icon" style="margin-top: -20px;">Fecha de Prestación</label>
+                                    </div>
+                                    <div class="input-field col s6" style="margin: 0">
+                                        <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio
+                                            (*)</label>
+                                        <input id="with_icon" type="date" ng-model="Vista3.F_Inicio"
+                                            max="{{SysDay | date:'yyyy-MM-dd'}}" ng-change="ValFecha('F_Inicio')">
+                                    </div>
+                                    <div class="input-field col s6" style="margin: 0">
+                                        <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin
+                                            (*)</label>
+                                        <input id="with_icon" type="date" ng-model="Vista3.F_Fin"
+                                            max="{{SysDay | date:'yyyy-MM-dd'}}" ng-change="ValFecha('F_Fin')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s1 right">
+                        <div class="input-field col m12 s12">
+                            <button class="btn white-text"
+                                style="padding-right: 5px; padding-left: 5px; margin-top: 10px;" ng-click="KeyFind()"><i
+                                    style="position: relative;" class="material-icons prefix">search</i></button>
+                        </div>
+                    </div>
+                    <!-- </form> -->
+                </div>
+            </div>
+            <!-- /////////////////////////////////////////////// -->
+        </div>
+        <!-- /////////////// -->
+        <div class="row dashboard-wrapper content-container white"
+            style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+            ng-if="Listado.Lista.length > 0">
+            <div class="col l12 m12 s12" style="position:relative">
+                <div class="col s7" style="margin-top:2em;">
+                    <div style="font-size: 1.2em;"><strong> Actividades PGP encontradas {{Listado.Lista.length}} por el
+                            filtro
+                            Anterior</strong>
+                    </div>
+                    <div class="row">
+                        <div style="font-size: 1em;cursor: pointer;color:red;" ng-click="Generar_Excel()">
+                            <i class="icon-export-4 cursor-pointer red-text"></i><strong> Generar Excel</strong>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- // -->
+                <div class="col s5" style="margin-top:3em;">
+                    <div class="col s10 no-padding label-new m-b right"
+                        style="margin-right: .5rem !important;margin-top: 0;">
+                        <input class="margin border-none input-text-new gray-input w-100 m-l" type="text"
+                            placeholder="..." ng-model="Listado.Filtro" ng-change="filter(Listado.Filtro)">
+                        <label>Buscar</label>
+                        <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                            title="Buscar"></i>
+                    </div>
+                </div>
+
+                <!-- /TABLA/ -->
+                <div style="width:100%;">
+                    <table id="H1_Tabla" class="bordered table_center_align"
+                        style="width:100%;font-size:6px !important;">
+                        <thead class="default-background white-text">
+                            <tr>
+                                <th>Régimen del Contrato</th>
+                                <th>Número del Contrato</th>
+                                <th>NIT</th>
+                                <th>Razón Social</th>
+                                <th>Tipo de Documento del Afiliado</th>
+                                <th>Número de Documento del Afiliado</th>
+                                <th>Nombre Completo del Afiliado</th>
+                                <th>Código del Producto</th>
+                                <th>Nombre del Producto</th>
+                                <th>Cantidad</th>
+                                <th>Fecha de Prestación</th>
+                                <!-- <th>Soporte</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="X in Listado.ListaTemp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
+                                style="color: black;cursor:pointer;">
+
+                                <td>{{X.regimen_contrato}}</td>
+                                <td>{{X.numero_contrato}}</td>
+                                <td>{{X.nit}}</td>
+                                <td>{{X.nombre_ips}}</td>
+                                <td>{{X.tipo_doc_afiliado}}</td>
+                                <td>{{X.num_doc_afiliado}}</td>
+                                <td>{{X.nombre_completo}}</td>
+                                <td>{{X.codigo_producto}}</td>
+                                <td>{{X.nombre_producto}}</td>
+                                <td>{{X.cantidad}}</td>
+                                <td>{{X.fecha_prestacion}}</td>
+                                <!-- <td>
+                                    <div class="tooltip" style="float:right;margin: 0px 15px 0px 30px;">
+                                        <i class="icon-download cursor-pointer" style="font-size: 1.5em;"
+                                            ng-click="Descargar_Soporte(X.SOPORTE)"></i>
+                                        <span class="tooltiptext"
+                                            style="font-size: 12px;width: 60px;margin-left: -30px;">Descargar
+                                            Soporte</span>
+                                    </div>
+                                </td> -->
+                            </tr>
+                            <tr ng-show="Listado.ListaTemp.length==0">
+                                <td class="center-align" colspan="8" style="font-weight: bolder;">No se
+                                    encontraron
+                                    resultados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="width: 100%;display: flex;">
+                        <div style="width: 50%;">
+                            <label for="normal">Total de documentos filtrados:
+                                {{Listado.ListaTemp.length}}</label>
+                        </div>
+                        <div style="width: 50%;text-align: right;">
+                            <label for="normal">Total de documentos encontrados:
+                                {{Listado.Lista.length}}</label>
+                        </div>
+                    </div>
+                    <div style="width: 100%;display: flex;">
+                        <div style="width: 100%;">
+                            <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                                <li><button ng-disabled='currentPage == 0'
+                                        class="btn-floating default-color default-border"
+                                        style="background-color: white;font-weight: 800;"
+                                        ng-click="paso('back')">&laquo;</button></li>
+                                <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                                        class="btn-floating default-color default-border"
+                                        style="background-color: white;font-weight: 800;"
+                                        ng-click='setPage(page.no)'>{{page.no}}</button>
+                                </li>
+                                <li><button ng-disabled='currentPage >= Listado.ListaTemp.length/pageSize - 1'
+                                        class="btn-floating default-color default-border"
+                                        style="background-color: white;font-weight: 800;"
+                                        ng-click="paso('next')">&raquo;</button></li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- // -->
+            </div>
+        </div>
+        <!-- /////////////// -->
+    </div>
+    <style>
+        #tabla_scroll th {
+            padding: 3px 10px;
+        }
+
+        #tabla_scroll li>button.btn {
+            font-size: small;
+            height: auto;
+            line-height: inherit;
+            padding: 0 1rem;
+        }
+
+        .table_border,
+        .table_border th,
+        .table_border td {
+            border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+            text-align: center;
+        }
+
+        #tabla_detalleglosa th {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
+
+        .swal-wide {
+            width: 850px !important;
+        }
+
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-item:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .list-group-item:hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item.hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .list-group {
+            font-size: 14px;
+        }
+    </style>
+</div>

@@ -1,0 +1,224 @@
+<div class="white newdesing position-relative" id="pantalla">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <style>
+        .newdesing .content-container {
+            min-height: 0;
+        }
+    </style>
+    <div class="row section-header margin">
+        <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5 class="cursor-pointer"
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+                    onclick="location.reload();">
+                    Seguimiento Mesas de Ayuda - TIC
+                </h5>
+            </li>
+        </ul>
+    </div>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <div id="Hoja2_Principal" class="card-content clearfix card Hoja1_Principal"
+            style="width: 100%;margin: auto;border-radius: 15px;margin-top: calc(11vh - 100px);"
+            ng-show="Vista.Activa==1">
+
+            <div class="row" style="margin-bottom: 0;">
+                <div class="tooltip" style="float:right;margin: 7px 15px 0px 30px;">
+                    <i class="icon-reply-all cursor-pointer white-text" ng-click="Volver_Vistas()"></i>
+                    <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Volver</span>
+                </div>
+                <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">
+                    Seguimiento Mesa de Ayuda Sin Comentar</p>
+
+                <div class="col s12">
+                    <div class="col s1 no-padding label-new m-b left">
+                        <select class="select-new gray-input" style="box-shadow: none;" material-select watch
+                            ng-model="Vista1.Mostrar_Sol" ng-change="initPaginacion2(Vista1.Mostrar_Sol)">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                        <div style="line-height: 2;">
+                            <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                                title="Actualizar Tabla" ng-click="Vista1_Buscar()"></i>
+                        </div>
+                    </div>
+                    <!-- <div class="col s7 label-new center-align" style="width: 60%;">
+                        <div class="center" style="margin:auto;display:flex;">
+
+                            <p class="default-background default-color center-align white-text" style="margin: 0;border-radius: 15px;
+                border: 5px solid;font-size: 1.2rem;font-weight: 600;padding: 0 10px;">
+                                Cantidad: {{Vista1_datos.length}}</p>
+
+                            <p class="default-background default-color center-align white-text" style="margin: 0;border-radius: 15px;
+                border: 5px solid;font-size: 1.2rem;font-weight: 600;padding: 0 10px;">
+                                Valor: ${{FormatPesoNumero(Vista1.Sum_Total.toString().replace(',', '.'))}}</p>
+                        </div>
+
+                    </div> -->
+                    <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;">
+                        <input class="margin border-none input-text-new gray-input w-100 m-l" type="text"
+                            placeholder="Buscar" ng-model="Vista1.Filtrar_Sol" ng-change="chg_filtrar();">
+                    </div>
+                </div>
+
+                <div style="width:100%;">
+                    <table id="H1_Tabla" class="bordered table_center_align"
+                        style="width:100%;font-size:6px !important;">
+                        <thead class="default-background" style="color:white;">
+                            <!-- <tr style="border-top-left-radius: 15px;border-top-right-radius: 15px;">
+                                <th colspan="2" class="default-color default-border" style="background-color: white;">
+                                    Cantidad: {{Vista1_datos.length}}</th>
+                                <th colspan="3" class="default-color default-border" style="background-color: white;">
+                                    Sumatoria: $0</th>
+                            </tr> -->
+                            <tr>
+                                <th>#Acas</th>
+                                <th>Concepto</th>
+                                <th>Fecha de Solicitud</th>
+                                <th>Fecha del Último Comentario</th>
+                                <th>Dias</th>
+                                <th>Solicitante</th>
+                                <th>Responsable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="X in Vista1_listDatosTemp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
+                                ng-click="" style="color: black;">
+                                <td>{{X.Numero}}</td>
+                                <td>{{X.Concepto}}</td>
+                                <td>{{X.Fecha_Solicitud}}</td>
+                                <td>{{X.Fecha_Comentario}}</td>
+                                <td>{{X.Dias}}</td>
+                                <td>{{X.Solicitante}}</td>
+                                <td>{{X.Funcionario}}</td>
+                            </tr>
+                            <tr ng-show="Vista1_listDatosTemp.length==0">
+                                <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron
+                                    resultados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="width: 100%;display: flex;">
+                        <div style="width: 50%;">
+                            <label for="normal">Total de documentos filtrados:
+                                {{Vista1_listDatosTemp.length}}</label>
+                        </div>
+                        <div style="width: 50%;text-align: right;">
+                            <label for="normal">Total de documentos encontrados:
+                                {{Vista1_datos.length}}</label>
+                        </div>
+                    </div>
+                    <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                        <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                                ng-click="paso('back')">&laquo;</button></li>
+                        <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                                class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button>
+                        </li>
+                        <li><button ng-disabled='currentPage >= Vista1_listDatosTemp.length/pageSize - 1'
+                                class="btn-floating default-background" ng-click="paso('next')">&raquo;</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ///////////////// -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <style>
+        .Ani_Down {
+            animation: slide 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) normal both;
+        }
+
+        .Ani_Up {
+            animation: slideout 0.01s cubic-bezier(0.55, 0.085, 0.68, 0.53) normal both;
+        }
+
+        @keyframes slide {
+            0% {
+                filter: blur(1px);
+                opacity: 0;
+            }
+
+            100% {
+                filter: blur(0px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideout {
+            0% {
+                filter: blur(0px);
+                opacity: 1;
+            }
+
+            100% {
+                filter: blur(1px);
+                opacity: 0;
+            }
+        }
+
+        .table_border_c2 td {
+            border-color: #c2c2c2;
+        }
+
+        .table_center_align h6,
+        .table_center_align span {
+            font-size: 1em !important;
+        }
+
+        .switch label .lever.check-c:after {
+            background-color: #ffffff;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            background-color: #ffffff;
+        }
+
+        .table_overflow th {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
+
+        .table_border,
+        .table_border th,
+        .table_border td {
+            border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+            text-align: center;
+        }
+
+
+        #toast-container .toast {
+            border-radius: 25px !important;
+            font-weight: 600;
+            text-align: center !important;
+            word-break: keep-all;
+            padding: 10px 25px;
+            width: auto;
+        }
+
+        input.input-text-new {
+            background-color: #f1f3f4 !important;
+        }
+
+        .gray-input {
+            background-color: #f1f3f4 !important;
+        }
+
+        .swal-wide {
+            width: 850px !important;
+        }
+    </style>
+</div>

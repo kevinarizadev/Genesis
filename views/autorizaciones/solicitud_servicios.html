@@ -1,0 +1,297 @@
+<div>
+    <div id="my_menu" class="row section-header" style="background: #9897e81f;margin-bottom: 0">
+        <div class="col l12">
+            <ul class="left mailbox-custom-search list-inline"
+                style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                <li>
+                    <h5
+                        style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                        Solicitud de Servicios / Productos</h5>
+                </li>
+                <li ng-show="isSet(2)">
+
+                    <i class="icon-search-2" ng-hide="verfiltrar" ng-click="verfiltrar=true" style="
+                                        top: 164px;cursor: pointer;
+                                        ">Filtrar</i>
+                    <input id="buscarautaa" ng-show="verfiltrar"
+                        style=" width: 300px; background: rgb(235, 235, 245); margin-bottom: -9px;transition: none;"
+                        ng-change="filter(val)" type="text" ng-model="val" placeholder="Filtrar Normativa"
+                        class="ng-pristine ng-valid ng-touched">
+                    <i ng-show="verfiltrar" ng-click="verfiltrar=false" class="icon-cancel-3"></i>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col l12 m12 s12">
+            <ul tabs="" reload="allTabContentLoaded"
+                class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content">
+                <li class="tab col l12" style="cursor: pointer;"><a ng-class="{ active: isSet(1) }" ng-click="setTab(1)"
+                        id="tab" class="col l12 large waves-effect waves-pink tabI">Solicitud</a></li>
+                <li class="tab col l12" style="cursor: pointer;"><a ng-class="{ active: isSet(2) }"
+                        ng-click="setTab(2); cargar_datos()"
+                        class="col l12 large waves-effect waves-pink tabII">Gestión</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container" style="width: 90% ;    background: #fff;    margin-bottom: -77px;">
+        <!-- <div ng-show="isSet(1)"> -->
+        <div ng-show="isSet(1)">
+            <div class="row content-container server margin">
+                <div class="col l12">
+                    <div class="row ">
+                        <div class="col s3">
+                            <div class="input-field col l12" style="display: flex;align-items: flex-end;">
+                                <label style="margin-top: -20px;" class="">Seccional</label>
+                                <select class="ng-touched ng-valid select-chosen-eps ng-dirty ng-valid-parse"
+                                    id="seccional" ng-model="seccional">
+                                    <option value="0" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="sec in lista_seccional" value="{{sec.NOMBRE}}">{{sec.NOMBRE}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col s3">
+
+                            <div class="input-field col l12">
+                                <input ng-change="Buscar_regimen()" id="prestador" type="text"
+                                    ng-model="prestador_nombre" disabled>
+                                <label for="prestador" class="">Prestador</label>
+                                <i class="icon icon-search" style="position: absolute;top: 0;right: 15px;border: 1px solid #039be5;color: #039be5;border-radius: 14px;
+                                        padding-top: 0; padding-bottom: 1px;font-size: 23px; cursor: pointer;"
+                                    class="btn-floating btn waves-effect waves-light blue"
+                                    ng-click="modal_filtrar('I')"></i>
+                            </div>
+
+                        </div>
+                        <div class="col s3">
+                            <div class="input-field col l12" style="display: flex;align-items: flex-end;">
+                                <label style="margin-top: -20px;" class="">Regimen</label>
+                                <select ng-change="Buscar_contrato()"
+                                    class="ng-touched ng-valid select-chosen-eps ng-dirty ng-valid-parse" id="regimen"
+                                    ng-model="regimen">
+                                    <option value="0" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="reg in lista_regimen" value="{{reg.CODIGO}}">{{reg.NOMBRE}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col s3">
+                            <div class="input-field col l12" style="display: flex;align-items: flex-end">
+                                <label style="margin-top: -20px;" class="">Contrato</label>
+                                <select class="ng-touched ng-valid select-chosen-eps ng-dirty ng-valid-parse"
+                                    id="contrato" ng-model="contrato">
+                                    <option value="0" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="t_n in lista_contrato" value="{{t_n.CONTRATO}}">CONTRATO
+                                        {{t_n.CONTRATO}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+
+                        <div class="col s6">
+                            <div class="input-field col l12">
+                                <input id="producto" type="text" ng-model="producto_nombre" disabled>
+                                <label for="producto" class="">Producto</label>
+                                <i class="icon icon-search" style="position: absolute;top: 0;right: 15px;border: 1px solid #039be5;color: #039be5;border-radius: 14px;
+                                padding-top: 0; padding-bottom: 1px;font-size: 23px; cursor: pointer;"
+                                    class="btn-floating btn waves-effect waves-light blue"
+                                    ng-click="modal_filtrar('P')"></i>
+                            </div>
+                        </div>
+                        <div class="col s6">
+                            <div class="input-field col l12">
+                                <input id="clasificacion" type="text" ng-model="clasificacion_nombre" disabled>
+                                <label for="clasificacion" class="">Clasificacion</label>
+                                <i class="icon icon-search" style="position: absolute;top: 0;right: 15px;border: 1px solid #039be5;color: #039be5;border-radius: 14px;
+                                padding-top: 0; padding-bottom: 1px;font-size: 23px; cursor: pointer;"
+                                    class="btn-floating btn waves-effect waves-light blue"
+                                    ng-click="modal_filtrar('C')"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col s9">
+                            <div class=" col l12 file-field input-field">
+                                <div class="btn">
+                                    <span class="white-text">Archivo</span>
+                                    <input type="file" id="adjunto" accept=".png,.jpg,.jpeg,.pdf,.doc"
+                                        ng-model="adjunto" required>
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input id="nombreadjunto" class="file-path" type="text" ng-change="obtenerBase()"
+                                        placeholder="Seleccione Archivo" ng-model="nombreadjunto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s3">
+                            <div class="input-field col l12">
+                                <input id="valor" type="number" ng-model="valor">
+                                <label for="valor" class="active">Valor</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row ">
+                        <div class="col l12">
+                            <div class="form-group shadow-textarea">
+                                <label style=" margin-top: -20px;">Descripción </label>
+                                <textarea class="form-control z-depth-1" id="exampleFormControlTextarea6" rows="3"
+                                    ng-keyup="handleKeyPress($event)" ng-model="descripcion" cols="50"
+                                    placeholder="Comentario"
+                                    style="margin: 0px;/* width: 1268px; */height: 134px;     text-transform: uppercase;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="cl l12" style="margin-left:50%">
+                    <button id="actualizar" class="btn" ng-click="subir_adjunto('U')" ng-show="actualizar_campo"
+                        style="margin-top: 10px;">Actualizar
+                    </button>
+                    <button id="actualizar" class="btn" ng-click="subir_adjunto('I')" ng-hide="actualizar_campo"
+                        style="margin-top: 10px;">Guardar
+                    </button>
+                    <button id="guardar" class="btn" ng-click="limpiar()" style="margin-top: 10px;">Limpiar</button>
+                </div>
+            </div>
+        </div>
+        <div ng-show="isSet(2)">
+            <div class="row">
+                <div class="responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="default-background white-text">
+                            <tr>
+                                <th style="border:none">#</th>
+                                <th style="border:none">FECHA</th>
+                                <th style="border:none">SECCIONAL</th>
+                                <th style="border:none">PRESTADOR</th>
+                                <th style="border:none">REGIMEN</th>
+                                <th style="border:none">CONTRATO</th>
+                                <th style="border:none">VALOR</th>
+                                <th style="border:none">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="mda in mesasayudasTemp  | inicio: currentPage * pageSize | limitTo: pageSize"
+                                ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+                                <th>{{mda.NUMERO}}</th>
+                                <td>{{mda.FECHA}}</td>
+                                <th>{{mda.SECCIONAL}}</th>
+                                <td>{{mda.IPS}}</td>
+                                <td>{{mda.REGIMEN}}</td>
+                                <td>contrato {{mda.CONTRATO}}</td>
+                                <td>{{mda.VALOR}}</td>
+
+
+                                <td>
+                                    <div class="tooltip" ng-show="mda.ADJUNTO" ng-click="descargafile(mda.ADJUNTO)">
+                                        <i class="Medium material-icons">library_books</i>
+                                        <span class="tooltiptext">Ver adjunto</span>
+                                    </div>
+                                    <div class="tooltip"
+                                        ng-click="mostrar_modal_detalle(mda.NUMERO,mda.NOMBRE_PRODUCTO,mda.NOMBRE_CLASIFICACION,mda.OBSERVACION)">
+                                        <i class="Medium material-icons">visibility</i>
+                                        <span class="tooltiptext">Ver Detalles</span>
+                                    </div>
+                                    <!-- <div class="tooltip"
+                                        ng-click="abrir_comentario(mda.NUMERO,mda.NOMBRE_PRODUCTO,mda.NOMBRE_CLASIFICACION,mda.OBSERVACION,mda.IPS,mda.CONTRATO)">
+                                        <i class="Medium material-icons">comment</i>
+                                        <span class="tooltiptext">Ver Comentarios</span>
+                                    </div> -->
+                                </td>
+                            </tr>
+                            <tr ng-if="mesasayudasTemp.length==0">
+                                <td colspan="10">
+                                    <center>
+                                        <h5>No se ha encontrado Registros</h5>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul style="text-align: right;" class="pagination" ng-show="mesasayudasTemp.length!=0">
+                        <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                                ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+                        <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                                class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button>
+                        </li>
+                        <li><button ng-disabled='currentPage >= mesasayudasTemp.length/pageSize - 1'
+                                class="btn-floating default-background"
+                                ng-click='currentPage = currentPage + 1'>&raquo;</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <style type="text/css">
+        a.active {
+            border-bottom: 1px solid;
+        }
+
+        th,
+        td {
+            text-align: center;
+            word-break: break-word;
+        }
+
+        i {
+            cursor: pointer;
+        }
+
+        .pagination li {
+            padding: 0 1px;
+        }
+
+        span.tooltiptext {
+            background: #bbc8ec !important;
+            color: #191919 !important;
+            border-bottom: 1px solid !important;
+        }
+    </style>
+    <div id="modal1" class="modal" style="    width: 500px;
+    max-height: 75%;
+    overflow: hidden;">
+        <div class="modal-content">
+            <h5>Detalles # {{numero_modal}}</h5>
+
+            <div class="row">
+                <div class="col l12 m12 s12">
+
+                    <div class="col l12 m12 s12  input-field" style="    padding-bottom: 20px;">
+                        <label for="des" id="-desz" class="active">Producto:</label>
+                        <div
+                            style="        padding: 5px; overflow: auto;    height: calc(42vh - 210px);    width: 100%;    margin-top: 10px;    margin-left: -4px;    border: 1px solid #4d524d38;">
+                            <span class="ng-binding" style="">
+                                {{modal_producto | uppercase}}</span>
+                        </div>
+                    </div>
+                    <div class="col l12 m12 s12  input-field" style="    padding-bottom: 20px;">
+                        <label for="des" id="-desz" class="active">Clasificación:</label>
+                        <div
+                            style="       padding: 5px;  overflow: auto;    height: calc(35vh - 210px);    width: 100%;    margin-top: 10px;    margin-left: -4px;    border: 1px solid #4d524d38;">
+                            <span class="ng-binding" style="">
+                                {{modal_clasificacion | uppercase}}</span>
+                        </div>
+                    </div>
+                    <div class="col l12 m12 s12  input-field" style="    padding-bottom: 20px;">
+                        <label for="des" id="-desz" class="active">Observación:</label>
+                        <div
+                            style="      padding: 5px;   overflow: auto;    height: calc(45vh - 210px);    width: 100%;    margin-top: 10px;    margin-left: -4px;    border: 1px solid #4d524d38;">
+                            <span class="ng-binding" style="">
+                                {{modal_observacion | uppercase}}</span>
+                        </div>
+                    </div>
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,808 @@
+<div class="row">
+  <style>
+    #preguntasdeclaracion table>tbody>tr>td:last-child {
+      width: 135px;
+      text-align: center;
+    }
+  </style>
+  <div class="col s12 m12 l12 magazine margin widgets-tabs">
+    <div class="card-panel widgets-tabs col s12 l12">
+      <ul tabs reload="allTabContentLoaded">
+        <li class="tab col s6" style="cursor: pointer;">
+          <a ng-click="setTab(1)" class="{{activeI}}">Gestion De Revision De Soporte</a>
+        </li>
+        <li class="tab col s6" style="cursor: pointer;"><a ng-click="setTab(2)" class="{{activeII}}">Consultar
+            Afiliado</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div ng-show="tabI" class="col no-padding" style="width: 100%;">
+    <div class="row" ng-hide="ConsultarInformacion">
+      <div class="col l12 m12 s12">
+        <div class="card">
+          <div class="card-content">
+            <h5 style="display: flex;"><strong>Revision De Digitalización</strong>
+              <!-- <div class="switch" style="margin-left: 1em;">
+                <label>
+                  <span ng-class="{'activo':!Habilitar}" class="activo">Antiguo</span>
+                  <input type="checkbox" ng-init="Habilitar = true;" ng-model="Habilitar"
+                    ng-change="HabilitarInformacion()">
+                  <span class="lever check-c"></span>
+                  <span ng-class="{'activo':Habilitar}">Nuevo</span>
+                </label>
+              </div> -->
+
+            </h5>
+
+          </div>
+          <!-- Proceso Nuevo -->
+          <div class="card-content clearfix" ng-hide="ProcesoNuevo">
+            <!-- checkbox -->
+            <div>
+              <div>
+                <input ng-click="Consultar('G',GrupoCheckbox)" type="checkbox" class="filled-in checkbox-info"
+                  id="checkbox1" ng-model="GrupoCheckbox" value="1" ng-checked=CheGrupo>
+                <label for="checkbox1">Grupo</label>
+              </div>
+              <div>
+                <input ng-click="Consultar('T',TipoCheckbox)" type="checkbox" class="filled-in checkbox-info"
+                  id="checkbox2" ng-model="TipoCheckbox" value="2" ng-checked=CheTipo>
+                <label for="checkbox2">Tipo Documento</label>
+              </div>
+            </div>
+            <!--FIN checkbox -->
+            <div class="divider" style="margin-top: 1em;margin-bottom: 1em;"></div>
+
+            <div ng-hide="Grupo">
+              <div class="input-field col l4 m12 s12">
+                <label class="active">Grupo</label>
+                <select class="select-chosen-eps" ng-model="GrupoPe" ng-change="BuscarXDeptoGrupo(GrupoPe)">
+                  <option value="">SELECCIONAR</option>
+                  <option ng-repeat="gp in grupopediente" value="{{gp.codigo}}">{{gp.nombre}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div ng-hide="TipoDoc">
+              <div class="input-field col l4 m12 s12">
+                <label class="active">Tipo Documental</label>
+                <select class="select-chosen-eps" ng-model="Documental" ng-change="BuscarXDepto(Documental)">
+                  <option value="">SELECCIONAR</option>
+                  <option ng-repeat="a1 in tipodocumental track by $index" value="{{a1.codigo}}">{{a1.nombre}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!--Fin Proceso Nuevo -->
+
+          <!-- Proceso Antiguo -->
+          <div class="card-content clearfix" ng-hide="ProcesoAntiguo">
+
+            <div>
+              <div class="input-field col l4 m12 s12">
+                <label class="active">Tipo Documental</label>
+                <select class="select-chosen-eps" ng-model="DocumentalAntiguo">
+                  <option value="">SELECCIONAR</option>
+                  <option ng-repeat="tp in documentoantiguo" value="{{tp.codigo}}">{{tp.nombre}}</option>
+                </select>
+              </div>
+
+              <center> <button class="waves-effect waves-light btn-large white-text pink"
+                  ng-click="ConsultarBolsaAntigua('A')">Consultar</button></center>
+            </div>
+
+          </div>
+          <!--Fin Proceso Antiguo -->
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-hide="DeptMunCantidad">
+      <div class="col l12 s12">
+        <div class="card">
+          <div class="card-content">
+            <div class="black-text title-panel" style="display: flex;justify-content: space-between;">
+              <h5 style="display: flex;"><strong>{{title}}</strong></h5>
+              <div class="btn-panel" style="display: flex;align-items: center;">
+                <i ng-click="Atras()" ng-hide="VisualizacionDepartamento!=true" class="icon-left-open-2"
+                  style="cursor:pointer">Atras</i>
+              </div>
+            </div>
+          </div>
+          <div class="divider" style="margin-top: -20px;"></div>
+          <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+            <div class="col l12 m12 s12" style="position:relative">
+
+              <div id="focus-effect" class="row margin" ng-hide="VisualizacionDepartamento">
+                <div ng-repeat="x1 in dptxcantidad" class="col s12 m6 l3">
+                  <div ng-click="VerMunicipio(x1.codigo)" class="card-panel center-align white-text no-padding"
+                    style="cursor:pointer">
+                    <div class="default-background" style="padding: 20px 20px 10px;position:relative">
+                      <!-- <i class="material-icons prefix hovitem" style="position: relative;font-size: 8em;z-index: 10;margin: auto;height: 140px;display: flex;justify-content: center;align-items: center;">{{list.icono}}</i> -->
+                      <p class="margin"
+                        style="z-index: 10;position: relative;width: calc(100% + 40px);margin-left: -20px!important;">
+                        <strong>
+                          {{x1.nombre}}
+                        </strong>
+                      </p>
+                    </div>
+                    <div class="black-text white"
+                      style="font-size: 14px;padding: 10px 20px;display: flex;justify-content: space-around;">
+                      <div class="black-text" style="width: 50%;display: grid;font-weight: bold">
+                        <span>{{x1.cantidad}}</span>
+                        Cantidad
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="focus-effect" class="row margin" ng-hide="VisualizacionMunicipio">
+                <div ng-repeat="x2 in munxcantidad" class="col s12 m6 l3">
+                  <div ng-click="ConsultarBolsa(x2.codigo)" class="card-panel center-align white-text no-padding"
+                    style="cursor:pointer">
+                    <div class="default-background" style="padding: 20px 20px 10px;position:relative">
+                      <!-- <i class="material-icons prefix hovitem" style="position: relative;font-size: 8em;z-index: 10;margin: auto;height: 140px;display: flex;justify-content: center;align-items: center;">{{list.icono}}</i> -->
+                      <p class="margin"
+                        style="z-index: 10;position: relative;width: calc(100% + 40px);margin-left: -20px!important;">
+                        <strong>
+                          {{x2.nombre}}
+                        </strong>
+                      </p>
+                    </div>
+                    <div class="black-text white"
+                      style="font-size: 14px;padding: 10px 20px;display: flex;justify-content: space-around;">
+                      <div class="black-text" style="width: 50%;display: grid;font-weight: bold">
+                        <span>{{x2.cantidad}}</span>
+                        Cantidad
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-hide="InformacionDeBolsa">
+      <div class="col l12 s12">
+        <div class="card">
+          <div class="card-content" style="margin-bottom: -20px;">
+            <h6 style="display: flex;"><strong>Informacion A Revisar</strong></h6>
+          </div>
+          <div class="divider"></div>
+          <div class="card-content clearfix">
+            <div class="row">
+              <div class="col l7 s7" ng-hide="MostrarArchivo">
+
+                <div id="Iframe-Master-CC-and-Rs" class="center-block-horiz no-padding" style="max-width: 100%;">
+                  <div ng-if="!tipoImgPdf" ng-class="{'d-block':tipoImgPdf==false}" class="d-none responsive-wrapper 
+                               responsive-wrapper-wxh-572x612"
+                    style="-webkit-overflow-scrolling: touch; overflow: auto;">
+                    <iframe ng-src="{{file}}">
+                      <p style="font-size: 110%;"><em><strong>ERROR: </strong>
+                          An &#105;frame should be displayed here but your browser version does not support
+                          &#105;frames.
+                        </em>Please update your browser to its most recent version and try again.</p>
+                    </iframe>
+                  </div>
+                  <div ng-if="tipoImgPdf" ng-class="{'d-block':tipoImgPdf==true}" class="d-none responsive-wrapper"
+                    style="height: 80vh;overflow: auto;">
+                    <!-- <img ng-src="{{file}}"> -->
+                    <img id="gear" ng-src="{{file}}" alt="bike gear by Markus Spiske" data-big="{{file}}"
+                      data-big2x="{{file}}" data-overlay="{{file}}" />
+                  </div>
+                </div>
+              </div>
+              <div class="col l5 s5">
+                <div ng-if="ActivarDeclaracionDeSalud">
+                  <div class="col m12 s12 btn-div">
+                    <a class="btn-floating btn waves-effect waves-light primary-button" ng-click="Cambiar()">
+                      <i class="material-icons dp48">assignment</i></a>
+                       <spam> <strong> {{palabra}} </strong>
+                      </spam>
+                  </div>
+                </div>
+                <div ng-show="InformacionSinDeclaracion">
+                  <p style="margin-bottom: 1em;font-size: 1em;text-align: center;">
+                    <strong>INFORMACIÓN DEL AFILIADO</strong>
+                  </p>
+                  <div>
+                    <span ng-hide="TablaDeInformacion" style="position: relative;top: 13px;right: 0;cursor: pointer;left: 100%;">
+                      <i class="Medium material-icons" ng-click="EditarInformacion(informacion)">mode_edit</i></span>
+                    <span ng-hide="EditarDeInformacion" style="position: relative;top: 13px;right: 0;cursor: pointer;left: 100%;">
+                      <i class="Medium material-icons" ng-click="AtrasInfo()">loop</i></span>
+                  </div>
+                  <table class="responsive-table table-bordered" ng-hide="TablaDeInformacion">
+                    <tbody>
+                      <tr>
+                        <th>NOMBRE AFILIADO</th>
+                        <td colspan="3">{{informacion.nombre_afiliado}}</td>
+                      </tr>
+                      <tr>
+                        <th>TIPO DOCUMENTO</th>
+                        <td>{{informacion.tipo_documento}}</td>
+                        <th>NUMERO DOCUMENTO</th>
+                        <td>{{informacion.documento}}</td>
+                      </tr>
+                      <tr>
+                        <th>DEPARTAMENTO</th>
+                        <td>{{informacion.departamento}}</td>
+                        <th>MUNICIPIO</th>
+                        <td>{{informacion.municipio}}</td>
+                      </tr>
+                      <tr>
+                        <th>FECHA NACIMIENTO</th>
+                        <td>{{informacion.fecha_nacimiento}}</td>
+                        <th>SEXO</th>
+                        <td>{{informacion.sexo}}</td>
+                      </tr>
+                      <tr>
+                        <th>FECHA AFILIACIÓN</th>
+                        <td>{{informacion.fecha_afiliacion}}</td>
+                        <th>REGIMEN</th>
+                        <td>{{informacion.regimen}}</td>
+                      </tr>
+                      <tr>
+                        <th>FICHA DEL SISBEN</th>
+                        <td>{{informacion.ficha_sisben}}</td>
+                        <th>PUNTAJE DEL SISBEN</th>
+                        <td>{{informacion.puntaje_sisben}}</td>
+                      </tr>
+                      <tr>
+                        <th>NIVEL DE SISBEN</th>
+                        <td>{{informacion.nivel_sisben}}</td>
+                        <th>TELEFONO</th>
+                        <td>{{informacion.telefono_contacto}}</td>
+                      </tr>
+                      <tr>
+                      <tr>
+                        <th>DIRECCÒN</th>
+                        <td>{{informacion.direccion}}</td>
+                        <th>TIPO AFILIADO</th>
+                        <td>{{informacion.tipo_afiliado}}</td>
+                      </tr>
+                      <th>NOMBRE DE CABEZA</th>
+                      <td colspan="3">{{informacion.nombre_cabeza}}</td>
+                      </tr>
+                      <tr>
+                        <th>TIPO DOCUMENTO CABEZA</th>
+                        <td>{{informacion.tipo_documento_cabeza}}</td>
+                        <th>DOCUMENTO CABEZA</th>
+                        <td>{{informacion.documento_cabeza}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div ng-hide="EditarDeInformacion">
+                    <div class="col s12">
+                      <div class="row margin">
+                        <div class="col s12 no-padding">
+                          <div class="input-field margin">
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column input-padding">
+                                <input id="primer_nombre" type="text" ng-model="infotemp.primer_nombre" style="text-transform:uppercase;"
+                                  onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                <label for="primer_nombre" class="">1er Nombre</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="segundo_nombre" type="text" ng-model="infotemp.segundo_nombre"
+                                  style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+                                  class="validate">
+                                <label for="segundo_nombre" class="">2do Nombre</label>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column input-padding">
+                                <input id="primer_apellido" ng-model="infotemp.primer_apellido" type="text"
+                                  style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+                                  class="validate">
+                                <label for="primer_apellido" class="">1er Apellido</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="segundo_apellido" ng-model="infotemp.segundo_apellido" type="text"
+                                  style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+                                  class="validate">
+                                <label for="segundo_apellido" class="">2do Apellido</label>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column input-padding">
+                                <label style=" margin-top: -20px;">Tipo de
+                                  Documento</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.tipo_documento">
+                                  <!-- <option ng-repeat="tdoc in tiposdocumento" value="{{tdoc.Codigo}}">
+                                                    {{tdoc.Nombre}}</option> -->
+                                  <option value="" disabled>SELECCIONAR</option>
+                                  <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == infotemp.tipo_documento" 
+                                  ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                                  <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+                                  <option value="TI">TARJETA DE IDENTIDAD</option>
+                                  <option value="RC">REGISTRO CIVIL</option>
+                                  <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                                  <option value="CN">CERTIFICADO NACIDO VIVO</option>
+                                  <option value="PA">PASAPORTE</option>
+                                  <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                  <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                                  <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                                  <option value="CD">CARNET DIPLOMÁTICO</option>
+                                  <option value="SC">SALVO CONDUCTO</option> -->
+                                </select>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="documento" ng-model="infotemp.documento" type="text" class="validate">
+                                <label for="documento" class="">Número</label>
+                              </div>
+                            </div>
+
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <label style="margin-top: -20px;">Fecha Nacimiento</label>
+                                <input ng-model="infotemp.fecha_nacimiento" type="date" id="datepicker" max="{{maxDate}}" class="datepicker" />
+                              </div>
+                              <div class="input-list input-view-column">
+                                <label style="margin-top: -20px;">Sexo</label>
+                                <select class="select-chosen-eps" id="sexoBeneficiario" ng-model="infotemp.genero">
+                                  <option value="" selected>SELECCIONAR</option>
+                                  <option value="M">MASCULINO</option>
+                                  <option value="F">FEMENINO</option>
+                                </select>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <input id="telefono_contacto" ng-model="infotemp.telefono_contacto" type="text" class="validate">
+                                <label for="telefono_contacto" class="">Télefono</label>
+                              </div>
+                              <div class="input-list input-view-column input-padding">
+                                <input id="barrio" type="text" style="text-transform:uppercase;"
+                                  onkeyup="javascript:this.value=this.value.toUpperCase();" ng-model="infotemp.barrio" disabled>
+                                <label for="barrio">Barrio</label>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <input id="direccion" type="text" ng-model="infotemp.direccion">
+                                <label for="direccion" class="">Dirección</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <div class="tooltip">
+                                  <label ng-click="AbrirModalDireccion()"><i class="material-icons">info</i></label>
+                                  <span class="tooltiptext">Click Para Actualizar Direccion</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <input id="regimen_hom" type="text" ng-model="infotemp.regimen_hom" disabled class="ng-pristine ng-valid ng-touched">
+                                <label for="regimen_hom" class="active">Régimen</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input type="checkbox" id="portabilidad" ng-model="infotemp.portabilidad" disabled class="ng-pristine ng-valid ng-touched">
+                                <label for="checkboxp">Portabilidad</label>
+                              </div>
+                            </div>
+
+                            <div class="input-list margin" ng-show="infotemp.portabilidad == true">
+                              <div class="input-list input-view-column">
+                                <input id="ubicacion_act" type="text" ng-model="infotemp.ubicacion_act"
+                                 disabled class="ng-pristine ng-valid ng-touched">
+                                <label for="ubicacion_act" class="active">Municipio Actual</label>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list margin">
+                              <div class="input-list input-view-column">
+                                <label style=" margin-top: -20px;">Municipio</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.mun" ng-change="ObtenerEscenarios(infotemp.mun)" disabled>
+                                  <option value="">Seleccionar</option>
+                                  <option ng-selected="{{mun.CODIGO}}==infotemp.mun" ng-repeat="mun in Municipios track by $index"
+                                    value="{{mun.CODIGO}}">{{mun.NOMBRE}}</option>
+                                </select>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list margin">
+                              <div class="input-list input-view-column">
+                                <label style=" margin-top: -20px;">Nuevo Escenario</label>
+                                <select id="escenario" class="select-chosen-eps" ng-model="infotemp.escenario" disabled>
+                                  <option ng-repeat="esc in Escenarios track by $index" value="{{esc.CODIGO}}">{{esc.NOMBRE}}</option>
+                                  <!-- ng-selected="{{e.CODIGO}}==infotemp.escenario" -->
+                                </select>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <label for="simple-select" style="margin-top: -20px;">Grupo Poblacional</label>
+                                <select id="gpoblacional"  class="select-chosen-eps" ng-model="infotemp.gpobla">
+                                  <option ng-selected="{{grupo.CODIGO}}==infotemp.gpobla" ng-repeat="grupo in GPoblacionales" value="{{grupo.CODIGO}}">{{grupo.NOMBRE}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="ficha_sisben" ng-model="infotemp.ficha_sisben" type="text" class="validate">
+                                <label for="ficha_sisben" class="">Ficha Sisben</label>
+                              </div>
+                            </div>
+                  
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <input id="nivel_sisben" ng-model="infotemp.nivel_sisben" type="text" class="validate">
+                                <label for="nivel_sisben" class="">Nivel Sisben</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="puntaje_sisben" ng-model="infotemp.puntaje_sisben" type="text" class="validate">
+                                <label for="puntaje_sisben" class="">Puntaje Sisben</label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div style="width: 100%;text-align: center;" ng-hide="Ocultar">
+                    <button class="black-text btn" type="submit"
+                      style="margin-top: 25px;border-radius: 50px 50px 50px 50px;background-color: #71c93df0;cursor: pointer !important;"
+                      ng-click="ActualizarNovedad(infotemp)">Guardar</button>
+                  </div>
+                  <p style="margin-bottom: 1em;font-size: 1em;text-align: center;" ng-show="Ocultar">
+                    <strong>ANEXOS DOCUMENTOS</strong>
+                  </p>
+                  <table class="responsive-table striped table-bordered" align="center" id="anexos"
+                    style="cursor: pointer !important;" ng-show="Ocultar">
+                    <thead align="center">
+                      <tr>
+                        <td class="center-align"><strong>Tipo Anexo</strong></td>
+                        <td class="center-align"><strong>Fecha Anexo</strong></td>
+                        <td class="center-align"><strong>Opción</strong></td>
+                      </tr>
+                    </thead>
+                    <tbody style="height: 40%; overflow: scroll;">
+                      <tr ng-repeat="documentos in AnexosDocumentos">
+                        <td ng-click="VisualizacionAnexos(documentos.ruta,documentos.ftp)" class="center-align">
+                          {{documentos.nombre}}
+                        </td>
+                        <td ng-click="VisualizacionAnexos(documentos.ruta,documentos.ftp)" class="center-align">
+                          {{documentos.fecha_anexo}}
+                        </td>
+                        <td class="center-align">
+                          <div class="tooltip">
+                            <i ng-click="AprobarDocumento(documentos.nombre,documentos.ruta)"
+                              class="Medium material-icons">check</i>
+                            <span class="tooltiptext">Aprobar</span>
+                          </div>
+                          <div class="tooltip">
+                            <i ng-click="NegarDocumento(documentos.nombre,documentos.ruta)"
+                              class="Medium material-icons">clear</i>
+                            <span class="tooltiptext">Negar</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div ng-hide="InformacionSinDeclaracion">
+                  <div class="switch">
+                    <form id="preguntasdeclaracion">
+                      <table class="responsive-table striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th data-field="idpregunta">Número</th>
+                            <th data-field="texto">Pregunta</th>
+                            <th data-field="respuesta">Respuesta</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr data-ng-repeat="renglon in Preguntas">
+                            <td>
+                              <center>{{renglon.RENGLON}}</center>
+                            </td>
+                            <td>{{renglon.PREGUNTA}}</td>
+                            <td class="switch">
+                              <label>
+                                <span ng-class="{'activo':!check_respuesta}" class="activo">NO</span>
+                                <input id="{{'resp'+renglon.RENGLON}}" type="checkbox"
+                                  ng-init="check_respuesta = false;" ng-model="check_respuesta">
+                                <span class="lever check-c"></span>
+                                <span ng-class="{'activo':check_respuesta}">SI</span>
+                              </label>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </form>
+                  </div>
+                  <br>
+                  <center><button class="waves-effect waves-light btn-large white-text" type="submit"
+                      ng-click="enviarEncuesta()">Guardar</button></center>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div ng-show="tabII" class="col no-padding" style="width: 100%;">
+    <div class="col l12 m12 s12">
+      <div class="card">
+        <div class="card-content">
+          <h5 style="display: flex;"><strong>Consultar Afiliado</strong>
+          </h5>
+        </div>
+        <div class="card-content clearfix">
+          <form ng-submit="ConsultarAfiliado()">
+            <div>
+              <div>
+                <div class="input-field col s5 offset-s1">
+                  <i class="material-icons prefix">view_list</i>
+                  <select id="simple-select chosen" ng-model="tipoDocu" ng-change="ChangeConsulta()" material-select
+                    watch>
+                    <option value="0">SELECCIONAR</option>
+                    <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == tipoDocu" 
+                              ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                    <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+                    <option value="TI">TARJETA DE IDENTIDAD</option>
+                    <option value="RC">REGISTRO CIVIL</option>
+                    <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                    <option value="PA">PASAPORTE</option>
+                    <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                    <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                    <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                    <option value="CD">CARNET DIPLOMÁTICO</option> -->
+                  </select>
+                  <label for="simple-select hide-on-med-and-down">Tipo de Documento</label>
+                </div>
+              </div>
+              <div>
+                <div class="input-field col s5">
+                  <i class="material-icons prefix">account_circle</i>
+                  <input id="with_icon" type="text" ng-model="documento" ng-change="ChangeConsulta()" class="validate">
+                  <label for="with_icon">Documento</label>
+                </div>
+              </div>
+              <div class="col s12">
+                <center><button class="waves-effect waves-light btn-large white-text pink" type="submit">Buscar</button>
+                </center>
+              </div>
+            </div>
+          </form>
+
+          <div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-hide="OcultarInformacion">
+      <div class="col l12 m12 s12">
+        <div class="card">
+          <div class="card-content clearfix">
+            <form>
+              <blockquote><strong>DATOS BASICOS</strong></blockquote>
+              <div class="col l12 m12 s12">
+                <div class="input-field col l4 m10 s12">
+                  <input id="regimen_hom" type="text" ng-model="info.regimen_hom" disabled class="ng-pristine ng-valid ng-touched">
+                  <label for="regimen_hom" class="active">Régimen</label>
+                </div>
+                <div class="input-field col l4 m10 s12">
+                  <input type="checkbox" id="portabilidad" ng-model="info.portabilidad" disabled
+                    class="ng-pristine ng-valid ng-touched">
+                  <label for="checkboxp">Portabilidad</label>
+                </div>
+                <div class="input-field col l3 m10 s12" ng-hide="info.portabilidad == false">
+                  <input id="ubicacion_act" type="text" ng-model="info.ubicacion_act" disabled
+                    class="ng-pristine ng-valid ng-touched">
+                  <label for="ubicacion_act" class="active">Municipio Actual</label>
+                </div>
+              </div>
+              <div class="col l12 m12 s12">
+                <div class="input-field col l2 m10 s12">
+                  <input id="primer_nombre" type="text" ng-model="info.pnombre">
+                  <label for="primer_nombre">Primer Nombre</label>
+                </div>
+                <div class="input-field col l2 m10 s12">
+                  <input id="segundo_nombre" type="text" ng-model="info.snombre">
+                  <label for="segundo_nombre">Segundo Nombre</label>
+                </div>
+                <div class="input-field col l2 m10 s12">
+                  <input id="primer_apellido" type="text" ng-model="info.papellido">
+                  <label for="primer_apellido">Primer Apellido</label>
+                </div>
+                <div class="input-field col l1 m10 s12">
+                  <input id="segundo_nombre" type="text" ng-model="info.sapellido">
+                  <label for="segundo_apellido" class="">Segundo Apellido</label>
+                </div>
+
+                <div class="input-field col l2 m10 s12">
+                  <input id="nivel_sisben" type="date" ng-model="info.fecha_nacimiento">
+                  <label for="nivel_sisben" style="margin-top: -20px;" class="">Fecha Nacimineto</label>
+                </div>
+
+                <div class="input-field col l2 m10 s12">
+                  <label for="simple-select" style="margin-top: -20px;">Genero</label>
+                  <select class="select-chosen-eps" ng-model="info.genero">
+                    <option value="0">SELECCIONAR</option>
+                    <option value="M">MASCULINO</option>
+                    <option value="F">FEMENINO</option>
+                  </select>
+                </div>
+
+              </div>
+              <div class="col l12 m12 s12">
+                <div class="input-field col l3 m12 s12">
+                  <label for="simple-select" style="margin-top: -20px;">Tipo De Documento</label>
+                  <select class="select-chosen-eps" ng-model="info.typedoc">
+                    <option value="0">SELECCIONAR</option>
+                    <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == info.typedoc" 
+                              ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                    <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+                    <option value="TI">TARJETA DE IDENTIDAD</option>
+                    <option value="RC">REGISTRO CIVIL</option>
+                    <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                    <option value="PA">PASAPORTE</option>
+                    <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                    <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                    <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                    <option value="CD">CARNET DIPLOMÁTICO</option> -->
+                  </select>
+                </div>
+                <div class="input-field col l2 m12 s12">
+                  <input id="nivel_sisben" type="text" ng-model="info.cedula">
+                  <label for="nivel_sisben" class="">Cedula</label>
+                </div>
+                <div class="input-field col l1 m10 s12">
+                  <input id="direccion" type="text" ng-model="info.celular">
+                  <label for="direccion" class="">Celular</label>
+                </div>
+                <div class="input-field col l2 m10 s12">
+                  <input id="direccion" type="text" ng-model="info.barrio">
+                  <label for="direccion" class="">Barrio</label>
+                </div>
+                <div class="input-field col l3 m12 s12">
+                  <input id="direccion" type="text" ng-model="info.direccion">
+                  <label for="direccion" class="">Dirección</label>
+                </div>
+                <div class="tooltip">
+                  <label ng-click="AbrirModalDireccion()"><i class="material-icons"
+                      style="margin-top:30px;">info</i></label>
+                  <span class="tooltiptext">Click Para Actualizar Direccion</span>
+                </div>
+              </div>
+              <div class="col l12 m12 s12">
+                <blockquote><strong>DATOS DE UBICACION</strong></blockquote>
+                <div class="input-field col l3 m12 s12">
+                  <label style=" margin-top: -20px;">Municipio</label>
+                  <select class="select-chosen-eps" ng-model="info.mun" ng-change="ObtenerEscenarios(info.mun)" disabled>
+                    <option value="">Seleccionar</option>
+                    <option ng-selected="{{m.CODIGO}}==info.ciudad" ng-repeat="m in Municipios" value="{{m.CODIGO}}">
+                      {{m.NOMBRE}}</option>
+                  </select>
+                </div>
+                <div class="input-field col l3 m12 s12">
+                  <label style=" margin-top: -20px;">Nuevo Escenario</label>
+                  <select id="escenario" class="select-chosen-eps" ng-model="escenario" disabled>
+                    <option ng-selected="{{e.CODIGO}}==info.escenario" ng-repeat="e in Escenarios" value="{{e.CODIGO}}">
+                      {{e.NOMBRE}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col l12 m12 s12">
+                <blockquote><strong>DATOS DEL SISBEN</strong></blockquote>
+              </div>
+              <div class="col l12 m12 s12">
+                <div class="input-field col l4 m12 s12" style="margin-bottom: 5px;">
+
+                  <label for="simple-select" style="margin-top: -20px;">Grupo Poblacional</label>
+                  <select class="select-chosen-eps" ng-model="gpobla">
+                    <option id="gpobla" ng-selected="{{grupo.CODIGO}}==info.grupopoblacional" ng-repeat="grupo in GPoblacionales"
+                      value="{{grupo.CODIGO}}">{{grupo.NOMBRE}}</option>
+                  </select>
+                </div>
+                <div class="input-field col l2 m12 s12">
+                  <input id="ficha_sisben" type="text" ng-model="info.ficha" maxlength="9">
+                  <label for="ficha_sisben">Ficha de Sisben</label>
+                </div>
+                <div class="input-field col l2 m12 s12">
+                  <input id="nivel_sisben" type="text" ng-model="info.nivel" maxlength="1" min="2">
+                  <label for="nivel_sisben" class="">Nivel de Sisben</label>
+                </div>
+                <div class="input-field col l2 m12 s12">
+                  <input id="puntaje_sisben" type="text" ng-model="info.puntaje" maxlength="5">
+                  <label for="puntaje_sisben" class="">Puntaje del Sisben</label>
+                </div>
+                <div>
+                  <div class="tooltip" style="margin-left: auto; left: 5em;">
+                    <button type="submit"
+                      class="btn-floating btn-large waves-effect waves-light ng-pristine ng-valid ng-touched"
+                      ng-click="GuardarNovedad(info)" ng-model="ActualizarInformacion">
+                      <i class="icon-floppy"><i class="zmdi zmdi-refresh-sync fa-spin"></i></i>
+                    </button>
+                    <span class="tooltiptext">Guardar Informacion</span>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+  <style>
+    a.active.final {
+      border-top: 2px solid #ad1457 !important;
+      padding-top: 0 !important;
+    }
+
+    .d-none {
+      display: none;
+    }
+
+    .d-block {
+      display: block !important;
+    }
+
+    #Iframe-Master-CC-and-Rs {
+      max-width: 512px;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    .responsive-wrapper {
+      position: relative;
+      height: 0;
+    }
+
+    .responsive-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    .responsive-wrapper-wxh-572x612 {
+      padding-bottom: 107%;
+    }
+
+    .set-border {
+      border: 5px inset #4f4f4f;
+    }
+
+    .set-box-shadow {
+      -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+      -moz-box-shadow: 4px 4px 14px #4f4f4f;
+      box-shadow: 4px 4px 14px #4f4f4f;
+    }
+
+    .set-padding {
+      padding: 40px;
+    }
+
+    .set-margin {
+      margin: 30px;
+    }
+
+    .center-block-horiz {
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+  </style>

@@ -1,0 +1,1178 @@
+<div id="adminautprog">
+  <div class="row">
+    <div class="col s12 m12 l12 magazine margin widgets-tabs">
+      <div class="card-panel widgets-tabs col l12" style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+        <div class="col no-padding" style="width: 100%;">
+          <div class="col s12 l12">
+            <div class="card" style="box-shadow: none;border: 1px solid rgba(160, 160, 160, 0.2);">
+              <div class="card-content" style="    display: flex;
+                      justify-content: space-between;
+                      align-items: center;">
+                <h5 style="text-align: center;">Admin Programadas</h5>
+                <i class="icon-left-open-2" ng-hide="tab.number==0" ng-click="retroceder();"
+                  style="cursor: pointer">Atras</i>
+              </div>
+              <div class="card-action" style="padding: 0;">
+                <div class="row">
+                  <div id="visitchart">
+                    <div class="col s12">
+                      <div ng-show="tab.number==0">
+                        <p style="text-align: center;padding-bottom: 20px;">Cantidad de IPS con Autorizaciones
+                          Programadas =
+                          {{listaIps.length}}</p>
+                        <div class="row" ng-hide="listaIps.length==0">
+                          <div class="col s6">
+
+                            <span style="cursor: pointer;" ng-click="tab.number=2;">Nuevo <i
+                                class="icon-plus"></i></span>
+                          </div>
+                          <div class="col s6">
+                            <input type="text" style="float: right;margin-bottom: 10px"
+                              class="margin border-none input-text-new" ng-keyup="filterIps(filtroIps)"
+                              ng-model="filtroIps" placeholder="Buscar Ips">
+                          </div>
+
+                        </div>
+                        <table class="responsive-table table-bordered striped" style="height:100px;">
+                          <thead>
+                            <tr>
+                              <th style="text-align:center;"> #</th>
+                              <th style="text-align:center;"> NIT</th>
+                              <th style="text-align:center;">NOMBRE DE LA IPS</th>
+                              <th style="text-align:center;">ACCIONES</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              ng-repeat="i in listaIpsprogTemp | inicio: currentPageips * pageSizeips | limitTo: pageSizeips"
+                              ng-hide="listaIpsprogTemp.length == 0">
+                              <td style="text-align:center;">
+                                {{$index+1}}
+                              </td>
+                              <td style="text-align:center;">
+                                {{i.NIT}}
+                              </td>
+                              <td style="text-align:center;">
+                                {{i.TERCERO}}
+                              </td>
+                              <td style="text-align:center;">
+                                <i class="icon-eye" style="font-size: 25px;cursor: pointer;"
+                                  ng-click="accionIps(i,'C');"></i>
+                              </td>
+                            </tr>
+                            <tr ng-show="listaIpsprogTemp.length==0">
+                              <td style="text-align: center" colspan="7">No hay IPS</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <ul style="text-align: center;padding-top: 20px;" class="pagination">
+                          <li><button ng-disabled='currentPageips == 0' class="btn-floating default-background"
+                              ng-click="pasoips('back')">&laquo;</button></li>
+                          <li ng-repeat='page in pagesips'><button ng-disabled='currentPageips == page.no - 1'
+                              class="btn-floating default-background"
+                              ng-click='setPageips(page.no)'>{{page.no}}</button></li>
+                          <li><button ng-disabled='currentPageips >= listaIpsprogTemp.length/pageSizeips - 1'
+                              class="btn-floating default-background" ng-click="pasoips('next')">&raquo;</button></li>
+                        </ul>
+                      </div>
+                      <div ng-show="tab.number==1">
+                        <p style="text-align: center;"> <b>NIT: </b>{{tempIps.NIT}} | <b>IPS:</b> {{tempIps.TERCERO}}
+                        </p>
+                             <div class="row">
+                          <div class="col s3">
+                            <span style="cursor: pointer;"
+                              ng-click="accionmodalproducto='I';openmodals('modalproducto');">Nuevo Cups <i
+                                class="icon-plus"></i></span>
+                          </div>
+                          
+                          <div class="col s3">
+                            <span style="cursor: pointer;" ng-click="openmodals('modalhistorico');">Historico Cups <i
+                                class="icon-clipboard-2"></i></span>
+                          </div>
+                          <div class="col s3">
+                            <span style="cursor: pointer;" ng-click="JSONToCSVConvertor();">Exportar Cups <i
+                              class="icon-file-excel"></i></span>                            
+                          </div>
+                          <div class="col s3">
+                            <input type="text" style="float: right;margin-bottom: 10px"
+                              class="margin border-none input-text-new" ng-model="filtroCups"
+                              ng-change="filterCups(filtroCups);" placeholder="Buscar Cups">
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col s6">
+                            <div> Un resultado de <strong> {{listCupsTemp.length}} Cups </strong>, por el filtro
+                              Anterior
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <table class="responsive-table table-bordered striped" style="height:100px;">
+                          <thead>
+                            <tr>
+                              <th style="text-align:center;"> COD_CUPS</th>
+                              <th style="text-align:center;">NOMBRE_CUPS</th>
+                              <th style="text-align:center;">ESTADO CUPS</th>
+                              <th style="text-align:center;">REGIMEN</th>
+                              <th style="text-align:center;">CONTRATO</th>
+                              <th style="text-align:center;">UBICACIÓN</th>
+                              <th style="text-align:center;">DIAS</th>
+                              <th style="text-align:center;">ESTADO CONTRATO</th>
+                              <th style="text-align:center">ACCIÓN</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="i in listCupsTemp">
+                              <td style="text-align:center;">
+                                {{i.COD_CUPS}}
+                              </td>
+                              <td>
+                                {{i.NOMBRE_CUPS}}
+                              </td>
+                              <td style="text-align:center;">
+                                <span ng-class="{'orange status white-text': i.ESTADO_CUPS!='ACTIVO'}">
+                                  {{i.ESTADO_CUPS}}
+                                </span>
+                              </td>
+                              <td style="text-align:center;text-transform: uppercase;">
+                                {{i.REGIMEN}}
+                              </td>
+                              <td style="text-align:center;">
+                                {{i.CONTRATO}}
+                              </td>
+                              <td style="text-align:center;">
+                                {{i.UBICACION}}
+                              </td>
+                              <td style="text-align:center;">
+                                {{i.DIAS}}
+                              </td>
+                              <td style="text-align:center;">
+                                <span ng-class="{'orange status white-text': i.ESTADO_CONTRATO!='PROCESADO'}">
+                                  {{i.ESTADO_CONTRATO}}
+                                </span>
+                              </td>
+                              <td style="text-align:center;">
+                                <i class="icon-edit-alt" style="font-size: 20px;cursor: pointer;"
+                                  ng-click="accionCups(i,'U');" title="Actualizar Producto"></i><br>
+                                <i class=" icon-arrows-cw-2" style="font-size: 20px;cursor: pointer;"
+                                  title="Cambiar Contrato" ng-click="accionCups(i,'C');"></i><br>
+                                <i class="icon-trash" style="font-size: 20px;cursor: pointer;"
+                                  ng-click="accionCups(i,'D');" title="Inactivar Producto"></i>
+                              </td>
+                            </tr>
+                            <tr ng-show="listCupsTemp.length==0">
+                              <td style="text-align: center" colspan="9">No hay Cups por Visualizar</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div ng-show="tab.number==2">
+                      <div class="row">
+                        <div class="col s12">
+                          <ul class="StepProgress">
+                            <li class="StepProgress-item s" ng-class="{'current': configTimeLime.step1}">
+                              <strong class="noselectxtpqr">Seleccionar Ips</strong>
+                              <div class="w-100" ng-show="configTabs.tab=='I'">
+                                <div class="row">
+                                  <div class="col s12">
+                                    <form ng-submit="buscarIps(buscard2)">
+                                      <div class="input-list input-form">
+                                        <div class="input-field col s12">
+                                          <a href="javascript:void(0)" ng-click="buscarIps(buscard2)"><i
+                                              style="position: absolute; top: 16px; right: 6px;"
+                                              class="material-icons prefix">search</i></a>
+                                          <input id="ipsinput" type="text" ng-model="buscard2" required>
+                                          <label for="ipsinput">Ips:</label>
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col s12" ng-hide="inactivebarraips"
+                                      style="max-height: 35vh;overflow-y: auto;">
+                                      <table class="table table-bordered table-striped">
+                                        <thead>
+                                          <tr>
+                                            <th style="text-align:center;">NIT</th>
+                                            <th>NOMBRE</th>
+                                            <th>DIRECCION</th>
+                                            <th style="text-align:center;"><a href="javascript:void(0)">SELECCIONAR</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr id="I{{$index+1}}"
+                                            ng-repeat="ips in listIpsmodal | filter:buscard2 as resultips">
+                                            <td style="text-align:center;">{{ips.Codigo}}</td>
+                                            <td>{{ips.Nombre}}</td>
+                                            <td>{{ips.Direccion}}</td>
+                                            <td>
+                                              <center>
+                                                <i ng-click="seleccionarips(ips,$index+1)" style="cursor:pointer;"
+                                                  class="material-icons prefix">check</i>
+                                              </center>
+                                            </td>
+                                          </tr>
+                                          <tr ng-if="resultips.length==0">
+                                            <th class="center-align" colspan="5">No hay Resultados</th>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                  <div class="right-align">
+                                    <a class="waves-effect waves-light btn white-text success"
+                                      ng-click="updateConfigTabs('Cups','S');">SIGUIENTE</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                            <li class="StepProgress-item" ng-class="{'current': configTimeLime.step2}">
+                              <strong class="noselectxtpqr">Seleccionar Cups </strong>
+                              <div class="w-100" ng-show="configTabs.tab=='C'">
+                                <div class="row">
+                                  <div class="col s12" style="text-align: center;">
+                                    <span> <b>Nit: </b> {{tempIps.Codigo}} | <b> Nombre:</b> {{tempIps.Nombre}} </span>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="row">
+                                    <div class="col s11">
+                                      <form ng-submit="buscarProducto(buscarpro)" name="findpro" id="findproa">
+                                        <div class="input-list input-form">
+                                          <div class="input-field col s12">
+                                            <a href="javascript:void(0)" ng-click="buscarProducto(buscarpro)">
+                                              <i style="position: absolute; top: 16px; right: 6px;"
+                                                class="material-icons prefix">search</i></a>
+                                            <input id="proinput" type="text" ng-model="buscarpro" required>
+                                            <label for="proinput">Producto:</label>
+                                          </div>
+                                        </div>
+                                      </form>
+                                    </div>
+                                    <div class="col s1" ng-show="inactivebarrapro==true && tempProducto!=null" style="margin-top: 60px;">
+                                      <i style="cursor:pointer;" ng-click="inactivebarrapro=false; tempProducto=null;"
+                                        class="material-icons">close</i>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <div class="col s12" ng-show="inactivebarrapro==false && tempProducto==null"
+                                      style="max-height: 35vh;overflow-y: auto;">
+                                      <table class="table table-bordered table-striped">
+                                        <thead>
+                                          <tr>
+                                            <th style="text-align:center;">PRODUCTO</th>
+                                            <th style="text-align:center;">NOMBRE</th>
+                                            <th style="text-align:center;">CONTRATO</th>
+                                            <th style="text-align:center;">UBICACIÓN</th>
+                                            <th style="text-align:center;">REGIMEN</th>
+                                            <th style="text-align:center;">CONCEPTO</th>
+                                            <th style="text-align:center;"><a href="javascript:void(0)">AGREGAR</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr id="P{{$index+1}}"
+                                            ng-repeat="pro in listProductos | filter:buscarpro as resultbuscarpro">
+                                            <td style="text-align:center;">{{pro.CODIGO}}</td>
+                                            <td style="text-align:center;">{{pro.NOMBRE}}</td>
+                                            <td style="text-align:center;">{{pro.CONTRATO}}</td>
+                                            <td style="text-align:center;">{{pro.UBI_CONTRATO}}</td>
+                                            <td style="text-align:center;">{{pro.REGIMEN}}</td>
+                                            <td style="text-align:center;">{{pro.CONCEPTO}}</td>
+                                            <td>
+                                              <center>
+                                                <i ng-click="seleccionarproducto(pro,$index+1)" style="cursor:pointer;"
+                                                  class="material-icons prefix">check</i>
+                                              </center>
+                                            </td>
+                                          </tr>
+                                          <tr ng-if="resultbuscarpro.length==0">
+                                            <th class="center-align" colspan="7"> No hay Resultados</th>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="col s12" ng-show="inactivebarrapro==true && tempProducto!=null">
+                                      <table class="table table-bordered table-striped">
+                                        <thead>
+                                          <tr>
+                                            <th style="text-align:center;">PRODUCTO</th>
+                                            <th style="text-align:center;">NOMBRE</th>
+                                            <th style="text-align:center;">CONTRATO</th>
+                                            <th style="text-align:center;">UBICACIÓN</th>
+                                            <th style="text-align:center;">CONCEPTO</th>
+                                            <th style="text-align:center;">REGIMEN</th>
+                                            <th style="text-align:center;width: 100px;">DIAS</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <td style="text-align:center;">{{tempProducto.CODIGO}}</td>
+                                            <td style="text-align:center;">{{tempProducto.NOMBRE}}</td>
+                                            <td style="text-align:center;">{{tempProducto.CONTRATO}}</td>
+                                            <td style="text-align:center;">{{tempProducto.UBI_CONTRATO}}</td>
+                                            <td style="text-align:center;">{{tempProducto.CONCEPTO}}</td>
+                                            <td style="text-align:center;">{{tempProducto.REGIMEN}}</td>
+                                            <td style="text-align:center;">
+                                              <select class="select-chosen-eps" ng-model="tempProducto.DIAS">
+                                                <option ng-repeat="a in dias" ng-value="a.Codigo">{{a.Nombre}}</option>
+                                              </select>
+                                            </td>
+                                          </tr>
+                                          <tr ng-if="resultbuscarpro.length==0">
+                                            <th class="center-align" colspan="7"> No hay Resultados</th>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="right-align">
+                                  <a class="waves-effect waves-light btn white-text success"
+                                    ng-click="updateConfigTabs('Ips','A');">Anterior</a>
+                                  <a class="waves-effect waves-light btn white-text success"
+                                    ng-click="updateConfigTabs('Finalizar','S');">Finalizar</a>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="modalSeleccionips" class="modal" style="overflow: hidden;width: 70%;">
+            <div class="modal-content" style="padding: 0px !important;">
+              <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                  <div class="card-content foot4" style="padding: 0">
+                    <div class="col s11">
+                      <h5 class="white-text">SELECCIÓN DE IPS PROGRAMADAS</h5>
+                    </div>
+                    <div class="col s1">
+                      <h5 style="text-align: end;"><i style="cursor:pointer;"
+                          ng-click="closemodals('modalSeleccionips')" class="material-icons white-text">close</i></h5>
+                    </div>
+                  </div>
+                  <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+                    <div class="row">
+                      <div class="col s12">
+                        <ul class="StepProgress">
+                          <li class="StepProgress-item s" ng-class="{'current': configTimeLime.step1}">
+                            <strong class="noselectxtpqr">Seleccionar Ips</strong>
+                            <div class="w-100" ng-show="configTabs.tab=='I'">
+                              <div class="row">
+                                <div class="col s12">
+                                  <form ng-submit="buscarIps(buscard2)">
+                                    <div class="input-list input-form">
+                                      <div class="input-field col s12">
+                                        <a href="javascript:void(0)" ng-click="buscarIps(buscard2)"><i
+                                            style="position: absolute; top: 16px; right: 6px;"
+                                            class="material-icons prefix">search</i></a>
+                                        <input id="ipsinput" type="text" ng-model="buscard2" required>
+                                        <label for="ipsinput">Ips:</label>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                                <div class="col s12" ng-hide="inactivebarraips"
+                                  style="max-height: 35vh;overflow-y: auto;">
+                                  <table class="table table-bordered table-striped">
+                                    <thead>
+                                      <tr>
+                                        <th style="text-align:center;">NIT</th>
+                                        <th>NOMBRE</th>
+                                        <th>DIRECCION</th>
+                                        <th style="text-align:center;"><a href="javascript:void(0)">SELECCIONAR</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr ng-repeat="ips in listIpsmodal | filter:buscard2 as resultips">
+                                        <td style="text-align:center;">{{ips.Codigo}}</td>
+                                        <td>{{ips.Nombre}}</td>
+                                        <td>{{ips.Direccion}}</td>
+                                        <td>
+                                          <center>
+                                            <i ng-click="seleccionarips(ips,'A')" style="cursor:pointer;"
+                                              class="material-icons prefix">check</i>
+                                          </center>
+                                        </td>
+                                      </tr>
+                                      <tr ng-if="resultips.length==0">
+                                        <th class="center-align" colspan="5">No hay Resultados</th>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li class="StepProgress-item" ng-class="{'current': configTimeLime.step2}">
+                            <strong class="noselectxtpqr">Seleccionar Cups y Otros</strong>
+                            <div class="w-100" ng-show="configTabs.tab=='C'">
+                              <div class="row">
+                                <div class="col s12">
+                                  <form ng-submit="buscarProducto(buscarpro)" name="findpro" id="findproa">
+                                    <div class="input-list input-form">
+                                      <div class="input-field col s12">
+                                        <a href="javascript:void(0)" ng-click="buscarProducto(buscarpro)">
+                                          <i style="position: absolute; top: 16px; right: 6px;"
+                                            class="material-icons prefix">search</i></a>
+                                        <input id="proinput" type="text" ng-model="buscarpro" required>
+                                        <label for="proinput">Producto:</label>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+
+                                <div class="col s12" ng-hide="inactivebarrapro"
+                                  style="max-height: 35vh;overflow-y: auto;">
+                                  <table class="table table-bordered table-striped">
+                                    <thead>
+                                      <tr>
+                                        <th style="text-align:center;">PRODUCTO</th>
+                                        <th style="text-align:center;">NOMBRE</th>
+                                        <th style="text-align:center;">CONTRATO</th>
+                                        <th style="text-align:center;">REGIMEN</th>
+                                        <th style="text-align:center;">UBICACIÓN</th>
+                                        <th style="text-align:center;"><a href="javascript:void(0)">AGREGAR</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr ng-repeat="pro in listProductos | filter:buscarpro as resultbuscarpro">
+                                        <td style="text-align:center;">{{pro.CODIGO}}</td>
+                                        <td style="text-align:center;">{{pro.NOMBRE}}</td>
+                                        <td style="text-align:center;">{{pro.DOC_CONTRATO}} - {{pro.CONTRATO}}</td>
+                                        <td style="text-align:center;">{{pro.REGIMEN}}</td>
+                                        <td style="text-align:center;">{{pro.UBI_CONTRATO}}</td>
+                                        <td>
+                                          <center>
+                                            <i ng-click="seleccionarproducto(pro)" style="cursor:pointer;"
+                                              class="material-icons prefix">check</i>
+                                          </center>
+                                        </td>
+                                      </tr>
+                                      <tr ng-if="resultbuscarpro.length==0">
+
+                                        <th class="center-align" colspan="5"> No hay Resultados</th>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div class="right-align">
+                                <a class="waves-effect waves-light btn white-text success"
+                                  ng-click="updateConfigTabs('Ips','A');">Anterior</a>
+                                <a class="waves-effect waves-light btn white-text success"
+                                  ng-click="updateConfigTabs('Second','S');">Finalizar</a>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="modalproducto" class="modal" style="overflow: hidden; width: 70%;">
+            <div class="modal-content" style="padding: 0px !important;">
+              <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                  <div class="card-content foot4" style="padding: 0">
+                    <div class="col s11">
+                      <h5 class="white-text" ng-if="accionmodalproducto!='C'">Productos</h5>
+                      <h5 class="white-text" ng-if="accionmodalproducto=='C'">Cambiar Contrato</h5>
+                    </div>
+                    <div class="col s1">
+                      <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalproducto')"
+                          class="material-icons white-text">close</i></h5>
+                    </div>
+                  </div>
+                  <div class="card-action" style="padding:0px;padding-bottom:3px;border-top: 0">
+                    <div class="row">
+                      <div class="col s12">
+                        <div class="row" ng-show="accionmodalproducto=='I'">
+                          <div class="row">
+                            <div class="col s11">
+                              <form ng-submit="buscarProducto(buscarpro)" name="findpro" id="findproa">
+                                <div class="input-list input-form">
+                                  <div class="input-field col s12">
+                                    <a href="javascript:void(0)" ng-click="buscarProducto(buscarpro)">
+                                      <i style="position: absolute; top: 16px; right: 6px;"
+                                        class="material-icons prefix">search</i></a>
+                                    <input id="proinput" type="text" ng-model="buscarpro" required>
+                                    <label for="proinput">Producto:</label>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <div class="col s1" ng-show="inactivebarrapro==true && tempProducto!=null" style="margin-top: 60px;">
+                              <i style="cursor:pointer;" ng-click="inactivebarrapro=false; tempProducto=null;"
+                                class="material-icons">close</i>
+                            </div>
+                          </div>
+                          <div class="col s12" ng-hide="inactivebarrapro" style="max-height: 35vh;overflow-y: auto;">
+                            <table class="table table-bordered table-striped">
+                              <thead>
+                                <tr>
+                                  <th style="text-align:center;">PRODUCTO</th>
+                                  <th style="text-align:center;">NOMBRE</th>
+                                  <th style="text-align:center;">CONTRATO</th>
+                                  <th style="text-align:center;">REGIMEN</th>
+                                  <th style="text-align:center;">UBICACIÓN</th>
+                                  <th style="text-align:center;"><a href="javascript:void(0)">AGREGAR</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr ng-repeat="pro in listProductos | filter:buscarpro as resultbuscarpro">
+                                  <td style="text-align:center;">{{pro.CODIGO}}</td>
+                                  <td style="text-align:center;">{{pro.NOMBRE}}</td>
+                                  <td style="text-align:center;">{{pro.DOC_CONTRATO}} - {{pro.CONTRATO}}</td>
+                                  <td style="text-align:center;">{{pro.REGIMEN}}</td>
+                                  <td style="text-align:center;">{{pro.UBI_CONTRATO}}</td>
+                                  <td>
+                                    <center>
+                                      <i ng-click="seleccionarproducto(pro)" style="cursor:pointer;"
+                                        class="material-icons prefix">check</i>
+                                    </center>
+                                  </td>
+                                </tr>
+                                <tr ng-if="resultbuscarpro.length==0">
+
+                                  <th class="center-align" colspan="5"> No hay Resultados</th>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="row" ng-show="inactivebarrapro==true && tempProducto!=null">
+                            <div class="col s12">
+                              <span style="text-align:center;">PRODUCTO A AGREGAR</span>
+                              <table class="table table-bordered table-striped">
+                                <thead>
+                                  <tr>
+                                    <th style="text-align:center;">PRODUCTO</th>
+                                    <th style="text-align:center;">NOMBRE</th>
+                                    <th style="text-align:center;">CONTRATO</th>
+                                    <th style="text-align:center;">UBICACIÓN</th>
+                                    <th style="text-align:center;">REGIMEN</th>
+                                    <th style="text-align:center;">CONCEPTO</th>
+                                    <th style="text-align:center;" colspan="4">DIAS</th>
+                                    <th style="text-align:center;"><a href="javascript:void(0)">ACCIÓN</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td style="text-align:center;">{{tempProducto.CODIGO}}</td>
+                                    <td style="text-align:center;width: 30%;overflow: hidden;">
+                                      {{tempProducto.NOMBRE}}</td>
+                                    <td style="text-align:center;">{{tempProducto.DOC_CONTRATO}} -
+                                      {{tempProducto.CONTRATO}}</td>
+                                    <td style="text-align:center;">{{tempProducto.UBI_CONTRATO}}</td>
+                                    <td style="text-align:center;">{{tempProducto.REGIMEN}}</td>
+                                    <td style="text-align:center;">{{tempProducto.CONCEPTO}}</td>
+                                    <td style="text-align:center;" colspan="4">
+                                      <select class="select-chosen-eps" ng-model="tempProducto.DIAS">
+                                        <option ng-repeat="a in dias" ng-value="a.Codigo">{{a.Nombre}}</option>
+                                      </select>
+                                    </td>
+                                    <td>
+                                      <center>
+                                        <i ng-click="saveproductomodal(tempProducto)"
+                                          style="cursor:pointer;font-size: 30px;" class="icon-floppy"></i>
+                                      </center>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
+                      
+                        <div class="row" ng-if="accionmodalproducto=='C'">
+                          <div class="row">
+                            <span style="text-align:center;">CONTRATO A REEMPLAZAR</span>
+                            <table class="table table-bordered table-striped" ng-if="acciontempcups">
+                              <thead>
+                                <tr>
+                                  <th style="text-align:center;">CONTRATO</th>
+                                  <th style="text-align:center;">UBICACIÓN</th>
+                                  <th style="text-align:center;">REGIMEN</th>
+                                  <th style="text-align:center;">CONCEPTO</th>
+                                  <th style="text-align:center;">DIAS</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td style="text-align:center;">{{acciontempcups.CONTRATO}}</td>
+                                  <td style="text-align:center;">{{acciontempcups.UBICACION}}</td>
+                                  <td style="text-align:center;">{{acciontempcups.REGIMEN}}</td>
+                                  <td style="text-align:center;">{{acciontempcups.CONCEPTO}}</td>
+                                  <td style="text-align:center;">{{acciontempcups.DIAS}}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <div class="row"
+                          ng-show="(accionmodalproducto=='C' && inactivebarrapro==true) && tempProducto==null">
+                          <div class="col s12" style="max-height: 30vh;overflow-y: auto;">
+                            <span style="text-align:center;">LISTA DE CONTRATOS</span>
+                            <table class="table table-bordered table-striped">
+                              <thead>
+                                <tr>
+                                  <th style="text-align:center;">CONTRATO</th>
+                                  <th style="text-align:center;">UBICACIÓN</th>
+                                  <th style="text-align:center;">DOCUMENTO</th>
+                                  <th style="text-align:center;">MODALIDAD</th>
+                                  <th style="text-align:center;"><a href="javascript:void(0)">AGREGAR</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr ng-repeat="c in listacontratos">
+                                  <td style="text-align:center;">{{c.NUMERO}}</td>
+                                  <td style="text-align:center;">{{c.UBICACION}}</td>
+                                  <td style="text-align:center;">{{c.DOCUMENTO}}</td>
+                                  <td style="text-align:center;">{{c.MODALIDAD}}</td>
+                                  <td>
+                                    <center>
+                                      <i ng-click="seleccionarproducto(c)" style="cursor:pointer;"
+                                        class="material-icons prefix">check</i>
+                                    </center>
+                                  </td>
+                                </tr>
+                                <tr ng-if="listacontratos.length==0">
+                                  <th class="center-align" colspan="7"> No hay Contratos</th>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <div ng-show="accionmodalproducto=='U'">
+                          <div class="row">
+                            <div class="col s12">
+                              <span style="text-align:center;">PRODUCTO A ACTUALIZAR</span>
+                              <table class="table table-bordered table-striped">
+                                <thead>
+                                  <tr>
+                                    <th style="text-align:center;">PRODUCTO</th>
+                                    <th style="text-align:center;">NOMBRE</th>
+                                    <th style="text-align:center;">CONTRATO</th>
+                                    <th style="text-align:center;">UBICACIÓN</th>
+                                    <th style="text-align:center;">REGIMEN</th>
+                                    <th style="text-align:center;">CONCEPTO</th>
+                                    <th style="text-align:center;" colspan="4">DIAS</th>
+                                    <th style="text-align:center;"><a href="javascript:void(0)">ACCIÓN</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td style="text-align:center;">{{tempProducto.COD_CUPS}}</td>
+                                    <td style="text-align:center;width: 30%;overflow: hidden;">
+                                      {{tempProducto.NOMBRE_CUPS}}</td>
+                                    <td style="text-align:center;">{{tempProducto.DOC_CONTRATO}} -
+                                      {{tempProducto.CONTRATO}}</td>
+                                    <td style="text-align:center;">{{tempProducto.UBICACION}}</td>
+                                    <td style="text-align:center;">{{tempProducto.REGIMEN}}</td>
+                                    <td style="text-align:center;">{{tempProducto.CONCEPTO}}</td>
+                                    <td style="text-align:center;" colspan="4">
+                                      <select id="menu" class="select-chosen-eps">
+                                        <option value="1"> 1</option>
+                                        <option value="2"> 2</option>
+                                        <option value="3"> 3</option>
+                                        <option value="4"> 4</option>
+                                        <option value="5"> 5</option>
+                                        <option value="6"> 6</option>
+                                        <option value="7"> 7</option>
+                                        <option value="8"> 8</option>
+                                        <option value="9"> 9</option>
+                                        <option value="10"> 10</option>
+                                        <option value="11"> 11</option>
+                                        <option value="12"> 12</option>
+                                        <option value="13"> 13</option>
+                                        <option value="14"> 14</option>
+                                        <option value="15"> 15</option>
+                                        <option value="16"> 16</option>
+                                        <option value="17"> 17</option>
+                                        <option value="18"> 18</option>
+                                        <option value="19"> 19</option>
+                                        <option value="20"> 20</option>
+                                        <option value="21"> 10</option>
+                                        <option value="22"> 11</option>
+                                        <option value="23"> 13</option>
+                                        <option value="24"> 14</option>
+                                        <option value="25"> 15</option>
+                                        <option value="26"> 16</option>
+                                        <option value="27"> 17</option>
+                                        <option value="28"> 18</option>
+                                        <option value="29"> 19</option>
+                                        <option value="30"> 20</option>
+                                        <option value="31"> 10</option>
+                                        <option value="32"> 11</option>
+                                        <option value="33"> 13</option>
+                                        <option value="34"> 14</option>
+                                        <option value="35"> 15</option>
+                                        <option value="36"> 16</option>
+                                        <option value="37"> 17</option>
+                                        <option value="38"> 18</option>
+                                        <option value="39"> 19</option>
+                                        <option value="40"> 20</option>
+                                        <option value="31"> 10</option>
+                                        <option value="32"> 11</option>
+                                        <option value="33"> 13</option>
+                                        <option value="34"> 14</option>
+                                        <option value="35"> 15</option>
+                                        <option value="36"> 16</option>
+                                        <option value="37"> 17</option>
+                                        <option value="38"> 18</option>
+                                        <option value="39"> 19</option>
+                                        <option value="40"> 20</option>
+                                        <option value="41"> 10</option>
+                                        <option value="42"> 11</option>
+                                        <option value="43"> 13</option>
+                                        <option value="44"> 14</option>
+                                        <option value="45"> 15</option>
+                                        <option value="46"> 16</option>
+                                        <option value="47"> 17</option>
+                                        <option value="48"> 18</option>
+                                        <option value="49"> 19</option>
+                                        <option value="50"> 20</option>
+                                        <option value="51"> 10</option>
+                                        <option value="52"> 11</option>
+                                        <option value="53"> 13</option>
+                                        <option value="54"> 14</option>
+                                        <option value="55"> 15</option>
+                                        <option value="56"> 16</option>
+                                        <option value="57"> 17</option>
+                                        <option value="58"> 18</option>
+                                        <option value="59"> 19</option>
+                                        <option value="60"> 20</option>
+                                      </select>
+                                    </td>
+                                    <td>
+                                      <center>
+                                        <i ng-click="saveproductomodal(tempProducto)"
+                                          style="cursor:pointer;font-size: 30px;" class="icon-floppy"></i>
+                                      </center>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                      <div ng-show="accionmodalproducto=='C'">
+                        <div class="col s12" ng-show="inactivebarrapro==true && tempProducto!=null">
+                          <i style="cursor:pointer;float: right; cursor: pointer;" ng-click="tempProducto=null;"
+                            class="material-icons">close</i>
+                          <span style="text-align:center;">CONTRATO SELECCIONADO</span>
+                          <table class="table table-bordered table-striped">
+                            <thead>
+                              <tr>
+                                <th style="text-align:center;">CONTRATO</th>
+                                <th style="text-align:center;">UBICACIÓN</th>
+                                <th style="text-align:center;">DOCUMENTO</th>
+                                <th style="text-align:center;">MODALIDAD</th>
+                                <th style="text-align:center;"><a href="javascript:void(0)">AGREGAR</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td style="text-align:center;">{{tempProducto.NUMERO}}</td>
+                                <td style="text-align:center;">{{tempProducto.UBICACION}}</td>
+                                <td style="text-align:center;">{{tempProducto.DOCUMENTO}}</td>
+                                <td style="text-align:center;">{{tempProducto.MODALIDAD}}</td>
+                                <td>
+                                  <center>
+                                    <i ng-click="saveproductomodal(tempProducto)"
+                                      style="cursor:pointer;font-size: 30px;" class="icon-floppy"></i>
+                                  </center>
+                                </td>
+                              </tr>
+                              <tr ng-if="listacontratos.length==0">
+                                <th class="center-align" colspan="7"> No hay Contratos</th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="modalhistorico" class="modal" style="overflow: hidden; width: 80%;">
+            <div class="modal-content" style="padding: 0px !important;">
+              <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                  <div class="card-content foot4" style="padding: 0">
+                    <div class="col s11">
+                      <h5 class="white-text">Historico</h5>
+                    </div>
+                    <div class="col s1">
+                      <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalhistorico')"
+                          class="material-icons white-text">close</i></h5>
+                    </div>
+                  </div>
+                  <div class="card-action" style="padding:0px;padding-bottom:3px;border-top: 0">
+                    <div class="row">
+                      <div class="col s12">
+                        <div class="row">
+                          <div class="row" style="margin: 0;">
+                            <div class="col s11">
+                              <form ng-submit="buscarHistorico(buscarprohist)" name="findpro" id="findproa">
+                                <div class="input-list input-form">
+                                  <div class="input-field col s12">
+                                    <a href="javascript:void(0)" ng-click="buscarHistorico(buscarprohist)">
+                                      <i style="position: absolute; top: 16px; right: 6px;"
+                                        class="material-icons prefix">search</i></a>
+                                    <input id="proinput" type="text" ng-model="buscarprohist" required>
+                                    <label for="proinput">Codigo Producto:</label>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <div class="col s1" style="margin-top: 60px;;">
+                              <i style="cursor:pointer;" ng-show="inactivebarrapro==true && tempProducto!=null"
+                                ng-click="inactivebarrapro=false; tempProducto=null;" class="material-icons">close</i>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col s12" ng-show="inactivebarrapro==false"
+                              style="max-height: 30vh;overflow-y: auto;">
+                              <table class="table table-bordered table-striped">
+                                <thead>
+                                  <tr>
+                                    <th style="text-align:center;">CONSECUTIVO</th>
+                                    <th style="text-align:center;">COD_PROD</th>
+                                    <th style="text-align:center;">ACCION</th>
+                                    <th style="text-align:center;">COLUMNA</th>
+                                    <th style="text-align:center;">VALOR_ANTERIOR</th>
+                                    <th style="text-align:center;">VALOR_NUEVO</th>
+                                    <th style="text-align:center;">FECHA Y HORA</th>
+                                    <th style="text-align:center;">USUARIO</th>
+                                    <th style="text-align:center;">RESPONSABLE</th>
+
+
+
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr ng-repeat="mov in listProductosHist | filter:buscarprohist as resultbuscarpro">
+                                    <td style="text-align:center;">{{mov.CONSECUTIVO}}</td>
+                                    <td style="text-align:center;">{{mov.COD_PROD}}</td>
+                                    <td style="text-align:center;">{{mov.ACCION}}</td>
+                                    <td style="text-align:center;">{{mov.COLUMNA}}</td>
+                                    <td style="text-align:center;">{{mov.VALOR_OLD}}</td>
+                                    <td style="text-align:center;">{{mov.VALOR_NEW}}</td>
+                                    <td style="text-align:center;">{{mov.HORA}}</td>
+                                    <td style="text-align:center;">{{mov.USUARIO_ORA}}</td>
+                                    <td style="text-align:center;">{{mov.RESPONSABLE}}</td>
+
+                                  </tr>
+                                  <tr ng-if="resultbuscarpro.length==0">
+
+                                    <th class="center-align" colspan="6"> No hay Resultados</th>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <style>
+          .tab a:hover {
+            background-color: #ddd !important;
+            color: white !important;
+          }
+
+          /* Style the active class (and buttons on mouse-over) */
+          .activebtn-step,
+          .activebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+          }
+
+          .step-item {
+            height: 100px;
+            width: 100px;
+            border-radius: 100px;
+            padding: 0px;
+          }
+
+          .donebtn-step,
+          .donebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+          }
+
+          .steper {
+            width: 60%;
+            display: inline-flex;
+            text-align: center;
+            padding-bottom: 10px;
+            margin-left: 20%;
+          }
+
+          .step-divider {
+            width: 100%;
+            position: relative;
+            top: 30px;
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 20px;
+          }
+
+          .btn-step-content {
+            position: relative;
+            display: none;
+            height: calc(100% - 132px);
+            width: inherit;
+            overflow: visible;
+            margin-left: 41px;
+            margin-right: 24px;
+          }
+
+          .step-option {
+            background: #eee;
+            height: 70px;
+            position: absolute;
+            bottom: -45px;
+            width: 100%;
+            margin-bottom: 6px;
+            left: 0px;
+            z-index: 2;
+          }
+
+          .back-step,
+          .back-step:hover {
+            margin-top: 7px;
+            position: absolute;
+            right: 80px;
+            background: #ff4350 !important;
+          }
+
+          .flex {
+            display: flex !important;
+          }
+
+          .btn-step {
+            background-color: rgba(0, 0, 0, .3);
+            color: white;
+          }
+
+          .hover-item:hover {
+            background-color: rgba(221, 221, 221, 0.45);
+          }
+
+          .hover-item:active {
+            background-color: rgba(221, 221, 221, 0.45);
+          }
+
+          .tabmenu>li:target>a {
+            background-color: rgba(221, 221, 221, 0.45);
+          }
+
+          .requerido {
+            color: red !important;
+          }
+
+          .tabactiva {
+            background-color: rgba(206, 206, 206, 0.71);
+          }
+
+          .colorblack {
+            color: black;
+          }
+
+          .itemsspam {
+            color: white !important;
+            border-radius: 12px !important;
+            box-shadow: 2px 2px 3px 0px #ccc !important;
+            position: relative !important;
+            top: 5px !important;
+            left: 11px !important;
+            cursor: pointer;
+          }
+
+          .hovpanel:hover {
+            background: #32364c2b;
+            color: #ffa51b;
+            cursor: pointer;
+          }
+
+          .mayus {
+            text-transform: uppercase;
+          }
+
+          #header-fixed {
+            position: fixed;
+            top: 0px;
+            display: none;
+          }
+
+          .cuadrado {
+            width: 25vh;
+            max-width: 240px;
+            height: 25vh;
+            max-height: 240px;
+            position: relative;
+            background: white;
+            box-shadow: 0 0 8px 1px #c7c7c7;
+          }
+
+          .coloritem {
+            color: black !important;
+          }
+
+          .autprocesada {
+            background-color: #4CAF50 !important;
+          }
+
+          .autactiva {
+            background-color: #ff9800 !important;
+          }
+
+          .switch label {
+            font-weight: 600;
+          }
+
+          .switch label .lever.check-c {
+            background-color: #818181 !important;
+          }
+
+          .switch label .lever.check-c:after {
+            background-color: #26a69a;
+          }
+
+          .switch label>span.activo {
+            color: #26a69a !important;
+          }
+
+          .text-center {
+            text-align: center;
+          }
+
+          div#modaldetalle {
+            top: 1% !important;
+          }
+
+          div#modalnovedades {
+            top: 1% !important;
+          }
+
+          .outer {
+            width: 1px;
+            height: 100%;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+          }
+
+          .inner {
+            /* position: absolute; */
+            width: 100%;
+            height: 50vh;
+            background: grey;
+            top: 30%;
+            box-shadow: 0px 0px 30px 20px grey;
+          }
+
+          .style-table-default {
+            height: 350px;
+            overflow: auto;
+          }
+
+          /* Style Scroll */
+          .scrollTableDefault::-webkit-scrollbar {
+            /* width */
+            width: 5px;
+          }
+
+          .scrollTableDefault::-webkit-scrollbar-track {
+            /* Track */
+            background: #f1f1f1;
+          }
+
+          .scrollTableDefault::-webkit-scrollbar-thumb {
+            /* Handle */
+            background: #888;
+          }
+
+          .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+            /* Handle on hover */
+            background: #555;
+          }
+
+          .swal2-container {
+            z-index: 10000 !important;
+          }
+
+          #tautorizaciones_length,
+          #tautorizaciones_filter,
+          #tautorizacionespro_length,
+          #tautorizacionespro_filter {
+            margin-top: -150px;
+          }
+
+          #tautorizaciones_filter,
+          #tautorizacionespro_filter {
+            margin-right: 10px;
+          }
+
+          #tautorizacionespro {
+            width: 100% !important;
+          }
+
+          #tautorizaciones_paginate,
+          #tautorizacionespro_paginate {
+            margin-top: 15px;
+          }
+
+          .clase-gray {
+            color: #736a6a !important;
+          }
+
+          .spancount {
+            position: absolute;
+            font-size: 10px;
+            height: 15px;
+            width: auto;
+            min-height: 15px;
+            min-width: 20px;
+            border-radius: 50%;
+            top: 10px;
+            left: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .d-flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        </style>
+      </div>
+    </div>

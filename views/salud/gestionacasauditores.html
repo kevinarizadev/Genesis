@@ -1,0 +1,280 @@
+<div>
+    <style>
+      .ftlc {
+        width: 20% !important;
+      }
+    </style>
+  
+    <div id="gestionacastic" class="white newdesing" style="position:relative">
+      <!-- Encabezado -->
+      <div class="row section-header">
+        <ul class="left mailbox-custom-search list-inline"
+          style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+          <li id="inicio">
+            <h5>Gestión de Servicios AUDITORIA </h5>
+          </li>
+          <li style="display:flex;align-items: center;">
+            <form method="post" ng-submit="buscarAcas(buscaracas)" autocomplete="off" class="form-input-icon-new">
+              <input type="text" class="margin border-none" ng-model="buscaracas" placeholder="Buscar ticket">
+              <i ng-click="buscarAcas(buscaracas)" class="icon-search"></i>
+            </form>
+          </li>
+        </ul>
+      </div>
+      <!-- Contenido -->
+      <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+        <div class="col l12 m12 s12" style="position:relative">
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+            {{(panel.activo == 2)? titulo_2 : (panel.activo == 3)? titulo_3:''}}
+            <div class="btn-panel" style="display: flex;align-items: center;">
+              <input type="text" class="margin border-none input-text-new" ng-show="panel.activo == 3" ng-model="filtrar"
+                placeholder="Buscar en la tabla">
+              
+                <i ng-click="filtrar = '';buscaracas = '';changePanel()" ng-show="panel.activo!=1 && panel.activo!=4" class="icon-left-open-2">Atras</i>
+                <i ng-click="filtrar = '';buscaracas = '';panel.activo=1;" ng-show="panel.activo==4" class="icon-left-open-2">Atras</i>
+            </div>
+          </div>
+  
+          <!-- <div class="col s12" style="display: flex;justify-content: center;align-items: center;height: 76px;">
+            <button class="btn default-background" href="" style="height: 45px;line-height: 45px;" ng-click="obtener_gestionacascontratacion()">
+                OBTENER DATOS 
+            </button>
+        </div> -->
+  
+          <div class="row" ng-show="panel.activo == 1">
+            <div class="row">
+              <div class="col s4">
+                <blockquote>
+                  <strong>
+                    ASESORÍA AUDITORES PARES.
+                  </strong>
+                </blockquote>
+              </div>
+  
+            </div>
+  
+            <div class="col s4" ng-repeat="x in Listado_Eps | orderBy : 'nombre_motivo'">  
+              <div ng-click="getAcasConcepto_responsables(x.cod_motivo, 'E', x.activos, x.procesados, x.nombre_motivo)"
+                class="card-panel center-align white-text no-padding" style="cursor:pointer">
+  
+                <div class="card-panel center-align white-text no-padding" style="cursor:pointer">
+                  <div class="default-background" style="padding: 20px 20px 10px;position:relative">
+                    <i class="material-icons prefix hovitem"
+                      style="position: relative;font-size: 8em;z-index: 10;margin: auto;height: 140px;display: flex;justify-content: center;align-items: center;">{{Get_Icon_Eps(x.cod_motivo)}}</i>
+                    <p class="margin"
+                      style="z-index: 10;position: relative;width: calc(100% + 40px);margin-left: -20px!important;">
+                      <strong>
+                        {{x.nombre_motivo}}
+                      </strong>
+                    </p>
+                    <div style="background-color: #cd6868;position: absolute;bottom: 0;right: 0;left: 0;"
+                      ng-style="colors(x.activos)"></div>
+                  </div>
+                  <div class="black-text white"
+                    style="font-size: 14px;padding: 10px 20px;display: flex;justify-content: space-around;">
+                    <div class="red-text" style="width: 50%;display: grid;font-weight: bold" >
+                      <span>{{x.activos}}</span>
+                      Abiertos
+                    </div>
+                    <div class="green-text"
+                      style="width: 50%;border-left: 1px solid #ededed;display: grid;font-weight: bold">
+                      <span>{{x.procesados}}</span>
+                      Cerrados
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+  
+            </div>
+ 
+          </div>
+  
+          <div class="row margin" ng-show="panel.activo == 2">
+            <!-- <h3> probando {{tipo_persona}}  -- {{concepto_persona}} </h3> -->
+  
+            <div ng-repeat="list in Listado_Responsables" class="col s12 m6 l3">
+              
+              <div class="card-panel center-align white-text no-padding">
+                <div style="padding: 20px 20px 10px;background-color: #84c79f;position:relative">
+                  <div
+                    style="max-width: 80%;z-index: 10;position: relative;background-image: url(images/acasContratacion/foto.jpg);background-repeat: no-repeat;background-size: cover;background-position-y: 0%;height: 169px;width: 169px;border-radius: 50%;margin: auto;margin-bottom: 0.5em;">
+                  </div>
+                  <!-- <img src="assets/images/users/default-user.png" alt="avatar profile" class="circle responsive-img" style=""> -->
+                  <p class="margin" style="z-index: 10;position: relative;">
+                    <strong style="padding: 2px 15px;">
+                      {{list.nombre}}
+                    </strong>
+                  </p>
+                  <div style="background-color: #cd6868;position: absolute;bottom: 0;right: 0;left: 0;"
+                    ng-style="colors(list.activos)"></div>
+                </div>
+                <div class="black-text white"
+                  style="font-size: 14px;padding: 10px 20px;display: flex;justify-content: space-around;">
+                  <a class="red-text"
+                    href="javascript:void(0)" style="width: 50%;display: grid;font-weight: bold"  ng-click="getAcasConcepto(list.identificacion, 'A', list.activos, list.nombre)">
+                    <span>{{list.activos}}</span>
+                    Abiertos
+                  </a>
+                  <a class="green-text"
+                    href="javascript:void(0)"
+                    style="width: 50%;border-left: 1px solid #ededed;display: grid;font-weight: bold"  ng-click="getAcasConcepto(list.identificacion, 'P', list.procesados, list.nombre)">
+                    <span>{{list.procesados}}</span>
+                    Cerrados
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+  
+          <div ng-show="panel.activo == 3" class="card-action" id="card-action">
+  
+  
+            <div class="col s6 input-field col l4 left" style="margin:0;">
+              <input id="normal1" type="text" class="validate" ng-model="buscar" ng-change="filter(buscar)"
+                style="text-transform:uppercase">
+              <label for="normal" class="">Buscar en la tabla</label>
+            </div>
+  
+            <div class="col s6">
+              <label for="normal" class="">TOTAL DE ACAS FILTRADOS:
+                {{listDatosTemp.length}} - FILTRADO EN PAGINAS DE 10 </label>
+  
+            </div>
+  
+            <table id="tabla_1" class="responsive-table striped display dataTable table-bordered"
+              style="width:99%; position: relative;">
+              <thead class="default-background" style="color:white;">
+                <tr>
+                  <th class="center-align">#</th>
+                  <th class="center-align">EMISOR</th>
+                  <th class="center-align">MESA DE AYUDA</th>
+                  <th class="center-align">ASUNTO</th>
+                  <th class="center-align">RECEPTOR</th>
+                  <th class="center-align">FECHA RADICACION</th>
+                  <th class="center-align">FECHA CIERRE</th>
+                  <th class="center-align">DIAS</th>
+                  <th class="center-align">OFICINA</th>
+                  <th class="center-align">CARGO</th>
+                  <th class="center-align">DETALLES</th>
+  
+                </tr>
+  
+              <tbody>
+                <tr
+                  ng-repeat="r in listDatosTemp  |filter: buscar | inicio: currentPage * pageSize | limitTo: pageSize">
+                  <!-- <tr ng-repeat="r in resultado | filter : buscar"> -->
+  
+                  <td class="center-align">{{$index + 1}}</td>
+  
+                  <td class="center-align">{{r.Emisor.toUpperCase()}}</td>
+                  <td class="center-align">{{r.Numero}}</td>
+                  <td class="center-align">{{r.Asunto}}</td>
+                  <td class="center-align">{{r.Responsable}}</td>
+                  <td class="center-align">{{r.Fecha}}</td>
+                  <td class="center-align">{{r.Fecha_cierre}}<span ng-show="r.Fecha_cierre == '' ">-</span></td>
+                  <td class="center-align">{{r.Dias}}</td>
+                  <td class="center-align">{{r.Ubicacion}}</td>
+                  <td class="center-align">{{r.Cargo}}</td>
+  
+  
+                  <td class="center-align">
+                    <i style="cursor:pointer;position: relative;display: flow-root;font-size: 17px;"
+                      class="icon-eye-6" ng-click="verdescripcion(r.Descripcion,r.Numero,r.Cod_Ubicacion)">
+                      <span
+                        style="position: absolute;font-size: 10px;height: 15px;width: 15px;min-height: 15px;min-width: 15px;border-radius: 50%;top: 16px;left: 7px;font-weight: bold;display: flex;justify-content: center;align-items: center;"
+                        class="default-background white-text ng-binding"
+                        ng-class="{'orange':r.cantidad <= 0}">{{r.cantidad}}</span>
+                    </i>
+                  </td>
+  
+  
+                </tr>
+              </tbody>
+  
+  
+            </table>
+  
+            <div style="margin:0;position: absolute;left: 2%;">
+              <label for="normal" class="">Total de documentos filtrados:
+                {{listDatosTemp.length}}</label>
+            </div>
+            <div style="margin:0;position: absolute;right: 2%;">
+              <label for="normal" class="">Total de documentos encontrados:
+                {{listDatosTemp.length}}</label>
+            </div>
+            <ul style="text-align: center;padding-top: 20px;" class="pagination">
+  
+              <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                  ng-click="paso('back')">&laquo;</button></li>
+  
+              <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                  class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+  
+              <li><button ng-disabled='currentPage >= listDatosTemp.length/pageSize - 1'
+                  class="btn-floating default-background" ng-click="paso('next')">&raquo;</button></li>
+  
+            </ul>
+          </div>
+  
+  
+          <div ng-show="panel.activo == 4" class="card-action" id="card-action">
+  
+  
+            <div class="scroll_x" style="position: absolute;width: calc(100% - 10px);z-index: 10;overflow: hidden;">
+              <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+    
+              </table>
+            </div>
+            <div class="col s6">
+              <label for="normal" class="">TOTAL DE ACAS FILTRADOS:
+                {{listDatosTemp.length}} - FILTRADO EN PAGINAS DE 10 </label>
+  
+            </div>
+  
+            <table id="tablaByCN" class="striped table-bordered white" style="position: relative;">
+              <thead>
+                <tr class="default-background white-text">
+                  <th data-field="index" class="border-none center-align">#</th>
+                  <th data-field="Nombre" class="border-none">EMISOR</th>
+                  <th data-field="Ticket" class="border-none">MESA DE AYUDA </th>
+                  <th data-field="Asusnto" class="border-none">ASUNTO</th>
+                  <th data-field="Autoriza" class="border-none">RECEPTOR</th>
+                  <th data-field="Fecha Ingreso" class="border-none">FECHA RADICACION </th>
+                  <th data-field="Fecha Cierre" class="border-none">FECHA CIERRE</th>
+                  <th data-field="Dias" class="border-none center-align">DIAS</th>
+                  <th data-field="Ciudad" class="border-none">OFICINA</th>
+                  <th data-field="Cargo" class="border-none">CARGO</th>
+                  <th data-field="Detalle" class="border-none center-align">DETALLES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="acas in listacas | filter:{$:filtrar}">
+                  <td class="center-align">{{$index + 1}}</td>
+                  <td>{{acas.NOMBRE.toUpperCase()}}</td>
+                  <td>{{acas.NUMERO}}</td>
+                  <td>{{acas.ASUNTO}}</td>
+                  <td>{{acas.NOMBRE_AUTORIZA}}</td>
+                  <td>{{acas.FECHA_INGRESO}}</td>
+                  <td>{{acas.FECHA_CIERRE}}</td>
+                  <td class="center-align">{{acas.DIAS}}</td>
+                  <td>{{acas.CIUDAD}}</td>
+                  <td>{{acas.CARGO}}</td>
+                  <td class="center-align">
+                    <i style="cursor:pointer;position: relative;display: flow-root;font-size: 17px;" class="icon-eye-6" ng-click="verdescripcion(acas.DESCRIPCION,acas.NUMERO,acas.UBICACION)">
+                      <span style="position: absolute;font-size: 10px;height: 15px;width: 15px;min-height: 15px;min-width: 15px;border-radius: 50%;top: 16px;left: 7px;font-weight: bold;display: flex;justify-content: center;align-items: center;"
+                        class="default-background white-text ng-binding" ng-class="{'orange':acas.DIAS <= 0}">{{acas.DIAS}}</span>
+                    </i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+  
+          </div>
+  
+  
+        </div>
+  
+      </div>

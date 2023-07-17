@@ -1,0 +1,117 @@
+<div>
+   <script src="bower_components/sweetalert/js/sweetalert2.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="bower_components/sweetalert/css/sweetalert2.css">
+   <div>
+      <div class="row margin">
+         <div class="col s12 m12 l12" ng-show="panelbusqueda">
+            <div class="card">
+               <div class="card-content">
+                  <spam><h5>Declaración de Salud para Afiliados</h5></spam>
+               </div>
+                  <div class="card-content clearfix">
+                     <form id="busafi" class="row" ng-submit="busquedaAfiliado()" style="margin-bottom: 10px !important;">
+                        <div class="input-field col s6">
+                           <i class="material-icons prefix">view_list</i>
+                           <select id="simple-select chosen" ng-model="type" material-select watch>
+                              <option value="0" disabled>SELECCIONAR</option>
+                             <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Form.Tipo_Doc" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                           </select>
+                           <label for="simple-select hide-on-med-and-down">Tipo de Documento</label>
+                        </div>
+                        <div class="input-field col s5">
+                           <i class="material-icons prefix">account_circle</i>
+                           <input id="with_icon" type="text" ng-model="id" class="validate">
+                           <label for="with_icon">Documento</label>
+                        </div>
+                           <div class="col s12">
+                              <center><button class="waves-effect waves-light btn-large white-text" type="submit">Buscar</button></center>
+                           </div>
+                        </form>
+                  </div>
+            </div>
+         </div>
+         <div class="col s12 m12 l12" ng-show="panelnucleo">
+            <div class="card">
+               <div class="card-content">
+                  <h5>Núcleo Familiar</h5>
+               </div>
+               <div class="card-action">
+                  <blockquote style="border-left: 5px solid #000000 !important">
+                     Seleccione el afiliado al cual le va a realizar la encuesta de declaración de salud:
+                  </blockquote>
+                  <table class="highlight responsive-table bordered" align="center" id="tablanucleo" style="cursor: pointer !important;">
+                     <thead align="center">
+                        <tr>
+                           <td><strong>TIPO</strong></td>
+                           <td><strong>DOCUMENTO</strong></td>
+                           <td><strong>NOMBRE</strong></td>
+                           <td><strong>TIPO AFILIADO</strong></td>
+                           <td><strong>FECHA ULTIMA DECLARACIÓN</strong></td>
+                        </tr>
+                     </thead>
+                     <tbody style="height: 40%; overflow: scroll;">
+                        <tr data-ng-repeat="data in afildata track by $index" ng-click="showEncuesta(data.TIPODOCUMENTO,data.DOCUMENTO,data.NOMBRECOMPLETO)">
+                           <td>{{data.TIPODOCUMENTO}}</td>
+                           <td>{{data.DOCUMENTO}}</td>
+                           <td>{{data.NOMBRECOMPLETO}}</td>
+                           <td>{{data.TIPO+data.PARENTESCO}}</td>
+                           <td>{{data.ULTFECHAENC}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <br>
+                  <center><button class="waves-effect waves-light btn-large white-text" type="submit" ng-click="imprimeEncuesta()">Imprimir</button></center>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row margin" ng-show="panelpreguntas">
+         <div class="row">
+            <div class="col s12 l12 m12">
+               <div class="card last-orders">
+                  <div class="card-content">
+                     <h5>{{select.nombre_afiliado}}</h5>
+                     <a ng-click="cambiarAfil()" ng-show="optcambiar" style="cursor: pointer; font-size: 14px;" title="Cambiar Afiliado">Cambiar</a>
+                  </div>
+                  <div class="card-action">
+                     <div class="switch">
+                        <form id="preguntasdeclaracion">
+                           <table class="responsive-table striped table-bordered">
+                              <thead>
+                                 <tr>
+                                    <th data-field="idpregunta">Número</th>
+                                    <th data-field="texto">Pregunta</th>
+                                    <th data-field="respuesta">Respuesta</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr data-ng-repeat="renglon in Preguntas">
+                                    <td><center>{{renglon.RENGLON}}</center></td>
+                                    <td>{{renglon.PREGUNTA}}</td>
+                                    <td>
+                                       <label>
+                                          NO<input type="checkbox" id="{{'resp'+renglon.RENGLON}}"><span class="lever"></span>SI
+                                       </label>
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </form>
+                     </div>
+                     <br>
+                     <center><button class="waves-effect waves-light btn-large white-text" type="submit" ng-click="enviarEncuesta()">Guardar</button></center>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <style>
+     .mouse{
+         cursor: pointer;
+      }
+     .mouse2{
+         cursor: pointer;
+      }
+   </style>
+</div>

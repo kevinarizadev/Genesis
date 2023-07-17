@@ -1,0 +1,521 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer"
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+          onclick="location.reload();">
+          Encuesta Causa/Efecto y Objetivos
+        </h5>
+      </li>
+      <!-- <li ng-if="Mostrar_Descargar">
+      <ul class="tabs transparent" style="overflow:hidden;">
+        <li class="tab col w-auto">
+          <a ng-click="Descarga_Historial()" href class="active">Descargar Encuestas
+            <i class="icon-download-1"></i></a>
+        </li>
+      </ul>
+    </li> -->
+    </ul>
+  </div>
+
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <div class="row dashboard-wrapper content-container white" style="height: 90vh;">
+    <div class="col l12 m12 s12 center">
+      <div style="position: absolute;margin-top: 6em;margin-left: 23em;">
+        <div id="Imagen_back">
+          <img src="images\talentohumano\evaluacion.svg" alt="Imagen">
+        </div>
+      </div>
+    </div>
+    <!-- //// -->
+    <!-- ///// -->
+    <div id="Form" class="card-content clearfix card"
+      style="width: 90%;margin: 1rem auto auto auto;border-radius: 15px;">
+      <div class="Anim_Show Form_Desactivados" style="margin: auto;width: 90;">
+        <div class="row" style="margin-bottom: 0;width: 98%;margin-top: 1rem;">
+          <div class="foot4 divcardcustom default-linear-gradient border-none" style="margin-bottom: 2vh;">
+            <div class="text-al divcardcustom2">
+              <strong style="font-weight:600">Problema {{(Form.Id_Problema =='' ? '' : '- #' + Form.Id_Problema)}}</strong>
+            </div>
+          </div>
+          <!-- // -->
+        </div>
+        <div class="row" style="margin:0vh 1vw">
+          <div class="col s12">
+            <div class="col s12 no-padding label-new m-b">
+              <textarea id="Form_Problema" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+                autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                ng-keyup="FormatTexto('Form_Problema')" ng-model="Form.Problema"
+                title="Se permiten un máximo de 1000 caracteres, no se permiten caracteres especiales"
+                ng-disabled="Form.Status == 1"></textarea>
+              <label>Descripcion del Problema - Caracteres: {{Form.Problema.length}} - Mínimo: 30 - Máximo:
+                1000</label>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10vh;" ng-show="Form.Status == 0">
+          <div class="col s12 center">
+            <input class="btn white-text default-linear-gradient" type="submit" value="Guardar"
+              ng-click="Guardar_Problema();">
+          </div>
+        </div>
+        <!-- ////////////////////////////// -->
+        <div class="row" style="margin:10vh 2vh 1vw" ng-show="Form.Status == 1">
+          <ul class="tabs nav" style="background-color: transparent;margin: .5vh;width: 99%;overflow: hidden;">
+            <li class="tab col w-auto active"><a id="Tab1" href ng-click="setTab(1)" class="active"><strong
+                  style=" font-weight: bold;">Árbol de Causa/Efecto</strong></a>
+            </li>
+            <li class="tab col w-auto"><a id="Tab2" href ng-click="setTab(2)"><strong style="font-weight: bold;">Árbol
+                  de Objetivos</strong></a></li>
+          </ul>
+        </div>
+        <!-- ///////////////CAUSAS/////////////// -->
+        <div class="row" style="margin:2vh 1vw" ng-show="Form.Status == 1 && Tabs == 1">
+          <blockquote class="default-color">Causas</blockquote>
+          <!-- // -->
+          <ul class="collapsible m-l" data-collapsible="accordion"
+            style="background-color: transparent;border: 0;box-shadow: none;margin:1vh 1vw">
+            <li ng-repeat="x in Form.Hoja1.Causas">
+              <!-- <li> -->
+              <div id="collapsible-header-Hoja1Causas" class="collapsible-header"
+                style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                <div class="foot4 divcardcustom input-file-radius">
+                  <div class="text-al divcardcustom2" style="line-height: normal;">
+                    <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                        style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                        title="Desplegar lista"></i>#{{$index + 1 }} Causa</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Body-->
+              <div class="collapsible-body" style="border-bottom: 0;">
+                <div class="col s12 m12 l12 m-b"
+                  style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+                  <!-- Nombre  -->
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Causa: </label>
+                      <label>{{x.Titulo}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Descripción: </label>
+                      <label>{{x.Descripcion}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 center" style="margin-top: 1vh;margin-bottom: 1vh;">
+                    <button class="btn" title="Ver Causas Detalles"
+                      ng-click="Abrir_Modal_Hoja1_CausaEfecto('Causa',$index)"
+                      style="height: 24px;line-height: 1;">Agregar Detalle</button>
+                    <button class="btn" title="Ver Causas Detalles"
+                      ng-click="Abrir_Modal_Hojas_CausaEfecto_Detalle('Hoja1', 'Causas', $index)"
+                      style="height: 24px;line-height: 1;" ng-if="x.Detalle.length">Ver
+                      Detalles</button>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="col s12 center">
+            <button class="btn" title="Agregar Causa" style="height: 24px;line-height: 1;"
+              ng-click="Abrir_Modal_Hoja1_CausaEfecto('Causa')">Agregar Causa</button>
+          </div>
+          <!-- // -->
+        </div>
+        <!-- ///////////////EFECTOS/////////////// -->
+        <div class="row" style="margin:5vh 1vw" ng-show="Form.Status == 1 && Tabs == 1">
+          <blockquote class="default-color">Efectos</blockquote>
+          <!-- // -->
+          <ul class="collapsible m-l" data-collapsible="accordion"
+            style="background-color: transparent;border: 0;box-shadow: none;margin:1vh 1vw">
+            <!-- <li ng-repeat="x in Array_Patologias_Pluri"> -->
+            <li ng-repeat="x in Form.Hoja1.Efectos">
+              <!-- <li> -->
+              <div id="collapsible-header-Hoja1Efectos" class="collapsible-header"
+                style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                <div class="foot4 divcardcustom input-file-radius">
+                  <div class="text-al divcardcustom2" style="line-height: normal;">
+                    <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                        style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                        title="Desplegar lista"></i>#{{$index + 1}} Efecto</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Body-->
+              <div class="collapsible-body" style="border-bottom: 0;">
+                <div class="col s12 m12 l12 m-b"
+                  style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+                  <!-- Nombre  -->
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Efecto: </label>
+                      <label>{{x.Titulo}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Descripción: </label>
+                      <label>{{x.Descripcion}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 center" style="margin-top: 1vh;margin-bottom: 1vh;">
+                    <button class="btn" title="Ver Efectos Detalles"
+                      ng-click="Abrir_Modal_Hoja1_CausaEfecto('Efecto',$index)"
+                      style="height: 24px;line-height: 1;">Agregar Detalle</button>
+                    <button class="btn" title="Ver Efectos Detalles"
+                      ng-click="Abrir_Modal_Hojas_CausaEfecto_Detalle('Hoja1', 'Efectos', $index)"
+                      style="height: 24px;line-height: 1;" ng-if="x.Detalle.length">Ver
+                      Detalles</button>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="col s12 center">
+            <button class="btn" title="Agregar Efecto" style="height: 24px;line-height: 1;"
+              ng-click="Abrir_Modal_Hoja1_CausaEfecto('Efecto')">Agregar Efecto</button>
+          </div>
+          <!-- // -->
+        </div>
+        <!-- ////////////////////////////// -->
+        <!-- ///////////////CAUSAS/////////////// -->
+        <div class="row" style="margin:2vh 1vw" ng-show="Form.Status == 1 && Tabs == 2">
+          <blockquote class="default-color">Causas</blockquote>
+          <!-- // -->
+          <ul class="collapsible m-l" data-collapsible="accordion"
+            style="background-color: transparent;border: 0;box-shadow: none;margin:1vh 1vw">
+            <li ng-repeat="x in Form.Hoja2.Causas">
+              <!-- <li> -->
+              <div id="collapsible-header-Hoja2Causas" class="collapsible-header"
+                style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                <div class="foot4 divcardcustom input-file-radius">
+                  <div class="text-al divcardcustom2" style="line-height: normal;">
+                    <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                        style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                        title="Desplegar lista"></i>#{{$index + 1 }} Causa</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Body-->
+              <div class="collapsible-body" style="border-bottom: 0;">
+                <div class="col s12 m12 l12 m-b"
+                  style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+                  <!-- Nombre  -->
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Causa: </label>
+                      <label>{{x.Titulo}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Descripción: </label>
+                      <label>{{x.Descripcion}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 center" style="margin-top: 1vh;margin-bottom: 1vh;">
+                    <button class="btn" title="Ver Causas Detalles"
+                      ng-click="Abrir_Modal_Hoja2_CausaEfecto('Causa',$index)"
+                      style="height: 24px;line-height: 1;">Agregar Detalle</button>
+                    <button class="btn" title="Ver Causas Detalles"
+                      ng-click="Abrir_Modal_Hojas_CausaEfecto_Detalle('Hoja2', 'Causas', $index)"
+                      style="height: 24px;line-height: 1;" ng-if="x.Detalle.length">Ver
+                      Detalles</button>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="col s12 center">
+            <button class="btn" title="Agregar Causa" style="height: 24px;line-height: 1;"
+              ng-click="Abrir_Modal_Hoja2_CausaEfecto('Causa')">Agregar Causa</button>
+          </div>
+          <!-- // -->
+        </div>
+        <!-- ///////////////EFECTOS/////////////// -->
+        <div class="row" style="margin:5vh 1vw" ng-show="Form.Status == 1 && Tabs == 2">
+          <blockquote class="default-color">Efectos</blockquote>
+          <!-- // -->
+          <ul class="collapsible m-l" data-collapsible="accordion"
+            style="background-color: transparent;border: 0;box-shadow: none;margin:1vh 1vw">
+            <li ng-repeat="x in Form.Hoja2.Efectos">
+              <!-- <li> -->
+              <div id="collapsible-header-Hoja2Efectos" class="collapsible-header"
+                style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                <div class="foot4 divcardcustom input-file-radius">
+                  <div class="text-al divcardcustom2" style="line-height: normal;">
+                    <strong class="switch" style="font-size: 0.9rem;"><i class="icon-down-2"
+                        style="cursor: pointer;font-size: 14px;color:white; display: contents !important;"
+                        title="Desplegar lista"></i>#{{$index + 1}} Efecto</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Body-->
+              <div class="collapsible-body" style="border-bottom: 0;">
+                <div class="col s12 m12 l12 m-b"
+                  style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -3px;">
+                  <!-- Nombre  -->
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Efecto: </label>
+                      <label>{{x.Titulo}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 no-padding" style="margin-top: .3rem;">
+                    <div class="col s12">
+                      <label style="font-weight: 700;">Descripción: </label>
+                      <label>{{x.Descripcion}}</label>
+                    </div>
+                  </div>
+                  <div class="col s12 center" style="margin-top: 1vh;margin-bottom: 1vh;">
+                    <button class="btn" title="Ver Efectos Detalles"
+                      ng-click="Abrir_Modal_Hoja2_CausaEfecto('Efecto',$index)"
+                      style="height: 24px;line-height: 1;">Agregar Detalle</button>
+                    <button class="btn" title="Ver Efectos Detalles"
+                      ng-click="Abrir_Modal_Hojas_CausaEfecto_Detalle('Hoja2', 'Efectos', $index)"
+                      style="height: 24px;line-height: 1;" ng-if="x.Detalle.length">Ver
+                      Detalles</button>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="col s12 center">
+            <button class="btn" title="Agregar Efecto" style="height: 24px;line-height: 1;"
+              ng-click="Abrir_Modal_Hoja2_CausaEfecto('Efecto')">Agregar Efecto</button>
+          </div>
+          <!-- // -->
+        </div>
+        <!-- ////////////////////////////// -->
+
+        <div class="row" style="margin-top:1vh;" ng-show="Form.Status == 1">
+          <div class="col s12 center">
+            <input class="btn white-text default-linear-gradient" type="submit" value="Guardar" ng-click="Validar();">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /////////// -->
+  </div>
+  <!-- ///// -->
+
+  <!-- Modal_Hoja1_CausaEfecto  -->
+  <div id="Modal_Hoja1_CausaEfecto" class="modal">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4 default-linear-gradient" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h6 class="white-text">{{Form.Hoja1.Modal_Titulo}}
+                  {{(Form.Hoja1.Modal_CausaEfecto_DetalleSN != null &&
+                  Form.Hoja1.Modal_CausaEfecto_DetalleSN != undefined) ? 'Detalle' : ''}}</h6>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="overflow-y: auto;max-height: 80vh;">
+            <div class="col s12 m12 l12 center" style="padding-bottom:1em">
+              <div class="row">
+                <div class="col s12 no-padding label-new m-b">
+                  <input type="text" id="Modal_CausaEfecto" class="margin border-none input-text-new w-100 m-l"
+                    style="text-transform:uppercase" autocomplete="off" ng-model="Form.Hoja1.Modal_CausaEfecto"
+                    ng-keyup="FormatTexto('Modal_CausaEfecto');">
+                  <label>Titulo</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12 no-padding label-new m-b">
+                  <textarea id="Modal_Descripcion" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+                    autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                    ng-keyup="FormatTexto('Modal_Descripcion')" ng-model="Form.Hoja1.Modal_Descripcion"
+                    title="Se permiten un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+                  <label>Descripcion - Caracteres: {{Form.Hoja1.Modal_Descripcion.length}} - Máximo:
+                    1000</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row center" style="margin:7vh 5vh 1vw">
+              <button class="btn"
+                style="border-radius: 5px;background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);"
+                ng-click="Guardar_Modal_Hoja1_CausaEfecto()">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal_Hoja2_CausaEfecto  -->
+  <div id="Modal_Hoja2_CausaEfecto" class="modal">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+          <div class="card-content foot4 default-linear-gradient" style="padding-bottom: 0px; padding-top: 12px;">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s11">
+                <h6 class="white-text">{{Form.Hoja2.Modal_Titulo}}
+                  {{(Form.Hoja2.Modal_CausaEfecto_DetalleSN != null &&
+                  Form.Hoja2.Modal_CausaEfecto_DetalleSN != undefined) ? 'Detalle' : ''}}</h6>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-action" style="overflow-y: auto;max-height: 80vh;">
+            <div class="col s12 m12 l12 center" style="padding-bottom:1em">
+              <div class="row">
+                <div class="col s12 no-padding label-new m-b">
+                  <input type="text" id="Modal_CausaEfecto" class="margin border-none input-text-new w-100 m-l"
+                    style="text-transform:uppercase" autocomplete="off" ng-model="Form.Hoja2.Modal_CausaEfecto"
+                    ng-keyup="FormatTexto('Modal_CausaEfecto');">
+                  <label>Titulo</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12 no-padding label-new m-b">
+                  <textarea id="Modal_Descripcion" class="margin border-none textarea2 w-100 m-l" maxlength="1000"
+                    autocomplete="off" style="height: 100px;text-transform:uppercase;text-align: justify;"
+                    ng-keyup="FormatTexto('Modal_Descripcion')" ng-model="Form.Hoja2.Modal_Descripcion"
+                    title="Se permiten un máximo de 1000 caracteres, no se permiten caracteres especiales"></textarea>
+                  <label>Descripcion - Caracteres: {{Form.Hoja2.Modal_Descripcion.length}} - Máximo:
+                    1000</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row center" style="margin:7vh 5vh 1vw">
+              <button class="btn"
+                style="border-radius: 5px;background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);"
+                ng-click="Guardar_Modal_Hoja2_CausaEfecto()">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="Modal_Hojas_CausaEfecto_Detalle" class="modal" style="margin: 0 auto;max-height: 100%;width: 80%;top:0%;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+        ng-click="closeModal()">
+      </div>
+      <div class="card-content default-linear-gradient border-radius-none white-text">
+        <div class="col s11">
+          <div class="col s5" style="display: inline-flex;">
+            <span class="margin" style="font-size: 1.64rem;">Detalle
+              ({{Form.Modal_CausaEfecto_Detalle_Array.length}})</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!-- ELEGIR -->
+        <div class="col s12">
+          <div style="max-height:70vh;overflow:auto;border: 2px solid;">
+            <table class="highlight" style="width:100%;color: black;">
+              <thead class="default-linear-gradient">
+                <th style="color: white;">#</th>
+                <th style="color: white;">Titulo</th>
+                <th style="color: white;">Descripcion</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="x in Form.Modal_CausaEfecto_Detalle_Array">
+                  <td>{{$index + 1}}</td>
+                  <td>{{x.Titulo}}</td>
+                  <td style="max-width: 28vw;">{{x.Descripcion}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+
+  <style>
+    table,
+    thead>th,
+    thead>tr>td {
+      text-align: center;
+    }
+
+    .input-file-radius {
+      border-radius: 10px;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    [type="radio"]:not(:checked)+label {
+      height: 25px !important;
+    }
+
+    .textarea2 {
+      padding: 0.5rem !important;
+      width: calc(100% - 0rem) !important;
+      /* background-color: #cbcdce; */
+      background-color: #f1f3f4;
+      resize: none;
+      height: 7rem;
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+      margin-bottom: 0;
+    }
+
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    #Imagen_back {
+      margin: auto;
+      opacity: .4;
+    }
+
+    .card-panel,
+    .card,
+    .btn {
+      box-shadow: 0 2px 5px 0 rgb(197 208 239), 0 2px 10px 0 rgb(197 208 239) !important;
+      /* box-shadow: rgb(0 0 0 / 25%) 0px 0px 50px 11px !important; */
+    }
+
+    .label-new>label {
+      display: table;
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

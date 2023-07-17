@@ -1,0 +1,1436 @@
+<div id="gestionaut">
+  <div class="row">
+    <div class="col s12 m12 l12 magazine margin widgets-tabs">
+      <div class="card-panel widgets-tabs col l12" style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+        <div class="col s12 l12">
+          <div class="row" ng-show="verAutorizaciones==true">
+            <div class="col s4">
+              <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+              <h5>Consultar Autorización</h5>
+            </div>
+            <div class="col s8" style="text-align: right; margin-top: 15px;">
+              <div class="col s12 input-padding">
+                Tipos de busqueda :
+                <span>
+                  <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="AFILIADO"
+                    id="afiliado" />
+                  <label for="afiliado" ng-class="{'default-color': filterOptions=='AFILIADO' }"
+                    style="height: 0!important">AFILIADO </label>
+                </span>
+                <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences"
+                    value="AUTORIZACION" id="autorizacion" />
+                  <label style="height: 0!important" ng-class="{'default-color': filterOptions=='AUTORIZACION' }"
+                    for="autorizacion">AUTORIZACION</label>
+                </span>
+                <!-- <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="IPS"
+                  id="ips" />
+                  <label style="height: 25px!important" ng-class="{'default-color': filterOptions=='IPS'}"
+                  for="ips">IPS</label>
+                </span> -->
+                <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="AVANZADO"
+                    id="avanzado" />
+                  <label style="height: 25px!important" ng-class="{'default-color': filterOptions=='AVANZADO'}"
+                    for="avanzado">AVANZADO</label>
+                </span>
+              </div>
+            </div>
+            <div class="col s12">
+              <form ng-submit="buscarAutorizaciones()">
+                <div class="col s11">
+                  <di v class="col s9 offset-s3" ng-show="filterOptions=='AFILIADO'">
+                    <div class="input-field col m12 s12">
+                      <i class="material-icons prefix" style="margin-top: 10px;">wc</i>
+                      <input id="with_icon1" type="text" ng-model="documento">
+                      <label for="with_icon1">Documento</label>
+                      Ingrese el documento del afiliado. Si no obtiene resultados puede intentar
+                      buscar por sus
+                      <a style="cursor: pointer;" ng-click="busquedaDetalles()"
+                        title="Búsqueda por detalles del afiliado"> DATOS BASICOS</a>
+                    </div>
+                </div>
+                <div class="col s4 offset-s3" ng-show="filterOptions=='AUTORIZACION'">
+                  <div class="input-field col m12 s12">
+                    <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                    <input id="numaut" type="text" ng-model="numero">
+                    <label for="numaut">Numero</label>
+                  </div>
+                </div>
+                <div class="col s4" ng-show="filterOptions=='AUTORIZACION'">
+                  <div class="input-field col m12 s12">
+                    <i class="material-icons prefix" style="margin-top: 10px;">location_on</i>
+                    <input id="ubicacion" type="text" ng-model="ubicacion">
+                    <label for="ubicacion">Ubicación</label>
+                  </div>
+                </div>
+                <div class="col s8 offset-s3" ng-show="filterOptions=='IPS'">
+                  <div class="input-field col m12 s12">
+                    <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                    <input id="nitips" type="text" ng-model="nit">
+                    <label for="nitips">Nit IPS</label>
+                  </div>
+                </div>
+                <div class="col s12" style="padding: 20px;" ng-show="filterOptions=='AVANZADO'">
+                  <ul class="StepProgress">
+                    <li class="StepProgress-item s">
+                        <strong class="noselectxtpqr">Sección 1</strong>
+                        <div class="row" id="seccion1">
+                          <div class="col s4">
+                            <div class="row" style="margin: 0">
+                              <label for="with_icon" style="margin-top: -20px;">Ips</label>
+                            </div>
+                            <input id="nitips" type="text" ng-model="jsonautorizacion.nitavanzado" placeholder="Nit">
+                          </div>
+                          <div class="col  s4">
+                            <div class="row" style="margin: 0">
+                              <label for="with_icon" style="margin-top: -20px;">AFiliado</label>
+                            </div>
+                            <input id="with_icon1" type="text" ng-model="jsonautorizacion.documentoavanzado"
+                              placeholder="Documento">
+                          </div>
+                          <div class="col  s4">
+                            <div class="row" style="margin: 0">
+                              <label for="with_icon" style="margin-top: -20px;">Responsable</label>
+                            </div>
+                            <input id="with_icon1" type="text" ng-model="jsonautorizacion.responsableavanzado"
+                              placeholder="Documento">
+                          </div>
+                        </div>
+                    </li>
+                    <li class="StepProgress-item s">
+                        <strong class="noselectxtpqr">Sección 2</strong>
+                    
+                  <div  id="seccion2">
+                    <div class="row">                  
+                      <div class="col s6">
+                        <div class="row" style="margin: 0">
+                          <label style=" margin-top: -20px;">Estado</label>
+                        </div>
+                        <div class="col  s12">
+                          <select class="select-chosen-eps" ng-model="jsonautorizacion.estadoavanzado">
+                            <option value="">SELECCIONAR</option>
+                            <option value="A">ACTIVAS</option>
+                            <option value="X">ANULADAS</option>
+                            <option value="G">GESTIONADAS</option>
+                            <option value="P">PROCESADAS</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col s6">
+                        <div class="row" style="margin: 0">
+                          <label style="cursor: pointer;">Servicio</label>
+                        </div>
+                        <div class="col s12">
+                          <input type="number" placeholder="Codigo" min="1" max="9999"
+                            ng-model="jsonautorizacion.servicioavanzado">
+                        </div>
+                      </div>
+                    </div>                                
+                    <div class="row">
+                      <div class="col s6">
+                        <div class="row" style="margin-bottom: 10px">
+                          <label for="with_icon" style="margin-top: -20px;">Fecha Orden</label>
+                        </div>
+                        <div class="row" style="margin: 0">
+                          <div class="input-field col s6" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio</label>
+                            <input id="with_icon" type="date" ng-model="jsonautorizacion.fecha_ordeniniavanzado"
+                              max="{{maxDate}}">
+                          </div>
+                          <div class="input-field col s6" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin</label>
+                            <input id="with_icon" type="date" ng-model="jsonautorizacion.fecha_ordenfinavanzado"
+                              max="{{maxDate}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col s6">
+                        <div class="row" style="margin-bottom: 10px">
+                          <label for="with_icon" style="margin-top: -20px;">Fecha Confirmación</label>
+                        </div>
+                        <div class="row" style="margin: 0">
+                          <div class="input-field col s6" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio</label>
+                            <input id="with_icon" type="date" ng-model="jsonautorizacion.fecha_confirmadoiniavanzado"
+                              max="{{maxDate}}">
+                          </div>
+                          <div class="input-field col s6" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin</label>
+                            <input id="with_icon" type="date" ng-model="jsonautorizacion.fecha_confirmadofinavanzado"
+                              max="{{maxDate}}">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    </li>                        
+                </ul>               
+                </div>
+                <div class="col s1 right">
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" type="submit"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                        class="material-icons prefix">search</i></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div ng-show="verAutorizaciones==false && (filterOptions=='AFILIADO' || filterOptions=='AUTORIZACION')">
+          <div class="col s12" style="margin-bottom: 15px">
+            <div class="col s5">
+              <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+              <h5>Información del Afiliado</h5>
+            </div>
+            <div class="col s12">
+              <table class="responsive-table table-bordered" style="height:100px;">
+                <thead>
+                  <tr>
+                    <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                    <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                    <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO</th>
+                    <th data-field="UBICACION" class="center-align">UBICACION</th>
+                    <th data-field="GENERO" class="center-align">GENERO</th>
+                    <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                    <th data-field="EDAD" class="center-align">EDAD</th>
+                    <th data-field="IPS ANTERIOR" class="center-align"
+                      ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                    <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>
+                    <th data-field="NOVEDADES" class="center-align"><i class="icon-dot-3"></i></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} - {{infoafiliadoautedit.Documento}}
+                    </td>
+                    <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                    <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                    <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                      <span class="status purple"
+                        style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                    </td>
+                    <td class="center-align"><span class="status green">{{infoafiliadoautedit.Estado}}</span></td>
+
+                    <td ng-show="infoafiliadoautedit.SINIESTRO == 'true'" class="center-align"><span
+                        class="status orange">ALTO
+                        COSTO</span></td>
+                    <td ng-show="infoafiliadoautedit.TUTELA == 'true'" class="center-align"><span
+                        class="status red">TUTELA</span></td>
+                    <td ng-show="infoafiliadoautedit.PORTABILIDAD=='S'">
+                      <span class="status light-blue">PORTABILIDAD</span>
+                    </td>
+                    <td ng-show="infoafiliadoautedit.ERROR_50=='true'" class="center-align">
+                      <span class="status black" style="color:#fff">ERROR_50</span>
+                    </td>
+                    <td ng-if="infoafiliadoautedit.AFIC_T045=='S'" class="center-align">
+                      <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                    </td>
+                    <td> <i class="icon-info-circled" ng-click="openmodals('modalnovedades')"
+                        title="Información adicional y Novedades"
+                        style="cursor: pointer;font-size: 2em;justify-content: center;display: flex; align-items: center;"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div ng-show="verAutorizaciones==false && filterOptions=='IPS'">
+          <div class="col s12" style="margin-bottom: 15px">
+            <div class="col s5">
+              <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+              <h5>Información de la IPS</h5>
+            </div>
+            <div class="col s12">
+              <table class="responsive-table table-bordered" style="height:100px;">
+                <thead>
+                  <tr>
+                    <th data-field="NOMBRE" class="center-align">NIT</th>
+                    <th data-field="Nombre" class="center-align">NOMBRE IPS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center-align">{{infoafiliadoautedit.Codigo}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Nombre}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div ng-show="verAutorizaciones==false && filterOptions=='RESPONSABLE'">
+          <div class="col s12" style="margin-bottom: 15px">
+            <div class="col s5">
+              <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+              <h5>Información del Responsable</h5>
+            </div>
+            <div class="col s12">
+              <table class="responsive-table table-bordered" style="height:100px;">
+                <thead>
+                  <tr>
+                    <th data-field="NOMBRE" class="center-align">DOCUMENTO</th>
+                    <th data-field="Nombre" class="center-align">NOMBRE RESPONSABLE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center-align">{{infoafiliadoautedit.Codigo}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Nombre}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;" ng-hide="verAutorizaciones">
+          <div class="charts" style="margin-bottom: 0px;width: 99%;">
+            <div class="row">
+              <div class="col s12 right">
+                <div class="input-field col s4 right">
+                  <input id="buscarpro" type="text" ng-model="filtaut" ng-change="filter(filtaut)" required>
+                  <label for="buscarpro">Buscar:</label>
+                </div>
+              </div>
+            </div>
+
+          <div class="col s12" style="margin-bottom: 1em;">
+              <div style="float: left;"> Un resultado de <strong> {{listarAutorizacionesTemp.length}} Autorizaciones, por el filtro
+                  Anterior</strong>
+              </div>
+              <div  style="float: right;">
+                <button type="button" class="btn white-text" ng-click="JSONToCSVConvertor('LISTADO DE AUTORIZACIONES', true);">Descargar <i class=" icon-file-excel"></i> </button>
+              </div>
+            </div>
+            <div class="card-content foot4"
+              style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+              <div class="col s11">
+                <h5 class="white-text">{{nameaut}}</h5>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="limpiar()"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+            <div class="card-action"
+              style="padding-bottom: 3px;border-top: 0;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); margin: 10px"
+              ng-repeat="aut in listarAutorizacionesTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+              <div class="row" style="margin-bottom: 0" ng-hide="showcenso == $index">
+                <div class="col s12" style="padding: 0">
+                  <div class="row">
+                    <div class="col s12 default-background">
+                      <span class="white-text"> <b> AUTORIZACIÓN - {{aut.NUMERO}} - UBICACIÓN - {{aut.UBICACION}}
+                        <i ng-if="rolaut==false" class="icon-upload cursor-pointer" ng-click="openmodals('modalsoportes',aut);"></i>
+                        </b></span>
+                      <span class="white-text right"><b> IPS - {{aut.IPS}}</b></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s7">
+                    <p>SERVICIO - {{aut.CLASIFICACION}} - {{aut.SERVICIO}}</p>
+                    <div class="row">
+                    <table class="striped table-bordered">
+                      <thead>
+                        <th class="text-center">CODIGO</th>
+                        <th class="text-center">NOMBRE</th>
+                        <th class="text-center">CANTIDAD</th>
+                        <th class="text-center">VALOR</th>
+                        <th class="text-center">TOTAL</th>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="d in aut.DETALLES as rsult">
+                          <td class="text-center">{{d.cod_producto}}</td>
+                          <td> {{d.nombre_producto}}</td>
+                          <td class="text-center">{{d.cantidad}}</td>
+                          <td class="text-center">{{d.valor}}</td>
+                          <td class="text-center">{{d.total_cf}}</td>
+                        </tr>
+                        <tr ng-if="rsult.length==0">
+                          <td class="text-center" colspan="5">SIN DETALLE</td>
+                        </tr>
+                      </tbody>
+                      <tfoot ng-if="aut.DETALLES.length>0">
+                        <tr>
+                          <th class="center-align"> <b>Total: </b></th>
+                          <th class="center-align">-</th>
+                          <th class="center-align">-</th>
+                          <th class="center-align">-</th>
+                          <th class="center-align">${{getTotal(aut) }}</th>
+                        </tr>
+                      </tfoot>
+                    </table>
+                    </div>
+                      <div class="row" ng-if="aut.ESTADO=='ANULADA' || aut.STATUS=='ANULADA'" style="text-align: center;">
+                                      <span><b ng-if="aut.MOTIVO_ANULACION"> Motivo Anulación:</b>
+                                        {{aut.MOTIVO_ANULACION ? aut.MOTIVO_ANULACION:'SIN MOTIVO DE ANULACIÓN'}}</span>
+                                    </div>
+                  </div>
+                  <div class="col s5">
+                    <div class="row margin">
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b> FECHA ORDEN</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.FECHAORDEN}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>FECHA SOLICITUD</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.FECHASOLICITUD}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>FECHA AUTORIZACION</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.FECHA}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row margin">
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b> TIPO AUTORIZADO</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.AUTC_CLASE}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>AUT PROGRAMADA</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.PROGRAMADA}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>RESPONSABLE</b>
+                        </div>
+                        <div class="text-center">
+                          <span style="font-size: 10px"> {{aut.RESPONSABLE}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0">
+                      <div class="col s4"
+                        style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>ESOA</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{aut.NUM_ESOA =='' ? '-':aut.NUM_ESOA}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;border-bottom: 1px solid #ddd">
+                        <div class="text-center">
+                          <b>ESTADO</b>
+                        </div>
+                        <div class="text-center">
+                          <span style="color: {{aut.ESTADO_CLASE}}"> <b>
+                              {{aut.ESTADO =='' ? '-': aut.ESTADO}}</b></span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>STATUS</b>
+                        </div>
+                        <div class="text-center">
+                          <span style="color: {{aut.STATUS_CLASE}}"> <b> {{aut.STATUS}}</b></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0">
+                      <div class="col s4"
+                        style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>UBICACIÓN</b>
+                        </div>
+                        <div class="text-center">
+                          <span>{{aut.UBICACION_PACIENTE}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>CONTRATO</b>
+                        </div>
+                        <div class="text-center">
+                          <span>{{aut.CONTRATO}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>ANTICIPO</b>
+                        </div>
+                        <div class="text-center">
+                          {{aut.ANTICIPO}}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0">
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;border-bottom: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>TUTELA</b>
+                        </div>
+                        <div class="text-center">
+                          <span ng-class="{'text_Tutela': aut.TUTELA!='0'}"> {{aut.TUTELA}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;padding-bottom: 10px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>MIPRES</b>
+                        </div>
+                        <div class="text-center">
+                          <span ng-class="{'textFactura': aut.MIPRES!='0'}"> {{aut.MIPRES}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;padding-bottom: 10px;border-bottom: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>DX</b>
+                        </div>
+                        <div class="text-center">
+                          {{aut.DX}}
+                          </i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0">
+                      <div class="col s4" style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>CENSO</b>
+                        </div>
+                        <div class="text-center">
+                          <i style="font-size: 20px;cursor:pointer;" ng-click="obtenercenso(aut, $index)"
+                            class="icon-medkit"></i>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;padding-bottom: 10px;border-right: 1px solid #ddd">
+                        <div class="text-center">
+                          <b>FACTURA</b>
+                        </div>
+                        <div class="text-center">
+                          <span ng-class="{'textFactura': aut.FACTURA!='0'}"> {{aut.FACTURA}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>ACCIÓN</b>
+                        </div>
+                        <div class="text-center">
+                          <i style="cursor:pointer;" ng-click="openmodals('modaldetalle',aut);sumPrint = 0;"
+                            class="material-icons">assignment_turned_in</i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-show="showcenso == $index">
+                <div class="row">
+                  <div class="col s12 orange">
+                    <span class="white-text"> <i class="icon-left-open-2" ng-click="backAut();"
+                        style="cursor: pointer;"></i> <b> AUTORIZACIÓN - {{tempaut.NUMERO}} - UBICACIÓN -
+                        {{tempaut.UBICACION}} </b>                        
+                      </span>
+                    <span class="white-text right"><b> IPS - {{tempaut.IPS}}</b></span>
+                  </div>
+                </div>
+                <div style="padding: 20px">
+                  <table class="striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th class="text-center">CODIGO</th>
+                        <th class="text-center">AFILIADO</th>
+                        <th class="text-center">DX</th>
+                        <th class="text-center">IPS</th>
+                        <th class="text-center">RESPONSABLE</th>
+                        <th class="text-center">REGISTRO</th>
+                        <th class="text-center">INGRESO ESTANCIA</th>
+                        <th class="text-center">ESTADO</th>
+                        <th class="text-center">HISTORICO EVOLUCION MEDICA</th>
+                        <th class="text-center">HISTORICO CHAT ADMINISTRATIVO</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="s in censos">
+                        <td class="text-center">{{s.CODIGOCENSO}}</td>
+                        <td class="text-center">{{s.NOMBREAFILIADO}}</td>
+                        <td class="text-center">{{s.DIAGNOSTICO}}</td>
+                        <td class="text-center">{{s.NOMBREIPS}}</td>
+                        <td class="text-center">{{s.RESPONSABLE}}</td>
+                        <td class="text-center">{{s.FECHA}}</td>
+                        <td class="text-center">{{s.FECHAINGRESO}}</td>
+                        <td class="text-center" style="text-transform: uppercase;">
+                          <b style="color: {{s.ESTADO_CLASE}}">{{s.ESTADO}}</b>
+                        </td>
+                        <td class="text-center">
+                          <i ng-click="detail_censo(s.CODIGOCENSO,s.UBICACION);" class="icon-eye"
+                            style="font-size: 20px;cursor: pointer;"></i>
+                        </td>
+                        <td class="text-center">
+                          <i ng-click="openmodals('modalhistoricochat',s);" class="icon-chat-1"
+                            style="font-size: 20px;cursor: pointer;"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div ng-if="listarAutorizacionesTemp.length==0" class="text-center" style="border: 1px solid #ddd">
+              <h5 class="default-color"> No hay coincidencias encontradas</h5>
+            </div>
+            <ul ng-hide="inactivepro" style="text-align: center;" class="pagination">
+              <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                  ng-click="paso('back')">&laquo;</button></li>
+              <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                  class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+              <li><button ng-disabled='currentPage >= listarAutorizacionesTemp.length/pageSize - 1'
+                  class="btn-floating default-background" ng-click="paso('next')">&raquo;</button></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col s12" ng-show="verAutorizacionesEdit==true && verAutorizaciones==true"
+          style="margin-bottom: 15px">
+          <div class="col s5">
+            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+            <h5>Información del Afiliado</h5>
+          </div>
+          <div class="col s12">
+            <table class="responsive-table table-bordered" style="height:100px;">
+              <thead>
+                <tr>
+                  <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                  <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                  <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO</th>
+                  <th data-field="UBICACION" class="center-align">UBICACION</th>
+                  <th data-field="GENERO" class="center-align">GENERO</th>
+                  <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                  <th data-field="EDAD" class="center-align">EDAD</th>
+                  <th data-field="IPS ANTERIOR" class="center-align"
+                    ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                  <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>
+                  <th data-field="NOVEDADES" class="center-align"><i class="icon-dot-3"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} - {{infoafiliadoautedit.Documento}}
+                  </td>
+                  <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                  <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                  <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                  <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                    <span class="status purple"
+                      style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                  </td>
+                  <td class="center-align"><span class="status green">{{infoafiliadoautedit.Estado}}</span></td>
+
+                  <td ng-show="infoafiliadoautedit.SINIESTRO == 'true'" class="center-align"><span
+                      class="status orange">ALTO
+                      COSTO</span></td>
+                  <td ng-show="infoafiliadoautedit.TUTELA == 'true'" class="center-align"><span
+                      class="status red">TUTELA</span></td>
+                  <td ng-show="infoafiliadoautedit.PORTABILIDAD=='S'">
+                    <span class="status light-blue">PORTABILIDAD</span>
+                  </td>
+                  <td ng-show="infoafiliadoautedit.ERROR_50=='true'" class="center-align">
+                    <span class="status black" style="color:#fff">ERROR_50</span>
+                  </td>
+                  <td ng-if="infoafiliadoautedit.AFIC_T045=='S'" class="center-align">
+                    <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                  </td>
+                  <td> <i class="icon-info-circled" ng-click="openmodals('modalnovedades')"
+                      title="Información adicional y Novedades"
+                      style="cursor: pointer;font-size: 2em;justify-content: center;display: flex; align-items: center;"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+      </div>
+      <div id="modaldetalle" class="modal" style="width: 95%!important; max-height: 100%;">
+        <div class="modal-content" style="padding: 0px !important;">
+          <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+            <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+              <div class="card-content foot4" style="padding: 0">
+                <div class="col s11">
+                  <h5 class="white-text">Detalle Autorización {{v_encabezadov.NUM_OASIS}} -
+                    {{v_encabezadov.UBI_OASIS}}</h5>
+
+                </div>
+                <div class="col s1">
+                  <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modaldetalle')"
+                      class="material-icons white-text">close</i></h5>
+                </div>
+              </div>
+              <div class="card-action" style="border-top: 0">
+                <div class="col s12">
+                  <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                    <strong class="c-none">DATOS DEL AFILIADO</strong>
+                  </blockquote>
+                  <table class="responsive-table table-bordered" style="height:100px;">
+                    <thead>
+                      <tr>
+                        <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                        <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                        <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO</th>
+                        <th data-field="UBICACION" class="center-align">UBICACION</th>
+                        <th data-field="GENERO" class="center-align">GENERO</th>
+                        <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                        <th data-field="EDAD" class="center-align">EDAD</th>
+                        <th data-field="IPS ANTERIOR" class="center-align"
+                          ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                        <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>
+                        <th data-field="NOVEDADES" class="center-align"><i class="icon-dot-3"></i></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                        <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} -
+                          {{infoafiliadoautedit.Documento}}</td>
+                        <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                        <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                        <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                        <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                        <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                        <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                          <span class="status purple"
+                            style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                        </td>
+                        <td class="center-align"><span class="status green">{{infoafiliadoautedit.Estado}}</span></td>
+
+                        <td ng-show="infoafiliadoautedit.SINIESTRO == 'true'" class="center-align"><span
+                            class="status orange">ALTO
+                            COSTO</span></td>
+                        <td ng-show="infoafiliadoautedit.TUTELA == 'true'" class="center-align"><span
+                            class="status red">TUTELA</span></td>
+                        <td ng-show="infoafiliadoautedit.PORTABILIDAD=='S'">
+                          <span class="status light-blue">PORTABILIDAD</span>
+                        </td>
+                        <td ng-show="infoafiliadoautedit.ERROR_50=='true'" class="center-align">
+                          <span class="status black" style="color:#fff">ERROR_50</span>
+                        </td>
+                        <td ng-if="infoafiliadoautedit.AFIC_T045=='S'" class="center-align">
+                          <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                        </td>
+                        <td> <i class="icon-info-circled" ng-click="openmodals('modalnovedades')"
+                            title="Información adicional y Novedades"
+                            style="cursor: pointer;font-size: 2em;justify-content: center;display: flex; align-items: center;"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+                <div class="row">
+                  <div class="col s6">
+                    <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                      <strong class="c-none">DATOS AUTORIZACION</strong>
+                    </blockquote>
+                    <div class="card-action"
+                      style="padding-top: 0;padding-bottom: 0; border-top: 0;max-height: 50vh;overflow: auto;height: auto;"
+                      ng-hide="dAuto">
+                      <p style="margin: 0"><b>DIAGNOSTICO 1 : </b> {{v_encabezadov.DX}}-{{v_encabezadov.NOMBRE_DX}}
+                      </p>
+                      <p style="margin: 0"><b>DIAGNOSTICO 2 : </b>
+                        {{v_encabezadov.DX1}}-{{v_encabezadov.NOMBRE_DX1}}</p>
+                      <p style="margin: 0"><b>SERVICIO : </b> {{v_encabezadov.CLASIFICACION}}-{{
+                  v_encabezadov.NOMBRE_CLAS}}</p>
+                      <p style="margin: 0;text-transform: uppercase;"><b>MEDICO : </b>
+                        {{v_encabezadov.MEDICO}}</p>
+                      <p style="margin: 0"><b>ESPECIALIDAD : </b> {{v_encabezadov.ESPECIALIDAD_MEDICO}}</p>
+                      <p style="margin: 0;text-transform: uppercase;word-wrap: break-word;"><b>OBSERVACION : </b>
+                        {{v_encabezadov.OBSERVACION}}</p>
+                      <p style="margin: 0"><b>SOPORTE:
+                          <a ng-hide="!v_encabezadov.ADJUNTO" style="cursor: pointer"
+                            ng-click="downloadFileAut(v_encabezadov.ADJUNTO,v_encabezadov.FTP);"> <i class="icon-download"></i>ARCHIVO</a>
+                        </b> {{!v_encabezadov.ADJUNTO ? 'SIN SOPORTE':''}}</p>
+                      <p style="margin: 0"><b>IPS SOLICITANTE: </b> {{v_encabezadov.SOLICITANTE}}</p>
+                      <p style="margin: 0"><b>DIRECCION:</b> {{v_encabezadov.DIR_SOLICITANTE}}</p>
+                      <p style="margin: 0"><b>TELEFONO:</b> {{v_encabezadov.TEL_SOLICITANTE}}</p>
+                      <p style="margin: 0"><b>CONTRATO: </b> {{v_encabezadov.CONTRATO}}</p>
+                      <p style="margin: 0"><b>FECHA ORDEN: </b> {{v_encabezadov.FECHA_ORDEN}}</p>
+                      <p style="margin: 0"><b>FECHA SOLICITUD: </b> {{v_encabezadov.FECHA_SOLICITUD}}</p>
+                      <p style="margin: 0"><b>FECHA PRESTACION: </b> {{v_encabezadov.FECHA_PRESTACION}}</p>
+                      <p style="margin: 0"><b>FECHA AUTORIZACION: </b> {{v_encabezadov.FECHA_AUTORIZACION}}</p>
+                      <p style="margin: 0"><b>FECHA VENCIMIENTO: </b> {{v_encabezadov.FECHA_VENCIMIENTO}}</p>
+                      <p style="margin: 0"><b>ORIGEN ATENCION: </b> {{v_encabezadov.ORIGEN_ATENCION}}</p>
+                      <p style="margin: 0"><b>TIPO DE SERVICIO:</b> {{v_encabezadov.TIPO_SOLICITUD}}</p>
+                      <p style="margin: 0"><b>UBICACION: </b> {{v_encabezadov.UBICACION_SOLi}}</p>
+                      <p style="margin: 0"><b>IPS ASIGNADA: </b> {{v_encabezadov.ASIGNADA}}</p>
+                      <p style="margin: 0"><b>DIRECCION: </b> {{v_encabezadov.DIR_ASIGNADA}}</p>
+                      <p style="margin: 0"><b>TELEFONO: </b> {{v_encabezadov.TEL_ASIGNADA}}</p>
+                    </div>
+                    <div ng-show="dAuto" style="max-height: 60vh;overflow: auto;height: auto;">
+                      <p style="margin: 0"><b>DIAGNOSTICO 1: </b> {{dAuto.NOMBREDX}}</p>
+                      <p style="margin: 0"><b>DIAGNOSTICO 2 : </b> {{dAuto.NOMBREDX2}}</p>
+                      <p style="margin: 0;text-transform: uppercase;"><b>JUSTIFICACION MEDICA :
+                        </b>{{dAuto.JUSTIFICACION}}
+                      </p>
+                      <p style="margin: 0"><b>IPS SOLICITANTE : </b> {{dAuto.IPS}}</p>
+                      <p style="margin: 0"><b>DIRECCION: </b> {{dAuto.DIRECCIONIPSSOLICITANTE}}</p>
+                      <p style="margin: 0"><b>TELEFONO: </b> {{dAuto.TELEFONOIPSSOLICITANTE}}</p>
+                      <!-- <p style="margin: 0"><b>SERVICIO: </b> {{dAuto.SERVICIO}}</p> -->
+                      <p style="margin: 0"><b>FECHA ENTREGA: </b> {{dAuto.FECHA_ENTREGA}}</p>
+                      <p style="margin: 0"><b>IPS ASIGNADA : </b> {{dAuto.IPSASIGNADA}}</p>
+                      <p style="margin: 0"><b>DIRECCION: </b> {{dAuto.DIRECCIONIPSASIGNADA}}</p>
+                      <p style="margin: 0"><b>TELEFONO: </b> {{dAuto.TELEFONOIPSASIGNADA}}</p>
+                    </div>
+                  </div>
+                  <div class="col s6">
+                      <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                        <strong class="c-none">PRODUCTOS</strong>
+                      </blockquote>
+                      <div class="row" style="max-height: 450px;overflow-y: auto;">
+                        <div class="col s6" ng-repeat="d in v_detallev track by $index">
+                          <div class="card">
+                            <div class="card-content" style="height: auto;">
+                              <label><b>CODIGO:</b> {{d.CODIGO}}</label>
+                              <br>
+                              <label> <b>NOMBRE:</b> {{d.NOMBRE}}  {{(d.OBSNOM =='' || d.OBSNOM ==undefined) ? '' : '-'}}  {{d.OBSNOM}}  {{(d.SUBCLASNOM =='' || d.SUBCLASNOM ==undefined) ? '' : '-'}}  {{d.SUBCLASNOM}} </label>
+                              <br>
+                              <div>
+                                <label><b>CANTIDAD:</b> {{d.CANTIDAD}}</label>
+                                <label><b>VALOR:</b> ${{formatPeso(d.VALOR)}}</label><br>
+                                <label><b>TOTAL:</b>{{d.VALOR_TOTAL_CF}}</label>
+
+                                
+                              </div>
+                              <i style="position: absolute; top: 9px; right: 9px;" class="icon-ok-6"></i>
+                              <div class="progress green lighten-4"
+                                style="position: absolute; bottom: 0px;  margin-top: 0px; left: 0px;">
+                                <div class="determinate green darken-2" style="width: 100%"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                     
+
+                      </div>
+                         <div class="row">
+                          <div class="col s6" ng-if="totalaut">
+                            <label><b>VALOR TOTAL AUTORIZACIÓN:</b> <span style="color:blue">{{totalaut}}</span></label>
+                          </div>
+                          <div class="col s6">
+                            <label><b>AUTORIZADO POR :</b> <span style="color:blue">{{v_encabezadov.RESPONSABLE}}</span></label>
+                          </div>
+                             
+                        </div>
+
+                      <div class="row" ng-hide="v_detallev.length>0" style="text-align: center">
+                        <h2>No hay productos en la Autorización</h2>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="modalnovedades" class="modal" style="width: 95%!important; max-height: 100%;">
+        <div class="modal-content" style="padding: 0px !important;">
+          <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+            <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+              <div class="card-content foot4" style="padding: 0;text-align: center;">
+                <div class="col s11">
+                  <h5 class="white-text">Información Adicional del Afiliado y Novedades</h5>
+
+                </div>
+                <div class="col s1">
+                  <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalnovedades')"
+                      class="material-icons white-text">close</i></h5>
+                </div>
+              </div>
+              <div class="card-action" style="border-top: 0">
+                <div class="row">
+                  <div class="col s5">
+                    <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                      <strong class="c-none">Datos del Afiliado {{datosAfiModalNov.NombreCompleto}}</strong>
+                    </blockquote>
+                    <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                      <div class="card-action" style="border-top: 0">
+                        <table class="striped table-bordered" style="height:100px;">
+                          <tr>
+                            <td colspan="4"> <strong>UBICACION: </strong> {{datosAfiModalNov.Municipio}} -
+                              {{datosAfiModalNov.Departamento}}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="4"> <strong>DIRECCION: </strong> {{datosAfiModalNov.DIRECCION}}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="2"> <strong>CONTACTO: </strong> {{datosAfiModalNov.Celular1}}</td>
+                            <td colspan="2">
+                              <div style="line-height: 30px;"><strong>DOCUMENTOS: </strong> <i
+                                  ng-click="openmodals('modaldocumentos');" class="icon-box"
+                                  style="cursor: pointer;font-size: 20px;float: right"></i></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> <strong>AFILIACION: </strong> {{datosAfiModalNov.FECHA_AFILIACION}}</td>
+                            <td> <strong>RETIRO: </strong> {{datosAfiModalNov.FECHA_RETIRO==null? 'NO
+                          APLICA':datosAfiModalNov.FECHA_RETIRO}}</td>
+                            <td> <strong>CAMBIO ESTADO: </strong> {{datosAfiModalNov.CAMBIO_ESTADO==null?
+                            'NO
+                          APLICA':datosAfiModalNov.CAMBIO_ESTADO}}</td>
+                          </tr>
+                          <tr ng-if="datosAfiModalNov.CodigoRegimen=='C'" ng-repeat="d in datosAfiModalNov.EMPLEADOR">
+                            <td> <strong>EMPLEADOR: </strong> {{d.Nit}} -
+                              {{d.Razon}}</td>
+                            <td style="text-align: center"> <strong>NIVEL: </strong> {{datosAfiModalNov.NIVEL}}</td>
+                            <td style="text-align: center"><strong>INGRESO: </strong>
+                              {{d.FechaInicio}} </td>
+                            <td style="text-align: center"><strong>TIPO: </strong> {{d.TicNombre}} </td>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th colspan="4" style="text-align: center;">RED DE PRIMER NIVEL</th>
+                          </tr>
+                          <tr>
+                            <th colspan="2" style="text-align: center">ENTIDAD</th>
+                            <th colspan="2" style="text-align: center">CLASE</th>
+                          </tr>
+                          <tr ng-repeat="c in capita">
+                            <td colspan="2">
+                              {{c.NIT}} - {{c.NOMBRE}}
+                            </td>
+                            <td colspan="2">
+                              {{c.CLASE}}
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col s1" style="margin-top: 100px">
+                    <div class="outer">
+                      <div class="inner"></div>
+                    </div>
+                  </div>
+                  <div class="col s6">
+                    <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                      <strong class="c-none">Novedades</strong>
+                    </blockquote>
+                    <div class="col s12">
+                      <form name="findnovedad" id="findnovedad">
+                        <div class="input-field col s5" style="float: right">
+                          <input id="with_icon" type="text" class="validate" ng-model="searchnovedades">
+                          <label for="with_icon" class="">Buscar:</label>
+                        </div>
+                    </div>
+                    </form>
+                    <div class="timeline-page col s12 card" style="box-shadow:none;padding-top: 0;padding-bottom: 0;">
+                      <div class="timeline card-content white">
+                        <!-- <div class="timeline-milestone">
+                                <span class="milestone-title white-text">HISTORIAL</span>
+                              </div> -->
+                        <div class="scrollTableDefault" style="max-height: 50vh;overflow-y: auto;padding: 10px">
+                          <div class="timeline-event"
+                            ng-repeat="novedad in novedades | filter: searchnovedades as resultadosnov">
+                            <div class="timeline-content">
+                              <div class="content-box">
+                                <h6>{{novedad.CONCEPTO}} <small>Realizada {{novedad.FECHA}}</small></h6>
+                                <p>
+                                  {{novedad.CODIGO}} - {{novedad.NOMBRE}}
+                                </p>
+                              </div>
+                            </div>
+                            <div class="timeline-badge timeline-badge1 white-text">
+                              <i class="icon-calendar"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="scrollTableDefault center" style="max-height: 50vh;overflow-y: auto;padding: 10px"
+                          ng-if="resultadosnov.length==0">
+                          <h1>NO HAY RESULTADOS</h1>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="modaldocumentos" class="modal" style="width: 50%!important; max-height: 100%;">
+        <div class="modal-content" style="padding: 0px !important;">
+          <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+            <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+              <div class="card-content foot4" style="padding: 0;text-align: center;">
+                <div class="col s11">
+                  <h5 class="white-text">Documentos del Afiliado {{datosAfiModalNov.NombreCompleto}}</h5>
+
+                </div>
+                <div class="col s1">
+                  <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modaldocumentos')"
+                      class="material-icons white-text">close</i></h5>
+                </div>
+              </div>
+              <div class="card-action" style="border-top: 0">
+                <div class="row">
+                  <div class="col s12">
+                    <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                      <div class="card-action" style="border-top: 0">
+                        <table class="striped table-bordered">
+                          <thead>
+
+                          </thead>
+                          <tr>
+                            <th>
+                              TIPO
+                            </th>
+                            <th>
+                              FECHA
+                            </th>
+                            <th>
+                              ESTADO
+                            </th>
+                            <th>
+                              ACCION
+                            </th>
+                          </tr>
+                          <tbody>
+                            <tr ng-repeat="d in documentosAfiliado">
+                              <td>{{d.TIPO}}</td>
+                              <td>{{d.FECHA}}</td>
+                              <td>{{d.ESTADO}}</td>
+                              <td style="text-align: center"><i style="font-size: 20px;cursor: pointer"
+                                  ng-click="viewDocument(d.RUTA,d.FTP);" class="icon-eye-1"></i></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="modalhistoricochat" class="modal" style="width: 50%!important; max-height: 100%;top: 5%!important;">
+        <div class="modal-content" style="padding: 0px !important;">
+          <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+            <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+              <div class="card-content foot4" style="padding: 0;text-align: center;">
+                <div class="col s11">
+                  <h5 class="white-text">CENSO - {{tempcenso.CODIGOCENSO}} - {{tempcenso.UBICACION}}</h5>
+
+                </div>
+                <div class="col s1">
+                  <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('modalhistoricochat')"
+                      class="material-icons white-text">close</i></h5>
+                </div>
+              </div>
+              <div class="card-action" style="border-top: 0">
+                <div class="row">
+                  <div class="col s12">
+                    <div id="chat_comment" class="row" style="overflow:auto;height: calc(100vh - 340px);">
+                      <div class="row" ng-show="!comentarios.length"
+                        style="display: flex;justify-content: center;align-items: center;height: 80%;">
+                        <i class="icon-comment-2" style="font-size: 40px;"></i>
+                      </div>
+                      <div class="row" ng-repeat="com in comentarios"
+                        ng-class="{'chat_right whi':nombre.toLowerCase() == com.NOMBRE.toLowerCase()}">
+                        <div class="col l1 md1 m1 margin no-padding border-none">
+                          <img src="assets/images/users/default-user.png" alt="jim"
+                            class="circle responsive-img valign margin hide-on-small-only">
+                        </div>
+                        <div class="col l11 md11 m11">
+                          <div class="desc_com"
+                            ng-class="{'white-text default-background-light':nombre.toLowerCase() == com.NOMBRE.toLowerCase()}"
+                            style="padding: 1em;">
+                            <p class="margin">
+                              <strong>{{com.MENSAJE}}</strong>
+                            </p>
+                            <small>{{com.NOMBRE}}</small>
+                          </div>
+                          <div
+                            style="width: 100%;height: 0;border-bottom: 1px solid #ffca867a;margin: 1em 0;position: relative;display: flex;justify-content: space-between;align-items: center;">
+                            <span style="font-size: 10px;background-color: #ffffff;padding: 0 10px;">
+                              {{com.FECHA}}
+                            </span>
+                            <span style="font-size: 10px;background-color: #ffffff;padding: 0 10px;">
+                              {{com.HORA}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div ng-hide="cod_estado != 'Activo'" class="row margin" style="display: flex;">
+                      <div class="col l11 md11 m11">
+                        <div class="input-field col m12 s12 margin no-padding">
+                          <div class="default-background file-field input-field"
+                            style="display: flex;margin: 0;color: white;">
+                            <div>
+                              <i class="material-icons dp48" style="margin-top: 10px;">attach_file</i>
+                              <input type="file" id="adjuntocab" accept=".pdf" required>
+                            </div>
+                            <div class="file-path-wrapper" style="width: 100%;">
+                              <input class="file-path validate valid" type="text" id="nombreadjunto"
+                                placeholder="Seleccionar un adjunto" ng-model="DocumentoAbjunto"
+                                style="margin: 0;border: none;">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col l12 md12 m12 no-padding">
+                          <textarea class="border-none border-radius-none default-background-light white-text"
+                            placeholder="Comentar..." ng-model="observacion" rows="4" cols="50"
+                            style="margin: 0px 0px 10px;border-radius: 3px;padding: 1em;max-width: 100%;width: 100%;height: 70px;outline: none;"></textarea>
+                        </div>
+                      </div>
+                      <div class="col l1 md1 m1 margin no-padding border-none">
+                        <i ng-click="CrearComentario('R')" class="icon-paper-plane white-text "
+                          style="background-color: #f2cea5;display: flex;justify-content: center;align-items: center;width: 3.4em;height: 3.4em;border-radius: 50%;cursor: pointer;margin: auto;"></i>
+                        <!-- <i ng-click="insertarComentario('R')" class="icon-paper-plane white-text "
+                          style="background-color: #f2cea5;display: flex;justify-content: center;align-items: center;width: 3.4em;height: 3.4em;border-radius: 50%;cursor: pointer;margin: auto;"></i> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  <div id="modalsoportes" class="modal"
+      style="width: 90%!important; max-height: 100%;top: 5%!important;overflow: hidden;">
+      <div class="modal-content" style="padding: 0px !important;">
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+          <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+            <div class="card-content foot4" style="padding: 0;text-align: center;">
+              <div class="col s11">
+                <h5 class="white-text"> AUTORIZACION {{tempaut.NUMERO}} - {{tempaut.UBICACION}}</h5>
+
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;"><i style="cursor:pointer;"
+                    ng-click="closemodals('modalsoportes')"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+            <div class="card-action" style="border-top: 0">
+
+              <div class="row" style="margin-bottom: 0;">
+                <div class="col s6">                              
+                  <div class="row">
+                    <div class="col s12">
+                      <label for="idepriciris" style="margin-left: 15px;">Soporte Autorización:<span
+                        style="color:red;">*</span></label>
+                      <div class="input-field col m10 s12 w-100">
+                        <div class="file-field input-field">
+                          <div class="btn">
+                            <i class="icon-file-pdf"></i>
+                            <input type="file" name="adjunto" id="soporteaut" />
+                          </div>
+                          <div class="file-path-wrapper">
+                            <input id="inputFiletextaut" class="file-path" type="text"
+                              placeholder="Adjuntar archivo">
+                            <span ng-if="data.formato"
+                              ng-class="{'red-text': autsoporte.namefile==null, 'green-text': autsoporte.namefile!=null }">{{data.formato}}</span>                                
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style=" display: flex;justify-content: center;" ng-click="adjuntarsoporteaut();">
+                    <a class="waves-effect waves-light btn white-text primary-button">ADJUNTAR</a>
+                  </div>
+                </div>
+                <div class="col s6" style="height: 65vh;"
+                  ng-style="{'display': (autsoporte.pdf=='' || autsoporte.pdf==null)? 'flex':''}">
+                  <div class="row" style="text-align: center" ng-if="autsoporte.pdf">
+                    <div class="col s12">
+                      <span><b>SOPORTE</b> </span>
+                    </div>
+                  </div>
+                  <iframe ng-if="autsoporte.pdf"ng-src="{{trustSrc(autsoporte.pdf)}}"
+                    style="width:100%; height: 65vh;margin-bottom: 1em;" frameborder="0"></iframe>
+                  <span class="default-color" ng-if="autsoporte.pdf=='' || autsoporte.pdf==null"
+                    style="text-align: center;font-size: 1.5em">
+                    <b>SOPORTE</b>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <style>
+        .tab a:hover {
+          background-color: #ddd !important;
+          color: white !important;
+        }
+
+        /* Style the active class (and buttons on mouse-over) */
+        .activebtn-step,
+        .activebtn-step:hover {
+          background-color: #2196f3 !important;
+          color: white !important;
+        }
+
+        .step-item {
+          height: 100px;
+          width: 100px;
+          border-radius: 100px;
+          padding: 0px;
+        }
+
+        .donebtn-step,
+        .donebtn-step:hover {
+          background-color: #2196f3 !important;
+          color: white !important;
+        }
+
+        .steper {
+          width: 60%;
+          display: inline-flex;
+          text-align: center;
+          padding-bottom: 10px;
+          margin-left: 20%;
+        }
+
+        .step-divider {
+          width: 100%;
+          position: relative;
+          top: 30px;
+          margin-left: 0px;
+          margin-right: 0px;
+          margin-top: 20px;
+        }
+
+        .btn-step-content {
+          position: relative;
+          display: none;
+          height: calc(100% - 132px);
+          width: inherit;
+          overflow: visible;
+          margin-left: 41px;
+          margin-right: 24px;
+        }
+
+        .step-option {
+          background: #eee;
+          height: 70px;
+          position: absolute;
+          bottom: -45px;
+          width: 100%;
+          margin-bottom: 6px;
+          left: 0px;
+          z-index: 2;
+        }
+
+        .back-step,
+        .back-step:hover {
+          margin-top: 7px;
+          position: absolute;
+          right: 80px;
+          background: #ff4350 !important;
+        }
+
+        .flex {
+          display: flex !important;
+        }
+
+        .btn-step {
+          background-color: rgba(0, 0, 0, .3);
+          color: white;
+        }
+
+        .hover-item:hover {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .hover-item:active {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .tabmenu>li:target>a {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .requerido {
+          color: red !important;
+        }
+
+        .tabactiva {
+          background-color: rgba(206, 206, 206, 0.71);
+        }
+
+        .colorblack {
+          color: black;
+        }
+
+        .itemsspam {
+          color: white !important;
+          border-radius: 12px !important;
+          box-shadow: 2px 2px 3px 0px #ccc !important;
+          position: relative !important;
+          top: 5px !important;
+          left: 11px !important;
+          cursor: pointer;
+        }
+
+        .hovpanel:hover {
+          background: #32364c2b;
+          color: #ffa51b;
+          cursor: pointer;
+        }
+
+        .mayus {
+          text-transform: uppercase;
+        }
+
+        #header-fixed {
+          position: fixed;
+          top: 0px;
+          display: none;
+        }
+
+        .cuadrado {
+          width: 25vh;
+          max-width: 240px;
+          height: 25vh;
+          max-height: 240px;
+          position: relative;
+          background: white;
+          box-shadow: 0 0 8px 1px #c7c7c7;
+        }
+
+        .coloritem {
+          color: black !important;
+        }
+
+        .autprocesada {
+          background-color: #4CAF50 !important;
+        }
+
+        .autactiva {
+          background-color: #ff9800 !important;
+        }
+
+        .switch label {
+          font-weight: 600;
+        }
+
+        .switch label .lever.check-c {
+          background-color: #818181 !important;
+        }
+
+        .switch label .lever.check-c:after {
+          background-color: #26a69a;
+        }
+
+        .switch label>span.activo {
+          color: #26a69a !important;
+        }
+
+        .text-center {
+          text-align: center;
+        }
+
+        div#modaldetalle {
+          top: 1% !important;
+        }
+
+        div#modalnovedades {
+          top: 1% !important;
+        }
+
+        .outer {
+          width: 1px;
+          height: 100%;
+          margin: auto;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .inner {
+          /* position: absolute; */
+          width: 100%;
+          height: 50vh;
+          background: grey;
+          top: 30%;
+          box-shadow: 0px 0px 30px 20px grey;
+        }
+
+        .style-table-default {
+          height: 350px;
+          overflow: auto;
+        }
+
+        /* Style Scroll */
+        .scrollTableDefault::-webkit-scrollbar {
+          /* width */
+          width: 5px;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-track {
+          /* Track */
+          background: #f1f1f1;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-thumb {
+          /* Handle */
+          background: #888;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+          /* Handle on hover */
+          background: #555;
+        }
+
+        .swal2-container {
+          z-index: 10000 !important;
+        }
+
+        .clase-gray {
+          color: #736a6a !important;
+        }
+
+        .textFactura {
+          color: blue;
+          font-size: 10px;
+          font-weight: bold;
+        }
+
+        .text_Tutela {
+          color: red;
+          font-weight: bold;
+        }
+      </style>
+    </div>
+  </div>

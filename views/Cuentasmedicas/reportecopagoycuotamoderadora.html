@@ -1,0 +1,1064 @@
+<div id="pantalla" class="white newdesing">
+    <style>
+        #tabla_scroll th {
+            padding: 3px 10px;
+        }
+
+        #tabla_scroll li>button.btn {
+            font-size: small;
+            height: auto;
+            line-height: inherit;
+            padding: 0 1rem;
+        }
+
+        .table_border,
+        .table_border th,
+        .table_border td {
+            border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+            text-align: center;
+        }
+
+        .swal-wide {
+            width: 850px !important;
+        }
+    </style>
+    <!-- configuracion de los tabs principales -->
+    <div class="row section-header" style="margin-top:7px">
+        <ul class="left mailbox-custom-search list-inline"
+            style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+            <li id="inicio">
+                <i ng-click="Refrescar_Inicio()"></i>
+                <h5 onclick="location.reload();" class="cursor-pointer">REPORTE COPAGO Y CUOTA MODERADORA</h5>
+            </li>
+            <li>
+                <ul class="tabs transparent" style="overflow:hidden;">
+                    <li class="tab col w-auto" ng-class="{subraya : Tabs == 1}" ng-if="rolseleccionadoResumen">
+                        <a ng-click="Set_Tab(1);" id="tabs_1" href>Autorizacion<i class="icon-search-6"></i></a>
+                    </li>
+                    <li class="tab col w-auto" ng-class="{subraya : Tabs == 2}" ng-if="rolseleccionadoResumen">
+                        <a ng-click="Set_Tab(2);" id="tabs_2" href>Radicacion<i class="icon-search-6"></i></a>
+                    </li>
+
+                    <!-- <li class="tab col w-auto" ng-class="{subraya : Tabs == 3}" ng-if="rolseleccionadoReportes">
+                        <a ng-click="Set_Tab(3);" id="tabs_3" href>Informes<i class="icon-download-1"></i></a>
+                    </li> -->
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <div class="col s12" ng-show="Tabs == 1">
+            <div class="card ng-scope" style="margin: 38px; bottom: 10px ;zoom:75%;">
+                <div class="row">
+                    <div class="col s12">
+                        <!-- Informacion del Paciente -->
+                        <strong style="font-size: x-large;">
+                            AUTORIZACIONES CON COPAGO Y/O CUOTA MODERADORA
+                        </strong>
+                        <div class="col l12 m12 s12">
+                            <div class="row">
+                                <div class="col l3 m3 s3">
+                                    <label style="padding-left: 4%;font-size: inherit;">Nit:<span
+                                            class="red-text">*</span></label>
+                                    <div class="input-field-ps col s12">
+                                        <input id="with_icon" ng-model="consultAuto.numeroNit" type="text"
+                                            style="cursor: pointer;" text-upper  autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col l2 m2 s2">
+                                    <label style="padding-left: 9%;font-size: inherit;">Fecha
+                                        inicio:<span class="red-text">*</span></label>
+                                    <div class="col s12 ">
+                                        <input
+                                            class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l ng-pristine ng-valid ng-valid-max ng-touched"
+                                            ng-model="consultAuto.fechainicioConsulta" type="date">
+                                    </div>
+                                </div>
+                                <div class="col l2 m2 s2">
+                                    <label style="padding-left: 9%;font-size: inherit;">Fecha
+                                        final:<span class="red-text">*</span></label>
+                                    <div class="col s12 ">
+                                        <input
+                                            class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l ng-pristine ng-valid ng-valid-max ng-touched"
+                                            ng-model="consultAuto.fechafinalConsulta" type="date">
+                                    </div>
+                                </div>
+                                <!-- boton consultar -->
+                                <div class="col l3 m3 s3">
+                                    <div class="col s12 ">
+                                        <button class="white-text default-background" type="button"
+                                            ng-click="lista_autorizaciones_copago_cuota()"
+                                            style="border-radius: 10px;zoom:130%;margin-top: 17px;">Consultar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row dashboard-wrapper content-container white"
+            style="padding-bottom: 20px;margin-bottom: 0;zoom:65%;margin-left: -20px;"
+            ng-show="Tabs == 1 && Vista1_datos.length > 0">
+            <div class="row" style="margin-bottom: 0;">
+                <div class="col s12">
+                    <div class="col s1 no-padding label-new m-b left">
+                        <select class="select-new gray-input" style="box-shadow: none;" material-select watch
+                            ng-model="Vista1.Mostrar_Sol" ng-change="init_pag_cant_Mostrar(Vista1.Mostrar_Sol)">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                        <div style="line-height: 2;">
+                            <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                                title="Actualizar Tabla" ng-click="lista_fact_aut_copago_cuota()"></i>
+                        </div>
+                    </div>
+                    <form ng-submit="chg_filtrar1('filtrar_Programacion');">
+                        <div class="col s4 no-padding label-new m-b right"
+                            style="margin-right: .5rem !important;margin-top: 30px;">
+                            <label style="padding-left: 2%;font-size: inherit;">Buscar:</label>
+                            <div class="input-field-ps col s12">
+                                <input id="Var_Seccional_Filtrar_Sol"
+                                    class="margin border-none input-text-new gray-input w-100 m-l"
+                                    ng-model="Vista1.filtrar_Programacion" type="text" placeholder="..."
+                                    style="cursor: pointer;" text-upper autocomplete="off">
+                                <a><i style="position: absolute; top: 5px; right: 0px;cursor: pointer;"
+                                        class="material-icons prefix default-color"
+                                        ng-click="chg_filtrar1('filtrar_Programacion');">search</i></a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div style="width:100%;">
+                    <table id="H1_Tabla" class="bordered table_center_align"
+                        style="width:100%;font-size:6px !important;">
+                        <thead class="center-align default-background default-border white-text">
+                            <tr>
+                                <th>Documento</th>
+                                <th>Nombre de afiliado</th>
+                                <th>Regimen</th>
+                                <th>Prestador</th>
+                                <th>Numero de autorizacion</th>
+                                <th>Producto</th>
+                                <th>Dx</th>
+                                <th>Nombre Dx</th>
+                                <th>Nivel sisben</th>
+                                <th>Valor copago</th>
+                                <th>Valor cuata moderadora</th>
+                                <th>Numero de factura</th>
+                                <th>Valor factura</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="consultaAutorizaciones in list_DatosTemp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
+                                ng-click="" style="color: black;">
+                                <td>{{consultaAutorizaciones.TIPO_DOCUMENTO}} {{consultaAutorizaciones.DOCUMENTO}}</td>
+                                <td>{{consultaAutorizaciones.AFIC_NOMBRE}}</td>
+                                <td>{{consultaAutorizaciones.AUTC_REGIMEN}}</td>
+                                <td>{{consultaAutorizaciones.RAZON_SOCIAL}}</td>
+                                <td>{{consultaAutorizaciones.AUTN_AUTORIZACION_MANUAL}}</td>
+                                <td>{{consultaAutorizaciones.NOMBRE_PRODUCTO}}</td>
+                                <td>{{consultaAutorizaciones.COD_DX}}</td>
+                                <td>{{consultaAutorizaciones.NOMBRE_DX}}</td>
+                                <td>{{consultaAutorizaciones.AFIN_NIVEL_SISBEN}}</td>
+                                <td>${{formatPeso(consultaAutorizaciones.COPAGO_TEMPORAL)}}</td>
+                                <td>${{formatPeso(consultaAutorizaciones.CUOTA_MODERADORA)}}</td>
+                                <td>{{consultaAutorizaciones.FACC_FACTURA}}</td>
+                                <td>${{formatPeso(consultaAutorizaciones.VALOR_SERVICIO)}}</td>
+                            </tr>
+                            <tr ng-show="list_DatosTemp.length == 0">
+                                <td class="center-align" colspan="20" style="font-weight: bolder;">No se
+                                    encontraron
+                                    resultados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                        <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                                ng-click="paso('back')">&laquo;</button></li>
+                        <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                                class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button>
+                        </li>
+                        <li><button ng-disabled='currentPage >= list_DatosTemp.length/pageSize - 1'
+                                class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col s12" ng-show="Tabs == 2">
+            <div class="card ng-scope" style="margin: 38px; bottom: 10px ;zoom:75%;">
+                <div class="row">
+                    <div class="col s12">
+                        <!-- Informacion del Paciente -->
+                        <strong style="font-size: x-large;">
+                            FACTURAS RADICADAS CON AUTORIZACIONES OBJETO DE COPAGO Y/O CUOTA MODERADORA
+                        </strong>
+                        <div class="col l12 m12 s12">
+                            <div class="row">
+                                <div class="col l3 m3 s3">
+                                    <label style="padding-left: 4%;font-size: inherit;">Nit:<span
+                                            class="red-text">*</span></label>
+                                    <div class="input-field-ps col s12">
+                                        <input id="with_icon" ng-model="consultCopa.numeroNit" type="text"
+                                            style="cursor: pointer;" text-upper autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col l2 m2 s2">
+                                    <label style="padding-left: 9%;font-size: inherit;">Fecha
+                                        inicio:<span class="red-text">*</span></label>
+                                    <div class="col s12 ">
+                                        <input
+                                            class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l ng-pristine ng-valid ng-valid-max ng-touched"
+                                            ng-model="consultCopa.fechainicioConsulta" type="date">
+                                    </div>
+                                </div>
+                                <div class="col l2 m2 s2">
+                                    <label style="padding-left: 9%;font-size: inherit;">Fecha
+                                        final:<span class="red-text">*</span></label>
+                                    <div class="col s12 ">
+                                        <input
+                                            class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l ng-pristine ng-valid ng-valid-max ng-touched"
+                                            ng-model="consultCopa.fechafinalConsulta" type="date">
+                                    </div>
+                                </div>
+                                <!-- boton consultar -->
+                                <div class="col l3 m3 s3">
+                                    <div class="col s12 ">
+                                        <button class="white-text default-background" type="button"
+                                            ng-click="lista_fact_aut_copago_cuota()"
+                                            style="border-radius: 10px;zoom:130%;margin-top: 17px;">Consultar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row dashboard-wrapper content-container white"
+            style="padding-bottom: 20px;margin-bottom: 0;zoom:65%;margin-left: -20px;"
+            ng-show="Tabs == 2 && Vista2_datos.length > 0">
+            <div class="row" style="margin-bottom: 0;">
+                <div class="col s12">
+                    <div class="col s1 no-padding label-new m-b left">
+                        <select class="select-new gray-input" style="box-shadow: none;" material-select watch
+                            ng-model="Vista1.Mostrar_Sol" ng-change="init_pag_cant_Mostrar(Vista1.Mostrar_Sol)">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                        <div style="line-height: 2;">
+                            <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                                title="Actualizar Tabla" ng-click="lista_autorizaciones_cuo_mod()"></i>
+                        </div>
+                    </div>
+                    <form ng-submit="chg_filtrar2('filtrar_Programacion');">
+                        <div class="col s4 no-padding label-new m-b right"
+                            style="margin-right: .5rem !important;margin-top: 30px;">
+                            <label style="padding-left: 2%;font-size: inherit;">Buscar:</label>
+                            <div class="input-field-ps col s12">
+                                <input id="Var_Seccional_Filtrar_Sol"
+                                    class="margin border-none input-text-new gray-input w-100 m-l"
+                                    ng-model="Vista2.filtrar_Programacion" type="text" placeholder="..."
+                                    style="cursor: pointer;" text-upper autocomplete="off">
+                                <a><i style="position: absolute; top: 5px; right: 0px;cursor: pointer;"
+                                        class="material-icons prefix default-color"
+                                        ng-click="chg_filtrar2('filtrar_Programacion');">search</i></a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div style="width:100%;">
+                    <table id="H1_Tabla" class="bordered table_center_align"
+                        style="width:100%;font-size:6px !important;">
+                        <thead class="center-align default-background default-border white-text">
+                            <tr>
+                                <th>Documento</th>
+                                <th>Nombre del afiliado</th>
+                                <th>Regimen</th>
+                                <th>Prestador</th>
+                                <th>Valor copago</th>
+                                <th>Valor cuota moderadora</th>
+                                <th>Valor radicado</th>
+                                <th>Numero factura</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="consultaCopago in list_DatosTemp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
+                                ng-click="" style="color: black;">
+                                <td>{{consultaCopago.FACC_TIPO_DOC_AFILIADO}}
+                                    {{consultaCopago.FACC_AFILIADO}}</td>
+                                <td>{{consultaCopago.AFIC_NOMBRE}}</td>
+                                <td>{{consultaCopago.AFIC_REGIMEN}}</td>
+                                <td>{{consultaCopago.TERC_NOMBRE}}</td>
+                                <td>${{formatPeso(consultaCopago.VALOR_COPAGO)}}</td>
+                                <td>${{formatPeso(consultaCopago.VALOR_CUOTA_MODERADORA)}}</td>
+                                <td>${{formatPeso(consultaCopago.FACV_TOTAL_PROVEEDOR)}}</td>
+                                <td>{{consultaCopago.FACC_FACTURA}}</td>
+                            </tr>
+                            <tr ng-show="list_DatosTemp.length == 0">
+                                <td class="center-align" colspan="20" style="font-weight: bolder;">No se
+                                    encontraron
+                                    resultados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                        <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                                ng-click="paso('back')">&laquo;</button></li>
+                        <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                                class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button>
+                        </li>
+                        <li><button ng-disabled='currentPage >= list_DatosTemp.length/pageSize - 1'
+                                class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <style>
+        .subraya {
+            border-bottom-style: ridge !important;
+            border-color: #1a2e63 !important;
+            margin: 0px 9px !important;
+        }
+
+        .ps-light-yellow {
+            background-color: #f7fb00de !important;
+        }
+
+        .ps-light-green {
+            background-color: rgb(3, 197, 20) !important;
+        }
+
+        .ps-light-red {
+            background-color: #f75050 !important;
+        }
+
+        .ps-light-purple {
+            background-color: rgb(71, 71, 165) !important;
+        }
+
+        #tabla_modal_ENTREGA th {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
+
+        .btn_2 {
+            border: none;
+            border-radius: 2px;
+            display: inline-block;
+            height: 36px;
+            line-height: 36px;
+            outline: 0;
+            padding: 0 2rem;
+            text-transform: uppercase;
+            vertical-align: middle;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #1a2e63;
+        }
+
+        .light-red {
+            background-color: palevioletred !important;
+        }
+
+
+        .input-field-ps {
+            position: relative;
+            margin-top: 1px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .select-new-ps {
+            outline: none !important;
+            height: 34px;
+            background-color: white;
+            display: block;
+            border: 1px solid #8a88865e;
+            border-radius: 0.25rem;
+            border-bottom: 1px solid #8a88865e;
+            box-shadow: none !important;
+        }
+
+        .btn-new-ps {
+            border: none;
+            border-radius: 2px;
+            display: inline-block;
+            height: 32px;
+            line-height: 36px;
+            outline: 0;
+            padding: 0 2rem;
+            text-transform: uppercase;
+            vertical-align: middle;
+            background-color: #1a2e63;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        .border_bottom_LR {
+            border-bottom-left-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+        }
+
+        .Green_Est {
+            background-color: green !important;
+        }
+
+        .Red_Est {
+            background-color: red !important;
+        }
+
+        .buena {
+            color: rgb(3, 197, 20) !important;
+        }
+
+        .poca {
+            color: rgb(235, 156, 5) !important;
+        }
+
+        .baja {
+            color: rgb(245, 75, 75) !important;
+        }
+
+        .teal.activo {
+            background-color: rgb(3, 197, 20) !important;
+        }
+
+        .teal.procesado {
+            background-color: rgb(71, 71, 165) !important;
+        }
+
+
+        .yellow {
+            background-color: #b7a60f !important;
+        }
+
+
+
+
+        #IMG_Secc {
+            cursor: pointer;
+        }
+
+        #IMG_Secc:hover .tooltip-css3 {
+            display: block;
+        }
+
+        .tooltip-css3:before {
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 20px solid #6c63ff;
+            bottom: -15px;
+            content: "";
+            height: 0;
+            left: 50%;
+            margin-left: -30px;
+            position: absolute;
+            transform: skew(-45deg);
+            width: 0;
+        }
+
+        .tooltip-css3 {
+            background-color: #6c63ff;
+            border-radius: 100% 100% 100% 100%;
+            box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+            color: #FFFFFF;
+            display: none;
+            left: 70%;
+            padding: 20px 30px;
+            position: absolute;
+            top: 23%;
+        }
+
+        .Btn_Secc_Pen {
+            background-color: #afaaff;
+            box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+            color: #FFFFFF;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .Btn_Secc_New {
+            background-color: #afaaff;
+            box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+            color: #FFFFFF;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* /// */
+        .Con_pulse_P {
+            /* background: #FF6D4A; */
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_P 5s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_P {
+            0% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.7), 0 0 0 0 rgba(71, 71, 165, 0.7);
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0.7);
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 15px rgba(71, 71, 165, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0);
+            }
+        }
+
+
+        .Con_pulse_G {
+
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_G 3s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_G {
+            0% {
+                box-shadow: 0 0 0 0 rgba(162, 162, 175, 0.7), 0 0 0 0 rgba(162, 162, 175, 0.7);
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(162, 162, 175, 0.7);
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 15px rgba(71, 71, 165, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0);
+            }
+        }
+
+
+        .Con_pulse_V {
+            /* background: #FF6D4A; */
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_V 5s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_V {
+            0% {
+                box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.7), 0 0 0 0 rgba(43, 255, 36, 0.7);
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(43, 255, 36, 0.0), 0 0 0 0 rgba(43, 255, 36, 0.7);
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.0), 0 0 0 15px rgba(43, 255, 36, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.0), 0 0 0 0 rgba(43, 255, 36, 0);
+            }
+        }
+
+        /* /// */
+        .Animacion_HojaForm {
+            animation: 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal both running swing-in-top-fwd;
+        }
+
+        @keyframes swing-in-top-fwd {
+            0% {
+                /* -webkit-transform: rotateX(-100deg);
+          transform: rotateX(-100deg);
+          -webkit-transform-origin: top;
+          transform-origin: top; */
+                opacity: 0;
+            }
+
+            100% {
+                /* -webkit-transform: rotateX(0deg);
+          transform: rotateX(0deg);
+          -webkit-transform-origin: top;
+          transform-origin: top; */
+                opacity: 1;
+            }
+        }
+
+        .BgColor_A {
+            background: linear-gradient(to bottom left, #37daf0, #00acc1, #37daf0);
+        }
+
+        .BgColor_R {
+            background: linear-gradient(to bottom left, #f1ad5a, #fb8c00, #f1ad5a);
+        }
+
+        .BgColor_C {
+            background: linear-gradient(to bottom left, #e65b8e, #d81b60, #e65b8e);
+        }
+
+        .BgColor_O {
+            background: linear-gradient(to bottom left, #d7d9db, #6A6D71, #d7d9db);
+        }
+
+        .BgColor_N {
+            background: linear-gradient(to bottom left, #63f193, #25D962, #63f193);
+        }
+
+        .Color_A {
+            color: #00acc1 !important;
+            border-left: 5px solid #00acc1;
+        }
+
+        .Color_R {
+            color: #fb8c00 !important;
+            border-left: 5px solid #fb8c00;
+        }
+
+
+
+        .Color_C {
+            color: #d81b60 !important;
+            border-left: 5px solid #d81b60;
+        }
+
+        .Color_O {
+            color: #6A6D71 !important;
+            border-left: 5px solid #6A6D71;
+        }
+
+        .Color_N {
+            color: #25D962 !important;
+            border-left: 5px solid #25D962;
+        }
+
+        .textarea2 {
+            padding: 0.5rem !important;
+            width: calc(100% - 0rem) !important;
+            /* background-color: #cbcdce; */
+            background-color: #f1f3f4;
+            resize: none;
+            height: 7rem;
+        }
+
+        input.input-text-new {
+            background-color: #f1f3f4 !important;
+        }
+
+        .gray-input {
+            background-color: #f1f3f4 !important;
+        }
+
+        .Tarjeta_Titulo {
+            -webkit-transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+            transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+            position: relative;
+            z-index: 3;
+        }
+
+        .Tarjeta_Titulo:hover {
+            transform: translate3d(0, -25px, 0);
+        }
+
+        .Tarjeta_Titulo>.card {
+            border-radius: .375rem;
+            z-index: 2;
+        }
+
+        .Tarjeta_Titulo .card-content {
+            padding: 0.6rem 0.8rem;
+            display: flex;
+        }
+
+        .Tarjeta_Titulo h6 {
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
+            font-size: 0.8125rem;
+        }
+
+        .Tarjeta_Texto {
+            z-index: -1;
+            margin-top: -3.7em;
+            width: calc(100% - 30px);
+            left: 15px;
+            /* text-align: center; */
+            width: auto;
+            border-radius: .375rem;
+            height: 41px;
+            padding: 0.9rem 0.8rem;
+        }
+
+        .Tarjeta_Texto>span {
+            position: relative;
+            font-size: 0.8em;
+            font-weight: 700;
+        }
+
+        #H1_Tabla>thead,
+        #H1_Tabla>tbody {
+            font-size: 1em;
+            /* border: 3px; */
+            border-width: medium;
+            border-style: solid;
+            border-radius: .375rem;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .Class_Tabla_Btn_Gestionar {
+            border-radius: .375rem;
+            width: 30%;
+            margin: auto;
+            border-width: medium;
+        }
+
+        .Class_Tabla_Btn_Gestionar h6 {
+            font-weight: 700 !important;
+            font-size: 0.8125rem;
+        }
+
+        .animated {
+            -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+        }
+
+        .switch label .lever.check-c:after {
+            background-color: #ffffff;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            background-color: #ffffff;
+        }
+
+        .dropdown-content li {
+            min-height: 23px;
+        }
+
+        .select_maxheigth ul {
+            max-height: 125px;
+        }
+
+        .dropdown-content li>span {
+            line-height: 32px;
+            padding: 0px 16px;
+        }
+
+        .currency-input {
+            position: relative;
+        }
+
+        .currency {
+            padding-left: -22px;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 8px;
+            font-size: 21px;
+        }
+
+        #toast-container .toast {
+            border-radius: 10px !important;
+            font-weight: 600;
+            text-align: center !important;
+            word-break: keep-all;
+            padding: 10px 25px;
+            width: auto;
+            background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+        }
+
+        blockquote {
+            font-weight: 700;
+            background-color: #f1f3f4;
+        }
+
+        .VistaFile .Iframe {
+            visibility: hidden;
+            height: 50vh;
+            color: #fff;
+            text-align: center;
+            margin-bottom: -0.6rem;
+            border-top-right-radius: 6px;
+            border-top-left-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: calc(100% + 6px);
+            right: 0;
+            opacity: 0;
+            transition: opacity 1s;
+            border: 3px solid #333333;
+        }
+
+        .VistaFile:hover .Iframe {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .Iframe:hover {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .input-file-radius-cargado {
+            /* border-top-right-radius: 0 !important; */
+            /* border-bottom-right-radius: 0 !important; */
+            background-color: #03c5146e !important;
+        }
+
+        .input-file-radius-cargado2 {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            background-color: #03c5146e !important;
+        }
+
+        .input-file-radius-opcional {
+            background-color: #0000004f !important;
+        }
+
+        .input-file-radius-obligatorio {
+            background-color: #f54b4bb0 !important;
+        }
+
+        .input-file-radiu {
+            border-radius: 10px;
+        }
+
+        .input-file-radius {
+            border-radius: 10px;
+        }
+
+        .select-wrapper input.select-dropdown:disabled {
+            color: black;
+        }
+
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-item:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .list-group-item:hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item.hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .list-group {
+            font-size: 14px;
+        }
+
+        .class_upper td,
+        .class_upper th {
+            text-transform: uppercase;
+        }
+
+        .class_gris {
+            color: rgba(0, 0, 0, 0.26) !important;
+        }
+
+        .class_label {
+            color: #80868b;
+        }
+
+        /*******************/
+
+        .switch label .lever {
+            background-color: #1a2e63;
+            width: 60px;
+            height: 29px;
+        }
+
+        .switch label .lever:after {
+            left: 4px;
+            top: 4px;
+            background-color: #fff !important;
+        }
+
+        .switch label .lever.check-c {
+            background-color: #1a2e63 !important;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            left: 35px;
+        }
+
+        /* // */
+        .lever.check-c:hover span.lever.check-c:after {
+            width: 100px !important;
+        }
+
+        /**/
+        [type="checkbox"].filled-in:not(:checked)+label:after {
+            border: 3px solid #1a2e63;
+        }
+
+        [type="checkbox"].filled-in:checked+label:after {
+            border: 3px solid #1a2e63;
+            background-color: #1a2e63;
+        }
+
+        .modal {
+            border-radius: 10px;
+            overflow: hidden;
+            max-height: 88%;
+            z-index: 1003;
+            display: none;
+            opacity: 0;
+            transform: scaleX(0.7);
+            top: 4%;
+        }
+
+        .pagination {
+            text-align: center;
+            padding-top: 0px;
+            font-weight: 800;
+        }
+
+        /* --------------------------------------------------------------------------------------------- */
+        @keyframes Anim_Show {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .Anim_Show {
+            animation-name: Anim_Show;
+            animation-duration: 1s;
+        }
+
+        .Con_pulse_A {
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_A 5s linear infinite;
+        }
+
+        @keyframes animate-pulse_A {
+            0% {
+                box-shadow: 0 0 0 0 #f7fb00de, 0 0 0 0 #f7fb00de;
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 #f7fb00de;
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+            }
+        }
+
+        .Con_pulse_X {
+            /* background: #FF6D4A; */
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_X 5s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_X {
+            0% {
+                box-shadow: 0 0 0 0 #f75050, 0 0 0 0 #f75050;
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 #f75050;
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+            }
+        }
+
+        .Con_pulse_D {
+            /* background: #FF6D4A; */
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_D 5s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_D {
+            0% {
+                box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.7), 0 0 0 0 rgba(235, 156, 5, 0.7);
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(235, 156, 5, 0.0), 0 0 0 0 rgba(235, 156, 5, 0.7);
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.0), 0 0 0 15px rgba(235, 156, 5, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(235, 156, 5, 0.0), 0 0 0 0 rgba(235, 156, 5, 0);
+            }
+        }
+
+
+
+        input[type=text] {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            background-clip: padding-box;
+            padding: 0 1em;
+            font-weight: 600;
+            height: 2rem;
+        }
+    </style>
+</div>

@@ -1,0 +1,140 @@
+<div>
+   <div class="row" >
+      <div class="col l12 m6 s12">
+         <div class="card" ng-init="obtenerDocumento()">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch divcardcustom2" style="display:flex;">
+                  <strong>Búsqueda de Afiliado:</strong>
+               </div>
+            </div>
+
+            <form id="datosform">
+               <div class="col s12">
+                  <div class="input-field col l4 m12 s12">
+                     <label style=" margin-top: -20px;">Tipo de Documento</label>
+                     <select class="select-chosen-eps" ng-model="type" ng-change="solobusqueda()"> 
+                        <option ng-repeat="documento in Documentos.Documento" ng-value="documento.Codigo">{{documento.Nombre}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l4 m12 s12">
+                     <input id="idnumber" type="text" class="validate" ng-model="id" ng-change="solobusqueda()">
+                     <label for="direccion" class="">Número de identificación</label>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <a class="btn-floating btn-large waves-effect waves-light primary-button" ng-click="busquedaAfiliado()"><i class="material-icons dp48">search</i></a>
+                  </div>
+               </div>
+
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l3 m12 s12">
+                     <input id="nombre" type="text" ng-model="afildata['0'].NOMBRE" disabled="true" >
+                     <label for="nombre" class="">Nombre completo</label>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="fecha_nacimiento" type="text" ng-model="afildata['0'].FECHA_NACIMIENTO" disabled="true">
+                     <label for="fecha_nacimiento" class="">Fecha Nacimiento</label>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="genero" type="text" ng-model="afildata['0'].SEXO" disabled="true">
+                     <label for="genero" class="">Género</label>
+                  </div>
+                  <div class="input-field col l2 m12 s12" >
+                     <input id="departamento" type="text" ng-model="afildata['0'].REGIMEN" disabled="true" >
+                     <label for="departamento" class="">Régimen</label>
+                  </div>
+                  <div class="input-field col l2 m12 s12" >
+                     <input id="municipio" type="text" ng-model="afildata['0'].ESTADO" disabled="true">
+                     <label for="municipio" class="">Estado Afiliación</label>
+                  </div>
+               </div>
+            </form>
+
+            <div class="input-button">
+               <center>
+                  <button class="btn btn-primary" ng-click="generaEncuesta()" ng-disabled="apto">Generar encuesta</button>
+               </center>
+            </div>
+            <br>
+         </div>
+      </div>
+   </div>
+
+   <div class="row" ng-hide="panelencuesta">
+      <div class="col l12 m12 s12">
+         <div class="card">
+            <div class="card-title">
+               <div class="text-al switch" style="display:flex;">
+                  <center><strong>Encuesta de Satisfacción</strong></center>
+               </div>
+            </div>
+            <div class="card-content clearfix">
+               <form id="encuesta">
+                  <table class="highlight responsive-table bordered" align="center">
+                     <thead align="center">
+                        <tr>
+                           <td><center><strong>NÚMERO</strong></center></td>
+                           <td><center><strong>PREGUNTA</strong></center></td>
+                           <td><center><strong>CALIFICACIÓN</strong></center></td>
+                        </tr>
+                     </thead>
+                     <tbody style="height: 40%; overflow: scroll;">
+                        <tr data-ng-repeat="q in question">
+                           <td>{{q.NUMEROPREGUNTA}}</td>
+                           <td style="font-size: 14px;">{{q.PREGUNTA}}</td>
+                           <td style="font-size: 14px;">
+                              <select class="select-chosen-eps" id="{{'respuesta'+q.NUMEROPREGUNTA}}"> 
+                                 <option value="S">SELECCIONAR</option>
+                                 <option value="E">EXCELENTE</option>
+                                 <option value="B">BUENO</option>
+                                 <option value="A">ACEPTABLE</option>
+                                 <option value="M">MALO</option>
+                                 <option value="N">NO SABE / NO RESPONDE</option>
+                              </select>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>17</td>
+                           <td style="font-size: 14px;">Recomendaria nuestros servicios?</td>
+                           <td style="font-size: 14px;">
+                              <select class="select-chosen-eps" ng-model="recomendaria">
+                                 <option value="S">Si</option>
+                                 <option value="N">No</option>
+                              </select>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </form>
+            </div>
+            <div class="input-button">
+               <center><button class="btn btn-primary" ng-click="enviarEncuesta(type,id)" >Enviar Encuesta</button></center>
+            </div>
+            <br>
+         </div>
+      </div>
+   </div>
+
+   <div class="fixed-action-btn horizontal">
+      <div class="tooltip">
+         <a class="btn-floating btn-large" data-toggle="modal" id="return-to-top">
+         <i class="zmdi zmdi-long-arrow-up zmdi-hc-fw"></i>
+         </a>
+         <span class="tooltiptext">Subir</span>
+      </div>
+   </div>
+   <script type="text/javascript">
+      $(window).scroll(function() {
+          if ($(this).scrollTop() >= 50) {        // If page is scrolled more than 50px
+              $('#return-to-top').fadeIn(200);    // Fade in the arrow
+          } else {
+              $('#return-to-top').fadeOut(200);   // Else fade out the arrow
+          }
+      });
+      $('#return-to-top').click(function() {      // When arrow is clicked
+          $('body,html').animate({
+              scrollTop : 0                       // Scroll to top of body
+          }, 500);
+      });
+   </script>
+</div>
+

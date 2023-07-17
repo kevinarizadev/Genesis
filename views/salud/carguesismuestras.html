@@ -1,0 +1,307 @@
+<div style="padding: 12px;">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .switch label input[type=checkbox]:checked+.lever {
+            background-color: #5c92e5;
+        }
+
+        .switch input[type=checkbox][disabled]:checked+.lever {
+            background-color: #e3e3e3;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            background-color: #2167d3;
+            left: 24px;
+        }
+    </style>
+    <!-- <div class="row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s3" ng-click="detalles = false"><a class="active" href="javascript: void(0)">RESUMEN
+                        Y
+                        CARGUE</a></li>
+                <li class="tab col s3" ng-click="detalles = true"><a href="javascript: void(0)">DETALLES</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col s12 m12 l12">
+        <div class="card">
+            <div class="foot4 divcardcustom">
+                <div class="text-al switch">
+                    <strong>{{ detalles === true ? 'Detalles de cargue del Instituto Nacional de Salud' : 'Información general cargue del Instituto Nacional de Salud' }}</strong>
+                    <button style="border: none; border-radius: 50%; width: 26px; height: 26px; float: right; top: -3px; position: relative; background-color: #2ab7a9;" ng-click="detalles = !detalles">{{ detalles === false ? '+' : '-' }}</button>
+                </div>
+            </div>
+            <div class="card-content" ng-show="detalles === false">
+                <div class="row">
+                    <div class="col s3">
+                        <div class="flex flex-row justify-between items-center p-3 rounded bg-blue-600 text-white">
+                            <h6><i class="fa fa-tasks"></i> Total cargues</h6>
+                            <span class="text-3xl" id="total_cargues">0</span>
+                        </div>
+                    </div>
+                    <div class="col s3">
+                        <div class="flex flex-row justify-between items-center p-3 rounded bg-orange-600 text-white">
+                            <h6><i class="fa fa-users"></i> Total afiliados</h6>
+                            <span class="text-3xl" id="total_afiliados">0</span>
+                        </div>
+                    </div>
+                    <div class="col s3">
+                        <div class="flex flex-row justify-between items-center p-3 rounded bg-green-600 text-white">
+                            <h6><i class="fa fa-user-plus"></i> Encontrados</h6>
+                            <span class="text-3xl" id="afiliados_encontrados">0</span>
+                        </div>
+                    </div>
+                    <div class="col s3"">
+              <div class=" flex flex-row justify-between items-center p-3 rounded bg-red-600 text-white">
+                        <h6><i class="fa fa-user-times"></i> No encontrados</h6>
+                        <span class="text-3xl" id="afiliados_no_encontrados">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-content" ng-show="detalles === true">
+            <div class="row pb-0">
+                <div class="col s2">
+                    <div class="switch">
+                        <label>
+                            Todos
+                            <input type="checkbox" ng-model="filtro.activo" ng-change="chequearFiltro()">
+                            <span class="lever"></span>
+                            Filtrar
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col s10 flex flex-row justify-end">
+                    <div class="pr-3">
+                        <input type="checkbox" id="check-encontrados" ng-disabled="!filtro.activo" ng-model="filtro.encontrados" ng-change="filtrar()" />
+                        <label for="check-encontrados">Encontrados</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="test7" ng-disabled="!filtro.activo"  ng-model="filtro.nuevos" ng-change="filtrar()" />
+                        <label for="test7">Nuevos</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="test8" ng-disabled="!filtro.activo" ng-model="filtro.actualizados" ng-change="filtrar()" />
+                        <label for="test8">Actualizados</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="test9" ng-disabled="!filtro.activo" ng-model="filtro.inconsistencias" ng-change="filtrar()" />
+                        <label for="test9">Con inconsistencias</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="test6" ng-disabled="!filtro.activo" ng-model="filtro.no_encontrados" ng-change="filtrar()" />
+                        <label for="test6">No Encontrados</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s3" id="select-container">
+                </div>
+
+                <div class="col s3">
+                    <button class="btn relative" style="bottom: -10px;" ng-click="exportarDatos()">
+                        <i class="icon-file-excel"></i>Descargar datos
+                    </button>
+                </div>
+            </div>
+
+            <div class="row" id="table-container">
+                <table id="datatable"></table>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="col s12 m12 l12">
+    <div class="card">
+        <div class="foot4 divcardcustom">
+            <div class="text-al switch">
+                <strong>Cargue de SISMUESTRAS</strong>
+            </div>
+        </div>
+        <div class="card-content" ng-show="cargando === true">
+            <div class="w-100">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="display-flex">
+                            <h5 class="w-divTitle noselectxtpqr">Tienes un cargue pendiente ({{ reintento === true ? 'Reintentando ' : '' }}{{ actual }} de {{ todos }})</h5>
+                        </div>
+                        <div class="row">
+                            <progress id="progreso_carga" value="0" max="0" style="
+                                position: relative;
+                                width: 100%;
+                                height: 28px;
+                                margin-top: 12px;
+                            "></progress>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-content" ng-show="cargando === false">
+            <div class="w-100">
+                <div class="row">
+                    <div class="col s12">
+                        <input id="inputFilePlaceHolderMasiv" class="file-path" type="file"
+                            placeholder="Adjuntar archivo" style="display: none;" multiple>
+                        <div class="p-6 border-dashed border-2 border-blue-600 rounded-lg text-center" id="file-drop"
+                            ng-click="cargarArchivo()">
+                            <p>Clic o arrastrar los archivos a cargar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col s12 m12 l12" ng-show="false">
+    <div class="card">
+        <div class="foot4 divcardcustom">
+            <div class="text-al switch">
+                <strong>Resumen de cargue</strong>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="w-100">
+                <!-- <div class="row">
+                    <p>Estado: <strong class="green-text">Exitoso</strong></p>
+                    <p>Archivo cargado: <strong>176-170620092253-000.txt</strong></p>
+                    <p>Fecha cargue: <strong>05/06/2020 07:45 AM</strong></p>
+                    <p>Fecha procesado: <strong>05/06/2020 08:00 AM</strong></p>
+                </div> -->
+
+                <div class="row">
+                    <div class="col s4 flex flex-col justify-center items-center text-center">
+                        <span class="text-3xl text-blue-600">{{ ultimoCargueTotal }}</span>
+                        <span class="text-blue-600">Registros totales</span>
+                    </div>
+
+                    <div class="col s4 flex flex-col justify-center items-center text-center">
+                        <span class="text-3xl text-green-600">{{ ultimoCargueEncontrados.length }}</span>
+                        <span class="text-green-600">Afiliados encontrados</span>
+                    </div>
+
+                    <!-- <div class="col s2 flex flex-col justify-center items-center text-center">
+                        <span class="text-3xl text-purple-600">7</span>
+                        <span class="text-purple-600">Afiliados nuevos</span>
+                    </div> -->
+<!-- 
+                    <div class="col s2 flex flex-col justify-center items-center text-center">
+                        <span class="text-3xl text-gray-600">3</span>
+                        <span class="text-gray-600">Afiliados actualizados</span>
+                    </div> -->
+
+                    <!-- <div class="col s2 flex flex-col justify-center items-center text-center">
+                        <span class="text-3xl text-orange-600">0</span>
+                        <span class="text-orange-600">Afiliados con inconsistencias</span>
+                    </div> -->
+
+                    <div class="col s4 flex flex-col justify-center items-center text-center">
+                        <span class="text-3xl text-red-600">{{ ultimoCargueNoEncontrados.length }}</span>
+                        <span class="text-red-600">Afiliados no encontrados</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs">
+                            <li class="tab col s3"><a class="active" ng-click="vistaResumen = 'registros'" href="javascript: void(0)">REGISTROS</a></li>
+                            <li class="tab col s3"><a ng-click="vistaResumen = 'encontrados'"  href="javascript: void(0)">ENCONTRADOS</a></li>
+                            <!-- <li class="tab col s3"><a href="javascript: void(0)">NUEVOS</a></li> -->
+                            <!-- <li class="tab col s3"><a href="javascript: void(0)">ACTUALIZADOS</a></li> -->
+                            <!-- <li class="tab col s3"><a href="javascript: void(0)">CON INCONSISTENCIAS</a></li> -->
+                            <li class="tab col s3"><a ng-click="vistaResumen = 'no_encontrados'" href="javascript: void(0)">NO ENCONTRADOS</a></li>
+                        </ul>
+
+                        <div class="row" ng-show="vistaResumen === 'registros'">
+                            <div class="col s12">
+                                <table>
+                                    <thead>
+                                        <th># Registro</th>
+                                        <th>Tipo Documento</th>
+                                        <th>Documento</th>
+                                        <th>Nombre</th>
+                                        <th>Estado</th>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr ng-repeat="(indice, registro) in ultimaListaGestion">
+                                            <td>{{ indice + 1 }}</td>
+                                            <td>{{ registro.TIPO }}</td>
+                                            <td>{{ registro.DOCUMENTO }}</td>
+                                            <td>{{ registro.NOMBRE_COMPLETO }}</td>
+                                            <td>{{ registro.ESTADO_AFILIADO }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="vistaResumen === 'encontrados'">
+                            <div class="col s12">
+                                <table>
+                                    <thead>
+                                        <th># Registro</th>
+                                        <th>Tipo Documento</th>
+                                        <th>Documento</th>
+                                        <th>Nombre</th>
+                                        <th>Estado</th>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr ng-repeat="(indice, registro) in ultimoCargueEncontrados">
+                                            <td>{{ indice + 1 }}</td>
+                                            <td>{{ registro.TIPO }}</td>
+                                            <td>{{ registro.DOCUMENTO }}</td>
+                                            <td>{{ registro.NOMBRE_COMPLETO }}</td>
+                                            <td>{{ registro.ESTADO_AFILIADO }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="vistaResumen === 'no_encontrados'">
+                            <div class="col s12">
+                                <table>
+                                    <thead>
+                                        <th># Registro</th>
+                                        <th>Tipo Documento</th>
+                                        <th>Documento</th>
+                                        <th>Nombre</th>
+                                        <th>Estado</th>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr ng-repeat="(indice, registro) in ultimoCargueNoEncontrados">
+                                            <td>{{ indice + 1 }}</td>
+                                            <td>{{ registro.TIPO }}</td>
+                                            <td>{{ registro.DOCUMENTO }}</td>
+                                            <td>{{ registro.NOMBRE_COMPLETO }}</td>
+                                            <td>{{ registro.ESTADO_AFILIADO }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-action">
+            <a href="javascript: void(0)" ng-click="cargueExitoso = false; carguePendiente = false; vistaResumen = 'registros'">Aceptar</a>
+        </div>
+    </div>
+</div>
+</div>

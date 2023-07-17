@@ -1,0 +1,581 @@
+<div id="administradorSGC" class="white newdesing collapsible-new">
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            /* display: none; */
+            -webkit-appearance: none;
+        }
+
+        ::-webkit-input-placeholder {
+            color: #80868b;
+        }
+
+        g+.highcharts-button,
+        svg>.highcharts-tooltip+text {
+            display: none;
+        }
+
+        .s6>.tipo_d {
+            margin-left: .5rem !important;
+        }
+
+        .collapsible-body-new tr.active>td:nth-child(1) {
+            color: #26a69a;
+            font-weight: bold;
+        }
+
+        .collapsible-body-new tr.active>td>i.icon-down-open-1 {
+            transform: rotate(180deg);
+            display: flex;
+            color: #26a69a;
+        }
+
+        /* .collapsible-body-new tr.active {
+            background-color: #f1f3f4;
+            border-top: 1px solid #1a2e63;
+        } */
+        /* .collapsible-body-new tr.active+tr {
+            border-bottom: 1px solid #1a2e63;
+        } */
+        .select-default-new {
+            outline: none !important;
+            height: 31px;
+            display: block;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid #dadce0;
+            box-shadow: none !important;
+        }
+
+        [type="radio"]+label:after,
+        [type="radio"]+label:before {
+            opacity: 0 !important;
+        }
+
+        [type="radio"]+label {
+            border-bottom: 2px solid transparent;
+        }
+
+        [type="radio"]:checked+label {
+            border: 2px solid #1a2e63;
+        }
+    </style>
+    <div class="row section-header margin">
+        <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5>Administrador del SGC</h5>
+            </li>
+            <!-- <li ng-if="tabs.select==1 || tabs.select==3">
+                    <i class="icon-plus green-text cursor-pointer" title="Agregar un documento"> Agregar</i>
+                </li> -->
+            <!-- <li>
+                <a href="#/procesosnew">
+                    <i class="icon-sitemap default-color" style="cursor:pointer;font-size: 18px;"
+                        title="Modulo de procesos"></i>
+                </a>
+            </li> -->
+            <li>
+                <ul class="tabs transparent">
+                    <li class="tab col w-auto">
+                        <a ng-click="seleccionar(1)" ng-class="{'active':tabs.select==1}"
+                            href="javascript:void(0)">Macroprocesos <i class="icon-sitemap"></i></a>
+                    </li>
+                    <li class="tab col w-auto">
+                        <a ng-click="seleccionar(2);" ng-class="{'active':tabs.select==2}"
+                            href="javascript:void(0)">Indicadores <i class="icon-chart-bar"></i></a>
+                    </li>
+                    <li class="tab col w-auto">
+                        <a ng-click="seleccionar(3)" ng-class="{'active':tabs.select==3}"
+                            href="javascript:void(0)">Plantillas <i class="icon-folder-open-1"></i></a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="row dashboard-wrapper content-container">
+        <!-- ------------------------------------------------------------------------------------------------------------- TAB.MACROPROCESOS -->
+        <div ng-if="tabs.select==1" class="col s12 no-padding">
+            <div class="col s12 m12 l5">
+                <div class="col s12 no-padding label-new m-b">
+                    <select ng-model="tab_macroprocesos.macroproceso"
+                        ng-change="cambiar_tipo_macroproceso(tab_macroprocesos.macroproceso);tab_macroprocesos.proceso='';tab_macroprocesos.codigo=''"
+                        id="tab_macroprocesos_macroproceso" class="select-default-new input-out-new"
+                        style="box-shadow: none;">
+                        <option value="">Seleccionar</option>
+                        <option ng-repeat="mac in macroprocesos_select" value="{{mac.ID}}">{{mac.NOMBRE}}</option>
+                    </select>
+                    <label for="tab_macroprocesos_macroproceso">Macroprocesos</label>
+                </div>
+                <div class="col s12 no-padding label-new m-b">
+                    <select ng-model="tab_macroprocesos.proceso"
+                        ng-change="cambiar_tipo_proceso(tab_macroprocesos.proceso);tab_macroprocesos.subproceso='';tab_macroprocesos.codigo=''"
+                        id="tab_macroprocesos_proceso" class="select-default-new input-out-new" style="box-shadow: none;">
+                        <option value="">Seleccionar</option>
+                        <option ng-repeat="pro in proceso_select" value="{{pro.ID}}">
+                            {{pro.NOMBRE}}({{pro.CODIFICACION}})</option>
+                    </select>
+                    <label for="tab_macroprocesos_proceso">Proceso</label>
+                </div>
+                <div class="col {{(subproceso_select.length==0)?'s12':'s6'}} no-padding label-new m-b">
+                    <select ng-model="tab_macroprocesos.tipo_documento" id="tab_macroprocesos_tipo_documento"
+                        class="select-default-new input-out-new" style="box-shadow: none;">
+                        <option value>Seleccionar</option>
+                        <option ng-repeat="tds in tipo_documento_select" value="{{tds.codigo}}">
+                            {{tds.nombre}}({{tds.codigo}})</option>
+                    </select>
+                    <label for="tab_macroprocesos_tipo_documento">Tipo de Documento</label>
+                </div>
+                <div class="col s6 no-padding label-new m-b {{(subproceso_select.length>0)?'':'ng-hide'}}">
+                    <select ng-model="tab_macroprocesos.subproceso" id="tab_macroprocesos_subproceso"
+                        class="select-default-new input-out-new tipo_d" style="box-shadow: none;">
+                        <option value="">Seleccionar</option>
+                        <option ng-repeat="sub in subproceso_select" value="{{sub.ID}}">
+                            {{sub.NOMBRE}}({{sub.CODIFICACION}})</option>
+                    </select>
+                    <label for="tab_macroprocesos_subproceso">Subproceso</label>
+                </div>
+                <div class="col s12 no-padding label-new m-b">
+                    <input ng-model="tab_macroprocesos.nombre" id="tab_macroprocesos_nombre" type="text"
+                        autocomplete="off" class="margin border-none white input-text-new input-w-p input-out-new w-100">
+                    <label for="tab_macroprocesos_nombre">Nombre del Documento</label>
+                </div>
+                <div class="col s5 no-padding label-new m-b">
+                    <input ng-model="tab_macroprocesos.codigo" id="tab_macroprocesos_codigo" type="text"
+                        class="margin border-none white input-text-new input-w-p input-out-new w-100">
+                    <label for="tab_macroprocesos_codigo">Código <i
+                            ng-click="generar_codigo(tab_macroprocesos.proceso,tab_macroprocesos.tipo_documento)"
+                            class="icon-cog cursor-pointer"></i></label>
+                </div>
+                <div class="col s2 no-padding label-new m-b">
+                    <input ng-model="tab_macroprocesos.version" ng-init="tab_macroprocesos.version=1" min="0" max="1000"
+                        id="tab_macroprocesos_version" type="number"
+                        class="margin border-none white input-text-new input-w-p m-l input-out-new w-100">
+                    <label for="tab_macroprocesos_version">Versión</label>
+                </div>
+                <div class="col s5 no-padding label-new m-b">
+                    <input ng-model="tab_macroprocesos.fecha_ultima_version" id="tab_macroprocesos_fecha_ultima_version"
+                        type="date" class="datepicker border-none input-date-new white m-l input-out-new">
+                    <label for="tab_macroprocesos_fecha_ultima_version">Fecha Versión</label>
+                </div>
+                <div class="col s12 m6 l6 no-padding label-new m-b">
+                    <select ng-model="tab_macroprocesos.estado" id="tab_macroprocesos_estado"
+                        class="select-default-new input-out-new" style="box-shadow: none;">
+                        <option value>Seleccionar</option>
+                        <option ng-repeat="est in estado_select" value="{{est.codigo}}">{{est.nombre}}</option>
+                    </select>
+                    <label for="tab_macroprocesos_estado">Estado</label>
+                </div>
+                <div class="col s6 no-padding label-new m-b">
+                    <select ng-model="tab_macroprocesos.origen_documento" id="tab_macroprocesos_origen_documento"
+                        class="select-default-new input-out-new m-l" style="box-shadow: none;">
+                        <option value>Seleccionar</option>
+                        <option ng-repeat="ori in origen_documento" value="{{ori.codigo}}">{{ori.nombre}}</option>
+                    </select>
+                    <label for="tab_macroprocesos_origen_documento">Origen del Documento</label>
+                </div>
+                <div class="col s12 m12 l12 no-padding label-new m-b">
+                    <div data-file="Seleccionar Documento" class="input-out-new input-file-new">
+                        <i class="icon-folder-open-1"></i>
+                        <input input-ng-file id="macroprocesos" data-index="0" data-name_default="Seleccionar Documento"
+                            type="file" class="margin border-none">
+                    </div>
+                    <label for="macroprocesos">Archivo:</label>
+                </div>
+                <div class="col s12 m12 l7 no-padding m-b">
+                    <input ng-if="!tab_macroprocesos.boton_activo"
+                        ng-click="insertar_documento(tab_macroprocesos.macroproceso,tab_macroprocesos.proceso,tab_macroprocesos.subproceso,tab_macroprocesos.tipo_documento,tab_macroprocesos.nombre,tab_macroprocesos.codigo,tab_macroprocesos.version,tab_macroprocesos.fecha_ultima_version,tab_macroprocesos.estado,tab_macroprocesos.origen_documento)"
+                        class="border-radius-none btn green white-text w-100" type="submit" value="Guardar Documento"
+                        style="transition: all 0s;">
+                    <input ng-if="tab_macroprocesos.boton_activo"
+                        ng-click="actualizar_documento(tab_macroprocesos.id,tab_macroprocesos.url,tab_macroprocesos.macroproceso,tab_macroprocesos.proceso,tab_macroprocesos.subproceso,tab_macroprocesos.tipo_documento,tab_macroprocesos.nombre,tab_macroprocesos.codigo,tab_macroprocesos.version,tab_macroprocesos.fecha_ultima_version,tab_macroprocesos.estado,tab_macroprocesos.origen_documento)"
+                        class="border-radius-none btn purple w-100 white-text" type="submit"
+                        value="Actualizar Documento" style="transition: all 0s;">
+                </div>
+                <div class="col s12 m12 l1 no-padding m-b"></div>
+                <div class="col s12 m12 l4 no-padding m-b">
+                    <input ng-click="limpiar()" class="border-radius-none btn blue w-100 white-text" type="submit"
+                        value="Limpiar" style="transition: all 0s;">
+                </div>
+            </div>
+            <div class="col s12 m12 l7">
+                <form class="title-panel w-100 justify-content-around" action="#" style="margin-bottom: 15px;">
+                    <div>
+                        <input ng-model="macroproceso" ng-change="radio_tipo_macroproceso(macroproceso);"
+                            id="Estrategicos" name="groupRadio" type="radio" value="1" />
+                        <label for="Estrategicos" class="align-items-center d-flex justify-content-center"
+                            style="flex-direction: column;padding: 0 20px;">
+                            <img src="images/iconos/m_procesos/MACROPROCESOS ESTRATEGICOS.png" style="width: 30px;">
+                            Estrategicos</label>
+                    </div>
+                    <div>
+                        <input ng-model="macroproceso" ng-change="radio_tipo_macroproceso(macroproceso);"
+                            id="Misionales" name="groupRadio" type="radio" value="2" />
+                        <label for="Misionales" class="align-items-center d-flex justify-content-center"
+                            style="flex-direction: column;padding: 0 20px;">
+                            <img src="images/iconos/m_procesos/MACROPROCESOS MISIONALES.png" style="width: 30px;">
+                            Misionales</label>
+                    </div>
+                    <div>
+                        <input ng-model="macroproceso" ng-change="radio_tipo_macroproceso(macroproceso);" id="Apoyo"
+                            name="groupRadio" type="radio" value="3" />
+                        <label for="Apoyo" class="align-items-center d-flex justify-content-center"
+                            style="flex-direction: column;padding: 0 20px;">
+                            <img src="images/iconos/m_procesos/macroprocesos de apoyo-8.png" style="width: 30px;">
+                            Apoyo</label>
+                    </div>
+                </form>
+                <div class="col s12 no-padding" style="overflow: auto;height: calc(100vh - 250px);">
+                    <table class="white position-relative" style="border-left: 5px solid #1a2e63;">
+                        <thead>
+                            <tr class="default-background white-text">
+                                <th class="border-none">
+                                    Nombre
+                                </th>
+                                <th class="border-none right-align">
+                                    Icono
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="collapsible-body-new">
+                            <tr ng-if="macroproceso_json[0].procesos.length==0">
+                                <td>
+                                    <b>No hay contenido.</b>
+                                </td>
+                            </tr>
+                            <tr ng-repeat-start="items in macroproceso_json[0].procesos"
+                                ng-class="{'active':tab_macroprocesos.proceso_select == $index}"
+                                ng-click="tab_macroprocesos.proceso_select=(tab_macroprocesos.proceso_select == $index)?-1:$index;tab_macroprocesos.subproceso_select=-1;tab_macroprocesos.tipo_documento_select=-1"
+                                class="cursor-pointer">
+                                <td>
+                                    <b>{{items.nombre}}</b>[{{(items.subprocesos[0].codigo==-1)?items.subprocesos[0].tipo_documento.length:(items.subprocesos.length+1)}}]
+                                </td>
+                                <td class="right-align">
+                                    <img src="{{items.icono}}" style="font-size: 16px;width: 27px;">
+                                </td>
+                            </tr>
+                            <tr ng-repeat-end>
+                                <td colspan="2" class="panel" style="padding: 0;text-align: center;padding-left: 12px;">
+                                    <table ng-if="items.subprocesos[0].codigo!=-1" class="white position-relative"
+                                        style="border-left: 5px solid #b6bbbd;">
+                                        <tbody class="white">
+                                            <tr ng-if="items.subprocesos.length==0">
+                                                <td>
+                                                    No hay contenido.
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat-start="item in items.subprocesos"
+                                                ng-class="{'active':tab_macroprocesos.subproceso_select == $index}"
+                                                class="center-align"
+                                                ng-init="tab_macroprocesos.subproceso_select=(item.nombre==-1)?$index:-1">
+                                                <td colspan="2"
+                                                    ng-click="tab_macroprocesos.subproceso_select=(tab_macroprocesos.subproceso_select == $index)?-1:$index;tab_macroprocesos.tipo_documento_select=-1;">
+                                                    <b>{{item.nombre}}</b>[{{(items.subprocesos[$index].tipo_documento==null || items.subprocesos[$index].tipo_documento.length==0)?'0':items.subprocesos[$index].tipo_documento.length}}]
+                                                </td>
+                                                <td ng-click="tab_macroprocesos.subproceso_select=(tab_macroprocesos.subproceso_select == $index)?-1:$index;tab_macroprocesos.tipo_documento_select=-1"
+                                                    class="right-align">
+                                                    <i class="icon-down-open-1 cursor-pointer"
+                                                        style="font-size: 20px;"></i>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat-end>
+                                                <td colspan="3" class="panel" style="padding: 0;padding-left: 12px;">
+                                                    <table class="striped table-bordered white position-relative">
+                                                        <tbody>
+                                                            <tr
+                                                                ng-if="item.tipo_documento==null || item.tipo_documento.length==0">
+                                                                <td>
+                                                                    No hay contenido.
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat-start="tipo in (item.tipo_documento==null)?[]:item.tipo_documento"
+                                                                ng-class="{'active':tab_macroprocesos.tipo_documento_select == $index}"
+                                                                class="center-align">
+                                                                <td
+                                                                    ng-click="tab_macroprocesos.tipo_documento_select=(tab_macroprocesos.tipo_documento_select == $index)?-1:$index;">
+                                                                    {{nombre_tdocumento(tipo.codigo)}}[{{(tipo.documentos==null)?'0':tipo.documentos.length}}]
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat-end>
+                                                                <td colspan="3" class="panel" style="padding: 0;">
+                                                                    <table>
+                                                                        <tbody>
+                                                                            <tr
+                                                                                ng-if="tipo.documentos == null || tipo.documentos.length==0">
+                                                                                <td>
+                                                                                    No hay contenido.
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr ng-repeat="documento in (tipo.documentos==null)?[]:tipo.documentos"
+                                                                                class="center-align">
+                                                                                <td class="w-100">
+                                                                                    {{documento.codigo}}
+                                                                                    {{documento.nombre}}
+                                                                                </td>
+                                                                                <td ng-style="estado_actual(documento.estado)"
+                                                                                    class="white-text center-align border-radius-none">
+                                                                                    {{documento.estado}}</td>
+                                                                                <td class="center-align">
+                                                                                    <i ng-click="descargar_archivo(documento.url)"
+                                                                                        class="{{icono(documento.url)}}"
+                                                                                        style="cursor:pointer;font-size: 16px;"></i>
+                                                                                </td>
+                                                                                <!-- <td class="center-align">
+                                                                                    <i class="zmdi zmdi-traffic"
+                                                                                        style="font-size: 17px;"></i>
+                                                                                </td> -->
+                                                                                <td class="center-align">
+                                                                                    <i ng-click="editar_documento(documento)"
+                                                                                        class="icon-edit"
+                                                                                        style="font-size: 15px;"></i>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr ng-class="{'active':tab_macroprocesos.tipo_documento_select == -2}"
+                                                class="center-align">
+                                                <td
+                                                    ng-click="tab_macroprocesos.tipo_documento_select=(tab_macroprocesos.tipo_documento_select == -2)?-3:-2;">
+                                                    Caracterización[0]
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="panel" style="padding: 0;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    No hay contenido.
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table ng-if="items.subprocesos[0].codigo==-1"
+                                        class="striped table-bordered white position-relative">
+                                        <tbody>
+                                            <tr ng-repeat-start="tipo in items.subprocesos[0].tipo_documento"
+                                                ng-class="{'active':tab_macroprocesos.tipo_documento_select == $index}"
+                                                class="center-align">
+                                                <td
+                                                    ng-click="tab_macroprocesos.tipo_documento_select=(tab_macroprocesos.tipo_documento_select == $index)?-1:$index;">
+                                                    {{nombre_tdocumento(tipo.codigo)}}[{{(tipo.documentos==null)?'0':tipo.documentos.length}}]
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat-end>
+                                                <td colspan="3" class="panel" style="padding: 0;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr
+                                                                ng-if="tipo.documentos == null || tipo.documentos.length==0">
+                                                                <td>
+                                                                    No hay contenido.
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat="documento in (tipo.documentos==null || tipo.documentos.length==0)?[]:tipo.documentos"
+                                                                class="center-align">
+                                                                <td class="w-100">
+                                                                    {{documento.codigo}}
+                                                                    {{documento.nombre}}
+                                                                </td>
+                                                                <td ng-style="estado_actual(documento.estado)"
+                                                                    class="white-text center-align border-radius-none">
+                                                                    {{documento.estado}}</td>
+                                                                <td class="center-align">
+                                                                    <i ng-click="descargar_archivo(documento.url)"
+                                                                        class="{{icono(documento.url)}}"
+                                                                        style="cursor:pointer;font-size: 16px;"></i>
+                                                                </td>
+                                                                <!-- <td class="center-align">
+                                                                    <i class="zmdi zmdi-traffic"
+                                                                        style="font-size: 17px;"></i>
+                                                                </td> -->
+                                                                <td class="center-align">
+                                                                    <i ng-click="editar_documento(documento)"
+                                                                        class="icon-edit" style="font-size: 15px;"></i>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- ------------------------------------------------------------------------------------------------------------- TAB.INDICADORES -->
+        <div ng-show="tabs.select==2" class="col s12 no-padding">
+            <div class="align-items-center black-text col d-flex justify-content-between s12 title-panel"
+                style="margin-bottom: 15px;">
+                <span ng-show="!tab_indicadores.vista">Documentos:</span>
+                <input ng-show="tab_indicadores.vista" type="text" class="margin border-none input-text-new input-out-new white"
+                    ng-model="filtrar_all" placeholder="Buscar en la tabla">
+                <i ng-show="tab_indicadores.vista || tab_indicadores.documentos.length>0"
+                    ng-click="exportar(tab_indicadores.documentos, 'Documentos Cargados SGC', true)"
+                    title="Exportar a Excel" class="icon-file-excel green-text cursor-pointer" style="font-size: 16px;">
+                    Exportar ({{tab_indicadores.documentos.length}})</i>
+                <i class="icon-arrows-ccw purple-text cursor-pointer" ng-click="checkbox_indicadores()" style="font-size: 16px;">Actualizar:</i>
+                <div class="switch">
+                    <label>
+                        <span class="{{(tab_indicadores.vista==true)?'':'activo'}}">Grafica</span>
+                        <input type="checkbox" ng-model="tab_indicadores.vista"
+                            ng-change="checkbox_indicadores()">
+                        <span class="lever check-c"></span>
+                        <span class="{{(tab_indicadores.vista==true)?'activo':''}}">Historial</span>
+                    </label>
+                </div>
+            </div>
+            <div ng-show="!tab_indicadores.vista" class="col s12 m12 l12">
+                <div id="container" style="width: calc(100vw - 347px);height:  calc(100vh - 210px);"></div>
+            </div>
+            <div ng-show="tab_indicadores.vista" class="col s12 m12 l12">
+                <div class="table-over-box" style="height: calc(100vh - 210px);">
+                    <table class="striped table-bordered white">
+                        <thead class="default-background white-text">
+                            <tr>
+                                <th>Id</th>
+                                <th>Macro</th>
+                                <th>Proceso</th>
+                                <th>Subprocesos</th>
+                                <th>Tipo Documento</th>
+                                <th>Nombre</th>
+                                <th>Codigo</th>
+                                <th>Version</th>
+                                <th>Fecha</th>
+                                <th>Origen</th>
+                                <th>Estado</th>
+                                <th>Url</th>
+                                <th>Responsable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="tab_indicadores.documentos.length==0">
+                                <td colspan="13">No hay contenido.</td>
+                            </tr>
+                            <tr ng-repeat="documento in tab_indicadores.documentos | filter:{$:filtrar_all}">
+                                <td>{{documento.codigo_documento}}</td>
+                                <td>{{documento.codigo_macro}}</td>
+                                <td>{{documento.codigo_proceso}}</td>
+                                <td>{{documento.codigo_subprocesos}}</td>
+                                <td>{{documento.tipo_documento}}</td>
+                                <td>{{documento.nombre}}</td>
+                                <td>{{documento.codigo}}</td>
+                                <td>{{documento.version}}</td>
+                                <td title="Fecha de la ultima actualización">{{documento.fecha_act}}</td>
+                                <td>{{documento.origen_documento}}</td>
+                                <td>{{documento.estado}}</td>
+                                <td>
+                                    <i ng-click="descargar_archivo(documento.url)" title="Descargar Documento"
+                                        class="{{icono(documento.url)}} cursor-pointer" style="font-size: 16px;"></i>
+                                </td>
+                                <td title="Cedula:{{documento.id_responsable}}">{{documento.nombre_responsable}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- ------------------------------------------------------------------------------------------------------------- TAB.PLANTILLAS -->
+        <div ng-if="tabs.select==3" class="col s12 no-padding">
+            <div class="align-items-center black-text col d-flex justify-content-between s12 title-panel"
+                style="margin-bottom: 15px;">
+                Plantillas Institucionales:
+                <i class="icon-arrows-ccw purple-text cursor-pointer" ng-click="tab_plantillas.filtro='';listar_plantillas((tab_plantillas.switch)?'I':'A');" style="font-size: 16px;">Actualizar:</i>
+                <div class="switch">
+                    <label>
+                        <span class="{{(tab_plantillas.switch==false)?'activo':''}}">Activo</span>
+                        <input type="checkbox" ng-model="tab_plantillas.switch"
+                            ng-change="tab_plantillas.filtro='';listar_plantillas((tab_plantillas.switch)?'I':'A');">
+                        <span class="lever check-c"></span>
+                        <span class="{{(tab_plantillas.switch==true)?'activo':''}}">Inactivo</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col s12 m6 l6">
+                <div class="col s12 m6 l12 no-padding label-new m-b">
+                    <input ng-model="tab_plantillas.nombre" id="plantilla_nombre" type="text"
+                        class="margin border-none white input-text-new input-w-p input-out-new w-100">
+                    <label for="plantilla_nombre">Nombre:</label>
+                </div>
+                <div class="col s12 m6 l6 no-padding label-new m-b">
+                    <select ng-model="tab_plantillas.estado" id="tab_plantillas_estado" class="select-new input-out-new"
+                        style="box-shadow: none;" material-select watch convert-to-number>
+                        <option value="">Seleccionar</option>
+                        <option value="A">Activo</option>
+                        <option value="I">Inactivo</option>
+                    </select>
+                    <label for="tab_plantillas_estado">Estado</label>
+                </div>
+                <div class="col s12 m6 l6 no-padding label-new m-b">
+                    <div data-file="Seleccionar Documento" class="input-out-new input-file-new m-l">
+                        <i class="icon-folder-open-1"></i>
+                        <input input-ng-file id="plantilla" data-index="1" data-name_default="Seleccionar Documento"
+                            type="file" class="margin border-none">
+                    </div>
+                    <label for="plantilla">Archivo:</label>
+                </div>
+                <input ng-if="!tab_plantillas.boton_activo"
+                    ng-click="guardar_plantilla(tab_plantillas.nombre,tab_plantillas.estado)"
+                    class="border-radius-none btn default-background w-100 white-text" type="submit"
+                    value="Guardar Plantilla" style="transition: all 0s;">
+                <input ng-if="tab_plantillas.boton_activo"
+                    ng-click="actualizar_plantilla(tab_plantillas.codigo,tab_plantillas.nombre,tab_plantillas.estado,tab_plantillas.url)"
+                    class="border-radius-none btn default-background w-100 white-text" type="submit"
+                    value="Actualizar Plantilla" style="transition: all 0s;">
+            </div>
+            <div class="col s12 m6 l6">
+                <div style="overflow: auto;height: calc(100vh - 210px);">
+                    <table class="striped table-bordered white position-relative">
+                        <thead>
+                            <tr class="default-background white-text">
+                                <th class="center-align">#{{plantillas.length==0?'':plantillas.length}}</th>
+                                <th>
+                                    <input type="text" ng-model="tab_plantillas.filtro" class="margin border-none"
+                                        style="height: auto;font-size: 13px;" placeholder="Nombre">
+                                </th>
+                                <th colspan="2" class="center-align">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="plantillas.length==0">
+                                <td colspan="4">No hay contenido.</td>
+                            </tr>
+                            <tr ng-repeat="plantilla in plantillas | filter:{NOMBRE:tab_plantillas.filtro}">
+                                <td class="center-align" title="{{plantilla.ID}}">{{($index+1)}}</td>
+                                <td>{{plantilla.NOMBRE}}</td>
+                                <td class="center-align">
+                                    <i ng-click="descargar_archivo(plantilla.URL)" title="Descargar Plantilla"
+                                        class="{{icono(plantilla.URL)}} cursor-pointer" style="font-size: 16px;"></i>
+                                </td>
+                                <td class="center-align">
+                                    <i ng-click="editar_plantilla(plantilla)" title="Editar Plantilla"
+                                        class="icon-edit cursor-pointer" style="font-size: 15px;"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

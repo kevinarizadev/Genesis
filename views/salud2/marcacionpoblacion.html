@@ -1,0 +1,191 @@
+<div ng-controller="marcacioncontroller">
+   <div class="row">
+      <div class="col l6 m12 s12" ng-init="graficos()">
+         <div class="card charts">
+            <div class="card-content">
+            </div>
+            <div class="card-action">
+               <div id="piependientes"></div>
+            </div>
+         </div>
+      </div>
+      <div class="col l6 m12 s12">
+         <div class="card charts">
+            <div class="card-content">
+            </div>
+            <div class="card-action">
+               <div id="pietotales"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row" style="padding: 5px 0px 5px 20px; background-color: #fff;" ng-show="titulo">
+      <h5><strong>Afiliados {{listado}}</strong></h5>
+   </div>
+   <div class="row">
+      <div class="col l6 m12 s12" ng-show="panelafiliados">
+         <div class="card">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch divcardcustom2" style="display:flex;">
+                  <center><strong>{{patologia}} : {{total | number:0}}</strong></center>
+               </div>
+            </div>
+            <div class="card-content clearfix" style="height: 480px; overflow: auto;">
+               <div class="input-field col l8 m12 s12" >
+                  <input id="afilbusqueda" type="text" class="validate" ng-model="busquedaafil">
+                  <label for="afilbusqueda" class="">Valor de Búsqueda</label>
+               </div>
+               <div class="input-field col l3 m12 s12" >
+                  <a class="btn-floating btn-large waves-effect waves-light primary-button" ng-click="filtrar()"><i class="material-icons dp48">search</i></a>
+               </div>
+               <table class="bordered" align="center" id="tablaafiliados" style="cursor: pointer !important;">
+                  <thead align="center">
+                     <tr>
+                        <td><strong>TIPO</strong></td>
+                        <td><strong>DOCUMENTO</strong></td>
+                        <td><strong>NOMBRE</strong></td>
+                        <td><strong>INGRESO</strong></td>
+                     </tr>
+                  </thead>
+                  <tbody style="height: 40%; overflow: scroll;">
+                     <tr data-ng-repeat="afiliado in Afiliados | filter: busqueda | limitTo:100 track by $index" ng-click="muestrDetalleAfil(afiliado.TIPODOCUMENTO,afiliado.DOCUMENTO,afiliado.FECHAMODIFICACION)">
+                        <td>{{afiliado.TIPODOCUMENTO}}</td>
+                        <td>{{afiliado.DOCUMENTO}}</td>
+                        <td>{{afiliado.NOMBRE}}</td>
+                        <td>{{afiliado.FECHAINGRESO}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col s12 m12 l6" ng-show="paneldetaafil">
+         <div class="card card-default ">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch divcardcustom2" style="display:flex;">
+                  <strong>Información del Afiliado</strong>
+               </div>
+            </div>
+            <div class="card-content">
+               <span class="title fs-24 text-bold">{{detaafil.nombre_afiliado}}</span>
+               <p><strong>{{detaafil.tipo_documento + ' - ' + detaafil.documento}}</strong></p>
+               <p class="grey-text"><i class="material-icons tiny ">perm_contact_calendar</i>{{detaafil.fecha_nacimiento}} - {{detaafil.edad}} años</p>
+               <input type="checkbox" id="checkbox2" disabled="true">
+               <p>{{detaafil.departamento}} - {{detaafil.municipio}}</p>
+               <p>{{detaafil.localidad}}</p><br>
+               <p style="color: red;"><strong>{{detaafil.diagnostico}}</strong></p><br>
+               <p><strong>Regimen: </strong>{{detaafil.regimen + ' - ' + detaafil.estado}}</p><br>
+               <p><strong>Fecha Afiliación:</strong> {{detaafil.fecha_afiliacion}}</p><br>
+               <p><strong>Sexo: </strong>{{detaafil.genero}}</p><br>
+               <p><strong>Dirección:</strong> {{detaafil.direccion}}</p><br>
+               <p><strong>Telefono:</strong> {{detaafil.telefono}}</p>
+            </div>
+            <div class="input-button">
+               <center>
+                  <a class="waves-effect waves-light btn white-text primary-button" ng-click="marca('P')" ng-show="btnAprueba" ng-disabled="disAprueba">Aprobar</a>
+                  <a class="waves-effect waves-light btn white-text primary-button" ng-click="marca('A')" ng-show="btnReversa" ng-disabled="disReversa">Reversar</a>
+                  <a class="waves-effect waves-light btn white-text primary-button" ng-click="marca('X')" ng-show="btnRechazar" ng-disabled="disRechaza">Rechazar</a><br>
+               </center>
+            </div><br>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+
+      <style type="text/css">
+         .none {
+            border-top: 0px solid black !important;
+         }
+      </style>
+      <div class="col s12 m12 l12 magazine margin widgets-tabs" ng-show="panelinfoadicional">
+         <div class="card-panel widgets-tabs col l12">
+            <ul tabs  reload="allTabContentLoaded">
+               <li class="tab col s3" style="cursor: pointer;"><a ng-click="paneladjuntos = false; paneldx = true; activedx = 'active'; activead = 'none';" ng-class="activedx">DIAGNOSTICOS</a></li>
+               <li class="tab col s3" style="cursor: pointer;"><a ng-click="paneladjuntos = true; paneldx = false; activead = 'active'; activedx = 'none';" ng-class="activead">ADJUNTOS</a></li>
+            </ul>
+            <div ng-show="paneldx" class="col no-padding" style="width: 100%;">
+               <table class="bordered responsive-table" align="center" id="tabladx">
+                  <thead align="center">
+                     <tr>
+                        <td><strong>CODIGO</strong></td>
+                        <td><strong>NOMBRE</strong></td>
+                        <td><strong>FECHA</strong></td>
+                        <td><strong>IPS</strong></td>
+                        <td><strong>INGRESO</strong></td>
+                        <td><strong>NÚMERO</strong></td>
+                     </tr>
+                  </thead>
+                  <tbody style="height: 40%; overflow: scroll;">
+                     <tr data-ng-repeat="diagnostico in Diagnosticos | limitTo:10 track by $index">
+                        <td>{{diagnostico.CODIGO}}</td>
+                        <td>{{diagnostico.NOMBRE}}</td>
+                        <td>{{diagnostico.FECHA}}</td>
+                        <td>{{diagnostico.IPS}}</td>
+                        <td>{{diagnostico.INGRESO}}</td>
+                        <td>{{diagnostico.SUBINGRESO}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <div ng-show="paneladjuntos" class="col no-padding" style="width: 100%;">
+               <table class="bordered" align="center" id="tablaad">
+                  <thead align="center">
+                     <tr>
+                        <td><strong>TIPO ANEXO</strong></td>
+                        <td><strong>FECHA ADJUNTO</strong></td>
+                        <td><strong>OBSERVACIÓN</strong></td>
+                     </tr>
+                  </thead>
+                  <tbody style="height: 40%; overflow: scroll;">
+                     <tr data-ng-repeat="anexo in Anexos track by $index" ng-click="veranexo(anexo.RUTA)"  style="cursor: pointer;">
+                        <td>{{anexo.TIPO}}</td>
+                        <td>{{anexo.FECHA}}</td>
+                        <td>{{anexo.OBSERVACION}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+               <br><br>
+               <center>
+                  <form id="anexos_cac">
+                     <input type="text" name="type_afil" ng-value="type_afil" style="display: none;">
+                     <input type="text" name="id_afil" ng-value="id_afil" style="display: none;">
+                     <div class="input-button" ng-init="tipodocs()" style="width: 50%;">
+                        <label for="tipo_anexo" style="margin-top: -20px; float: left;">Seleccione Tipo de Documento</label>
+                        <select class="select-chosen-eps" name="tipo_anexo">
+                           <option value="0" disabled>Seleccionar</option>
+                           <option ng-repeat="cod in Documentos" ng-value={{cod.CODIGO}}>{{cod.NOMBRE}}</option>
+                        </select>
+                     </div><br>
+                     <div class="file-field input-field" style="width: 50%;">
+                        <div class="btn">
+                           <span class="white-text">Seleccionar</span>
+                           <input name="archivo" accept=".png,.jpg,.jpeg,.pdf,.doc" type="file" ng-disabled="seleccionarchivodis">
+                        </div>
+                        <div class="file-path-wrapper">
+                           <input id="nombreadjunto" class="file-path validate" type="text" placeholder="Seleccione Archivo" ng-model="nombreadjunto" ng-disabled="seleccionarchivodis" ng-change="validaAnexo()">
+                        </div>
+                     </div><br>
+                     <center><a class="waves-effect waves-light btn white-text primary-button" ng-click="subeanexos()">Subir</a></center>
+                     <br><br>
+                  </form>
+               </center>
+               <!-- <center>
+                  
+                     <div class="btn">
+                        <label for="causal" style="margin-top: -20px;">Seleccione Tipo de Documento</label>
+                        <select class="select-chosen-eps" id="tipo_anexo" ng-options="documento.CODIGO as (documento.NOMBRE) for documento in Documentos">
+                        </select>
+                     </div>
+                     
+                     
+                     <div class="file-path-wrapper">
+                        <input id="nombreadjunto" class="file-path validate" type="text" placeholder="Seleccione Archivo" ng-model="nombreadjunto" ng-disabled="seleccionarchivodis" ng-change="validaAnexo()">
+                     </div>
+                     <center><a class="waves-effect waves-light btn white-text primary-button" ng-click="subeanexos()">Subir</a></center>
+                  </form>
+               </div></center> -->
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

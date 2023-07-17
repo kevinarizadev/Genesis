@@ -1,0 +1,360 @@
+<div id="calendarioModal" class="close-none newdesing_modal">
+  <div class="col s12 m6 l6 card">
+    <div class="card-content" style="border-bottom: 5px solid #164691">
+      <div ng-if="datos.vista == 0" title="Crear Nuevo" class="ngdialog-add">
+        <i ng-click="cambiarVista(1);" class="icon-plus"></i>
+      </div>
+      <h5 style="max-width: 85%;">{{titulo}}</h5>
+      <div title="Cerrar" class="ngdialog-close" style="margin-left: auto;"></div>
+    </div>
+    <div class="card-action border-none">
+      <!-- ---------------------------------------------------------------------------Vista Previa------------------------------------------------------------------------------ -->
+      <div ng-if="datos.vista == 0" class="row margin">
+        <div class="col l12 m12 s12" style="overflow: auto;max-height: 70vh;">
+          <div class="row margin" style="position:relative;height: 100%;">
+            <ul class="margin last-child-not-border" style="margin-right: 8px!important;">
+              <li class="detalles" ng-repeat="des in id_detalles" style="display: flex;padding: 8px 0;border-bottom: 1px solid #26a69a8c;">
+                <div ng-click="cambiarVista(2,des.code);" title="Ver Agenda" ng-class="{'w-100':admin == false}" class="details"
+                  style="display: flex;width: 82%;padding: 8px;border-radius: 15px;">
+                  <div style="justify-content: start;margin: auto 0;margin-right: 25px;margin-left: 15px;min-width: 15px;min-height: 15px;">
+                    <div class="active day-btn desable {{des.EstadoCal}}"></div>
+                  </div>
+                  <div style="margin-right: auto;line-height: 2;">
+                    {{des.name}} - {{des.titulo}}
+                  </div>
+                </div>
+                <div class="group_btn" ng-if="admin == true" style="display: flex;align-items: center;justify-content: space-around;width: 18%;">
+                  <i ng-click="cambiarVista(1,des.code);" title="Editar" class="icon-edit grey-text margin"></i>
+                  <i ng-click="borrarAgenda(des.code)" title="Eliminar" class="icon-trash-empty red-text"></i>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------Editar y Crear------------------------------------------------------------------------------ -->
+      <div ng-if="datos.vista == 1" class="row margin">
+        <div class="col l12 m12 s12">
+          <div class="row margin">
+            <div class="col s4 no-padding label-new m-b">
+              <select ng-model="agenda.tipo" id="agenda_tipo" class="select-new white" material-select watch
+                convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option ng-repeat="tip in tipo_agenda" value="{{tip.numero}}">{{tip.nombre}}</option>
+              </select>
+              <label for="agenda_tipo" title="Tipo de agenda">Tipo de agenda *</label>
+            </div>
+            <div class="col s4 no-padding label-new m-b">
+              <input ng-model="agenda.titulo" id="agenda_titulo" type="text" class="margin border-none white input-text-new input-w-p m-l">
+              <label for="agenda_titulo">Tema *</label>
+            </div>
+            <div class="col s4 no-padding m-b label-new">
+              <input ng-model="agenda_fecha" id="agenda_fecha" type="date" class="datepicker border-none input-date-new white m-l">
+              <label title="Fecha de la agenda" for="agenda_fecha">Fecha *</label>
+            </div>
+            <div class="col s12 no-padding m-b">
+              <div class="col s8 no-padding label-new" style="height: auto;">
+                <textarea ng-model="agenda.descripcion" id="agenda_descripcion" rows="5" cols="5" class="materialize-textarea input-w-p border-none textarea-new white"
+                  style="max-height: 6rem;min-height: 6rem;overflow: auto;"></textarea>
+                <label title="Descripción de la agenda" for="agenda_descripcion">Descripción *</label>
+              </div>
+              <div class="col s4 no-padding m-b label-new">
+                <select ng-model="agenda.hora" id="agenda_hora" class="select-new white m-l" material-select watch
+                  convert-to-number>
+                  <option value="" ng-selected>Seleccionar</option>
+                  <option value="7:00">7:00 a.m.</option>
+                  <option value="8:00">8:00 a.m.</option>
+                  <option value="9:00">9:00 a.m.</option>
+                  <option value="10:00">10:00 a.m.</option>
+                  <option value="11:00">11:00 a.m.</option>
+                  <option value="12:00">12:00 p.m.</option>
+                  <option value="13:00">1:00 p.m.</option>
+                  <option value="14:00">2:00 p.m.</option>
+                  <option value="15:00">3:00 p.m.</option>
+                  <option value="16:00">4:00 p.m.</option>
+                  <option value="17:00">5:00 p.m.</option>
+                  <option value="18:00">6:00 p.m.</option>
+                  <option value="19:00">7:00 p.m.</option>
+                  <option value="20:00">8:00 p.m.</option>
+                  <option value="21:00">9:00 p.m.</option>
+                  <option value="22:00">10:00 p.m.</option>
+                  <option value="23:00">11:00 p.m.</option>
+                  <option value="24:00">12:00 a.m.</option>
+                  <option value="1:00">1:00 a.m.</option>
+                  <option value="2:00">2:00 a.m.</option>
+                  <option value="3:00">3:00 a.m.</option>
+                  <option value="4:00">4:00 a.m.</option>
+                  <option value="5:00">5:00 a.m.</option>
+                  <option value="6:00">6:00 a.m.</option>
+                </select>
+                <label for="agenda_hora" title="Hora de la agenda">Hora *</label>
+              </div>
+              <div class="col s4 no-padding label-new m-b">
+                <label for="agenda_soporte">Soporte <i ng-if="agenda.link!='' && agenda.link!=null && agenda.link!=undefined"
+                    ng-click="getRutaTemp(agenda.link)" class="icon-attach-5" style="color: #164691;font-weight: bold;"></i></label>
+                <div data-file="RAR, ZIP, PDF, Excel, Word" class="input-file-new white m-l">
+                  <i class="icon-folder-open-1"></i>
+                  <input ng-model="agenda.link" select-ng-soporte title="{{filesArray[0].name}}" id="0" ng-change="loadFile(0);"
+                    ng-init="agenda.link=''" type="file" class="margin border-none">
+                </div>
+              </div>
+            </div>
+            <div class="col s12 no-padding m-b">
+              <div class="col s6 no-padding m-b label-new" style="height: 30vh;">
+                <label>Seleccionar Asistentes({{select_asistentes.length}})</label>
+                <div class="w-100 m-r" style="overflow: auto;height: 30vh;border: 2px solid #ff4350;display: grid;">
+                  <table class="responsive-table striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>
+                          <input type="text" ng-model="filter_nombre_0" class="margin border-none" style="height: auto;font-size: 13px;"
+                            placeholder="Nombre">
+                        </th>
+                        <th>
+                          <input type="text" ng-model="filter_cargo_0" class="margin border-none" style="height: auto;font-size: 13px;"
+                            placeholder="Cargo">
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="se_asis in select_asistentes | filter:{nombre:filter_nombre_0,cargo:filter_cargo_0} | orderBy:'nombre'"
+                        ng-click="asistentesChange('asistentes',se_asis,'select_asistentes')" style="cursor:pointer;user-select: none;">
+                        <td>{{se_asis.nombre}}</td>
+                        <td>{{se_asis.cargo}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <i ng-if="select_asistentes.length==0" class="icon-user-times" style="margin:auto"></i>
+                </div>
+              </div>
+              <div class="col s6 no-padding m-b label-new" style="height: 30vh;">
+                <label>Asistentes Seleccionados({{asistentes.length}}) *</label>
+                <div class="w-100 m-l" style="overflow: auto;height: 30vh;border: 2px solid #1a2e63;display: grid;">
+                  <table class="responsive-table striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>
+                          <input type="text" ng-model="filter_nombre_1" class="margin border-none" style="height: auto;font-size: 13px;"
+                            placeholder="Nombre">
+                        </th>
+                        <th>
+                          <input type="text" ng-model="filter_cargo_1" class="margin border-none" style="height: auto;font-size: 13px;"
+                            placeholder="Cargo">
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="asis in asistentes | filter:{nombre:filter_nombre_1,cargo:filter_cargo_1} | orderBy:'nombre'"
+                        ng-click="asistentesChange('select_asistentes',asis,'asistentes')" style="cursor:pointer;user-select: none;">
+                        <td>{{asis.nombre}}</td>
+                        <td>{{asis.cargo}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <i ng-if="asistentes.length==0" class="icon-user-times" style="margin:auto"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+            value="Cerrar">
+          <input ng-click="guardarAgenda(agenda_fecha)" class="btn white-text default-background right" type="submit"
+            value="Guardar">
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------Ver Agenda------------------------------------------------------------------------------ -->
+      <div ng-if="datos.vista == 2" class="row margin">
+        <div class="col l12 m12 s12">
+          <div class="row margin">
+            <div class="col l12 m12 s12 no-padding">
+              <div class="col s4 no-padding label-new m-b h-auto">
+                <label>Tipo de agenda:</label>
+                <p class="margin m-l">{{agenda_data[0].nombre_evento}}</p>
+              </div>
+              <div class="col s4 no-padding label-new m-b h-auto">
+                <label>Tema:</label>
+                <p class="margin m-l">{{agenda_data[0].titulo}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label for="fecha_reporte">Fecha:</label>
+                <p class="margin m-l">{{formatDateArray(agenda_data[0].fecha,1)}} -
+                  {{formatDateArray(agenda_data[0].fecha,2)}} - {{formatDateArray(agenda_data[0].fecha,4)}}</p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12 no-padding">
+              <div class="col s8 no-padding label-new" style="height: 6rem;">
+                <label for="Objetivo">Descripción:</label>
+                <p class="margin m-l" style="overflow: auto;">{{agenda_data[0].descripcion}}</p>
+              </div>
+              <div class="col s4 no-padding m-b label-new h-auto">
+                <label>Hora:</label>
+                <p class="margin m-l">{{horaText(agenda_data[0].hora)}}</p>
+              </div>
+              <div ng-if="agenda_data[0].link!='' && agenda_data[0].link!=null && agenda_data[0].link!=undefined" class="col s4 no-padding label-new m-b h-auto">
+                <label for="file">Adjunto Soporte:</label>
+                <p class="margin m-l">
+                  <a ng-click="getRutaTemp(agenda_data[0].link)" style="cursor: pointer;color: #164691;font-weight: bold;">Descargar</a>
+                </p>
+              </div>
+            </div>
+            <div class="col l12 m12 s12 no-padding">
+              <div class="col s12 no-padding m-b label-new" style="height: 30vh;">
+                <label>Asistentes Seleccionados({{agenda_data[0].asistentes.length}}):</label>
+                <div class="w-100 m-l" style="overflow: auto;height: 30vh;border: 2px solid #1a2e63;display: grid;">
+                  <table class="responsive-table striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>
+                          <input type="text" ng-model="filter_nombre_1" class="margin border-none" style="height: auto;font-size: 13px;"
+                            placeholder="Nombre">
+                        </th>
+                        <th>
+                          <input type="text" ng-model="filter_cargo_1" class="margin border-none" style="height: auto;font-size: 13px;"
+                            placeholder="Cargo">
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="asis in agenda_data[0].asistentes | filter:{nombre:filter_nombre_1,cargo:filter_cargo_1} | orderBy:'nombre'"
+                        style="cursor:pointer;user-select: none;">
+                        <td>{{asis.nombre}}</td>
+                        <td>{{asis.cargo}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <i ng-if="agenda_data[0].asistentes.length==0" class="icon-user-times" style="margin:auto"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex;justify-content: space-between;margin-top: 1em;">
+            <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+              value="Cerrar">
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------Agregar/Editar Vacaciones------------------------------------------------------------------------------ -->
+      <div ng-if="datos.vista == 3" class="row margin">
+        <div class="col l12 m12 s12">
+          <div class="row margin">
+            <div ng-if="id == null" class="col s4 no-padding label-new m-b">
+              <select ng-model="vacaciones_datos.documento" class="select-new white" material-select watch
+                convert-to-number>
+                <option value="" ng-selected>Seleccionar</option>
+                <option ng-repeat="repo in select_asistentes" value="{{repo.cedula}}">{{repo.nombre}}</option>
+              </select>
+              <label title="Usuario">Seleccionar Usuario *</label>
+            </div>
+            <div ng-if="id != null && id !=''" class="col s4 no-padding label-new m-b">
+              <input ng-model="vacaciones_datos.nombre" disabled="true" id="vacaciones_datos_nombre" type="text" class="margin border-none white input-text-new input-w-p">
+              <label for="vacaciones_datos_nombre">Usuario</label>
+            </div>
+            <div class="col s4 no-padding m-b label-new">
+              <input ng-model="finicio" ng-change="actulizarFfin(finicio)" id="finicio" type="date" class="datepicker border-none input-date-new white m-l">
+              <label title="Fecha en que inician las vacaciones" for="finicio">Fecha de Inicio *</label>
+            </div>
+            <div class="col s4 no-padding m-b label-new">
+              <input ng-model="ffin" min="{{minF}}" id="ffin" type="date" class="datepicker border-none input-date-new white m-l">
+              <label title="Fecha en que finalizan las vacaciones" for="ffin">Fecha de Fin *</label>
+            </div>
+          </div>
+          <input class="waves-effect waves-light btn white-text red left-align" type="button" ng-click="modalClose()"
+            value="Cerrar">
+          <input ng-click="guardarVacaciones(finicio,ffin)" class="btn white-text default-background right" type="submit"
+            value="Guardar">
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .newdesing_modal .ngdialog-add:hover {
+      background-color: #164691;
+      color: white;
+    }
+
+    .newdesing_modal input[type="date"]::-webkit-inner-spin-button,
+    .newdesing_modal input[type="date"]::-webkit-calendar-picker-indicator {
+      /* display: none; */
+      -webkit-appearance: none;
+    }
+
+    .newdesing_modal ::-webkit-input-placeholder {
+      color: #80868b;
+    }
+
+
+
+    #calendarioModal {
+      width: 60%;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      margin: auto;
+    }
+
+    #calendarioModal>.card {
+      background-color: #e5e6e6;
+      width: 100%;
+    }
+
+    .input-w-p {
+      width: 100% !important;
+      padding: 0 0.5rem !important;
+    }
+
+    .w-100 {
+      width: 100% !important;
+    }
+
+    /* .btn-inactivo {
+        background-color: #DFDFDF !important;
+        box-shadow: none;
+        color: #9F9F9F !important;
+        cursor: pointer;
+        opacity: .65;
+      } */
+
+    html.ngdialog-open,
+    body.ngdialog-open {
+      overflow: hidden !important;
+      height: auto !important;
+    }
+
+    #calendarioModal .w-30vw>.dropdown-content {
+      width: 30vw !important;
+    }
+
+    #calendarioModal .red {
+      background-color: #c1001f !important;
+    }
+
+    #calendarioModal .blue {
+      background-color: #134c95 !important;
+    }
+
+    .h-auto {
+      height: auto !important;
+    }
+
+    .label-new>label {
+      font-weight: bold;
+      color: black;
+    }
+
+    tr>td {
+      width: 50%;
+    }
+
+    .group_btn>i:hover {
+      background-color: white;
+      border-radius: 50%;
+    }
+
+    @media only screen and (max-width: 992px) {
+      #calendarioModal {
+        width: 95% !important;
+      }
+    }
+  </style>
+</div>

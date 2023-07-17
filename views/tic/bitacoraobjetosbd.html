@@ -1,0 +1,422 @@
+<div class="white newdesing position-relative" id="pantalla">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <style>
+        .newdesing .content-container {
+            min-height: 0;
+        }
+    </style>
+    <div class="row section-header margin">
+        <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5 class="cursor-pointer"
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+                    onclick="location.reload();">
+                    Bitácora de Objetos Base de Datos - TIC
+                </h5>
+            </li>
+            <li>
+                <ul class="tabs transparent" style="overflow:hidden;">
+                    <li class="tab col w-auto">
+                        <a ng-click="SetTab(1)" id="Sol" href class="active">Bitácora
+                        </a>
+                    </li>
+                    <li class="tab col w-auto">
+                        <a ng-click="SetTab(2);" id="Nueva" href>Nueva Bitácora</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div ng-show="Vista.Activa == 1">
+        <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+            <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+            <div id="Hoja2_Principal" class="card-content clearfix card Hoja1_Principal"
+                style="width: 100%;margin: auto;border-radius: 15px;margin-top: calc(11vh - 100px);">
+                <div class="row" style="margin-bottom: 0;">
+
+                    <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">
+                        Consolidado de Bitacoras</p>
+
+                    <div class="col s12">
+                        <div class="col s1 no-padding label-new m-b left">
+                            <select class="select-new gray-input" style="box-shadow: none;" material-select watch
+                                ng-model="Vista1.Mostrar_Sol" ng-change="initPaginacion2(Vista1.Mostrar_Sol)">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                            <div style="line-height: 2;">
+                                <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                                    title="Actualizar Tabla" ng-click="Vista1_Buscar()"></i>
+                            </div>
+                        </div>
+                        <div class="col s7 label-new center-align" style="width: 50%;margin-top: 0;">
+                            <div class="col s9 no-padding label-new m-b select_maxheigth">
+                                <select class="select-new gray-input m-l" style="box-shadow: none;" material-select
+                                    watch ng-model="Vista1.Area" ng-change="Vista1_Buscar()">
+                                    <option value="">Seleccionar</option>
+                                    <option style="text-transform: capitalize;" ng-selected="x.Codigo == Vista1.Area"
+                                        ng-repeat="x in Array_Areas" value="{{x.Codigo}}">{{x.Nombre}}</option>
+                                </select>
+                                <label>Area</label>
+                            </div>
+                        </div>
+                        <!-- <div class="col s7 label-new center-align" style="width: 60%;">
+                        <div class="center" style="margin:auto;display:flex;">
+
+                            <p class="default-background default-color center-align white-text" style="margin: 0;border-radius: 15px;
+                border: 5px solid;font-size: 1.2rem;font-weight: 600;padding: 0 10px;">
+                                Cantidad: {{Vista1_datos.length}}</p>
+
+                            <p class="default-background default-color center-align white-text" style="margin: 0;border-radius: 15px;
+                border: 5px solid;font-size: 1.2rem;font-weight: 600;padding: 0 10px;">
+                                Valor: ${{FormatPesoNumero(Vista1.Sum_Total.toString().replace(',', '.'))}}</p>
+                        </div>
+
+                    </div> -->
+                        <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l" type="text"
+                                placeholder="Buscar" ng-model="Vista1.Filtrar_Sol" ng-change="chg_filtrar();">
+                        </div>
+                    </div>
+
+                    <div style="width:100%;">
+                        <table id="H1_Tabla" class="bordered table_center_align"
+                            style="width:100%;font-size:6px !important;">
+                            <thead class="default-background" style="color:white;">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Proceso</th>
+                                    <th>Tipo de Objeto</th>
+                                    <th>Nombre de Objeto</th>
+                                    <th>Fecha Modificado</th>
+                                    <th>Anexo</th>
+                                    <th>Detalle</th>
+                                    <th>Responsable</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="X in Vista1_listDatosTemp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
+                                    ng-click="" style="color: black;">
+                                    <td>{{X.Id}}</td>
+                                    <td>{{X.Proceso}}</td>
+                                    <td>{{X.Tipo_objeto}}</td>
+                                    <td>{{X.Nombre_objeto}}</td>
+                                    <td>{{X.Fecha_modificado}}</td>
+                                    <td>
+                                        <span class="white-text"
+                                            style="padding: 3px;background-color:rgb(161, 169, 162);"
+                                            ng-if="X.Anexo == ''">SIN ANEXO</span>
+                                        <span class="white-text cursor-pointer"
+                                            style="padding: 3px;background-color:rgb(6, 152, 20)!important"
+                                            ng-click="Abrir_Modal_Soportes(X.Anexo)" ng-if="X.Anexo != ''">VER
+                                            ANEXO</span>
+                                    </td>
+                                    <td>
+                                        <div class="tooltip">
+                                            <i class="icon-info-circled-3 default-color cursor-pointer"
+                                                style="font-size: 15px;" ng-click="Ver_Detalle(X.Detalle)"></i>
+                                            <span class="tooltiptext"
+                                                style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Ver
+                                                Detalle</span>
+                                        </div>
+                                    </td>
+                                    <td>{{X.Responsable}}</td>
+                                </tr>
+                                <tr ng-show="Vista1_listDatosTemp.length==0">
+                                    <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron
+                                        resultados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="width: 100%;display: flex;">
+                            <div style="width: 50%;">
+                                <label for="normal">Total de registros filtrados:
+                                    {{Vista1_listDatosTemp.length}}</label>
+                            </div>
+                            <div style="width: 50%;text-align: right;">
+                                <label for="normal">Total de registros encontrados:
+                                    {{Vista1_datos.length}}</label>
+                            </div>
+                        </div>
+                        <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                            <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                                    ng-click="paso('back')">&laquo;</button></li>
+                            <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                                    class="btn-floating default-background"
+                                    ng-click='setPage(page.no)'>{{page.no}}</button>
+                            </li>
+                            <li><button ng-disabled='currentPage >= Vista1_listDatosTemp.length/pageSize - 1'
+                                    class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-show="Vista.Activa == 2">
+        <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+            <div class="card-content clearfix card Form_Clase"
+                style="width: 80%;margin: auto;border-radius: 15px;margin-top: calc(20vh - 100px);">
+                <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">Registrar Nueva
+                    Bitácora
+                </p>
+                <div class="row">
+                    <div class="col s12 m12 s12">
+                        <div class="col s6 no-padding label-new m-b select_maxheigth">
+                            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
+                                ng-model="Form.Area">
+                                <option value="">Seleccionar</option>
+                                <option style="text-transform: capitalize;" ng-selected="x.Codigo == Form.Area"
+                                    ng-repeat="x in Array_Areas" value="{{x.Codigo}}">{{x.Nombre}}</option>
+                            </select>
+                            <label id="Form_Area_Label">Area</label>
+                        </div>
+                        <div class="col s6 no-padding label-new m-b">
+                            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
+                                ng-model="Form.Tipo_Objeto">
+                                <option value="">Seleccionar</option>
+                                <option style="text-transform: capitalize;" value="FUNCION">Funcion</option>
+                                <option style="text-transform: capitalize;" value="JOBS">Jobs</option>
+                                <option style="text-transform: capitalize;" value="PAQUETE">Paquete</option>
+                                <option style="text-transform: capitalize;" value="PROCEDIMIENTO">Procedimiento</option>
+                                <option style="text-transform: capitalize;" value="TABLA">Tabla</option>
+                                <option style="text-transform: capitalize;" value="TRIGGER">Trigger</option>
+                                <option style="text-transform: capitalize;" value="VISTA">Vista</option>
+                            </select>
+                            <label id="Form_Tipo_Objeto_Label">Tipo de Objeto</label>
+                            <!-- <input type="text" id="Form_Paquete" class="margin border-none input-text-new w-100 m-l"
+                                style="text-transform:uppercase" autocomplete="off" ng-model="Form.Paquete"
+                                maxlength="50" ng-keyup="FormatTexto('Form_Paquete')"> -->
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s6 no-padding label-new m-b">
+                            <input id="Form_Nombre_Objeto" type="text"
+                                class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                                autocomplete="off" ng-model="Form.Nombre_Objeto" maxlength="50"
+                                ng-keyup="FormatTexto('Form_Nombre_Objeto')">
+                            <label id="Form_Nombre_Objeto_Label">Nombre del Objeto</label>
+                        </div>
+                        <div class="col s6 no-padding label-new m-b">
+                            <input type="date" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Form.Fecha_modificado" max="{{SysDay | date:'yyyy-MM-dd'}}"
+                                ng-change="ValFecha('Fecha_modificado')">
+                            <label id="Form_Fecha_modificado_Label">Fecha Modificado</label>
+                        </div>
+
+                    </div>
+                    <div class="col s12 no-padding label-new m-b" style="margin-bottom: 5.5rem;">
+                        <textarea id="Form_Detalle" class="margin border-none textarea2 w-100 m-l"
+                            style="height: 100px;text-transform:uppercase;text-align: justify;margin-left: 1.2em !important;margin-right: .75em !important;"
+                            ng-model="Form.Detalle" maxlength="4000"
+                            ng-keyup="Contar_Car(Form.Detalle.length);FormatTextoObs('Form_Detalle')"
+                            title="Se permiten un mínimo de 10 caracteres"></textarea>
+                        <label id="Form_Detalle_Label" style="margin-left: .55rem;">Detalle</label>
+                    </div>
+                    <div class="col s6 no-padding"
+                        style="text-align: right;margin-top: -20px;padding: 0.5rem !important;"
+                        ng-style="{'color' : (Form.Detalle.length >= 4000) ? 'red' : '#333'}" ng-show="Form.Detalle">
+                        <span style="position:absolute;right: 2em;font-size: 1.2em;">{{Form.Detalle.length}}/4000</span>
+                    </div>
+                    <div class="col s12 m12 l12 m-b" style="margin-bottom: 1.5rem;">
+                        <div class="col s6 no-padding label-new m-b" id="AdjustSop">
+                            <label class="m-l" style="width: max-content;" id="Form_Soporte1_Label">Soporte</label>
+                            <div class="file-field input-field m-l input-file-radiu input-file-radius-opcional"
+                                style="margin: 0;width: -webkit-fill-available;">
+                                <div class="right">
+                                    <span class="black-text"><i class="icon-folder-open-1 default-color"
+                                            style="line-height: 2rem;"></i></span>
+                                    <input type="file" id="Form_Soporte1">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path Hoja1_Archivos" type="text"
+                                        placeholder="Adjunte un archivo (pdf, jpg, png)" readonly
+                                        style="border-radius: 0;height: 2rem;border-bottom: 0;" id="Sop_Lab_Soporte1"
+                                        ng-model="Sop_Lab.Soporte1"
+                                        ng-change="loadFile('Soportes', 'Soporte1_URL', 'Soporte1_B64', 'Form_Soporte1', 'Sop_Lab_Soporte1')">
+                                </div>
+                            </div>
+                            <div class="VistaFile input-file-radiu" style="position: relative;display: inline-block;"
+                                ng-if="Form.Soportes.Soporte1_URL!=''"
+                                ng-class="(Form.Soportes.Soporte1_URL=='')? '' : 'input-file-radius-cargado2';">
+                                <i class="icon-eye default-color" style="cursor: pointer;font-size: 18px;"
+                                    ng-click="openInNewTab(Form.Soportes.Soporte1_URL)"></i>
+                                <iframe id="Iframe_Sop1" class="Iframe"
+                                    ng-src="{{Form.Soportes.Soporte1_URL}}"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col s12 m12 s12 center">
+                        <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+                            ng-click="Guardar_Bitacora()">GUARDAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+    <div id="Modal_Soportes" class="modal"
+        style="margin: 0 auto;max-height:99%;width: 95%;top:-100px !important;transition-duration: 0.3s;">
+        <div class="col s12 m6 l6 card margin">
+            <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #000;"
+                ng-click="closeModal()"></div>
+            <div class="card-content">
+                <h5><span style="font-weight: 700;">Anexo</span></h5>
+            </div>
+            <div class="card-action" style="padding-left: 0px; padding-right: 0px;padding-bottom: 0;">
+                <div class="row allMails bg-white white" style="margin-bottom: 0px;">
+                    <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+                        style="height: 80vh;" ng-show="Form.Url==''">
+                        <i class="icon-file-pdf" style="margin: auto;font-size: 5em;"></i>
+                    </div>
+                    <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+                        style="height: 80vh;overflow: auto;" ng-show="Form.Url!=''">
+                        <iframe style="width: 100%;height: 100%;" ng-if="Form.Url!=''" type="application/pdf"
+                            ng-src="{{Form.Url}}" src="{{Form.Url}}">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <style>
+        .dropdown-content li {
+            min-height: 23px;
+        }
+
+        .select_maxheigth ul {
+            max-height: 125px;
+        }
+
+        .dropdown-content li>span {
+            line-height: 32px;
+            padding: 0px 16px;
+        }
+
+        .VistaFile .Iframe {
+            visibility: hidden;
+            height: 50vh;
+            color: #fff;
+            text-align: center;
+            margin-bottom: -0.6rem;
+            border-top-right-radius: 6px;
+            border-top-left-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: calc(100% + 6px);
+            right: 0;
+            opacity: 0;
+            transition: opacity 1s;
+            border: 3px solid #333333;
+        }
+
+        .VistaFile:hover .Iframe {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .Iframe:hover {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .input-file-radiu {
+            border-radius: 10px;
+        }
+
+        .input-file-radius-opcional {
+            background-color: #0000004f !important;
+        }
+
+        .input-file-radius-cargado {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            background-color: #03c5146e !important;
+        }
+
+        .input-file-radius-cargado2 {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            background-color: #03c5146e !important;
+        }
+
+        .textarea2 {
+            padding: 0.5rem !important;
+            width: calc(100% - 0rem) !important;
+            /* background-color: #cbcdce; */
+            background-color: #f1f3f4;
+            resize: none;
+            height: 7rem;
+        }
+
+
+        .table_border_c2 td {
+            border-color: #c2c2c2;
+        }
+
+        .table_center_align h6,
+        .table_center_align span {
+            font-size: 1em !important;
+        }
+
+        .switch label .lever.check-c:after {
+            background-color: #ffffff;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            background-color: #ffffff;
+        }
+
+        .table_overflow th {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
+
+        .table_border,
+        .table_border th,
+        .table_border td {
+            border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+            text-align: center;
+        }
+
+
+        #toast-container .toast {
+            border-radius: 25px !important;
+            font-weight: 600;
+            text-align: center !important;
+            word-break: keep-all;
+            padding: 10px 25px;
+            width: auto;
+        }
+
+        input.input-text-new {
+            background-color: #f1f3f4 !important;
+        }
+
+        .gray-input {
+            background-color: #f1f3f4 !important;
+        }
+
+        .swal-wide {
+            width: 850px !important;
+        }
+    </style>
+</div>

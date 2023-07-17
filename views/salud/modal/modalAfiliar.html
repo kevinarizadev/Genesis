@@ -1,0 +1,192 @@
+<div style="width: 80%; margin: 0 auto; padding-top: 50px;">
+   <div class="col s12 m6 l6 card">
+      <div class="ngdialog-close" style="float: right; font-size: 40px; padding-right: 20px;"></div>
+      <div class="card-content">
+         <h5>{{msj}}</h5>
+         <div class="switch">
+            <label>
+              <span ng-class="{'activo':!check_option}">Nuevo Afiliado</span>
+              <input type="checkbox" ng-init="check_option = false" ng-model="check_option" ng-change="switch()">
+              <span class="lever check-c"></span>
+              <span ng-class="{'activo':check_option}">Nacido Vivo</span>
+            </label>
+          </div>
+      </div>
+      <div class="card-action">
+         <div class="row" ng-hide="afi_body">
+            <form ng-submit="buscar()">
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l3 m12 s12">
+                     <label for="tipo_documento" class="active">Tipo de Documento</label>
+                     <select class="select-chosen-eps" ng-model="new.tipo_documento">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="CC">CEDULA DE CIUDADANÍA</option>
+                        <option value="TI">TARJETA DE IDENTIDAD</option>
+                        <option value="RC">REGISTRO CIVIL</option>
+                        <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                        <option value="PA">PASAPORTE</option>
+                        <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                        <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                        <!-- <option value="MS">MENOR SIN IDENTIFICACIÓN</option> -->
+                        <option value="CD">CARNET DIPLOMÁTICO</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="documento" type="text" ng-model="new.documento" required minlength="6" maxlength="20">
+                     <label for="documento" class="">Número de Documento</label>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l3 m12 s12">
+                     <input id="primer_nombre" type="text" ng-model="new.primer_nombre" required>
+                     <label for="primer_nombre" class="">Primer Nombre</label>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="segundo_nombre" type="text" ng-model="new.segundo_nombre">
+                     <label for="segundo_nombre" class="">Segundo Nombre</label>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="primero_apellido" type="text" ng-model="new.primero_apellido" required>
+                     <label for="primero_apellido" class="">Primer Apellido</label>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="segundo_apellido" type="text" ng-model="new.segundo_apellido">
+                     <label for="segundo_apellido" class="">Segundo Apellido</label>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l2 m12 s12">
+                     <label class="active">Género</label>
+                     <select class="select-chosen-eps" ng-model="new.genero" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option value="F">FEMENINO</option>
+                        <option value="M">MASCULINO</option>
+                     </select>
+                  </div>
+                <!--   <div class="input-field col l3 m12 s12">
+                     <label class="active">Departamento</label>
+                     <select class="select-chosen-eps" ng-model="new.departamento" ng-change="filterMunicipio()" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option ng-repeat="dato in Departamentos" value="{{dato.CODIGO}}">{{dato.NOMBRE}}</option>
+                     </select>
+                  </div> -->
+                  <div class="input-field col l3 m12 s12">
+                     <label class="active">Municipio</label>
+                     <select class="select-chosen-eps" ng-model="new.municipio" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option ng-repeat="dato in Municipios" value="{{dato.CODIGO}}">{{dato.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="fecha_nacimiento" class="datepicker picker__input uppercase" type="date" ng-model="new.fecha_nacimiento" required>
+                     <label for="fecha_nacimiento" class="labelper">Fecha de Nacimiento</label>
+                  </div>
+                 
+               </div>
+               <div class="col l12 m12 s12">
+                  <blockquote>
+                     A continuación ingrese los datos de contacto del afiliado:
+                  </blockquote>
+                  <div class="input-field col l2 m12 s12">
+                     <label for="telefono" class="active">Teléfono</label>
+                     <input numbers-only mask='9999999' id="telefono" type="text" ng-model="new.telefono">
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <label for="celular" class="active">Teléfono Móvil</label>
+                     <input numbers-only mask='9999999999' id="celular" type="text" ng-model="new.celular" ng-required="(new.telefono === undefined || new.telefono =='')">
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <label for="correo" class="active">Correo Electrónico</label>
+                     <input id="correo" type="email" ng-model="new.correo">
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <label for="direccion" class="active">Dirección</label>
+                     <input id="direccion" type="text" ng-model="direccion_afiliado" placeholder="Click para digitar dirección" ng-click="regDireccion()">
+                  </div>
+               </div>
+            </form>            
+         </div>
+         <div class="row" ng-hide="!afi_body">
+            <form ng-submit="regAfiliadoNuevo(check_option)">
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l3 m12 s12">
+                     <label for="tipo_documento" class="active">Tipo de Documento</label>
+                     <select class="select-chosen-eps" ng-model="newnac.tipo_doc">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="MS" >MENOR SIN IDENTIFICACIÓN</option>
+                        <option value="CN" >CERTIFICADO DE NACIDO VIVO</option>
+                        <option value="RC">REGISTRO CIVIL</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="documentonac" type="text" ng-model="newnac.documento" required>
+                     <label for="documento" class="">Número de Documento</label>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l3 m12 s12">
+                     <input id="primer_nombre" type="text" ng-model="newnac.primer_nombre" required>
+                     <label for="primer_nombre" class="">Primer Nombre</label>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="segundo_nombre" type="text" ng-model="newnac.segundo_nombre">
+                     <label for="segundo_nombre" class="">Segundo Nombre</label>
+                  </div>
+                  <div class="input-field col l3 m12 s12">
+                     <input id="primero_apellido" type="text" ng-model="newnac.primero_apellido" required>
+                     <label for="primero_apellido" class="">Primer Apellido</label>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="segundo_apellido" type="text" ng-model="newnac.segundo_apellido">
+                     <label for="segundo_apellido" class="">Segundo Apellido</label>
+                  </div>
+               </div>
+               <div class="col l12 m12 s12">
+                  <div class="input-field col l2 m12 s12">
+                     <label class="active">Género</label>
+                     <select class="select-chosen-eps" ng-model="newnac.genero" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option value="F">FEMENINO</option>
+                        <option value="M">MASCULINO</option>
+                     </select>
+                  </div>
+                <!--<div class="input-field col l3 m12 s12">
+                     <label class="active">Departamento</label>
+                     <select class="select-chosen-eps" ng-model="new.departamento" ng-change="filterMunicipio()" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option ng-repeat="dato in Departamentos" value="{{dato.CODIGO}}">{{dato.NOMBRE}}</option>
+                     </select>
+                  </div> -->
+                  <div class="input-field col l3 m12 s12">
+                     <label class="active">Municipio</label>
+                     <select class="select-chosen-eps" ng-model="newnac.municipio" required> 
+                        <option value="" ng-disabled="true">SELECCIONAR</option>
+                        <option ng-repeat="dato in Municipios" value="{{dato.CODIGO}}">{{dato.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l2 m12 s12">
+                     <input id="fecha_nacimiento" class="datepicker picker__input uppercase" type="date" ng-model="newnac.fecha_nacimiento" required>
+                     <label for="fecha_nacimiento" class="labelper">Fecha de Nacimiento</label>
+                  </div>
+                  <div class="col">
+                     <div class="input-field">
+                       <div class="file-field input-field">
+                           <div class="btn">
+                               <span class="white-text"><i class="material-icons">attach_file</i>
+                               <input type="file" id="adjuntocab" ng-model ="newnac.ruta">
+                           </div>
+                           <div class="file-path-wrapper">
+                               <input class="file-path validate" type="text" placeholder="Adjunto Nacido Vivo" ng-model="adjunto">
+                           </div>
+                       </div>
+                   </div>
+               </div>
+               </div>
+           </form>            
+         </div>
+         <br>
+         <center><input ng-click="regAfiliadoNuevo(check_option)" class="waves-effect waves-light btn white-text success" type="submit"></center>
+      </div>
+      <br>
+   </div>
+</div>

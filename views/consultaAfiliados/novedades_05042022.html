@@ -1,0 +1,456 @@
+<div ng-controller="novedadescontroller">
+   <div class="row">
+      <div class="col l12 m6 s12">
+         <div class="card" ng-init="obtenerDocumento()">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch divcardcustom2" style="display:flex;">
+                  <strong>Búsqueda de Afiliado:</strong>
+               </div>
+            </div>
+            <form id="datosform" ng-submit="busquedaAfiliado()">
+               <div class="col s12">
+                  <div class="input-field col l4 m12 s12">
+                     <label style=" margin-top: -20px;">Tipo de Documento</label>
+                     <select class="select-chosen-eps" ng-model="type" ng-change="solobusqueda()"
+                        ng-disabled="busqueda">
+                        <option value="">SELECCIONAR</option>
+                        <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == type" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l4 m12 s12">
+                     <input id="idnumber" type="text" class="validate" ng-model="id" ng-change="solobusqueda()"
+                        ng-disabled="busqueda">
+                     <label for="idnumber" class="">Número de identificación</label>
+                  </div>
+               </div>
+               <div class="input-button">
+                  <center>
+                     <button class="btn btn-primary" type="submit">Buscar Afiliado</button>
+                  </center>
+               </div>
+            </form>
+            <br>
+         </div>
+      </div>
+   </div>
+
+   <div class="row" ng-if="new.REG == 'V'">
+      <div class="col s12 m12 l12">
+         <div class="card red">
+            <div class="card-content white-text">
+               Datos básicos del afiliado certificados por la Registraduría Nacional del Estado Civil
+<!--                <a ng-hide="OcultarText" title="Indicar Cambio" class="white-text">
+                  ,Si Desea Realizar Un Cambio.<strong style="cursor: pointer;color: black;font-family: inherit;"
+                     ng-click="AbrirModal()">CLIC AQUI</strong>
+               </a> -->
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="row" ng-show="paneldatos">
+      <fieldset ng-disabled="alldata" style="border: none; margin-left: -10px; margin-right:0px; margin-bottom: -30px;">
+         <div class="col s12 m12 l12">
+            <div class="card">
+               <div class="foot4 divcardcustom">
+                  <div class="text-al switch divcardcustom2" style="display:flex;">
+                     <strong>Información del Afiliado</strong>
+                  </div>
+               </div>
+               <div class="card-content clearfix">
+                  <div class="col l12 m12 s12">
+                     <blockquote>Datos Básicos de Identificación</blockquote>
+                     <div class="col s12 no-padding">
+                        <div class="input-field col l3 m12 s12">
+                           <input id="pri_nombre" type="text" ng-model="new.REGIMEN_HOM" disabled>
+                           <label for="pri_nombre">Régimen</label>
+                        </div>
+                        <div class="input-field col l3 m12 s12">
+                             <div class="m-l d-flex align-items-center">
+                                 <input type="checkbox" id="checkboxp" ng-model="new.PORTABILIDAD" disabled>
+                                 <label for="checkboxp">Portabilidad</label>
+                             </div>
+                        </div>
+                        <div ng-show="new.PORTABILIDAD" class="input-field col l3 m12 s12">
+                           <input id="pri_nombre" type="text" ng-model="new.UBICACION_ACT" disabled>
+                           <label for="pri_nombre">Municipio Actual</label>
+                        </div>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="pri_nombre" type="text" ng-model="new.PRIMERNOMBRE" ng-disabled="dsbnombres"
+                           maxlength="20">
+                        <label for="pri_nombre" class="">Primer Nombre</label>
+                     </div>
+                     <div class="input-field col l2 m12 s12">
+                        <input id="seg_nombre" type="text" ng-model="new.SEGUNDONOMBRE" ng-disabled="dsbnombres"
+                           maxlength="30">
+                        <label for="seg_nombre" class="">Segundo Nombre</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="pri_apellido" type="text" ng-model="new.PRIMERAPELLIDO" ng-disabled="dsbnombres"
+                           maxlength="20">
+                        <label for="pri_apellido" class="">Primer Apellido</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="seg_apellido" type="text" ng-model="new.SEGUNDOAPELLIDO" ng-disabled="dsbnombres"
+                           maxlength="30">
+                        <label for="seg_apellido" class="">Segundo Apellido</label>
+                     </div>
+                  </div>
+                  <div class="col l12 m12 s12">
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Tipo de Documento</label>
+                        <select class="select-chosen-eps" ng-model="new.TIPODOCUMENTO" ng-disabled="dsbid"
+                           ng-options="documento.Codigo as (documento.Nombre) for documento in Documentos.Documento">
+                        </select>
+                     </div>
+                     <div class="input-field col l2 m12 s12">
+                        <input id="documento" type="text" ng-model="new.DOCUMENTO" ng-disabled="dsbid" maxlength="20">
+                        <label for="documento" class="">Número de identificación</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <label for="fecha_nacimiento" style=" margin-top: -20px;">Fecha Nacimiento</label>
+                        <input id="fecha_nacimiento" ng-model="new.NACIMIENTO" type="date" ng-disabled="dsbnacimiento">
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Sexo</label>
+                        <select class="select-chosen-eps" ng-model="new.SEXO" ng-disabled="dsbsexo">
+                           <option value="F">FEMENINO</option>
+                           <option value="M">MASCULINO</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col l12 m12 s12">
+                     <blockquote>Datos de Ubicación</blockquote>
+                     <div class="input-field col l3 m12 s12" ng-init="obtenerMunicipios()">
+                        <label style=" margin-top: -20px;">Municipio</label>
+                        <select class="select-chosen-eps" ng-model="new.MUNICIPIO" ng-disabled="dsbmunicipio"
+                           ng-options="municipio.CODIGO as (municipio.NOMBRE) for municipio in Municipios"
+                           ng-change="obtenerEscenarios()">
+                        </select>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Nuevo Escenario</label>
+                        <select id="escenario" class="select-chosen-eps" ng-model="new.ESCENARIO"
+                           ng-options="escenario.CODIGO as (escenario.CODIGO + ' - ' + escenario.NOMBRE) for escenario in Escenarios" ng-disabled="dsbescenario">
+                        </select>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="direccion" type="text" ng-model="new.DIRECCION" ng-disabled="true">
+                        <label for="direccion" class="">Dirección</label>
+                     </div>
+                     <div class="input-field col l2 m12 s12">
+                        <label style=" margin-top: -20px;">Estado</label>
+                        <select class="select-chosen-eps" ng-model="new.ESTADO" ng-disabled="dsbestado">
+                           <option value="AC">ACTIVO</option>
+                           <option value="AF">FALLECIDO</option>
+                           <option value="IN">INACTIVO</option>
+                           <option value="RE">RETIRADO</option>
+                           <option value="SU">SUSPENDIDO</option>
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </fieldset>
+   </div>
+
+   <div class="row" ng-show="paneldatos">
+      <fieldset ng-disabled="alldata" style="border: none; margin-left: -10px; margin-right:0px; margin-bottom: -30px;">
+         <div class="col s12 m12 l12">
+            <div class="card card-default ">
+               <div class="foot4 divcardcustom">
+                  <div class="text-al switch divcardcustom2" style="display:flex;">
+                     <strong>Datos Complementarios</strong>
+                  </div>
+               </div>
+               <div class="card-content clearfix">
+                  <div class="col l12 m12 s12">
+                     <blockquote>Datos del Sisben</blockquote>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="ficha_sisben" type="text" ng-model="new.FICHASISBEN" ng-disabled="dsbsisben"
+                           maxlength="9">
+                        <label for="ficha_sisben" class="">Ficha de Sisben</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="nivel_sisben" type="text" ng-model="new.NIVELSISBEN" maxlength="1"
+                           ng-disabled="dsbsisben" ng-change="validasisben()">
+                        <label for="nivel_sisben" class="">Nivel de Sisben</label>
+                     </div>
+                  </div>
+
+                  <div class="col l12 m12 s12" ng>
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Discapacidad</label>
+                        <select class="select-chosen-eps" ng-model="new.DISCAPACIDAD" ng-disabled="dsbdiscapacidad">
+                           <option value="">NINGUNA</option>
+                           <option value="F">FISICA</option>
+                           <option value="N">NEURO-SENSORIAL</option>
+                           <option value="M">MENTAL</option>
+                        </select>
+                     </div>
+                     <div class="input-field col l5 m12 s12" ng-init="obtenerGrupoPoblacional()">
+                        <label for="simple-select" style="margin-top: -20px;">G.Poblacional</label>
+                        <select class="select-chosen-eps" ng-model="new.GPOBLACIONAL"
+                           ng-options="pobla.CODIGO as (pobla.NOMBRE) for pobla in Gpoblacional"
+                           ng-change="selectGPoblacional()">
+                        </select>
+                     </div>
+                     <div class="input-field col l3 m12 s12" ng-init="obtenerZona()">
+                        <label style="margin-top: -20px;">Zona</label>
+                        <select class="select-chosen-eps" ng-model="new.ZONA"
+                           ng-options="zona.Codigo as (zona.Nombre) for zona in Zonas.Zona">
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </fieldset>
+   </div>
+
+   <div class="row" ng-show="panelanexos">
+
+      <div class="col s12 m12 l12">
+         <div class="card card-default ">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch" style="display:flex;">
+                  <strong>Soportes de Novedad</strong>
+               </div>
+            </div>
+            <div class="card-action">
+               <blockquote>
+                  Por favor, adjunte los documentos requeridos y de click en Subir Documento para completar el registro
+                  de las novedades.
+               </blockquote>
+            </div>
+            <div class="input-button" style="padding-bottom: 15px !important;">
+               <center>
+                  <a class="waves-effect waves-light btn white-text primary-button" style="margin-top: 25px;"
+                     ng-click="CargarSoporte()" ng-show="adjuntosisben">Consultar DNP</a>
+                  <a class="waves-effect waves-light btn white-text primary-button" style="margin-top: 25px;"
+                     ng-click="ModalDigitalizacion('2')">Subir Documento</a>
+               </center>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row" ng-show="tablaretiro">
+
+         <div class="col s12 m12 l12">
+            <div class="card card-default ">
+               <div class="foot4 divcardcustom">
+                  <div class="text-al switch" style="display:flex;">
+                     <strong>Tutetas</strong>
+                  </div>
+               </div>
+               <div class="card-action">
+               </div>
+               
+                     <div class="card-content clearfix" style=" margin-top: 1em;">
+                     <table class="responsive-table striped table-bordered" align="center" id="informacion"
+                         style="border-bottom: none;">
+                         <thead align="center">
+                             <tr>
+                                 <td class="center-align"><strong>NUMERO</strong></td>
+                                 <td class="center-align"><strong>RADICADO</strong></td>
+                                 <td class="center-align"><strong>MOTIVO</strong></td>
+                                 <td class="center-align"><strong>ACCIONANTE</strong></td>
+                                 <td class="center-align"><strong>FECHA VENCIMIENTO</strong></td>
+                                 <td class="center-align"><strong>OPCION</strong></td>
+                             </tr>
+                         </thead>
+                         <tbody style="height: 40%; overflow: scroll;">
+                             <tr ng-repeat="listarinfo in informacion">
+                                 <td class="center-align">{{listarinfo.numero}}</td>
+                                 <td class="center-align">{{listarinfo.radicado}}</td>
+                                 <td class="center-align">{{listarinfo.motivo}}</td>
+                                 <td class="center-align">{{listarinfo.accionante}}</td>
+                                 <td class="center-align">{{listarinfo.fecha_vencimiento}}</td>
+                                 <td class="center-align">
+                                     <div class="tooltip" >
+                                         <i ng-click="NovTutelas(listarinfo)" style="cursor: pointer !important;"
+                                             class="Medium material-icons">check</i>
+                                         <span class="tooltiptext">Seleccionar</span>
+                                     </div>
+                                 </td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+            </div>
+         </div>
+      </div>
+
+   <div class="row" ng-show="panelopciones">
+      <div class="col s12 m12 l12">
+         <div class="card">
+            <div class="foot4 divcardcustom">
+               <div class="text-al switch divcardcustom2" style="display:flex;">
+                  <strong>Opciones</strong>
+               </div>
+            </div>
+            <div class="card-content clearfix">
+               <div class="col l12 m12 s12">
+                  <center>
+                     <a class="waves-effect waves-light btn white-text primary-button" ng-click="solobusqueda()"
+                        ng-hide="btncancelar">Cancelar</a>
+                     <a class="btn white-text primary-button" ng-click="activar()"
+                        ng-show="btnreactivar">Activar Afiliado</a>
+                     <a class="waves-effect waves-light btn white-text primary-button" ng-click="cambiardir()"
+                        ng-hide="btncambiodir">Datos de Contacto</a>
+                     <a class="waves-effect waves-light btn white-text primary-button" ng-click="retirarafil()"
+                        ng-hide="btnretiro">Retiro</a>
+                     <a class="waves-effect waves-light btn white-text primary-button" ng-click="validadocs()"
+                        ng-hide="btnguardarcambios">Guardar Cambios</a>
+                  </center>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="modal" class="modal"
+      style="width: 80%; margin-top: -60px !important; overflow-y: hidden; max-height: 100%; height: 810px;">
+      <div class="modal-content">
+
+         <h5 style="display: flex;"><strong>INFORMACIÓN A MODIFICAR</strong>
+            <a class="btn-floating btn waves-effect waves-light primary-button" style="margin-left: 1em;"
+               ng-click="EnviarInformacion(info,info.NACIMIENTO)">
+               <i class="material-icons dp48">save</i></a>
+         </h5>
+         <div class="row">
+            <div class="card">
+               <div class="foot4 divcardcustom">
+                  <div class="text-al switch divcardcustom2" style="display:flex;">
+                     <strong>Información del Afiliado</strong>
+                  </div>
+               </div>
+               <div class="card-content clearfix">
+                  <div class="col l12 m12 s12">
+                     <blockquote>Datos Básicos de Identificación</blockquote>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="p_nombre" type="text" ng-model="info.PRIMERNOMBRE" maxlength="20">
+                        <label for="p_nombre" class="">Primer Nombre</label>
+                     </div>
+                     <div class="input-field col l2 m12 s12">
+                        <input id="s_nombre" type="text" ng-model="info.SEGUNDONOMBRE" maxlength="30">
+                        <label for="s_nombre" class="">Segundo Nombre</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="p_apellido" type="text" ng-model="info.PRIMERAPELLIDO" maxlength="20">
+                        <label for="p_apellido" class="">Primer Apellido</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="s_apellido" type="text" ng-model="info.SEGUNDOAPELLIDO" maxlength="30">
+                        <label for="s_apellido" class="">Segundo Apellido</label>
+                     </div>
+                  </div>
+                  <div class="col l12 m12 s12">
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Tipo de Documento</label>
+                        <select class="select-chosen-eps" ng-model="info.TIPODOCUMENTO"
+                           ng-options="documento.Codigo as (documento.Nombre) for documento in Documentos.Documento">
+                        </select>
+                     </div>
+                     <div class="input-field col l2 m12 s12">
+                        <input id="documento" type="text" ng-model="info.DOCUMENTO" maxlength="20">
+                        <label for="documento" class="">Número de identificación</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <label for="fecha_nacimiento" style=" margin-top: -20px;">Fecha Nacimiento</label>
+                        <input id="fecha_nacimiento" ng-model="info.NACIMIENTO" type="date">
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Sexo</label>
+                        <select class="select-chosen-eps" ng-model="info.SEXO">
+                           <option value="F">FEMENINO</option>
+                           <option value="M">MASCULINO</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col l12 m12 s12">
+                     <blockquote>Datos de Ubicación</blockquote>
+                     <div class="input-field col l3 m12 s12" ng-init="obtenerMunicipios()">
+                        <label style=" margin-top: -20px;">Municipio</label>
+                        <select class="select-chosen-eps" ng-model="info.MUNICIPIO"
+                           ng-options="municipio.CODIGO as (municipio.NOMBRE) for municipio in Municipios"
+                           ng-change="obtenerEscenarios()">
+                        </select>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Nuevo Escenario</label>
+                        <select id="escenario" class="select-chosen-eps" ng-model="info.ESCENARIO"
+                           ng-options="escenario.CODIGO as (escenario.CODIGO + ' - ' + escenario.NOMBRE) for escenario in Escenarios">
+                        </select>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="direccion" type="text" ng-model="info.DIRECCION">
+                        <label for="direccion" class="">Dirección</label>
+                     </div>
+                     <div class="input-field col l2 m12 s12">
+                        <label style=" margin-top: -20px;">Estado</label>
+                        <select class="select-chosen-eps" ng-model="info.ESTADO" ng-disabled="dsbestado">
+                           <option value="AC">ACTIVO</option>
+                           <option value="AF">FALLECIDO</option>
+                           <option value="IN">INACTIVO</option>
+                           <option value="RE">RETIRADO</option>
+                           <option value="SU">SUSPENDIDO</option>
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="card">
+               <div class="foot4 divcardcustom">
+                  <div class="text-al switch divcardcustom2" style="display:flex;">
+                     <strong>Datos Complementarios</strong>
+                  </div>
+               </div>
+               <div class="card-content clearfix">
+                  <div class="col l12 m12 s12">
+                     <blockquote>Datos del Sisben</blockquote>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="ficha_sisben" type="text" ng-model="info.FICHASISBEN" maxlength="9">
+                        <label for="ficha_sisben" class="">Ficha de Sisben</label>
+                     </div>
+                     <div class="input-field col l3 m12 s12">
+                        <input id="nivel_sisben" type="text" ng-model="info.NIVELSISBEN" maxlength="1"
+                           ng-change="validasisben()">
+                        <label for="nivel_sisben" class="">Nivel de Sisben</label>
+                     </div>
+                  </div>
+
+                  <div class="col l12 m12 s12" ng>
+                     <div class="input-field col l3 m12 s12">
+                        <label style=" margin-top: -20px;">Discapacidad</label>
+                        <select class="select-chosen-eps" ng-model="info.DISCAPACIDAD">
+                           <option value="">NINGUNA</option>
+                           <option value="F">FISICA</option>
+                           <option value="N">NEURO-SENSORIAL</option>
+                           <option value="M">MENTAL</option>
+                        </select>
+                     </div>
+                     <div class="input-field col l5 m12 s12" ng-init="obtenerGrupoPoblacional()">
+                        <label for="simple-select" style="margin-top: -20px;">G.Poblacional</label>
+                        <select class="select-chosen-eps" ng-model="info.GPOBLACIONAL"
+                           ng-options="pobla.CODIGO as (pobla.NOMBRE) for pobla in Gpoblacional"
+                           ng-change="selectGPoblacional()">
+                        </select>
+                     </div>
+                     <div class="input-field col l3 m12 s12" ng-init="obtenerZona()">
+                        <label style="margin-top: -20px;">Zona</label>
+                        <select class="select-chosen-eps" ng-model="info.ZONA"
+                           ng-options="zona.Codigo as (zona.Nombre) for zona in Zonas.Zona">
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+
+         </div>
+      </div>
+   </div>
+</div>

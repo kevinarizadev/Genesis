@@ -1,0 +1,294 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+          onclick="location.reload();">
+          Horario de Oficinas de Atención
+        </h5>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <div class="row dashboard-wrapper content-container white">
+    <div class="col s12 m12 l12">
+      <!-- TABLA -->
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <!-- <div class="col s12">
+          <div class="left" style="margin: auto;margin-right: 10px;">
+            <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;" title="Actualizar Tabla"
+              ng-click="Obtener_Listado_Proyectos()"></i>
+          </div>
+          <div class="right tooltip" style="margin: auto;margin-right: 10px;">
+            <button class="btn default-linear-gradient" style="padding: 0px;border-radius: 10px;">
+              <i class="icon-doc-new white-text" style="padding: 8px 5px 8px 5px;display: flex;"
+                ng-click="Crear_Nuevo()"></i>
+            </button>
+            <span class="tooltiptext" style="font-size: 12px;width: 120px;margin-left: -60px;">Nuevo</span>
+          </div>
+          <div class="col s3 no-padding label-new right m-b"
+            style="width: 25%;display: inline-flex;margin-right: 4rem;margin-top: 0.35rem;">
+            <input class="margin border-none input-text-new black-text gray-input w-100 m-l" style="text-align:right;"
+              autocomplete="off" placeholder="Buscar..." ng-model="Form.Filtro">
+          </div>
+        </div> -->
+        <div class="card-action" id="card-action"
+          style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+          <!-- ELEGIR -->
+          <div class="col s12">
+            <!-- // -->
+            <div id="Diag_3" class="foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Listado de Oficinas
+                  ({{listadoOficinas.length}})</strong>
+                <div class="tooltip">
+                  <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoProyectos()"></i>
+                  <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+                </div>
+                <div class="col s3 no-padding label-new right"
+                  style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l black-text"
+                    style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="Form.Filtro">
+                </div>
+              </div>
+            </div>
+            <div style="max-height: 55vh;overflow:auto;border:4px solid;" class="default-color">
+              <table id="tabla_nueva_1" class="bordered highlight" style="width:100%;color: black;">
+                <thead class="default-color">
+                  <th>Departamento</th>
+                  <th>Municipio</th>
+                  <th>Oficina</th>
+                  <th>Dirección</th>
+                  <th>Horario</th>
+                </thead>
+                <tbody>
+                  <tr class="cursor-pointer" title="Editar horario de atención"
+                    ng-repeat="x in listadoOficinas | filter:Form.Filtro | orderBy:propertyName:reverse">
+                    <td ng-click="editarOficina(x)">{{x.DEPARTAMENTO}}</td>
+                    <td ng-click="editarOficina(x)">{{x.MUNICIPIO}}</td>
+                    <td ng-click="editarOficina(x)">{{x.UBGC_NOMBRE}}</td>
+                    <td ng-click="editarOficina(x)">{{x.DIRECCION}}</td>
+                    <td ng-click="editarOficina(x)">{{x.HORARIO}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- //-// -->
+        </div>
+        <!-- FORM -->
+        <div class="col s12 m12 l12" style="justify-content: center;" ng-show="Form.Status == 1">
+          <div class="row" id="Form1">
+            <div class="col s12 m12 l12">
+              <blockquote class="default-color">
+                {{Form.oficina}}
+                <span class="right">{{Form.direccion}}</span>
+              </blockquote>
+              <div class="col s12 no-padding label-new m-b">
+                <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                  autocomplete="off" id="Form_horario" ng-model="Form.horario" maxlength="100" readonly>
+                <label>Horario</label>
+              </div>
+
+              <div class="col s3 no-padding label-new m-b">
+                <label>Mañana Hora Entrada</label>
+                <select class="select-default-new input-out-new m-l" ng-model="Form.mananaHoraEntrada"
+                  ng-change="calcularHorario()">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="4AM">4 AM</option>
+                  <option value="5AM">5 AM</option>
+                  <option value="6AM">6 AM</option>
+                  <option value="7AM">7 AM</option>
+                  <option value="8AM">8 AM</option>
+                  <option value="9AM">9 AM</option>
+                </select>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <label>Mañana Hora Salida</label>
+                <select class="select-default-new input-out-new m-l" ng-model="Form.mananaHorasalida"
+                  ng-change="calcularHorario()">
+                  <option value="">NO APLICA</option>
+                  <option value="10AM">10 AM</option>
+                  <option value="11AM">11 AM</option>
+                  <option value="12PM">12 PM</option>
+                </select>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <label>Tarde Hora Entrada</label>
+                <select class="select-default-new input-out-new m-l" ng-model="Form.tardeHoraEntrada"
+                  ng-change="calcularHorario()">
+                  <option value="">NO APLICA</option>
+                  <option value="12PM">12 PM</option>
+                  <option value="1PM">1 PM</option>
+                  <option value="2PM">2 PM</option>
+                </select>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
+                <label>Tarde Hora Salida</label>
+                <select class="select-default-new input-out-new m-l" ng-model="Form.tardeHorasalida"
+                  ng-change="calcularHorario()">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="3PM">3 PM</option>
+                  <option value="4PM">4 PM</option>
+                  <option value="5PM">5 PM</option>
+                  <option value="6PM">6 PM</option>
+                </select>
+              </div>
+
+              <div class="col s12 input-padding" style="padding-left: 2.3rem;">
+                <input type="checkbox" class="filled-in" id="Form_jornadaContinua" ng-model="Form.jornadaContinua"
+                  ng-change="calcularHorario()">
+                <label for="Form_jornadaContinua">Jornada Continua</label>
+              </div>
+
+            </div>
+            <!--  -->
+            <div class="col s12 m12 l12 center m-b">
+              <input class="btn white-text default-linear-gradient" type="submit" value="Guardar"
+                ng-click="actualizarOficina();" ng-if="Form.Status == 1">
+              <input class="btn white-text red"
+                style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit" value="Cerrar"
+                ng-click="atras();">
+            </div>
+          </div>
+        </div>
+        <!-- FORM -->
+      </div>
+      <!-- TABLA -->
+
+      <!-- /////////// -->
+
+    </div>
+    <!-- /////////// -->
+  </div>
+  <!-- ///// -->
+
+
+  <style>
+    [type="checkbox"].filled-in:not(:checked)+label:after {
+      border: 2px solid #000000;
+    }
+
+    [type="checkbox"].filled-in:checked+label:after {
+      border: 2px solid #000000;
+      background-color: #000000;
+    }
+
+    #Form1 {
+      border: 4px solid;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    .text-upper {
+      text-transform: uppercase !important;
+    }
+
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+    #Diag_3 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    #tabla_nueva_1 th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      cursor: pointer;
+      text-align: center;
+      background-color: #fff !important;
+    }
+
+    #tabla_nueva_1>thead {
+      font-size: 1em;
+      /* border: 3px; */
+      /* border-width: medium;
+      border-style: solid;
+      border-radius: .375rem; */
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    #tabla_nueva_1 td {
+      text-align: center;
+    }
+
+
+    .label-new>label {
+      display: table;
+    }
+
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    #toast-container .success {
+      background: linear-gradient(to bottom left, #0fda00, #007217, #0fda00);
+    }
+
+    .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+    }
+
+    .sortorder:after {
+      content: '\25bc';
+    }
+
+    .sortorder.reverse:after {
+      content: '\25b2';
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

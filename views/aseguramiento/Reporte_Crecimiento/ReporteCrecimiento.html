@@ -1,0 +1,205 @@
+<div id="reporteCrecimiento" class="white newdesing" style="position:relative">
+   <!-- Encabezado -->
+   <div class="row section-header">
+      <ul class="left mailbox-custom-search list-inline"
+         style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+         <li id="inicio">
+            <h5>Generar Reportes</h5>
+         </li>
+      </ul>
+   </div>
+   <!-- Contenido -->
+   <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+      <div class="col l12 m12 s12" style="position:relative;height: auto;">
+         <div class="col l6 m6 s12">
+            <div class="col l12 m12 s12" style="padding-bottom: 20px;">
+               <div class="input-field col l7 m12 s12">
+                  <label class="labelper">Tipo de Reporte</label>
+                  <select id="tiporeporte" name="tiporeporte" class="select-chosen-eps validate" ng-model="tipo_reporte" ng-change="listaAnnos(tipo_reporte)"
+                     required>
+                     <option value="" disabled>SELECCIONAR</option>
+                     <option value="C">CRECIMIENTO DE POBLACIÓN</option>
+                     <option value="TN">TRASLADOS NEGADOS</option>
+                     <option value="RN">REPORTE DE NOVEDADES</option>
+                  </select>
+               </div>
+            </div>
+            <div class="col l12 m12 s12" ng-hide="hdeInputsPeriodo" style="padding-bottom: 20px;">
+               <div class="input-field col l4 m12 s12" ng-hide="hdeSlectAnno">
+                  <label class="labelper">Año</label>
+                  <select id="anno" name="anno" class="select-chosen-eps validate"
+                     ng-model="anno" ng-change="listaMeses(anno,tipo_reporte)" required>
+                     <option value="" disabled>SELECCIONAR</option>
+                    <!--  <option ng-repeat="annos in Annos track by $index" 
+                        ng-value="annos.anno">{{annos.anno}}</option> -->
+                     <option value="2021">2021</option>
+                     <option value="2022">2022</option>
+                     <option value="2023">2023</option>
+
+                  </select>
+               </div>
+               <div class="input-field col l4 m12 s12" ng-hide="hdeSlectMes">
+                  <label class="labelper"># Mes</label>
+                  <select id="mes" name="mes" class="select-chosen-eps validate" ng-model="mes"
+                     ng-change="listaPeriodos(anno,mes,tipo_reporte)" required>
+                     <option value="" disabled>SELECCIONAR</option>
+                     <!--<option ng-repeat="mes in Meses track by $index" 
+                        ng-value="mes.mes">{{mes.mes}}</option> -->
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                     <option value="6">6</option>
+                     <option value="7">7</option>
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                     <option value="11">11</option>
+                     <option value="12">12</option>
+                  </select>
+               </div>
+               <div class="input-field col l3 m12 s12" ng-hide="hdeSlectPer">
+                  <label class="labelper">Periodo</label>
+                  <select id="semana" name="semana" class="select-chosen-eps validate" ng-model="semana" required>
+                     <option value="" disabled>SELECCIONAR</option>
+                     <!-- <option ng-repeat="periodo in Periodos track by $index" ng-value="periodo.periodo">{{periodo.periodo}}</option> -->
+
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                  </select>
+               </div>
+            </div>
+            <div id="botones" class="col l10 m12 s12 offset-l2" ng-hide="historial.codResponsable == '8646049' || historial.codResponsable == '22523027'">
+               <div class="input-field" ng-hide="hdeBtnC">
+                  <div class="tooltip">
+                     <a  class="btn btn-primary" ng-click="reporteCrecimiento('C',semana,mes,anno);">CRECIMIENTO DE POBLACIÓN
+                        <i class="icon-chart-line"></i>
+                     </a>
+                     <span class="tooltiptext tooltiptablas">GENERAR</span>
+                  </div>
+               </div>
+               <div class="input-field" ng-hide="hdeBtnTN">
+                  <div class="tooltip">
+                     <a id="btnTN" class="btn btn-primary" ng-click="reporteCrecimiento('TN',semana,mes,anno)">TRASLADOS NEGADOS
+                        <i class="icon-block"></i>
+                     </a>
+                     <span class="tooltiptext tooltiptablas">GENERAR</span>
+                  </div>
+               </div>
+               <div class="input-field" ng-hide="hdeBtnRN">
+                  <div class="tooltip">
+                     <a id="btnRN" class="btn btn-primary" ng-click="reporteCrecimiento('RN',semana,mes,anno)">REPORTE DE NOVEDADES
+                        <i class="icon-doc-text-2"></i>
+                     </a>
+                     <span class="tooltiptext tooltiptablas">GENERAR</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col l6 m6 s12" ng-hide="hdeInfoAdjuntos">
+            <div class="row margin">
+               <div class="col s12 m6 l6">
+                  <div class="card">
+                     <div class="card-content">
+                        <h5>{{rutas.soportes}}<i class="zmdi zmdi-cloud-upload grey-text right"></i></h5>
+                        <div class="row">
+                           <h6>Soportes Consultados</h6>
+                        </div>
+                        <div class="progress teal lighten-4">
+                           <div class="determinate teal darken-2" style="width: 100%"></div>
+                        </div>
+                        <!-- <p>
+                           <small>5% increase vs previous month</small>
+                        </p> -->
+                     </div>
+                  </div>
+               </div>
+               <div class="col s12 m6 l6">
+                  <div class="card">
+                     <div class="card-content">
+                        <h5>{{rutas.afiliados}}<i class="zmdi zmdi-account grey-text right"></i></h5>
+                        <div class="row">
+                           <h6>Usuarios Asociados</h6>
+                        </div>
+                        <div class="progress orange lighten-4">
+                           <div class="determinate orange darken-2" style="width: 100%"></div>
+                        </div>
+                        <!-- <p>
+                           <small>hdd is at 60% capacity</small>
+                        </p> -->
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col l12 m12 s12">
+            <hr style="margin-top: 30px;margin-bottom: 15px;border-top: 1px solid rgba(160, 160, 160, 0.2);">
+            <ul class="collapsible" data-collapsible="expandable"
+               style="background-color: transparent;border: 0;box-shadow: none;">
+               <li class="active">
+                  <div id="collapsible-header-h3" class="collapsible-header active"
+                     style="line-height: 3rem;padding: 0;">
+                     <div class="foot4 divcardcustom">
+                        <div class="text-al divcardcustom2" style="line-height: normal;text-align: center;">
+                           <strong class="switch" style="cursor:pointer;" title="Desplegar lista">Historial de Reportes
+                              <!-- <i class="icon-down-2"
+                                 style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                                 title="Desplegar lista">
+                              </i> -->
+                           </strong>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="collapsible-body"
+                     style="display: block; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+                     <div class="col s12 m12 l12 center">
+                        <div class="switch">
+                           <table id="dataHistorialReportes" class="highlight responsive-table" style="width:100%; cursor:pointer;">
+                              <thead>
+                                 <tr>
+                                    <th>Responsable</th>
+                                    <th>Tipo</th>
+                                    <th>Periodo</th>
+                                    <th>Fecha y Hora inicio</th>
+                                    <th>Fecha y Hora Fin</th>
+                                    <th>Tiempo Tardado</th>
+                                 </tr>
+                              </thead>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </li>
+            </ul>
+         </div>
+
+      </div>
+   </div>
+   <style>
+      #toast-container .toast {
+         /* width: 470px; */
+         /* width: fit-content; */
+         border-radius: 25px !important;
+         font-weight: 600;
+         text-align: center !important;
+         word-break: keep-all;
+         padding: 10px 25px;
+         width: auto;
+      }
+
+      div.dt-buttons{
+         visibility: hidden;
+      }
+
+      tbody>tr>td{
+         text-align: center;
+         font-size: 13px !important;
+      }
+
+      thead>tr>th{
+         text-align: center;
+      }
+   </style>
+</div>

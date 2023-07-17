@@ -1,0 +1,159 @@
+<div id="gestionacastic" class="white newdesing" style="position:relative">
+    <!-- Encabezado -->
+    <div class="row section-header">
+        <ul class="left mailbox-custom-search list-inline"
+            style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+            <li id="inicio">
+                <h5>Gestión de Servicios PUBLICIDAD</h5>
+            </li>
+            <li style="display:flex;align-items: center;">
+                <form method="post" ng-submit="buscarAcas(buscaracas)" autocomplete="off" class="form-input-icon-new">
+                    <input type="text" class="margin border-none" ng-model="buscaracas" placeholder="Buscar ticket">
+                    <i ng-click="buscarAcas(buscaracas)" class="icon-search"></i>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <!-- Contenido -->
+    <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+        <div class="col l12 m12 s12" style="position:relative">
+            <div class="black-text title-panel"
+                style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+                {{ panel.activo == 1 ? '':panel.titulo}}
+                <!-- <i ng-init="filterOrder = '-procesado'"
+                    ng-click="filterOrder == '-procesado'?filterOrder = 'procesado':filterOrder = '-procesado'"
+                    ng-show="panel.activo == 1" ng-class="{'icon-up-dir':filterOrder == '-procesado'}"
+                    class="icon-down-dir" style="cursor: pointer;"> {{filterOrder == '-procesado'?'Mayor':'Menor'}}
+                    Cerrados</i> -->
+
+                <div class="btn-panel" style="display: flex;align-items: center;">
+                    <input type="text" class="margin border-none input-text-new" ng-show="panel.activo == 2"
+                        ng-model="filtrar" placeholder="Buscar en la tabla">
+                    <i ng-click="filtrar = '';buscaracas = '';changePanel()" ng-show="panel.activo!=1"
+                        class="icon-left-open-2">Atras</i>
+                </div>
+            </div>
+            <div class="row margin" ng-show="panel.activo == 1">
+                <div ng-repeat="list in listdeptstic | orderBy:filterOrder" class="col s12 m6 l3">
+                    <div class="card-panel center-align white-text no-padding">
+                        <div style="padding: 20px 20px 10px;background-color: #84c79f;position:relative">
+                            <div
+                                style="max-width: 80%;z-index: 10;position: relative;background-image: url(images/user.jpg);background-repeat: no-repeat;background-size: cover;background-position-y: 0%;height: 169px;width: 169px;border-radius: 50%;margin: auto;margin-bottom: 0.5em;">
+                            </div>
+                            <!-- <img src="assets/images/users/default-user.png" alt="avatar profile" class="circle responsive-img" style=""> -->
+                            <p class="margin" style="z-index: 10;position: relative;">
+                                <strong style="padding: 2px 15px;">
+                                    {{list.nombre}}
+                                </strong>
+                            </p>
+                            <div style="background-color: #cd6868;position: absolute;bottom: 0;right: 0;left: 0;"
+                                ng-style="colors(list.activo)"></div>
+                        </div>
+                        <div class="black-text white"
+                            style="font-size: 14px;padding: 10px 20px;display: flex;justify-content: space-around;">
+                            <a ng-click="obtenerAcasXPersona(list.cedula,'A',list.nombre,'Abiertos')" class="red-text"
+                                href="javascript:void(0)" style="width: 50%;display: grid;font-weight: bold">
+                                <span>{{list.activo}}</span> Abiertos
+                            </a>
+                            <a ng-click="obtenerAcasXPersona(list.cedula,'P',list.nombre,'Cerrados')" class="green-text"
+                                href="javascript:void(0)"
+                                style="width: 50%;border-left: 1px solid #ededed;display: grid;font-weight: bold">
+                                <span>{{list.procesado}}</span> Cerrados
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row margin" ng-show="panel.activo == 2" style="position: relative;">
+                <div class="scroll_x" style="position: absolute;width: calc(100% - 10px);z-index: 10;overflow: hidden;">
+                    <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+
+                    </table>
+                </div>
+                <div id="tabla_scroll" class="scroll_x" style="overflow: auto;height: calc(100vh - 219px);">
+                    <table id="tablaByCN" class="striped table-bordered white" style="position: relative;">
+                        <thead>
+                            <tr class="default-background white-text">
+                                <!-- <th data-field="index" class="border-none center-align">#</th> -->
+                                <th data-field="Nombre" class="border-none">Nombre</th>
+                                <th data-field="Ticket" class="border-none">Ticket</th>
+                                <th data-field="Asusnto" class="border-none">Asunto</th>
+                                <th data-field="Autoriza" class="border-none">Autoriza</th>
+                                <th data-field="Fecha Ingreso" class="border-none">Fecha Ingreso</th>
+                                <th data-field="Fecha Cierre" class="border-none">Fecha Cierre</th>
+                                <th data-field="Dias" class="border-none center-align">Dias</th>
+                                <th data-field="Ciudad" class="border-none">Ciudad</th>
+                                <th data-field="Cargo" class="border-none">Cargo</th>
+                                <th data-field="Detalle" class="border-none center-align">Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="listacas.length == 0">
+                                <td colspan="10" class="center-align">
+                                    No hay acas para mostrar
+                                </td>
+                            </tr>
+                            <tr
+                                ng-repeat="acas in listacas | filter:filtrar | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                <!-- <td class="center-align">{{$index + 1}}</td> -->
+                                <td>{{acas.NOMBRE}}</td>
+                                <td>{{acas.NUMERO}}</td>
+                                <td>{{acas.ASUNTO}}</td>
+                                <td>{{acas.NOMBRE_AUTORIZA}}</td>
+                                <td>{{acas.FECHA_INGRESO}}</td>
+                                <td>{{acas.FECHA_CIERRE}}</td>
+                                <td class="center-align">{{acas.DIAS}}</td>
+                                <td>{{acas.CIUDAD}}</td>
+                                <td>{{acas.CARGO}}</td>
+                                <td class="center-align">
+                                    <i style="cursor:pointer;position: relative;display: flow-root;font-size: 17px;"
+                                        class="icon-eye-6"
+                                        ng-click="verdescripcion(acas.DESCRIPCION,acas.NUMERO,acas.UBICACION)">
+                                        <span
+                                            style="position: absolute;font-size: 10px;height: 15px;width: 15px;min-height: 15px;min-width: 15px;border-radius: 50%;top: 16px;left: 7px;font-weight: bold;display: flex;justify-content: center;align-items: center;"
+                                            class="default-background white-text ng-binding"
+                                            ng-class="{'orange':acas.DIAS <= 0}">{{acas.CANTIDAD}}</span>
+                                    </i>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="10" class="border-none no-padding" style="user-select: none">
+                                    <div class="black-text title-panel d-flex justify-content-between align-items-center"
+                                        style="margin-top: 15px;">
+                                        <select id="pageSize" ng-model="pageSize"
+                                            class="gray-input select-default-new border-none" ng-change="currentPage=0"
+                                            style="width: auto;max-width: 100px;">
+                                            <option value="20">20</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                            <option value="200">200</option>
+                                            <option value="500">500</option>
+                                        </select>
+                                        <div style="margin-left: auto;">
+                                            <button class="btn btn-small border-radius-none no-padding"
+                                                ng-disabled="currentPage == 0" ng-click="btns_paginacion(currentPage-1)"
+                                                style="box-shadow: none;">
+                                                <i class="icon-left-small"></i>
+                                            </button>
+                                            <small
+                                                style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                                                Página {{currentPage+1}} de {{numberOfPages()}}
+                                            </small>
+                                            <button class="btn btn-small border-radius-none no-padding"
+                                                ng-disabled="currentPage >= getData().length/pageSize - 1"
+                                                ng-click="btns_paginacion(currentPage+1)" style="box-shadow: none;">
+                                                <i class="icon-right-small"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

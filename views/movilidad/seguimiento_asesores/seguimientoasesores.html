@@ -1,0 +1,707 @@
+<div>
+    <div class="row">
+        <div class="col s12 m12 l12 magazine margin widgets-tabs">
+            <div class="card-panel widgets-tabs col l12 m12 s12" style="margin-top: 0px; padding-bottom: 15px;height: auto;">
+                <ul tabs reload="allTabContentLoaded" style="box-shadow: 0px 2px 2px #f3f3f3;">
+                    <li class="tab col l3 m3 s3" style="cursor: pointer;" ng-class="activeIcolor"><a style="border-top:0"
+                            ng-click="setTab(1);sumPrint = 0;" ng-class="activeI">Afiliación</a></li>
+                    <li class="tab col l3 m3 s3" style="cursor: pointer;" ng-class="activeIIcolor"><a style="border-top:0"
+                            ng-click="setTab(2)" ng-class="activeII">Empresas</a></li>
+                    <li class="tab col l3 m3 s3" style="cursor: pointer;visibility:hidden;" ng-class="activeIIIcolor"><a style="border-top:0"
+                            ng-click="setTab(3)" ng-class="activeIII">Llamadas</a></li>
+                    <li class="tab col l3 m3 s3" style="cursor: pointer;visibility:hidden;" ng-class="activeIVcolor"><a style="border-top:0"
+                            ng-click="setTab(4)" ng-class="activeIV">Devoluciones</a></li>
+                </ul>
+                <div ng-show="tabI" class="col no-padding" style="width: 100%;">
+                    <div ng-hide="inactiveseccion1tab1">
+                        <div class="col l6 m9 s10">
+                            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                            <h5>Registro de Formularios de Afiliación</h5>
+                        </div>
+                        <div class="col l6 m2 s2 tooltip" style="margin-top: 15px; cursor: pointer;">
+                            <i ng-click="openmodal('afiliacion')" class="small material-icons">search</i></span></i>
+                            <span class="tooltiptext" style="left: 0; margin-left: -37px;">Consultar</span>
+                        </div>
+                    </div>
+                    <div class="col l12 m12 s12" style="margin-top: 20px;">
+                        <form ng-submit="registraFormulario('afiliacion');">
+                            <div class="input-field col l3 m12 s12">
+                                <input id="dteFecha" class="datepicker picker__input uppercase" style="width: 100%;"
+                                    ng-model="Fecha" type="text" placeholder="dd/mm/aaaa" required>
+                                <label for="dteFecha" class="labelper" style="margin-top: -30px;">Fecha</label>
+                            </div>
+                            <div class="input-field col l2 m12 s12" title="Digite # del código del asesor.">
+                                <input id="codigo_asesor" type="text" ng-model="codigo_asesor" title="Digite # del código del asesor." readonly disabled required>
+                                <label for="codigo_asesor">Código de Asesor</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12">
+                                <label for="tipo_doc_usuario" class="labelper">Tipo de Documento Usuario</label>
+                                <select id="tipo_doc_usuario" name="tipo_doc_usuario" class="select-chosen-eps validate" ng-model="tipo_doc_usuario" required>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <!-- <option ng-repeat="tipo_doc in tipodocumento.Documento track by $index" ng-value="tipo_doc.Codigo">{{tipo_doc.Nombre}}</option> -->
+                                    <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == tipo_doc_usuario" 
+                                    ng-repeat="x in Tipos_Documentos track by $index | orderBy:'NOMBRE'">{{x.NOMBRE}}</option>
+                                </select>
+                            </div>
+                            <div class="input-field col l2 m12 s12" title="Digite # de identificación del usuario.">
+                                <input id="doc_usuario" class="validate" type="text" ng-model="doc_usuario" placeholder="Tabular [↹]" 
+                                title="Digite # de identificación del usuario." required ng-keydown="($event.keyCode == 9) && setNombreAfil('A')">
+                                <label for="doc_usuario" class="active">Identificación Usuario</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12" ng-hide="hdeInfoAfiliado">
+                                <input id="pnombre_usuario" type="text" ng-model="pnombre_usuario" readonly disabled>
+                                <label for="pnombre_usuario">Primer Nombre Usuario</label>
+                            </div>
+                            <div class="input-field col l2 m12 s12" ng-hide="hdeInfoAfiliado">
+                                <input id="snombre_usuario" type="text" ng-model="snombre_usuario" readonly disabled>
+                                <label for="snombre_usuario">Segundo Nombre Usuario</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12" ng-hide="hdeInfoAfiliado">
+                                <input id="papellido_usuario" type="text" ng-model="papellido_usuario" readonly disabled>
+                                <label for="papellido_usuario">Primer Apellido Usuario</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12" ng-hide="hdeInfoAfiliado">
+                                <input id="sapellido_usuario" type="text" ng-model="sapellido_usuario" readonly disabled>
+                                <label for="sapellido_usuario">Segundo Apellido Usuario</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12" ng-hide="hdeInfoAfiliado">
+                                <label class="labelper">Tipo de Documento Empresa</label>
+                                <select class="select-chosen-eps validate" ng-model="tipo_doc_empresa" required>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="C">CÉDULA DE CIUDADANÍA</option>
+                                    <option value="N">NIT</option>
+                                    <option value="B">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                </select>
+                            </div>
+                            <div class="input-field col l3 m12 s12" title="Digite # del código de la empresa." ng-hide="hdeInfoAfiliado">
+                                <input id="codigo_empresa" class="validate" type="text" ng-model="codigo_empresa" placeholder="Tabular [↹]" title="Digite # del código de la empresa." required ng-keydown="($event.keyCode == 9) && setNombreAfil('E')">
+                                <label for="codigo_empresa" class="active">Código de Empresa</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12" ng-hide="hdeInfoEmpresaAfiliacion">
+                                <input id="nombre_empresa_afiliacion" type="text" ng-model="nombre_empresa_afiliacion" disabled>
+                                <label for="nombre_empresa_afiliacion">Razón Social</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12" ng-hide="hdeInfoAfiliado">
+                                <label class="labelper">Observación</label>
+                                <select class="select-chosen-eps validate" ng-model="observacion" required>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="t_observacion in tiposObservacion track by $index" ng-value="t_observacion.codigo">{{t_observacion.nombre}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col l12 m12 s12" style="margin-top: 30px;margin-bottom: 30px;" ng-hide="hdeInfoAfiliado">
+                                <center>
+                                    <button class="btn btn-primary" type="submit">Guardar</button>
+                                </center>
+                            </div>
+                        </form>
+                        <div id="modalConsultaAfiliacion" class="modal" style="width: 90%;max-height: 90%;">
+                            <div class="modal-content" style="padding: 0px !important;">
+                                <div class="col l12 m12 s12" style="padding-left: 0px; padding-right: 0px;">
+                                    <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                                        <div class="card-content foot4" style="padding: 0">
+                                            <div class="col l11 m11 s11">
+                                                <h5 class="white-text">Consulta de Afiliación</h5>
+                                            </div>
+                                            <div class="col s1">
+                                                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('afiliacion')"
+                                                        class="material-icons white-text">close</i></h5>
+                                            </div>
+                                        </div>
+                                        <div class="card-action" style="padding-bottom: 3px;overflow: auto;max-height: 75vh;">
+                                            <div class="row">
+                                                <div class="col l12 m12 s12">
+                                                    <form ng-submit="consultarAfiliacion('afiliacion');">
+                                                        <div class="input-field col l3 m3 s3" style="margin-top: 20px;">
+                                                            <input id="dteFechaConsultaAfiliacion" class="datepicker picker__input uppercase" style="width: 100%;" 
+                                                                ng-model="dteFechaConsultaAfiliacion" type="text" placeholder="dd/mm/aaaa">
+                                                            <label for="dteFechaConsultaAfiliacion" class="labelper" style="margin-top: -30px;">Fecha</label>
+                                                        </div>
+                                                        <div class="input-field col l4 m4 s4" title="Digite # del código del asesor.">
+                                                            <input id="cod_asesor" class="validate" type="text" ng-model="cod_asesor"
+                                                                title="Digite # del código del asesor.">
+                                                            <label for="cod_asesor">Código de Asesor</label>
+                                                        </div>
+                                                        <div class="input-field col l1 m3 s3">
+                                                            <a href="javascript:void(0)" ng-click="consultarAfiliacion('afiliacion');">
+                                                                <i style="position: absolute; top: 10px;margin-right: 100px;" class="material-icons prefix">search</i>
+                                                            </a>
+                                                        </div>
+                                                        <!-- <div class="input-field col l1 m3 s3" ng-show="dataRegistros.length > 0">
+                                                            <a href="javascript:void(0)" ng-click="imprimirInforme('afiliacion');">
+                                                                <i style="position: absolute; top: 10px;margin-right: 100px;" class="material-icons prefix">print</i>
+                                                            </a>
+                                                        </div> -->
+                                                    </form>
+                                                </div>
+                                                <div class="col l12 m12 s12" ng-hide="hdeTablaAfiliacion">
+                                                    <!-- <table class="striped table-bordered white w-100" style="cursor: pointer !important;margin-top: 25px;">
+                                                        <thead class="default-background">
+                                                            <tr class="default-background white-text">
+                                                                <th class="border-none center-align">Número de Formulario</th>
+                                                                <th class="border-none center-align">Fecha</th>
+                                                                <th class="border-none center-align">Seccional</th>
+                                                                <th class="border-none center-align">Código de Asesor</th>
+                                                                <th class="border-none center-align">Identificación Usuario</th>
+                                                                <th class="border-none center-align">Identificación Empresa</th>
+                                                                <th class="border-none center-align">Observación</th>
+                                                            </tr>
+                                                        </thead>
+                                                    
+                                                        <tbody>
+                                                            <tr ng-if="dataRegistros.length == 0">
+                                                                <td colspan="7" class="center-align">
+                                                                    No hay datos para mostrar.
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat="regAfiliacion in dataRegistros">
+                                                                <td class="center-align">8001 - {{regAfiliacion.num_formulario}}</td>
+                                                                <td class="center-align">{{regAfiliacion.fecha}}</td>
+                                                                <td class="center-align">{{regAfiliacion.ubi_nombre}}</td>
+                                                                <td class="center-align">{{regAfiliacion.codigo_asesor}}</td>
+                                                                <td class="center-align">{{regAfiliacion.id_usuario}}</td>
+                                                                <td class="center-align">{{regAfiliacion.cod_empresa}}</td>
+                                                                <td class="center-align">{{regAfiliacion.observacion}}</td>                                                    
+                                                            </tr>
+                                                        </tbody>
+                                                    </table> -->
+                                                    <div class="card-content clearfix">
+                                                        <table id="tblFormulariosAfiliacion" class="responsive-table display dataTable" style="width:100%; cursor:pointer;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td><b>SECCIONAL</b></td>
+                                                                    <td><b>FECHA</b></td>
+                                                                    <td><b># FORMULARIO</b></td>
+                                                                    <td><b>TIPO DOCUMENTO USUARIO</b></td>
+                                                                    <td><b>DOCUMENTO USUARIO</b></td>
+                                                                    <td><b>PRIMER APELLIDO USUARIO</b></td>
+                                                                    <td><b>SEGUNDO APELLIDO USUARIO</b></td>
+                                                                    <td><b>PRIMER NOMBRE USUARIO</b></td>
+                                                                    <td><b>SEGUNDO NOMBRE USUARIO</b></td>
+                                                                    <td><b>TIPO DOCUMENTO EMPRESA</b></td>
+                                                                    <td><b>CÓDIGO EMPRESA</b></td>
+                                                                    <td><b>NO. PAQUETE</b></td>
+                                                                    <td><b>CÓDIGO ASESOR</b></td>
+                                                                    <td><b>ESTADO</b></td>
+                                                                    <td><b>CAUSAL DEVOLUCIÓN</b></td>
+                                                                    <td><b>OBSERVACIÓN</b></td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="tabII" class="col no-padding" style="width: 100%;">
+                    <div ng-hide="inactiveseccion1tab2">
+                        <div class="col l6 m9 s10">
+                            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                            <h5>Registro de Formularios de Empresas</h5>
+                        </div>
+                        <div class="col l6 m2 s2 tooltip" style="margin-top: 15px; cursor: pointer;">
+                            <i ng-click="openmodal('empresas')" class="small material-icons">search</i></span></i>
+                            <span class="tooltiptext" style="left: 0; margin-left: -37px;">Consultar</span>
+                        </div>
+                    </div>
+                    <div class="col l12 m12 s12" style="margin-top: 20px;">
+                        <form ng-submit="registraFormulario('empresas');">
+                            <div class="input-field col l2 m12 s12">
+                                <input id="dteFechaEmpresas" class="datepicker picker__input uppercase" style="width: 100%;" ng-model="dteFechaEmpresas"
+                                    type="text" placeholder="dd/mm/aaaa" required>
+                                <label for="dteFechaEmpresas" class="labelper" style="margin-top: -30px;">Fecha</label>
+                            </div>
+                            <div class="input-field col l2 m12 s12" title="Digite # del código del asesor.">
+                                <input id="codigo_asesor_empresas" type="text" ng-model="codigo_asesor_empresas"
+                                    title="Digite # del código del asesor." readonly disabled required>
+                                <label for="codigo_asesor_empresas">Código de Asesor</label>
+                            </div>
+                            <div class="input-field col l4 m12 s12">
+                                <label class="labelper">Tipo de Documento Empresa</label>
+                                <select class="select-chosen-eps validate" ng-model="tdoc_empresa" required>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option value="C">CÉDULA DE CIUDADANÍA</option>
+                                    <option value="N">NIT</option>
+                                    <option value="B">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                </select>
+                            </div>
+                            <div class="input-field col l3 m12 s12" title="Digite # del código de la empresa.">
+                                <input id="cod_empresas" class="validate" type="text" ng-model="cod_empresas" placeholder="Tabular [↹]"
+                                    title="Digite # del código de la empresa." required ng-keydown="($event.keyCode == 9) && setNombreAfil('E')">
+                                <label for="cod_empresas" class="active">Código de Empresa</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12" ng-hide="hdeInfoEmpresa">
+                                <input id="nombre_empresa" type="text" ng-model="nombre_empresa" disabled>
+                                <label for="nombre_empresa">Razón Social</label>
+                            </div>
+                            <div class="input-field col l3 m12 s12">
+                                <label class="labelper">Observación</label>
+                                <select class="select-chosen-eps validate" ng-model="observacion_empresas" required>
+                                    <option value="" disabled>SELECCIONAR</option>
+                                    <option ng-repeat="t_observacion in tiposObservacion track by $index" ng-value="t_observacion.codigo">
+                                        {{t_observacion.nombre}}
+                                    </option>
+                                    <!-- <option value="1">AFILIACIÓN</option>
+                                                                <option value="2">CREACIÓN RANGO DE AFILIACIÓN</option>
+                                                                <option value="3">AFILIACIÓN DIGITADA URGENTE</option> -->
+                                </select>
+                            </div>
+                            <div class="col l12 m12 s12" style="margin-top: 30px;margin-bottom: 30px;">
+                                <center>
+                                    <button class="btn btn-primary" type="submit">Guardar</button>
+                                </center>
+                            </div>
+                        </form>
+                        <div id="modalConsultaEmpresas" class="modal" style="width: 75%;max-height: 90%;">
+                            <div class="modal-content" style="padding: 0px !important;">
+                                <div class="col l12 m12 s12" style="padding-left: 0px; padding-right: 0px;">
+                                    <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                                        <div class="card-content foot4" style="padding: 0">
+                                            <div class="col l11 m11 s11">
+                                                <h5 class="white-text">Consulta de Empresas</h5>
+                                            </div>
+                                            <div class="col s1">
+                                                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('empresas')"
+                                                        class="material-icons white-text">close</i></h5>
+                                            </div>
+                                        </div>
+                                        <div class="card-action" style="padding-bottom: 3px;overflow: auto;max-height: 75vh;">
+                                            <div class="row">
+                                                <div class="col l12 m12 s12">
+                                                    <form ng-submit="consultarAfiliacion('empresas');">
+                                                        <div class="input-field col l3 m3 s3" style="margin-top: 20px;">
+                                                            <input id="dteFechaConsultaEmpresas" class="datepicker picker__input uppercase" 
+                                                                style="width: 100%;" ng-model="dteFechaConsultaEmpresas" type="text" placeholder="dd/mm/aaaa">
+                                                            <label for="dteFechaConsultaEmpresas" class="labelper"
+                                                                style="margin-top: -30px;">Fecha</label>
+                                                        </div>
+                                                        <div class="input-field col l4 m4 s4" title="Digite # del código del asesor.">
+                                                            <input id="cod_asesor_empresas" class="validate" type="text" ng-model="cod_asesor_empresas"
+                                                                title="Digite # del código del asesor.">
+                                                            <label for="cod_asesor_empresas">Código de Asesor</label>
+                                                        </div>
+                                                        <div class="input-field col l1 m3 s3">
+                                                            <a href="javascript:void(0)" ng-click="consultarAfiliacion('empresas');">
+                                                                <i style="position: absolute; top: 10px;margin-right: 100px;"
+                                                                    class="material-icons prefix">search</i>
+                                                            </a>
+                                                        </div>
+                                                        <!-- <div class="input-field col l1 m3 s3" ng-show="dataRegistros.length > 0">
+                                                            <a href="javascript:void(0)" ng-click="imprimirInforme('empresas');">
+                                                                <i style="position: absolute; top: 10px;margin-right: 100px;"
+                                                                    class="material-icons prefix">print</i>
+                                                            </a>
+                                                        </div> -->
+                                                    </form>
+                                                </div>
+                                                <div class="col l12 m12 s12" ng-hide="hdeTablaAfiliacion">
+                                                    <!-- <table class="striped table-bordered white w-100"
+                                                        style="cursor: pointer !important;margin-top: 25px;">
+                                                        <thead class="default-background">
+                                                            <tr class="default-background white-text">
+                                                                <th class="border-none center-align">Número de Formulario</th>
+                                                                <th class="border-none center-align">Fecha</th>
+                                                                <th class="border-none center-align">Seccional</th>
+                                                                <th class="border-none center-align">Código de Asesor</th>
+                                                                <th class="border-none center-align">Identificación Empresa</th>
+                                                                <th class="border-none center-align">Observación</th>
+                                                            </tr>
+                                                        </thead>
+                    
+                                                        <tbody>
+                                                            <tr ng-if="dataRegistros.length == 0">
+                                                                <td colspan="7" class="center-align">
+                                                                    No hay datos para mostrar.
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat="regAfiliacion in dataRegistros">
+                                                                <td class="center-align">8001 - {{regAfiliacion.num_formulario}}</td>
+                                                                <td class="center-align">{{regAfiliacion.fecha}}</td>
+                                                                <td class="center-align">{{regAfiliacion.ubi_nombre}}</td>
+                                                                <td class="center-align">{{regAfiliacion.codigo_asesor}}</td>
+                                                                <td class="center-align">{{regAfiliacion.cod_empresa}}</td>
+                                                                <td class="center-align">{{regAfiliacion.observacion}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table> -->
+                                                    <div class="card-content clearfix">
+                                                        <table id="tblFormulariosEmpresas" class="responsive-table display dataTable" style="width:100%; cursor:pointer;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td><b>SECCIONAL</b></td>
+                                                                    <td><b>FECHA</b></td>
+                                                                    <td><b># FORMULARIO</b></td>
+                                                                    <td><b>TIPO DOCUMENTO EMPRESA</b></td>
+                                                                    <td><b>CÓDIGO EMPRESA</b></td>
+                                                                    <td><b>CÓDIGO ASESOR</b></td>
+                                                                    <td><b>OBSERVACIÓN</b></td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="tabIII" class="col no-padding" style="width: 100%;">
+                    <div class="col m12 s12">
+                        <div class="col m12 s12" style="margin-top: 0px; margin-bottom: 5px;">
+                            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                            <h5>Control de Llamadas</h5>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="tabIV" class="col no-padding" style="width: 100%;">
+                    <div class="row" ng-hide="inactiveseccion4tab4">
+                        <div class="col l12 m12 s12">
+                            <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                            <h5>Gestión de Devoluciones</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .tab a:hover {
+                    background-color: #ddd !important;
+                    color: white !important;
+                }
+
+                /* Style the active class (and buttons on mouse-over) */
+                .activebtn-step,
+                .activebtn-step:hover {
+                    background-color: #2196f3 !important;
+                    color: white !important;
+                }
+
+                .step-item {
+                    height: 100px;
+                    width: 100px;
+                    border-radius: 100px;
+                    padding: 0px;
+                }
+
+                .donebtn-step,
+                .donebtn-step:hover {
+                    background-color: #2196f3 !important;
+                    color: white !important;
+                }
+
+                .steper {
+                    width: 60%;
+                    display: inline-flex;
+                    text-align: center;
+                    padding-bottom: 10px;
+                    margin-left: 20%;
+                }
+
+                .step-divider {
+                    width: 100%;
+                    position: relative;
+                    top: 30px;
+                    margin-left: 0px;
+                    margin-right: 0px;
+                    margin-top: 20px;
+                }
+
+                .btn-step-content {
+                    position: relative;
+                    display: none;
+                    height: calc(100% - 132px);
+                    width: inherit;
+                    overflow: visible;
+                    margin-left: 41px;
+                    margin-right: 24px;
+                }
+
+                .step-option {
+                    background: #eee;
+                    height: 70px;
+                    position: absolute;
+                    bottom: -45px;
+                    width: 100%;
+                    margin-bottom: 6px;
+                    left: 0px;
+                    z-index: 2;
+                }
+
+                .back-step,
+                .back-step:hover {
+                    margin-top: 7px;
+                    position: absolute;
+                    right: 80px;
+                    background: #ff4350 !important;
+                }
+
+                .flex {
+                    display: flex !important;
+                }
+
+                .btn-step {
+                    background-color: rgba(0, 0, 0, .3);
+                    color: white;
+                }
+
+                .hover-item:hover {
+                    background-color: rgba(221, 221, 221, 0.45);
+                }
+
+                .hover-item:active {
+                    background-color: rgba(221, 221, 221, 0.45);
+                }
+
+                .tabmenu>li:target>a {
+                    background-color: rgba(221, 221, 221, 0.45);
+                }
+
+                .requerido {
+                    color: red !important;
+                }
+
+                .tabactiva {
+                    background-color: rgba(206, 206, 206, 0.71);
+                }
+
+                .colorblack {
+                    color: black;
+                }
+
+                .itemsspam {
+                    color: white !important;
+                    border-radius: 12px !important;
+                    box-shadow: 2px 2px 3px 0px #ccc !important;
+                    position: relative !important;
+                    top: 5px !important;
+                    left: 11px !important;
+                    cursor: pointer;
+                }
+
+                .hovpanel:hover {
+                    background: #32364c2b;
+                    color: #ffa51b;
+                    cursor: pointer;
+                }
+
+                .mayus {
+                    text-transform: uppercase;
+                }
+
+                #header-fixed {
+                    position: fixed;
+                    top: 0px;
+                    display: none;
+                }
+
+                .cuadrado {
+                    width: 25vh;
+                    max-width: 240px;
+                    height: 25vh;
+                    max-height: 240px;
+                    position: relative;
+                    background: white;
+                    box-shadow: 0 0 8px 1px #c7c7c7;
+                }
+
+                .coloritem {
+                    color: black !important;
+                }
+
+                .autprocesada {
+                    background-color: #4CAF50 !important;
+                }
+
+                .autactiva {
+                    background-color: #ff9800 !important;
+                }
+
+                .switch label {
+                    font-weight: 600;
+                }
+
+                .switch label .lever.check-c {
+                    background-color: #818181 !important;
+                }
+
+                .switch label .lever.check-c:after {
+                    background-color: #26a69a;
+                }
+
+                .switch label>span.activo {
+                    color: #26a69a !important;
+                }
+
+                .text-center {
+                    text-align: center;
+                }
+
+                div#modaldetalle {
+                    top: 1% !important;
+                }
+
+                div#modalnovedades {
+                    top: 1% !important;
+                }
+
+                .outer {
+                    width: 1px;
+                    height: 100%;
+                    margin: auto;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .inner {
+                    /* position: absolute; */
+                    width: 100%;
+                    height: 50vh;
+                    background: grey;
+                    top: 30%;
+                    box-shadow: 0px 0px 30px 20px grey;
+                }
+
+                .style-table-default {
+                    height: 350px;
+                    overflow: auto;
+                }
+
+                /* Style Scroll */
+                .scrollTableDefault::-webkit-scrollbar {
+                    /* width */
+                    width: 5px;
+                }
+
+                .scrollTableDefault::-webkit-scrollbar-track {
+                    /* Track */
+                    background: #f1f1f1;
+                }
+
+                .scrollTableDefault::-webkit-scrollbar-thumb {
+                    /* Handle */
+                    background: #888;
+                }
+
+                .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+                    /* Handle on hover */
+                    background: #555;
+                }
+
+                /* Style Scroll */
+                /* #modalnovedades .timeline .timeline-badge {
+          display: block;
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          background: #d2d2d2;
+          top: 5px;
+          right: calc(98% - 20px);
+          border-radius: 50%;
+          text-align: center;
+          cursor: default;
+        }
+
+        #modalnovedades .timeline .timeline-event::after {
+          display: block;
+          content: "";
+          width: 2px;
+          height: calc(100% - 50px);
+          position: absolute;
+          background: #d2d2d2;
+          left: calc(2% - 1px);
+          top: 50px;
+        } */
+
+                /* #modalnovedades .timeline .timeline-event:nth-child(even) .timeline-content {
+          margin-left: calc(5% + 50px);
+        }
+
+        #modalnovedades .timeline .timeline-event .timeline-content {
+          position: relative;
+          width: calc(48% - 50px);
+        } */
+                .multi-steps>li.is-active~li:before,
+                .multi-steps>li.is-active:before {
+                    content: counter(stepNum);
+                    font-family: inherit;
+                    font-weight: 700;
+                }
+
+                .multi-steps>li.is-active~li:after,
+                .multi-steps>li.is-active:after {
+                    background-color: #ededed;
+                }
+
+                .multi-steps {
+                    display: table;
+                    table-layout: fixed;
+                    width: 100%;
+                }
+
+                .multi-steps>li {
+                    counter-increment: stepNum;
+                    text-align: center;
+                    display: table-cell;
+                    position: relative;
+                    color: tomato;
+                }
+
+                .multi-steps>li:before {
+                    content: '\f00c';
+                    content: '\2713;';
+                    content: '\10003';
+                    content: '\10004';
+                    content: '\2713';
+                    display: block;
+                    margin: 0 auto 4px;
+                    background-color: #fff;
+                    width: 36px;
+                    height: 36px;
+                    line-height: 32px;
+                    text-align: center;
+                    font-weight: bold;
+                    border-width: 2px;
+                    border-style: solid;
+                    border-color: tomato;
+                    border-radius: 0%;
+                }
+
+                .multi-steps>li:after {
+                    content: '';
+                    height: 2px;
+                    width: 100%;
+                    background-color: tomato;
+                    position: absolute;
+                    top: 16px;
+                    left: calc(50% + 18px);
+                    z-index: 0;
+                }
+
+                .multi-steps>li:last-child:after {
+                    display: none;
+                }
+
+                .multi-steps>li.is-active:before {
+                    background-color: #fff;
+                    border-color: tomato;
+                }
+
+                .multi-steps>li.is-active~li {
+                    color: #808080;
+                }
+
+                .multi-steps>li.is-active~li:before {
+                    background-color: #ededed;
+                    border-color: #ededed;
+                }
+            </style>
+        </div>
+    </div>

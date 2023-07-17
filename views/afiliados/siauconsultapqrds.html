@@ -1,0 +1,183 @@
+<div id="siauconsultapqrds">
+   <div class="card-panel widgets-tabs col l12" style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+      <div id="searchpqrds" ng-if="showform==false">
+          <div class="row">
+             <div class="row">
+                <div class="col s12">
+                   <div class="col m12 s12">
+                      <div class="display-flex text-center">
+                         &nbsp;
+                         <h5 class="w-divTitle">CONSULTA DE SEGUIMIENTO PQRDS</h5>
+                         &nbsp;
+                      </div>
+                      &nbsp;
+                   </div>
+                </div>
+             </div>
+             <div class="col-sm-12 col-md-12 col-lg-12">
+                <div id="info-busqueda" ng-hide="showform">
+                   <form ng-submit="serchpqrds();">
+                      <div class="row">
+                         <div class="col s4">
+                            <div class="form-group">
+                               <label for="tipodocumento">Tipo de Documento</label>
+                               <select required class="select-chosen-eps" id="tipodocumento" ng-model="search.tipodocumento">
+                                  <option value="" disabled>SELECCIONAR</option>
+                                  <option value="{{x.CODIGO}}" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                               </select>
+                            </div>
+                         </div>
+                         <div class="col s4">
+                            <div class="form-group">
+                               <label for="documento">Documento</label>
+                               <input required  id="documento" type="text"
+                                  ng-model="search.documento" ng-keyup="FormatSoloNumero('documento')">
+                            </div>
+                         </div>
+                         <div class="col s4">
+                            <div class="form-group">
+                               <label for="pqrds">PQRDS</label>
+                               <input required  id="pqrds" type="text" ng-model="search.pqrds" ng-keyup="FormatSoloNumero('pqrds')">
+                            </div>
+                         </div>
+                      </div>
+                      <div class="row">
+                         <div class="col-sm-12 col-md-12 col-lg-12 botones">
+                            <div class="float-none text-center">
+                               <a id="test1" class="waves-effect waves-light btn white-text red kc_button-cancel"
+                                  ng-click="cancelform()">CANCELAR</a>
+                               <button type="submit" id="test2" class="waves-effect waves-light btn white-text kc_button"
+                                  ng-click="searchAfiliado()">
+                                  CONSULTAR
+                               </button>
+                            </div>
+                         </div>
+                      </div>
+                   </form>
+      
+                </div>
+      
+             </div>
+          </div>
+       </div>
+       <div id="statepqrds" ng-if="showform==true">
+          <div class="row">
+             <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="row">
+                   <div class="row" style="margin-top: 100px;display: table;margin-left: auto;margin-right: auto;">
+                      <div class="col-sm-12 col-md-12 col-lg-12">
+                         <h4 style="text-align: center;">SU SOLICITUD IDENTIFICADA CON NÚMERO <b>#{{search.pqrds}}</b><br> SE ENCUENTRA EN ESTADO: <b>{{Estado}}</b> </h4>
+                      </div>
+                   </div>
+                   <div class="progress-new mb-0 centrarul">
+                      <ul style="padding: 0;">                       
+                         <li>
+                            <img src="images/siau/Fase1.svg"><br>
+                            <i class="fas" ng-class="{'current fa-check': statepqr.RADICACION =='S', 'fa-ellipsis-h': statepqr.RADICACION =='N'  }"></i>
+                            <p>RADICACIÓN</p>
+      
+                         </li>
+                         <li>
+                            <img src="images/siau/Fase2.svg"><br>
+                            <i class="fas" ng-class="{'current fa-check': statepqr.GESTION =='S','fa-ellipsis-h': statepqr.GESTION =='N' }"></i>
+                            <p>GESTIÓN</p>
+                         </li>
+                         <li>
+                            <img src="images/siau/Fase3.svg"><br>
+                            <i class="fas" ng-class="{'current fa-check': statepqr.RESPUESTA =='S','fa-ellipsis-h': statepqr.RESPUESTA =='N' }"></i>
+                            <p>RESPUESTA</p>
+                         </li>
+                         <li>
+                            <img src="images/siau/Fase4.svg"><br>
+                            <i class="fas" ng-class="{'current fa-check': statepqr.ENTREGA =='S','fa-ellipsis-h': statepqr.ENTREGA =='N' }"></i>
+                            <p>ENTREGA</p>
+                         </li>
+                      </ul>
+                   </div>
+                   <div class="row mb-5" style="display: table;margin:auto;" ng-if="statepqr.ENTREGA == 'S'">
+                      <div class="col-sm-12 col-md-12 col-lg-12">
+                         <h6>La respuesta de su solicitud ha sido entregada por el tipo de modalidad seleccionada</h6>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+          <div class="row">
+             <div class="col-sm-12 col-md-12 col-lg-12 botones">
+                <div class="float-none text-center">
+                   <a id="test2" class="waves-effect waves-light btn white-text red kc_button-cancel"
+                      ng-click="cancelform()">Nueva consulta</a>
+                   <a id="test3" class="waves-effect waves-light btn white-text red kc_button"
+                      ng-click="reqpqrds()" ng-if="statepqr.RESPUESTA == 'S' && statepqr.ENTREGA == 'N'">Solicitar respuesta</a>
+                </div>
+             </div>
+          </div>
+       </div>
+   </div>
+    <style>
+        main {
+                padding-left:0px;
+            }
+    
+           aside > ul{
+                display: none;
+            }
+
+            .progress-new{
+    margin:  100px  auto;
+}
+.progress-new img{
+    width: 100px;    
+    height: 100px;
+    margin-bottom: 20px;
+}
+.centrarul{
+    text-align: center;
+}
+
+.centrarul li{
+    display: inline-block;
+    width: 250px;
+    position: relative;
+}
+
+
+ul li .fas{
+    background: #ccc;
+    width: 30px;
+    height: 30px;
+    color: #fff;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+ul li .fas::after{
+    content: '';
+    background-color: #ccc;
+    height: 5px;
+    width: 255px;
+    display: block;
+    position: absolute;
+    left: 0;    
+    top: 133px;
+    z-index: 0;
+    z-index: 1;
+}
+
+ul li .fas.current{
+    background: #148e14;
+}
+
+ul li .fas.current::after {
+    background: #148e14;
+}
+
+ul li .fas.current::before {
+   z-index: 2;
+}
+
+.fa-check:before {
+    position: relative;
+}
+    </style>
+</div>

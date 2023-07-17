@@ -1,0 +1,1828 @@
+<div class="newdesing" style="position:relative">
+
+  <!-- header de la app -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content:
+      space-between;align-items: center;">
+      <li>
+        <h5>Mapa Riesgos</h5>
+      </li>
+      <li>
+        <!-- <button ng-show="permisosValidos.includes(permisosModulo['descargar'])" ng-click="descargarExcel()"
+          class="btn waves-effect waves-light" style="background: #f1f3f4;border: 1px solid #1a6321;color: #1a6332;">
+          <i class="fas fa-file-excel"></i> Descargar excel</button> -->
+        <button ng-show="menu!='ver-matriz'" ng-click="mostrarVista('ver-matriz');sp_rc_get_data_matriz_riesgo()"
+          class="btn waves-effect waves-light" style="background: #f1f3f4;border: 1px solid #1a1c63;color: #1a1c63;">
+          <i class="fas fa-list" style="margin-right: 1em;"></i>Matriz de riesgos</button>
+        <button ng-show="menu=='ver-matriz'" ng-click="mostrarVista('listadoriesgo');"
+          class="btn waves-effect waves-light" style="background: #f1f3f4;border: 1px solid #1a1c63;color: #1a1c63;">
+          <i class="fas fa-list" style="margin-right: 1em;"></i>Consolidado de riesgos</button>
+      </li>
+    </ul>
+  </div>
+
+
+
+  <div ng-switch="menu">
+    <div ng-switch-when="listadoriesgo">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card contentcard" style="min-height: 600px;">
+                  <div class="col s12" style="border-bottom: 1px solid #f1f3f4">
+                    <div class="col s9">
+                      <h5>
+                        <small>
+                          <i class="icon-list-alt"></i>
+                          Listado de riesgos
+                        </small>
+                      </h5>
+                    </div>
+                  </div>
+                  <div class="col s12 mt-20">
+                    <div class="row">
+
+                      <div style="display: flex;
+                        justify-content: end;
+                        flex-direction: row;
+                        margin-left: 16px;
+                        gap: 1em;">
+                        <div>
+                          <div class="row" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;">Código riesgo</label>
+                          </div>
+                          <input type="text" name="codigo" ng-model="codigo" placeholder="">
+                        </div>
+                        <div>
+                          <div class="row" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;">Descripción riesgo</label>
+                          </div>
+                          <input type="text" name="des" ng-model="des" placeholder="">
+                        </div>
+                        <div>
+                          <div class="row" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;">Zona inherente</label>
+                          </div>
+                          <select ng-model="zona" name="zona" class="select-chosen-eps" style="padding-top: 0px;">
+                            <option value="">SELECCIONAR</option>
+                            <option value="Extrema">Extrema</option>
+                            <option value="Moderado">Moderado</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Baja">Baja</option>
+                          </select>
+                        </div>
+                        <div>
+                          <div class="row" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;">Tipo del riesgo</label>
+                          </div>
+                          <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="tipo">
+                            <option value="">SELECCIONAR</option>
+                            <option ng-repeat="data in listados.tipoRiesgo" value="{{data.Codigo}}">{{data.Nombre}}
+                            </option>
+                          </select>
+                        </div>
+                        <div style="display: flex;">
+                          <div>
+                            <div class="input-field col m12 s12">
+                              <button class="btn white-text" ng-click="excel(zona,tipo,codigo,des)"
+                                style="padding-right: 5px; padding-left: 5px;"><i style="position: relative;"
+                                  class="material-icons prefix">search</i></button>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="input-field col m12 s12">
+                              <button class="btn white-text"
+                                ng-click="zona='';tipo='';codigo='';des='';excel(zona,tipo,codigo,des)"
+                                style="background: red; padding-right: 5px; padding-left: 5px;"><i
+                                  style="position: relative; background: red;"
+                                  class="material-icons prefix">clear</i></button>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="input-field col m12 s12">
+                              <button class="btn white-text"
+                                ng-show="permisosValidos.includes(permisosModulo['descargar'])"
+                                ng-click="descargarExcel()"
+                                style="background: #1a6321; padding-right: 20px; padding-left: 20px;"><i
+                                  style="position: relative; background: #1a6321;"
+                                  class="fas fa-file-excel"></i></button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col s12">
+                        <div class="row overflow" style="height: 540px; overflow: auto;">
+
+                          <table id="table" class="table-bordered
+                            table-striped">
+                            <thead>
+                              <th style="border: 1px solid #fff;">Código</th>
+                              <th style="border: 1px solid #fff;">Descripción</th>
+                              <th style="border: 1px solid #fff;">Zona inherente</th>
+                              <th style="border: 1px solid #fff;">Zona residual</th>
+                              <th style="border: 1px solid #fff;">Tipo de riesgos</th>
+                              <th style="border: 1px solid #fff;">Ver riesgo</th>
+                            </thead>
+                            <tbody ng-show="permisosValidos.includes(permisosModulo['listar'])">
+                              <tr ng-repeat="dato in listexcel">
+                                <td>{{dato.Codigo}}</td>
+                                <td style="text-transform: lowercase;">{{dato.Riesgo}}</td>
+                                <td ng-style="{'background': dato.ZonaRiesgoInherenteColor}"
+                                  style="color:white;font-weight: bold; text-align:center">{{dato.ZonaRiesgoInherente}}
+                                </td>
+                                <td ng-style="{'background': dato.ZonaRiesgoResidualColor}"
+                                  style="color:white;font-weight: bold; text-align:center">{{dato.ZonaRiesgoResidual}}
+                                </td>
+                                <td style="text-transform: lowercase;">{{elegirTipoRiesgoXTabla(dato.TipoRiesgo)}}</td>
+                                <td style="text-align: center;
+                                font-size: 21px;"
+                                  ng-click="mostrarVista('verriesgo');ListadoRiesgosId(dato.Codigo);ListadoControlDetalle(dato.Codigo);">
+                                  <a class="fa fa-eye" aria-hidden="true"></a>
+                                </td>
+                              </tr>
+                              <tr ng-if="dato.length==0">
+                                <td colspan="5">
+                                  <h5>No se ha encontrado Registros</h5>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-switch-when="ver-riesgo">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card" style="padding-bottom: 4px;">
+                  <div class="row bb">
+                    <div style="display: flex;
+                    justify-content: space-between;
+                    margin-left: 0.5em;
+                    margin-right: 0.5em;">
+                      <h5><small> <i class="icon-tasks"></i>Información riesgos</small></h5>
+                      <button class="waves-effect waves- btn" ng-click="mostrarVista('listadoriesgo')" style="background: #f1f3f4;border: 1px solid
+                          #1a2e63;color: #1a2e63; margin: 8px;">
+                        <i class="icon-list-alt"></i> Listado riesgos </button>
+                    </div>
+                  </div>
+                  <div class="m-l m-r row">
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                        padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Información del riesgo</p>
+                    </div>
+                    <div class="col s6">
+                      <h6> <i class="material-icons" style="font-size: 13px;">dialpad</i>
+                        <strong>Código</strong>
+                        {{riesgos.Codigo}}
+                      </h6>
+                      <h6> <i class="material-icons" style="font-size: 13px;">location_on</i>
+                        <strong> Proceso: </strong>{{riesgos.Proceso}}
+                      </h6>
+                      <h6>
+                        <img ng-show="riesgos.Estado!='A'" src="assets/images/live.gif" class="iconopr"
+                          style="filter: contrast(3); width: 16px;">
+                        <img ng-show="riesgos.Estado=='A'" src="assets/images/live.gif" class="iconopr"
+                          style="filter: hue-rotate(140deg) contrast(3);width: 16px;">
+                        <strong>Estado:</strong>
+                        {{riesgos.Estado=='A'?'Activo':'Inactivo'}}
+                      </h6>
+                    </div>
+                    <div class="col s6" style="    margin-top: 2em;
+                    text-align: center;">
+                      <button class="btn waves-effect waves-light" ng-click="mostrarVista('ver-control')"
+                        style="background: #f1f3f4;border: 1px solid #1c631a;color: #1c631a;">
+                        <i class="icon-tasks" style="margin-right: 10px;"></i>Ver controles para este riesgo</button>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                        padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Descripción del riesgo</p>
+                    </div>
+                    <div class="col s12">
+                      <div>
+                        <label>Impacto del riesgo+ Causa Inmediata+Causa Raíz</label>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <label style=" color: black;"> {{riesgos.impactoRiesgo + ' ' + riesgos.causaInmediata + ' '
+                        +riesgos.causaRaiz}}</label>
+                      <div>
+                        <h6 style="    border: 1px solid #c9c9c9;
+                        padding: 0.5em;
+                        background: #f1f3f4;">
+                          <span style="color: #558a2f;"> {{riesgos.ImpactoRiesgo}}</span>
+                          <span style="color: #f0a42f;"> {{riesgos.CausaInmediata}}</span>
+                          <span style="color: #222422;"> {{riesgos.CausaRaiz}}</span>
+                        </h6>
+                      </div>
+                    </div>
+
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                        padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Tipo del riesgo</p>
+                    </div>
+                    <div class="col s12">
+                      <div class="row" style="    margin-bottom: 0px;
+                      ">
+                        <div class="col s4 " ng-repeat="data in tiposRiesgosElegidos">
+                          <div class="card">
+                            <div class="row">
+                              <div class="col s2" style="
+                                  background: #f1f3f4;
+                                  color: #1a2e63;
+                                  padding: 0em 1em;
+                              ">
+                                <p>{{data.Codigo}}</p>
+                              </div>
+                              <div class="col s10">
+                                <p>{{data.Nombre}}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                        padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Probabilidad
+                        inherente</p>
+                    </div>
+                    <div class="col s12">
+                      <div class="row" style="    margin-bottom: 0px;">
+                        <div class="col s12" ng-repeat="data in probabilidadInherenteElegidos">
+                          <div class="card">
+                            <div class="row">
+                              <div class="col s2" style="
+                                  color: #1a2e63;
+                                  padding: 0em 1em;
+                                  height: 100%;
+                              " ng-style="{'background': data.Color}">
+                                <p style="margin-bottom: 0px;
+                              font-size: 11px;
+                              font-weight: bold;">Calificación:</p>
+                                <p style="
+                              margin-top: 0px;
+                          ">{{data.Calificacion}}</p>
+                              </div>
+                              <div class="col s8">
+                                <p style="margin-bottom: 0px;
+                                font-size: 11px;
+                                font-weight: bold;">Frecuencia de la actividad</p>
+                                <p style=" text-align: justify;
+                                margin-top: 0px;
+                            ">{{data.Nombre}}</p>
+                              </div>
+                              <div class="col s2" style="
+                              background: #f1f3f4;
+                              color: #1a2e63;
+                              padding: 0em 1em;
+                              height: 100%;
+                          ">
+                                <p style="margin-bottom: 0px;
+                                font-size: 11px;
+                                font-weight: bold;">Probabilidad</p>
+                                <p style="
+                                margin-top: 0px;
+                            ">{{data.Probabilidad}}%</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                        padding-left:0px;">
+                      <p class="title-1 foot4 white-text">Impacto inherente
+                      </p>
+                    </div>
+                    <div class="col s12">
+                      <div class="row" style="margin-bottom: -14px;">
+                        <div class="col s12">
+                          <label> </label>
+                        </div>
+                      </div>
+                      <div class="row" style="    margin-bottom: 0px;">
+                        <div class="col s12" ng-repeat="data in ListadoElegirAfectuacionReputacional">
+                          <div class="card">
+                            <div class="row">
+                              <div class="col s2" style="
+                                  color: #1a2e63;
+                                  padding: 0em 1em;
+                                  height: 6em;
+                              " ng-style="{'background': data.Color}">
+                                <p style="margin-bottom: 0px;
+                              font-size: 11px;
+                              font-weight: bold;">Calificación:</p>
+                                <p style="
+                              margin-top: 0px;
+                          ">{{data.Impacto}}</p>
+                              </div>
+                              <div class="col s8">
+                                <p style="margin-bottom: 0px;
+                                font-size: 11px;
+                                font-weight: bold;">Afectación Reputacional</p>
+                                <p style="text-align: justify;
+                                margin-top: 0px;
+                            ">{{data.Nombre}}</p>
+                              </div>
+                              <div class="col s2" style="
+                              background: #f1f3f4;
+                              color: #1a2e63;
+                              padding: 0em 1em;
+                              height: 6em;
+                          ">
+                                <p style="margin-bottom: 0px;
+                                font-size: 11px;
+                                font-weight: bold;">Probabilidad</p>
+                                <p style="
+                                margin-top: 0px;
+                            ">{{data.Probabilidad}}%</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div class="row" style="margin-bottom: -14px;">
+                        <div class="col s12" style="    padding: 0px;">
+                          <div class="row" style="    margin-bottom: 0px;">
+                            <div class="col s12" ng-repeat="data in ListadoElegirAfectuacionEconomica">
+                              <div class="card">
+                                <div class="row">
+                                  <div class="col s2" style="
+                                      color: #1a2e63;
+                                      padding: 0em 1em;
+                                      height: 6em;
+                                  " ng-style="{'background': data.Color}">
+                                    <p style="margin-bottom: 0px;
+                                  font-size: 11px;
+                                  font-weight: bold;">Calificación:</p>
+                                    <p style="
+                                  margin-top: 0px;
+                              ">{{data.Impacto}}</p>
+                                  </div>
+                                  <div class="col s8">
+                                    <p style="margin-bottom: 0px;
+                                    font-size: 11px;
+                                    font-weight: bold;">Afectación Económica </p>
+                                    <p style="text-align: justify;
+                                    margin-top: 0px;
+                                ">{{data.Nombre}}</p>
+                                  </div>
+                                  <div class="col s2" style="
+                                  background: #f1f3f4;
+                                  color: #1a2e63;
+                                  padding: 0em 1em;
+                                  height: 6em;
+                              ">
+                                    <p style="margin-bottom: 0px;
+                                    font-size: 11px;
+                                    font-weight: bold;">Probabilidad</p>
+                                    <p style="
+                                    margin-top: 0px;
+                                ">{{data.Probabilidad}}%</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div class="row" style="margin-bottom: -14px;">
+                        <div class="col s12" style="    padding: 0px;">
+                          <div class="row" style="    margin-bottom: 0px;">
+                            <div class="col s12" ng-repeat="data in ListadoElegirafectuacionSaludAfiliado">
+                              <div class="card">
+                                <div class="row">
+                                  <div class="col s2" style="
+                                      color: #1a2e63;
+                                      padding: 0em 1em;
+                                      height: 6em;
+                                  " ng-style="{'background': data.Color}">
+                                    <p style="margin-bottom: 0px;
+                                  font-size: 11px;
+                                  font-weight: bold;">Calificación:</p>
+                                    <p style="
+                                  margin-top: 0px;
+                              ">{{data.Impacto}}</p>
+                                  </div>
+                                  <div class="col s8">
+                                    <p style="margin-bottom: 0px;
+                                    font-size: 11px;
+                                    font-weight: bold;">Afectación Salud Afiliado</p>
+                                    <p style="text-align: justify;
+                                    margin-top: 0px;
+                                ">{{data.Nombre}}</p>
+                                  </div>
+                                  <div class="col s2" style="
+                                  background: #f1f3f4;
+                                  color: #1a2e63;
+                                  padding: 0em 1em;
+                                  height: 6em;
+                              ">
+                                    <p style="margin-bottom: 0px;
+                                    font-size: 11px;
+                                    font-weight: bold;">Probabilidad</p>
+                                    <p style="
+                                    margin-top: 0px;
+                                ">{{data.Probabilidad}}%</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text text-align:center;">Zona del riesgo inherente </p>
+                    </div>
+
+
+                    <div class="col s12" style="max-height:
+                    45vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                    </div>
+                    <div class="col s12" style="max-height:
+                    45vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th style="text-align: left;" rowspan="2">Probabilidad</th>
+                            <th colspan="5" style="text-align:center;">Impacto</th>
+
+                          <tr>
+                            <th style="text-align:center; ">1 Leve</th>
+                            <th style="z-index: 999;">2 Menor</th>
+                            <th style="z-index: 999;">3 Moderado</th>
+                            <th style="z-index: 999;">4 Mayor</th>
+                            <th style="z-index: 999;">5 Catastrófico</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <tbody>
+                          <tr>
+                            <td>5 Muy alta</td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='51'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='52'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='53'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='54'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='55'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>4 Alta</td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='41'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='42'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='43'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='44'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='45'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>3 Media</td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='31'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='32'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='33'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='34'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='35'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>2 Baja</td>
+                            <td style="background: #43A047;  opacity: 0.5;"
+                              ng-class="campana=='21'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='22'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='23'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='24'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='25'?'border-seleccionado':''"></td>
+                          </tr>
+                          <tr>
+                            <td>1 Muy baja</td>
+                            <td style="background: #43A047;  opacity: 0.5;"
+                              ng-class="campana=='11'?'border-seleccionado':''"></td>
+                            <td style="background: #43A047;  opacity: 0.5;"
+                              ng-class="campana=='12'?'border-seleccionado':''"></td>
+                            <td style="background: #FFEB3B;  opacity: 0.5;"
+                              ng-class="campana=='13'?'border-seleccionado':''"></td>
+                            <td style="background: #FF9800;  opacity: 0.5;"
+                              ng-class="campana=='14'?'border-seleccionado':''"></td>
+                            <td style="background: #F44336;  opacity: 0.5;"
+                              ng-class="campana=='15'?'border-seleccionado':''"></td>
+                          </tr>
+                        </tbody>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+                      padding-left:0px;">
+                      <p class="title-1 foot4 white-text text-align:center;">Informativo </p>
+                    </div>
+                    <div class="col s12" style="max-height:
+                      45vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th style="text-align: left; white-space: nowrap;">Zona de Riesgo</th>
+                            <th style="font-weight: bold; font-size: 15px; background: #43A047; color: #32364c">BAJA
+                            </th>
+                            <th style="font-weight: bold; font-size: 15px; background: #FFEB3B; color: #32364c">MODERADA
+                            </th>
+                            <th style="font-weight: bold; font-size: 15px; background: #FF9800;color: #32364c">ALTA</th>
+                            <th style="font-weight: bold; font-size: 15px; background: #F44336; color: #32364c">EXTREMA
+                            </th>
+                          </tr>
+                        </thead>
+                      </table>
+
+                    </div>
+                    <div class="col s8">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-switch-when="ver-control">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card" style="padding-bottom: 4px;">
+                  <div class="row bb">
+                    <div style="display: flex;
+                    justify-content: space-between;
+                    margin-left: 0.5em;
+                    margin-right: 0.5em;">
+                      <h5><small> <i class="icon-tasks"></i>Información del controles para el riesgo</small></h5>
+                      <button class="waves-effect waves- btn" ng-click="mostrarVista('listadoriesgo')" style="background: #f1f3f4;border: 1px solid
+                          #1a2e63;color: #1a2e63; margin: 8px;">
+                        <i class="icon-list-alt"></i> Descripción riesgos </button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;padding-left:0px;">
+                      <p class="title-1 foot4 white-text text-align:center;">Controles </p>
+                    </div>
+                    <div class="col s12" style="max-height:45vh;overflow-y: auto;">
+                      <table id="table2" class="table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th style="border: 1px solid #fff;">Número de riesgo</th>
+                            <th style="border: 1px solid #fff;">Descripción de Control</th>
+                            <th style="border: 1px solid #fff;">Responsable</th>
+                            <th style="border: 1px solid #fff">Tipo</th>
+                            <th style="border: 1px solid #fff">Documentación</th>
+                            <th style="border: 1px solid #fff">Implementación</th>
+                            <th style="border: 1px solid #fff">Frecuencia</th>
+                            <th style="border: 1px solid #fff">Evidencia</th>
+                            <th style="border: 1px solid #fff">valoración de control</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="dato in listadosControl">
+                            <td>{{dato.NumeroRiesgo }}</td>
+                            <td>{{dato.DescripcionControl }}</td>
+                            <td>{{dato.Responsable }}</td>
+                            <td>{{dato.Tipo }}</td>
+                            <td>{{dato.Documentacion}}</td>
+                            <td>{{dato.Implementacion}}</td>
+                            <td>{{dato.Frecuendia}}</td>
+                            <td>{{dato.Evidencia}}</td>
+                            <td>{{dato.ValoracionControl}}%</td>
+                          </tr>
+                          <tr ng-if="dato.length==0">
+                            <td colspan="5">
+                              <h5>No se ha encontrado Registros</h5>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-switch-when="ver-matriz">
+      <div class="row">
+        <div class="col m12 s12 l12">
+          <div class="row content-container elements mb-0">
+            <div class="row">
+              <div class="col m12 s12">
+                <div class="card" style="padding-bottom: 4px;">
+                  <div class="row bb">
+                    <div style="display: flex;
+                    justify-content: space-between;
+                    margin-left: 0.5em;
+                    margin-right: 0.5em;">
+                      <h5><small> <i class="icon-tasks"></i>Matriz de riesgos</small></h5>
+                    </div>
+                  </div>
+
+
+                  <div class="row">
+                    <div class="col s12" style="max-height:  65vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th style="text-align: left;" rowspan="2">Probabilidad</th>
+                            <th colspan="5" style="text-align:center;">Impacto</th>
+
+                          <tr>
+                            <th style="text-align:center; ">1 Leve</th>
+                            <th style="z-index: 999;">2 Menor</th>
+                            <th style="z-index: 999;">3 Moderado</th>
+                            <th style="z-index: 999;">4 Mayor</th>
+                            <th style="z-index: 999;">5 Catastrofico</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <tbody>
+                          <tr>
+                            <td>5 Muy alta</td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[0][11].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[0][11].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[1][12].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[1][12].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[2][13].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[2][13].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[3][14].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[3][14].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #F9A19A;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[4][15].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[4][15].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>4 Alta</td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[5][21].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[5][21].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[6][22].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[6][22].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[7][23].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[7][23].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[8][24].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[8][24].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #F9A19A;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[9][25].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[9][25].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>3 Media</td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[10][31].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[10][31].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[11][32].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[11][32].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[12][33].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[12][33].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[13][34].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[13][34].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #F9A19A;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[14][35].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[14][35].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>2 Baja</td>
+                            <td style="background: #A1CFA3;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[15][41].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[15][41].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[16][42].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[16][42].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[17][43].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[17][43].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[18][44].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[18][44].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #F9A19A;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[19][45].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[19][45].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>1 Muy baja</td>
+                            <td style="background: #A1CFA3;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[20][51].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[20][51].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #A1CFA3;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[21][52].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[21][52].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #FFF59D;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[22][53].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[22][53].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #ff98007d;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[23][54].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[23][54].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td style="background: #F9A19A;padding: 0;">
+                              <table>
+                                <tr>
+                                  <td class="border text-center">
+                                    Inicial <br>
+                                    {{matriz[24][55].RiesgoInicial}}
+                                  </td>
+                                  <td class="border text-center">
+                                    Final <br>
+                                    {{matriz[24][55].RiesgoFinal}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col m-l s12" style="border-bottom: 1px solid #e6e6e6;
+    padding-left:0px;">
+                      <p class="title-1 foot4 white-text text-align:center;">Informativo </p>
+                    </div>
+                    <div class="col s12" style="max-height:
+    45vh;overflow-y: auto;">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th style="text-align: left; white-space: nowrap;">Zona de Riesgo</th>
+                            <th style="font-weight: bold; font-size: 15px; background: #43A047; color: #32364c">BAJA
+                            </th>
+                            <th style="font-weight: bold; font-size: 15px; background: #FFEB3B; color: #32364c">MODERADA
+                            </th>
+                            <th style="font-weight: bold; font-size: 15px; background: #FF9800;color: #32364c">ALTA</th>
+                            <th style="font-weight: bold; font-size: 15px; background: #F44336; color: #32364c">EXTREMA
+                            </th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    <div class="col s8">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <style>
+    .activo_tab {
+      background: #1a2e63;
+      color: #fff;
+    }
+
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+
+
+
+    }
+
+    td {
+      text-align: justify;
+    }
+
+
+
+
+    table {
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 10px;
+    }
+
+
+    th {
+      position: sticky;
+      top: 0;
+      background-color: white;
+
+    }
+
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background-color: #1a2e63;
+      z-index: 1;
+      color: #fff;
+
+    }
+
+    th {
+      text-align: center;
+      text-transform: uppercase;
+      background: #ddd;
+    }
+
+    i.right {
+      color: #1a2e63b8;
+      font-size: 1.5em;
+      position: absolute;
+      top: -0.4em;
+      right: -0.3em;
+      transform: rotate(44deg);
+    }
+
+    .card_departamentos {
+      background: #F1F3F4;
+      padding: 1em;
+      height: 5em;
+      font-size: 9px;
+    }
+
+    .card_ips {
+      background: #F1F3F4;
+      padding: 1em;
+      height: 8em;
+      font-size: 9px;
+    }
+
+    p.card_total {
+      margin: 1px;
+      cursor: pointer;
+    }
+
+    .card_departamentos:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    .card_ips:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    h5.titulo_card {
+      padding: 0.3em 1.2em;
+      margin: 0px;
+      background: #e5e6e6;
+      border: 1px solid #c4c4c4;
+      color: #818282;
+    }
+
+
+    .dataTables_filter {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 10px;
+    }
+
+    li.active_list {
+      color: #3f475e;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .bt {
+      padding: 1em !important;
+      border-top: 1px solid #d2d2d2;
+    }
+
+
+
+
+
+
+
+    .icono_etiqueta {
+      right: 1em;
+      position: absolute;
+    }
+
+    .etiquita {
+      background: #e5e6e6;
+      border-radius: 1em;
+      padding-left: 1em;
+      position: relative;
+      margin: 1px;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 680px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    div.columnas {
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 25%;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    }
+
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input.input-text-new {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .tab-color {
+      background: #1565c033;
+    }
+
+    .tab-no-color {
+      background: #c5c7c7a6;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    div.columnas {
+      /* border-bottom: 1px solid #e5e6e6; */
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::before,
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::after {
+      right: -77px;
+      border-top-left-radius: .25rem !important;
+      border-bottom-left-radius: .25rem !important;
+    }
+
+    .content-box {
+      background-color: #f7f7f7;
+      border-bottom-right-radius: .50rem !important;
+      border-bottom-left-radius:
+        .50rem !important;
+      border-bottom: 30px solid #ebecec !important;
+      padding-top: 37px !important;
+      box-shadow:
+        none !important;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height:
+        43px;
+      background: #4daf7c;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* disabled */
+    .file-upload-wrapper2 {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+    }
+
+    .file-upload-wrapper2:after {
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+    .file-upload-wrapper2:before {
+      content: "Adjuntar";
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      height: 43px;
+      background: #919292;
+      color: #fff;
+      font-weight: 700;
+      z-index: 25;
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 15px;
+      text-transform: uppercase;
+      pointer-events: none;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .file-upload-wrapper2:hover:before {
+      background: #919292;
+    }
+
+    .file-upload-wrapper2 input {
+      opacity: 0;
+      position:
+        absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: not-allowed !important;
+      width: 100%;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+      color: #fff !important;
+      border: 1px solid #dddddd;
+      border-radius: 3px;
+      padding: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      background: #32364c;
+      border: 1px solid transparent;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #1a2e6385;
+      border: 1px solid transparent;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border-right: 1px solid #1a2e63;
+    }
+
+
+    .tooltip {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      z-index: 1;
+      padding: 5px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+    }
+
+    tfoot:hover {
+      box-shadow: -9px -5px 6px rgb(0 0 0 / 30%);
+    }
+
+    select.gray-input.select-chosen-eps.select-input-new.select-new {
+      padding: 0;
+    }
+
+    .border-seleccionado {
+      border: 4px solid #1a2e63 !important;
+      opacity: 1 !important;
+    }
+  </style>
+
+
+
+  <!-- fin de estilo de la app -->
+</div>

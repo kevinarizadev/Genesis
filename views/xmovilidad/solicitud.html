@@ -1,0 +1,255 @@
+<link rel="stylesheet" type="text/css" href="bower_components/sweetalert/css/sweetalert2.css">
+<div ng-controller="solicitudmovilidadctrl">
+   <div class="row margin">
+       <div class="col s12 m12 l12">
+         <div class="card">
+            <div class="card-content">
+               <h5>Información del responsable de afiliacón</h5>
+            </div>
+            <div class="card-content clearfix">
+               <form id="busafi" class="row" ng-submit="busquedaEmpleado()" style="margin-bottom: 10px !important;">
+                  <div class="input-field col s4">
+                     <label for="tipo_doc_th" class="active"> Tipo de Documento</label>
+                     <select id="tipo_doc_th" class="select-chosen-eps" ng-model="tipo_documento_empleado" required>
+                        <option value="">SELECCIONAR</option>
+                        <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+                        <option value="TI">TARJETA DE IDENTIDAD</option>
+                        <option value="RC">REGISTRO CIVIL</option>
+                        <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                        <option value="PA">PASAPORTE</option>
+                        <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                        <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                        <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                        <option value="CD">CARNET DIPLOMÁTICO</option> -->
+                        <option value="{{x.CODIGO}}" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                     </select>                     
+                  </div>
+                  <div class="input-field col s4">
+                     <i class="material-icons prefix">account_circle</i>
+                     <input id="with_icon" type="text" ng-model="documento_empleado" class="validate" required>
+                     <label for="with_icon">Documento</label>
+                  </div>
+                  <div class="col s12" style="padding-top: 10px;">
+                     <center><button class="waves-effect waves-light btn white-text" type="submit">Buscar</button></center>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+
+       <div class="col s12 m12 l12" ng-hide= "inserpersonal">
+         <div class="card">
+            <div class="card-content">
+               <h5>Registrar información de responsable de afiliación</h5>
+            </div>
+            <div class="card-content clearfix">
+               <blockquote>
+                  {{registrarmensaje}} <br>
+                  Para comenzar el proceso debe digitar sus datos de identificación y correo electrónico donde se le notificará cuando su solicitud sea aprobada o rechazada. Esta información solo debe ser digitada una vez.
+               </blockquote>
+               <form id="busafi" class="row" ng-submit="registraEmpleado()" style="margin-bottom: 10px !important;">
+                  <div class="input-field col s3">
+                     <label for="sede_empleado" class="active">Sede</label>
+                     <select id="sede_empleado" class="select-chosen-eps" ng-model="solicitud.lugar" name="lugar">
+                        <option value="0">SELECCIONAR</option>
+                        <option ng-repeat="lugar in lugares  track by $index" ng-value="lugar.codigo">{{lugar.nombre}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col s4">
+                     <i class="material-icons prefix">account_circle</i>
+                     <input id="with_icon" type="text" ng-model="nombre_empleado" class="validate" maxlength="50" required>
+                     <label for="with_icon">Nombre Completo</label>
+                  </div>
+                  <div class="input-field col s4">
+                     <i class="material-icons prefix">alternate_email</i>
+                     <input id="email_empleado" type="email" ng-model="correo_empleado" class="validate" maxlength="100" required>
+                     <label for="email_empleado">Correo Electrónico</label>
+                  </div>
+                  <div class="col s12" style="padding-top: 10px;">
+                     <center><button class="waves-effect waves-light btn white-text" type="submit">Registrar</button></center>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+
+       <div class="col s12 m12 l12" ng-hide= "updapersonal"> <!-- ng-hide= "updapersonal" -->
+         <div class="card">
+           <div class="card-content">
+               <spam>
+                  <h5>Actualizar Información de la Empresa </h5>
+                  <h7>Última modificación: {{fechamod}}</h7>
+               </spam>
+            </div>
+            <div class="card-content clearfix">
+               <form class="row" ng-submit="actualizarinformacionemp()">
+                
+                  <div class="input-field col s3">
+                     <i class="material-icons prefix" style="margin-left: 10%;margin-top: 1.5%;">account_circle</i>
+                     <h5 style="margin-left: 25%">{{nombre}} <h6 style="margin-left: 25%; color: gray;">Asesor</h6></h5>
+                 </div>
+                 <div class="input-field col s3">
+                     <i class="material-icons prefix" style="margin-left: 10%;margin-top: 1.5%;">store_mall_directory</i>
+                     <h5 style="margin-left: 25%">{{sede_emp}} <h6 style="margin-left: 25%; color: gray;">Sede</h6></h5>
+                 </div>
+                 <div class="input-field col s3">
+                     <i class="material-icons prefix" style="margin-left: 10%;margin-top: 1.5%;">place</i>
+                     <h5 style="margin-left: 25%">{{direccion_emp}} <h6 style="margin-left: 25%; color: gray;">Dirección</h6></h5>
+                 </div>
+                 <div class="input-field col s2">
+                     <i class="material-icons prefix" style="margin-left: 10%;margin-top: 1.5%;">local_phone</i>
+                     <h5 style="margin-left: 25%">{{contacto}} <h6 style="margin-left: 25%; color: gray;">Contacto</h6></h5>
+                 </div>
+                  <!-- <div class="input-field col s5">
+                     
+                  </div> -->
+                  <div class="col s12" style="padding-top: 10px;">
+                     <center><button class="waves-effect waves-light btn white-text" type="submit">Actualizar</button></center>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+
+      <div class="col s12 m12 l12" ng-hide= "updapersonal">  <!-- ng-hide= "updapersonal" -->
+        <div class="card" >
+            <div class="card-content">
+               <spam>
+                  <h5>Solicitud de Movilidad al Afiliado</h5>
+               </spam>
+            </div>
+            <div class="card-content clearfix">
+               <blockquote>
+                  Los siguientes campos son obligatorios para realizar la búsqueda del empleado en nuestra base de datos.
+               </blockquote>
+               <form id="busafi" class="row" ng-submit="busquedaAfiliado()" style="margin-bottom: 10px !important;">
+                  <div class="input-field col s4">
+                     <label for="tipo_doc_afil" class="active">Tipo de Documento</label>
+                     <select id="tipo_doc_afil" class="select-chosen-eps" ng-model="solicitud.tipo_documento" required>
+                        <option value="">SELECCIONAR</option>
+                        <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+                        <option value="TI">TARJETA DE IDENTIDAD</option>
+                        <option value="RC">REGISTRO CIVIL</option>
+                        <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                        <option value="PA">PASAPORTE</option>
+                        <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                        <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                        <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                        <option value="CD">CARNET DIPLOMÁTICO</option> -->
+                        <option value="{{x.CODIGO}}" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col s4">
+                     <i class="material-icons prefix">account_circle</i>
+                     <input id="with_icon" type="text" ng-model="solicitud.documento" class="validate">
+                     <label for="with_icon">Documento</label>
+                  </div>
+                  <div class="input-field col s3">
+                     <label for="fecha_nacimiento" class="active">Fecha de Nacimiento</label>
+                     <input id="fecha_nacimiento" ng-model="solicitud.f_nacimiento" type="date" required="">
+                  </div>
+                  <div class="col s12" style="padding-top: 10px;">
+                     <center><button class="waves-effect waves-light btn white-text" type="submit">Buscar</button></center>
+                  </div>
+               </form>
+               <blockquote>
+                  Si el empleado no se encuentra dentro de nuestro sistema de información puede registrar sus datos dando <a ng-click="newAfiliado()" style="cursor: pointer;">Click Aquí</a>
+               </blockquote>
+            </div>
+            
+         </div>
+      </div>
+     <!--  <div class="col s12 m12 l12" ng-hide= "solafiliado">
+         
+      </div> -->
+      <div class="col s6 m6 l6" ng-show="panelinfoafiliado">
+         <div class="card">
+            <div class="card-content">
+               <h5>Datos de la Solicitud</h5>
+            </div>
+            <div class="card-action">
+               <blockquote style="border-left: 5px solid #000000 !important">
+                  Verifique que este sea el afiliado sobre el cual usted realizara la solicitud y de click en <b>continuar</b>:
+               </blockquote>
+               <table class="responsive-table table-bordered">
+                  <tbody>
+                     <tr>
+                        <th style="text-align: left;" data-field="Nombre">NOMBRE</th>
+                        <td style="text-align: left;">{{Data.NOMBRE}}</td>
+                     </tr>
+                     <tr>
+                        <th style="text-align: left;" data-field="Tipo Documentn">TIPO DE DOCUMENTO</th>
+                        <td style="text-align: left;">{{Data.TIPODOCUMENTO}}</td>
+                     </tr>
+                     <tr>
+                        <th style="text-align: left;" data-field="Documento">DOCUMENTO</th>
+                        <td style="text-align: left;">{{Data.DOCUMENTO}}</td>
+                     </tr>
+                     <tr>
+                        <th style="text-align: left;" data-field="Sexo">GENERO</th>
+                        <td style="text-align: left;">{{Data.SEXO}}</td>
+                     </tr>
+                     <tr>
+                        <th style="text-align: left;" data-field="Departamento">DEPARTAMENTO</th>
+                        <td style="text-align: left;">{{Data.DEPARTAMENTO}}</td>
+                     </tr>
+                     <tr>
+                        <th style="text-align: left;" data-field="Municipio">MUNICIPIO</th>
+                        <td style="text-align: left;">{{Data.MUNICIPIO}}</td>
+                     </tr>
+                     <tr>
+                        <th style="text-align: left;" data-field="Regimen">RÉGIMEN</th>
+                        <td style="text-align: left;">{{Data.REGIMEN}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+               <br>
+               <center><button class="waves-effect waves-light btn white-text" type="submit" ng-click="ingresadatos()">Continuar</button></center>
+            </div>
+         </div>
+      </div>
+      <div class="col s6 m6 l6" ng-show="panelingresodatos">
+         <div class="card">
+            <div class="card-content">
+               <h5>Información de la Solicitud</h5>
+            </div>
+            <div class="card-action"  style="height: 443px;">
+               <form id="formsolicitud" ng-submit="subirAdjunto()">
+                  <div class="input-field col l10 m10 s10">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Seleccione el asesor al cual realizará la solicitud
+                     </blockquote>
+                     <select id="idasesor" class="select-chosen-eps" ng-model="solicitud.asesor" name="asesor" required>
+                        <option value="">SELECCIONAR</option>
+                        <option ng-repeat="asesor in asesores track by $index" ng-value="asesor.CODIGO">{{asesor.NOMBRE}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l12 m12 s12">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Adjunte el archivo comprimido (.ZIP) con los documentos requeridos (Máximo 8MB):
+                     </blockquote>
+                  </div>
+                  <input type="input" name="tipo_documento" ng-model="solicitud.tipo_documento" style="display: none">
+                  <input type="input" name="documento" ng-model="solicitud.documento" style="display: none">
+                  <div class="col s12 col s10 m10 l10" ng-hide="inactive1" style="margin-top: 20px;">
+                     <div class="file-field input-field">
+                        <div class="btn">
+                           <span class="white-text">Archivo</span>
+                           <input name="archivo" accept=".zip,.rar" type="file" ng-disabled="seleccionarchivodis">
+                        </div>
+                        <div class="file-path-wrapper">
+                           <input id="nombreadjunto" class="file-path validate" type="text" placeholder="Adjunte archivos en formato comprimido" ng-model="nombreadjunto" >
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col s12 col s10 m6 l6  offset-s1 offset-m3 offset-l3 " ng-hide="inactive1" style="margin-top: 20px;">
+                     <center><button class="waves-effect waves-light btn white-text" type="submit" >Enviar</button></center>
+                     <br>   
+                  </div>
+               </form>
+               <!-- <center><button class="waves-effect waves-light btn white-text" type="submit" ng-click="ingresadatos()">Continuar</button></center> -->
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

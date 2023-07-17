@@ -1,0 +1,504 @@
+<div class="row">
+    <style>
+        #Iframe-Master-CC-and-Rs {
+            max-width: 512px;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        /* inner wrapper: make responsive */
+        .responsive-wrapper {
+            position: relative;
+            height: 0;
+            /* gets height from padding-bottom */
+
+            /* put following styles (necessary for overflow and scrolling handling on mobile devices) inline in .responsive-wrapper around iframe because not stable in CSS:
+    -webkit-overflow-scrolling: touch; overflow: auto; */
+
+        }
+
+        .responsive-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        /* padding-bottom = h/w as % -- sets aspect ratio */
+        /* YouTube video aspect ratio */
+        .responsive-wrapper-wxh-572x612 {
+            padding-bottom: 107%;
+        }
+
+        /* general styles */
+        /* ============== */
+        .set-border {
+            border: 5px inset #4f4f4f;
+        }
+
+        .set-box-shadow {
+            -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+            -moz-box-shadow: 4px 4px 14px #4f4f4f;
+            box-shadow: 4px 4px 14px #4f4f4f;
+        }
+
+        .set-padding {
+            padding: 40px;
+        }
+
+        .set-margin {
+            margin: 30px;
+        }
+
+        .center-block-horiz {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+
+
+        /* Ripple effect */
+        .ripple {
+            background-position: center;
+            transition: background 0.8s;
+        }
+
+        .ripple:hover {
+            background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%) center/15000%;
+        }
+
+        .ripple:active {
+            background-color: #484949;
+            background-size: 100%;
+            transition: background 0s;
+        }
+
+        /* Button style */
+        button {
+            border: none;
+            border-radius: 2px;
+            padding: 12px 18px;
+            font-size: 16px;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: white;
+            background-color: #2196f3;
+            box-shadow: 0 0 4px #999;
+            outline: none;
+        }
+
+        .botones {
+            height: calc(100vh - 143px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .botones>a {
+            margin: 40px;
+            height: 110px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            width: 20%;
+            border-radius: 70px;
+        }
+
+        .botones>a>i {
+            font-size: 3em;
+            margin-right: 0;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="date"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"],
+        input[type="date"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type=text]::-webkit-input-placeholder:after {
+            content: '*';
+            color: red;
+            vertical-align: top;
+            font-size: 10px;
+        }
+
+        label {
+            color: black;
+        }
+
+        .requerido {
+            color: red;
+        }
+
+        .normal {
+            color: black;
+        }
+
+        #modalsemana {
+            width: 80% !important;
+            max-height: 75% !important;
+
+        }
+
+        #modalcontrol {
+            width: 80% !important;
+            max-height: 75% !important;
+        }
+
+
+
+        .ftlc {
+            width: 20% !important;
+        }
+    </style>
+
+    <div class="foot4 divcardcustom">
+        <div class="text-al switch divcardcustom2" style="text-align: center;">
+            <div class="input-button">
+
+            </div>
+            <i ng-show="vistas != null" class="icon-left-open-2"
+                ng-click="(vistas==4)? cambiarVista(1) : cambiarVista()"
+                style="cursor: pointer;font-size: 13px;position: absolute;left: 0;">Atras</i>
+            <strong>{{titulo}} {{subtitulo}}</strong>
+
+        </div>
+    </div>
+
+    <div ng-show="vistas==null" class="margin" class="col l12 ml2 s12 card ">
+
+        <div class="col l6 ml2 s12 right" ng-show="false">
+
+
+            <input type="text" class="margin border-none input-text-new" ng-model="buscar"
+                placeholder="Buscar en la tabla">
+        </div>
+
+
+        <div class="col l12 ml2 s12 " ng-show="false" class="scrollDefault" style="overflow-y: auto">
+            <table class="responsive-table striped table-bordered display dataTable">
+                <thead>
+                    <tr>
+                        <th class="center-align">NOMBRE</th>
+                        <th class="center-align">TIPO / DOCUMENTO</th>
+                        <th class="center-align">IPS</th>
+                        <th class="center-align">FECHA DE NOTIFICACION</th>
+                        <th class="center-align">ZONA</th>
+                        <th class="center-align">DESCRIPCION </th>
+                        <th class="center-align">TELEFONO </th>
+
+                        <th class="center-align">DIRECCION</th>
+                        <th class="center-align">FECHA DE RETIRO</th>
+                        <th class="center-align">ESTADO </th>
+                        <th class="center-align">SEGUIMIENTO </th>
+                        <th class="center-align">SOPORTES </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in listacontrol | filter:buscar">
+                        <td class="center-align">{{item.NOMBRE}}</td>
+                        <td class="center-align">{{item.DOCUMENTO}}</td>
+                        <td class="center-align">{{item.IPS}}</td>
+                        <td class="center-align">{{item.FECHANOTI}} <span ng-show="item.FECHANOTI == null">No fue
+                                reportado por el SIVIGILA </span></td>
+                        <td class="center-align">{{item.ZONA}}</td>
+                        <td class="center-align">{{item.DESCRIPCION}}</td>
+                        <td class="center-align">{{item.TELEFONO}} </td>
+                        <td class="center-align">{{item.DIRECCION}} </td>
+                        <td class="center-align">{{item.FECHARETIRO}}<span ng-show="item.FECHARETIRO == null">Sigue
+                                Activo</span> </td>
+                        <td class="center-align">{{item.ESTADO}}</td>
+                        <td>
+
+                            <div class="tooltip">
+                                <label ng-click="abrirModal(item)">
+                                    <i ng-model="abrirsemana" style="top: 16px; right: 0px;cursor: pointer;"
+                                        class="material-icons prefix default-color">search</i></label>
+                                <span class="tooltiptext">Click Para abrir CONTROL DE SEGUIMIENTO</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="col s6">
+                                <div>
+                                    <a class=" btn default-background " href="" ng-model="abrircontrol"
+                                        ng-click="cambiarVista(2,item.NOMBRE);">SOPORTES
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+        <div class="card-action" id="card-action">
+            <div class="input-field col l4 left" style="margin:0;">
+                <input id="normal1" type="text" class="validate" ng-model="buscar" ng-change="filter(buscar)"
+                    style="text-transform:uppercase">
+                <label for="normal" class="">Buscar en la tabla</label>
+            </div>
+
+            <table id="tabla_1" class="responsive-table striped display dataTable table-bordered"
+                style="width:99%; position: relative;">
+                <thead class="default-background" style="color:white;">
+                    <tr>
+                        <th class="center-align">NOMBRE</th>
+                        <th class="center-align">TIPO / DOCUMENTO</th>
+                        <th class="center-align">EDAD (MESES)</th>
+                        <th class="center-align">ZONA</th>
+                        <th class="center-align">DIRECCION</th>
+                        <th class="center-align">TELEFONO </th>
+                        <th class="center-align">IPS</th>
+                        <!-- <th class="center-align">OBSERVACIÓN </th> -->
+                        
+
+
+                        <th class="center-align">ESTADO </th>
+                        <!-- <th class="center-align">REGISTRO DE CONTROL </th> -->
+                        <th class="center-align">SEGUIMIENTO </th>
+                    </tr>
+
+                <tbody>
+                    <tr style="cursor:pointer;"
+                        ng-repeat="item in listDatosTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+                        <td class="center-align">{{item.NOMBRE}}</td>
+                        <td class="center-align">{{item.DOCUMENTO}}</td>
+                        <td class="center-align">{{item.EDAD}}</td>
+                        <td class="center-align">{{item.ZONA}}</td>
+                        <td class="center-align">{{item.DIRECCION}} </td>
+                        <td class="center-align">{{item.TELEFONO}} </td>
+                        <td class="center-align">{{item.IPS}}</td>
+                        <!-- <td class="center-align">{{item.DESCRIPCION}}</td> -->
+                        
+                        <td class="center-align">{{item.ESTADO}}</td>
+
+                        <td class="center-align">
+
+                            <div class="tooltip">
+                                <label>
+                                    <i ng-click="cambiarVista(2,item.NOMBRE,item.CODIGODES,item);"
+                                        style="cursor: pointer; font-size: 30px;" class="fa fa-list-alt
+                                            default-color"></i></label>
+                                <span class="tooltiptext">VER SEGUIMIENTO</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin:0;position: absolute;left: 2%;">
+                <label for="normal" class="">Total de documentos filtrados:
+                    {{listDatosTemp.length}}</label>
+            </div>
+            <div style="margin:0;position: absolute;right: 2%;">
+                <label for="normal" class="">Total de documentos encontrados:
+                    {{listDatosTemp.length}}</label>
+            </div>
+            <ul style="text-align: center;padding-top: 20px;" class="pagination">
+
+                <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                        ng-click="paso('back')">&laquo;</button></li>
+
+                <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                        class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+
+                <li><button ng-disabled='currentPage >= listDatosTemp.length/pageSize - 1'
+                        class="btn-floating default-background" ng-click="paso('next')">&raquo;</button></li>
+
+            </ul>
+        </div>
+
+
+    </div>
+
+    <!-- VISTA DEL SEGUIMIENTO  -->
+
+    <div ng-show="vistas == 2" class="col no-padding" style="width: 100%;">
+        <i ng-show="vistas != null" class="icon-left-open-2" ng-click="cambiarVista()"
+            style="cursor: pointer;font-size: 17px;position: absolute;left: 250px;">Atras</i>
+        <div class="col no-padding" style="width: 100%;">
+            <div class="col s12 m12 l12 magazine widgets-tabs">
+                <div class="card-panel widgets-tabs col l12 margin" style="padding-top: 40px">
+                    <div class="col s12">
+                        <div class="row">
+                            <div class="col 32 m32 s12">
+                                <div class="scrollDefault" style="margin-bottom: 2em;overflow-y: auto">
+                                    <table class="responsive-table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="center-align">SOPORTES</th>
+                                                <th class="center-align">SEMANA</th>
+                                                <th class="center-align">CODIGO DE REGISTRO</th>
+                                                <!-- <th class="center-align">DESCRIPCION</th> -->
+                                                <th class="center-align">FECHA DE CONSULTA</th>
+                                                <th class="center-align">FECHA DEL PROXIMO CONTROL</th>
+
+                                                <!-- <th class="center-align">FECHA DE ULTIMO CONTROL</th> -->
+                                                <th class="center-align">PESO ACTUAL</th>
+                                                <th class="center-align">CLASIFICACIÓN</th>
+                                                <th class="center-align">VACUNACIÓN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="item in detalles">
+                                                <td class="center-align">
+                                                    <div class="tooltip">
+                                                        <label> <i
+                                                                ng-click="versoportes(item.CODSEMANA,item.CODUSUARIO,item.FECHACONSULTA)"
+                                                                style="cursor: pointer; font-size: 25px;"
+                                                                class="icon-archive default-color"></i></label>
+                                                </td>
+                                                <td class="center-align">{{item.CODSEMANA}}</td>
+                                                <td class="center-align">{{item.CODUSUARIO}}</td>
+                                                <!-- <td class="center-align">{{item.DESCRIPCION}}</td> -->
+                                                <td class="center-align">{{item.FECHACONSULTA}}</td>
+                                                <td class="center-align">{{item.FECHAPROXIMOCONTROL}}<span
+                                                    ng-show="item.FECHAPROXIMOCONTROL == null">No aplica
+                                                </span></td>
+                                                <!-- <td class="center-align">{{item.FECHAULTIMOCONTROL}}</td>  >-->
+                                                <td class="center-align">{{item.PESOACTUAL}}</td>
+                                                <td class="center-align">{{item.PUNTAJEZ}}</td>
+                                                <td class="center-align"> <i
+                                                    ng-click="get_vacunas(item.CODSEMANA,item.CODUSUARIO)"
+                                                    title="Esquema Vacunacion"
+                                                    style="cursor: pointer; font-size: 25px;"
+                                                    class="fa fa-id-card default-color"></i> {{item.VACUNACION}}
+                                            </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="center-align" ng-show="detalles.length==0" colspan="9">No hay
+                                                    datos para mostrar</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <div class="col s12">
+                                <div ng-show="versoporte" class="col l12 ml2 s12 ">
+
+
+                                    <!-- FILA 1 -->
+
+
+                                    <div class="card col s12">
+                                        <blockquote>
+                                            Ver soportes del afiliado - SEMANA {{numerodesemana}}
+                                        </blockquote>
+
+                                        <div class="card-content clearfix">
+                                            <table class="highlight responsive-table bordered" align="center"
+                                                style="cursor: pointer !important;">
+                                                <thead align="center">
+                                                    <tr>
+                                                        <td><strong>#</strong></td>
+                                                        <td><strong>Nombre</strong></td>
+                                                        <td><strong>Fecha de consulta </strong> </td>
+                                                        <td><strong>Fecha</strong></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="height: 40%; overflow: scroll;">
+                                                    <tr data-ng-repeat="sop in soportereg track by $index"
+                                                        ng-click="estadoanexo(sop.URL,sop.FTP)">
+                                                        <td>{{$index+1}}</td>
+                                                        <td>{{sop.NOMBRE}}</td>
+                                                        <td>{{fecha_consulta}}</td>
+                                                        <td>{{sop.FECHA}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalesquemavacunacion" class="modal">
+        <div class="modal-content" style="padding: 0 !important;">
+            <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+
+                    <div class="card-content foot4" style="padding: 0">
+                        <div class="col s11">
+                            <h5 class="white-text">Control de Seguimiento</h5>
+                        </div>
+                        <div class="col s1">
+                            <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                    ng-click="cerrarModalEsquemaVacunacion()"
+                                    class="material-icons white-text">close</i>
+                            </h5>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <table>
+                            <tr>
+                                <th>Descripcion</th>
+                                <th>Realizado</th>
+                            </tr>
+                            <tr ng-repeat="item in esquemaVacunacion">
+                                <td>{{item.DETALLE}}</td>
+                                <td><input type="checkbox" disabled ng-change="cambiarRespuestaEsquemaEvaluacion(item)"
+                                        ng-model="item.RESPUESTA" style="left: 0;
+                                        position: relative;
+                                        opacity: 1;"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalvisual" class="modal">
+        <div class="row margin">
+            <div id="Iframe-Master-CC-and-Rs" class="center-block-horiz no-padding" style="max-width: 100%;">
+                <div ng-if="!tipoImgPdf" ng-class="{'d-block':tipoImgPdf==false}"
+                    class="d-none responsive-wrapper  responsive-wrapper-wxh-572x612"
+                    style="-webkit-overflow-scrolling: touch; overflow: auto;">
+                    <iframe ng-src="{{file}}">
+                        <p style="font-size: 110%;"><em><strong>ERROR: </strong>
+                                An &#105;frame should be displayed here but your browser version does not support
+                                &#105;frames.
+                            </em>Please update your browser to its most recent version and try again.</p>
+                    </iframe>
+                </div>
+                <div ng-if="tipoImgPdf" ng-class="{'d-block':tipoImgPdf==true}" class="d-none responsive-wrapper"
+                    style="height: auto;overflow: auto;">
+                    <!-- <img ng-src="{{file}}"> -->
+                    <img id="gear" ng-src="{{file}}" alt="bike gear by Markus Spiske" data-big="{{file}}"
+                        data-big2x="{{file}}" data-overlay="{{file}}" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

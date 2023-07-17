@@ -1,0 +1,567 @@
+<div class="row">
+    <style>
+        #Iframe-Master-CC-and-Rs {
+            max-width: 512px;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        /* inner wrapper: make responsive */
+        .responsive-wrapper {
+            position: relative;
+            height: 0;
+            /* gets height from padding-bottom */
+
+            /* put following styles (necessary for overflow and scrolling handling on mobile devices) inline in .responsive-wrapper around iframe because not stable in CSS:
+                    -webkit-overflow-scrolling: touch; overflow: auto; */
+
+        }
+
+        .responsive-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        /* padding-bottom = h/w as % -- sets aspect ratio */
+        /* YouTube video aspect ratio */
+        .responsive-wrapper-wxh-572x612 {
+            padding-bottom: 107%;
+        }
+
+        /* general styles */
+        /* ============== */
+        .set-border {
+            border: 5px inset #4f4f4f;
+        }
+
+        .set-box-shadow {
+            -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+            -moz-box-shadow: 4px 4px 14px #4f4f4f;
+            box-shadow: 4px 4px 14px #4f4f4f;
+        }
+
+        .set-padding {
+            padding: 40px;
+        }
+
+        .set-margin {
+            margin: 30px;
+        }
+
+        .center-block-horiz {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+
+
+        /* Ripple effect */
+        .ripple {
+            background-position: center;
+            transition: background 0.8s;
+        }
+
+        .ripple:hover {
+            background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%) center/15000%;
+        }
+
+        .ripple:active {
+            background-color: #484949;
+            background-size: 100%;
+            transition: background 0s;
+        }
+
+        /* Button style */
+        button {
+            border: none;
+            border-radius: 2px;
+            padding: 12px 18px;
+            font-size: 16px;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: white;
+            background-color: #2196f3;
+            box-shadow: 0 0 4px #999;
+            outline: none;
+        }
+
+        .botones {
+            height: calc(100vh - 143px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .botones>a {
+            margin: 40px;
+            height: 110px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            width: 20%;
+            border-radius: 70px;
+        }
+
+        .botones>a>i {
+            font-size: 3em;
+            margin-right: 0;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="date"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"],
+        input[type="date"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type=text]::-webkit-input-placeholder:after {
+            content: '*';
+            color: red;
+            vertical-align: top;
+            font-size: 10px;
+        }
+
+        label {
+            color: black;
+        }
+
+        .requerido {
+            color: red;
+        }
+
+        .amarillo {
+            color: darkkhaki
+        }
+
+        .normal {
+            color: black;
+        }
+
+        #modalsemana {
+            width: 80% !important;
+            max-height: 75% !important;
+
+        }
+
+        #modalcontrol {
+            width: 80% !important;
+            max-height: 75% !important;
+        }
+
+
+
+        .ftlc {
+            width: 20% !important;
+        }
+
+
+        .Class_perimetrobraquial_Rojo {
+            background-color: red !important;
+            color: white;
+            border-radius: 25px;
+        }
+
+        .Class_perimetrobraquial_Amarillo {
+            background-color: yellow !important;
+            color: black;
+            border-radius: 25px;
+            font-size: 0.75em;
+            font-weight: 800;
+        }
+
+        .Class_perimetrobraquial_Verde {
+            background-color: green !important;
+            color: white;
+            border-radius: 25px;
+        }
+    </style>
+
+  
+    <div  class="col no-padding" style="width: 100%;">
+        <div class="col no-padding" style="width: 100%;">
+            <div class="col s12 m12 l12 magazine widgets-tabs">
+                <div class="card-panel" style="margin-bottom: 20px;">
+                    <div class="row">
+                        <div class="col l12 m12 s12">
+                            <blockquote>
+                                Ingrese tipo y número de documento del afiliado.
+                            </blockquote>
+                            <br>
+                            <div class="col s12">
+                                <div class="row margin">
+                                    <form ng-submit="consulta()">
+                                        <div class="col s4">
+                                            <label style=" margin-top: -20px;">Tipo de documento</label>
+                                            <select id="tipo" ng-model="dato.tipo" class="select-chosen-eps "
+                                                style="margin-top: -6px; padding-top: 5px;">
+                                                <option disabled value="">SELECCIONAR</option>
+                                                <option value="CN">NACIDO VIVO</option>
+                                                <option value="RC">REGISTRO CIVIL</option>
+                                                <option value="PE">PERMISO ESPECIAL</option>
+                                                <option value="MS">MENOR SIN IDENTIFICACION</option>
+                                            </select>
+
+                                        </div>
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="numeroid" maxlength="15" type="text"
+                                                    class="form-control validate valid " ng-model="dato.numeroid">
+                                                <a href="javascript:void(0)" id="buscarDocumentoLink"
+                                                    ng-click="consulta()"><i
+                                                        style="position: absolute; top: 16px; right: 6px;"
+                                                        class="default-color fa fa-address-card"></i></a>
+                                                <label for="numeroid">Numero de documento</label>
+                                            </div>
+                                        </div>
+                                        <div class="col s2 center-align">
+                                            <button  style="height:30px; margin-top: 30px;" class="btn btn-primary"  type="submit">Buscar
+                                                Afiliado</button>
+                                        </div>
+                                       
+
+                                    </form>
+
+
+
+
+                                </div>
+                          
+
+
+            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- segunda parte de ambulatoria      -->
+                <div ng-show="segundaparte">
+
+                    <div class="card-panel widgets-tabs col l12 margin" style="padding-top: 40px">
+                        <div class="col s12">
+                            <div class="row">
+                                <div class="col s12">
+                                    <blockquote>
+                                        Datos basicos del afiliado
+                                    </blockquote>
+                                    <br>
+
+                                    <!-- FILA 1 -->
+                                    <div class="row">
+                                        <div class="col s4">
+                                            <label style=" margin-top: -20px;">Fuente de información</label>
+                                            <select id="reporta" ng-model="dato.reporta" class="select-chosen-eps valid"
+                                                style="margin-top: -6px; padding-top: 5px;">
+                                                <option disabled value="">SELECCIONAR</option>
+                                                <option value="{{item.CODIGO}}" ng-repeat="item in tipoentidades">
+                                                    {{item.NOMBRE}}</option>
+
+                                            </select>
+                                        </div>
+                                        <!-- <div class="col s4" ng-show="dato.reporta == 1">
+                                            <div class="">
+                                                <label for="numero">Numero Consecutivo</label>
+                                                <input style="margin-top: -7px;" id="numero" type="text"
+                                                    class="form-control " ng-model="dato.numero">
+                                            </div>
+                                        </div> -->
+
+                                        <div class="col s4" ng-show="dato.reporta == 1">
+                                            <div class="">
+                                                <label for="fechanotificacion">Fecha de
+                                                    notificación </label>
+                                                <input id="fechanotificacion" type="date" class="form-control"
+                                                    style="margin-top: -7px;" ng-model="dato_fechanotificacion">
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col s4" ng-show="dato.reporta == 1">
+                                            <div class="">
+                                                <label for="semananoti">Semana de
+                                                    notificación</label>
+                                                <input id="semananoti" type="text" style="margin-top: -7px;"
+                                                    class="form-control  " ng-model="dato.semananoti">
+
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <!-- FILA 2 -->
+                                    <div class="row">
+
+                                        <div class="col s3">
+                                            <div class="input-field">
+                                                <input id="pnombre" type="text" class="form-control "
+                                                    ng-model="dato.pnombre" disabled>
+                                                <label for="pnombre">Primer nombre</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col s3">
+                                            <div class="input-field">
+                                                <input id="snombre" type="text" class="form-control "
+                                                    ng-model="dato.snombre" disabled>
+                                                <label for="snombre">Segundo nombre</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- <input type="date" id="fecha" name="fecha"> -->
+
+                                        <div class="col s3">
+                                            <div class="input-field">
+                                                <input id="papellido" type="text" class="form-control "
+                                                    ng-model="dato.papellido" disabled>
+                                                <label for="papellido">Primer apellido</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col s3">
+                                            <div class="input-field">
+                                                <input id="sapellido" type="text" class="form-control "
+                                                    ng-model="dato.sapellido" disabled>
+                                                <label for="sapellido">Segundo apellido</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <br>
+
+                                    <!-- FILA 3 -->
+                                    <div class="row">
+
+                                        <div class="col s3">
+                                            <label style=" margin-top: -20px;">Pais de origen</label>
+                                            <select id="paisorigin" ng-model="dato.paisorigin"
+                                                class="select-chosen-eps " style="margin-top: -6px; padding-top: 5px;">
+                                                <option disabled value="">SELECCIONAR</option>
+                                                <option value="1">COLOMBIA</option>
+                                                <option value="2">VENEZUELA</option>
+                                                <option value="0">OTRO</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col s3">
+                                            <div class="input-field">
+                                                <input id="departamento" type="text" class="form-control "
+                                                    ng-model="dato.departamento" disabled>
+                                                <label for="departamento">Departamento</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col s3">
+                                            <div class="input-field">
+                                                <input id="municipio" type="text" class="form-control "
+                                                    ng-model="dato.municipio" disabled>
+                                                <label for="municipio">Municipio</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col s3">
+                                            <div class="input-field">
+                                                <input id="zona" type="text" class="form-control " ng-model="dato.zona"
+                                                    disabled>
+                                                <label for="zona"> <strong>Zona</strong> </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- FILA 4 -->
+                                    <div class="row">
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="direccion" type="text" class="form-control "
+                                                    ng-model="dato.direccion" disabled>
+                                                <label for="direccion">Dirección</label>
+                                            </div>
+                                        </div>
+                                        <div class="col s1">
+                                            <div class="tooltip">
+                                                <label ng-click="AbrirModalDireccion()"><i
+                                                        class="default-color material-icons"
+                                                        style="margin-top:30px;right: -40px;position: absolute;">info</i></label>
+                                                <span class="tooltiptext">Click Para Actualizar Direccion</span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col s3">
+                                            <div class="">
+                                                <label for="telefono">Telefono</label>
+                                                <input id="telefono" style="margin-top: -7px;" type="text"
+                                                    class="form-control " ng-model="dato.telefono">
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col s4">
+                                            <div class="">
+                                                <label for="corregimiento">Corregimiento (Opcional)</label>
+                                                <input placeholder="no aplica" id="corregimiento"
+                                                    style="margin-top: -7px;" type="text" class="form-control "
+                                                    ng-model="dato.corregimiento">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <br>
+
+                                    <!-- FILA 5 -->
+                                    <div class="row">
+
+                                    
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="sexo" type="text" class="form-control " ng-model="dato.ips"
+                                                    disabled>
+                                                <label for="sexo">IPS</label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="regimen" type="text" class="form-control "
+                                                    ng-model="dato.regimen" disabled>
+                                                <label for="regimen">Regimen</label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="sexo" type="text" class="form-control " ng-model="dato.sexo"
+                                                    disabled>
+                                                <label for="sexo">Genero</label>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <!-- FILA 6 -->
+
+                                    <div class="row">
+
+                                        <div class="col s4">
+
+                                            <div class="input-field">
+                                                <input id="fechanacimiento" type="text" class=" "
+                                                    ng-model="dato.fechanacimiento" disabled>
+                                                <label for="fechanacimiento" class="">Fecha de
+                                                    nacimiento</label>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="edad" type="text" class="form-control" ng-model="dato.edad"
+                                                    disabled>
+                                                <label for="edad">Edad (MESES)</label>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col s4">
+                                            <div class="input-field">
+                                                <input id="eps" type="text" class="form-control " ng-model="dato.eps"
+                                                    disabled>
+                                                <label for="eps">EPS</label>
+                                            </div>
+                                        </div>
+
+
+
+
+
+                                    </div>
+
+                                    <!-- Parte final -->
+                                    <div class="row">
+                                        <div class="input-list input-view-column">
+
+                                            <textarea placeholder="Observacion (opcional)" id="observaciona"
+                                                ng-model="dato.observaciona" class="form-control" rows="5"
+                                                style="height: 61px;    width: 104%;"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="col s6">
+                                        <div class="file-field input-field">
+                                            <form id="anexo2" method="post" enctype="multipart/form-data">
+                                                <div class="btn">
+
+                                                    <span class="white-text">HISTORIA CLINICA</span>
+                                                    <input id="anexo2adj" name="adjunto" accept=".pdf,.png,.jpg"
+                                                        type="file">
+                                                </div>
+                                            </form>
+                                            <div class="file-path-wrapper">
+                                                <input ng-model="dato.historiaclinica" class="file-path validate"
+                                                    type="text" id="textadj" placeholder="Subir Soporte">
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="col s12"
+                                        style="display: flex;justify-content: center;align-items: center;height: 76px;">
+                                        <a class="btn default-background" href=""
+                                            style="height: 45px;line-height: 45px;" ng-model="dato.enviareporte"
+                                            ng-click="enviarreporte()">GUARDAR DATOS</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+
+
+
+  
+
+
+   
+
+
+
+
+
+
+
+ 
+
+</div>

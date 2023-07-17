@@ -1,0 +1,358 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer"
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+          onclick="location.reload();">
+          Gestión Tipo de Producto PGP
+        </h5>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <div class="row dashboard-wrapper content-container white" style="height: 90vh;">
+    <div class="col l12 m12 s12 center">
+      <div style="position: absolute;width: 83vw;margin-top: 10em;margin-left: 5em;">
+        <div id="Imagen_back">
+          <img src="images\administrativa\consultatercero.svg" alt="Imagen">
+        </div>
+      </div>
+    </div>
+    <!-- //// -->
+    <div class="card-content clearfix card" style="width: 30%;margin: 1rem auto auto auto;border-radius: 15px;"
+      ng-show="Form.Status == 0">
+      <div class="row" style="margin-bottom: 0;margin-top: 1rem;">
+        <div class="col s12 no-padding label-new m-b" style="width: 98%;">
+          <input type="text" id="Form_Nit_Ips" class="margin border-none input-text-new w-100 m-l"
+            style="text-transform:uppercase" autocomplete="off" ng-model="Form.Nit_Ips"
+            ng-keyup="Complete_Listado_Ips($event,Form.Nit_Ips);KeyFind_ObIps($event);">
+          <label>Nit/Nombre Ips
+          </label>
+          <ul class="list-group m-l Clase_Listar_Ips"
+            style="overflow: auto;max-height: 14vh;position:absolute;margin: 0;width: inherit;margin-top:2.2em;z-index: 3;">
+            <li class="list-group-item" style="font-size: 0.7em;" id="Ips{{$index}}"
+              ng-repeat="x in Busqueda.Ips.Filtro"
+              ng-click="FillTextbox_Listado_Ips(x.nit,x.nombre_ips)"
+              ng-class="$index == Busqueda.Ips.Seleccion ? 'hover' : ''">
+              {{x.nit}} - {{x.nombre_ips}}</li>
+          </ul>
+          <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+            ng-click="Buscar_ObIps()"></i>
+        </div>
+        <!-- <div class="col s12 no-padding label-new m-b" style="width: 98%;">
+          <input class="margin border-none input-text-new gray-input w-100 m-l" style="text-transform: uppercase;"
+            autocomplete="off" id="Form_Nit_Ips" ng-model="Form.Nit_Ips"
+            ng-keyup="FormatSoloNumero('Form_Nit_Ips');KeyFind_Ips($event)">
+          <label>Nit/Nombre IPS</label>
+          <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;" title="Buscar"
+            ng-click="Buscar_Ips()"></i>
+        </div> -->
+      </div>
+    </div>
+    <!-- ///// -->
+    <div id="Form" class="card-content clearfix card"
+      style="width: 80%;margin: 1rem auto auto auto;border-radius: 15px;" ng-show="Form.Status == 1">
+      <div class="Anim_Show Form_Desactivados" style="margin: auto;width: 90;">
+        <div class="row" style="margin-bottom: 0;width: 98%;margin-top: 1rem;">
+          <div style="max-height: calc(40vh - 15px);overflow:auto;">
+            <table class="tabla_estilo_0 highlight" style="width:100%;color: black;">
+              <thead class="white-text default-linear-gradient">
+                <th class="center">Nit</th>
+                <th class="center">Ips</th>
+                <th class="center">Contrato</th>
+                <th class="center">Regimen</th>
+                <th class="center">-</th>
+              </thead>
+              <tbody>
+                <tr class="cursor-pointer" ng-repeat="x in Datos | filter:Hoja.Filter">
+                  <td class="center" ng-click="Mostrar_Ips($index)">{{x.nit}}</td>
+                  <td class="center" ng-click="Mostrar_Ips($index)">{{x.nombre_ips}}</td>
+                  <td class="center" ng-click="Mostrar_Ips($index)">{{x.cntn_numero}}</td>
+                  <td class="center" ng-click="Mostrar_Ips($index)">{{x.cntc_documento == 'KC' ? 'CONTRIBUTIVO' :
+                    'SUBSIDIADO'}}</td>
+                  <td class="center">
+                    <div class="tooltip">
+                      <i class="icon-eye cursor-pointer" style="font-size: 1.5em;" ng-click="Mostrar_Ips($index)"></i>
+                      <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Ver
+                        Tercero</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row" style="margin-top:1vh;">
+          <div class="col s12 center">
+            <input class="btn white-text red"
+              style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit" value="Cerrar"
+              ng-click="Volver();">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /////////// -->
+    <div id="Form" class="card-content clearfix card"
+      style="width: 95%;margin: 1rem auto auto auto;border-radius: 15px;" ng-show="Form.Status == 2">
+      <div class="Anim_Show" style="margin: auto;width: 90;">
+        <div class="row" style="margin-bottom: 0;width: 98%;margin-top: 1rem;">
+          <div id="Diag_3" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Listado de Productos</strong>
+              <div class="tooltip" ng-show="Form.Nit != ''">
+                <i class="icon-cw-circle cursor-pointer" ng-click="Mostrar_Productos()"></i>
+                <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+              </div> ({{Form.Nombre_Ips + ' - ' + Form.Documento + ' - ' + Form.Numero}})
+              <div class="col s3 no-padding label-new right"
+                style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                <input class="margin border-none input-text-new black-text gray-input w-100 m-l"
+                  style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="Form.Filtrar"
+                  ng-keyup="chg_filtrar(Form.Filtrar)">
+              </div>
+            </div>
+          </div>
+          <!-- /TABLA/ -->
+          <div style="width:100%;">
+            <table class="highlight" style="width:100%;font-size:6px !important;">
+              <thead>
+                <tr class="default-linear-gradient">
+                  <th>CODIGO</th>
+                  <th>PRODUCTO</th>
+                  <th>TIPO</th>
+                </tr>
+              </thead>
+              <tbody class="default-border">
+                <tr ng-repeat="X in Lista_Tabla_Temp | inicio: currentPage * pageSize | limitTo: pageSize"
+                  style="color: black;cursor:pointer;">
+                  <td ng-click="Guardar_Tipo_Producto(X)">{{X.cndc_producto}}</td>
+                  <td ng-click="Guardar_Tipo_Producto(X)">{{X.proc_nombre}}</td>
+                  <td ng-click="Guardar_Tipo_Producto(X)">{{X.tipo_producto_pgp}}</td>
+                </tr>
+                <tr ng-show="Lista_Tabla_Temp.length==0">
+                  <td class="center-align" colspan="3" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="width: 100%;display: flex;">
+              <div style="width: 50%;">
+                <label for="normal">Total de documentos filtrados:
+                  {{Lista_Tabla_Temp.length}}</label>
+              </div>
+              <div style="width: 50%;text-align: right;">
+                <label for="normal">Total de documentos encontrados:
+                  {{Lista_Tabla.length}}</label>
+              </div>
+            </div>
+            <div style="width: 100%;display: flex;">
+              <!-- <div style="width: 33%;"></div> -->
+              <div style="width: 100%;">
+                <ul class="pagination">
+                  <li><button ng-disabled='currentPage == 0' class="btn-floating white-text default-linear-gradient"
+                      ng-click="paso('back')">&laquo;</button></li>
+                  <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                      class="btn-floating white-text default-linear-gradient"
+                      ng-click='setPage(page.no)'>{{page.no}}</button>
+                  </li>
+                  <li><button ng-disabled='currentPage >= Lista_Tabla_Temp.length/pageSize - 1'
+                      class="btn-floating white-text default-linear-gradient" ng-click="paso('next')">&raquo;</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 center">
+            <input class="btn white-text red"
+              style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit" value="Cerrar"
+              ng-click="Volver();">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ///// -->
+
+
+  <style>
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    @keyframes Anim_Show {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .Anim_Show {
+      animation-name: Anim_Show;
+      animation-duration: 1s;
+    }
+
+    #Imagen_back {
+      cursor: pointer;
+      width: 50vw;
+      margin: auto;
+      opacity: .4;
+    }
+
+    .card-panel,
+    .card,
+    .btn {
+      box-shadow: 0 2px 5px 0 rgb(197 208 239), 0 2px 10px 0 rgb(197 208 239) !important;
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+    #Diag_3 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      font-size: 0.7em;
+    }
+
+    .list-group {
+      font-size: 14px;
+      overflow: auto;
+      max-height: 13vh;
+      position: absolute;
+      margin: 0;
+      width: inherit;
+      margin-top: 2.2em;
+      z-index: 3;
+    }
+
+    .tabla_estilo_0 th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+    .label-new>label {
+      display: table;
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+
+    ul::-webkit-scrollbar {
+      width: 6px;
+      background-color: #F5F5F5;
+    }
+
+    .select-wrapper input.select-dropdown:disabled {
+      color: black;
+    }
+
+    .Green_Est {
+      background-color: green !important;
+    }
+
+    .Red_Est {
+      background-color: red !important;
+    }
+
+    .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+    }
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

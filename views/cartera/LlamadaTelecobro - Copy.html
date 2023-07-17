@@ -1,0 +1,209 @@
+<div id="llamadastelecobro" class="white newdesing" style="position:relative">
+    <div class="row section-header">
+        <ul class="left mailbox-custom-search list-inline"
+        style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+        <li id="inicio"  ng-init="ListarDepartamento()">
+            <h5>Registro de llamadas Telecobro</h5>
+        </li>
+        <li ng-show="reloj">
+            <div for="duracion" id="duracion" value="0" class="tiempo">{{datos.duracion}}</div>
+        </li>
+    </ul>
+</div>
+
+<div class="row white newdesing section-header" ng-show="BotonRegistroLlamada">
+    <center>
+        <button class="waves-effect waves-light btn white-text primary-button margin-bottom-10"
+        ng-click="Consultar()">
+        <i class="icon-call"></i>Registar Llamadas
+    </button>
+</center>
+</div>
+
+
+<div class="row section-header white" ng-show="FormularioDeLlamada">
+    <div class="col l12 m12 s12">
+        <div class="row">
+            <div class="col l12 m12 s12">
+                <div class="col l4 m12 s12">
+                    <div class="input-field">
+                        <input id="fecha" type="text" class="" ng-model="datos.fechatemporal" disabled>
+                        <label for="fecha" class="">Fecha Registro</label>
+                    </div>
+
+                </div>
+                <div class=" col l4 m12 s12">
+                    <div class="input-field">
+                        <input id="hora" type="text" class="" ng-model="datos.hora" disabled>
+                        <label for="hora" class="">Hora Registro</label>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col l12 m12 s12">
+                <div class="col l4 m12 s12">
+                    <div class="input-field">
+                      <label class="active">Tipo de Documento (*)</label>
+                      <select class="select-chosen-eps" ng-model="datos.tipodocumento" disabled>
+                        <option value="0">SELECCIONAR</option>
+                        <option value="N">NIT</option>
+                        <option value="C">CEDULA DE CIUDADANÍA</option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="col l4 m12 s12">
+              <div class="input-field">
+                <input id="id" type="text"  ng-model="datos.documento" disabled>
+                <label for="id" class="">Número de identificación (*)</label>
+            </div>
+        </div>
+        <div class="col l4 m12 s12">
+            <div class="input-field">
+                <label for="razon" class="active">Nombre o Razon Social</label>
+                <input id="razon" type="text"  ng-model="datos.razonsocial" disabled>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="col l12 m12 s12">
+        <div class="col l3 m12 s12">
+            <div class="input-field">
+              <label class="active">Departamento (*)</label>
+              <select class="select-chosen-eps" id="deptos" ng-model="datos.departamento" ng-options="deptos.codigo as deptos.nombre for deptos in depto" ng-change="BuscoMunicipio()"> 
+              </select>
+          </div>
+      </div>
+      <div class="col l3 m12 s12">
+        <div class="input-field">
+            <label class="active">Municipio (*)</label>
+            <select id="municipio" class="select-chosen-eps" ng-model="datos.municipio" ng-options="mun.CODIGO as (mun.NOMBRE) for mun in muni">
+            </select>
+        </div>
+    </div>
+    <div class=" col l3 m12 s12">
+        <div class="input-field">
+            <input id="telefono" type="text" class="validate" ng-model="datos.telefono">
+            <label for="telefono" class="">Telefono (*)</label>
+        </div>
+    </div>
+    <div class="col l3 m12 s12">
+        <div class="input-field">
+            <label for="celular" class="active">Celular</label>
+            <input id="celular" type="text" class="validate valid" ng-model="datos.celular">
+        </div>
+    </div>
+</div>
+
+
+<div class="col l12 m12 s12">
+    <div class="col l6 m12 s12">
+        <div class="input-field">
+            <input id="dirrecion" type="text" class="validate" ng-model="datos.direccion">
+            <label for="dirrecion" class="">Dirección</label>
+        </div>
+    </div>
+    <div class="col l1 m12 s12">
+        <div class="tooltip">
+            <label ng-click="AbrirModalDireccion()"><i class="material-icons"
+                style="margin-top:30px;">info</i></label>
+                <span class="tooltiptext">Click Para Actualizar Direccion</span>
+            </div>
+        </div>
+
+        <div class=" col l5 m12 s12">
+            <div class="input-field">
+                <input id="correo" type="text" class="validate" ng-model="datos.correo">
+                <label for="correo" class="">Correo Electronico</label>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="col l12 m12 s12">
+        <div class="col l6 m12 s12">
+            <div class="input-field">
+                <label class="active">Motivos</label>
+                <select class="select-chosen-eps" ng-model="datos.motivo"
+                ng-change="BuscarSubMotivos(datos.motivo)">
+                <option value="0">SELECCIONAR</option>
+                <option ng-repeat="lm in lmotivos" ng-value="lm.codigo">{{lm.nombre}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="col l6 m12 s12">
+        <div class="input-field">
+            <label class="active">Submotivos</label>
+            <select class="select-chosen-eps" ng-model="datos.submotivo"
+            ng-change="MostrarFecha(datos.submotivo)">
+            <option value="0">SELECCIONAR</option>
+            <option ng-repeat="ls in lsubmotivos" ng-value="ls.codigo">{{ls.nombre}}</option>
+        </select>
+    </div>
+</div>
+</div>
+
+<div class="col l12 m12 s12">
+    <div class="col l6 m12 s12" ng-if="OcultarFecha">
+        <div class="input-field">
+            <label for="fechamotivo" class="active">Fecha</label>
+            <input id="fechamotivo" type="date" min="{{maxDate}}" class="validate valid"
+            ng-model="datos.fechamotivo">
+        </div>
+    </div>
+    <div class="col l6 m12 s12">
+        <div class="input-field">
+            <label for="persona" class="active">Persona Contactada</label>
+            <input id="persona" type="text" class="validate valid" ng-model="datos.personacontacto">
+        </div>
+    </div>
+</div>
+
+<!-- Observacion-->
+<div class="col l12 m12 s12">
+    <div class="col l6 m12 s12">
+        <div class="input-field">
+            <textarea class="validate valid" placeholder="Observacion" id="observacion" cols="30"
+            rows="10" ng-model="datos.observacion"
+            style="margin: 0px; width: 1217px; height: 92px;"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="col l12 m12 s12" style="margin-top: 20px;">
+    <center>
+        <button class="btn white-text primary-button margin-bottom-10" ng-click="FinalizarLlamadas()">
+            <i class="icon-call"></i>Finalizar Llamadas </button>
+        </center>
+    </div>
+
+</div>
+</div>
+</div>
+
+
+
+
+<style>
+    .btn {
+        background-color: #88C542;
+    }
+    .tiempo {
+        position: absolute;
+        right: 55px;
+        font-size: 30px;
+        font-family: monospace;
+        padding: 10px;
+        border: 2px solid #4CAF50;
+        z-index: 100;
+        border-radius: 5px;
+        background-color: rgb(242, 255, 242);
+        color: #000000;
+        top: 49%;
+    }
+</style>
+
+
+</div>

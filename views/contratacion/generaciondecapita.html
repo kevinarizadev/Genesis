@@ -1,0 +1,851 @@
+<div id="pantalla" class="white newdesing">
+    <div class="row section-header">
+        <ul class="left mailbox-custom-search list-inline"
+            style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+            <li id="inicio">
+                <i ng-click="Refrescar_Inicio()"></i>
+                <h5 onclick="location.reload();" class="cursor-pointer">Generacion de capita</h5>
+            </li>
+            <li>
+                <ul class="tabs transparent" style="overflow:hidden;">
+                    <li class="tab col w-auto">
+                        <a ng-click="Set_Tab(1);" href>Apertura de capita & periodo<i class="icon-calendar-7"></i></a>
+                    </li>
+                    <li class="tab col w-auto">
+                        <a ng-click="Set_Tab(2);" href>Gestion de matriz<i class="icon-view-mode"></i></a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- Capita & Periodo -->
+    <div class=" card col s12" ng-show="Tabs == 1"
+        style="width: 60%;margin: 15px auto;padding: 10px 10px 0px 10px;border-radius: 15px;">
+        <blockquote style="margin-top:0;">
+            Apertura de capita
+        </blockquote>
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="row">
+                            <div class="col l12 m12 s12">
+                                <label style="padding-left: 4%;font-size: inherit;">Estado:
+                                    <b>{{estadodelperido}} - {{ periodo }}</b></label>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="ocultarperiodoGenerar">
+                            <div class="col l12 m12 s12">
+                                <label style="padding-left: 4%;font-size: inherit;">Periodo a generar -
+                                    <b>{{periodoCapturar}}</b></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12" style="display: flex;justify-content: flex-end; padding: 10px 0.75px;"
+                ng-if="estadodelperiodo != 'A'">
+                <button type="button" ng-class="classebuttonApertura" class="icon-spinner2 white-text"
+                    ng-click="aperturaCapita()" ng-disabled="aperturaCapitadisable">Cerrar capita</button>
+            </div>
+        </div>
+
+        <div class="row" ng-show="aperturaCapitadisable == true && ocultarperiodoGenerar == true">
+            <blockquote>
+                Crear periodo
+            </blockquote>
+            <div class="col l12 m12 s12">
+                <div class="col s4">
+                    <label>Periodo:<span class="red-text">*</label>
+                    <div class="input-field">
+                        <input id="fechaMesanno" ng-model="fechaMesanno" class="fechaperiodo" type="text">
+                    </div>
+                </div>
+                <!-- <div class="col s4">
+                    <label>Fecha de Inicio:<span class="red-text">*</label>
+                    <div class="input-field">
+                        <input id="fechainicio" ng-model="fechainicio" type="date">
+                    </div>
+                </div>
+                <div class="col s4">
+                    <label>Fecha final:<span class="red-text">*</label>
+                    <div class="input-field">
+                        <input id="fechafinal" ng-model="fechafinal" type="date">
+                    </div>
+                </div> -->
+                <div class="col s12" style="display: flex;justify-content: flex-end; padding: 10px 0.75px;">
+                    <button class="icon-calendar white-text default-linear-gradient" type="button"
+                        ng-click="funcrearPeriodo()" id="funcrearPeriodo">Crear periodo</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <blockquote>
+                Generar precapita
+            </blockquote>
+            <br>
+            <!-- Estado de la capita -->
+            <div class="row" style="zoom:50%; margin-left: 517px;">
+                <div class="col s12">
+                    <h3>
+                        <strong>
+                            <i class="fa fa-database " aria-hidden="true"></i>
+                            {{ estadocapitamensaje }}-{{ periodo }}
+                        </strong>
+                    </h3>
+                </div>
+            </div>
+            <br>
+            <div class="col s12" style="text-align: center; padding: 10px 0.75px;">
+                <button ng-class="classebuttonGenerarcapita" class="icon-calendar white-text default-linear-gradient"
+                    type="button" ng-click="fungenerarCapita()" ng-disabled="generarCapitadisable">Generar capita
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Gestion de Matriz -->
+    <div id="ngdialog2" class=" card col s12" ng-show="Tabs == 2"
+        style="width: 60%;margin: 15px auto;padding: 10px 10px 0px 10px;border-radius: 15px;">
+        <!-- Proceso de Descargue -->
+        <div class="row">
+            <blockquote>
+                Proceso de descargue
+            </blockquote>
+            <div class="col l12 m12 s12">
+                <div class="row" ng-hide="hideinformacion">
+                    <div class="col l12 m12 s12">
+                        <label style="padding-left: 4%;font-size: inherit;">Estado:
+                            <b>{{estadodelperido}}
+                                -
+                                {{ periodo }}</b></label>
+                    </div>
+                </div>
+                <div class="col s4" ng-init="cargaAnnos()">
+                    <label id="tipodeconcepto3">Tipos de concepto<span class="red-text">*</label>
+                    <select ng-model="tipos_concepto"
+                        style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                        <option disabled value="">SELECCIONAR</option>
+                        <option value="{{item.codigo}}" ng-repeat="item in conceptos">{{item.nombre}}</option>
+                    </select>
+                </div>
+                <div class="col s4">
+                    <label id="tipos_concepto">Regimen:<span class="red-text">*</label>
+                    <select ng-model="regimen" style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                        <option disabled value="">SELECCIONAR</option>
+                        <option value="C">CONTRIBUTIVO</option>
+                        <option value="S">SUBSIDIADO</option>
+                    </select>
+                </div>
+                <div class="col s12" style="display: flex;justify-content: flex-end; padding: 10px 0.75px;">
+                    <button class="icon-download-1 white-text default-linear-gradient" type="button"
+                        ng-click="descargarconceptoCapita()">Descargar</button>
+                </div>
+            </div>
+            <br>
+        </div>
+        <!-- Proceso de Cargue -->
+        <div class="row">
+            <blockquote>
+                Proceso de cargue
+            </blockquote>
+            <div class="col l12 m12 s12">
+
+                <div class="col s4">
+                    <label id="tipodeconcepto3">Tipo de concepto<span class="red-text">*</label>
+                    <select ng-model="tipodeconcepto3"
+                        style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                        <option disabled value="">SELECCIONAR</option>
+                        <option value="{{item.codigo}}" ng-repeat="item in conceptos">{{item.nombre}}</option>
+                    </select>
+                </div>
+                <div class="col s4">
+                    <label id="tipos_concepto">Regimen:<span class="red-text">*</label>
+                    <select ng-model="regimenc"
+                        style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                        <option disabled value="">SELECCIONAR</option>
+                        <option value="C">CONTRIBUTIVO</option>
+                        <option value="S">SUBSIDIADO</option>
+                    </select>
+                </div>
+                <form>
+                    <div class="col s4">
+                        <label>Archivo:<span class="red-text">*</span></label>
+                        <div class="file-field input-field gray-input m-l input-file-radiu"
+                            style="margin: 0;width: -webkit-fill-available;" id="nombrearchivo_txt">
+                            <div class="right">
+                                <span class="black-text"><i class="icon-folder-open-1 default-color"
+                                        style="line-height: 2rem;"></i></span>
+                                <input id="anexoadj_txt" ng-init="inactivect=true" name="file-upload-field" id="periodo"
+                                    type="file" style="width: 414px;" class="file-upload-field" value="">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input ng-model="nombrearchivo_txt" class="file-path Var_Seccional_Archivos" type="text"
+                                    placeholder="Adjunte un archivo (txt)" readonly
+                                    style="border-radius: 0;height: 2rem;border-bottom: 0;">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="col s12" style="display: flex;justify-content: flex-end; padding: 10px 0.75px;">
+                    <button class=" icon-upload-1 white-text default-linear-gradient" type="button"
+                        ng-click="Cargarcapita()">Cargar informacion</button>
+                </div>
+            </div>
+            <br>
+        </div>
+        <div classs="row" ng-show="DescargueConsolidado">
+            <blockquote>
+                Descargar consolidado
+            </blockquote>
+            <div class="col s12" style="text-align: center; padding: 10px 0.75px;">
+                <button class="icon-download-1 white-text default-linear-gradient" type="button"
+                    ng-click="descargarconsolidar()">Descargar consolidado</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        .icon-calendar:before {
+            content: '\e86c';
+        }
+
+
+        .k-grid-header,
+        .k-grouping-header,
+        .k-header,
+        .k-pager-wrap,
+        .k-panelbar .k-tabstrip-items .k-item,
+        .default-linear-gradient {
+            background-image: linear-gradient(to bottom left, #5870ae, #1a2e63, #5870ae);
+            border-radius: 10px;
+            color: white;
+            border-color: white;
+        }
+
+        .k-autocomplete.k-state-active,
+        .k-dropdown-wrap.k-state-active,
+        .k-multiselect.k-header.k-state-active,
+        .k-numeric-wrap.k-state-active,
+        .k-picker-wrap.k-state-active {
+            color: #5870ae;
+            background-color: #5870ae;
+            border-color: #5870ae
+        }
+
+        .k-autocomplete.k-state-default.k-state-border-down,
+        .k-autocomplete.k-state-default.k-state-border-up,
+        .k-dropdown-wrap.k-state-active .k-select,
+        .k-numeric-wrap.k-state-active .k-select,
+        .k-picker-wrap.k-state-active .k-select {
+            border-color: #1a2e63;
+        }
+
+        .k-calendar .k-header .k-state-hover {
+            background-color: #5870ae;
+        }
+
+        .k-calendar .k-content .k-link,
+        .k-calendar .k-footer .k-link {
+            color: #2e2e2e
+        }
+
+
+        .default-linear-gradient-disabled {
+            background-image: linear-gradient(to bottom left, #c5cad7, #b9bcc5, #5870ae66);
+            border-radius: 10px;
+            color: white;
+            border-color: white;
+        }
+
+        .border_bottom_LR {
+            border-bottom-left-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+        }
+
+        .Green_Est {
+            background-color: green !important;
+        }
+
+        .Red_Est {
+            background-color: red !important;
+        }
+
+        .buena {
+            color: rgb(3, 197, 20) !important;
+        }
+
+        .poca {
+            color: rgb(235, 156, 5) !important;
+        }
+
+        .baja {
+            color: rgb(245, 75, 75) !important;
+        }
+
+        .teal.activo {
+            background-color: rgb(3, 197, 20) !important;
+        }
+
+        .teal.procesado {
+            background-color: rgb(71, 71, 165) !important;
+        }
+
+        .yellow {
+            background-color: #b7a60f !important;
+        }
+
+        #IMG_Secc {
+            cursor: pointer;
+        }
+
+        #IMG_Secc:hover .tooltip-css3 {
+            display: block;
+        }
+
+        .tooltip-css3:before {
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 20px solid #6c63ff;
+            bottom: -15px;
+            content: "";
+            height: 0;
+            left: 50%;
+            margin-left: -30px;
+            position: absolute;
+            transform: skew(-45deg);
+            width: 0;
+        }
+
+        .tooltip-css3 {
+            background-color: #6c63ff;
+            border-radius: 100% 100% 100% 100%;
+            box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+            color: #FFFFFF;
+            display: none;
+            left: 70%;
+            padding: 20px 30px;
+            position: absolute;
+            top: 23%;
+        }
+
+        .Btn_Secc_Pen {
+            background-color: #afaaff;
+            box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+            color: #FFFFFF;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .Btn_Secc_New {
+            background-color: #afaaff;
+            box-shadow: 0 0 5px 0 rgb(108 99 255 / 49%);
+            color: #FFFFFF;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* /// */
+        .Con_pulse_P {
+            /* background: #FF6D4A; */
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_P 5s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_P {
+            0% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.7), 0 0 0 0 rgba(71, 71, 165, 0.7);
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0.7);
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 15px rgba(71, 71, 165, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(71, 71, 165, 0.0), 0 0 0 0 rgba(71, 71, 165, 0);
+            }
+        }
+
+
+        .Con_pulse_V {
+            /* background: #FF6D4A; */
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_V 5s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_V {
+            0% {
+                box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.7), 0 0 0 0 rgba(43, 255, 36, 0.7);
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(43, 255, 36, 0.0), 0 0 0 0 rgba(43, 255, 36, 0.7);
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.0), 0 0 0 15px rgba(43, 255, 36, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(43, 255, 36, 0.0), 0 0 0 0 rgba(43, 255, 36, 0);
+            }
+        }
+
+        /* /// */
+        .Animacion_HojaForm {
+            animation: 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal both running swing-in-top-fwd;
+        }
+
+        @keyframes swing-in-top-fwd {
+            0% {
+                /* -webkit-transform: rotateX(-100deg);
+          transform: rotateX(-100deg);
+          -webkit-transform-origin: top;
+          transform-origin: top; */
+                opacity: 0;
+            }
+
+            100% {
+                /* -webkit-transform: rotateX(0deg);
+          transform: rotateX(0deg);
+          -webkit-transform-origin: top;
+          transform-origin: top; */
+                opacity: 1;
+            }
+        }
+
+        .BgColor_A {
+            background: linear-gradient(to bottom left, #37daf0, #00acc1, #37daf0);
+        }
+
+        .BgColor_R {
+            background: linear-gradient(to bottom left, #f1ad5a, #fb8c00, #f1ad5a);
+        }
+
+        .BgColor_C {
+            background: linear-gradient(to bottom left, #e65b8e, #d81b60, #e65b8e);
+        }
+
+        .BgColor_O {
+            background: linear-gradient(to bottom left, #d7d9db, #6A6D71, #d7d9db);
+        }
+
+        .BgColor_N {
+            background: linear-gradient(to bottom left, #63f193, #25D962, #63f193);
+        }
+
+        .Color_A {
+            color: #00acc1 !important;
+            border-left: 5px solid #00acc1;
+        }
+
+        .Color_R {
+            color: #fb8c00 !important;
+            border-left: 5px solid #fb8c00;
+        }
+
+        .Color_C {
+            color: #d81b60 !important;
+            border-left: 5px solid #d81b60;
+        }
+
+        .Color_O {
+            color: #6A6D71 !important;
+            border-left: 5px solid #6A6D71;
+        }
+
+        .Color_N {
+            color: #25D962 !important;
+            border-left: 5px solid #25D962;
+        }
+
+        .textarea2 {
+            padding: 0.5rem !important;
+            width: calc(100% - 0rem) !important;
+            /* background-color: #cbcdce; */
+            background-color: #f1f3f4;
+            resize: none;
+            height: 7rem;
+        }
+
+        input.input-text-new {
+            background-color: #f1f3f4 !important;
+        }
+
+        .gray-input {
+            background-color: #f1f3f4 !important;
+        }
+
+        .Tarjeta_Titulo {
+            -webkit-transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+            transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+            position: relative;
+            z-index: 3;
+        }
+
+        .Tarjeta_Titulo:hover {
+            transform: translate3d(0, -25px, 0);
+        }
+
+        .Tarjeta_Titulo>.card {
+            border-radius: .375rem;
+            z-index: 2;
+        }
+
+        .Tarjeta_Titulo .card-content {
+            padding: 0.6rem 0.8rem;
+            display: flex;
+        }
+
+        .Tarjeta_Titulo h6 {
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
+            font-size: 0.8125rem;
+        }
+
+        .Tarjeta_Texto {
+            z-index: -1;
+            margin-top: -3.7em;
+            width: calc(100% - 30px);
+            left: 15px;
+            /* text-align: center; */
+            width: auto;
+            border-radius: .375rem;
+            height: 41px;
+            padding: 0.9rem 0.8rem;
+        }
+
+        .Tarjeta_Texto>span {
+            position: relative;
+            font-size: 0.8em;
+            font-weight: 700;
+        }
+
+        #H1_Tabla>thead,
+        #H1_Tabla>tbody {
+            font-size: 1em;
+            /* border: 3px; */
+            border-width: medium;
+            border-style: solid;
+            border-radius: .375rem;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .Class_Tabla_Btn_Gestionar {
+            border-radius: .375rem;
+            width: 30%;
+            margin: auto;
+            border-width: medium;
+        }
+
+        .Class_Tabla_Btn_Gestionar h6 {
+            font-weight: 700 !important;
+            font-size: 0.8125rem;
+        }
+
+        .animated {
+            -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+        }
+
+        .switch label .lever.check-c:after {
+            background-color: #ffffff;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            background-color: #ffffff;
+        }
+
+        .dropdown-content li {
+            min-height: 23px;
+        }
+
+        .select_maxheigth ul {
+            max-height: 125px;
+        }
+
+        .dropdown-content li>span {
+            line-height: 32px;
+            padding: 0px 16px;
+        }
+
+        .currency-input {
+            position: relative;
+        }
+
+        .currency {
+            padding-left: -22px;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 8px;
+            font-size: 21px;
+        }
+
+        #toast-container .toast {
+            border-radius: 10px !important;
+            font-weight: 600;
+            text-align: center !important;
+            word-break: keep-all;
+            padding: 10px 25px;
+            width: auto;
+            background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+        }
+
+        blockquote {
+            font-weight: 700;
+            background-color: #f1f3f4;
+        }
+
+        .VistaFile .Iframe {
+            visibility: hidden;
+            height: 50vh;
+            color: #fff;
+            text-align: center;
+            margin-bottom: -0.6rem;
+            border-top-right-radius: 6px;
+            border-top-left-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: calc(100% + 6px);
+            right: 0;
+            opacity: 0;
+            transition: opacity 1s;
+            border: 3px solid #333333;
+        }
+
+        .VistaFile:hover .Iframe {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .Iframe:hover {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .input-file-radius-cargado {
+            /* border-top-right-radius: 0 !important; */
+            /* border-bottom-right-radius: 0 !important; */
+            background-color: #03c5146e !important;
+        }
+
+        .input-file-radius-cargado2 {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            background-color: #03c5146e !important;
+        }
+
+        .input-file-radius-opcional {
+            background-color: #0000004f !important;
+        }
+
+        .input-file-radius-obligatorio {
+            background-color: #f54b4bb0 !important;
+        }
+
+        .input-file-radiu {
+            border-radius: 10px;
+        }
+
+        .input-file-radius {
+            border-radius: 10px;
+        }
+
+        .select-wrapper input.select-dropdown:disabled {
+            color: black;
+        }
+
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-item:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .list-group-item:hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item.hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .list-group {
+            font-size: 14px;
+        }
+
+        .class_upper td,
+        .class_upper th {
+            text-transform: uppercase;
+        }
+
+        .class_gris {
+            color: rgba(0, 0, 0, 0.26) !important;
+        }
+
+        .class_label {
+            color: #80868b;
+        }
+
+        /*******************/
+
+        .switch label .lever {
+            background-color: #1a2e63;
+            width: 60px;
+            height: 29px;
+        }
+
+        .switch label .lever:after {
+            left: 4px;
+            top: 4px;
+            background-color: #fff !important;
+        }
+
+        .switch label .lever.check-c {
+            background-color: #1a2e63 !important;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            left: 35px;
+        }
+
+        /* // */
+        .lever.check-c:hover span.lever.check-c:after {
+            width: 100px !important;
+        }
+
+        /**/
+        [type="checkbox"].filled-in:not(:checked)+label:after {
+            border: 3px solid #1a2e63;
+        }
+
+        [type="checkbox"].filled-in:checked+label:after {
+            border: 3px solid #1a2e63;
+            background-color: #1a2e63;
+        }
+
+        .modal {
+            border-radius: 10px;
+            overflow: hidden;
+            max-height: 88%;
+            z-index: 1003;
+            display: none;
+            opacity: 0;
+            transform: scaleX(0.7);
+            top: 4%;
+        }
+
+        .pagination {
+            text-align: center;
+            padding-top: 0px;
+            font-weight: 800;
+        }
+
+        /* --------------------------------------------------------------------------------------------- */
+        @keyframes Anim_Show {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .Anim_Show {
+            animation-name: Anim_Show;
+            animation-duration: 1s;
+        }
+
+        .Con_pulse_A {
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_A 5s linear infinite;
+        }
+
+        @keyframes animate-pulse_A {
+            0% {
+                box-shadow: 0 0 0 0 #f7fb00de, 0 0 0 0 #f7fb00de;
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 #f7fb00de;
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+            }
+        }
+
+        .Con_pulse_X {
+            /* background: #FF6D4A; */
+            border-radius: 50%;
+            color: #FFF;
+            animation: animate-pulse_X 5s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animate-pulse_X {
+            0% {
+                box-shadow: 0 0 0 0 #f75050, 0 0 0 0 #f75050;
+            }
+
+            40% {
+                box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 #f75050;
+            }
+
+            80% {
+                box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+            }
+        }
+
+
+
+
+
+        input[type=text] {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            background-clip: padding-box;
+            padding: 0 1em;
+            font-weight: 600;
+            height: 2rem;
+        }
+    </style>
+</div>

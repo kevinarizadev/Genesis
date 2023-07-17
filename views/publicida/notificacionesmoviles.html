@@ -1,0 +1,198 @@
+<div class="row">
+    <div class="col s12">
+        <div class="row">
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s3" ng-click="cambiarTab('1')"><a href="javascript: void(0)">CREAR
+                            CAMPAÑA</a></li>
+                    <li class="tab col s3" ng-click="cambiarTab('2')"><a id="listado_notificaciones" class="active"
+                            href="javascript: void(0)">LISTADO</a></li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="row" ng-if="data.tab === '1'">
+            <div class="col s6">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title" style="background-color: transparent; color: #1a2e63;">Información de
+                            la notificación</span>
+                        <div class="row" style="margin-bottom: 0px; margin-top: 2em;">
+                            <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                                <div class="row">
+                                    <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                                        <div class="input-field col l12 m12 s12 margin">
+                                            <label class="label" for="titulo">Titulo</label>
+                                            <input id="titulo" type="text" ng-model="data.titulo">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                                        <div class="input-field col l12 m12 s12 margin">
+                                            <label class="label" for="descripcion">Descripción</label>
+                                            <input id="descripcion" type="text" ng-model="data.descripcion">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                                        <div class="input-field col l12 m12 s12 margin">
+                                            <label class="labelper" for="fecha_publicacion">Fecha de Publicación</label>
+                                            <input id="fecha_publicacion" type="date" ng-model="data.fecha_publicacion"
+                                                ng-change="verificarFecha()">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="switch">
+                                        <label>
+                                            Inactivo
+                                            <input type="checkbox" ng-disabled="!data.mostrarEstado"
+                                                ng-model="data.estado_check" ng-change="chequearEstado()"
+                                                class="ng-pristine ng-valid ng-touched">
+                                            <span class="lever"></span>
+                                            Activo
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                                        <div class="file-field input-field col l12 m12 s12 margin">
+                                            <div class="btn" style="padding: 0px 12px;">
+                                                <span><i class="material-icons">photo</i></span>
+                                                <input id="image" type="file" accept="image/*">
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text" ng-model="data.image"
+                                                    ng-change="mostrarVistaPrevia()">
+                                                    <small>La imagen debe de tener un tamaño de 420x420 px</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a class="btn-floating btn-large green" href="javascript: void(0)"
+                            ng-click="crearNotificacion()">
+                            <i class="large material-icons">save</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s6">
+                <h6><strong style="color: #1a2e63;">Vista previa imagen:</strong></h6>
+                <div id="phone-preview"
+                    style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 70vh;">
+                    <img src="/images/publicidad/notificaciones-moviles/54b972c504b660f6e7905ff1242245c9.png"
+                        style="position: absolute; width: 25vw;">
+                    <img id="previewImage" style="position: absolute; z-index: 1; max-width: 14vw;">
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-if="data.tab === '2'">
+            <div class="switch">
+                <label>
+                    Inactivo
+                    <input type="checkbox" ng-model="data.filtro.activo" ng-change="chequearFiltro()"
+                        class="ng-pristine ng-valid ng-touched">
+                    <span class="lever"></span>
+                    Activo
+                </label>
+            </div>
+            <div class="row" id="table-container">
+                <div class="col s12 m12 l12">
+                    <div class="row" style="display: grid;
+                    grid-gap: 10px;
+                    grid-template-columns: repeat(4, 1fr);  ">
+                        <div class="col s3 m3 l3" style="margin-left: 0px !important; margin-right: 0px; width: 100%;"
+                            ng-repeat="item in data.dataFiltered">
+                            <div class="card">
+                                <div class="card-content" style="display: flex; flex-direction: column; align-items: center;">
+                                    <img src="/php/funcsoporte.php?path={{ item.RUTA }}" style="max-width: 220px; max-height: 320px;">
+                                    <div style="align-self: start;">
+                                        <strong><span class="card-title" style="background-color: transparent; color: #1a2e63; line-height: 16px; font-size: 16px;">{{ item.TITULO }}</span></strong>
+                                        <p>{{ item.DESCRIPCION }}</p>
+                                        <p>{{ item.ESTADO }}</p>
+                                        <p>{{ item.FECHA_PUBLICACION }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="card-actions" style="padding: 0px 0px 8px 8px;">
+                                    <a class="btn-floating halfway-fab waves-effect waves-light red" ng-if="item.ESTADO_NOT === 'A'" ng-click="editarEstadoNotificacion(item, 'P')"><i class="material-icons">notifications_off</i></a>
+                                    <a class="btn-floating halfway-fab waves-effect waves-light green" ng-if="item.ESTADO_NOT !== 'A'" ng-click="editarEstadoNotificacion(item, 'A')"><i class="material-icons">notifications_active</i></a>
+                                    <a class="btn-floating halfway-fab waves-effect waves-light" style="background-color: #1a2e63;" ng-click="editarNotificacion(item)"><i class="material-icons">create</i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .dataTables_length {
+            display: none !important;
+        }
+
+        .dataTables_paginate {
+            margin-top: 8px !important;
+        }
+
+        .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border: 8px solid #1a2e63;
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: #1a2e63 transparent transparent transparent;
+        }
+
+        .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s;
+        }
+
+        .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s;
+        }
+
+        .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s;
+        }
+
+        @keyframes lds-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .ngdialog-theme-default {
+            padding-bottom: 80px !important;
+            padding-top: 80px !important;
+        }
+    </style>
+</div>

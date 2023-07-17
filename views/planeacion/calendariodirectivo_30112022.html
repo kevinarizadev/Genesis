@@ -1,0 +1,552 @@
+<div id="micalendario" class="white newdesing" style="position:relative;">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li>
+        <h5 style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">Calendario
+          Directivo</h5>
+      </li>
+      <li>
+        <div class="btn-panel" style="display: flex;align-items: center;font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+          <i ng-click="yearPrev()" class="icon-angle-left margin"></i>
+          <h6 style="margin: 0 0 0 20px;font-weight: bold;">{{year}}</h6>
+          <i ng-click="yearNext()" class="icon-angle-right"></i>
+        </div>
+      </li>
+      <li>
+        <i ng-click="(switch_view==false)?verAgendaInsert(1, [], CurrentDate.getDate(), dayNames[CurrentDate.getDay()], monthNames[CurrentDate.getMonth()],(CurrentDate.getMonth()+1),CurrentDate.getFullYear()):agregar_editar_vacaciones()"
+          class="icon-plus blue-text" title="Agregar">Agregar</i>
+      </li>
+      <li style="display:flex;align-items: center;">
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!switch_view}">Agenda</span>
+            <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view" ng-change="(switch_view == true)?viewType(true):viewType(false)">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':switch_view}">Vacaciones</span>
+          </label>
+        </div>
+      </li>
+      <li style="display:flex;align-items: center;">
+        <div ng_show="v_search" class="form-input-icon-new">
+          <input type="text" class="margin border-none" ng-model="filtrar" placeholder="Buscar...">
+          <i ng-click="toggleSearch()" class="icon-cancel"></i>
+        </div>
+        <i ng-if="!v_search" ng-click="toggleSearch()" class="icon-search"></i>
+      </li>
+    </ul>
+  </div>
+  <!-- Contenido -->
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 0;margin-bottom: 0;">
+    <div class="col l12 m12 s12" ng-if="!panel">
+      <div class="black-text title-panel white" style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <i ng-if="!cronogramaVista" ng-click="toggleMenu()" class="icon-th-list-5">Ver Cronograma</i>
+        <i ng-if="cronogramaVista" ng-click="toggleMenu()" class="icon-left-open-2">Ocultar Cronograma</i>
+        <div class="col center-align day-box"
+          style="justify-content: start;">
+          <div class="desable active day-btn blue" style="margin-right:1em"></div>
+          <span>Comite</span>
+        </div>
+        <div class="col center-align day-box"
+          style="justify-content: start;">
+          <div class="desable active day-btn blue red" style="margin-right:1em"></div>
+          <span>Comite/Auditoría</span>
+        </div>
+        <div class="col center-align day-box"
+          style="justify-content: start;">
+          <div class="desable active day-btn red" style="margin-right:1em"></div>
+          <span>Auditoría</span>
+        </div>
+      </div>
+      <div class="row margin scroll_event">
+        <div ng-if="cronogramaVista" class="col l6 m12 s12" style="position: fixed;width: calc(50vw - 178px);animation-delay: 0s;">
+          <div class="lista_progamacion center-align">
+            <ul class="last-child-not-border">
+              <li ng-repeat="cro in cronograma_lista | filter:{$:filtrar}" ng-class="{'Hoy_p':(formatDateArray(cro.fecha,1) == CurrentDate.getDate() && (formatDateArray(cro.fecha,3) - 1) == CurrentDate.getMonth() && formatDateArray(cro.fecha,4) == CurrentDate.getFullYear())}"
+                style="display: flex;padding: 8px;border-bottom: 1px solid #818181;">
+                <div ng-click="verAgenda(2,cro.numero,formatDateArray(cro.fecha,1),formatDateArray(cro.fecha,0),formatDateArray(cro.fecha,2),formatDateArray(cro.fecha,3),formatDateArray(cro.fecha,4))"
+                  ng-class="{'w-100':admin == false}" class="details" style="display: flex;width: 100%;padding: 8px;border-radius: 15px;align-items: center;text-align: left;position: relative;">
+                  <div style="justify-content: start;margin: auto 0;margin-right: 10px;margin-left: 5px;min-width: 15px;min-height: 15px;">
+                    <div class="active day-btn desable {{cro.c_tipo}}">{{formatDateArray(cro.fecha,1)}} </div>
+                  </div>
+                  <div class="left-align" style="width: 70px;padding: 0;text-align: left;font-size: 12px;margin-right: 5px;">
+                    {{formatDateArray(cro.fecha,2)}} <br> {{formatDateArray(cro.fecha,0).substring(0,3)}}
+                  </div>
+                  <div class="left-align" style="width: 70px;padding: 0;text-align: left;font-size: 12px;border-right: 2px solid #818181;margin-right: 15px;">{{horaText(cro.hora)}}</div>
+                  <div style="width: calc(100% - 190px);">
+                    {{cro.nombre_reporte}}: {{cro.titulo}}
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div ng-class="{'l12':!cronogramaVista}" class="col l6 m12 s12 no-padding" style="float:right;animation-delay: 0s;">
+          <div id="{{mes.name}}" ng-repeat="mes in calendar | filter:{$:filtrar}" ng-class="{'l6':cronogramaVista,'Mes':((mes.num - 1) == CurrentDate.getMonth() && mes.year == CurrentDate.getFullYear())}"
+            class="col l3 m12 s12 mes-calendario">
+            <div class="row margin title-calendar white-text">
+              {{mes.name}}
+            </div>
+            <div class="row" style="margin: 0;height: 215px;">
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">L</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">M</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">X</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">J</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">V</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #f1f3f4;">
+                <div class="day-btn title-calendar">S</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #f1f3f4;">
+                <div class="day-btn title-calendar">D</div>
+              </div>
+              <div ng-style="dayNull(mes.init)" class="col center-align day-box" style="height: 15px;">
+              </div>
+              <div ng-repeat="dia in mes.days" class="col center-align day-box" data-length="{{dia.details.length}}"
+                ng-class="{'indice':dia.details.length>1,'color-fsemana':dia.name=='SÁBADO' || dia.name=='DOMINGO','Hoy':(dia.num == CurrentDate.getDate() && (mes.num - 1) == CurrentDate.getMonth() && mes.year == CurrentDate.getFullYear())}">
+                <div ng-click="verAgenda(1,dia.details,dia.num,dia.name,mes.name,mes.num,mes.year)" ng-class="{'active {{colores_calendario(dia.details,dia.num,(mes.num - 1),mes.year)}}':dia.details.length>0,'color-festive':dia.festive==true}"
+                  class="day-btn" title="{{dia.name}}">{{dia.num}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ------------------------------------------------------------------------------Vacaciones------------------------------------------------------------------------------------- -->
+    <div class="col l12 m12 s12" ng-if="panel">
+      <div class="black-text title-panel white" style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <div class="black-text title-panel white" style="display: flex;justify-content: space-between;align-items: center;width: 50%;">
+          <div ng-init="alert1=''" ng-mouseover="alert1='active'" ng-mouseleave="alert1=''" data-tip="Gris" class="{{alert1}} col center-align day-box"
+            style="justify-content: start;">
+            <div class="desable active day-btn grey" style="margin-right:1em"></div>
+            <span>Finalizadas</span>
+          </div>
+          <div ng-init="alert2=''" ng-mouseover="alert2='active'" ng-mouseleave="alert2=''" data-tip="Rojo" class="{{alert2}} col center-align day-box"
+            style="justify-content: start;">
+            <div class="desable active day-btn red" style="margin-right:1em"></div>
+            <span>De Vacaciones</span>
+          </div>
+          <div ng-init="alert3=''" ng-mouseover="alert3='active'" ng-mouseleave="alert3=''" data-tip="Azul" class="{{alert3}} col center-align day-box"
+            style="justify-content: start;">
+            <div class="desable active day-btn blue green" style="margin-right:1em"></div>
+            <span>Pendientes</span>
+          </div>
+        </div>
+        <div ng-if="vacaciones_calendar.length>0" class="btn-panel">
+          <i ng-click="agregar_editar_vacaciones(cedula_vac)" title="Editar" class="icon-edit grey-text">Editar</i>
+          <i ng-click="borrar_vacaciones(cedula_vac)" title="Eliminar" class="icon-trash-empty red-text">Eliminar</i>
+        </div>
+      </div>
+      <div class="row margin scroll_event">
+        <div class="col l6 m12 s12" style="position: fixed;width: calc(50vw - 178px);">
+          <div class="lista_progamacion center-align" style="animation: fadeIn 1s">
+            <ul class="last-child-not-border">
+              <li ng-repeat="vac in vacaciones | filter:{$:filtrar}" ng-class="{'Hoy_p':(formatDateArray(vac.fecha_inicial,1) == CurrentDate.getDate() && (formatDateArray(vac.fecha_inicial,3) - 1) == CurrentDate.getMonth() && formatDateArray(vac.fecha_inicial,4) == CurrentDate.getFullYear())}"
+                style="display: flex;padding: 8px;border-bottom: 1px solid #26a69a8c;">
+                <div ng-click="verVaciones(vac.numero,vac.nombre,vac.cargo,vac.fecha_inicial,vac.fecha_final,$index,vac.documento)"
+                  ng-class="{'userSelect':userSelect==$index}" class="details" style="display: flex;width: 100%;padding: 8px;border-radius: 15px;align-items: center;">
+                  <div class="left-align" style="width: 70px;padding: 0;font-size: 12px;border-right: 2px solid #818181;margin-right: 5px;">
+                    <span style="text-transform: capitalize;">
+                      {{formatDateArray(vac.fecha_inicial,1)}}
+                      <br>
+                      {{formatDateArray(vac.fecha_inicial,2)}}
+                    </span>
+                  </div>
+                  <div style="justify-content: start;margin: auto 0;margin-right: 25px;margin-left: 15px;min-width: 15px;min-height: 15px;">
+                    <div class="active day-btn desable {{vac.color}}"></div>
+                  </div>
+                  <div style="width: calc(100% - 210px);text-align: left;">
+                    {{vac.nombre}}
+                  </div>
+                  <div class="right-align" style="width: 70px;padding: 0;font-size: 12px;border-left: 2px solid #818181;margin-left: 5px;">
+                    <span style="text-transform: capitalize;">
+                      {{formatDateArray(vac.fecha_final,1)}}
+                      <br>
+                      {{formatDateArray(vac.fecha_final,2)}}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col l6 m12 s12 no-padding" style="float:right;animation: fadeIn 1s;
+            animation-delay: 0s;">
+          <div ng-if="vacaciones_calendar.length==0" style="display: flex;justify-content: center;align-items: center;height: calc(50vw - 128px);">
+            <img src="assets/images/cajacopi.png" class="logo" style="width:15em;animation: bounceInDown 1s;">
+          </div>
+          <div ng-if="vacaciones_calendar.length!=0" style="padding: 1em .75rem;border-radius: 3px;margin: .5em .75rem;border: 2px solid;position: relative;">
+            <h5 class="center-align" style="margin-top: 0;width: calc(100% - 72px);margin: auto;">{{nombre}}</h5>
+            <p><b>Cargo:</b> {{cargo}}</p>
+            <p><b>Inicio Vacaciones:</b> {{formatDateArray(fechaInicio,1)}} - {{formatDateArray(fechaInicio,2)}} -
+              {{formatDateArray(fechaInicio,4)}}</p>
+            <p><b>Fin Vacaciones:</b> {{formatDateArray(fechaFin,1)}} - {{formatDateArray(fechaFin,2)}} -
+              {{formatDateArray(fechaFin,4)}}</p>
+          </div>
+          <div id="{{mes.name}}" ng-repeat="mes in vacaciones_calendar | orderBy:'num'" ng-class="{'Mes':((mes.num - 1) == CurrentDate.getMonth() && mes.year == CurrentDate.getFullYear())}"
+            class="col l6 m12 s12 mes-calendario mes-vac">
+            <div class="row margin title-calendar white-text">
+              {{mes.name}}
+            </div>
+            <div class="row" style="margin: 0;height: 215px;">
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">L</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">M</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">X</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">J</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #134c9596">
+                <div class="day-btn title-calendar">V</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #f1f3f4;">
+                <div class="day-btn title-calendar">S</div>
+              </div>
+              <div class="col center-align day-box" style="background-color: #f1f3f4;">
+                <div class="day-btn title-calendar">D</div>
+              </div>
+              <div ng-style="dayNull(mes.init)" class="col center-align day-box" style="height: 15px;">
+              </div>
+              <div ng-repeat="dia in mes.days" class="col center-align day-box" ng-class="{'bg-vacaciones':diasActivo(dia.num,$parent.mes.num),'color-fsemana':dia.name=='SÁBADO' || dia.name=='DOMINGO','Hoy':(dia.num == CurrentDate.getDate() && (mes.num - 1) == CurrentDate.getMonth() && mes.year == CurrentDate.getFullYear())}">
+                <div ng-class="{'color-festive default-color':dia.festive==true}" class="day-btn" title="{{dia.name}}">{{dia.num}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .sepia {
+      filter: sepia(0.5);
+    }
+
+    .scroll_event {
+      height: calc(100vh - 194px);
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    #micalendario .lista_progamacion {
+      /* background-color: #f1f3f4; */
+      border: 3px solid #134c95;
+      border-radius: 6px;
+      margin-top: .5em;
+      margin-bottom: 0.6em;
+      animation: fadeIn 1s;
+      /* animation-delay: 0.5s; */
+    }
+
+    #micalendario .lista_progamacion>ul {
+      margin: 0;
+      max-height: calc(100vh - 217px);
+      min-height: 231px;
+      overflow: hidden;
+    }
+
+    #micalendario .lista_progamacion>ul:hover {
+      overflow: auto;
+    }
+
+    #micalendario [data-tip]:after {
+      width: auto;
+    }
+
+    #div1 {
+      overflow: hidden;
+      position: relative;
+      padding-bottom: 50vh;
+    }
+
+    #div1>div {
+      height: 100%;
+      width: 100%;
+      max-width: none;
+      position: fixed;
+      position: absolute;
+      top: 0%;
+    }
+
+    .day-box {
+      width: 14.28571428571429%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 0 !important;
+      position: relative;
+    }
+
+    .day-btn {
+      font-size: 12px;
+      font-weight: 600;
+      color: inherit;
+      background-color: transparent;
+      border-radius: 0;
+      height: 20px;
+      width: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* transition: background-color 100ms linear; */
+      cursor: pointer;
+      position: relative;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    .day-btn:not(.title-calendar):not(.desable).active:hover {
+      opacity: .6;
+    }
+
+    .day-btn:not(.title-calendar).active {
+      background-color: #777;
+      color: white;
+      font-weight: bold;
+    }
+
+    .day-btn:not(.title-calendar).active.ok {
+      background-color: #fed200;
+      color: #333;
+    }
+
+    #micalendario .red {
+      background-color: #c1001f !important;
+      color: white !important;
+    }
+
+    #micalendario .blue {
+      background-color: #134c95 !important;
+      color: white !important;
+    }
+
+    #micalendario .blue.red {
+      /* background: linear-gradient(135deg, #134c95 0%, #134c95 50%, #c1001f 51%, #c1001f 71%, #c1001f 100%); */
+      background: linear-gradient(to left, #c1001f 50%, #134c95 50%);
+      color: white !important;
+    }
+
+    .day-btn:not(.title-calendar):not(.active):hover {
+      background-color: #6787b733;
+    }
+
+    .title-calendar {
+      font-weight: bold;
+    }
+
+    .mes-calendario>.row:last-child {
+      border: 3px solid #134c95;
+      border-radius: 0 0 6px 6px;
+    }
+
+    .mes-calendario {
+      margin-top: .5em;
+      margin-bottom: 0.6em;
+    }
+
+    .color-fsemana {
+      background-color: #f1f3f4;
+    }
+
+    .color-festive {
+      color: #c1001f !important;
+      font-weight: bold;
+    }
+
+    .bg-vacaciones {
+      background-color: #26a69a !important;
+      color: #fafafa;
+    }
+
+    /* .bg-vacaciones:before {
+      content: "";
+      height: 2px;
+      width: 8px;
+      position: absolute;
+      background-color: #26a69a;
+      left: 0;
+    } */
+
+    /* .bg-vacaciones:after {
+      content: "";
+      height: 2px;
+      width: 8px;
+      position: absolute;
+      background-color: #26a69a;
+      right: 8px;
+    } */
+
+    .userSelect {
+      background-color: #f1f3f4 !important;
+    }
+
+    /* .color-festive,
+    .color-fsemana>div {
+      cursor: no-drop !important;
+    } */
+
+    .Hoy {
+      box-shadow: inset 0 0 0px 2px #2e2e2e;
+    }
+
+    .Mes>.row:first-child {
+      background-color: #4d4d4d !important;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      color: white !important;
+    }
+
+    .Hoy_p {
+      border-bottom: 1px solid #ffffff !important;
+      background-color: #4d4d4d;
+      color: white;
+    }
+
+    .mes-calendario>.row:first-child {
+      position: relative;
+    }
+
+    .mes-calendario {
+      position: relative;
+    }
+
+    .mes-calendario:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(4))>.row:first-child::before,
+    .mes-calendario.l6:not(:nth-child(1)):not(:nth-child(2))>.row:first-child::before,
+    .mes-calendario.mes-vac>.row:first-child::before {
+      content: "";
+      height: 40px;
+      width: 9px;
+      position: absolute;
+      left: 40px;
+      top: -30px;
+      border: 1px solid #818181;
+      border-radius: 3px;
+      background: linear-gradient(to top, #818181 10%, #f1f3f4 10%);
+      box-shadow: inset -3px -1px 0px 0px #818181;
+    }
+
+    .mes-calendario:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(4))>.row:first-child::after,
+    .mes-calendario.l6:not(:nth-child(1)):not(:nth-child(2))>.row:first-child::after,
+    .mes-calendario.mes-vac>.row:first-child::after {
+      content: "";
+      height: 40px;
+      width: 9px;
+      position: absolute;
+      right: 40px;
+      top: -30px;
+      border: 1px solid #818181;
+      border-radius: 3px;
+      background: linear-gradient(to top, #818181 10%, #f1f3f4 10%);
+      box-shadow: inset -3px -1px 0px 0px #818181;
+    }
+
+    .mes-calendario:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(4))>.row:last-child::before,
+    .mes-calendario.l6:not(:nth-child(1)):not(:nth-child(2))>.row:last-child::before,
+    .mes-calendario.mes-vac>.row:last-child::before {
+      content: "";
+      height: 40px;
+      width: 9px;
+      position: absolute;
+      left: 35px;
+      top: -30px;
+      border: 1px solid #818181;
+      border-radius: 3px;
+      background: linear-gradient(to top, #818181 10%, #f1f3f4 10%);
+      box-shadow: inset -3px -1px 0px 0px #818181;
+    }
+
+    .mes-calendario:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(4))>.row:last-child::after,
+    .mes-calendario.l6:not(:nth-child(1)):not(:nth-child(2))>.row:last-child::after,
+    .mes-calendario.mes-vac>.row:last-child::after {
+      content: "";
+      height: 40px;
+      width: 9px;
+      position: absolute;
+      right: 35px;
+      top: -30px;
+      border: 1px solid #818181;
+      border-radius: 3px;
+      background: linear-gradient(to top, #818181 10%, #f1f3f4 10%);
+      box-shadow: inset -3px -1px 0px 0px #818181;
+    }
+
+    .mes-calendario>.row:first-child {
+      font-weight: bold;
+      background-color: #134c95;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      text-align: center;
+    }
+
+    .last-child-not-border>li:last-child {
+      border-bottom: none !important;
+    }
+
+    .last-child-not-border>li>.details {
+      cursor: pointer;
+    }
+
+    .last-child-not-border>li>.details:hover,
+    .last-child-not-border>li>.details:focus {
+      background-color: #f1f3f4;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    [data-tip].active:before,
+    [data-tip].active:after {
+      z-index: 1000;
+    }
+
+    [data-tip]:after {
+      right: 105%;
+      left: auto;
+      width: 200px;
+      text-align: left;
+    }
+
+    .black-text.title-panel>div {
+      width: auto;
+    }
+
+    .day-box.indice::after {
+      content: attr(data-length);
+      font-size: 7px;
+      font-weight: 900;
+      left: 60%;
+      top: 60%;
+      position: absolute;
+      /*background-color: #ffffff;
+      border: 1px solid #f8c400;*/
+      padding: 2px;
+      border-radius: 50%;
+      height: 14px;
+      width: 14px;
+    }
+
+    li.Hoy_p>.details:hover {
+      background-color: white;
+      color: #333;
+    }
+
+    .Hoy_p .userSelect {
+      background-color: #ffffff !important;
+      color: #4d4d4d;
+    }
+  </style>
+</div>

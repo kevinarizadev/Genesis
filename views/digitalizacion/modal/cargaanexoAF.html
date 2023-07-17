@@ -1,0 +1,535 @@
+<div class="modal-none-close" style="width: 100vw;margin: 0;padding: 0;height: 100vh;">
+  <div class="card margin border-radius-none" style="height: 100vh;width: 100vw;display: flex">
+    <div class="row" style="margin: auto;width: 100%;">
+      <i ng-click="closeThisDialog(0)"
+        style="cursor:pointer; float: right;font-size: 30px;padding-right: 0.2em;margin-top: -30px;padding-top: 7px;"
+        class="material-icons">close</i>
+      <!-- Visualizacion Soporte -->
+      <div class="col s12 m12 l2 center-align" style="position: relative;">
+        <a class="btn red" style="width: 100%;" ng-click="LimpiarCanvas('D')"
+          ng-hide="VentanaDigitalizacion">Restaurar</a>
+        <a class="btn red" style="width: 100%;" ng-click="LimpiarCanvas('C')" ng-hide="VentanaCargue">Restaurar</a>
+        <!-- Imagenes -->
+        <ul class="connected-sortable droppable-area1" ng-hide="VentanaDigitalizacion"
+          style="background-color: #bcbcbc;height: calc(100vh - 150px);width: 100%;overflow: auto;margin-bottom: 0;">
+          <li class="draggable-item" ng-repeat="imga in rutaimagen">
+            <img src="{{imga.ruta}}" />
+          </li>
+        </ul>
+        <!-- Cargue -->
+        <div
+          style="overflow: auto;height: calc(95vh - 108px);border:1px solid #bcbcbc;margin-bottom: 15px;margin-top: 1em;"
+          ng-hide="VentanaCargue">
+          <table class="responsive-table striped">
+            <thead>
+              <tr>
+                <th colspan="2">ARCHIVOS CARGADOS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="pd in panelDatos">
+                <td>{{pd.name}}</td>
+                <td class="center-align">
+                  <div class="tooltip" style="cursor: pointer !important;">
+                    <i ng-click="VisualizarDocumentos(pd.base64,pd.ext)" class="Medium material-icons">attachment</i>
+                    <!-- <span class="tooltiptext">Agregar Beneficiario</span> -->
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Botones -->
+        <div class="buttons_or">
+          <a class="btn blue darken-4" ng-click="SubirCarpeta()">Escanear</a>
+          <div ng-click="ConfiguraImpresora()" class="or"></div>
+          <div class="btn green darken-2 file-field">
+            <span>Subir</span>
+            <input id="upFile" type="file" accept="image/*,application/pdf" select-ng-filesm ng-model="upFile"
+              ng-change="subirFile(upFile)" multiple>
+          </div>
+        </div>
+      </div>
+      <!--Fin Visualizacion Soporte -->
+
+      <!-- Visualizacion Contenido -->
+      <div class="col s12 m12 l8 center-align">
+        <div class="col l12 no-padding margin">
+          <h5 style="text-align: center;position: relative;margin-top: 0;display: flex;justify-content: space-between;">
+            <strong class="black-text" style="font-size: 20px;">DIGITALIZACION</strong>
+          </h5>
+          <!-- Contenido Canvas Por Digitalizacion -->
+          <div ng-hide="MostrarArchivoDigital">
+            <div id="contiene-canvas">
+
+            </div>
+            <div id="parent">
+              <canvas id="myCanvas" class="connected-sortable droppable-area1 canvas" width="920"
+                height="{{heightCanvas}}" style="zoom: 0.9;margin: auto;">
+                <img id="imgCanvas" alt="No Se Puede Vizualiar El Documento">
+              </canvas>
+            </div>
+          </div>
+          <!--Final Contenido Canvas Por Digitalizacion -->
+
+          <!-- Contenido Del Cargue -->
+          <div class="col l12 s7" ng-hide="MostrarArchivoCargue">
+
+            <div id="Iframe-Master-CC-and-Rs" class="center-block-horiz no-padding" style="max-width: 100%;">
+              <div id="PDF" ng-if="!tipoImgPdf" ng-class="{'d-block':tipoImgPdf==false}" class="d-none responsive-wrapper 
+                                       responsive-wrapper-wxh-572x612"
+                style="-webkit-overflow-scrolling: touch; overflow: auto;">
+                <iframe ng-src="{{trustSrc(movie.src)}}" allowfullscreen type="application/pdf">
+                  <p style="font-size: 110%;">
+                    <em><strong>ERROR: </strong></em>Please update your browser to its most recent
+                    version and try again.
+                  </p>
+                </iframe>
+              </div>
+              <div ng-if="tipoImgPdf" ng-class="{'d-block':tipoImgPdf==true}" class="d-none responsive-wrapper"
+                style="height: 85vh;overflow: auto;border: #0c0c0c 1px solid;margin: 20px;">
+                <img ng-src="{{file}}">
+              </div>
+            </div>
+          </div>
+          <!-- Contenido Del Cargue -->
+
+
+        </div>
+      </div>
+      <!-- Visualizacion Contenido -->
+
+      <div class="col s12 m12 l2" style="position: relative;">
+        <div class="btn-hover">
+          <div class="input-field" ng-hide="OcultarProceso" style="display: flex;align-items: flex-end;">
+            <label style="margin-top: -20px;">Tipo Paquete</label>
+            <i class="material-icons">view_list</i>
+            <select class="select-chosen-eps" ng-model="CTipoProceso" ng-change="ObtenerParametros(CTipoProceso)"
+              ng-disabled="BloquearTipoProceso" style="height: auto;">
+              <option value="">SELECCIONAR</option>
+              <option ng-repeat="q1 in listado" ng-value="q1.codigo" value="{{q1.codigo}}">{{q1.nombre}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top: 15px;" ng-hide="OcultarTabla">
+          <div style="overflow: auto;height: calc(50vh - 108px);border:1px solid #bcbcbc;margin-bottom: 15px;">
+            <table class="responsive-table striped">
+              <thead>
+                <tr>
+                  <th colspan="2">{{title}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="q2 in procesos">
+                  <td class="obligatorio-{{q2.obligatorio}}">{{q2.nombre}}</td>
+                  <td class="center-align">
+                    <div class="tooltip" style="cursor: pointer !important;">
+                      <i ng-click="Convertir64(q2.codigo_soporte)" class="Medium material-icons">add_circle</i>
+                      <!-- <span class="tooltiptext">Agregar Beneficiario</span> -->
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="margin-top: 15px;" ng-hide="TablaDeLosArchivos">
+          <div style="overflow: auto;height: calc(50vh - 108px);border: 1px solid #4CAF50;margin-bottom: 15px;">
+            <table class="responsive-table striped">
+              <thead>
+                <tr></tr>
+                <th>Archivos Para Subir</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="q3 in  array">
+                  <td>{{q3.nombre}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <a class="btn green" ng-click="SubirPaquete()" style="width: 100%;" ng-hide="OcultarSubirArchivos">Subir
+            Archivos</a>
+        </div>
+      </div>
+    </div>
+    <style type="text/css">
+      html.ngdialog-open,
+      body.ngdialog-open {
+        overflow: hidden !important;
+      }
+
+      .obligatorio-S {
+        color: red;
+      }
+
+      .modal-none-close+.ngdialog-close {
+        display: none !important;
+      }
+
+      #nav {
+        list-style: none;
+      }
+
+      #nav li {
+        float: left;
+      }
+
+      #nav li a {
+        display: block;
+        text-decoration: none;
+      }
+
+      #nav li a:hover {
+        color: #FFFFFF;
+      }
+
+      /* Submenu */
+      #nav ul.submenu {
+        padding: 5px;
+        position: absolute;
+        list-style: none;
+      }
+
+      /* Subsubmenu */
+      #nav ul.subsubmenu {
+        position: absolute;
+        list-style: none;
+        margin-left: 150px;
+        margin-top: -30px;
+      }
+
+      #nav ul.subsubmenu li {
+        min-width: 500px;
+      }
+
+      #parent {
+        width: 100%;
+        height: calc(100vh - 85px);
+        overflow: auto;
+        background-color: #bcbcbc;
+        display: flex;
+      }
+
+      .mainArea {
+        height: auto;
+        background-color: #0ff;
+        border: 1px solid #000;
+        padding: 20px;
+      }
+
+      #myCanvas {
+        background-color: #777777;
+        display: block;
+        width: 90%;
+      }
+
+      .listImg li {
+        width: 150px;
+        height: 250px;
+        padding: 10px 20px;
+      }
+
+      #modal12 .modal-content {
+        padding: 0;
+      }
+
+      #modal12 {
+        top: 0 !important;
+        overflow: hidden;
+        height: 100vh !important;
+
+        display: none;
+        position: fixed;
+        left: 0;
+        right: 0;
+        background-color: #fafafa;
+        padding: 24px;
+        max-height: 100% !important;
+        width: 100vw !important;
+        margin: auto;
+        will-change: top, opacity;
+      }
+
+      #modal12 [type="checkbox"]+label {
+        padding-left: 20px;
+        height: 20px;
+      }
+
+      /* menu hover */
+      #modal12 .btn-hover {
+        position: relative;
+      }
+
+      #modal12 .btn-hover>a {
+        width: 100%;
+      }
+
+      #modal12 .btn-hover:hover>a {
+        background-color: #de538e;
+      }
+
+      #modal12 .btn-hover>ul {
+        top: 100%;
+        left: 0;
+        display: none;
+        position: absolute;
+        width: auto;
+        height: auto;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        right: 0;
+        z-index: 20;
+        margin: 0;
+      }
+
+      #modal12 .btn-hover:hover>ul {
+        display: block;
+      }
+
+      #modal12 .submenu-hover {
+        cursor: pointer;
+        position: relative;
+        padding: 12px 16px;
+      }
+
+      #modal12 .submenu-hover>ul {
+        display: none;
+        position: absolute;
+        right: 100%;
+        top: 0;
+        width: 100%;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      }
+
+      #modal12 .btn-hover:hover .submenu-hover:hover>ul {
+        display: block;
+      }
+
+      #modal12 .submenu-hover>ul>li {
+        cursor: pointer;
+        padding: 12px 16px;
+      }
+
+      #modal12 .submenu-hover>ul>li:hover {
+        background: #f1f1f1;
+        color: black;
+      }
+
+      #modal12 ul.connected-sortable>li {
+        border: 2px #777777;
+        margin: 10px;
+        border-top-style: solid;
+        cursor: grab;
+      }
+
+      .buttons_or {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .buttons_or>.btn {
+        width: 48% !important;
+        padding: 0;
+      }
+
+      .buttons_or>.or:after {
+        font-family: "fontello";
+        text-align: center;
+        content: "";
+        height: 30px;
+        width: 30px;
+        background-color: white;
+        border-radius: 50%;
+        position: absolute;
+        left: calc(50% - 15px);
+        top: 4px;
+        content: '\eb9d';
+        font-size: 20px;
+        color: #0d47a1;
+        z-index: 10;
+      }
+
+      #Iframe-Master-CC-and-Rs {
+        max-width: 512px;
+        max-height: 100%;
+        overflow: hidden;
+      }
+
+      .responsive-wrapper {
+        position: relative;
+        height: 0;
+      }
+
+      .responsive-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #PDF {
+        padding-bottom: calc(100% - 297px);
+      }
+
+      table.striped>tbody>tr>td {
+        word-break: break-word;
+      }
+
+    </style>
+  </div>
+  <link ng-if="show_modal" rel="stylesheet" href="styles/adres/style.css">
+  <div ng-show="show_modal" id="adres_imprimir">
+    <div style="width: 90%;font-weight: normal;margin: 10px 15px 15px 15px;">
+      <img src="images/adres/BannerAdres.jpg" style="width: 99%">
+      <div id="divInfo" style="margin-top: -9px;">
+        <p class="titleRespuesta">
+          ADMINISTRADORA DE LOS RECURSOS DEL SISTEMA GENERAL
+          <br>
+          DE SEGURIDAD SOCIAL EN SALUD - ADRES
+        </p>
+        <p style="text-align: center;" class="NormalBold">
+          Información de Afiliados en la Base de Datos Única de Afiliados al Sistema de Seguridad Social en Salud
+        </p>
+        <p style="text-align: center;" class="NormalBold">
+          Resultados de la consulta
+        </p>
+
+        <p style="text-align: left; font-weight: 700;">
+          Información Básica del Afiliado :
+        </p>
+        <div class="center">
+          <div>
+            <table cellspacing="0" rules="all" border="1" id="GridViewBasica" style="border-collapse:collapse;">
+              <tbody>
+                <tr class="DataGrid_Header" style="background-color:#3498DB;">
+                  <th scope="col">COLUMNAS</th>
+                  <th scope="col">DATOS</th>
+                </tr>
+                <tr class="DataGrid_Item" align="center">
+                  <td>TIPO DE IDENTIFICACIÓN</td>
+                  <td>{{adres_data.TipoDocumento}}</td>
+                </tr>
+                <tr class="DataGrid_AlternatingItem" align="center">
+                  <td>NÚMERO DE IDENTIFICACION</td>
+                  <td>{{adres_data.Documento}}</td>
+                </tr>
+                <tr class="DataGrid_Item" align="center">
+                  <td>NOMBRES</td>
+                  <td>{{adres_data.Nombres}}</td>
+                </tr>
+                <tr class="DataGrid_AlternatingItem" align="center">
+                  <td>APELLIDOS</td>
+                  <td>{{adres_data.Apellidos}}</td>
+                </tr>
+                <tr class="DataGrid_Item" align="center">
+                  <td>FECHA DE NACIMIENTO</td>
+                  <td>{{adres_data.FechaNacimiento}}</td>
+                </tr>
+                <tr class="DataGrid_AlternatingItem" align="center">
+                  <td>DEPARTAMENTO</td>
+                  <td>{{adres_data.Departamento}}</td>
+                </tr>
+                <tr class="DataGrid_Item" align="center">
+                  <td>MUNICIPIO</td>
+                  <td>{{adres_data.Municipio}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p style="font-weight: 700">
+          Datos de afiliación :
+        </p>
+        <div>
+          <table cellspacing="0" rules="all" border="1" id="GridViewAfiliacion" style="border-collapse:collapse;">
+            <tbody>
+              <tr class="DataGrid_Header" style="background-color:#3498DB;">
+                <th scope="col">ESTADO</th>
+                <th scope="col">ENTIDAD</th>
+                <th scope="col">REGIMEN</th>
+                <th scope="col">FECHA DE AFILIACIÓN EFECTIVA</th>
+                <th scope="col">FECHA DE FINALIZACIÓN DE AFILIACIÓN</th>
+                <th scope="col">TIPO DE AFILIADO</th>
+              </tr>
+              <tr class="DataGrid_Item" align="center">
+                <td>{{adres_data.Estado}}</td>
+                <td>{{adres_data.EPS}}</td>
+                <td>{{adres_data.Regimen}}</td>
+                <td>{{adres_data.FechaInicioAfiliacion}}</td>
+                <td>{{adres_data.FechaFinAfiliacion}}</td>
+                <td>{{adres_data.TipoAfiliado}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <br>
+        <br>
+        <table class="tabla_limpia" cellspacing="10" cellpadding="2">
+          <tbody>
+            <tr>
+              <td style="font-weight:bold;"><span id="lblFecha">Fecha de Impresión:</span></td>
+              <td><span id="lblProceso">{{adres_data.FechaHora}}</span></td>
+              <td style="font-weight:bold;"><span id="lblOrigen">Estación de origen:</span></td>
+              <td><span id="lblEstacion">179.15.208.216</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+
+
+
+        <p class="pie">
+          La información registrada en esta página es reflejo de lo reportado por las Entidades en cumplimiento de la
+          Resolución 4622 de 2016.
+          <br><br>Respecto a las fechas de afiliación contenidas en esta consulta, se aclara que la <b>Fecha de
+            Afiliación
+            Efectiva </b>hace referencia a la fecha en la cual inicia la afiliación para el usuario, la cual fue
+          reportada
+          por la EPS o EOC, sin importar que haya estado en el Régimen Contributivo o en el Régimen Subsidiado en
+          dicha
+          entidad. Ahora bien, la <b>Fecha de Finalización de Afiliación</b>, establece el término de la afiliación a
+          la
+          entidad de acuerdo con la fecha de la novedad que haya presentado la EPS o EOC. A su vez se aclara que la
+          fecha
+          de 31/12/2999 determina que el afiliado se encuentra vinculado con la entidad que genera la consulta.
+          <br><br>La
+          responsabilidad por la calidad de los datos y la información reportada a la Base de Datos Única de Afiliados
+          –
+          BDUA, junto con el reporte oportuno de las novedades para actualizar la BDUA, corresponde directamente a su
+          fuente de información; en este caso de las EPS, EOC y EPS-S.
+          <br><br><strong>Esta información se debe utilizar por parte de las entidades y los prestadores de servicios
+            de
+            salud, como complemento al marco legal y técnico definido y nunca como motivo para denegar la prestación
+            de
+            los servicios de salud a los usuarios.</strong><br><br>Si usted encuentra una inconsistencia en la
+          información
+          publicada en ésta página, por favor remítase a la EPS en la cual se encuentre afiliado y solicite la
+          corrección
+          de la información inconsistente sobre su afiliación. Una vez realizada esta actividad, la EPS debe remitir
+          la
+          novedad correspondiente a la ADRES, conforme lo establece la normatividad vigente.
+        </p>
+        <div class="pieBtn">
+          <p>
+            <a href="javascript:window.print()">
+              <!-- <img src="http://www.fosyga.gov.co/fisalud/images/print.gif"> -->
+              IMPRIMIR</a>
+            <a href="javascript:window.close()">CERRAR VENTANA</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

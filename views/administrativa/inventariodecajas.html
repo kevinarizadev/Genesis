@@ -1,0 +1,543 @@
+<div id="pantalla" class="white newdesing" style="position:relative">
+  <style>
+    i {
+      cursor: pointer;
+    }
+
+    #tabla_nueva_1 th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      cursor: pointer;
+      text-align: center;
+      background-color: #fff !important;
+    }
+
+    #tabla_nueva_1>thead {
+      font-size: 1em;
+      /* border: 3px; */
+      border-width: medium;
+      border-style: solid;
+      border-radius: .375rem;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    #tabla_nueva_1 td {
+      text-align: center;
+    }
+
+    .Diag_3 {
+      border-bottom-left-radius: 0px !important;
+      border-bottom-right-radius: 0px !important;
+    }
+
+    .switch label .lever.check-c:after {
+      background-color: #ffffff;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #ffffff;
+    }
+
+    .switch label>span.activo {
+      color: #0c4587 !important;
+    }
+  </style>
+  <!-- //////////////////////////////// INICIO DE VISTA DEL MODULO DE GESTIONAR///////////////////////////////// -->
+
+  <!-- INICIO DEL SELECCTOR-->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Inventario de Cajas</h5>
+      </li>
+      <div class="switch">
+        <label>
+          <span ng-class="{'activo':switch_view}">Gestionar</span>
+          <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view">
+          <span class="lever check-c"></span>
+          <span ng-class="{'activo':!switch_view}" class="spinner">Consultar</span>
+        </label>
+      </div>
+    </ul>
+  </div>
+  <!-- FIN DEL SELECCTOR-->
+
+
+  <!-- INICIO DE LOS INPUT BUSCAR E INGRESO DE FACTURA-->
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div class="col s12">
+      <div ng-show="!switch_view" id="permisos">
+        <div class="row margin">
+          <div class="col s5">
+            <form ng-submit="Validar_Caja();">
+              <div class="col s6 no-padding label-new m-b">
+                <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l "
+                  ng-disabled="Val_Caja" style="text-transform: uppercase;" id="numero_caja" autocomplete="off"
+                  ng-model="Form.numero_caja" maxlength="10" placeholder="......." numbers-only>
+                <label>Ingrese # de la caja:
+                  <div class="tooltip">
+                    <i class="icon-box-1" ng-click="Validar_Caja();"></i>
+                    <span class="tooltiptext ng-binding"
+                      style="font-size: 12px;width: 125px;margin-left: -62px;margin-bottom: 4px;">Click para
+                      Consultar</span>
+                  </div>
+                </label>
+              </div>
+            </form>
+
+            <!-- INICIO DE LOS INPUT BUSCAR E INGRESO DE FACTURA-->
+
+            <form ng-submit="Validar_Factura();">
+              <div class="col s6 no-padding label-new m-b" ng-show="Val_Caja">
+                <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                  style="text-transform: uppercase;" ng-model="Form.numero_factura" id="numero_factura" maxlength="15"
+                  autocomplete="off">
+                <label>Ingrese # de factura:
+                  <div class="tooltip">
+                    <i class="icon-doc-text-inv-1" ng-click="Validar_Factura();"></i>
+                    <span class="tooltiptext ng-binding"
+                      style="font-size: 12px;width: 125px;margin-left: -62px;margin-bottom: 4px;">Click para
+                      Consultar</span>
+                  </div>
+                </label>
+              </div>
+            </form>
+            <div class="row left" ng-show="Val_Caja" style="padding-left: 4%">
+              <button id="buton" class="btn" type="submit" ng-click="Guardar_facturas()">
+                Guardar Facturas
+              </button>
+            </div>
+            <div class="row right" ng-show="Val_Caja" style="padding-right: 12%">
+              <button id="buton" class="btn red" type="submit" ng-click="Cancelar(accion)">
+                Cancelar
+              </button>
+            </div>
+
+
+            <!-- INICIO RELACION DE NUMEROS DE FACTURAS CONSULTADA EN LA CAJA-->
+
+            <strong>
+              <div class="col s12" ng-show="List_relacion.length > 0">
+                <div class="col s12 no-padding m-l">
+                  <td>RELACION DE FACTURAS</td>
+                  <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
+                    <div class="text-al divcardcustom2">
+                      <strong class="switch" style="font-weight:600"> Cantidad de Facturas
+                        ({{ (List_relacion == null ? 0 : List_relacion.length) }})</strong>
+                      <div class="col s1 no-padding label-new right"
+                        style="width: 40%;display:  inline-flex;margin-right: 5px;margin-top: -2px;">
+                        <input class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text "
+                          style="text-align:left;" autocomplete="off" placeholder="Filtrar......"
+                          ng-model="filter_facturas_general">
+                      </div>
+                    </div>
+                  </div>
+                  <div style="width:100%;color: black;border:3px solid; overflow-x:hidden; max-height: 60vh;">
+                    <table class="highlight tabla_nueva_resp">
+                      <thead>
+                        <tr>
+                          <th style="background-color:#F0F8FF;">Factura</th>
+                          <th style="background-color:#F0F8FF;">Nit</th>
+                          <th style="background-color:#F0F8FF;">Valor</th>
+                          <th style="background-color:#F0F8FF;">Accion</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="cursor-pointer" ng-repeat="x in List_relacion | filter: filter_facturas_general">
+                          <td>{{x.factura}}</td>
+                          <td>{{x.nit}}</td>
+                          <td>$ {{formatPeso2(x.valor)}}</td>
+                          <td>
+                            <i class="icon-doc-add" title="Click para cargar factura" ng-click="Cargar_Factura(x)"></i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <!-- INICIO RELACION DE NUMEROS DE FACTURAS CONSULTADA EN LA CAJA-->
+
+          <div class="col s1"></div>
+          <strong>
+            <div class="col s5" ng-show="Val_Caja">
+              <div class="col s12 no-padding m-l">
+                <td>FACTURAS CARGADAS</td>
+                <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
+                  <div class="text-al divcardcustom2">
+                    <strong class="switch" style="font-weight:600"> Caja #{{Form.numero_caja}} - Facturas
+                      ({{ (List_relacion_encontradas == null ? 0 : List_relacion_encontradas.length) }})</strong>
+                    <div class="col s1 no-padding label-new right"
+                      style="width: 40%;display:  inline-flex;margin-right: 5px;margin-top: -2px;">
+                      <input class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text "
+                        style="text-align:left;" autocomplete="off" placeholder="Filtrar......"
+                        ng-model="filter_facturas_general">
+                    </div>
+                  </div>
+                </div>
+                <div style="width:100%;color: black;border:3px solid; overflow-x:hidden; max-height: 74vh;">
+                  <table class="highlight tabla_nueva_resp ">
+                    <thead>
+                      <tr>
+                        <th style="background-color:#F0F8FF;">Factura</th>
+
+                        <th style="background-color:#F0F8FF;">Nit</th>
+                        <th style="background-color:#F0F8FF;">Valor</th>
+                        <th style="background-color:#F0F8FF;">Estado</th>
+                        <th style="background-color:#F0F8FF;">Accion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="cursor-pointer" ng-repeat="x in List_relacion_encontradas | filter: filter_facturas_general">
+                        <td>{{x.factura}}</td>
+                        <td>{{x.nit}}</td>
+                        <td>$ {{formatPeso2(x.valor)}}</td>
+                        <td>{{x.estado}}</td>
+                        <td>
+                          <i class="icon-trash-8" title="Click para Eliminar registro"
+                            ng-click="Eliminar(x.factura)"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <!--FORMULARIO DE CONSULTA-->
+
+      <div ng-show="switch_view">
+        <div class="col s12 m12 12" ng-hide="campos">
+          <div class="" id="tabscroll">
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div class="card-content">
+                  <ul class="tabs transparent" style="overflow:hidden;">
+                    <li class="tab col w-auto">
+                      <a ng-click="SetTab(1)" id="Sol" href class="active">Consultar Caja/Factura
+                        <i class="icon-doc-text-inv"></i></a>
+                    </li>
+                    <li class="tab col w-auto">
+                      <a ng-click="SetTab(2);" id="Nueva" href>Descargar Reporte <i class=" icon-search-2"></i></a>
+                    </li>
+                  </ul>
+
+                  <!-- tabs I -->
+                  <div class="col s12 m12 m-t" ng-show="Tabs == 1">
+                    <div class="row">
+                      <form>
+                        <div class="col s3 no-padding label-new m-b">
+                          <label>CONSULTAR POR:</label>
+                          <select ng-change="Selector()" class="select-default-new input-out-new m-l"
+                            ng-model="Form.Tipo_Numero" id="Form_Tipo_Numero" >
+                            <option value="" disabled>SELECCIONAR</option>
+                            <option value="NC">NUMERO DE CAJA</option>
+                            <option value="NF">NUMERO DE FACTURA</option>
+                          </select>
+                        </div>
+
+                        <div class="col no-padding label-new m-b"
+                          ng-class="{'s5': Form.Tipo_Numero != 'NF', 's2': Form.Tipo_Numero == 'NF'}">
+                          <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                            autocomplete="off" id="Form_Numero_F" ng-model="Form.Numero_F" placeholder="Ingresar numero a consultar......"
+                            ng-keyup="FormatSoloNumero('Form_Numero_F')" maxlength="15">
+                          <!-- <label><title>NUMERO DE FACTURA</title></label>
+                             <strong class="switch" style="font-weight:600"> {{Form.numero_caja}}</strong> -->
+                          <!-- <head>
+                          <title>NUMERO DE FACTURA</title>
+                        </head> -->
+                        </div>
+
+                        <div class="col s2" style="line-height: 5;">
+                          <button class="btn"
+                            style="border-radius: 20px;background-color: rgb(22, 28, 110);margin-right: 2em;" 
+                            ng-click="BuscarNumero();">Buscar</button>
+                        </div>
+
+                      </form>
+                    </div>
+                    <h6 class="col s6"><label> * El modulo de consulta solo
+                        permite visualizar las facturas asociadas en cajas *</label></h6>
+
+                    <div class="col s12" ng-show="lis_info.length > 0">
+                      <div class="col s12 no-padding m-l">
+                        <td></td>
+                        <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
+                          <div class="text-al divcardcustom2">
+                            <strong class="switch" style="font-weight:600"> Cantidad de Facturas
+                              ({{ (lis_info == null ? 0 : lis_info.length) }})</strong>
+                            <div class="col s1 no-padding label-new right"
+                              style="width: 40%;display:  inline-flex;margin-right: 5px;margin-top: -2px;">
+                              <input
+                                class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text "
+                                style="text-align:left;" autocomplete="off" placeholder="Filtrar......"
+                                ng-model="filter_facturas_consulta">
+                            </div>
+                          </div>
+                        </div>
+                        <div style="width:100%;color: black;border:3px solid; overflow-x:hidden; max-height: 60vh;">
+                          <table class="highlight tabla_nueva_resp">
+                            <thead>
+                              <tr>
+                                <th style="background-color:#F0F8FF;">N°</th>
+                                <th style="background-color:#F0F8FF;">Numero de caja</th>
+                                <th style="background-color:#F0F8FF;">Factura</th>
+                                <th style="background-color:#F0F8FF;">Nit</th>
+                                <th style="background-color:#F0F8FF;">Ips</th>
+                                <th style="background-color:#F0F8FF;">Valor</th>
+                                <th style="background-color:#F0F8FF;">Fecha de registro</th>
+                                <th style="background-color:#F0F8FF;">Responsable del registro</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-if="lis_info.length == 0">
+                                <td colspan="9" class="center-align">
+                                  No hay usuarios para mostrar
+                                </td>
+                              </tr>
+                              <tr class="cursor-pointer" ng-repeat="info in lis_info | filter:filter_facturas_consulta">
+                                <td>{{($index+1)}}</td>
+                                <td>{{info.caja}}</td>
+                                <td>{{info.num_factura}}</td>
+                                <td>{{info.nit}}</td>
+                                <td>{{info.ips}}</td>
+                                <td>$ {{formatPeso2(info.valor)}}</td>
+                                <td>{{info.fecha_procesa}}</td>
+                                <td>{{info.usuario_procesa}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- tabs II -->
+                  <div class="col s12 m12 m-t" ng-show="Tabs == 2">
+                    <div class="row">
+                      <div class="col no-padding label-new m-b s3">
+                        <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                          type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" autocomplete="off" ng-model="F_Inicio">
+                        <label>FECHA INICIAL</label>
+                      </div>
+                      <div class="col no-padding label-new m-b s3">
+                        <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                          type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" autocomplete="off" ng-model="F_Final">
+                        <label>FECHA FINAL</label>
+                      </div>
+                      <div class="col s2" style="line-height: 5;">
+                        <button class="btn"
+                          style="border-radius: 20px;background-color: rgb(22, 28, 110);margin-right: 2em;"
+                          ng-click="Generar_Reporte();">Buscar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;" ng-show="toolsbtn">
+        <a class="btn-floating btn-large">
+          <i class="icon-cog-alt"></i>
+        </a>
+        <ul>
+          <li ng-show="limpiarbtn"><a class="btn-floating green" title="Limpiar formulario"><i class="icon-eraser"
+                ng-click="limpiar()">loop</i></a></li>
+          <li ng-show="errorbtn"><a class="btn-floating blue" title="Ver errores"><i class="material-icons"
+                ng-click="Abrir_modal()">info_outline</i></a></li>
+          <li ng-show="cargarbtn"><a class="btn-floating red" title="Deshacer cambios"><i class="icon-cw-circle"
+                ng-click="Cargar()"></i></a></li>
+        </ul>
+      </div>
+      <!-- ///////////////////////////////////////////STYLE///////////////////////////////////////////////////// -->
+      <style type="text/css">
+        .tabla_nueva_resp th {
+          position: sticky;
+          top: 0;
+          z-index: 9;
+        }
+
+        .hover-item:hover {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .hover-item:active {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .tabmenu>li:target>a {
+          background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .requerido {
+          color: red;
+        }
+
+        .normal {
+          color: #9e9e9e;
+        }
+
+        .tabactiva {
+          background-color: rgba(206, 206, 206, 0.71);
+        }
+
+        .k-datepicker {
+          width: 9.4em;
+        }
+
+        .encendido {
+          pointer-events: auto;
+        }
+
+        .apagado {
+          pointer-events: none;
+        }
+
+        .col.s4 {
+          margin-top: 5px;
+        }
+
+        input[type=number] {
+          margin-top: -5px;
+        }
+
+        .list-group-item:last-child {
+          margin-bottom: 0;
+          border-bottom-right-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+
+        .list-group-item:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+        }
+
+        .list-group-item:hover {
+          color: #1a2e63;
+          cursor: pointer;
+          font-weight: bold;
+        }
+
+        .list-group-item {
+          position: relative;
+          display: block;
+          padding: 10px 15px;
+          margin-bottom: -1px;
+          background-color: #fff;
+          border: 1px solid #ddd;
+          font-size: 0.7em;
+        }
+
+        /* ////////////////////////////////////// */
+        .loading {
+          display: flex;
+          justify-content: center;
+          margin-bottom: -1rem;
+        }
+
+        .loading div {
+          width: 1rem;
+          height: 1rem;
+          margin: 2rem 0.3rem;
+          border-radius: 50%;
+          -webkit-animation: 0.9s bounce-new infinite alternate;
+          animation: 0.9s bounce-new infinite alternate;
+        }
+
+        .loading div:nth-child(2) {
+          -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s;
+        }
+
+        .loading div:nth-child(3) {
+          -webkit-animation-delay: 0.6s;
+          animation-delay: 0.6s;
+
+        }
+
+        @keyframes bounce-new {
+          to {
+            opacity: 0.3;
+            -webkit-transform: translate3d(0, -1rem, 0);
+            transform: translate3d(0, -1rem, 0);
+          }
+        }
+
+        .loading-swal .swal2-content>.lds-dual-ring {
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: auto;
+        }
+
+        /* //////////////////////////////////////////////////// */
+        .currency-input {
+          position: relative;
+        }
+
+        .currency {
+          padding-left: -22px;
+        }
+
+        .currency-symbol {
+          position: absolute;
+          top: 7px;
+          left: 8px;
+          font-size: 21px;
+        }
+
+        #toast-container .toast {
+          border-radius: 25px !important;
+          font-weight: 600;
+          text-align: center !important;
+          word-break: keep-all;
+          padding: 10px 25px;
+          width: auto;
+        }
+
+        option:nth-child(n) {
+          font-size: .8em;
+        }
+
+        .table_border,
+        .table_border th,
+        .table_border td {
+          border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+          text-align: center;
+          text-transform: capitalize !important;
+        }
+
+        #Table_Afi_Det td {
+          font-size: 0.7em;
+        }
+
+        #Table_Afi_Det option:nth-child(n) {
+          font-size: 1em;
+        }
+
+        #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #03b447, #008b35, #03b447);
+    }
+      </style>
+    </div>
+  </div>
+</div>

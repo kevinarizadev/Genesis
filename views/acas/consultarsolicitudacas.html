@@ -1,0 +1,355 @@
+<div id="pantalla" class="white newdesing" style="position:relative">
+    <!-- Contenido  -->
+    <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+        <div class="col l12 m12 s12" style="position:relative">
+            <!-- /////////////////////////////////////////////// -->
+            <div class="row">
+                <div class="col s4">
+                    <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                    <h5>Consultar Solicitudes</h5>
+                </div>
+                <div class="col s8" style="text-align: right; margin-top: 15px;">
+                    <div class="col s12 input-padding">
+                        Tipos de busqueda :
+                        <!-- <span>
+                            <input class="with-gap" type="radio" ng-model="Tabs" name="occurrences" value="FUNC"
+                                id="FUNC" />
+                            <label for="FUNC" ng-class="{'default-color': Tabs=='FUNC' }"
+                                style="height: 0!important"ng-click="SetTab('FUNC')" >Funcionario </label>
+                        </span> -->
+                        <span> <input class="with-gap" type="radio" ng-model="Tabs" name="occurrences" value="TICKET"
+                                id="TICKET"/>
+                            <label style="height: 0!important" ng-class="{'default-color': Tabs=='TICKET' }"
+                                for="TICKET"ng-click="SetTab('TICKET')" >Mesa de Ayuda</label>
+                        </span>
+                        <span> <input class="with-gap" type="radio" ng-model="Tabs" name="occurrences" value="AVANZADO"
+                                id="avanzado">
+                            <label style="height: 25px!important" ng-class="{'default-color': Tabs=='AVANZADO'}"
+                                for="avanzado"ng-click="SetTab('AVANZADO')" >Avanzado</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col s12">
+                    <form ng-submit="Obt_Vista_Consultar_Acas()">
+                        <div class="col s11">
+                            <di v class="col s9 offset-s3" ng-show="Tabs=='FUNC'">
+                                <div class="input-field col m12 s12">
+                                    <i class="material-icons prefix" style="margin-top: 10px;">wc</i>
+                                    <input id="with_icon1" type="text" ng-model="Vista1.Responsable_Cod" ng-disabled="true">
+                                    <label for="with_icon1">Documento</label>
+                                    Ingrese el documento del funcionario.
+                                </div>
+                        </div>
+                        <div class="col s8 offset-s3" ng-show="Tabs=='TICKET'">
+                            <div class="input-field col m12 s12">
+                                <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                                <input id="numaut" type="text" ng-model="Vista2.Numero" ng-keyup="FormatSoloNumero('numaut');" maxlength="10">
+                                <label for="numaut">Número de Mesa de Ayuda</label>
+                            </div>
+                        </div>
+                        <div class="col s11" style="padding: 20px;" ng-show="Tabs=='AVANZADO'">
+                            <div class="row margin">
+                                <div class="col s12">
+                                    <div class="row" style="margin-bottom: 10px">
+                                        <label for="with_icon" style="margin-top: -20px;">Fecha de Radicación</label>
+                                    </div>
+                                    <div class="row margin">
+                                        <div class="col s6">
+                                            <div class="input-field col s6" style="margin: 0">
+                                                <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio
+                                                    (*)</label>
+                                                <input id="with_icon" type="date" ng-model="Vista3.F_Inicio"
+                                                    max="{{SysDay | date:'yyyy-MM-dd'}}"
+                                                    ng-change="ValFecha('F_Inicio')">
+                                            </div>
+                                            <div class="input-field col s6" style="margin: 0">
+                                                <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin
+                                                    (*)</label>
+                                                <input id="with_icon" type="date" ng-model="Vista3.F_Fin"
+                                                    max="{{SysDay | date:'yyyy-MM-dd'}}" ng-change="ValFecha('F_Fin')">
+                                            </div>
+                                        </div>
+                                        <div class="col s3" style="margin-top: -3vh;">
+                                            <div class="row" style="margin: 0">
+                                                <label style=" margin-top: -20px;">Tipo (*)</label>
+                                            </div>
+                                            <select class="select-chosen-eps" ng-model="Vista3.Tipo">
+                                                <option value="S">Mis Solicitudes</option>
+                                                <option value="G">Mis Gestiones</option>
+                                            </select>
+                                        </div>
+                                        <div class="col s3" style="margin-top: -3vh;">
+                                            <div class="row" style="margin: 0">
+                                                <label style=" margin-top: -20px;">Estado (*)</label>
+                                            </div>
+                                            <select class="select-chosen-eps" ng-model="Vista3.Estado">
+                                                <option value="">Todos</option>
+                                                <option value="A">Activo</option>
+                                                <option value="P">Procesado</option>
+                                            </select>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s1 right">
+                            <div class="input-field col m12 s12">
+                                <button class="btn white-text"
+                                    style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                        style="position: relative;" class="material-icons prefix">search</i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /////////////////////////////////////////////// -->
+            <div class="row margin" ng-show="Listado.Acas.length != 0" style="position: relative;">
+                <div class="col s7 no-padding label-new">
+                    <div> Un resultado de <strong> {{Listado.Acas.length}} Mesa de Ayuda, por el filtro
+                            Anterior</strong>
+                    </div>
+                </div>
+                <div class="input-field col s3 right">
+                    <input id="buscarpro" type="text" ng-model="Listado.Filtro">
+                    <label for="buscarpro">Buscar:</label>
+                </div>
+                <div class="col s12">
+                    <div class="scroll_x"
+                        style="position: absolute;width: calc(100% - 10px);z-index: 10;overflow: hidden;">
+                        <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+                        </table>
+                    </div>
+                    <div id="tabla_scroll" class="scroll_x" style="overflow: auto;height: calc(85vh - 10px);">
+                        <table id="tablaByCN" class="striped table-bordered white" style="position: relative;">
+                            <thead class="default-linear-gradient">
+                                <tr>
+                                    <th data-field="Ticket" class="border-none">MESA DE AYUDA</th>
+                                    <th data-field="Asusnto" class="border-none">ASUNTO</th>
+                                    <th data-field="Fecha Ingreso" class="border-none">FECHA RADICACION</th>
+                                    <th data-field="Fecha Cierre" class="border-none">FECHA CIERRE</th>
+                                    <th data-field="Ciudad" class="border-none">UBICACION</th>
+                                    <th data-field="Autoriza" class="border-none">REMITENTE</th>
+                                    <th data-field="Nombre" class="border-none">RESPONSABLE</th>
+                                    <th data-field="Cargo" class="border-none">ESTADO</th>
+                                    <th data-field="Dias" class="border-none center-align">DIAS</th>
+                                    <th data-field="Cargo" class="border-none">PRIORIDAD</th>
+                                    <th data-field="Adjunto" class="border-none">ADJUNTO</th>
+                                    <th data-field="Detalle" class="border-none center-align">DETALLE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="Listado.Acas.length == 0">
+                                    <td colspan="10" class="center-align">
+                                        No hay acas para mostrar
+                                    </td>
+                                </tr>
+                                <tr
+                                    ng-repeat="acas in Listado.Acas | filter:Listado.Filtro | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                    <!-- <td class="center-align">{{$index + 1}}</td> -->
+                                    <td>{{acas.NUMERO}}</td>
+                                    <td>{{acas.ASUNTO}}</td>
+                                    <td>{{acas.FECHA_APERTURA}}</td>
+                                    <td>{{acas.FECHA_CIERRE}}</td>
+                                    <td>{{acas.UBICACION}}</td>
+                                    <td>{{acas.NOMBRE_REMITENTE}}</td>
+                                    <td>{{acas.RESPONSABLE}}</td>
+                                    <td class="center-align white-text"><span style="padding:2px" ng-style="Estado_Solicitud_Color(acas.ESTADO.toString().substr(0,1))">{{acas.ESTADO}}</span>
+                                        </td>
+                                    <td class="center-align">{{acas.DIAS}}</td>
+                                    <td class="center-align white-text">
+                                        <span class="{{acas.ESTILO}}" style="padding:2px">{{acas.PRIORIDAD}}</span>
+                                        </td>
+                                    <td class="center">
+                                        <span class="white-text"
+                                            style="padding: 3px;background-color:rgb(161, 169, 162);"
+                                            ng-if="acas.ADJUNTO == ''">SIN ANEXO</span>
+                                        <span class="white-text cursor-pointer"
+                                            style="padding: 3px;background-color:rgb(6, 152, 20)!important"
+                                            ng-click="Abrir_Modal_Soportes(acas.ADJUNTO)" ng-if="acas.ADJUNTO != ''">VER
+                                            ANEXO</span>
+                                    </td>
+                                    <td class="center-align">
+                                        <i style="cursor:pointer;position: relative;display: flow-root;font-size: 17px;"
+                                            class="icon-eye-6"
+                                            ng-click="verdescripcion(acas.DESCRIPCION,acas.NUMERO,acas.COD_UBICACION)">
+                                            <span
+                                                style="position: absolute;font-size: 10px;height: 15px;width: 15px;min-height: 15px;min-width: 15px;border-radius: 50%;top: 16px;left: 7px;font-weight: bold;display: flex;justify-content: center;align-items: center;"
+                                                class="default-background white-text ng-binding"
+                                                ng-class="{'orange':acas.DIAS <= 0}">{{acas.DETALLE}}</span>
+                                        </i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="10" class="border-none no-padding" style="user-select: none">
+                                        <div class="black-text title-panel d-flex justify-content-between align-items-center"
+                                            style="margin-top: 15px;">
+                                            <select id="pageSize" ng-model="pageSize"
+                                                class="gray-input select-default-new border-none"
+                                                ng-change="currentPage=0" style="width: auto;max-width: 100px;">
+                                                <option value="15">15</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                                <option value="200">200</option>
+                                                <option value="500">500</option>
+                                            </select>
+                                            <div style="margin-left: auto;">
+                                                <button class="btn btn-small border-radius-none no-padding"
+                                                    ng-disabled="currentPage == 0"
+                                                    ng-click="btns_paginacion(currentPage-1)" style="box-shadow: none;">
+                                                    <i class="icon-left-small"></i>
+                                                </button>
+                                                <small
+                                                    style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                                                    Página {{currentPage+1}} de {{numberOfPages()}}
+                                                </small>
+                                                <button class="btn btn-small border-radius-none no-padding"
+                                                    ng-disabled="currentPage >= getData().length/pageSize - 1"
+                                                    ng-click="btns_paginacion(currentPage+1)" style="box-shadow: none;">
+                                                    <i class="icon-right-small"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /////////////// -->
+        <div id="Modal_Soportes" class="modal"
+            style="margin: 0 auto;max-height:99%;width: 95%;top:-100px !important;transition-duration: 0.3s;">
+            <div class="col s12 m12 l12 card margin">
+                <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #000;"
+                    ng-click="closeModal()"></div>
+                <div class="card-content">
+                    <h5><span style="font-weight: 700;">Anexo</span></h5>
+                </div>
+                <div class="card-action" style="padding-left: 0px; padding-right: 0px;padding-bottom: 0;">
+                    <div class="row allMails bg-white white" style="margin-bottom: 0px;">
+                        <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+                            style="height: 80vh;" ng-show="Listado.Url==''">
+                            <i class="icon-file-pdf" style="margin: auto;font-size: 5em;"></i>
+                        </div>
+                        <div class="col s12 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+                            style="height: 80vh;overflow: auto;" ng-show="Listado.Url!=''">
+                            <iframe style="width: 100%;height: 100%;" ng-if="Listado.Url!=''" type="application/pdf"
+                                ng-src="{{Listado.Url}}" src="{{Listado.Url}}">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /////////////// -->
+    </div>
+    <style>
+        .yellow {background-color: #b7a60f !important;}
+
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-item:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .list-group-item:hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .list-group {
+            font-size: .8rem;
+        }
+
+        input.input-text-new {
+            background-color: #f1f3f4 !important;
+        }
+
+        .gray-input {
+            background-color: #f1f3f4 !important;
+        }
+
+        .tooltip_ab {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip_ab .tooltiptext_ab::after {
+            content: "";
+            position: absolute;
+            top: -37%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #00000000 #00000000 #555 #00000000;
+        }
+
+        .tooltip_ab:hover .tooltiptext_ab {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip_ab .tooltiptext_ab {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: -150%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .dropdown-content li {
+            min-height: 23px;
+        }
+
+        .select_maxheigth ul {
+            max-height: 125px;
+        }
+
+        #toast-container .toast {
+            border-radius: 25px !important;
+            font-weight: 600;
+            text-align: center !important;
+            word-break: keep-all;
+            padding: 10px 25px;
+            width: auto;
+        }
+
+        .dropdown-content li {
+            min-height: 23px;
+        }
+
+        .dropdown-content li>span {
+            line-height: 32px;
+            padding: 0px 16px;
+        }
+    </style>
+</div>

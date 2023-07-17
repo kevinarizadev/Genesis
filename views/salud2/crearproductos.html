@@ -1,0 +1,465 @@
+<div id="creacion_productos" class="row">
+    <div id="my_menu" class="row section-header" style="background: #9897e81f;margin-bottom: 0">
+        <div class="col l12">
+            <ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                <li>
+                    <h5 style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+                        Creación y Configuración de Productos</h5>
+                </li>
+
+                <li ng-show="edicion">
+                    <i class="icon-left-open-2" ng-click="edicion=undefined" style="cursor: pointer;">Atras</i>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col l12 m12 s12" ng-hide="edicion">
+        <div class="row content-container server margin">
+            <div class="col l12 m12 s12">
+                <div class="row " style="border: 1px solid #ebebf5;position: relative;">
+                    <form ng-submit="buscar_lista();">
+                        <div class="col s4">
+                            <div class="input-field col l12" style="display: flex;align-items: flex-end;">
+                                <input id="producto" type="text" ng-model="codigo_bus">
+                            </div>
+                        </div>
+                        <div class="col s5">
+                            <div ng-show="!gestion.ESTADO" style=" padding: 20px;">
+                                <a ng-click="buscar_lista();" style="background: #ebebf5;
+                                                            box-shadow: 2px 3px 5px grey;" class="btnRotate modal-action modal-close waves-effect waves-green btn-flat"><i
+                                                    class="icon-search-outline"></i>BUSCAR POR NOMBRE O CÓDIGO </a>
+                            </div>
+                        </div>
+                        <div class="col s3">
+                            <div ng-show="!gestion.ESTADO" style=" padding: 20px;">
+                                <a ng-click="limpiar();edicion=true;productos.Codigo11" style="background: #ebebf5;
+                                                                box-shadow: 2px 3px 5px grey;" class="btnRotate modal-action modal-close waves-effect waves-green btn-flat"><i
+                                                        class=" icon-doc-new"></i> NUEVO</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12" ng-show="lista_productos.length==0" style="text-align: center;">
+                        <img src="assets/images/buscar.svg" style="width: 50%">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-show="lista_productos.length>0" class="row content-container server margin" style=" position: relative;">
+            <div class="col l12">
+                <table class="table table-bordered table-striped">
+                    <thead class="default-background white-text">
+                        <tr>
+                            <th style="border: 0px"><b>CÓDIGO</b></th>
+                            <th style="border: 0px"><b>NOMBRE</b></th>
+                            <th style="border: 0px"><b>CLASIFICACIÓN</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="DM{{mda.NUMERO}}" class="c-pointer" ng-class="{'hover-item-list-agregar ': hovering}" ng-repeat="mda in lista_productos " ng-mouseenter="hovering=true" ng-mouseleave="hovering=false" ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}" ng-click="productos.Codigo=1;buscar_numero2(mda.NUMERO)">
+                            <td>{{mda.NUMERO}}</td>
+                            <td>{{mda.NOMBRE}}</td>
+                            <td>{{mda.CLASIFICACION}}-{{mda.NOMBRE_CLASIFICACION}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div ng-show="edicion" id="Editar_producto" class="col l12 m12 s12">
+        <div class="row">
+            <div class="col l6 m12 s12 ">
+                <div class="card inbox-element inbox-4">
+                    <div class="card-header default-background white-text ng-scope" style="display: flex;text-align: center;align-items: center;">
+                        <i class="icon-right"></i>
+                        <strong>CREACIÓN DE NUEVOS PRODUCTOS</strong>
+                    </div>
+                    <form id="productos" class="productos_de">
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l6 m12 s12" ng-hide="productos.Codigo==0">
+                                <label for="cargue" class="active">Tip-o de Cargue</label>
+                                <select class="select-chosen-eps" id="cargue" ng-model="CARGUE" style="height: auto;" ng-change="carga_clasificacion_productos()">
+                                    <option value="">---</option>
+                                    <option value="I">INSUMOS - MEDICAMENTOS</option> 
+                                    <option  ng-show="rol==0 || rol==93" value="C">CUPS</option>
+                                    <option value="P">PAQUETE</option>
+                                </select>
+                            </div>                                
+                            <div class="input-field col l5 m12 s12">
+                                <input id="NUMERO" type="text" ng-disabled="productos.Codigo==0" style="text-transform: uppercase !important;" ng-change="validar_numero('NUMERO')" ng-blur="buscar_numero()" ng-model="productos.NUMERO" class="upper">
+                                <label for="NUMERO" class="">Codigo</label>                                     
+                            </div>
+                            <div  class="input-field col l6 m12 s12" ng-if="productos.Codigo==0">
+                                       <i title="Agregar Subclasificaciones" class="fontello-icon icon-plus-circled" ng-click="add_subclasificacion('OPEN', productos.NUMERO)" style="font-size: 30px;position: absolute;top: 1px;right: 20px;cursor: pointer;">
+                                </i>
+                            </div>
+                        </div>
+
+
+                        <br>
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l11 m11 s11">
+                                <input id="NOMBRE" type="text" style="text-transform: uppercase !important;" ng-model="productos.NOMBRE" class="upper" ng-keyup="FormatTexto('NOMBRE')">
+                                <label for="NOMBRE" class="">Nombre</label>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l6 m12 s12">
+                                <!-- <input id="ESTADO" type="text" ng-model="productos.ESTADO" class="upper"> -->
+                                <label for="ESTADO" class="active">Estado</label>
+                                <select class="select-chosen-eps" id="ESTADO" ng-model="productos.ESTADO" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="A">ACTIVO</option>
+                                    <option value="I">INACTIVO</option>
+                                    <option value="R">RETIRADO</option>
+                                </select>
+                            </div>
+                            <div class="input-field col l5 m12 s12">
+                                <label for="NIVEL" class="active">Nivel de Complejidad</label>
+                                <select class="select-chosen-eps" id="NIVEL" ng-model="productos.NIVEL" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div ng-hide="(rol==0 || rol==93 || CARGUE=='P')" class=" col l11 m12 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <select class="select-chosen-eps" id="CLASIFICACION_S" ng-model="productos.CLASIFICACION_CODIGO" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option ng-repeat="c in clasificaciones" value="{{c.NUMERO}}" ng-selected="productos.CLASIFICACION_CODIGO==c.NUMERO">{{c.NOMBRE}}</option>
+                                </select>
+                                <label for="NIVEL" class="active">Clasificación Principal</label>
+                            </div>
+                        </div>
+                        <br>
+                        <div ng-show="(rol==0 || rol==93 || CARGUE=='P')" class=" col l11 m12 s12">
+                            <div class="input-field col l12 m12 s12">
+                                <input disabled id="CLASIFICACION" type="text" ng-model="productos.CLASIFICACION_NOMBRE" class="upper">
+                                <label for="CLASIFICACION" class="">Clasificación Principal</label>
+                                <i class="fontello-icon icon-attention-circled" ng-click="modal_clasificacion()" style="font-size: 30px;position: absolute;top: 1px;right: 20px;cursor: pointer;">
+                                </i>
+                            </div>
+                        </div>
+                        <br>
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l5 m12 s12">
+                                <label for="TIPO_PROD" class="active">Tipo de Producto</label>
+                                <select class="select-chosen-eps" id="TIPO_PROD" ng-model="productos.TIPO_PROD" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="A">AMBULATORIO</option>
+                                    <option value="D">DOMICILIARIO</option>
+                                    <option value="H">HOSPITALARIO</option>
+                                    <option value="U">URGENCIA</option>
+                                    <option value="T">TODAS</option>
+                                </select>
+                            </div>
+                            <div class="input-field col l6 m12 s12">
+                                <label for="CLASE" class="active">Clase</label>
+                                <select class="select-chosen-eps" id="CLASE" ng-model="productos.CLASE" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="A">AMBOS</option>
+                                    <option value="P">PYP</option>
+                                    <option value="N">NO APLICA</option>
+                                    <option value="C">RECUPERACION</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l3 m12 s12">
+                                <label for="COPAGO" class="active">Copago</label>
+                                <select class="select-chosen-eps" id="COPAGO" ng-model="productos.COPAGO" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="S">SI</option>
+                                    <option value="N">NO</option>
+                                </select>
+                            </div>
+
+                            <div class="input-field col l4 m12 s12">
+                                <input id="CANT_MES" type="number" ng-model="productos.CANT_MES" class="upper">
+                                <label for="CANT_MES" class="active">Cantidad por mes</label>
+                            </div>
+                            <div class="input-field col l4 m12 s12">
+                                <input id="CANT_ANO" type="number" ng-model="productos.CANT_ANO" class="upper">
+                                <label for="CANT_ANO" class="active">Cantidad por años</label>
+                            </div>
+                        </div>
+                        <br>
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l3 m12 s12">
+                                <label for="RECOBRO" class="active">Recobro</label>
+                                <select class="select-chosen-eps" id="RECOBRO" ng-model="productos.RECOBRO" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="S">SI</option>
+                                    <option value="N">NO</option>
+                                </select>
+                            </div>
+
+                            <div class="input-field col l4 m12 s12">
+                                <input id="CANT_MINIMA" type="number" ng-model="productos.CANT_MINIMA" class="upper">
+                                <label for="CANT_MINIMA" class="active">Cantidad Minima</label>
+                            </div>
+                            <div class="input-field col l4 m12 s12">
+                                <input id="CANT_MAXIMA" type="number" ng-model="productos.CANT_MAXIMA" class="upper">
+                                <label for="CANT_MAXIMA" class="active">Cantidad Maxima</label>
+                            </div>
+                        </div>
+                        <br>
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l3 m12 s12">
+                                <label for="POS" class="active">Pos</label>
+                                <select  class="select-chosen-eps" id="POS" ng-model="productos.POS" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="S">SI</option>
+                                    <option value="N">NO</option>
+                                </select>
+                            </div>
+                            <div class="input-field col l4 m12 s12">
+                                <input id="EDAD_MINIMA" type="number" ng-model="productos.EDAD_MINIMA" class="upper">
+                                <label for="EDAD_MINIMA" class="active">Edad Minima en Dias</label>
+                            </div>
+                            <div class="input-field col l4 m12 s12">
+                                <input id="EDAD_MAXIMA" type="number" ng-model="productos.EDAD_MAXIMA" class="upper">
+                                <label for="EDAD_MAXIMA" class="active">Edad Maxima en Dias</label>
+                            </div>
+                        </div>
+                        <br>
+                        <div class=" col l12 m12 s12">
+                            <div class="input-field col l5 m12 s12">
+                                <label for="GENERO" class="active">Genero</label>
+                                <select class="select-chosen-eps" id="GENERO" ng-model="productos.GENERO" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="A">AMBOS</option>
+                                    <option value="F">FEMENINO</option>
+                                    <option value="M">MASCULINO</option>
+                                </select>
+                            </div>
+                            <div class="input-field col l6 m12 s12">
+                                <label for="ALTO_COSTO" class="active">Alto Costo</label>
+                                <select  class="select-chosen-eps" id="ALTO_COSTO" ng-model="productos.ALTO_COSTO" style="height: auto;">
+                                    <option value="">---</option>
+                                    <option value="S">SI</option>
+                                    <option value="N">NO</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class=" col l12 m12 s12" style="padding:10px;text-align: center">
+                                <button id="g¿actualizar2" class="btn" type="reset" ng-if="Rol_Permiso == 'S'" ng-show="productos.Codigo==0" ng-click="actualizar()" style="margin-top: 10px;"><i class="icon-floppy"></i>Actualizar
+                                </button>
+                                <button disabled id="actualizar" class="btn" type="submit" ng-click="actualizar()" ng-show="productos.Codigo!=0" style="margin-top: 10px;"><i class="icon-floppy"></i>Guardar
+                                </button>
+                                <button id="limpiar" class="btn" type="reset" ng-click="limpiar()" style="margin-top: 10px;"><i class="icon-erase"></i>Limpiar
+                                </button>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col l3 m12 s12 " id="Clasificacion_alterna_div_completo">
+                <div class="card inbox-element inbox-4" style="height: 670px;margin-top:2px">
+                    <div class="card-header default-background white-text ng-scope" style="display: flex;text-align: center;align-items: center;">
+                        <i class="icon-right"></i>
+                        <strong>CLASIFICACION</strong>
+                    </div>
+                    <div style="margin: 0px;" class="row">
+                        <div class="col l12 m4 s4">
+                            <form>
+                                <div class="input-field col l12" id="filtrar_clasificacion">
+                                    <input id="buscarautaa" type="text" ng-model="val2">
+                                    <label for="buscarautaa" style="margin-left: 10px;" class="">
+                                        <i class="icon-search-2"></i>
+                                        Filtrar:
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div style="height: 481px;overflow-y: auto;    overflow-x: hidden;" id="Clasificacion_alterna">
+                        <table style="cursor:pointer;">
+                            <thead>
+                                <tr>
+                                    <td><b>CÓDIGO</b></td>
+                                    <td><b>NOMBRE</b></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="DM{{cp.NUMERO}}" class="c-pointer" ng-class="{'hover-item-list-agregar ': hovering}" ng-mouseenter="hovering=true" ng-mouseleave="hovering=false" ng-repeat="cp in clasificacion_alterna | filter: val2" ng-show="cp.APARECER==0" ng-click="selectClasificacion_alterna(cp.NUMERO,cp.NOMBRE);">
+                                    <td style="width:60px">{{cp.NUMERO}}</td>
+                                    <td>{{cp.NOMBRE}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col l3 m12 s12 " id="clasifi">
+                <div class="card inbox-element inbox-4" style="height: 670px;margin-top: 1px" id="Clasificacion_alterna_selecionada_div2">
+                    <div class="card-header default-background white-text ng-scope" style="display: flex;text-align: center;align-items: center;">
+                        <i class="icon-right"></i>
+                        <strong>CLASIFICACION ALTERNA</strong>
+                    </div>
+                    <br>
+                    <div style="height: 526px;overflow: auto;" id="Clasificacion_alterna_selecionada_div1">
+                        <table style="cursor:pointer;">
+                            <thead>
+                                <tr>
+                                    <td><b>CÓDIGO</b></td>
+                                    <td><b>NOMBRE</b></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="DM{{cp.NUMERO}}" class="c-pointer" ng-class="{'hover-item-list-eliminar ': hovering}" ng-mouseenter="hovering=true" ng-mouseleave="hovering=false" ng-repeat="cp in Clasificacion_alterna_selecionada" ng-click="remove_selectClasificacion_alterna($index);">
+                                    <td style="width:60px">{{cp.NUMERO}}</td>
+                                    <td>{{cp.NOMBRE}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class=" col l12 m12 s12" style="padding:5px;text-align: center" ng-init="mostrar=true" ng-mouseenter="mostrar=true" ng-mouseleave="mostrar=false" id="confirmar">
+
+                            <button class="btn" type="submit" ng-if="Rol_Permiso=='S'" ng-click="confirmar()" style="margin-top: 10px;">
+                                <i class="icon-eject-1"></i>
+                                <strong ng-show="mostrar==true">Confirmar</strong>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <div id="add_subclasificacion" class="modal" style="width: 90%!important;max-height: 100%;top: 5%!important;overflow: hidden;">
+    <div class="modal-content" style="padding: 0px !important;">
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+            <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                <div class="card-content foot4" style="padding: 0;text-align: center;">
+                    <div class="col s11">
+                        <h5 class="white-text">SUBCLASIFICACIONES PARA El PRODUCTO {{productos.NUMERO}}</h5>
+
+                    </div>
+                    <div class="col s1">
+                        <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                ng-click="add_subclasificacion('CLOSE');"
+                                class="material-icons white-text">close</i></h5>
+                    </div>
+                </div>
+                <div class="card-action" style="border-top: 0">
+                       <div style="text-align: center;width: 50%;">
+                                <h6> <b>CREAR SUBCLASIFICACIÓN</b> </h6>
+                            </div>     
+                    <div class="row">
+                          <div class="col s6 text-center">
+                           <div class="col s12">                      
+                            <div class="input-field col s12">
+                                <textarea id="subcladescrip" class="materialize-textarea" ng-model="subclasificacion"></textarea>
+                                <label for="subcladescrip">Descripción</label>
+                            </div>
+
+                       
+                        </div>
+                             <div class="row text-center">
+                                   <a class="waves-effect waves-light btn white-text float-none"  ng-click="accion_subclasificacion(edit =='S'? 'S':'G');">
+                                    GUARDAR
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col s6">                                                                         
+                            <div class="row" style="overflow: auto;max-height: 400px;">
+                                <table class="striped table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th class="noselectxtpqr text-center">CODIGO</th>
+                                            <th class="noselectxtpqr text-center">NOMBRE</th>                                                                        
+                                            <th class="noselectxtpqr text-center">ACCION</th>
+                                        </tr>
+                                        <tr ng-repeat="p in tempsupclasificacion as resultsub">
+                                            <td class="text-center">{{p.NUMERO_H}}</td>
+                                            <td class="text-center">{{p.NOMBRE_H}}</td>                                      
+                                            <td class="text-center noselectxtpqr">                                            
+                                                <i id="bt-ges" ng-click="accion_subclasificacion('E',p,p.NUMERO_H);" class="icon-edit-alt fs-20 c-pointer"></i>
+                                                <i id="bt-ges" ng-click="accion_subclasificacion('D',p,$index);" class="icon-trash fs-20 c-pointer"></i>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="resultsub.length==0">
+                                            <th colspan="4" class="text-center">NO HAY SUBCLASIFICACIONES</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                          
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <style type="text/css">
+        .hover-item-list-agregar {
+            background-color: #ddd !important;
+        }
+        
+        .titulo {
+            background: #1A2E63;
+        }
+        
+        html body.cyan-scheme .titulo {
+            background: #00abc0;
+        }
+        
+        html body.blue-scheme .titulo {
+            background: #1565c0;
+        }
+        
+        html body.green-scheme .titulo {
+            background: #558A2F;
+        }
+        
+        html body.purple-scheme .titulo {
+            background: #6A1B99;
+        }
+        
+        html body.yellow-scheme .titulo {
+            background: #FDA626;
+        }
+        
+        html body.dark-scheme .titulo {
+            background: #111;
+        }
+        
+        input#CLASIFICACION {
+            color: rgb(0, 0, 0) !important;
+        }
+        
+        input[disabled] {
+            color: rgba(0, 0, 0, 0.6) !important;
+        }
+        
+        .hover-item-list-agregar {
+            background-color: #56b9494d;
+        }
+        
+        .hover-item-list-eliminar {
+            background-color: #ec5248b0;
+        }
+        
+        i {
+            cursor: pointer;
+        }
+        
+        input[type=text]:disabled {
+            text-transform: uppercase !important;
+        }
+    </style>
+</div>

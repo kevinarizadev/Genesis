@@ -1,0 +1,620 @@
+<div class="row" style="background-color: transparent;">
+	<style>
+		.newdesing .content-container {
+			min-height: calc(20vh - 0vh) !important;
+			padding-top: 20px !important;
+			margin-bottom: 0 !important;
+		}
+		.general #small-chart5 {
+			background: linear-gradient(to right, #FFC107 50%, #FF9800 50%);
+			background-size: 200% 100%;
+			background-position: right bottom;
+			transition: all 0.6s ease;
+		}
+		p{
+			margin-top: 0px !important;
+			font-size: 11.5px !important;
+			margin-bottom: 0px !important;
+		}
+		.columnas p {position: absolute;top: -38px;width: 207px;border: 1px solid #e5e6e6;padding: 1px 10px;border-radius: 0px 19px 0px 0px;}
+		.dataTables_filter {margin: 0 !important}
+		.incla {height: auto !important;font-size: 1em !important;}
+		.lb {padding-left: 20px !important;height: 20px!important;transform: scale(.8) !important;}
+		.medidas {width: 33.3% !important;margin-right: 0.4%;}
+		.select-personalizado {background-color: #bcbdbd;padding: 0px !important;height: 2em !important; width: 15em !important;}
+		p.titulo_card {padding: 0.3em 1.2em;margin: 0px;background: #ffffff;border: 1px solid #c4c4c4;color: #818282;}
+		hr {height: 0px;background-color: black;padding: 0;margin: 0;margin-bottom: 0.2%;}
+		table.dataTable {width: 100% !important;}
+		.medidas{height: 12vh !important;    width: 100% !important;}
+		@media only screen and (max-width: 1440px) {
+			#tabla_info th, #tabla_info td {font-size: 11px;}
+			.medidas {height: 18vh !important;width: 100% !important;}
+		}
+	</style>
+
+	<div class="row section-header" style="margin: 0;background: #9897e81f;padding: 0px; margin-bottom: 0em;">
+		<ul class="left mailbox-custom-search list-inline" style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+			<li id="inicio">
+				<h5>Consulta Cartera
+					<a ng-if="OcultarActualizar" class="btn-floating btn waves-effect waves-light blue" ng-click="ActualizarCartera()"><i class="material-icons dp48">copyright</i></a>
+				</h5>
+			</li>
+			<li>
+				<div class="col input-field">
+					<label class="active" style="color: black;margin-top: -3px;">Tipo de Documento</label>
+					<select class="select-chosen-eps border-none input-text-new select-personalizado" ng-model="typedoc" ng-change="CambioBusqueda()" style="">
+						<option value="S">SELECCIONAR</option>
+						<option value="N">NIT</option>
+						<option value="C">CEDULA CIUDADANIA</option>
+						<option value="X">CEDULA EXTRANJERIA</option>
+						<option value="B">PERMISO ESPECIAL</option>
+						<option value="V">PERMISO TEMPORAL DE PERMANENCIA</option>
+						<option value="T">TARJETA DE IDENTIDAD</option>
+
+					</select>
+				</div>
+				<div class="col input-field">
+					<input type="text" class="border-none input-text-new" ng-model="doc" ng-change="CambioBusqueda()" placeholder="Documento" style="background-color: #bcbdbd;width: 10em;margin-left: auto;">
+				</div>
+				<div class="input-field col">
+					<a ng-click="Consultar()" class="btn btn-small" style="background-color: rgba(238, 64, 53, 0.8);">CONSULTAR</a>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<hr>
+
+	<div ng-if="OcultarOpciones">
+
+		<div class="col s12 m12 l3">
+			<div class="card medidas white-text" style="background-color: #ffc107 !important;">
+				<div class="card-content">
+					<h5>Incumplimiento Pago</h5>
+					<div class="row col s12">
+						<table>
+							<tbody>
+								<tr>
+									<td class="no-padding">Exitosamente</td>
+									<td class="no-padding">Error</td>
+								</tr>
+								<tr>
+									<td class="no-padding"><strong>{{sms_correcto_aviso}}</strong></td>
+									<td class="no-padding"><strong>{{fallo_de_envio_aviso}}</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="col s12 m12 l3">
+			<div class="card medidas white-text" style="background-color: #8BC34A !important;">
+				<div class="card-content">
+					<h5>Aviso Incumplimiento</h5>
+					<div class="row col s12">
+						<table>
+							<tbody>
+								<tr>
+									<td class="no-padding">Exitosamente</td>
+									<td class="no-padding">Error</td>
+								</tr>
+								<tr>
+									<td class="no-padding"><strong>{{sms_correcto_incumplimiento}}</strong></td>
+									<td class="no-padding"><strong>{{fallo_de_envio_incumplimiento}}</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col s12 m12 l3">
+			<div class="card medidas white-text" style="background-color: #00abc0 !important;">
+				<div class="card-content">
+					<h5>Consolidado General</h5>
+					<div class="row col s12">
+						<table>
+							<tbody>
+								<tr>
+									<td class="no-padding">Exitosamente</td>
+									<td class="no-padding">Error</td>
+								</tr>
+								<tr>
+									<td class="no-padding"><strong>{{sms_correcto_historico}}</strong></td>
+									<td class="no-padding"><strong>{{fallo_de_envio_historico}}</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col s12 m12 l3">
+			<div class="card medidas white-text" style="background-color: #FF5722 !important;">
+				<div class="card-content">
+					<h5>Registro Llamadas<i class="material-icons right">call</i> </h5>
+					<div class="row col s12">
+						<table>
+							<tbody>
+								<tr>
+									<td class="no-padding">Llamadas Recibida</td>
+									<td class="no-padding">Llamadas Saliente</td>
+								</tr>
+								<tr>
+									<td class="no-padding"><strong>{{llamada_recibida}}</strong></td>
+									<td class="no-padding"><strong>{{llamada_realizada}}</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col s12" style="height: 100%;width: 100%;" ng-if="!OcultarOpciones">
+		<div class="general content-container row">
+			<div class="col l3 m3 s3 scc no-padd" ng-repeat="duplicarse in duplicar" >
+				<div class="card small-chart margin" id="small-chart{{$index+1}}" style="height:120px;;width: 98%;">
+					<div class="col l3 m3 s3 scc no-padd" style="display: inline-table;">
+						<h4> <strong>{{duplicarse.porcentaje_meta}}% </strong></h4>
+					</div>
+					<div class="col l9 m9 s9 sct no-padd">
+						<div class="justify-align">
+							<p> <strong> {{duplicarse.nombre_funcionario}} </strong></p>
+							<p><strong>Rango Cartera: </strong> {{duplicarse.segmento_cartera}}</p>
+							<p><strong>Valor De Mora: </strong> ${{duplicarse.mora_x_cobrar}}</p>
+							<p><strong>Meta a Recuperar: </strong> ${{duplicarse.meta_x_recuperar}}</p>
+							<p><strong>Valor Recuperado: </strong> ${{duplicarse.gestion_mora_recuperada}}</p>
+							<p><strong>Numero De Aportante: </strong> {{duplicarse.cantidad_aportante}}</p>
+							<p><strong>Cantidad Registro: </strong> {{duplicarse.cantidad_registro}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col s12" style="height: 100%;width: 100%;margin-top: 5%;" ng-if="!OcultarOpciones">
+		<div class="center">
+			<img src="assets/images/cartera/logo.svg" style="width: 30%;">
+		</div>
+	</div>
+
+	<div class="col s12 m12 l12" ng-if="OcultarInfoBasica">
+		<div class="col s12 m12 l12 margin">
+			<div class="row margin">
+				<div class="col s12 m12 l12 margin" style="padding: 0px !important">
+					<div class="card">
+						<div class="card-content">
+							<p style="padding: 0.3em 1.2em;float: left;"> <strong>Información Del Aportante </strong>
+								<div style="float: left;">
+									<div class="tooltip">
+										<a ng-click="EditarInformacion(aportante)" class="blue btn btn-floating right waves-effect waves-light">
+											<i class="material-icons dp48" style="background-color: #b00f1e;">edit</i>
+										</a>
+										<span class="tooltiptext">Editar Información</span>										
+									</div>
+								</div>
+								<div style="float: right;">
+									<div class="tooltip">
+										<a ng-click="RegistrarLlamadas(aportante)" class="blue btn btn-floating right waves-effect waves-light">
+											<i class="material-icons dp48" style="background-color: #4CAF50;">call</i>
+										</a>
+										<span class="tooltiptext">Registrar Llamadas</span>
+										
+									</div>
+									<div class="tooltip">
+										<a ng-click="PrintCarta(aportante)" class="blue btn btn-floating right waves-effect waves-light">
+											<i class="material-icons dp48" style="background-color: #FF9800;">print</i>
+										</a>
+										<span class="tooltiptext">Imprimir Consolidado General</span>
+										
+									</div>
+									<div class="tooltip">
+										<a ng-click="GeneracionCarta()" class="blue btn btn-floating right waves-effect waves-light">
+											<i class="material-icons dp48" style="background-color: #03A9F4;">email</i>
+										</a>
+										<span class="tooltiptext">Notificar Consolidado Cartera</span>
+									</div>
+								</div>
+							</p>							
+							<div style="height: 30vh;">
+								<table id="tabla_info" class="responsive-table table-bordered striped">
+									<tbody>
+										<tr>
+											<th >NOMBRE APORTANTE</th>
+											<td colspan="4" align="center">{{aportante.nombre_aportante}}</td>
+										</tr>
+										<tr>
+											<th>TIPO DOCUMENTO</th>
+											<td colspan="2" align="center">{{aportante.tipo_doc_aportante}}</td>
+											<th>NUMERO DOCUMENTO</th>
+											<td colspan="2" align="center">{{aportante.doc_aportante}}</td>
+										</tr>
+
+										<tr>
+											<th>DEPARTAMENTO</th>
+											<td colspan="2" align="center">{{aportante.nombre_dpto_aportante}}</td>
+											<th>MUNICIPIO</th>
+											<td colspan="2" align="center">{{aportante.nombre_mun_aportante}}</td>											
+										</tr>
+
+										<tr>
+											<th>DIRECCION</th>
+											<td colspan="2" align="center">{{aportante.direccion}}</td>
+											<th>CORREO ELECTRONICO</th>
+											<td colspan="2" align="center">{{aportante.correo_aportante}}</td>
+										</tr>									
+
+										<tr>
+											<th>CELULAR</th>
+											<td colspan="2" align="center">{{aportante.celular_aportante}}</td>
+											<th>TELEFONO FIJO</th>
+											<td colspan="2" align="center">{{aportante.telefono_aportante}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="contenido marketing" style="padding: 0 25px !important;" ng-if="OcultarOpciones">
+
+		<div class="formulario row">
+			<div class="card-title col l12 m12 s12">
+				<p class="titulo_card ng-binding" ng-click="VisualizarInformacion('I')">
+					<i class="icon-user-pair"></i> <strong>  Información De Cotizante   </strong>   
+					<i ng-class="InfoCotizante==true?'icon-angle-circled-up':'icon-angle-circled-down'" class="right icon-angle-circled-down"></i>
+				</p>
+			</div>
+			<div ng-show="InfoCotizante" class="card-body col l12 m12 s12" style="padding: 0 !important;">
+				<table id="tablacotizante" class="responsive-table striped table-bordered white">
+					<thead>
+						<tr>
+							<td class="center-align"><strong>#</strong></td>
+							<td class="center-align"><strong>PERIDO</strong></td>
+							<td class="center-align"><strong>DOCUMENTO AFILIADO</strong></td>
+							<td class="center-align"><strong>NOMBRE AFILIADO</strong></td>
+							<td class="center-align"><strong>FECHA LIMITE</strong></td>
+							<td class="center-align"><strong>OPCIONES</strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="d in afiliados">                               
+							<td class="center-align">{{($index+1)}}</td>
+							<td class="center-align">{{d.periodo}} - {{d.ano}}</td>
+							<td class="center-align">{{d.tipo_doc_afiliado}} - {{d.documento_afiliado}}</td>
+							<td class="center-align">{{d.nombre_completo}}</td>
+							<td class="center-align">{{d.fecha_limite}}</td>
+							<td class="center-align">
+								<div class="tooltip">
+									<i ng-click="EnviarCartaNoti(d)"  style="cursor: pointer"
+									class="Medium material-icons">markunread</i>
+									<span class="tooltiptext">Enviar Carta</span>
+								</div>
+								<div class="tooltip">
+									<i ng-click="PrintCarta(d,'IP')"  style="cursor: pointer"
+									class="Medium material-icons">print</i>
+									<span class="tooltiptext">Imprimir</span>
+								</div>
+							</td> 
+						</tr>
+					</tbody>
+				</table>	
+			</div>    		
+		</div>	
+
+		<div class="formulario row">
+			<div class="card-title col l12 m12 s12">
+				<p class="titulo_card" ng-click="VisualizarInformacion('IP')">
+					<i class="icon-article-alt-1"></i> <strong>Incumplimiento Pago</strong>
+					<i ng-class="InforIncumplimientoPago==true?'icon-angle-circled-up':'icon-angle-circled-down'" class="right icon-angle-circled-down"></i>
+				</p>
+			</div>
+			<div ng-show="InforIncumplimientoPago" class="card-body col l12 m12 s12" style="padding: 0 !important;">
+				<table id="tablaincumplimiento" class="responsive-table striped table-bordered white">
+					<thead>
+						<tr>
+							<td class="center-align"><strong>#</strong></td>
+							<td class="center-align"><strong>DOCUMENTO</strong></td>
+							<td class="center-align"><strong>NOMBRE APORTANTE </strong></td>
+							<td class="center-align"><strong>NOMBRE PROCESO</strong></td>
+							<td class="center-align"><strong>TIPO ERROR</strong></td>
+							<td class="center-align"><strong>FECHA ENVIO</strong></td>
+							<td class="center-align"><strong>CORREO ENVIO</strong></td>										
+							<td class="center-align"><strong>RESPONSABLE</strong></td>
+							<td class="center-align"><strong>MENSAJE PROCESO</strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ic in infoincumplimiento">                               
+							<td class="center-align">{{($index+1)}}</td>
+							<td class="center-align">{{ic.tipo_doc_aportante}} - {{ic.doc_aportante}}</td>
+							<td class="center-align">{{ic.nombre_aportante}}</td>										
+							<td class="center-align">{{ic.nombre_procesos}}</td>
+							<td class="center-align">{{ic.tipo_error}}</td>
+							<td class="center-align">{{ic.fecha_envio}}</td>
+							<td class="center-align">{{ic.correo_aportante}}</td>										
+							<td class="center-align">{{ic.nombre_responsable}}</td>
+							<td class="center-align">{{ic.mensaje_correo}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div> 
+		</div>
+
+		<div class="formulario row">
+			<div class="card-title col l12 m12 s12">
+				<p class="titulo_card" ng-click="VisualizarInformacion('AP')">
+					<i class="icon-article-alt-1"></i><strong>Aviso Incumplimiento</strong>
+					<i ng-class="InfoAvisoIncumplimientoPago==true?'icon-angle-circled-up':'icon-angle-circled-down'" class="right icon-angle-circled-down"></i>
+				</p>
+			</div>
+			<div ng-show="InfoAvisoIncumplimientoPago" class="card-body col l12 m12 s12" style="padding: 0 !important;">
+				<table id="tablaaviso" class="responsive-table striped table-bordered white">
+					<thead>
+						<tr>
+							<td class="center-align"><strong>#</strong></td>
+							<td class="center-align"><strong>DOCUMENTO</strong></td>
+							<td class="center-align"><strong>NOMBRE APORTANTE </strong></td>
+							<td class="center-align"><strong>NOMBRE PROCESO</strong></td>
+							<td class="center-align"><strong>TIPO ERROR</strong></td>
+							<td class="center-align"><strong>FECHA ENVIO</strong></td>
+							<td class="center-align"><strong>CORREO ENVIO</strong></td>										
+							<td class="center-align"><strong>RESPONSABLE</strong></td>
+							<td class="center-align"><strong>MENSAJE PROCESO</strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="if in infoaviso">                               
+							<td class="center-align">{{($index+1)}}</td>
+							<td class="center-align">{{if.tipo_doc_aportante}} - {{if.doc_aportante}}</td>
+							<td class="center-align">{{if.nombre_aportante}}</td>										
+							<td class="center-align">{{if.nombre_procesos}}</td>
+							<td class="center-align">{{if.tipo_error}}</td>
+							<td class="center-align">{{if.fecha_envio}}</td>
+							<td class="center-align">{{if.correo_aportante}}</td>										
+							<td class="center-align">{{if.nombre_responsable}}</td>
+							<td class="center-align">{{if.mensaje_correo}}</td>
+						</tr>
+					</tbody>
+				</table>	
+			</div> 
+		</div>
+
+		<div class="formulario row">
+			<div class="card-title col l12 m12 s12">
+				<p class="titulo_card" ng-click="VisualizarInformacion('HA')">
+					<i class="icon-article-alt-1"></i><strong>Consolidado General</strong>
+					<i ng-class="HistoricoInformacion==true?'icon-angle-circled-up':'icon-angle-circled-down'" class="right icon-angle-circled-down"></i>
+				</p>
+			</div>
+			<div ng-show="HistoricoInformacion" class="card-body col l12 m12 s12" style="padding: 0 !important;">
+				<table id="tablahistorico" class="responsive-table striped table-bordered white">
+					<thead>
+						<tr>
+							<td class="center-align"><strong>#</strong></td>
+							<td class="center-align"><strong>DOCUMENTO</strong></td>
+							<td class="center-align"><strong>NOMBRE APORTANTE </strong></td>
+							<td class="center-align"><strong>NOMBRE PROCESO</strong></td>
+							<td class="center-align"><strong>TIPO ERROR</strong></td>
+							<td class="center-align"><strong>FECHA ENVIO</strong></td>
+							<td class="center-align"><strong>CORREO ENVIO</strong></td>										
+							<td class="center-align"><strong>RESPONSABLE</strong></td>
+							<td class="center-align"><strong>MENSAJE PROCESO</strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="if in infoavisoH">                               
+							<td class="center-align">{{($index+1)}}</td>
+							<td class="center-align">{{if.tipo_doc_aportante}} - {{if.doc_aportante}}</td>
+							<td class="center-align">{{if.nombre_aportante}}</td>										
+							<td class="center-align">{{if.nombre_procesos}}</td>
+							<td class="center-align">{{if.tipo_error}}</td>
+							<td class="center-align">{{if.fecha_envio}}</td>
+							<td class="center-align">{{if.correo_aportante}}</td>										
+							<td class="center-align">{{if.nombre_responsable}}</td>
+							<td class="center-align">{{if.mensaje_correo}}</td>
+						</tr>
+					</tbody>
+				</table>	
+			</div> 
+		</div>
+
+		<div class="formulario row">
+			<div class="card-title col l12 m12 s12">
+				<p class="titulo_card" ng-click="VisualizarInformacion('RL')">
+					<i class="icon-article-alt-1"></i><strong>Registro Llamadas</strong>
+					<i ng-class="InfoRegistroLlamadas==true?'icon-angle-circled-up':'icon-angle-circled-down'" class="right icon-angle-circled-down"></i>
+				</p>
+			</div>
+			<div ng-show="InfoRegistroLlamadas" class="card-body col l12 m12 s12" style="padding: 0 !important;">
+				<table id="tablallamadas" class="responsive-table striped table-bordered white">
+					<thead>
+						<tr>
+							<td class="center-align"><strong>#</strong></td>
+							<td class="center-align"><strong>FECHA REGISTRO</strong></td>
+							<td class="center-align"><strong>MOTIVO</strong></td>
+							<td class="center-align"><strong>PERSONA CONTACTO</strong></td>
+							<td class="center-align"><strong>OBSERVACIÓN</strong></td>
+							<td class="center-align"><strong>RESPONSABLE</strong></td>
+							<td class="center-align"><strong>DURACION LLAMADA</strong></td>										
+							<td class="center-align"><strong>TIPO DE LLAMADAS</strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="tl in infollamadas">                               
+							<td class="center-align">{{($index+1)}}</td>
+							<td class="center-align">{{tl.fecha_registro}}</td>										
+							<td class="center-align">{{tl.nombre_motivo}}</td>
+							<td class="center-align">{{tl.persona_contacto}}</td>
+							<td class="center-align">{{tl.observacion}}</td>
+							<td class="center-align">{{tl.nombre_responsable}}</td>										
+							<td class="center-align">{{tl.duracion_llamada}}</td>
+							<td class="center-align">{{tl.tipo_llamada}}</td>
+						</tr>
+					</tbody>
+				</table>	
+			</div> 
+		</div>
+
+	</div>
+
+<!-- <div class="col s12 m12 l12" ng-if="OcultarNotiFechaLimite">	
+	<div class="row margin">
+		<div class="col s12 m12 l12 margin" style="padding: 0px !important">
+			<div class="card">
+				<div class="card-content">
+					<spam><h5>Notificaciones {{title}}</h5></spam>
+					<div style="height: 58vh;overflow-y: scroll;overflow-x: hidden;">
+						<table  class="responsive-table striped table-bordered white">
+							<thead>
+								<tr>
+									<td class="center-align"><strong>#</strong></td>
+									<td class="center-align"><strong>DOCUMENTO</strong></td>
+									<td class="center-align"><strong>NOMBRE APORTANTE </strong></td>
+									<td class="center-align"><strong>NOMBRE PROCESO</strong></td>
+									<td class="center-align"><strong>TIPO ERROR</strong></td>
+									<td class="center-align"><strong>CORREO ENVIADO</strong></td>
+									<td class="center-align"><strong>FECHA ENVIO</strong></td>
+									<td class="center-align"><strong>RESPONSABLE</strong></td>
+									<td class="center-align"><strong>MENSAJE PROCESO</strong></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="in in infnoti">                               
+									<td class="center-align">{{($index+1)}}</td>
+									<td class="center-align">{{in.t_afliado}} - {{in.documento_afiliado}}</td>
+									<td class="center-align">{{in.nombre_afliado}}</td>										
+									<td class="center-align">{{in.tipo_proceso}}</td>
+									<td class="center-align">{{in.tipo_error}}</td>	
+									<td class="center-align">{{in.correo_envio}}</td>	
+									<td class="center-align">{{in.fecha_envio}}</td>
+									<td class="center-align">{{in.responsable}}</td>
+									<td class="center-align">{{in.mensaje}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>		
+</div> -->
+
+<div id="modalactualizar" class="modal" style="width: 80%;">
+	<div class="modal-content">
+
+		<div style="width: 100%;margin: 0 auto;">
+			<div class="card-content">
+				<div class="row">
+					<form>
+						<div class="col l12 m12 s12">
+							<blockquote><strong>ACTUALIZAR INFORMACION</strong></blockquote>
+							<div class="col input-field l3 m12 s12">
+								<label for="simple-select" style="margin-top: -20px;">Tipo De Documento</label>
+								<select class="select-chosen-eps" ng-model="p_tipo_doc_aportante" disabled>
+									<option value="S">SELECCIONAR</option>
+									<option value="N">NIT</option>
+									<option value="C">CEDULA CIUDADANIA</option>
+								</select>
+							</div>
+							<div class="input-field col l4 m12 s12">
+								<input id="documento" type="text" ng-model="p_doc_aportante" disabled>
+								<label for="documento" class="">Documento</label>
+							</div>
+							<div class="input-field col l4 m12 s12">
+								<input id="razon" type="text" ng-model="p_nombre_aportante" disabled>
+								<label for="razon" class="">Razon Social</nombre_aportante>
+								</div>
+							</div>
+							<div class="col l12 m12 s12">
+								<div class="col input-field l4 m12 s12" ng-init="ListarDepartamento()">
+									<label style="margin-top: -20px;">Departamento</label>
+									<select class="select-chosen-eps" id="deptos" ng-model="p_departamento_aportante" ng-options="deptos.codigo as deptos.nombre for deptos in depto" ng-change="BuscoMunicipio()"> 
+									</select>
+								</div>
+								<div class="col input-field l4 m12 s12">
+									<label style="margin-top: -20px;">Municipio</label>
+									<select id="municipio" class="select-chosen-eps" ng-model="p_municipio_aportante" ng-options="municipio.CODIGO as (municipio.NOMBRE) for municipio in muni">
+									</select>
+								</div>
+							</div>
+
+
+
+							<div class="col l12 m12 s12">
+								<div class="input-field col l12 m12 s12">
+									<div class="input-field col l4 m12 s12">
+										<input id="celular" type="text" ng-model="p_celular_aportante">
+										<label for="celular" class="">Celular</label>
+									</div>
+									<div class="input-field col l3 m12 s12">
+										<input id="fijo" type="text" ng-model="p_fijo_aportante">
+										<label for="fijo" class="">Telefono Fijo</label>
+									</div>
+									<div class="input-field col l4 m12 s12">
+										<input id="correo" type="text" ng-model="p_correo_aportante">
+										<label for="correo" class="">Correo Electronico</label>
+									</div>
+
+
+
+								</div>
+							</div>
+
+
+
+							<div class="col l12 m12 s12">
+								<div class="input-field col l12 m12 s12">
+									<div class="input-field col l3 m12 s12">
+										<input id="direccion" type="text" ng-model="p_direccion" ng-disabled="BloquearDireccion">
+										<label for="direccion" class="">Dirección</label>
+									</div>
+									<div class="tooltip">
+										<label ng-click="AbrirModalDireccion()"><i class="material-icons">info</i></label>
+										<span class="tooltiptext">Click Para Actualizar Direccion</span>
+									</div>
+
+								</div>
+							</div>
+
+
+
+
+
+
+
+							<div class="col l12 m12 s12">
+								<div>
+									<div class="tooltip right">
+										<button type="submit" class="btn-floating btn-large waves-effect waves-light ng-pristine ng-valid ng-touched" ng-click="ActualizarInfor()">
+											<i class="icon-floppy"><i class="zmdi zmdi-refresh-sync fa-spin"></i></i>
+										</button>
+										<span class="tooltiptext">Actualizar Informacion</span>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+</div>
+

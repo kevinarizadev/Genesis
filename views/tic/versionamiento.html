@@ -1,0 +1,53 @@
+<div id="versionamiento" class="white">
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline">
+      <li>
+        <h5 class="page-title">Línea de tiempo</h5>
+      </li>
+      <li ng-if="role">
+        <i ng-click="create_notifi()" class="icon-plus-3">Crear Notificación</i>
+      </li>
+      <li>
+        <input ng-init="inputText = ''" ng-model="inputText" placeholder="Filtrar título..." aria-label="filter">
+      </li>
+      <li class="filter_notifi">
+        <select id="lblArea" ng-init="selectText = ''" ng-model="selectText" material-select watch convert-to-number>
+          <option value="" ng-selected>Todas las Areas</option>
+          <option value="{{a.nombre}}" ng-repeat="a in areas | orderBy:'nombre' track by a.codigo">{{a.nombre}}</option>
+        </select>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white">
+    <div class="timeline-page col s12">
+      <div class="timeline card-content white" when-scrolled="loadMore()">
+        <div ng-if="results.length != 0" class="timeline-milestone" ng-repeat-start="notification in notifications">
+          <span id="{{formatDate(CurrentDate)}} == {{convertDate(notification[0])}} => {{notification[0]}}" class="milestone-title white-text">{{(formatDate(CurrentDate)==convertDate(notification[0]))?'Hoy':notification[1][0].date}}</span>
+        </div>
+        <div ng-model="loop" id="{{n.id}}" class="timeline-event" ng-repeat-end ng-repeat="n in notification[1] | filter:{title:inputText, name_area:selectText == 'TODOS'?'Portal Genesis':selectText} as results">
+          <div class="timeline-content timeline-content-edit">
+            <h6>{{n.title}}
+              <small> {{n.hour}}</small>
+            </h6>
+            <div class="content-box">
+              <!-- | linky:'_blank' -->
+              <p ng-bind-html="IdentList(n.description)"></p>
+              <div class="chip" ng-repeat="res in (n.responsable).split(',')">
+                {{res}}
+              </div>
+              <img class="img-tl" ng-src="{{n.img_url == null?' ': n.img_url != ''?n.img_url:' '}}">
+              <small class="right">{{n.name_area}}</small>
+              <i ng-if="role" ng-click="delete_notifi(n.id)" class="zmdi icon-trash-empty"></i>
+              <i ng-if="role" ng-click="edit_notifi(n.id,n.title,n.description,n.date_ori,n.hour,n.area,n.name_area,n.icon,n.img_url,n.responsable)"
+                class="zmdi icon-edit"></i>
+            </div>
+          </div>
+          <div class="timeline-badge white-text timeline-badge{{($index + 1)}}">
+            <i class="zmdi {{n.icon}}"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p ng-if="null_notifi" style="text-align:center">No hay resultados.</p>
+  </div>
+</div>

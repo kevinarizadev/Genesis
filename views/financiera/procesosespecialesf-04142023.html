@@ -1,0 +1,193 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer"
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+          onclick="location.reload();">
+          Procesos Especiales
+        </h5>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white" style="height: 90vh;">
+    <div class="col l12 m12 s12 center">
+      <div style="position: absolute;width: 83vw;margin-top: 10em;margin-left: 5em;">
+        <div id="Imagen_back">
+          <img src="images\administrativa\consultatercero.svg" alt="Imagen">
+        </div>
+      </div>
+    </div>
+    <div class="card-content clearfix card" style="width: 40%;margin: 1rem auto auto auto;border-radius: 8px;">
+      <div class="row" style="margin-bottom: 0; width: 88%;">
+        <div class="col s12 no-padding label-new" style="width: 98%; margin-bottom: 3rem;">
+          <label class="label-new-shirley" style="left: 129.5px;">Seleccionar Tipo Proceso<span class="red-text">*</span></label>
+          <select ng-model="tipodeItem" ng-change="SeleccionarItem()" class="select-new gray-input"
+            style="box-shadow: none;display: block; padding: 5;border-radius: 10px;">
+            <option value="0">Seleccionar</option>
+            <option ng-repeat="reporte in Reportes" ng-value="reporte.CODIGO">{{reporte.NOMBRE}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="Form" class="card-content clearfix card" ng-show="vercontenido"
+      style="width: 87%;margin: 2rem auto auto auto;border-radius: 8px;">
+      <div class="row" style="margin-bottom: 13;width: 98%;margin-top: 1rem;">
+        <div ng-show="contenido1" class="tabla-result" style="max-height: 57vh;">
+          <div class="card-content">
+            <h5 style="display: flex;">{{Nombrereporte}}</h5>
+          </div>
+          <div class="card-action">
+            <div class="row">
+              <div ng-show="show_regimen" class="col l3 m3 s3" style="padding-left: 20px; padding-right: 0px;"
+                ng-init="regimen='X'">
+                <label style="padding-left: 25%;">Regimen<span class="red-text">*</span></label>
+                <select ng-model="regimen" style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                  <option value="X">Seleccionar</option>
+                  <option value="C">CONTRIBUTIVO</option>
+                  <option value="S">SUBSIDIADO</option>
+                  <option value="A">AMBOS</option>
+                </select>
+              </div>
+              <div ng-show="show_ano" class="col l2 m2 s2" style="padding-left: 20px; padding-right: 0px;" ng-init="cargaAnnos()">
+                <label style="padding-left: 25%;">Año:<span class="red-text">*</label>
+                <select ng-model="anno" style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;"  required>
+                  <option value=''>Seleccionar</option>
+                  <option ng-repeat="anno in Annos" ng-value="anno.ANNO">{{anno.ANNO}}</option>
+                </select>
+              </div>
+              <div  ng-show="show_ciclo" class="col l2 m2 s2" style="padding-left: 20px; padding-right: 0px;">
+                <label style="padding-left: 25%;">Ciclo:<span class="red-text">*</span></label>
+                <select ng-model="ciclo"  ng-disabled="deshabilitar_ciclo"
+                  ng-init="ciclo=''"
+                  style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                  <option value="">Seleccionar</option>
+                  <option value="M">Mensual</option>
+                  <option value="T">Trimestre</option>
+                  <option ng-repeat="ciclo in Ciclos" ng-value="ciclo.IDE">{{ciclo.NOMBRE}}</option>
+                </select>
+              </div>
+              <div ng-show="show_mensual || ciclo =='M' " class="col l2 m2 s2" style="padding-left: 20px; padding-right: 0px;" ng-init="periodo=0">
+                <label style="padding-left: 25%;">Periodo:<span class="red-text">*</label>
+                <select ng-model="periodo" style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;"
+                  ng-change="changeItem(periodo)" required>
+                  <option value=''>Seleccionar Periodo</option>
+                  <option ng-repeat="periodo in Periodos" value="{{periodo}}">{{periodo.NOMBRE}}</option>
+                </select>
+              </div>
+              <div class="col l2 m2 s2" ng-show="show_trimestre || ciclo =='T'"  style="padding-left: 20px; padding-right: 0px;">
+                <label style="padding-left: 25%;">Periodo Trimestral:<span class="red-text">*</label>
+                <select ng-model="trimestre" style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                   <option value="">Seleccionar</option>
+                   <option value="1">PRIMER TRIMESTRE</option>
+                   <option value="2">SEGUNDO TRIMESTRE</option>
+                   <option value="3">TERCER TRIMESTRE</option>
+                   <option value="4">CUARTO TRIMESTRE</option>
+                </select>
+             </div>
+              <div ng-show="show_nit" class="col l2 m2 s2">
+                <label style="padding-left: 32%;" id="numero_doc1">Nit:<span class="red-text">*</label>
+                <div class="col s12 ">
+                  <input id="nit" ng-model="nit" type="text" style="border: 1px solid #dee2e6;
+                    border-radius: 0.25rem;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    padding: 0 1em;" autocomplete="off">
+                </div>
+              </div>
+              <div ng-show="show_ubicacion" class="col l3 m2 s2">
+                <label style="padding-left: 22%;" id="ubicacion">Numero de Ubicacion:<span class="red-text">*</label>
+                <div class="col s12 ">
+                  <input id="ubicacion" ng-model="ubicacion" type="text" style="border: 1px solid #dee2e6;
+                    border-radius: 0.25rem;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    padding: 0 1em;"  autocomplete="off" placeholder="......." numbers-only>
+                </div>
+              </div>
+              <div ng-show="show_concepto" class="col l2 m2 s2" style="padding-left: 20px; padding-right: 0px;" ng-init="CargarConcepto()">
+                <label style="padding-left: 25%;">Concepto:<span class="red-text">*</label>
+                <select ng-model="concepto" style="display: flex;border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                  <option value=''>Seleccionar Concepto</option>
+                  <option ng-repeat="concepto in Concepto" ng-value="concepto.CODIGO">{{concepto.NOMBRE}}</option>
+                </select>
+              </div>
+              <div ng-show="show_fecha_recibico" class="col l2 m2 s2">
+                <label style="padding-left: 32%;" id="fecharecibido">Fecha Recibido:<span class="red-text">*</label>
+                <div class="col s12 ">
+                  <input id="fecharecibido" ng-model="fecharecibido" type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" style="border: 1px solid #dee2e6;
+                    border-radius: 0.25rem;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    padding: 0 1em;" autocomplete="off">
+                </div>
+              </div>
+              <div ng-show="show_fecha_respuesta" class="col l2 m2 s2">
+                <label style="padding-left: 22%;" id="fecharespuesta">Fecha de Respuesta:<span class="red-text">*</label>
+                <div class="col s12 ">
+                  <input id="fecharespuesta" ng-model="fecharespuesta" type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" style="border: 1px solid #dee2e6;
+                    border-radius: 0.25rem;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    padding: 0 1em;" autocomplete="off">
+                </div>
+              </div>
+              <div ng-show="show_archivo_txt" class="col l3 m2 s2">
+                <label style="padding-left: 65%;" id="nombrearchivo_txt">Archivo:<span class="red-text">*</label>
+                <div class="file-field input-field" style= "margin-top: 1px;">
+                  <div class="btn btn-primary" style="border-radius:5px;height: 45px;">
+                    <span class="white-text">ARCHIVO</span>
+                    <input id="anexo2adj_txt" name="adjunto" accept=".txt" type="file">
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input class="file-path validate" ng-model="nombrearchivo_txt" ng-change="validararchivo_txt()" type="text"
+                      id="textadj_txt" placeholder="Subir Archivo" >
+                  </div>
+                </div>
+              <div ng-show="show_archivo_zip" class="col l3 m2 s2">
+                <label style="padding-left: 65%;" id="nombrearchivo_zip">Archivo:<span class="red-text">*</label>
+                <div class="file-field input-field" style= "margin-top: 1px;">
+                  <div class="btn btn-primary" style="border-radius:5px;height: 45px;">
+                    <span class="white-text">ARCHIVO</span>
+                    <input id="anexo2adj_zip" name="adjunto" accept=".zip" type="file">
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input class="file-path validate" ng-model="nombrearchivo_zip" ng-change="validararchivo_zip()" type="text"
+                      id="textadj_zip" placeholder="Subir Archivo" >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="show_instructivo" class="zoom-img-hover">
+              <a href="https://genesis.cajacopieps.com/assets/images/Instructivo.jpg"  target="_blank" title="Ver Ejemplo de Extructura de Archivo a Cargar">
+                  <i class="zmdi zmdi-file-text fa-2x" style="bottom: 10px;right: 72px;color: #031f85;position: absolute;"></i>
+              </a>
+              <label style="bottom: -6px;right: 18px;color: #031f85;position: absolute;">Ver Ejemplo de Extructura</label>
+            </div>
+            </div>
+            <div class="row">
+              <div class="input-field center">
+                  <button class="btn btn-primary" type="submit" ng-click="Generar_reporte()"
+                    style="border-radius:5px;">Gestionar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    #Imagen_back {
+      cursor: pointer;
+      width: 50vw;
+      margin: auto;
+      opacity: .4;
+    }
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

@@ -1,0 +1,1182 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+
+    .content-container {
+      padding: 0 20px;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="Inicio()"></i>
+          Celulares y Líneas Móviles
+        </h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1)" id="tab_1" href class="active">Equipos Móviles
+              <!-- <i class="icon-users"></i> -->
+            </a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(2)" id="tab_2" href>Módems
+              <!-- <i class="icon-users"></i> -->
+            </a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(3)" id="tab_2" href>Líneas
+              <!-- <i class="icon-users"></i> -->
+            </a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(4)" id="tab_2" href>Asignación de Equipos
+              <!-- <i class="icon-users"></i> -->
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs == 1">
+    <div class="col s12 m12 l12" style="justify-content: center;">
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!--  -->
+        <div class="divTablas">
+          <span class="btn" ng-click="modalCrearEquipo()">Nuevo <i class="icon-doc-new"></i></span>
+          <div>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaRoja" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaEquipo','X')">
+              {{obtenerCantidadEstado('hojaEquipo','X')}} {{hojaEquipo_ObtenerEstado('X')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaVerde" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaEquipo','D')">
+              {{obtenerCantidadEstado('hojaEquipo','D')}} {{hojaEquipo_ObtenerEstado('D')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaNaranja" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaEquipo','S')">
+              {{obtenerCantidadEstado('hojaEquipo','S')}} {{hojaEquipo_ObtenerEstado('S')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaAzul" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaEquipo','E')">
+              {{obtenerCantidadEstado('hojaEquipo','E')}} {{hojaEquipo_ObtenerEstado('E')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaMorado" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaEquipo','R')">
+              {{obtenerCantidadEstado('hojaEquipo','R')}} {{hojaEquipo_ObtenerEstado('R')}}
+            </span>
+          </div>
+        </div>
+        <!--  -->
+        <div class="foot4 divcardcustom default-linear-gradient">
+          <div class="text-al divcardcustom2">
+            <strong class="switch">Listado de Equipos Móviles
+              ({{hojaEquipo.listadoTabla.length}})</strong>
+            <div class="tooltip">
+              <i class="icon-cw-circle cursor-pointer" ng-click="hojaEquipo_Listar()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+            </div>
+
+            <div class="col s3 no-padding label-new right"
+              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l black-text"
+                style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="hojaEquipo.filtro"
+                ng-change="filter('hojaEquipo',hojaEquipo.filtro)">
+            </div>
+          </div>
+        </div>
+        <div class="default-color">
+          <table class="tablaListado bordered highlight"
+            style="width:100%;font-size:6px !important;color: black;border:3px solid;">
+            <thead class="default-border default-color">
+              <th>#</th>
+              <th>Fecha Registro</th>
+              <th>Marca</th>
+              <th>Número de Modelo</th>
+              <!-- <th>Referencia</th> -->
+              <th>IMEI 1</th>
+              <th>IMEI 2</th>
+              <th>Capacidad GB</th>
+              <th>Color</th>
+              <th>Estado</th>
+              <th>-</th>
+            </thead>
+            <tbody>
+              <tr style="cursor:pointer;"
+                ng-repeat="x in hojaEquipo.listadoTablaTemp | inicio: hojaEquipo.varsTabla.currentPage * hojaEquipo.varsTabla.pageSize | limitTo: hojaEquipo.varsTabla.pageSize">
+                <td ng-click="modalEditarEquipo(x)">{{x.GESN_CODIGO}}</td>
+                <td ng-click="modalEditarEquipo(x)">{{x.GESF_FECHA_REGISTRO}}</td>
+                <td ng-click="modalEditarEquipo(x)">{{x.GESC_MARCA_EQUIPO}}</td>
+                <td ng-click="modalEditarEquipo(x)">{{x.GESC_NUMERO_MODELO}}</td>
+                <!-- <td ng-click="modalEditarEquipo(x)">{{x.GESC_REFERENCIA_EQUIPO}}</td> -->
+                <td ng-click="modalEditarEquipo(x)">{{x.GESN_IMEI_1}}</td>
+                <td ng-click="modalEditarEquipo(x)">{{x.GESN_IMEI_2}}</td>
+                <td ng-click="modalEditarEquipo(x)">{{x.GESC_CAPACIDAD_GB}}</td>
+                <td ng-click="modalEditarEquipo(x)">{{x.GESC_COLOR}}</td>
+
+                <td ng-click="modalEditarEquipo(x)">
+                  <span class="status white-text fw700 pad5 {{hojaEquipo_ObtenerEstadoColor(x.GESC_ESTADO)}}">
+                    {{hojaEquipo_ObtenerEstado(x.GESC_ESTADO)}}
+                  </span>
+                </td>
+                <td>
+                  <i class="iconFontSize icon-history default-color c-pointer" ng-click="modalVerTrazaEquipo(x)"
+                    title="Trazabilidad"></i>
+                </td>
+              </tr>
+              <tr ng-show="hojaEquipo.listadoTablaTemp.length == 0">
+                <td class="center-align" colspan="11" style="font-weight: bolder;">No se encontraron resultados.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row margin">
+            <div class="col s6"><label for="normal">Total de Equipos Móviles filtrados:
+                {{hojaEquipo.listadoTablaTemp.length}}</label></div>
+            <div class="col s6 right-align"><label for="normal">Total de Equipos Móviles encontrados:
+                {{hojaEquipo.listadoTabla.length}}</label></div>
+          </div>
+
+          <ul style="text-align: center;padding-top: 20px;" class="pagination">
+            <li><button ng-disabled='hojaEquipo.varsTabla.currentPage == 0' class="btn-floating default-linear-gradient"
+                ng-click="paso('hojaEquipo','back')">&laquo;</button>
+            </li>
+            <li ng-repeat='page in hojaEquipo.varsTabla.pages'><button
+                ng-disabled="hojaEquipo.varsTabla.currentPage == page.no - 1"
+                class="btn-floating default-linear-gradient"
+                ng-click="setPage('hojaEquipo',page.no)">{{page.no}}</button></li>
+            <li><button
+                ng-disabled='hojaEquipo.varsTabla.currentPage >= hojaEquipo.listadoTablaTemp.length/hojaEquipo.varsTabla.pageSize - 1'
+                class="btn-floating default-linear-gradient" ng-click="paso('hojaEquipo','next')">&raquo;</button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+  <!-- TABLA -->
+  <!-- MODAL -->
+  <div id="modalCrearEquipo" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5>
+          <span style="font-weight: 700;" class="default-color">
+            {{!hojaEquipo.formulario.idEquipo ? 'Registrar Nuevo Equipo Móvil':'Editar Equipo Móvil'}}
+          </span>
+        </h5>
+        <label ng-show="hojaEquipo.formulario.responsable">
+          <b>Responsable Registro:</b> {{hojaEquipo.formulario.responsable}}
+        </label>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin" style="max-height: 100vh;overflow-y: auto;">
+          <!--  -->
+          <div class="col s12 m12 l12">
+            <div class="col s2 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaEquipo.formulario.marca">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.nombre}}" ng-selected="x.nombre == hojaEquipo.formulario.marca"
+                  ng-repeat="x in hojaEquipo.listadoMarcas">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Marca (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaEquipo.formulario.numeroModel" maxlength="30" text-number-only text-upper>
+              <label>Número del Modelo (*)</label>
+            </div>
+            <!-- <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaEquipo.formulario.referencia" maxlength="30" text-number-only
+                text-upper>
+              <label>Referencia (*)</label>
+            </div> -->
+            <div class="col s3 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaEquipo.formulario.color">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.nombre}}" ng-selected="x.nombre == hojaEquipo.formulario.color"
+                  ng-repeat="x in hojaEquipo.listadoColores">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Color (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaEquipo.formulario.imei_1" maxlength="15" numbers-only>
+              <label>IMEI 1 (*)</label>
+            </div>
+
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12">
+
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaEquipo.formulario.imei_2" maxlength="15" numbers-only>
+              <label>IMEI 2</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaEquipo.formulario.capacidad" maxlength="3" numbers-only>
+              <label>Capacidad GB (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaEquipo.formulario.estado"
+                ng-disabled="!hojaEquipo.formulario.idEquipo">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaEquipo.formulario.estado"
+                  ng-repeat="x in hojaEquipo.listadoEstado">{{x.nombre}}</option>
+              </select>
+              <label>Estado (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 m-b"
+            ng-show="hojaEquipo.formulario.estado == 'X' || hojaEquipo.formulario.estado == 'R'">
+            <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+              <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
+                autocomplete="off" text-description text-upper ng-model="hojaEquipo.formulario.observacion"></textarea>
+              <label>Observación (*)</label>
+            </div>
+          </div>
+
+          <!--  -->
+
+          <!--  -->
+          <div class="col s12 m12 l12 center m-t m-b">
+            <input class="btn white-text default-linear-gradient" type="submit"
+              value="{{!hojaEquipo.formulario.idEquipo ? 'Guardar':'Actualizar'}} Equipo"
+              ng-click="guardarFormEquipo()">
+          </div>
+          <!-- </form> -->
+
+        </div>
+      </div>
+      <!--  -->
+      <!--  -->
+    </div>
+  </div>
+  <!-- MODAL -->
+  <!-- //////////////////////////////////TAB 2////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs == 2">
+    <div class="col s12 m12 l12" style="justify-content: center;">
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!--  -->
+        <div class="divTablas">
+          <span class="btn" ng-click="modalCrearModem()">Nuevo <i class="icon-doc-new"></i></span>
+          <div>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaRoja" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaModem','X')">
+              {{obtenerCantidadEstado('hojaModem','X')}} {{hojaModem_ObtenerEstado('X')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaVerde" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaModem','D')">
+              {{obtenerCantidadEstado('hojaModem','D')}} {{hojaModem_ObtenerEstado('D')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaNaranja" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaModem','S')">
+              {{obtenerCantidadEstado('hojaModem','S')}} {{hojaModem_ObtenerEstado('S')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaAzul" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaModem','E')">
+              {{obtenerCantidadEstado('hojaModem','E')}} {{hojaModem_ObtenerEstado('E')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaMorado" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaModem','R')">
+              {{obtenerCantidadEstado('hojaModem','R')}} {{hojaModem_ObtenerEstado('R')}}
+            </span>
+          </div>
+        </div>
+        <!--  -->
+        <div class="foot4 divcardcustom default-linear-gradient">
+          <div class="text-al divcardcustom2">
+            <strong class="switch">Listado de Módems
+              ({{hojaModem.listadoTabla.length}})</strong>
+            <div class="tooltip">
+              <i class="icon-cw-circle cursor-pointer" ng-click="hojaModem_Listar()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+            </div>
+
+            <div class="col s3 no-padding label-new right"
+              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l black-text"
+                style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="hojaModem.filtro"
+                ng-change="filter('hojaModem',hojaModem.filtro)">
+            </div>
+          </div>
+        </div>
+        <div class="default-color">
+          <table class="tablaListado bordered highlight"
+            style="width:100%;font-size:6px !important;color: black;border:3px solid;">
+            <thead class="default-border default-color">
+              <th>#</th>
+              <th>Fecha Registro</th>
+              <th>Marca</th>
+              <!-- <th>Referencia</th> -->
+              <th>IMEI</th>
+              <th>Estado</th>
+              <th>-</th>
+            </thead>
+            <tbody>
+              <tr style="cursor:pointer;"
+                ng-repeat="x in hojaModem.listadoTablaTemp | inicio: hojaModem.varsTabla.currentPage * hojaModem.varsTabla.pageSize | limitTo: hojaModem.varsTabla.pageSize">
+                <td ng-click="modalEditarModem(x)">{{x.GESN_CODIGO}}</td>
+                <td ng-click="modalEditarModem(x)">{{x.GESF_FECHA_REGISTRO}}</td>
+                <td ng-click="modalEditarModem(x)">{{x.GESC_MARCA_MODEM}}</td>
+                <!-- <td ng-click="modalEditarModem(x)">{{x.GESC_REFERENCIA_MODEM}}</td> -->
+                <td ng-click="modalEditarModem(x)">{{x.GESN_IMEI_1}}</td>
+                <td ng-click="modalEditarModem(x)">
+                  <span class="status white-text fw700 pad5 {{hojaModem_ObtenerEstadoColor(x.GESC_ESTADO)}}">
+                    {{hojaModem_ObtenerEstado(x.GESC_ESTADO)}}
+                  </span>
+                </td>
+                <td>
+                  <i class="iconFontSize icon-history default-color c-pointer" ng-click="modalVerTrazaModem(x)"
+                    title="Trazabilidad"></i>
+                </td>
+              </tr>
+              <tr ng-show="hojaModem.listadoTablaTemp.length == 0">
+                <td class="center-align" colspan="11" style="font-weight: bolder;">No se encontraron resultados.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row margin">
+            <div class="col s6"><label for="normal">Total de Módems filtrados:
+                {{hojaModem.listadoTablaTemp.length}}</label></div>
+            <div class="col s6 right-align"><label for="normal">Total de Módems encontrados:
+                {{hojaModem.listadoTabla.length}}</label></div>
+          </div>
+
+          <ul style="text-align: center;padding-top: 20px;" class="pagination">
+            <li><button ng-disabled='hojaModem.varsTabla.currentPage == 0' class="btn-floating default-linear-gradient"
+                ng-click="paso('hojaModem','back')">&laquo;</button>
+            </li>
+            <li ng-repeat='page in hojaModem.varsTabla.pages'><button
+                ng-disabled="hojaModem.varsTabla.currentPage == page.no - 1"
+                class="btn-floating default-linear-gradient"
+                ng-click="setPage('hojaModem',page.no)">{{page.no}}</button></li>
+            <li><button
+                ng-disabled='hojaModem.varsTabla.currentPage >= hojaModem.listadoTablaTemp.length/hojaModem.varsTabla.pageSize - 1'
+                class="btn-floating default-linear-gradient" ng-click="paso('hojaModem','next')">&raquo;</button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+  <!-- TABLA -->
+  <!-- MODAL -->
+  <div id="modalCrearModem" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;" class="default-color">
+            {{!hojaModem.formulario.idModem ? 'Registrar Nuevo Módem':'Editar Módem'}}
+          </span></h5>
+        <label ng-show="hojaModem.formulario.responsable">
+          <b>Responsable Registro:</b> {{hojaModem.formulario.responsable}}
+        </label>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin" style="max-height: 100vh;overflow-y: auto;">
+          <!--  -->
+          <div class="col s12 m12 l12">
+            <div class="col s2 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaModem.formulario.marca">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.nombre}}" ng-selected="x.nombre == hojaModem.formulario.marca"
+                  ng-repeat="x in hojaModem.listadoMarcas">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Marca (*)</label>
+            </div>
+            <!-- <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaModem.formulario.referencia" maxlength="30" text-number-only
+                text-upper>
+              <label>Referencia (*)</label>
+            </div> -->
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaModem.formulario.imei_1" maxlength="15" numbers-only>
+              <label>IMEI (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaModem.formulario.estado"
+                ng-disabled="!hojaModem.formulario.idModem">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaModem.formulario.estado"
+                  ng-repeat="x in hojaModem.listadoEstado">{{x.nombre}}</option>
+              </select>
+              <label>Estado (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 m-b"
+            ng-show="hojaModem.formulario.estado == 'X' || hojaModem.formulario.estado == 'R'">
+            <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+              <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
+                autocomplete="off" text-description text-upper ng-model="hojaModem.formulario.observacion"></textarea>
+              <label>Observación (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 center m-t m-b">
+            <input class="btn white-text default-linear-gradient" type="submit"
+              value="{{!hojaModem.formulario.idModem ? 'Guardar':'Actualizar'}} Módem" ng-click="guardarFormModem()">
+          </div>
+          <!-- </form> -->
+
+        </div>
+      </div>
+      <!--  -->
+      <!--  -->
+    </div>
+  </div>
+  <!-- MODAL -->
+  <!-- //////////////////////////////////TAB 3////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs == 3">
+    <div class="col s12 m12 l12" style="justify-content: center;">
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!--  -->
+        <div class="divTablas">
+          <span class="btn" ng-click="modalCrearLinea()">Nuevo <i class="icon-doc-new"></i></span>
+          <div>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaRoja" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaLinea','X')">
+              {{obtenerCantidadEstado('hojaLinea','X')}} {{hojaLinea_ObtenerEstado('X')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaVerde" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaLinea','D')">
+              {{obtenerCantidadEstado('hojaLinea','D')}} {{hojaLinea_ObtenerEstado('D')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaNaranja" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaLinea','S')">
+              {{obtenerCantidadEstado('hojaLinea','S')}} {{hojaLinea_ObtenerEstado('S')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaAzul" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaLinea','E')">
+              {{obtenerCantidadEstado('hojaLinea','E')}} {{hojaLinea_ObtenerEstado('E')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaMorado" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaLinea','R')">
+              {{obtenerCantidadEstado('hojaLinea','R')}} {{hojaLinea_ObtenerEstado('R')}}
+            </span>
+          </div>
+        </div>
+        <!--  -->
+        <div class="foot4 divcardcustom default-linear-gradient">
+          <div class="text-al divcardcustom2">
+            <strong class="switch">Listado de Líneas
+              ({{hojaLinea.listadoTabla.length}})</strong>
+            <div class="tooltip">
+              <i class="icon-cw-circle cursor-pointer" ng-click="hojaLinea_Listar()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+            </div>
+
+            <div class="col s3 no-padding label-new right"
+              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l black-text"
+                style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="hojaLinea.filtro"
+                ng-change="filter('hojaLinea',hojaLinea.filtro)">
+            </div>
+          </div>
+        </div>
+        <div class="default-color">
+          <table class="tablaListado bordered highlight"
+            style="width:100%;font-size:6px !important;color: black;border:3px solid;">
+            <thead class="default-border default-color">
+              <th>#</th>
+              <th>Fecha Registro</th>
+              <th>Operador</th>
+              <th>Número Línea</th>
+              <th>Tipo Plan</th>
+              <th>Descripcion Plan</th>
+              <th>Gigas</th>
+              <th>Valor Plan</th>
+              <th>Fecha Corte</th>
+              <th>Estado</th>
+              <th>-</th>
+            </thead>
+            <tbody>
+              <tr style="cursor:pointer;"
+                ng-repeat="x in hojaLinea.listadoTablaTemp | inicio: hojaLinea.varsTabla.currentPage * hojaLinea.varsTabla.pageSize | limitTo: hojaLinea.varsTabla.pageSize">
+                <td ng-click="modalEditarLinea(x)">{{x.GESN_CODIGO}}</td>
+                <td ng-click="modalEditarLinea(x)">{{x.GESF_FECHA_REGISTRO_LINEA}}</td>
+                <td ng-click="modalEditarLinea(x)">{{x.GESC_OPERADOR}}</td>
+                <td ng-click="modalEditarLinea(x)">{{x.GESN_NUMERO_LINEA}}</td>
+                <td ng-click="modalEditarLinea(x)">{{x.GESC_TIPO_LINEA.split('-')[1]}}</td>
+                <td ng-click="modalEditarLinea(x)">{{x.GESC_DESCRIPCION_PLAN}}</td>
+                <td ng-click="modalEditarLinea(x)">{{x.GESC_GIGAS}}</td>
+                <td ng-click="modalEditarLinea(x)">{{formatPeso2(x.GESN_VALOR_PLAN)}}</td>
+                <td ng-click="modalEditarLinea(x)">{{x.GESF_FECHA_CORTE}}</td>
+
+                <td ng-click="modalEditarLinea(x)">
+                  <span class="status white-text fw700 pad5 {{hojaLinea_ObtenerEstadoColor(x.GESC_ESTADO)}}">
+                    {{hojaLinea_ObtenerEstado(x.GESC_ESTADO)}}
+                  </span>
+                </td>
+                <td>
+                  <i class="iconFontSize icon-history default-color c-pointer" ng-click="modalVerTrazaLinea(x)"
+                    title="Trazabilidad"></i>
+                </td>
+              </tr>
+              <tr ng-show="hojaLinea.listadoTablaTemp.length == 0">
+                <td class="center-align" colspan="11" style="font-weight: bolder;">No se encontraron resultados.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row margin">
+            <div class="col s6"><label for="normal">Total de Líneas filtrados:
+                {{hojaLinea.listadoTablaTemp.length}}</label></div>
+            <div class="col s6 right-align"><label for="normal">Total de Líneas encontrados:
+                {{hojaLinea.listadoTabla.length}}</label></div>
+          </div>
+
+          <ul style="text-align: center;padding-top: 20px;" class="pagination">
+            <li><button ng-disabled='hojaLinea.varsTabla.currentPage == 0' class="btn-floating default-linear-gradient"
+                ng-click="paso('hojaLinea','back')">&laquo;</button>
+            </li>
+            <li ng-repeat='page in hojaLinea.varsTabla.pages'><button
+                ng-disabled="hojaLinea.varsTabla.currentPage == page.no - 1"
+                class="btn-floating default-linear-gradient"
+                ng-click="setPage('hojaLinea',page.no)">{{page.no}}</button></li>
+            <li><button
+                ng-disabled='hojaLinea.varsTabla.currentPage >= hojaLinea.listadoTablaTemp.length/hojaLinea.varsTabla.pageSize - 1'
+                class="btn-floating default-linear-gradient" ng-click="paso('hojaLinea','next')">&raquo;</button>
+            </li>
+          </ul>
+        </div>
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+  <!-- TABLA -->
+  <!-- MODAL -->
+  <div id="modalCrearLinea" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;" class="default-color">
+            {{!hojaLinea.formulario.idLinea ? 'Registrar Nueva Línea':'Editar Línea'}}
+          </span></h5>
+        <label ng-show="hojaLinea.formulario.responsable">
+          <b>Responsable Registro:</b> {{hojaLinea.formulario.responsable}}
+        </label>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin" style="max-height: 100vh;overflow-y: auto;">
+          <!--  -->
+
+          <div class="col s12 m12 l12">
+            <div class="col s2 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaLinea.formulario.operador">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.nombre}}" ng-selected="x.nombre == hojaLinea.formulario.operador"
+                  ng-repeat="x in hojaLinea.listadoOperadores">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Operador (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaLinea.formulario.numeroLinea" maxlength="10" numbers-only>
+              <label>Número Linea (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaLinea.formulario.tipo">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaLinea.formulario.tipo"
+                  ng-repeat="x in hojaLinea.listadoTipoLinea">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Tipo Linea (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaLinea.formulario.gigas" maxlength="50" text-upper>
+              <label>Gigas (*)</label>
+            </div>
+
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12">
+
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaLinea.formulario.descripcionPlan" maxlength="40" text-description
+                text-upper>
+              <label>Descripción Plan (*)</label>
+            </div>
+
+
+            <div class="col s3 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                id="hojaLinea_formulario_valorPlan" autocomplete="off" ng-model="hojaLinea.formulario.valorPlan"
+                maxlength="16" autocomplete="off" ng-keyup="FormatPeso('hojaLinea_formulario_valorPlan')">
+              <label>Valor Plan (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b">
+              <input class="border-none input-date-new white m-l input-out-new m-l" autocomplete="off" type="date"
+                ng-model="hojaLinea.formulario.fechaCorte">
+              <label>Fecha Corte</label>
+            </div>
+
+            <div class="col s3 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaLinea.formulario.estado"
+                ng-disabled="!hojaLinea.formulario.idLinea">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaLinea.formulario.estado"
+                  ng-repeat="x in hojaLinea.listadoEstado">{{x.nombre}}</option>
+              </select>
+              <label>Estado (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 m-b"
+            ng-show="hojaLinea.formulario.estado == 'X' || hojaLinea.formulario.estado == 'R'">
+            <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+              <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
+                autocomplete="off" text-description text-upper ng-model="hojaLinea.formulario.observacion"></textarea>
+              <label>Observación (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 center m-t m-b">
+            <input class="btn white-text default-linear-gradient" type="submit"
+              value="{{!hojaLinea.formulario.idLinea ? 'Guardar':'Actualizar'}} Línea" ng-click="guardarFormLinea()">
+          </div>
+          <!-- </form> -->
+
+        </div>
+      </div>
+      <!--  -->
+      <!--  -->
+    </div>
+  </div>
+  <!-- MODAL -->
+  <!-- ///// -->
+  <div id="modalTrazabilidad" class="modal" style="margin: 0 auto;max-height: 100%;width: 70%;top:0%;">
+    <div class="col s12 m12 l12 card margin no-padding">
+      <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+        ng-click="closeModal()">
+      </div>
+      <div class="card-content default-linear-gradient border-radius-none white-text">
+        <h5><span class="margin" style="font-size: 1.64rem;">Trazabilidad ({{hoja.listadoTablaTraza.length}})</span>
+        </h5>
+      </div>
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!-- ELEGIR -->
+        <!-- //-// -->
+        <div class="col s12" ng-if="hoja.listadoTablaTraza.length != 0">
+          <div style="max-height:70vh;overflow:auto;border: 2px solid;" class="default-color">
+            <table class="tablaListado highlight" style="width:100%;color: black;">
+              <thead>
+                <th>FECHA</th>
+                <th>RESPONSABLE</th>
+                <!-- <th>COMENTARIO</th> -->
+                <th>INFORMACION</th>
+                <th>DATO ANTERIOR</th>
+                <th>DATO NUEVO</th>
+              </thead>
+              <tbody id="idpro">
+
+                <tr ng-repeat="x in hoja.listadoTablaTraza">
+                  <td>{{x.BCOF_HORA}}</td>
+                  <!-- <td>{{x.BCOC_RESPONSABLE}}</td> -->
+                  <td>{{x.BCOC_USUARIO_OS}}</td>
+                  <td>{{x.BCOC_COLUMNA}}</td>
+                  <td>
+                    <span class="{{traza_ObtenerEstadoColor(x.BCOC_COLUMNA,x.BCOC_ANTERIOR)}}">
+                      {{traza_ObtenerEstado(x.BCOC_COLUMNA,x.BCOC_ANTERIOR)}}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="{{traza_ObtenerEstadoColor(x.BCOC_COLUMNA,x.BCOC_NUEVO)}}">
+                      {{traza_ObtenerEstado(x.BCOC_COLUMNA,x.BCOC_NUEVO)}}
+                    </span>
+                  </td>
+
+                  <!-- <td>{{x.BCOC_ANTERIOR}}</td> -->
+                  <!-- <td>{{x.BCOC_NUEVO}}</td> -->
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ///// -->
+  <!-- //////////////////////////////////TAB 4////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs == 4">
+    <div class="col s12 m12 l12" style="justify-content: center;">
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!--  -->
+        <div class="divTablas">
+          <span class="btn" ng-click="modalCrearAsig()">Nuevo <i class="icon-doc-new"></i></span>
+          <div>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaNaranja" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaAsig','P')">
+              {{obtenerCantidadEstado('hojaAsig','P')}} {{hojaAsig_ObtenerEstado('P')}}
+            </span>
+            <span class="status white-text fw700 pad5 c-pointer etiquetaAzul" title="Filtrar"
+              ng-click="filtrarListadoEstado('hojaAsig','C')">
+              {{obtenerCantidadEstado('hojaAsig','C')}} {{hojaAsig_ObtenerEstado('C')}}
+            </span>
+          </div>
+        </div>
+        <!--  -->
+        <div class="foot4 divcardcustom default-linear-gradient">
+          <div class="text-al divcardcustom2">
+            <strong class="switch">Listado de Asignaciones
+              ({{hojaAsig.listadoTabla.length}})</strong>
+            <div class="tooltip">
+              <i class="icon-cw-circle cursor-pointer" ng-click="hojaAsig_Listar()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+            </div>
+            <div class="tooltip">
+              <i class="icon-download cursor-pointer" ng-click="descargaInforme()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Descargar Informe</span>
+            </div>
+
+            <div class="col s3 no-padding label-new right"
+              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l black-text"
+                style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="hojaAsig.filtro"
+                ng-change="filter('hojaAsig',hojaAsig.filtro)">
+            </div>
+          </div>
+        </div>
+        <div class="default-color">
+          <table class="tablaListado bordered highlight"
+            style="width:100%;font-size:6px !important;color: black;border:3px solid;">
+            <thead class="default-border default-color">
+              <th>#</th>
+              <th>Fecha Asignación</th>
+              <th>Nombre del Empleado</th>
+              <th>Cargo</th>
+              <th>Operador</th>
+              <th>Linea móvil</th>
+              <th>IMEI EQUIPO</th>
+              <!-- <th>Numero SIM CARD</th> -->
+              <th>Regional</th>
+              <th>Oficina</th>
+              <th>Estado</th>
+              <th>-</th>
+              <!-- <th>Fecha Registro</th>
+              <th>Linea movil</th>
+              <th>Tipo de Linea</th>
+              <th>Equipo</th>
+              <th>Mesa de Ayuda</th>
+              <th>Resp. Entrega</th>
+              <th>Resp. Recibe</th>
+              <th>Estado</th> -->
+              <!-- <th>-</th> -->
+            </thead>
+            <tbody>
+              <tr style="cursor:pointer;"
+                ng-repeat="x in hojaAsig.listadoTablaTemp | inicio: hojaAsig.varsTabla.currentPage * hojaAsig.varsTabla.pageSize | limitTo: hojaAsig.varsTabla.pageSize">
+                <td ng-click="modalEditarAsig(x)">{{x.GESN_CODIGO}}</td>
+                <td ng-click="modalEditarAsig(x)">{{x.GESF_FECHA_ASIGNACION}}</td>
+                <td ng-click="modalEditarAsig(x)">{{x.NOMBRE_EMPLEADO}}</td>
+                <td ng-click="modalEditarAsig(x)">{{x.CARGO}}</td>
+                <td ng-click="modalEditarAsig(x)">{{x.OPERADOR}}</td>
+                <td ng-click="modalEditarAsig(x)">{{x.LINEA_MOVIL}}</td>
+                <td ng-click="modalEditarAsig(x)">({{x.IMEI_CEL ? 'CELULAR' : 'MODEM'}}) {{x.IMEI_CEL ? x.IMEI_CEL :
+                  x.IMEI_MODEM}}</td>
+                <td ng-click="modalEditarAsig(x)">{{x.REGIONAL}}</td>
+                <td ng-click="modalEditarAsig(x)">{{x.OFICINA}}</td>
+                <td ng-click="modalEditarAsig(x)">
+                  <span class="status white-text fw700 pad5 {{hojaAsig_ObtenerEstadoColor(x.GESC_ESTADO)}}">
+                    {{hojaAsig_ObtenerEstado(x.GESC_ESTADO)}}
+                  </span>
+                </td>
+                <td>
+                  <i class="iconFontSize icon-file-pdf red-text c-pointer" ng-click="descargarSoporte(x.GESC_ACTA)"
+                    ng-show="x.GESC_ACTA" title="Ver soporte"></i>
+                  <i class="iconFontSize icon-file-word default-color c-pointer" ng-show="!x.GESC_ACTA"
+                    ng-click="generarActa(x)" title="Generar Acta"></i>
+                  <i class="iconFontSize icon-upload default-color c-pointer" ng-show="!x.GESC_ACTA"
+                    ng-click="uploadSoporte(x)" title="Cargar Soporte"></i>
+                </td>
+
+              </tr>
+              <tr ng-show="hojaAsig.listadoTablaTemp.length == 0">
+                <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron resultados.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row margin">
+            <div class="col s6"><label for="normal">Total de Asignaciones filtradas:
+                {{hojaAsig.listadoTablaTemp.length}}</label></div>
+            <div class="col s6 right-align"><label for="normal">Total de Asignaciones encontradas:
+                {{hojaAsig.listadoTabla.length}}</label></div>
+          </div>
+
+          <ul style="text-align: center;padding-top: 20px;" class="pagination">
+            <li><button ng-disabled='hojaAsig.varsTabla.currentPage == 0' class="btn-floating default-linear-gradient"
+                ng-click="paso('hojaAsig','back')">&laquo;</button>
+            </li>
+            <li ng-repeat='page in hojaAsig.varsTabla.pages'><button
+                ng-disabled="hojaAsig.varsTabla.currentPage == page.no - 1" class="btn-floating default-linear-gradient"
+                ng-click="setPage('hojaAsig',page.no)">{{page.no}}</button></li>
+            <li><button
+                ng-disabled='hojaAsig.varsTabla.currentPage >= hojaAsig.listadoTablaTemp.length/hojaAsig.varsTabla.pageSize - 1'
+                class="btn-floating default-linear-gradient" ng-click="paso('hojaAsig','next')">&raquo;</button>
+            </li>
+          </ul>
+        </div>
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+  <!-- TABLA -->
+  <!-- MODAL -->
+  <div id="modalCrearAsig" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;" class="default-color">
+            {{!hojaAsig.formulario.idAsig ? 'Registrar Nueva Asignación':'Asignación realizada'}}
+          </span></h5>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin" style="max-height: 100vh;overflow-y: auto;">
+          <!--  -->
+          <!--  -->
+          <div class="col s12 m12 l12">
+
+            <div class="col s4 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.linea" ng-change="lineaSeleccionadaAsig()"
+                list="listadoLineas" ng-readonly="hojaAsig.formulario.idAsig" text-upper required>
+              <datalist id="listadoLineas" open="open">
+                <option value="{{x.GESN_CODIGO +' - '+ x.GESN_NUMERO_LINEA +' - '+ x.GESC_TIPO_LINEA.split('-')[1]}}"
+                  ng-repeat="x in hojaAsig.listadoLineas">
+              </datalist>
+              <label class="m-l">Línea móvil (*)</label>
+            </div>
+
+            <div class="col s4 no-padding label-new m-b" ng-show="hojaAsig.formulario.tipoLinea == 'C'">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.equipo" list="listadoEquipos"
+                ng-readonly="hojaAsig.formulario.idAsig" text-upper required>
+              <datalist id="listadoEquipos" open="open">
+                <option value="{{x.GESN_CODIGO +' - '+ x.GESC_MARCA_EQUIPO +' - '+ x.GESC_NUMERO_MODELO}}"
+                  ng-repeat="x in hojaAsig.listadoEquipos">
+              </datalist>
+              <label class="m-l">Equipo (*)</label>
+            </div>
+
+            <div class="col s4 no-padding label-new m-b" ng-show="hojaAsig.formulario.tipoLinea == 'M'">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.modem" list="listadoModems"
+                ng-readonly="hojaAsig.formulario.idAsig" text-upper required>
+              <datalist id="listadoModems" open="open">
+                <option value="{{x.GESN_CODIGO +' - '+ x.GESC_MARCA_MODEM}}" ng-repeat="x in hojaAsig.listadoModems">
+              </datalist>
+              <label class="m-l">Modem (*)</label>
+            </div>
+
+            <div class="col s4 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.mesaAyuda" ng-change="mesaAyudaSeleccionadaAsig()"
+                list="listadoAcas" ng-readonly="hojaAsig.formulario.idAsig" text-upper required>
+              <datalist id="listadoAcas" open="open">
+                <option value="{{x.CASN_NUMERO +' - '+ x.TERC_NOMBRE}}" ng-repeat="x in hojaAsig.listadoAcas">
+              </datalist>
+              <label class="m-l">Mesa de Ayuda (*)</label>
+            </div>
+
+          </div>
+
+          <div class="col s12 m12 l12">
+
+            <div class="col s4 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.nombre" readonly="true" text-upper>
+              <label>Nombre (*)</label>
+            </div>
+            <div class="col s4 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.cargo" readonly="true" text-upper>
+              <label>Cargo (*)</label>
+            </div>
+            <div class="col s4 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.area" readonly="true" text-upper>
+              <label>Area (*)</label>
+            </div>
+
+          </div>
+
+          <div class="col s12 m12 l12">
+            <div class="col s4 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.regional" readonly="true" text-upper>
+              <label>Regional (*)</label>
+            </div>
+            <div class="col s4 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaAsig.formulario.correo" readonly="true" text-upper>
+              <label>Correo (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 m-b">
+            <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+              <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
+                autocomplete="off" text-description text-upper ng-model="hojaAsig.formulario.observacion"></textarea>
+              <label>Observación (*)</label>
+            </div>
+          </div>
+          <!--  -->
+
+          <!--  -->
+          <div class="col s12 m12 l12 center m-t m-b" ng-if="!hojaAsig.formulario.idAsig">
+            <input class="btn white-text default-linear-gradient" type="submit"
+              value="{{!hojaAsig.formulario.idAsig ? 'Guardar':'Actualizar'}} Asignación" ng-click="guardarFormAsig()">
+          </div>
+          <!-- <div class="col s12 m12 l12 center m-t m-b">
+            <input class="btn white-text default-linear-gradient" type="submit"
+              value="{{!hojaAsig.formulario.idAsig ? 'Guardar':'Actualizar'}} Asignación" ng-click="guardarFormLinea()">
+          </div> -->
+          <!-- </form> -->
+
+        </div>
+      </div>
+      <!--  -->
+      <!--  -->
+    </div>
+  </div>
+  <!-- MODAL -->
+
+  <style>
+    .divTablas {
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .etiquetaRoja {
+      background-color: red;
+    }
+
+    .etiquetaVerde {
+      background-color: green;
+    }
+
+    .etiquetaNaranja {
+      background-color: orange;
+    }
+
+    .etiquetaAzul {
+      background-color: blue;
+    }
+
+    .etiquetaMorado {
+      background-color: purple;
+    }
+
+
+    .fw600 {
+      font-weight: 600;
+    }
+
+    .fw700 {
+      font-weight: 700;
+    }
+
+    .pad5 {
+      font-weight: 700;
+    }
+
+    table th,
+    table td {
+      text-align: center;
+    }
+
+    #tableFichaTecnica th,
+    #tableFichaTecnica td {
+      text-align: left;
+    }
+
+    #tableDatosCorresp th,
+    #tableDatosCorresp td {
+      text-align: left;
+    }
+
+    .iconFontSize {
+      font-size: 1.3rem;
+    }
+
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+    .btnAgregar {
+      padding: 0 0.5rem;
+      height: 2rem;
+      line-height: 2rem;
+    }
+
+    .blockquote_titulo {
+      height: 2vw;
+      line-height: 2;
+      padding-right: 1.5rem;
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
+    textarea {
+      resize: none;
+      height: 100px;
+      text-align: justify;
+    }
+
+    #procesosFile {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+      border: 1px solid #8a88865e !important;
+      height: 2.14rem;
+      border-radius: 2px;
+      margin: 0;
+      width: -webkit-fill-available;
+    }
+
+    .file-upload-wrapper:after {
+      text-align: center;
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      line-height: 1;
+      color: #80868b;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 400;
+      height: 8vh;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: 10vh;
+    }
+
+    select:disabled {
+      color: black;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    .text-upper {
+      text-transform: uppercase !important;
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+
+    .label-new>label {
+      display: table;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    #toast-container .success {
+      background: linear-gradient(to bottom left, #0fda00, #007217, #0fda00);
+    }
+
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

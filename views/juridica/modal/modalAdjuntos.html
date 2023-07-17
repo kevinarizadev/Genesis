@@ -1,0 +1,489 @@
+<div style="width: 90%; margin: 0 auto; padding-top: 50px;">
+  <div class="col s12 m6 l6 card" style="height: calc(100vh - 300px);">
+    <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;"></div>
+    <div class="card-content">
+      <h5 style="font-weight: 700;">Adjuntos Cargados
+        <!-- <span>{{consnulidad == undefined ? 'Tutela' : 'Novedad - '+consnulidad}}</span> -->
+      </h5>
+      <!-- <div class="row">
+            <div class="col s3 m3 l3">
+               <h5>Adjuntos Cargados</h5>
+               <span>{{consnulidad == undefined ? 'Tutela' : 'Novedad - '+consnulidad}}</span>
+            </div>
+            <div class="col s6 m6 l6">
+               <div class="center margin white">
+                  <ul id="tabs-list" class="align-items-center d-flex justify-content-between left list-inline w-100">
+                     <li style="margin: auto">
+                        <ul class="tabs transparent">
+                        <li class="tab col w-auto">
+                           <a id="tabadj_1" ng-click="obtenerAdjuntos()"
+                              href="javascript:void(0)">Tutela <i class="icon-list-add"></i></a>
+                        </li>
+                        <li class="tab col w-auto" ng-repeat="nul in cant_nulidades">
+                           <a id="tabadj_2" ng-click="obtenerAdjuntos(nul.consecutivo)"
+                              href="javascript:void(0)">Novedad {{nul.consecutivo}}<i class="icon-doc-text-inv"></i></a>
+                        </li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div> -->
+    </div>
+    <div class="card-action" style="padding-left: 0px; padding-right: 0px;padding-bottom: 0;">
+      <div class="row allMails bg-white white" style="margin-bottom: 0px;">
+        <div class="col s12 m3 l3 mailsParts tabInbox_3_1">
+
+          <!-- ng-show="Adjuntos.TUTELA.length>0"  -->
+          <ul class="collapsible Clase_AjustarHeigth_Modal_Soporte" data-collapsible="accordion"
+            style="background-color: #fff !important;height: 70vh;overflow-y: auto;">
+            <li>
+              <!-- ng-show="Adjuntos.TUTELA.length>0" -->
+              <div id="collapsible-header-Soporte-Tutela" class="collapsible-header">
+                <i class="material-icons">label_outline</i>Soportes
+              </div>
+              <div class="collapsible-body" style="padding-left: 10px;">
+
+
+                <ul class="collapsible" data-collapsible="accordion" style="background-color: #fff !important;">
+
+                  <li ng-show="Adjuntos.TUTELA.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes de Tutela
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection"
+                        style="box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="x in Adjuntos.TUTELA">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(x)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(x)"><strong>{{x.NOMBRE}}</strong></span>
+                          <span class="m-l" ng-click="actualizaSoporte(x)"
+                            ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S' && x.RUTA" title="Actualizar soporte"><i
+                              class="icon-upload"></i></span>
+                          <span class="m-l" ng-click="eliminaSoporte(x)"
+                            ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S' && x.RUTA" title="Eliminar soporte"><i
+                              class="icon-trash"></i></span><br>
+                          <label>{{x.FECHA}}</label><br>
+                          <label>{{x.RESPONSABLE}}</label>
+                          <i class="right pulse2" style="font-size: 20px;"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                  <li ng-show="Adjuntos.INCIDENTES.length>0" ng-repeat="y in grupo">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes de Incidente N°{{$index
+                      + 1}}
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="x in y.LISTA">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(x)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(x)"><b>{{x.NOMBRE}}</b></span>
+                          <span class="m-l" ng-click="actualizaSoporte(x)"
+                            ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S' && x.RUTA"><i class="icon-upload"></i></span>
+                          <span class="m-l" ng-click="eliminaSoporte(x) && x.RUTA" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"
+                            title="Eliminar soporte"><i class="icon-trash"></i></span>
+                          <br>
+                          <label>{{x.FECHA}}</label><br>
+                          <label>{{x.RESPONSABLE}}</label><br>
+                          <label ng-if="x.SANCIONAR_DECISION">{{x.SANCIONAR_DECISION}}</label>
+                          <!-- <i class="right pulse2" style="font-size: 20px;"></i> -->
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                  <li ng-show="Adjuntos.SEGUIMIENTO.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes de Seguimiento
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="x in Adjuntos.SEGUIMIENTO">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(x)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(x)"><strong>{{x.NOMBRE}}</strong></span><span class="m-l"
+                            ng-click="actualizaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"><i
+                              class="icon-upload"></i></span>
+                          <span class="m-l" ng-click="eliminaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"
+                            title="Eliminar soporte"><i class="icon-trash"></i></span>
+                          <br>
+                          <label>{{x.FECHA}}</label><br>
+                          <label>{{x.RESPONSABLE}}</label>
+                          <i class="right pulse2" style="font-size: 20px;"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                  <li ng-show="Adjuntos.ESTADO.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes de Revisiones
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="x in Adjuntos.ESTADO">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(x)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(x)"><strong>{{x.NOMBRE}}</strong></span><span class="m-l"
+                            ng-click="actualizaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"><i
+                              class="icon-upload"></i></span>
+                          <span class="m-l" ng-click="eliminaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"
+                            title="Eliminar soporte"><i class="icon-trash"></i></span>
+                          <br>
+                          <label>{{x.FECHA}}</label><br>
+                          <label>{{x.RESPONSABLE}}</label>
+                          <i class="right pulse2" style="font-size: 20px;"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                  <li ng-show="Adjuntos.NULIDAD.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes de Novedades
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="x in Adjuntos.NULIDAD">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(x)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(x)"><strong>{{x.NOMBRE}}</strong></span><span class="m-l"
+                            ng-click="actualizaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"><i
+                              class="icon-upload"></i></span>
+                          <span class="m-l" ng-click="eliminaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"
+                            title="Eliminar soporte"><i class="icon-trash"></i></span>
+                          <br>
+                          <label>Nulidad: {{x.NULIDAD}} - Declaro: {{x.DECLARACION == 'N' ?
+                            'No' :
+                            'Si'}}</label><br>
+                          <label>{{x.FECHA}}</label><br>
+                          <label>{{x.RESPONSABLE}}</label>
+                          <i class="right pulse2" style="font-size: 20px;"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            <li ng-show="cant_nulidades.length>0" ng-repeat="nul in cant_nulidades">
+              <div class="collapsible-header">
+                <i class="material-icons">label_outline</i>Novedad {{nul.CONS}}
+              </div>
+              <div class="collapsible-body" style="padding-left: 10px;">
+
+
+                <ul class="collapsible" data-collapsible="accordion" style="background-color: #fff !important;">
+
+                  <li ng-show="nul.ARCHIVOS.TUTELA.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection"
+                        style="box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="x in nul.ARCHIVOS.TUTELA">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(x)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(x)"><strong>{{x.NOMBRE}}</strong></span><span class="m-l"
+                            ng-click="actualizaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"><i
+                              class="icon-upload"></i></span><br>
+                          <label>{{x.FECHA}}</label><br>
+                          <label>{{x.RESPONSABLE}}</label>
+                          <i class="right pulse2" style="font-size: 20px;"></i>
+                        </li>
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-show="msjAdjuntosVacios">
+                          <span class="title avtitle" style="font-size: 0.9rem;"><strong>Sin
+                              adjuntos.</strong></span>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                  <li ng-repeat="y in nul.ARCHIVOS.INCIDENTES" ng-show="nul.ARCHIVOS.INCIDENTES.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes de Incidente
+                      N°{{y.INCIDENTE}}
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="z in y.ARCHIVO">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(z)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(z)"><strong>{{z.NOMBRE}}</strong></span><span class="m-l"
+                            ng-click="actualizaSoporte(x)"
+                            ng-if="cedula == '1042454684' || cedula == '1096211358' || cedula == '1083434770'"><i
+                              class="icon-upload"></i></span><br>
+                          <label>{{z.FECHA}}</label><br>
+                          <label>{{z.RESPONSABLE}}</label>
+                          <i class="right pulse2" style="font-size: 20px;"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                  <li ng-show="nul.ARCHIVOS.SEGUIMIENTO.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Soportes de Seguimiento
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection">
+                        <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;"
+                          ng-repeat="a in nul.ARCHIVOS.SEGUIMIENTO">
+                          <img src="assets/images/acta.svg" alt="john" class="circle c-pointer"
+                            ng-click="descargafile(a)">
+                          <span class="title avtitle c-pointer" style="font-size: 0.9rem;"
+                            ng-click="descargafile(a)"><strong>{{a.NOMBRE}}</strong></span><span class="m-l"
+                            ng-click="actualizaSoporte(x)" ng-if="Rol_Permisos.ACTUALIZAR_SOPORTES== 'S'"><i
+                              class="icon-upload"></i></span><br>
+                          <label>{{a.FECHA}}</label><br>
+                          <label>{{a.RESPONSABLE}}</label>
+                          <i class="right pulse2" style="font-size: 20px;"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+
+                  <!-- <li ng-show="Adjuntos.ESTADO.length>0">
+                              <div class="collapsible-header">
+                                 <i class="material-icons">label_outline</i>Soportes de Revisiones
+                              </div>
+                              <div class="collapsible-body">
+                                 <ul class="collection" id="collection">
+                                    <li class="collection-item avatar"
+                                       style="padding-top: 15px;min-height: 60px;"
+                                       ng-click="H1VerSoportes_Anticipo(x,$index,'HojaAnt_Soportes_Tutela_Seguimiento')"
+                                       ng-repeat="x in Adjuntos.ESTADO">
+                                       <img src="assets/images/acta.svg" alt="john" class="circle">
+                                       <span class="title avtitle" style="font-size: 0.9rem;"><strong>{{x.NOMBRE}}</strong></span><br>
+                                       <label>{{x.FECHA}}</label><br>
+                                       <label>{{x.RESPONSABLE}}</label>
+                                       <i class="right pulse2" style="font-size: 20px;"></i>
+                                    </li>
+                                 </ul>
+                              </div>
+                           </li> -->
+
+
+                  <!-- <li ng-show="Adjuntos.NULIDAD.length>0">
+                              <div class="collapsible-header">
+                                 <i class="material-icons">label_outline</i>Soportes de Novedades
+                              </div>
+                              <div class="collapsible-body">
+                                 <ul class="collection" id="collection">
+                                    <li class="collection-item avatar" style="padding-top: 15px;min-height: 60px;" ng-repeat="x in Adjuntos.NULIDAD">
+                                       <img src="assets/images/acta.svg" alt="john" class="circle">
+                                       <span class="title avtitle" style="font-size: 0.9rem;"><strong>{{x.NOMBRE}}</strong></span><br>
+                                       <label>{{x.FECHA}}</label><br>
+                                       <label>{{x.RESPONSABLE}}</label>
+                                       <i class="right pulse2" style="font-size: 20px;"></i>
+                                    </li>
+                                 </ul>
+                              </div>
+                           </li> -->
+                </ul>
+              </div>
+            </li>
+            <li>
+              <!-- ng-show="Adjuntos.TUTELA.length>0" -->
+              <div id="collapsible-header-Soporte-Tutela" class="collapsible-header">
+                <i class="material-icons">label_outline</i>Notificaciones
+              </div>
+              <div class="collapsible-body" style="padding-left: 10px;">
+                <ul class="collapsible" data-collapsible="accordion" style="background-color: #fff !important;">
+
+                  <li ng-show="Adjuntos.TUTELA.length>0">
+                    <div class="collapsible-header">
+                      <i class="material-icons">label_outline</i>Notificación de Reparto
+                    </div>
+                    <div class="collapsible-body">
+                      <ul class="collection" id="collection"
+                        style="box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);">
+                        <li class="collection-item avatar c-pointer" style="padding-top: 15px;min-height: 60px;"
+                          ng-click="mostrarPlantilla('1')">
+                          <img src="assets/images/acta.svg" alt="john" class="circle">
+                          <span class="title avtitle" style="font-size: 0.9rem;">
+                            <strong>Notificación</strong></span><br>
+                          <label>{{registro.fechaRegistro}}</label><br>
+                          <label>{{registro.nombre_radicador_nacional}}</label>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+
+                </ul>
+              </div>
+            </li>
+          </ul>
+
+
+
+        </div>
+        <div class="col s12 m9 l9 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+          style="height: 70vh;" ng-show="UrlSoporte=='' && verPlantillaTipo ==''">
+          <i class="icon-file-pdf" style="margin: auto;font-size: 5em;" ng-show="!UrlSoporteCargando"></i>
+          <div ng-show="UrlSoporteCargando" class="center-block">
+            <div class="loading">
+              <div class="default-background"></div>
+              <div class="default-background"></div>
+              <div class="default-background"></div>
+            </div>
+            <p style="font-weight: bold;" class="margin">Cargando...</p>
+          </div>
+        </div>
+        <div class="col s12 m9 l9 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+          style="height: 70vh;overflow: auto;" ng-show="UrlSoporte!=''">
+          <iframe style="width: 100%;height: 100%;" type="application/pdf" ng-src="{{UrlSoporte}}" src="{{UrlSoporte}}">
+          </iframe>
+        </div>
+        <div class="col s12 m9 l9 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+          style="height: 70vh;overflow: auto;" ng-show="verPlantillaTipo!=''">
+
+          <div class="row" ng-if="verPlantillaTipo == '1'">
+            <!-- <iframe style="width: 60vw;height: 60vh;" type="application/pdf"
+              src="views/juridica/plantillas/notificacion_reparto_tutela.html">
+            </iframe> -->
+            <div ng-include style="width: 60vw;height: 60vh;"
+              src="'views/juridica/plantillas/notificacion_reparto_tutela.html'"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<style>
+  .tabs {
+    display: flex;
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 48px;
+    background-color: #fff;
+    margin: 0 auto;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .tabs .tab {
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    display: block;
+    float: left;
+    text-align: center;
+    line-height: 48px;
+    height: 48px;
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    letter-spacing: .8px;
+    width: 15%;
+    min-width: 80px;
+  }
+
+  .tabs .tab a {
+    color: #1a2e63 !important;
+  }
+
+  .tabs .tab a:hover {
+    color: #f9c9cb !important;
+  }
+
+  .tabs .tab a:hover,
+  .tabs .tab a.active {
+    background-color: transparent;
+    color: #1a2e63;
+  }
+
+  .file-upload-wrapper {
+    position: relative;
+    width: 100%;
+    height: 44px;
+    border: 1px solid #eeeeee;
+    z-index: 1;
+  }
+
+  .file-upload-wrapper:after {
+    content: attr(data-text);
+    font-size: 18px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    padding: 10px 15px;
+    display: block;
+    width: calc(100% - 40px);
+    pointer-events: none;
+    z-index: 20;
+    height: 40px;
+    line-height: 24px;
+    color: #999;
+    border-radius: 5px 10px 10px 5px;
+    font-weight: 300;
+  }
+
+  .file-upload-wrapper:before {
+    content: "Adjuntar";
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    height: 43px;
+    background: #4daf7c;
+    color: #fff;
+    font-weight: 700;
+    z-index: 25;
+    font-size: 16px;
+    line-height: 44px;
+    padding: 0 15px;
+    text-transform: uppercase;
+    pointer-events: none;
+    border-radius: 0 5px 5px 0;
+  }
+
+  .file-upload-wrapper:hover:before {
+    background: #3d8c63;
+  }
+
+  .file-upload-wrapper input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
+    height: 43px;
+    margin: 0;
+    padding: 0;
+    display: block;
+    cursor: pointer;
+    width: 100%;
+  }
+</style>

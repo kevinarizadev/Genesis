@@ -1,0 +1,164 @@
+<div class="row margin">
+  <div class="col s12 m12 l12">
+    <div class="card">
+      <div class="card-content" style="padding:10px">
+        <div class="row" style="margin-bottom: 0">
+          <div class="col s6">
+              <h5>Impresión de autorizaciones</h5>             
+          </div>
+          <div class="col s6" style="margin: .82rem 0 .656rem 0;">            
+            <b>Tipos de busqueda :</b>
+            <span>
+              <input class="with-gap" type="radio" ng-model="filterautprint" name="filterautprint" value="AFILIADO"
+                id="afiliado" />
+              <label for="afiliado" ng-class="{'default-color': filterautprint=='AFILIADO' }"
+                style="height: 0!important">AFILIADO </label>
+            </span>
+            <span> <input class="with-gap" type="radio" ng-model="filterautprint" name="filterautprint"
+                value="AUTORIZACION" id="autorizacion" />
+              <label style="height: 0!important" ng-class="{'default-color': filterautprint=='AUTORIZACION' }"
+                for="autorizacion">AUTORIZACION</label>
+            </span>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-action">
+        <div class="card-content clearfix">
+          <div class="col s12">
+            <form id="busafi" class="row" ng-submit="buscarAutPrint()" style="margin-bottom: 10px !important;">
+              <div class="row" ng-show="filterautprint=='AFILIADO'">
+                <form class="col s12">
+                  <div class="row" style="margin-bottom: 0;">
+                    <div class="input-field col s5 offset-s1">
+                      <i class="material-icons prefix" style="margin-top: 10px;">view_list</i>
+                      <select id="simple-select chosen" ng-model="temptipoDoc" material-select watch>
+                        <option value="" disabled>SELECCIONAR</option>
+                      <!--   <option value="CC">CEDULA DE CIUDADANÍA</option>
+                        <option value="TI">TARJETA DE IDENTIDAD</option>
+                        <option value="RC">REGISTRO CIVIL</option>
+                        <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                        <option value="PA">PASAPORTE</option>
+                        <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                        <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                        <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                        <option value="CD">CARNET DIPLOMÁTICO</option>
+                        <option value="CN">NACIDO VIVO </option>
+                        <option value="SC">SALVO CONDUCTO</option> -->
+                        <option value="{{x.CODIGO}}"  ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                      </select>
+                      <label for="simple-select hide-on-med-and-down">Tipo de Documento</label>
+                    </div>
+                    <div class="input-field col s5">
+                      <i class="material-icons prefix" style="margin-top: 10px;">account_circle</i>
+                      <input id="with_icon" type="text" ng-model="tempdocumento">
+                      <label for="with_icon">Documento</label>
+                    </div>
+                  </div>                          
+              </div>
+              <div class="row" ng-show="filterautprint=='AUTORIZACION'" style="margin-bottom: 0;">
+                <form class="col s12">
+                  <div class="row">
+                    <div class="input-field col s5 offset-s1">
+                      <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                      <input id="with_icon2" type="text" ng-model="tempnumero" >
+                      <label for="simple-select hide-on-med-and-down">Numero</label>
+                    </div>
+                    <div class="input-field col s5">
+                      <i class="material-icons prefix" style="margin-top: 10px;">location_on</i>
+                    <input id="with_icon3" type="text" ng-model="tempubicacion">
+                    <label id="ubi" for="with_icon3">Ubicación</label>
+                    </div>
+                  </div>                          
+              </div>    
+              <div class="col s12">
+                <center>
+                <a ng-click="limpiar();" class="waves-effect waves-light btn-large white-text red"
+                  >Limpiar</a>
+                
+                  <button class="waves-effect waves-light btn-large white-text"
+                    type="submit">Buscar</button></center>
+
+              </div>       
+          </form>
+        </div>
+        <div class="col s12" ng-hide="inactive1">
+          <div class="row">
+            <div class="input-field col s3">
+              <i class="material-icons prefix">search</i>
+              <input id="with_icon" type="text" ng-model="filter" class="validate">
+              <label for="with_icon">Filtro</label>
+            </div>
+            <div class="input-field col s5">
+              <i class="material-icons prefix">face</i>
+              <input style="color: black !important;" id="with_icon" type="text" ng-model="Nombre" disabled
+                class="validate">
+              <label for="with_icon">Nombre</label>
+            </div>
+            <div class="input-field col s3">
+              <i class="material-icons prefix">swap_vert</i>
+              <input id="with_icon" type="number" ng-model="quantity" class="validate">
+              <label for="with_icon">Limite <strong>{{quantity}}</strong> de <strong>{{total}}</strong></label>
+            </div>              
+          </div>
+        
+        </div>
+        <table class="responsive-table striped table-bordered" ng-hide="inactive1">
+          <thead>
+            <tr>
+              <th class="center-align" data-field="Codigo">Codigo</th>
+              <th class="center-align" data-field="Fecha">Fecha</th>
+              <th data-field="Ubicación">Ubicación</th>
+              <th data-field="Servicio">Servicio</th>
+              <th data-field="Prestador">Prestador</th>
+              <th class="center-align" data-field="Estado">Estado</th>
+              <th class="center-align" data-field="Altocosto">Altocosto</th>
+              <th class="center-align" style="width: 70px;" data-field="Clase">Clase</th>
+              <th class="center-align" data-field="Tipo">Tipo</th>
+              <th ng-hide="rolaut" class="center-align" data-field="Acción">Habilitar</th>
+              <th class="center-align" data-field="Acción">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="aut in Autorizaciones | limitTo:quantity | filter:filter">
+              <td class="center-align">{{aut.Numero}}</td>
+              <td class="center-align">{{aut.Fecha}}</td>
+              <td class="center-align">{{aut.Ubicacion}}</td>
+              <td>{{aut.Servicio}}</td>
+              <td>{{aut.Prestador}}</td>
+              <td class="center-align"><span style="width: 70px;" class="{{aut.COLOR}}"><strong>{{aut.Estado}}</strong>
+                  </spam>
+              </td>
+              <td class="center-align">
+                <center><i class="material-icons">{{aut.Altocosto}}</i></center>
+              </td>
+              <td class="center-align">{{aut.Clase}}</td>
+              <td class="center-align">{{aut.Tipo}}</td>
+              <td ng-hide="rolaut">
+                <center>
+                  <input ng-hide={{aut.VISIBLE}} type="checkbox" class="filled-in checkbox-info" id="{{aut.Numero}}"
+                    ng-checked={{aut.EVENTO}} ng-disabled={{aut.EVENTO}} ng-click="actualizarprint(aut.Numero)"
+                    ng-model="veradj" ng-disabled="check1" ng-init="veradj=false">
+                  <label ng-hide={{aut.VISIBLE}} for="{{aut.Numero}}"></label>
+                </center>
+              </td>
+              <td>
+                <center><i style="{{aut.STYLE}}" ng-click="print(aut,aut.EVENTO)"
+                    class="material-icons">{{aut.PRINT}}</i></center>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .mouse {
+    cursor: pointer;
+  }
+
+  .mouse2 {
+    cursor: pointer;
+  }
+</style>

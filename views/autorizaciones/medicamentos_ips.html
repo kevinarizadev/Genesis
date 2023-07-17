@@ -1,0 +1,350 @@
+<div id="gestionmedicamentos" class="white newdesing position-relative">
+	<style>
+		.yellow {
+			background-color: #ffe27d !important;
+		}
+
+		.blue {
+			background-color: #19c5dc !important;
+		}
+
+		.green {
+			background-color: #11d16b !important;
+		}
+
+		.purple {
+			background-color: #3623d996 !important;
+		}
+
+		.estado {
+			color: #ffffff;
+			font-size: 12px;
+			white-space: nowrap;
+			padding: 2px 5px;
+			border-radius: 2px;
+			display: inline-block;
+		}
+
+		.newdesing input[type="date"]::-webkit-inner-spin-button,
+		.newdesing input[type="date"]::-webkit-calendar-picker-indicator,
+		.newdesing input[type="month"]::-webkit-inner-spin-button,
+		.newdesing input[type="month"]::-webkit-calendar-picker-indicator {
+			/* display: none; */
+			-webkit-appearance: none;
+		}
+
+		[type="radio"]:not(:checked)+label,
+		[type="radio"]:checked+label {
+			padding-right: 10px;
+		}
+
+		.card-btn-hover>div>.card:hover {
+			transform: scale(1.01);
+		}
+
+		input[type=number]::-webkit-inner-spin-button,
+		input[type=number]::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		/* input[type=number] {
+            -moz-appearance: textfield;
+        } */
+		#vista_camara {
+			width: 500px;
+			left: calc(20.94px - 201.32999999999998px);
+			transform: scaleX(1)!important;
+		}
+
+		.icon-qrcode-1.false+#vista_camara {
+			display: block !important;
+			top: 30px;
+		}
+	</style>
+	<div class="row section-header margin">
+		<ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+			<li id="inicio">
+				<h5
+					style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+					Soportes de Medicamentos</h5>
+			</li>
+			<!-- <li class="position-relative">
+                <i class="cursor-pointer position-relative dropdown-toggle {{qr?'active icon-qrcode-1':'icon-cancel'}}" ng-click="mostrar_scanner()"> {{qr_t}}</i>
+                <video id="vista_camara" class="dropdown-menu"></video>
+            </li> -->
+			<li class="d-flex align-items-center">
+				<div class="switch">
+					<label>
+						<span class="{{(qr==true)?'':'activo'}} position-relative">
+							<i class="cursor-pointer position-relative dropdown-toggle icon-qrcode-1 {{qr}}"></i>
+							<video id="vista_camara" class="dropdown-menu"></video>
+							{{qr_t}}
+						</span>
+						<input id="checkbox_scanner" ng-change="mostrar_scanner()" type="checkbox" ng-model="qr">
+						<span class="lever check-c"></span>
+						<span class="{{(qr==true)?'activo':''}}">
+							Apagar lector QR
+							<!-- <i class="icon-cancel"></i> -->
+						</span>
+					</label>
+				</div>
+			</li>
+			<li>
+				<form class="form-input-icon-new" method="post" ng-submit="buscar_autorizacion(codigo_autorizacion)"
+					autocomplete="off">
+					<input ng-model="codigo_autorizacion" type="number" class="margin border-none"
+						placeholder="Numero Autorización">
+					<i ng-click="buscar_autorizacion(codigo_autorizacion)" class="icon-search"></i>
+				</form>
+			</li>
+		</ul>
+	</div>
+	<div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+		<div class="col s12 m12 l12 position-relative">
+			<div ng-show="medicamentos.vista==1"
+				class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+				Departamentos ({{array_seccionales.length}}):
+			</div>
+			<div ng-show="medicamentos.vista==1" class="row margin card-btn-hover">
+				<div ng-repeat="seccional in array_seccionales" class="col s12 m6 l3">
+					<div ng-click="medicamentos.seccional=seccional.codigo;listar_municipios();medicamentos.vista=2"
+						class="card cursor-pointer">
+						<div class="card-content">
+							<h5 title="Cantidad de Autorizaciones">{{seccional.cantidad}} <i
+									class="zmdi zmdi-globe-alt grey-text right"></i></h5>
+							<div class="row">
+								<h6>{{seccional.nombre}}</h6>
+							</div>
+							<div class="border-radius-none progress teal lighten-4" style="height: 6px;">
+								<div class="determinate teal darken-2"
+									ng-style="calcular_porcentaje('array_seccionales',seccional.cantidad)"></div>
+							</div>
+							<p>
+								<small>{{(calcular_porcentaje('array_seccionales',seccional.cantidad)).width}} de
+									las autorizaciones</small>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-show="medicamentos.vista==2"
+				class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+				Municipios ({{array_municipios.length}}):
+				<i ng-click="listar_departamento();medicamentos.vista=1"
+					class="icon-left-open-2 cursor-pointer default-color">Atras</i>
+			</div>
+			<div ng-show="medicamentos.vista==2" class="row margin card-btn-hover">
+				<div ng-repeat="municipio in array_municipios" class="col s12 m6 l3">
+					<div ng-click="medicamentos.municipio=municipio.codigo;medicamentos.radio_estado='PE';medicamentos.switchaut=false;listar_autorizaciones_ips();currentPage=0;medicamentos.vista=3;"
+						class="card cursor-pointer">
+						<div class="card-content">
+							<h5 title="Cantidad de Autorizaciones">{{municipio.cantidad}} <i
+									class="zmdi zmdi-pin grey-text right"></i></h5>
+							<div class="row">
+								<h6>{{municipio.nombre}}</h6>
+							</div>
+							<div class="border-radius-none progress orange lighten-4" style="height: 6px;">
+								<div ng-style="calcular_porcentaje('array_municipios',municipio.cantidad)"
+									class="determinate orange darken-2"></div>
+							</div>
+							<p>
+								<small>{{(calcular_porcentaje('array_municipios',municipio.cantidad)).width}} de
+									las autorizaciones</small>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-show="medicamentos.vista==3"
+				class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+				<span>{{titulo_ips(medicamentos.seccional,medicamentos.municipio)}} / AUTORIZACIONES:</span>
+				<!-- <input type="text" ng-model="q" class="margin border-none" style="height: auto;font-size: 13px;"
+                placeholder="Nombre IPS"> -->
+				<!-- <input ng-model="q" type="text" class="margin border-none input-text-new"
+                    placeholder="Buscar en la tabla"> -->
+				<i ng-click="medicamentos.vista=2" class="icon-left-open-2 cursor-pointer default-color">Atras</i>
+			</div>
+			<div ng-show="medicamentos.vista==3"
+				class="align-items-center black-text d-flex justify-content-between m-b title-panel">
+				<!-- <ul class="estados margin">
+                    <span class="estado yellow black-text">Pendiente
+                        <b>6</b></span>
+                    <span class="estado blue black-text">Parcial
+                        <b>7</b></span>
+                    <span class="estado red black-text">Anulado
+                        <b>40</b></span>
+                    <span class="estado green black-text">Total
+                        <b>306</b></span>
+                </ul> -->
+				<form class="d-flex" action="#">
+					<div>
+						<input ng-model="medicamentos.radio_estado" ng-change="listar_autorizaciones_ips()"
+							id="Pendiente" name="radio_group" type="radio" value="PE" />
+						<label for="Pendiente" style="height: 25px!important;">Pendiente</label>
+					</div>
+					<div>
+						<input ng-model="medicamentos.radio_estado" ng-change="listar_autorizaciones_ips()" id="Parcial"
+							name="radio_group" type="radio" value="PA" />
+						<label for="Parcial" style="height: 25px!important;">Parcial</label>
+					</div>
+					<div>
+						<input ng-model="medicamentos.radio_estado" ng-change="listar_autorizaciones_ips()" id="Total"
+							name="radio_group" type="radio" value="TO" />
+						<label for="Total" style="height: 25px!important;">Total</label>
+					</div>
+					<!-- <div>
+                        <input ng-model="medicamentos.radio_estado" ng-change="listar_autorizaciones_ips()"
+                            id="Confirmado" name="radio_group" type="radio" value="CO" />
+                        <label for="Confirmado" style="height: 25px!important;">Confirmado</label>
+                    </div> -->
+				</form>
+				<ul class="estados margin">
+					<span class="black-text estado lighten-2 red">Tutela</span>
+					<span class="black-text estado lighten-2 orange">Mipres</span>
+				</ul>
+				<input ng-model="q" id="search" type="text" autocomplete="off"
+					class="border-none col gray-input input-text-new l3 margin md12 s12" placeholder="Filtrar tabla"
+					style="width: 200px;">
+				<div class="switch">
+					<label>
+						<span class="{{(medicamentos.switch==false)?'activo':''}}">Todo</span>
+						<input type="checkbox" ng-model="medicamentos.switch" ng-change="listar_autorizaciones_ips()">
+						<span class="lever check-c"></span>
+						<span class="{{(medicamentos.switch==true)?'activo':''}}">
+							<input ng-model="medicamentos.fecha_mes" ng-change="listar_autorizaciones_ips_mes()"
+								id="fecha_mes" type="month"
+								class="datepicker border-none input-date-new margin gray-input"
+								style="width: 200px!important;outline: none;">
+						</span>
+					</label>
+				</div>
+				<!-- <i ng-click="medicamentos.vista=2" class="icon-left-open-2 cursor-pointer default-color">Atras</i> -->
+				<!-- <i ng-if="medicamentos.modal" ng-click="cambiar_vista()" class="icon-left-open-2 cursor-pointer"
+                            style="margin-left: auto">Atras</i> -->
+			</div>
+			<div ng-show="medicamentos.vista==5"
+				class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+				Resultado de la búsqueda:
+				<i ng-click="listar_departamento();medicamentos.vista=1;codigo_autorizacion=''"
+					class="icon-left-open-2 cursor-pointer default-color">Atras</i>
+			</div>
+			<div ng-show="medicamentos.vista==3 || medicamentos.vista==5" class="position-relative overflow-auto">
+				<table class="striped table-bordered white">
+					<thead>
+						<tr class="default-background white-text">
+							<th class="border-none center-align">
+								#{{(autorizaciones.length==0)?'':autorizaciones.length}}
+							</th>
+							<th class="border-none center-align">
+								Numero Autorización
+							</th>
+							<th ng-if="medicamentos.vista==5" class="border-none center-align">
+								Ubicación Afiliado
+							</th>
+							<th class="border-none">
+								Nombre Afiliado
+							</th>
+							<th class="border-none center-align">
+								Fecha Autorización
+							</th>
+							<th ng-if="medicamentos.radio_estado!='PE'" class="border-none center-align">
+								Fecha Entrega
+							</th>
+							<th class="border-none center-align">
+								Estado Entrega
+							</th>
+							<th colspan="2" class="border-none center-align">
+								Opciones
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-if="autorizaciones.length == 0">
+							<td colspan="7" class="center-align">
+								No hay datos para mostrar
+							</td>
+						</tr>
+						<tr ng-repeat="autorizacion in autorizaciones | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize"
+							class="{{autorizacion.tipo_aut}}">
+							<td class="center-align">{{autorizaciones.indexOf(autorizacion)+1}}</td>
+							<td class="center-align">{{autorizacion.ub_codigo}}</td>
+							<td ng-if="medicamentos.vista==5" class="center-align">{{autorizacion.nombre_ubi_aut}}</td>
+							<td>
+								{{autorizacion.nombre_afi}}
+							</td>
+							<td class="center-align">
+								{{autorizacion.fecha_orden}}
+							</td>
+							<td ng-if="medicamentos.radio_estado!='PE'" class="center-align">
+								{{autorizacion.fecha_entrega}}
+							</td>
+							<td class="center-align black-text"
+								ng-class="{'yellow':autorizacion.estado=='Pendiente','blue':autorizacion.estado=='Parcial','green':autorizacion.estado=='Total','purple':autorizacion.estado=='Confirmada'}">
+								<b>{{autorizacion.estado}}</b>
+							</td>
+							<td class="center-align">
+								<i ng-click="abrir_modal(2,autorizacion)" class="icon-clipboard-2 cursor-pointer"
+									title="Detalle de la autorizacion" style="font-size: 16px;"></i>
+							</td>
+							<td ng-if="autorizacion.estado!='Confirmada' && autorizacion.estado!='Total' && medicamentos.switchaut!=true"
+								class="center-align">
+								<i ng-click="abrir_modal(3,autorizacion)" class="icon-upload cursor-pointer"
+									title="Cargar Soporte" style="font-size: 16px;"></i>
+							</td>
+							<td ng-if="autorizacion.estado=='Confirmada' || autorizacion.estado=='Total'"
+								class="center-align">
+								<i ng-click="abrir_modal(4,autorizacion)" class="icon-docs cursor-pointer"
+									title="Ver soportes" style="font-size: 16px;"></i>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="10" class="border-none no-padding" style="user-select: none">
+								<div class="black-text title-panel d-flex justify-content-between align-items-center"
+									style="margin-top: 15px;">
+									<div ng-show="medicamentos.vista!=5" class="switch">
+										<label>
+											<span
+												class="{{(medicamentos.switchaut==false)?'activo':''}}">Procesado</span>
+											<input type="checkbox" ng-model="medicamentos.switchaut"
+												ng-change="listar_autorizaciones_ips()">
+											<span class="lever check-c"></span>
+											<span class="{{(medicamentos.switchaut==true)?'activo':''}}">Anulado</span>
+										</label>
+									</div>
+									<!-- ng-show="autorizaciones.length>pageSize" -->
+									<select id="pageSize" ng-model="pageSize"
+										class="gray-input select-default-new border-none" ng-change="currentPage=0"
+										style="width: auto;max-width: 100px;">
+										<option value="10">10</option>
+										<option value="15">15</option>
+										<option value="20">20</option>
+									</select>
+									<!-- ng-show="autorizaciones.length>pageSize" -->
+									<div>
+										<button class="btn btn-small border-radius-none no-padding"
+											ng-disabled="currentPage == 0" ng-click="btns_paginacion(currentPage-1)"
+											style="box-shadow: none;">
+											<i class="icon-left-small"></i>
+										</button>
+										<small
+											style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+											Página {{currentPage+1}} de {{numberOfPages()}}
+										</small>
+										<button class="btn btn-small border-radius-none no-padding"
+											ng-disabled="currentPage >= getData().length/pageSize - 1"
+											ng-click="btns_paginacion(currentPage+1)" style="box-shadow: none;">
+											<i class="icon-right-small"></i>
+										</button>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

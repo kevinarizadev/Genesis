@@ -1,0 +1,122 @@
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<div ng-controller="procnovalidoscontroller">
+   <div class="row">
+      <div class="col l12 m12 s12" ng-init="muestraFacturas()">
+         <div class="card">
+            <div class="card-title">
+               <div class="text-al switch" style="display:flex;">
+                  <center><strong>Listado de Facturas <!-- - Total: {{ total | number:0}} Realizados: {{realizados}} --></strong></center>
+               </div>
+            </div>
+            <div class="card-content clearfix" style="height: 200px; overflow: auto;">
+               <table class="highlight responsive-table highlight" align="center" style="cursor: pointer !important;" id="tablalistado">
+                  <thead align="center">
+                     <tr>
+                        <td><strong>FACTURA</strong></td>
+                        <td><strong>IPS</strong></td>
+                        <td><strong>RECIBO</strong></td>
+                        <td><strong>AFILIADO</strong></td>
+                        <td><strong>EDAD</strong></td>
+                        <td><strong>SEXO</strong></td>
+                        <td><strong>DIAGNOSTICO</strong></td>
+                     </tr>
+                  </thead>
+                  <tbody style="height: 40%; overflow: scroll;">
+                     <tr  data-ng-repeat="facturas in facturas track by $index" ng-click="muestraDetalleFacturas(facturas.NIT,
+                                                                                                                     facturas.NUM_FACTURA,
+                                                                                                                     facturas.FCDN_RECIBO,
+                                                                                                                     facturas.AFIC_TIPO_DOCUMENTO,
+                                                                                                                     facturas.AFIC_DOCUMENTO,
+                                                                                                                     facturas.AFIC_NOMBRE,
+                                                                                                                     facturas.AFIC_SEXO)">
+                        <td>{{facturas.NUM_FACTURA}}</td>
+                        <td>{{facturas.TERC_NOMBRE}}</td>
+                        <td>{{facturas.FCDN_RECIBO}}</td>
+                        <td>{{facturas.AFIC_NOMBRE}}</td>
+                        <td><center>{{facturas.EDAD}}</center></td>
+                        <td>{{facturas.AFIC_SEXO}}</td>
+                        <td>{{facturas.FCDC_DIAGNOSTICO}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div> 
+   <div class="row" ng-hide="panelhomologacion">
+      <div class="col l6 m12 s12">
+         <div class="card">
+            <div class="card-title">
+               <div class="text-al switch" style="display:flex;">
+                  <center><strong>Detalle Factura</strong></center>
+               </div>
+            </div>
+            <div class="card-content clearfix" style="height: 400px; overflow: auto;">
+               <table class="highlight responsive-table highlight" align="center" id="tabladetalle" style="cursor: pointer !important;">
+                  <thead align="center">
+                     <tr>
+                        <td><strong>CÓDIGO</strong></td>
+                        <td><strong>NOMBRE GENÉRICO</strong></td>
+                        <td><strong>VALOR</strong></td>
+                     </tr>
+                  </thead>
+                  <tbody style="height: 40%; overflow: scroll;">
+                     <tr data-ng-repeat="detalle_factura in detalle_facturas track by $index" ng-click="asignaProducto(detalle_factura.NOMBREPRODUCTO)">
+                        <td>{{detalle_factura.CODIGO}}</td>
+                        <td>{{detalle_factura.NOMBREPRODUCTO}}</td>
+                        <td>{{detalle_factura.VALORPRODUCTO | currency : $ : 0}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col l6 m12 s12">
+         <div class="card">
+            <div class="card-title">
+               <div class="text-al switch" style="display:flex;">
+                  <center><strong>CUPS Homólogo</strong></center>
+               </div>
+            </div>
+            <div class="card-content clearfix" style="height: 400px; overflow: auto;">
+               <div class="input-field col l8 m12 s12" >
+                  <input id="id" type="text" class="validate" ng-model="valor_homologo">
+                  <label for="id" class="">Valor de Búsqueda</label>
+               </div>
+               <div class="input-field col l3 m12 s12" >
+                  <a class="btn-floating btn-large waves-effect waves-light primary-button" ng-click="busqueda_homologo()"><i class="material-icons dp48">search</i></a>
+               </div>
+               <table class="highlight responsive-table highlight" align="center" id="tablahomologo" style="cursor: pointer !important;">
+                  <thead align="center">
+                     <tr>
+                        <td><strong>CÓDIGO</strong></td>
+                        <td><strong>DESCRIPCION</strong></td>
+                     </tr>
+                  </thead>
+                  <tbody style="height: 40%; overflow: scroll;">
+                     <tr data-ng-repeat="data in homologacion | filter: filtro_homologo | limitTo:10" ng-click="asignaHomologo(data.CODIGO)">
+                        <td>{{data.CODIGO}}</td>
+                        <td>{{data.DESCRIPCION}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col s12 m12 l12 card">
+         <div class="card-content">
+            <h5>Opciones</h5>
+         </div>
+         <div class="card-action">
+            <!-- <blockquote>
+               Antes: <strong>{{antes.codigo}}</strong> - {{antes.descripcion}}
+            </blockquote>      
+            <blockquote>
+               Nuevo código: <strong>{{despues.codigo}}</strong> - {{despues.descripcion}}
+            </blockquote>  -->      
+         </div>
+         <center><a class="waves-effect waves-light btn white-text" ng-click="asignaprocedimiento()">Actualizar</a></center><br>
+      </div>
+   </div>  
+      
+</div>

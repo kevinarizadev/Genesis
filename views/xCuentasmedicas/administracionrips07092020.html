@@ -1,0 +1,291 @@
+<div class="row">
+	<div class="row section-header" style="padding-bottom: 0px;">
+	  <h4 class="page-title" ng-click="test()">Administración de IPS para Radicacion de RIPS</h4>
+	</div>
+	<div class="col l12 m12 s12">
+	  <div class="card charts">
+		<div class="card-content">
+		  <h5>Consultar IPS</h5>
+		</div>
+		<div class="card-action">
+		  <div class="row">
+			<blockquote style="margin-bottom: 10px;">Por favor busque la ips que desea gestionar</b></blockquote>
+			<div class="col s12">
+			  <form ng-submit="funcbuscarips(buscarips)">
+				<div class="input-field col s4">
+				  <input id="buscarautaa" type="text" ng-model="buscarips" required>
+				  <label for="buscarautaa">Buscar:</label>
+				</div>
+			  </form>
+			</div>
+			<div class="responsive" ng-hide="inactiveipstable">
+			  <table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="text-align:center;">NIT</th>
+						<th style="text-align:center;">RAZÓN SOCIAL</th>
+						<th style="text-align:center;">DEPARTAMENTO</th>
+						<th style="text-align:center;">MUNICIPIO</th>
+						<th style="text-align:center;">ESTADO</th>
+						<!-- <th style="text-align:center;">MONTO</th> -->
+						<th colspan="3" style="text-align:center;">ACCIÓN</th>
+						<th class="center-align">RIPS</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="ips in listarIPS">
+						<td style="text-align:center;">{{ips.CODIGO}}</td>
+						<td style="text-align:center;">{{ips.RAZON}}</td>
+						<td style="text-align:center;">{{ips.DPTO}}</td>
+						<td style="text-align:center;">{{ips.MUN}}</td>
+						<td style="text-align:center;"><span class="{{ips.CLASE}}">{{ips.ESTADO}}</span>
+						</td>
+						<!-- <td style="text-align:center;">{{ips.MONTO | currency:"$ ":0}}</td> -->
+						<td style="text-align:center;"
+							ng-show="ips.ESTADO == 'ACTIVO' || ips.ESTADO == 'INACTIVO'">
+							<div class="tooltip">
+								<i style="cursor:pointer;" ng-click="agregarValor(ips,'M')"
+									class="material-icons">attach_money</i>
+								<span class="tooltiptext">Monto</span>
+							</div>
+						</td>
+						<td style="text-align:center;"
+							ng-show="ips.ESTADO == 'ACTIVO' || ips.ESTADO == 'INACTIVO'">
+							<div class="tooltip">
+								<i style="cursor:pointer;" ng-click="actualizarEstado(ips,'E')"
+									class="material-icons">traffic</i>
+								<span class="tooltiptext">Habilitar</span>
+							</div>
+						</td>
+						<td style="text-align:center;"
+							ng-show="ips.ESTADO == 'ACTIVO' || ips.ESTADO == 'INACTIVO'">
+							<div class="tooltip">
+								<i style="cursor:pointer;" ng-click="openEditArchivos(ips.CODIGO)"
+									class="material-icons">mode_edit</i>
+								<span class="tooltiptext">Editar</span>
+							</div>
+						</td>
+						<td colspan="3" style="text-align:center;"
+							ng-hide="ips.ESTADO == 'ACTIVO' || ips.ESTADO == 'INACTIVO'">
+							<div class="tooltip">
+								<i style="cursor:pointer;"
+									ng-click="openEditArchivos(ips.CODIGO, ips.ESTADO)"
+									class="material-icons">add</i>
+								<span class="tooltiptext">Agregar</span>
+							</div>
+						</td>
+						<td class="center-align">
+							<div class="tooltip">
+								<i ng-click="detalle_rips(ips)" class="cursor-pointer icon-buffer"
+									style="font-size: 17px;"></i>
+								<span class="tooltiptext">Cargues</span>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div id="modalarchivos" class="modal" style="width: 50%;">
+	  <div class="modal-content">
+		<div class="col s12">
+			<div class="card charts">
+			  <div class="card-content">
+				<h5 ng-click="agregarValor(ips)">Archivos RIPS</h5>
+			  </div>
+			  <div class="card-action" style="padding-bottom: 3px;">
+				<div class="row">
+				  <div class="col s6" ng-repeat="arc in archivos track by $index">
+					<div class="col s8">
+					  <h6 style="margin-bottom: 0px; margin-top: 10px;">{{arc.NOMBRE}}</h6>
+					</div>
+					<div class="col s4">
+					  <p class="demo" style="text-align: center;">
+						<div class="demo">
+						  <div class="demo__content">
+							 <label class="switcher">
+							   <input type="checkbox" id="checkan_{{$index}}" ng-model="arc.ESTADO" ng-disabled="arc.ACTIVO" />
+							   <div class="switcher__indicator"></div>
+							 </label>
+						  </div>
+						</div>
+					  </p>
+					</div>
+					<div class="col s12">
+					  <hr>
+					</div>
+				  </div>
+				  <div class="col s12" style="padding-top: 15px;">
+					<center>
+					  <button class="btn-large white-text pink" type="button" ng-hide="!switchbtnactualizar" ng-click="actualizarArchivos(1)">Actualizar</button>
+					  <button class="btn-large white-text pink" type="button" ng-hide="switchbtnactualizar" ng-click="actualizarArchivos(2)">Habilitar</button>
+					</center>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div>
+	  </div>
+	</div>
+	<div id="detalle_rips" class="modal modal-mara-new" style="width: 90%;">
+        <div class="modal-header d-flex justify-content-between align-items-center white-text blue">
+            <h5 class="margin">{{listado.datos_ips.nombre}} - {{listado.datos_ips.nit}}</h5>
+            <i ng-click="cerrar_modal()"
+                class="align-items-center cursor-pointer d-flex icon-cancel justify-content-center position-relative"></i>
+        </div>
+        <div class="modal-content row margin">
+            <div class="col s12">
+                <h5 class="d-flex justify-content-between" style="margin-top: 0;">
+                    <small>Cantidad: {{listado.cargues.length}} - Listado de cargues RIPS: </small>
+                    <input type="text" class="margin border-none input-text-new input-out-new white" ng-model="filtro"
+                        placeholder="Buscar en la tabla">
+                </h5>
+                <div style="height: calc(90vh - 111px);overflow: auto;">
+                    <table class="striped table-bordered white">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="text-align:center;"><b>#</b></th>
+                                <th rowspan="2" style="text-align:center;">ID PROCESO</th>
+                                <th rowspan="2" style="text-align:center;">RECIBO</th>
+                                <th rowspan="2" style="text-align:center;">FECHA INGRESO AL SISTEMA</th>
+                                <th colspan="3" style="text-align:center;">FECHA DE VALIDACION</th>
+                                <th colspan="3" style="text-align:center;">FACTURAS</th>
+                                <!-- <th rowspan="2" style="text-align:center;">FACTURAS</th>
+                            <th rowspan="2" style="text-align:center;">RADICADAS</th>
+                            <th rowspan="2" style="text-align:center;">DEVUELTAS</th> -->
+                                <th rowspan="2" style="text-align:center;">ESTADO</th>
+                                <th colspan="2" style="text-align:center;">DESCARGAR</th>
+                            </tr>
+                            <tr>
+                                <th style="text-align:center;">INICIO</th>
+                                <th style="text-align:center;">FIN</th>
+                                <th style="text-align:center;">DURACIÓN</th>
+                                <th style="text-align:center;">CANTIDAD</th>
+                                <th style="text-align:center;">RADICADAS</th>
+                                <th style="text-align:center;">DEVUELTAS</th>
+                                <th style="text-align:center;">ERRORES</th>
+                                <th style="text-align:center;">ARCHIVOS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="rip in listado.cargues | filter:filtro">
+                                <th style="text-align:center;">{{$index + 1}}</th>
+                                <td style="text-align:center;">{{rip.codigo}}</td>
+                                <td style="text-align:center;">{{rip.recibo}}</td>
+                                <td style="text-align:center;">{{rip.fecha}}</td>
+                                <td style="text-align:center;">{{rip.fecha_ini}}</td>
+                                <td style="text-align:center;">{{rip.fecha_fin}}</td>
+                                <td style="text-align:center;">{{rip.duracion}}</td>
+                                <td style="text-align:center;">{{rip.facturas}}</td>
+                                <td style="text-align:center;">{{rip.radicadas}}</td>
+                                <td style="text-align:center;">{{rip.devueltas}}</td>
+                                <td style="text-align:center;"><span class="{{rip.clase}}">{{rip.estado}}</span></td>
+                                <td ng-if="rip.estado=='ERROR'" style="text-align:center;">
+                                    <i ng-click="descargar_errores(rip.codigo,'GENERALES')"
+                                        class="icon-file-excel green-text center-aling cursor-pointer"
+                                        style="font-size: 17px;"></i>
+                                </td>
+                                <td colspan="{{rip.estado=='ERROR'?1:2}}" style="text-align:center;">
+                                    <i ng-click="descargar_archivos(rip)"
+                                        class="icon-file-archive orange-text center-aling cursor-pointer"
+                                        style="font-size: 17px;"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+	<style media="screen">
+		#detalle_rips {
+            width: 95% !important;
+            top: 5vh !important;
+            max-height: 90vh !important;
+        }
+	  .switcher {
+		position: relative;
+		display: inline-block;
+		cursor: pointer;
+		padding-left: 100px;
+		height: 15px;
+		line-height: 40px;
+		margin: 5px;
+		font-size: 30px;
+		user-select: none;
+		}
+		.switcher input {
+		display: none;
+		}
+  
+		.switcher__indicator::after {
+		  content: "";
+		  position: absolute;
+		  top: 5px;
+		  left: 0;
+		  height: 30px;
+		  width: 30px;
+		  background-color: #d5d5d5;
+		  border-radius: 50%;
+		  transition: all 0.3s ease;
+		  animation-name: pulsein;
+		  animation-duration: 0.3s;
+		}
+		.switcher__indicator::before {
+		  content: "";
+		  position: absolute;
+		  top: 16px;
+		  left: 0;
+		  width: 70px;
+		  height: 8px;
+		  background-color: #d5d5d5;
+		  border-radius: 10px;
+		  transition: all 0.3s ease;
+		}
+		input:checked + .switcher__indicator::after {
+		background-color: #29ce9a;
+		transform: translateX(40px);
+		animation-name: pulseout;
+		animation-duration: 0.3s;
+		}
+		input:checked + .switcher__indicator::before {
+		background-color: #29ce9a;
+		}
+		input:disabled + .switcher__indicator::after, input:disabled + .switcher__indicator::before {
+		background-color: #87ccb6;
+		}
+  
+		@keyframes pulsein {
+		0%, 100% {
+		  top: 0px;
+		  height: 40px;
+		  width: 40px;
+		}
+		50% {
+		  top: 6px;
+		  height: 28px;
+		  width: 52px;
+		}
+		}
+		@keyframes pulseout {
+		0%, 100% {
+		  top: 0px;
+		  height: 40px;
+		  width: 40px;
+		}
+		50% {
+		  top: 6px;
+		  height: 28px;
+		  width: 52px;
+		}
+		}
+
+		.val_err {
+			background-color: #025e88 !important;
+			white-space: initial;
+		}
+	</style>
+  

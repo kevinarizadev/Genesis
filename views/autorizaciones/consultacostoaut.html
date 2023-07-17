@@ -1,0 +1,492 @@
+<div id="gestionaut">
+    <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <!-- Titulo App -->
+                <div class="card-content">
+                    <div class="row margin">
+                        <div class="col s12">
+                            <div class="col s12">
+                                <spam>
+                                    <h4>Consulta Costo Autorizaciones</h4>
+                                </spam>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="display: flex;justify-content: flex-end;">
+                    <div class="col s12">
+                        <h5>SELECCIONE AÑO Y PERIODO PARA FILTRAR</h5>
+
+                    </div>
+                    <div class="input-field col s12 m3 l3 margin">
+                        <label for="with_icon" style="margin-top: -25px;">AÑO: </label>
+                        <select class="select-chosen-eps" style="padding-top: 0" ng-model="annot"
+                            ng-change="getTecho();">
+                            <option value="">Seleccionar</option>
+                            <option ng-repeat="a in anos" ng-value="a.anno" ng-selected="a.anno==annot">
+                                {{a.anno}}</option>
+                        </select>
+                    </div>
+                    <div class="input-field col s12 m3 l3 margin">
+                        <label for="with_icon" style="margin-top: -25px;">PERIODO: </label>
+                        <select class="select-chosen-eps" style="padding-top: 0" ng-model="periodo"
+                            ng-change="getTecho();">
+                            <option value="">Seleccionar</option>
+                            <option ng-repeat="m in meses" ng-value="m.Codigo" ng-selected='m.Codigo==periodo'>
+                                {{m.Nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div ng-hide="verregional==false" class="row margin">
+                    <div ng-repeat="t in techos | orderBy:'tipo_cod'" class="col s12 m6 l6" ng-click="seleccionarreporte(t)" style="cursor: pointer">
+                        <div class="card" ng-style="{
+                            'background-color': t.tipo_cod == '1' ? 'rgba(71, 192, 21, 0.8)' : 
+                                                t.tipo_cod == '2' ? 'rgba(192, 21, 21, 0.8)' : 
+                                                t.tipo_cod == '3' ? 'rgba(21, 186, 192, 0.8)' :
+                                                t.tipo_cod == '4' ? 'rgba(239, 130, 17, 0.8)' : 
+                                                ''
+                        }" style="height: 312px;">
+                            <div class="card-content white-text">
+                                <div style="display: flex;justify-content: center;align-items: center;">
+                                    <h6 style="margin: 0;">{{t.tipo_nom}}</h6>
+                                </div>
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">COSTO INICIAL</h6>
+                                    <strong>{{t.valor_techo_ini}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">COSTO</h6>
+                                    <strong>{{t.valor_techo}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">VALOR AUTORIZADO</h6>
+                                    <strong>{{t.valor_autorizado}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">DISPONIBLE</h6>
+                                    <strong>{{t.disponible}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">PORCENTAJE CONSUMIDO</h6>
+                                    <strong>% {{t.por_consumido}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                                <div style="display: flex;justify-content: center;align-items: center;">
+                                    <h6 style="margin: 0;">DESCARGAR REPORTE</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                <!-- <div class="row margin">
+                    <div class="col s12 m3 l3" ng-click="ModalAbrir('P')" style="cursor: pointer">
+                        <div class="card" style="background-color:rgba(71, 192, 21, 0.8);">
+                            <div class="card-content white-text">
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">Costo Ambulatorio</h6>
+                                    <strong>{{listConsolidadoProSec.valor_inicial}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m3 l3" ng-click="ModalAbrir('P')" style="cursor: pointer">
+                        <div class="card" style="background-color:rgba(192, 21, 21, 0.8);">
+                            <div class="card-content white-text">
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">Alto Costo</h6>
+                                    <strong>{{listConsolidadoProSec.valor}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m3 l3" ng-click="ModalAbrir('P')" style="cursor: pointer">
+                        <div class="card" style="background-color:rgba(21, 186, 192, 0.8);">
+                            <div class="card-content white-text">
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">Hospitalizacion</h6>
+                                    <strong>{{listConsolidadoProSec.valor_autorizado}}</strong>
+                                </div>
+                                <div class="progress blue darken-3">
+                                    <div class="determinate white" style="width: 100%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m3 l3" ng-click="ModalAbrir('P')" style="cursor: pointer">
+                        <div class="card" style="background-color:rgba(239, 130, 17, 0.8);">
+                            <div class="card-content white-text">
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <h6 style="margin: 0;">Costo Total</h6>
+                                    <strong>{{listConsolidadoProSec.valor_consumido}}</strong>
+                                </div>
+                                <div class="progress grey darken-3">
+                                    <div class="determinate white" ng-style="calcWidthPers(listConsolidadoProSec.dif_porcentaje2)">
+                                    </div>
+                                </div>
+                                <div style="text-align: center; position: absolute; bottom: 11px; left: 20px;">
+                                    <strong style="font-size: small;">{{listConsolidadoProSec.dif_porcentaje2 | number:2}}% Consumido</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- Cuerpo App -->
+                <div class="card-action">
+                    <div class="card-content clearfix">
+                        <!-- <div class="row" style="display: flex;justify-content: flex-end;">
+                            <div class="col s12">
+                                <h5>SELECCIONE AÑO Y PERIODO PARA FILTRAR</h5>
+
+                            </div>
+                            <div class="input-field col s12 m3 l3 margin">
+                                <label for="with_icon" style="margin-top: -25px;">AÑO: </label>
+                                <select class="select-chosen-eps" style="padding-top: 0" ng-model="annot"
+                                    ng-change="getTecho();">
+                                    <option value="">Seleccionar</option>
+                                    <option ng-repeat="a in anos" ng-value="a.anno" ng-selected="a.anno==annot">
+                                        {{a.anno}}</option>
+                                </select>
+                            </div>
+                            <div class="input-field col s12 m3 l3 margin">
+                                <label for="with_icon" style="margin-top: -25px;">PERIODO: </label>
+                                <select class="select-chosen-eps" style="padding-top: 0" ng-model="periodo"
+                                    ng-change="getTecho();">
+                                    <option value="">Seleccionar</option>
+                                    <option ng-repeat="m in meses" ng-value="m.Codigo" ng-selected='m.Codigo==periodo'>
+                                        {{m.Nombre}}</option>
+                                </select>
+                            </div>
+                        </div> -->
+                        <div ng-hide="viewDetail==false || verregional==true" class="row">
+                            <div class="center" >
+                                <span id="yor1" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='';funcioncolor('yor1')">Todas</span>
+                                <span id="yor2" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='NACIONAL';funcioncolor('yor2')">Nacional</span>
+                                <span id="yor3" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='MIPRES';funcioncolor('yor3')">Mipres</span>
+                                <span id="yor4" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='BOYACA';funcioncolor('yor4')">Boyaca</span>
+                                <span id="yor5" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='ATLANTICO';funcioncolor('yor5')">Atlantico</span>
+                                <span id="yor6" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='BOLIVAR';funcioncolor('yor6')">Bolivar</span>
+                                <span id="yor7" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='CESAR';funcioncolor('yor7')">Cesar</span>
+                                <span id="yor8" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='CORDOBA';funcioncolor('yor8')">Cordoba</span>
+                                <span id="yor9" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='GUAJIRA';funcioncolor('yor9')">Guajira</span>
+                                <span id="yor10" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='MAGDALENA';funcioncolor('yor10')">Magdalena</span>
+                                <span id="yor11" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='META';funcioncolor('yor11')">Meta</span>
+                                <span id="yor12" style="cursor: pointer;" class="status grey pointer" ng-click="filtroipslistado1.seccional_nom ='SUCRE';funcioncolor('yor12')" style="background-color: #000000 !important;">Sucre</span>
+                            </div>
+                            </div>
+                        <div ng-show="filtroipslistado1.seccional_nom ==''" class="row">
+                            <div class="center" >
+                                <span id="yorn1" style="cursor: pointer;" class="status grey pointer" ng-click="filtrolistadotipo.tipo_nom ='';funcioncolor('yorn1')">Todas</span>
+                                <span id="yorn2" style="cursor: pointer;" class="status grey pointer" ng-click="filtrolistadotipo.tipo_nom ='VALOR_AMBULATORIO';funcioncolor('yorn2')">AMBULATORIO</span>
+                                <span id="yorn3" style="cursor: pointer;" class="status grey pointer" ng-click="filtrolistadotipo.tipo_nom ='VALOR_HOSPITALARIO';funcioncolor('yorn3')">HOSPITALARIO</span>
+                                <span id="yorn4" style="cursor: pointer;" class="status grey pointer" ng-click="filtrolistadotipo.tipo_nom ='VALOR_ALTO_COSTO';funcioncolor('yorn4')">ALTO COSTO</span>
+                                <span id="yorn5" style="cursor: pointer;" class="status grey pointer" ng-click="filtrolistadotipo.tipo_nom ='VALOR_MIPRES';funcioncolor('yorn5')">MIPRES</span>
+                            </div>
+                            </div>
+                        <div class="row" ng-hide="viewDetail==false || verregional==true">
+                            <div class="col s12" style="overflow: auto">
+                                <table class="striped table-bordered" id="ttecho">
+                                    <thead>
+                                        <tr>
+                                            <th class="center-align">#</th>
+                                            <th class="center-align">SECCIONAL</th>
+                                            <th class="center-align">TIPO</th>
+                                            <th class="center-align"> VALOR TECHO INICIAL</th>
+                                            <th class="center-align"> VALOR TECHO</th>
+                                            <th class="center-align"> VALOR AUTORIZADO</th>
+                                            <th class="center-align"> VALOR CONSUMIDO</th>
+                                            <th class="center-align">DISPONIBLE</th>
+                                            <th class="center-align">ACCIONES</th>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr ng-repeat=" t in techos | filter:filtroipslistado1 | filter:filtrolistadotipo"> -->
+                                            <tr data-ng-repeat="t in (filtrolista = (techos | filter: filtroipslistado1 | filter: filtrolistadotipo))">
+                                            <td class="center-align">{{$index+1}}</td>
+                                            <td class="center-align">{{t.seccional_nom}}</td>
+                                            <td class="center-align">{{t.tipo_nom}}</td>
+                                            <td class="center-align">{{t.valor_techo_ini}}</td>
+                                            <td class="center-align">{{t.valor_techo}}</td>
+                                            <td class="center-align">{{t.valor_autorizado}}</td>
+                                            <td class="center-align">% {{t.por_consumido}}</td>
+                                            <td class="center-align">{{t.disponible}}</td>
+                                            <td class="center-align" style="display: flex;">
+                                                <div ng-hide="hidenacciones">
+                                                    <div ng-if="t.tipo_cod !='5' && t.tipo_cod !='6'">
+                                                        <!-- <i ng-if="(periodo <= periodotemp) && (annotemp <= annot)" -->
+                                                        <i ng-if="(periodo >= periodotemp) && (annotemp == annot)"
+                                                            style="font-size: 20px;cursor: pointer;" title="Adicionar Monto"
+                                                            ng-click="incTecho(t,'S');" class="icon-plus"></i>
+                                                    </div>
+                                                </div>
+                                                <div ng-hide="hidenacciones">
+                                                    <div ng-if="t.tipo_cod !='5'  && t.tipo_cod !='6'">
+                                                    <!-- <i ng-if="(periodo <= periodotemp) && (annotemp <= annot)" -->
+                                                    <i ng-if="(periodo >= periodotemp) && (annotemp == annot)"
+                                                        style="font-size: 20px;cursor: pointer;" title="Restar Monto"
+                                                        ng-click="incTecho(t,'R');" class="icon-minus-4"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <i style="font-size: 20px;cursor: pointer;" title="Ver Detalle"
+                                                        ng-click="seleccionarreporte(t);" class="icon-download"></i>
+                                                </div>
+                                                <div>
+                                                    <i style="font-size: 20px;cursor: pointer;" title="Ver Detalle"
+                                                        ng-click="showDetail(t);" class="icon-eye-4"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                    <tfoot ng-if="techos">
+                                        <tr>
+                                            <th class="center-align" colspan="3"> <b>Total: </b></th>
+                                            <th class="center-align">{{ filtrolista | total: 'valor_techo_ini_ori' }}</th>
+                                            <th class="center-align">{{ filtrolista | total: 'valor_techo_ori' }}</th>
+                                            <th class="center-align">{{ filtrolista | total: 'valor_autorizado_ori' }}</th>
+                                            <th class="center-align">% {{ ((filtrolista | suma: 'valor_autorizado_ori')/(filtrolista | suma: 'valor_techo_ini_ori')* 100).toFixed(2)}}</th>
+                                            <!-- <th class="center-align">% {{ ((filtrolista | suma: 'por_consumido') / filtrolista.length).toFixed(2) }} </th> -->
+                                            <th class="center-align">{{filtrolista|total:'disponible_ori'}}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="row" ng-hide="viewDetail==true">
+                            <div class="row">
+                                <i class="icon-left-open-2" ng-click="showDetail()" style="cursor: pointer">Atras</i>
+                            </div>
+                            <div class="row">
+                                <div class="col s12" style="overflow: auto" ng-show="dtecho.length>0">
+                                    <input type="text" ng-model="fdtecho" placeholder="Consultar Transacción"
+                                        style="float: right;width: 30%">
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col s12" style="overflow: auto">
+                                    <table class="striped table-bordered" id="ddtecho">
+                                        <thead>
+                                            <tr>
+                                                <th class="center-align">CODIGO</th>
+                                                <th class="center-align">FECHA TRANSACCION</th>
+                                                <th class="center-align">RESPONSABLE</th>
+                                                <th class="center-align">NOM RESPONSABLE
+                                                </th>
+                                                <th class="center-align"> VALOR</th>
+                                                <th class="center-align"> ACCION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat=" d in dtecho | filter:fdtecho  as resultsP">
+                                                <td class="center-align">{{d.codigo}}</td>
+                                                <td class="center-align">{{d.fecha }}</td>
+                                                <td class="center-align">{{d.responsable}}</td>
+                                                <td class="center-align">{{d.responsable_nom}}</td>
+                                                <td class="center-align">{{d.valor}}</td>
+                                                <td class="center-align" style="text-transform: uppercase;">
+                                                    <b ng-class="getFieldClass(d)"> {{d.accion}} - {{d.opcion}}
+                                                    </b>
+                                                </td>
+                                            </tr>
+
+                                            <tr ng-if="resultsP.length==0">
+
+                                                <td class="center-align" colspan="6"> No hay Resultados</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot ng-if="dtecho">
+                                            <tr>
+                                                <th class="center-align" colspan="4">
+                                                    <b>Total: </b>
+                                                </th>
+                                                <th class="center-align">{{ getTotalAdicion() }}</th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col s12">
+                                    <span class="status green" style="margin-right: 10px;">ADICION - DIRECTO <span
+                                            style="font-size: 10px;">(LINEA DE FRENTE)</span> </span>
+                                    <span class="status orange" style="margin-right: 10px;">ADICION - CONTROLADO <span
+                                            style="font-size: 10px;">(MEDICO INTRAMURAL)</span> </span>
+                                    <span class="status purple" style="margin-right: 10px;">DISMINUCION - DIRECTO <span
+                                            style="font-size: 10px;">(LINEA DE FRENTE)</span> </span>
+                                    <span class="status blue" style="margin-right: 10px;">DISMINUCION - CONTROLADO <span
+                                            style="font-size: 10px;">(MEDICO INTRAMURAL)</span> </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modaldinero" class="modal" style="overflow: hidden;width: 40%;max-height: 100%;">
+        <div class="modal-content" style="padding: 0px !important;">
+            <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                    <div class="card-content foot4" style="padding: 0">
+                        <div class="row" style="margin: 0">
+                            <div class="col s11">
+                                <h5 class="white-text text-center">Ingrese la Cantidad</h5>
+                            </div>
+                            <div class="col s1">
+                                <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                        ng-click="closemodal('modaldinero')" class="material-icons white-text">close</i>
+                                </h5>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-action" style="border-top: 0">
+                        <div class="row">
+                            <div class="col s12">
+                                <div class="card-action" style="border-top: 0">
+                                    <div class="row">
+                                        <div class="col s4">
+                                            <span> <b>TIPO DE GESTIÓN:</b> </span>
+                                        </div>
+                                        <div class="col s8">
+                                            <div class="btn-panel switch">
+                                                <label>
+                                                    ADICIÓN
+                                                    <input type="checkbox" ng-init="admin_opcion = false"
+                                                        ng-model="admin_opcion">
+                                                    <span class="lever"></span>
+                                                    DIRECTO
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <div class="input-field col m12 s12">
+                                                <!-- <input id="plata" class="materialize-textarea" placeholder="Cantidad" ng-model="plata" autofocus>  -->
+
+                                                <input type="text" id="plata" ng-keyup="formatPeso('plata')"
+                                                    ng-model="plata" name="plata" placeholder="Cantidad" autofocus>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12"
+                                            style="display: flex;justify-content: center;align-items: center">
+                                            <button id="btn-solicitudtabI" class="btn white-text" type="button"
+                                                ng-click="saveadicion();">GUARDAR</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalreporte" class="modal" style="overflow: hidden;width: 40%;max-height: 100%;">
+        <div class="modal-content" style="padding: 0px !important;">
+            <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                    <div class="card-content foot4" style="padding: 0">
+                        <div class="row" style="margin: 0">
+                            <div class="col s11">
+                                <h5 class="white-text text-center">GENERAR REPORTE {{datosregional.tipo_nom}}</h5>
+                            </div>
+                            <div class="col s1">
+                                <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                        ng-click="closemodalreporte('modalreporte')" class="material-icons white-text">close</i>
+                                </h5>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-action" style="border-top: 0">
+                        <div class="row">
+                            <div class="col s12">
+                                <div class="card-action" style="border-top: 0">
+                                    <div class="row">
+                                        <div class="col s6">
+                                            <span> <b>FECHA INICIO:</b> </span>
+                                        </div>
+                                        <div class="col s6">
+                                            <span> <b>FECHA FIN:</b> </span>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s6">
+                                            <div class="input-field col m12 s12">
+                                                <input type="date" id="fechainicialr"
+                                                    ng-model="fechainicialr" name="fechainicialr" min={{fechaprimerdiames}} max={{fechaactual}}>
+                                            </div>
+                                        </div>
+                                        <div class="col s6">
+                                            <div class="input-field col m12 s12">
+                                                <input type="date" id="fechafinalr"
+                                                    ng-model="fechafinalr" name="fechafinalr" min={{fechaprimerdiames}} max={{fechaactual}}>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12"
+                                            style="display: flex;justify-content: center;align-items: center">
+                                            <button id="btn-solicitudtabI" class="btn white-text" type="button"
+                                                ng-click="Descargar_Reporte();">DESCARGAR</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        #ttecho {
+            width: 100% !important;
+        }
+
+        #ttecho_filter {
+            margin-top: 0 !important;
+        }
+    </style>
+</div>

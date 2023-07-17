@@ -1,0 +1,280 @@
+<div id="adminprocesos" class="white newdesing collapsible-new">
+    <style>
+        .admin {
+            height: calc(60vh - 213px) !important;
+        }
+        .gray-input {
+            background-color: #e5e6e6 !important;
+        }
+    </style>
+    <div class="row section-header"
+        style="box-shadow: 1px 2px 2px -1px rgba(0, 0, 0, 0.12);background-color: #f7f7f7;position: relative;">
+        <ul class="left mailbox-custom-search list-inline"
+            style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+            <li id="inicio">
+                <h5>Administrador de Procesos</h5>
+            </li>
+            <li ng-if="admin">
+                <i ng-click="btn_configurar()" title="Configurar" class="icon-cog-5 margin"
+                    style="cursor: pointer;">Configurar Procesos</i>
+            </li>
+            <li>
+                <a href="#/procesos">
+                    <i class="icon-brush default-color" style="cursor:pointer;font-size: 18px;"> Ver cambios</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="row dashboard-wrapper content-container" style="padding-bottom: 20px;margin-bottom: 0;">
+        <div id="step1" class="col s12 m12 l3" style="position:relative">
+            <div class="black-text title-panel"
+                style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+                Macropocesos:
+            </div>
+            <div ng-class="{'admin':configurar}" style="overflow: auto;height: calc(100vh - 213px);">
+                <table id="tablaMacro" class="striped table-bordered white" style="position: relative;">
+                    <thead>
+                        <tr class="default-background white-text">
+                            <th class="border-none">
+                                Titulo
+                            </th>
+                            <th class="border-none center-align">
+                                Procesos
+                            </th>
+                            <th class="border-none center-align">Ver</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="macro in macroprocesos track by $index">
+                            <td>{{macro.titulo}}</td>
+                            <td class="center-align">{{macro.opciones.length}}</td>
+                            <td class="center-align">
+                                <i ng-click="seeProcesses(macro.opciones,macro.titulo,macro.id)" class="icon-eye-6"
+                                    style="cursor:pointer;font-size: 18px;"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="step2" class="col s12 m12 l9" style="position: relative;">
+            <div ng-show="panel.titulo != ''" class="black-text title-panel"
+                style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+                {{panel.titulo}}
+                <div class="btn-panel" style="display: flex;align-items: center;">
+                    <!-- <input type="text" class="margin border-none input-text-new" ng-model="search_table" ng-change="cloneHeadFixed()" placeholder="Buscar..."> -->
+                    <i ng-click="show()" class="icon-cw-1"></i>
+                    <i class="icon-floppy-1" ng-click="BtnGuardar()" title="Guardar todos los cambios"
+                        style="margin-right: 6px;"></i>
+                </div>
+            </div>
+            <div ng-show="panel.titulo != ''" class="scroll_x"
+                style="position: absolute;width: 100%;z-index: 10;overflow: hidden;">
+                <table id="tablaClone" class="striped table-bordered white" style="position: relative;">
+                </table>
+            </div>
+            <div ng-class="{'admin':configurar}" ng-show="panel.titulo != ''" class="scroll_x"
+                style="overflow: auto;height: calc(100vh - 213px);">
+                <table id="tablaOriginal" class="striped table-bordered white" style="position: relative;">
+                    <thead>
+                        <tr class="default-background white-text">
+                            <th class="border-none">
+                                Titulo
+                            </th>
+                            <th class="border-none center-align">
+                                Icono
+                            </th>
+                            <th class="border-none center-align" colspan="2">
+                                Opciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="collapsible-body-new">
+                        <tr ng-repeat-start="items in procesoSelect | filter:{$:search_table}"
+                            ng-class="{'active':panel.level == $index}">
+                            <td
+                                ng-click="seeFiles($index,items.documentos,items.formatos,innerSwitch[items.id]);panel.edit=false;filter_d_f=''">
+                                {{items.titulo}}</td>
+                            <td class="center-align">
+                                <img src="{{items.icono}}" style="font-size: 16px;width: 27px;">
+                                <!-- <i class="{{items.icono}}" style="font-size: 16px;"></i> -->
+                            </td>
+                            <td class="center-align">
+                                <i ng-click="seeFiles($index,items.documentos,items.formatos,innerSwitch[items.id]);panel.edit=false"
+                                    class="icon-down-open-1" style="cursor:pointer;font-size: 20px;"></i>
+                            </td>
+                            <!--
+                            <td class="center-align">
+                                <a ng-href="{{items.url}}" target="_blank"><i class="icon-file-pdf" style="cursor:pointer;font-size: 16px;"></i></a>
+                            </td>
+                            -->
+                            <td class="center-align">
+                                <div class="button-dropdown-angular">
+                                    <i class="icon-cancel dropdown-toggle-angular"
+                                        ng-class="{'active':panel.add==$index,'icon-plus':panel.add!=$index}"
+                                        ng-click="addProcesses(items.id);name_file='';type_file='';stade_file='';"
+                                        title="Agregar nuevos Documentos/Formatos" style="font-size: 15px;"></i>
+                                    <div id="modulo_dropdown" class="dropdown-menu">
+                                        <label for="name">Titulo:</label>
+                                        <input id="name" type="text" class="margin border-none white input-text-new"
+                                            ng-model="name_file"
+                                            style="width: calc(100% - 20px);height: 3em;margin: 1em 0!important;">
+                                        <div style="display: flex;justify-content: space-between;">
+                                            <div style="width: 45%;">
+                                                <label for="type">Tipo:</label>
+                                                <select id="type" ng-model="type_file" class="no-padding margin"
+                                                    material-select watch>
+                                                    <option class="black-text" value=""></option>
+                                                    <option class="black-text" value="documentos">Documentos</option>
+                                                    <option class="black-text" value="formatos">Formatos</option>
+                                                </select>
+                                            </div>
+                                            <div style="width: 45%;">
+                                                <label for="stade">Estado:</label>
+                                                <select id="stade" ng-model="stade_file" class="no-padding margin"
+                                                    material-select watch>
+                                                    <option class="black-text" value=""></option>
+                                                    <option class="black-text" value="Publicar">Publicar</option>
+                                                    <option class="black-text" value="Revisar">Revisar</option>
+                                                    <option class="black-text" value="No Publicar">No Publicar</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <label for="file">Cargar archivo:</label>
+                                        <form method="post" autocomplete="off"
+                                            data-file="{{(panel.name=='')?'Seleccionar PDF, Point, Excel, Word':panel.name}}"
+                                            style="height: 2.7em;margin: 1em 0!important;position: relative;overflow: hidden;background-color: white;display: flex;align-items: center;justify-content: flex-end;">
+                                            <i for="file{{items.id}}" class="icon-folder-open-1"
+                                                style="font-size: 17px;"></i>
+                                            <<input type="file" 
+                                                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                                                application/vnd.openxmlformats-officedocument.presentationml.presentation,
+                                                application/vnd.ms-powerpoint,.pptx"
+                                                select-ng-file1 ng-change="loadFile();" ng-init="file_file=''"
+                                                ng-model="file_file" class="margin border-none white input-text-new"
+                                                style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;right: 0;bottom: 0;padding-left: 100%;outline: transparent;background-color: transparent!important;">
+                                        </form>
+                                        <a ng-click="addProcesses(items.id,true,name_file,type_file,stade_file,items.titulo);name_file='';type_file='';stade_file='';"
+                                            class="waves-effect waves-light btn white-text primary-button"
+                                            style="margin-top: 2em;height: auto;">Agregar
+                                            en {{items.titulo}}</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat-end>
+                            <td colspan="5" class="panel" style="padding: 2px;text-align: center;">
+                                <table ng-init="innerSwitch[$parent.items.id]=false;filter_d_f" class="responsive-table">
+                                    <thead class="white">
+                                        <tr>
+                                            <th class="switch" ng-if="!panel.edit">
+                                                <label class="white-text">
+                                                    <span ng-class="{'activo':!switch}">Documentos</span>
+                                                    <input type="checkbox"
+                                                        ng-init="switch = $parent.innerSwitch[$parent.items.id];$parent.innerSwitch[$parent.items.id]=switch"
+                                                        ng-model="switch"
+                                                        ng-change="$parent.innerSwitch[$parent.items.id]=switch;changeType(switch,items.documentos,items.formatos);$parent.filter_d_f=''">
+                                                    <span class="lever check-c"></span>
+                                                    <span ng-class="{'activo':switch}">Formatos</span>
+                                                </label>
+                                            </th>
+                                            <th ng-if="!panel.edit">
+                                                <input type="text" class="margin border-none gray-input input-text-new"
+                                                    ng-model="$parent.filter_d_f" placeholder="Filtrar" style="width: 130px;">
+                                            </th>
+                                            <th ng-if="panel.edit">Titulo</th>
+                                            <th class="center-align">Estado</th>
+                                            <th ng-if="panel.edit" class="center-align">Archivo</th>
+                                            <th class="center-align" colspan="{{panel.edit?2:4}}">Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="white" ng-if="!panel.edit">
+                                        <tr class="center-align" ng-repeat="item in switch_tipo | filter:$parent.filter_d_f track by item.id">
+                                            <td class="{{item.id}}">
+                                                {{item.titulo}}
+                                            </td>
+                                            <td>
+                                                <input type="text" class="margin border-none gray-input input-text-new" placeholder="url" style="width: 130px;" value="{{item.url}}">
+                                            </td>
+                                            <td ng-style="estadoChange(item.estado);"
+                                                class="white-text center-align border-radius-none">{{item.estado}}</td>
+                                            <td class="center-align">
+                                                <i ng-click="getRutaTemp(item.url);url_files=item.url" class="{{icono(item.url)}}"
+                                                    style="cursor:pointer;font-size: 16px;"></i>
+                                            </td>
+                                            <td class="center-align">
+                                                <i ng-click="changeStade($parent.items.id,item.id,$parent.innerSwitch[$parent.items.id])"
+                                                    class="zmdi zmdi-traffic" style="font-size: 17px;"></i>
+                                            </td>
+                                            <td class="center-align">
+                                                <i ng-click="editProcesses(true,item.id,item.titulo,item.estado,item.url,$parent.innerSwitch[$parent.items.id])"
+                                                    class="icon-edit" style="font-size: 15px;"></i>
+                                            </td>
+                                            <td class="center-align">
+                                                <i ng-click="deleteProcesses($parent.items.id,item.id,$parent.innerSwitch[$parent.items.id])"
+                                                    class="icon-trash-empty" style="font-size: 17px;"></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot ng-if="panel.edit" ng-class="{'active':panel.edit}">
+                                        <tr style="background-color: #f1f3f4;">
+                                            <td>
+                                                <input id="name" type="text"
+                                                    class="margin border-none input-text-new white" ng-model="name_edit"
+                                                    style="width: calc(100% - 20px);height: 3em;margin: 1em 0!important;">
+                                            </td>
+                                            <td>
+                                                <select ng-model="stade_edit" class="no-padding margin" material-select
+                                                    watch>
+                                                    <option class="black-text" value=""></option>
+                                                    <option class="black-text" value="Publicar">Publicar</option>
+                                                    <option class="black-text" value="Revisar">Revisar</option>
+                                                    <option class="black-text" value="No Publicar">No Publicar</option>
+                                                </select>
+                                            </td>
+                                            <td style="width: 22%;">
+                                                <div data-file="{{(panel.name=='')?'PDF, Excel, Word':panel.name}}"
+                                                    style="height: 2.7em;margin: 1em 0!important;position: relative;overflow: hidden;background-color: white;display: flex;align-items: center;justify-content: flex-end;">
+                                                    <i for="file" class="icon-folder-open-1"
+                                                        style="font-size: 17px;"></i>
+                                                    <input type="file"
+                                                        accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                        select-ng-file ng-change="loadFile();" ng-init="file_edit = ''"
+                                                        ng-model="file_edit" class="margin border-none input-text-new"
+                                                        style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;right: 0;bottom: 0;padding-left: 100%;outline: transparent;background-color: transparent!important;">
+                                                </div>
+                                            </td>
+                                            <td class="center-align">
+                                                <i ng-click="panel.edit=false" class="icon-cancel red-text"
+                                                    title="Cancelar cambios" style="font-size: 17px;"></i>
+                                            </td>
+                                            <td class="center-align">
+                                                <i ng-click="editProcesses(false,$parent.items.id,name_edit,stade_edit,url_edit,$parent.innerSwitch[$parent.items.id])"
+                                                    class="icon-check green-text" title="Guardar cambios"
+                                                    style="font-size: 17px;"></i>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <!-- <i class="icon-list-alt" ng-if="switch_tipo" style="top:5vh;left:50%;font-size: 2em;"></i> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <i class="icon-list-alt" ng-show="panel.titulo==''"
+                style="position:absolute;top:5vh;left:50%;font-size: 2em;"></i>
+        </div>
+        <div ng-if="configurar" class="col s12 m12 l12" style="position:relative">
+            <div class="input-field col m2 hide-on-med-and-down">
+                <p>Editar Procesos:</p>
+                <i class="icon-floppy-1" ng-click="BtnGuardar()" title="Guardar todos los cambios"
+                    style="margin-right: 6px;cursor: pointer;"></i>
+            </div>
+            <div class="input-field col s12 m12 l12">
+                <textarea ng-model="macroprocesos_edit" ng-change="modificar_procesos(macroprocesos_edit)"
+                    id="textarea1" class="materialize-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+</div>

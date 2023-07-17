@@ -1,0 +1,1065 @@
+<div id="versionamiento" class="white newdesing">
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Verificación de cumplimiento de condiciones para la prestación de servicios</h5>
+      </li>
+      <li style="display:flex;align-items: center;">
+        <i onclick="location.reload()" class="fontello-icon icon-cw-1"
+          style="cursor: pointer;margin-right: 1em;font-size: 20px;"></i>
+        <div class="switch" ng-show="nit == 0">
+          <label>
+            <span ng-class="{'activo':!check_option}" class="activo">Crear Pre-Auditoria</span>
+            <input type="checkbox" ng-init="check_option = false" ng-model="check_option"
+              ng-change="(check_option == true)?listar_pre_auditorias(0):0" class="ng-pristine ng-valid ng-touched">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':check_option}">Mis Auditorias</span>
+          </label>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;">
+
+    <!-- Pre-Auditoria -->
+    <div ng-if="!check_option">
+
+      <!-- BUSCAR PRESTADOR -->
+      <div class="card-content clearfix card" id="card-content"
+        ng-style="{ 'width' : (!tipoPorCedula) ? '30%' : '60%' }"
+        style="width: 30%;margin: 1rem auto auto auto;border-radius: 15px;" ng-if="paso == 1">
+        <div class="row" style="margin-bottom: 0;margin-top: 1rem;">
+          <div class="col s12">
+            <div class="col s12 no-padding label-new m-b center">
+              <input type="text" id="Form_Nombre" class="margin border-none input-text-new w-100 m-l"
+                style="text-transform:uppercase" autocomplete="off" ng-model="InputSearch">
+              <label>Consultar Prestador</label>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 center m-b" style="margin-bottom: 15px;">
+          <button class="btn waves-effect waves-light" ng-click="ConsultaIPS(InputSearch)"
+            style="border-radius: 15px;"><i class="icon-search"></i></button>
+        </div>
+      </div>
+
+      <!-- INFORMACION BASICA IPS CON CONTRATO ACTIVO -->
+      <div class="card-content clearfix card" id="card-content"
+        style="width: 90%;margin: 1rem auto auto auto;border-radius: 15px;" ng-if="paso == 2">
+        <div class="row" style="margin-bottom: 0;margin-top: 1rem; max-height: 475px; overflow-x: auto;">
+          <div class="col s12">
+            <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>#</th>
+                  <th class="center">Razon Social</th>
+                  <th class="center">Codigo Habilitacion</th>
+                  <th class="center">Sede</th>
+                  <th class="center">Direccion</th>
+                  <th class="center">Estado</th>
+                </tr>
+              </thead>
+              <tbody class="default-border">
+                <tr ng-repeat="X in ArrPrestadores track by $index">
+                  <td>
+                    <label>{{ $index + 1}}</label>
+                  </td>
+                  <td style="cursor: pointer;" ng-click="setIPS(X)">
+                    <label style="cursor: pointer;">{{X.razon_social}}</label>
+                  </td>
+                  <td class="center" style="cursor: pointer;" ng-click="setIPS(X)">
+                    <label style="cursor: pointer;">{{X.codigo_habilitacion}}</label>
+                  </td>
+                  <td class="center" style="cursor: pointer;" ng-click="setIPS(X)">
+                    <label style="cursor: pointer;">{{X.nombre_sede}}</label>
+                  </td>
+                  <td class="center" style="cursor: pointer;" ng-click="setIPS(X)">
+                    <label style="cursor: pointer;">{{X.direccion | uppercase}}</label>
+                  </td>
+                  <td class="center" style="cursor: pointer;" ng-click="setIPS(X)">
+                    <span style="border-radius: 29px; padding: 4px;"
+                      ng-style="{'background-color': (X.contrato_activo == 'S') ? 'green' : 'red'}">
+                      <strong style="color: white;">
+                        {{X.contrato_activo == 'S' ? 'CONTRATADO' : 'SIN CONTRATO'}}</strong>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col s12 center m-b" style="margin-bottom: 15px;">
+          <button class="btn waves-effect waves-light" ng-click="atras()" style="border-radius: 15px;">ATRAS</button>
+          <button class="btn waves-effect waves-light" ng-click="setPaso(3)"
+            style="border-radius: 15px;">SIGUIENTE</button>
+        </div>
+      </div>
+
+      <!-- SELECCIONAR GRUPO DE SERVICIOS Y SERVICIOS A EVELUAR -->
+      <div class="card-content clearfix card" id="card-content"
+        style="width: 70%;margin: 1rem auto auto auto;border-radius: 15px; text-align: center;" ng-show="paso == 3">
+        <h4>Servicios a Evaluar</h4>
+        <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+          <div class="col s12">
+            <div id="datos_cajacopi">
+              <aside class="sidebar-left">
+                <ul class="side-nav fixed clearfix left w-100" id="nav-mobile"
+                  style="left: 0;position: relative;top: 0;padding: 0;">
+                  <li>
+                    <ul class="collapsible" data-collapsible="accordion">
+                      <li ng-repeat="servicio in servicios_evaluarTemp track by $index">
+                        <div class="collapsible-header">
+                          <i class="{{arrIcons[$index].icon}}"></i>
+                          <div class="title-sidebar" style="margin-right: 5%;">{{servicio.DESCRIPCION}}</div>
+                          <div class="icon-sidebar">
+                            <i class="zmdi zmdi-chevron-down"></i>
+                            <i class="zmdi zmdi-chevron-up"></i>
+                          </div>
+                        </div>
+                        <div class="collapsible-body black-text" style="display: block;">
+                          <div class="row">
+                            <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+                              <thead class="default-border default-color">
+                                <tr>
+                                  <th>SERVICIO</th>
+                                  <th class="center">EVALUAR</th>
+                                </tr>
+                              </thead>
+                              <tbody class="default-border">
+                                <tr ng-repeat="X in servicio.SERVICIOS">
+                                  <td>
+                                    <label>{{X.DESCRIPCION}}</label>
+                                  </td>
+                                  <td class="center">
+                                    <input type="checkbox" class="check" id="{{servicio.CODIGO}}_{{X.CODIGO}}"
+                                      ng-click="X.CHECK=!X.CHECK" ng-checked="{{X.CHECK}}"><label
+                                      for="{{servicio.CODIGO}}_{{X.CODIGO}}"></label>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+          <div class="col s12 center m-b" style="margin-bottom: 15px; margin-top: 15px;">
+            <button class="btn waves-effect waves-light" ng-click="atras()" style="border-radius: 15px;">ATRAS</button>
+            <button class="btn waves-effect waves-light" ng-click="setPaso(4)"
+              style="border-radius: 15px;">SIGUIENTE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SELECCIONAR AUDITORES DE LA AUDITORIA -->
+      <div class="card-content clearfix card" id="card-content"
+        style="width: 90%;margin: 1rem auto auto auto;border-radius: 15px;" ng-if="paso == 4">
+        <div class="row" style="text-align: center;">
+          <div class="col s6">
+            <h4>Auditores</h4>
+            <div style="max-height: 333px; overflow-x: auto; text-align: center;">
+              <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+                <thead class="default-border default-color">
+                  <tr>
+                    <th>#</th>
+                    <th class="center">AUDITOR</th>
+                    <th class="center">SECCIONAL</th>
+                    <th class="center">ACCION</th>
+                  </tr>
+                </thead>
+                <tbody class="default-border">
+                  <tr ng-repeat="X in ArrAuditoresTemp track by $index">
+                    <!-- <tr> -->
+                    <td>
+                      <label>{{ $index + 1}}</label>
+                    </td>
+                    <td>
+                      <label>{{X.nombre}}</label>
+                    </td>
+                    <td class="center">
+                      <label>{{X.seccional}}</label>
+                    </td>
+                    <td class="center">
+                      <i class="icon-plus" style="cursor: pointer;" ng-click="addYremoveAuditor(1, X)"></i></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col s6">
+            <h4>Auditores Asignados</h4>
+            <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>#</th>
+                  <th class="center">AUDITOR</th>
+                  <th class="center">SECCIONAL</th>
+                  <th class="center">ROL</th>
+                  <th class="center">ACCION</th>
+                </tr>
+              </thead>
+              <tbody class="default-border">
+                <tr ng-repeat="X in ArrAuditores track by $index">
+                  <!-- <tr> -->
+                  <td>
+                    <label>{{ $index + 1}}</label>
+                  </td>
+                  <td>
+                    <label style="cursor: pointer;" ng-click="setSwal(X.documento, $index)">{{X.nombre}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.seccional}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{$index == 0 ? "LIDER" : X.rol | uppercase}}</label>
+                  </td>
+                  <td class="center">
+                    <i class="icon-trash" style="cursor: pointer;" ng-click="addYremoveAuditor(2, X)"
+                      ng-if="$index > 0"></i></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div  -->
+          <div ng-if="swEstandar.sw && ArrAuditores.length >  1"
+            style="position: absolute;top: 70px;right: 0px;height: auto;max-height: calc(70vh - 200px);width: calc(20% - 1.5rem);background-color: #e5e6e6;z-index: 10;margin: 0 0.75rem;border: 1px solid;overflow: auto;">
+            <table id="tablaOriginal_2" class="striped table-bordered white">
+              <thead class="default-background white-text">
+                <tr style="position: relative;">
+                  <th class="border-none">
+                    Eestandar
+                  </th>
+                  <th ng-click="add_all_modulo()" class="center-align border-none" style="cursor:pointer">Accion</th>
+                </tr>
+              </thead>
+              <tbody class="scroll-tbody-2 collapsible-body-new">
+                <tr
+                  ng-repeat="modulo in (ArrAuditores[swEstandar.index].estandar.length > 5 || ArrEstandaresTemp.length == 0) ? ArrAuditores[swEstandar.index].estandar : ArrEstandaresTemp">
+                  <td>{{modulo.DESCRIPCION}}</td>
+                  <td class="center-align">
+                    <i ng-click="addYremoveEstandar(modulo, ArrAuditores[swEstandar.index], 1)"
+                      class="icon-plus green-text"
+                      ng-if="ArrAuditores[swEstandar.index].estandar.length <= 5 && ArrEstandaresTemp.length > 0"></i>
+                    <i ng-click="addYremoveEstandar(modulo, ArrAuditores[swEstandar.index], 2)"
+                      class="icon-trash green-text"
+                      ng-if="ArrAuditores[swEstandar.index].estandar.length >= 6 || ArrEstandaresTemp.length == 0"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col s12 center m-b" style="margin-bottom: 15px; margin-top: 15px;">
+            <button class="btn waves-effect waves-light" ng-click="atras()" style="border-radius: 15px;">ATRAS</button>
+            <button class="btn waves-effect waves-light" ng-click="setPaso(5)"
+              style="border-radius: 15px;">SIGUIENTE</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RESUMEN GRUPO DE SERVICIOS Y SERVICIOS A EVELUAR -->
+      <div class="card-content clearfix card" id="card-content"
+        style="width: 70%;margin: 1rem auto auto auto;border-radius: 15px; text-align: center;" ng-show="paso == 5">
+        <h4>Resumen de Servicios a Evaluar</h4>
+        <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+          <div class="col s12">
+            <div id="datos_cajacopi">
+              <aside class="sidebar-left">
+                <ul class="side-nav fixed clearfix left w-100" id="nav-mobile"
+                  style="left: 0;position: relative;top: 0;padding: 0;">
+                  <li>
+                    <ul class="collapsible" data-collapsible="accordion1">
+                      <li ng-repeat="servicio in servicios_evaluarTemp track by $index">
+                        <div class="collapsible-header" ng-if="servicio.CHECK">
+                          <i class="{{arrIcons[$index].icon}}"></i>
+                          <div class="title-sidebar" style="margin-right: 5%;">{{servicio.DESCRIPCION}}</div>
+                          <div class="icon-sidebar">
+                            <i class="zmdi zmdi-chevron-down"></i>
+                            <i class="zmdi zmdi-chevron-up"></i>
+                          </div>
+                        </div>
+                        <div class="collapsible-body black-text" style="display: block;" ng-if="servicio.CHECK">
+                          <div class="row">
+                            <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+                              <thead class="default-border default-color">
+                                <tr>
+                                  <th>SERVICIO</th>
+                                </tr>
+                              </thead>
+                              <tbody class="default-border">
+                                <tr ng-repeat="X in servicio.SERVICIOS">
+                                  <td ng-if="X.CHECK">
+                                    <label>{{X.DESCRIPCION}}</label>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+          <div class="col s12 center m-b" style="margin-bottom: 15px; margin-top: 15px;">
+            <button class="btn waves-effect waves-light" ng-click="atras()" style="border-radius: 15px;">ATRAS</button>
+            <button class="btn waves-effect waves-light" ng-click="setPaso(6)"
+              style="border-radius: 15px;">SIGUIENTE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FECHA TENTATIVA DE AUDITORIA -->
+      <div class="card-content clearfix card" id="card-content"
+        style="width: 70%;margin: 1rem auto auto auto;border-radius: 15px; text-align: center;" ng-show="paso == 6">
+        <h4>Fecha tentativa de auditoria</h4>
+        <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+          <div class="col s12 no-padding label-new m-b center">
+            <input type="date" min="{{SysDay | date:'yyyy-MM-dd'}}" max="{{maxDate | date:'yyyy-MM-dd'}}"
+              ng-model="temp.FECHA" class="margin border-none input-text-new w-100 m-l" autocomplete="off">
+            <label>Seleccionar fecha</label>
+          </div>
+        </div>
+        <div class="col s12 center m-b" style="margin-bottom: 15px; margin-top: 15px;">
+          <button class="btn waves-effect waves-light" ng-click="atras()" style="border-radius: 15px;">ATRAS</button>
+          <button class="btn waves-effect waves-light" ng-click="guardar('P')"
+            style="border-radius: 15px;">GUARDAR</button>
+        </div>
+      </div>
+
+      <!-- fin Pre-Auditoria -->
+    </div>
+
+    <!-- Panel gestion -->
+    <div ng-if="check_option && !sw.tabs">
+      <div class="col m-b right s4">
+        <input type="text" class="margin border-none input-text-new m-l" style="text-transform:uppercase; width: 90%;"
+          autocomplete="off" ng-model="filterAud" placeholder="Buscar en la tabla">
+      </div>
+      <div class="col s12" style="overflow: auto; max-width: 100%; max-height: 70vh;">
+        <div class="row">
+          <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+            <thead class="default-border default-color">
+              <tr>
+                <th class="center">COD AUDITORIA</th>
+                <th class="center">NIT</th>
+                <th class="center">IPS</th>
+                <th class="center">SEDE</th>
+                <th class="center">UBICACION</th>
+                <th class="center">CORREO ELECTRONICO</th>
+                <th class="center">FECHA AUDITORIA</th>
+                <th class="center">ESTADO</th>
+                <th class="center">ACCION</th>
+              </tr>
+            </thead>
+            <tbody class="default-border">
+              <tr ng-repeat="X in lista_preAuditorias | filter:filterAud">
+                <td class="center">
+                  <label>{{X.numero_auditoria}}</label>
+                </td>
+                <td class="center">
+                  <label>{{X.nit}}</label>
+                </td>
+                <td class="center">
+                  <label>{{X.ips}}</label>
+                </td>
+                <td class="center">
+                  <label>{{X.nombre_sede}}</label>
+                </td>
+                <td class="center">
+                  <label>{{X.muni_nombre}}</label>
+                </td>
+                <td class="center">
+                  <label>{{X.email}}</label>
+                </td>
+                <td class="center">
+                  <label>{{X.fecha_auditoria | date:'dd/MM/yyyy'}}</label>
+                </td>
+                <td class="center">
+                  <label>{{X.estado == 'P' ? 'PROGRAMADA' : X.estado == 'E' ? 'EN EJECUCION' : X.estado == 'R' ?
+                    'REPROGRAMADA' : 'CERRADA'}}</label>
+                </td>
+                <td class="center">
+                  <i class="icon-cog-alt" style="cursor: pointer;font-size: larger;"
+                    ng-if="usuario == 1083434770 || 32769861 && nit == 0" data-toggle="tooltip"
+                    ng-click="ajustesAdmin(1, X)" data-placement="top" title="Ajustes"></i>
+                  <i class="icon-th-list" style="cursor: pointer;font-size: larger;" ng-if="nit == 0"
+                    ng-click="openModal(X)" data-toggle="tooltip" data-placement="top" title="Servicios a evaluar"></i>
+                  <i class="icon-play" style="color: rgb(16, 209, 16); cursor: pointer;"
+                    ng-if="X.estado != 'F' && nit == 0" ng-click="iniciarAuditoria(X)" data-toggle="tooltip"
+                    data-placement="top" title="Iniciar/Reanudar"></i>
+                  <i class="icon-eye-1" style="cursor: pointer;font-size: larger;" data-toggle="tooltip"
+                    data-placement="top" title="Ver auditoria" ng-if="X.estado == 'F' && nit == 0"
+                    ng-click="resultado_auditoria(X.numero_auditoria)"></i>
+                  <i class="icon-chart-bar" ng-if="X.estado == 'F'  && nit == 0"
+                    style="cursor: pointer;font-size: larger;" ng-click="tabulaResultados(1,X.numero_auditoria)"
+                    data-toggle="tooltip" data-placement="top" title="Resultados"></i>
+                  <label for="file-input">
+                    <i class="icon-attach-1" style="cursor: pointer;font-size: larger;" data-toggle="tooltip"
+                      data-placement="top" title="Adjuntar soportes"
+                      ng-if="X.ruta_soporte != 'S' && X.estado == 'F' && nit == 0"
+                      ng-click="cargue_evidencias(1,X)"></i>
+                  </label>
+                  <i class="icon-download-1" style="cursor: pointer;font-size: larger;"
+                    ng-if="X.ruta_soporte != 'N' && X.estado == 'F' && nit == 0" data-toggle="tooltip"
+                    data-placement="top" title="Descargar Soportes" ng-click="obtenerRutas(1, X.numero_auditoria)"></i>
+                  <i class="icon-edit-2" style="cursor: pointer;font-size: larger;" data-toggle="tooltip"
+                    data-placement="top" title="Reprogramar" ng-if="X.estado == 'P' && nit == 0"
+                    ng-click="reprogramar(X)"></i>
+                  <i class="icon-doc-6" style="cursor: pointer;font-size: larger;" data-toggle="tooltip"
+                    data-placement="top" title="Ver hallazgos" ng-if="X.estado == 'F' && nit == 0"
+                    ng-click="listar_hallazgos(X.numero_auditoria)"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Fin Panel gestion -->
+
+    <!-- LIST TAB HORIZONTAL -->
+    <div class="col s12" id="btn_top" style="margin-bottom: 1%;" ng-if="check_option && sw.tabs">
+      <div class="row" style="margin-bottom: 0px;">
+        <div class="col s2 m2 l2" style="position: relative;"
+          ng-repeat="servicio in listaGserviciosyServiciosTemp track by $index">
+          <div class="Tarjeta_Titulo" ng-click="abrirGrupo(servicio)">
+            <div class="card cursor-pointer default-linear-gradient" ng-click="serviciosAuditoria(servicio)">
+              <div class="card-content">
+                <i class="{{servicio.icon.icon}} white-text"></i>
+                <h6> {{servicio.grupo_servicio}}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIST TAB VERTICAL ESPECIALIDADES -->
+    <div class="col s12" ng-if="check_option && sw.acordeon">
+      <div class="row">
+        <div class="col s3" id="btns_servicio_select" style="max-height: 475px; overflow-x: auto;">
+          <div>
+            <aside class="sidebar-left">
+              <ul class="side-nav fixed clearfix left w-100" id="nav-mobile"
+                style="left: 0;position: relative;top: 0;padding: 0;">
+                <li>
+                  <ul class="collapsible" data-collapsible="accordion2">
+                    <li ng-repeat="servicio in servicioAuditoria.servicio track by $index">
+                      <div class="collapsible-header">
+                        <!-- ng-click="estandaresAuditoria(servicio.codigo_servicio, servicioAuditoria.codigo_grupo_servicio)"> -->
+                        <i class="{{servicioAuditoria.icon.icon}}"></i>
+                        <div class="title-sidebar" style="font-size: smaller;">
+                          {{servicio.descripcion_servicio}}
+
+                        </div>
+                        <div class="icon-sidebar">
+                          <i class="zmdi zmdi-chevron-down"></i>
+                          <i class="zmdi zmdi-chevron-up"></i>
+                        </div>
+                      </div>
+                      <div class="collapsible-body black-text" style="display: none;">
+                        <div class="row" ng-repeat="est in servicio.estandar track by $index"
+                          style="margin: auto; cursor: pointer;">
+                          <div class="center"
+                            ng-click="obtener_preguntas(servicio.codigo_servicio, est.codigo_estandar)">
+                            <label style="font-size: xx-small; cursor: pointer;">{{est.descripcion_estandar}}</label>
+                          </div>
+                          <!-- ng-click="obtener_preguntas(servicio, item)" -->
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+        <div class="col s9" id="contain_acordeon" style="max-height: 475px; overflow-x: auto;"
+          ng-if="lista_preguntasAuditoriasTemp.length > 0">
+          <div class="row">
+            <div class="col m-b right s4" ng-show="servicioAuditoria.codigo_grupo_servicio != 6">
+              <select id="filtro" class="select-chosen-eps" style="text-align:center" ng-model="motivox">
+                <option value="" selected disabled>SELECCIONAR</option>
+                <option value="ALTA">ALTA</option>
+                <option value="BAJA">BAJA</option>
+                <option value="BAJA - MEDIANA - ALTA">BAJA - MEDIANA - ALTA</option>
+                <option value="BAJA Y MEDIANA">BAJA Y MEDIANA</option>
+                <option value="MEDIANA">MEDIANA</option>
+                <option value="MEDIANA Y ALTA">MEDIANA Y ALTA</option>
+                <option value="NO APLICA">NO APLICA</option>
+                <option value="">TODAS</option>
+              </select>
+            </div>
+            <table class="bordered table_center_align" style="width:100%;font-size:6px !important;"
+              id="preguntasAuditoria">
+              <thead class="default-border default-color">
+                <tr>
+                  <th class="center">ARTICULO</th>
+                  <th class="center">SECCION</th>
+                  <th class="center" ng-if="servicioAuditoria.codigo_grupo_servicio == '5'">TRANSPORTE</th>
+                  <th class="center">COMPLEJIDAD</th>
+                  <th class="center">MODALIDAD</th>
+                  <th class="center">CRITERIO</th>
+                  <th class="center">CUMPLE</th>
+                  <th class="center">NO CUMPLE</th>
+                  <th class="center">NO APLICA</th>
+                </tr>
+              </thead>
+              <tbody class="default-border">
+                <tr ng-repeat="X in lista_preguntasAuditoriasTemp | filter:{complejidad:motivox} track by $index">
+                  <td>
+                    <label>{{X.articulo}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.seccion}}</label>
+                  </td>
+                  <td class="center" ng-if="servicioAuditoria.codigo_grupo_servicio == '5'">
+                    <label>{{X.tipo_transporte != undefined ? X.tipo_transporte : 'NO APLICA'}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.complejidad}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.modalidad}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.descripcion}}</label>
+                  </td>
+                  <td class="center">
+                    <div class="form-check">
+                      <input type="radio" class="form-check-input"
+                        id="C-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"
+                        name="G-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"
+                        ng-checked="X.check == 1 ? true: false"
+                        ng-click="X.check = 1; ObservacionCriterioAuditoria(X);">
+                      <label class="form-check-label"
+                        for="C-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"></label>
+                    </div>
+                  </td>
+                  <td class="center">
+                    <div class="form-check">
+                      <input type="radio" class="form-check-input"
+                        id="NC-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"
+                        name="G-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"
+                        ng-checked="X.check == 2 ? true: false"
+                        ng-click="X.check = 2; ObservacionCriterioAuditoria(X);">
+                      <label class="form-check-label"
+                        for="NC-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"></label>
+                    </div>
+                  </td>
+                  <td class="center">
+                    <div class="form-check">
+                      <input type="radio" class="form-check-input"
+                        id="NA-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"
+                        name="G-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"
+                        ng-click="X.check = 3" ng-checked="X.check == 3 ? true: false">
+                      <label class="form-check-label"
+                        for="NA-{{X.codigo_servicio}}-{{X.codigo_estandar}}-{{X.codigo_criterio}}"></label>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 center" style="padding-top: 1%;">
+          <button class="btn btn-primary" ng-click="guardarAvanceAuditoria(lista_preguntasAuditoriasTemp)">GUARDAR
+            AVANCE</button>
+          <button class="btn btn-primary" ng-click="guardar('F')">FINALIZAR AUDITORIA</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL RESUMEN -->
+    <div class="modal modal-content card-content clearfix card" id="modal_resumen"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center;">
+      <h4>Resumen de Servicios a Evaluar</h4>
+      <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+        <div class="col s12">
+          <div id="datos_cajacopi">
+            <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>#</th>
+                  <th class="center">GRUPO DE SERVIICIO</th>
+                  <th class="center">SERVICIO</th>
+                  <th class="center">ESTANDAR</th>
+                </tr>
+              </thead>
+              <tbody class="default-border">
+                <tr ng-repeat="X in lista_servicios_preAuditorias track by $index">
+                  <td class="center">
+                    <label>{{$index + 1}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.grupo_servicio}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.servicio}}</label>
+                  </td>
+                  <td class="center">
+                    <label>{{X.estandar}}</label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL REGISTRO ACCION DE MEJORA -->
+    <div class="modal modal-content card-content clearfix card" id="modal_registro_accion_mejora"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center;">
+      <h4>Registrar Accion de mejora</h4>
+      <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+        <div class="col s12">
+          <div class="col s12 no-padding label-new m-b center">
+            <input type="text" id="Form_Nombre" class="margin border-none input-text-new w-100 m-l"
+              style="text-transform:uppercase" autocomplete="off" ng-model="accion">
+            <label>Acción para el cumplimiento</label>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="col s6 no-padding label-new m-b center">
+            <input type="text" id="Form_Nombre" class="margin border-none input-text-new w-100 m-l"
+              style="text-transform:uppercase" autocomplete="off" ng-model="responsable">
+            <label>Responsable</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b center">
+            <!-- <input type="text" id="Form_Nombre" class="margin border-none input-text-new w-100 m-l"
+              style="text-transform:uppercase" autocomplete="off" ng-model="fechaLimite"> -->
+            <input type="date" min="{{SysDay | date:'yyyy-MM-dd'}}" max="{{maxDate | date:'yyyy-MM-dd'}}"
+              ng-model="fechaLimite" class="margin border-none input-text-new w-100 m-l" autocomplete="off">
+            <label>Fecha límite para implementar</label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 center" style="padding-top: 1%;">
+          <button class="btn btn-primary" ng-click="RegistrarPlan()">Registrar Plan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL REGISTRO OBSERVACIONES -->
+    <div class="modal modal-content card-content clearfix card" id="modal_registro_observacion_criterio"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center; height: 40%;">
+      <h4>Registrar Observacion</h4>
+      <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+        <textarea ng-model="observacionCriterio" style="width: 95%;height: 150px;" maxlength="1000"
+          ng-change="contaTextArea()"></textarea>
+        <div id="contador"></div>
+        <label>Observacion</label>
+      </div>
+      <div class="row">
+        <div class="col s12 center" style="padding-top: 1%;">
+          <button class="btn btn-primary" ng-click="RegistrarObservacion(model)">Registrar Hallazgo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CARGUE DE ARCHIVOS -->
+    <div class="modal modal-content card-content clearfix card" id="modal_cargue_evidencias"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center;">
+      <h4>Cargue de evidencias</h4>
+      <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+        <div class="col s12">
+          <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+            <thead class="default-border default-color">
+              <tr>
+                <th>#</th>
+                <th class="center">Estandar</th>
+                <th class="center">Cargar</th>
+              </tr>
+            </thead>
+            <tbody class="default-border">
+              <tr ng-repeat="X in ArrEstandares track by $index">
+                <td>
+                  <label class="center">{{$index + 1}}</label>
+                </td>
+                <td class="center">
+                  <label class="center">{{X.DESCRIPCION}}</label>
+                </td>
+                <td class="center">
+                  <div class="file-input-wrapper">
+                    <span id="file-button-text_{{X.CODIGO}}">Seleccionar archivo</span>
+                    <input type="file" id="file_{{X.CODIGO}}">
+                    <!-- onchange="document.getElementById('file-button-text').innerHTML = this.value.split('\\')[2]"> -->
+                    <!-- <input type="file" id="file_{{X.CODIGO}}"> -->
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 center" style="padding-top: 1%;">
+          <button class="btn btn-primary" ng-click="uploadFile(1)">Cargar Soportes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DESCARGAR ARCHIVOS -->
+    <div class="modal modal-content card-content clearfix card" id="modal_descarga_archivos"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center;">
+      <h4>Descargar evidencias</h4>
+      <div class="row" style="max-height: 475px; overflow-x: auto; margin: 1%">
+        <div class="col s12">
+          <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+            <thead class="default-border default-color">
+              <tr>
+                <th>#</th>
+                <th class="center">Estandar</th>
+                <th class="center">Ver</th>
+              </tr>
+            </thead>
+            <tbody class="default-border">
+              <tr ng-repeat="X in downloadFilesRutas track by $index">
+                <td>
+                  <label class="center">{{$index + 1}}</label>
+                </td>
+                <td class="center">
+                  <label class="center">{{X.estandar}}</label>
+                </td>
+                <td class="center">
+                  <i class="icon-eye-1" style="cursor: pointer;font-size: larger;" data-toggle="tooltip"
+                    data-placement="top" title="Descargar" ng-click="downloadFiles(X.ruta)"></i>
+                  <!-- <label class="center">{{X.ruta}}</label> -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TABULACIONES -->
+    <div class="modal modal-content card-content clearfix card" id="modal_tabulacion"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center;">
+      <div class="row" style="margin: 1%">
+        <div class="col s12">
+          <ul class="tabs transparent" style="overflow:hidden;">
+            <li class="tab col w-auto" ng-init="resul = 1;" style="cursor: pointer;">
+              <a ng-click="resul = 1;">Resultado General</a>
+            </li>
+            <li class="tab col w-auto" style="cursor: pointer;">
+              <a ng-click="resul = 2;">Resultado Por Estandar</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12" ng-if="resul == 1">
+          <h3>RESULTADO GENERAL</h3>
+          <h5>Cumplimiento del {{tabulaciones.Porcentaje}}%</h5>
+        </div>
+        <div class="col s12" ng-if="resul == 2">
+          <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+            <thead class="default-border default-color">
+              <tr>
+                <!-- <th class="center">GRUPO SERVICIOS</th> -->
+                <th class="center">#</th>
+                <th class="center">ESTANDAR</th>
+                <!-- <th class="center">HABILITADO</th> -->
+                <th class="center">PORCENTAJE</th>
+                <th class="center">CUMPLIMIENTO</th>
+              </tr>
+            </thead>
+            <tbody class="default-border">
+              <tr ng-repeat="x in tabulaciones.Estandares track by $index">
+                <td class="center">
+                  <label>{{ $index + 1}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.Estandar}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.Porcentaje}}%</label>
+                </td>
+                <td class="center"
+                  ng-style="{'background-color': (x.Porcentaje >= 95) ? '#80F79E' : (x.Porcentaje <= 79) ? '#F68180' : '#F2F681'}">
+                  <label style="color: white; font-weight: bold;">{{x.Porcentaje >= 95 ? 'CUMPLE' : x.Porcentaje <= 79
+                      ? 'NO CUMPLE' : 'CUMPLE CON PLAN DE MEJORAMIENTO' }}</label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL RESPUESTAS AUDITORIA -->
+    <div class="modal modal-content card-content clearfix card" id="modal_resultados_auditoria"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center;">
+      <h4>Resultados de auditoria</h4>
+      <div class="row">
+        <div class="col s12" style="max-height: 60vh; overflow: auto;">
+          <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+            <thead class="default-border default-color">
+              <tr>
+                <th class="center">SERVICIO</th>
+                <th class="center">ESTANDAR</th>
+                <th class="center">CRITERIO</th>
+                <th class="center">RESULTADO</th>
+                <th class="center">OBSERVACION</th>
+              </tr>
+            </thead>
+            <tbody class="default-border">
+              <tr ng-repeat="x in lista_resultado_auditoria track by $index">
+                <td class="center">
+                  <label>{{x.servicio}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.estandar}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.criterio}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.resultado}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.observacion != "" ? x.observacion : 'SIN OBSERVACION'}}</label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL HALLAZGOS -->
+    <div class="modal modal-content card-content clearfix card" id="modal_hallazgos"
+      style="margin: 1rem auto auto auto;border-radius: 15px; text-align: center;">
+      <h4>Resultados de hallazgos</h4>
+      <div class="row">
+        <div class="col s12" style="max-height: 60vh; overflow: auto;">
+          <table class="bordered table_center_align" style="width:100%;font-size:6px !important;">
+            <thead class="default-border default-color">
+              <tr>
+                <th class="center">SERVICIO</th>
+                <th class="center">ESTANDAR</th>
+                <th class="center">CRITERIO</th>
+                <th class="center">RESULTADO</th>
+                <th class="center">OBSERVACION</th>
+              </tr>
+            </thead>
+            <tbody class="default-border">
+              <tr ng-repeat="x in lista_hallazgos track by $index">
+                <td class="center">
+                  <label>{{x.servicio}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.estandar}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.criterio}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.resultado}}</label>
+                </td>
+                <td class="center">
+                  <label>{{x.observacion != "" ? x.observacion : 'SIN OBSERVACION'}}</label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+
+    <style type="text/css">
+      /* .icon-play{
+        background-color: green !important;
+      } */
+      table {
+        position: relative;
+        border-collapse: collapse;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+      }
+
+      .Tarjeta_Titulo {
+        -webkit-transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+        transition: all .8s cubic-bezier(.34, 1.61, .7, 1);
+        position: relative;
+        z-index: 3;
+      }
+
+      .Tarjeta_Titulo:hover {
+        transform: translate3d(0, -25px, 0);
+      }
+
+      .Tarjeta_Titulo>.card {
+        border-radius: .375rem;
+        z-index: 2;
+      }
+
+      .Tarjeta_Titulo .card-content {
+        padding: 0.6rem 0.8rem;
+        display: flex;
+      }
+
+      .Tarjeta_Titulo h6 {
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+        font-size: 0.8125rem;
+      }
+
+      .Tarjeta_Texto {
+        z-index: -1;
+        margin-top: -3.7em;
+        width: calc(100% - 30px);
+        left: 15px;
+        /* text-align: center; */
+        width: auto;
+        border-radius: .375rem;
+        height: 41px;
+        padding: 0.9rem 0.8rem;
+      }
+
+      .Tarjeta_Texto>span {
+        position: relative;
+        font-size: 0.8em;
+        font-weight: 700;
+      }
+
+      .Tarjeta_redondeada>.card {
+        border-radius: .375rem;
+        z-index: 2;
+      }
+
+      .Tarjeta_redondeada .card-content {
+        padding: 0.6rem 0.8rem;
+        display: flex;
+      }
+
+      .Tarjeta_redondeada h6 {
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+        font-size: 0.8125rem;
+      }
+
+      .slide-out-left {
+        -webkit-animation: slide-out-left 1.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+        animation: slide-out-left 1.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+      }
+
+      .slide-in-right {
+        -webkit-animation: slide-out-left 1.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) reverse both;
+        animation: slide-out-left 1.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) reverse both;
+      }
+
+      @-webkit-keyframes slide-out-left {
+        0% {
+          -webkit-transform: translateX(0);
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        100% {
+          -webkit-transform: translateX(-1000px);
+          transform: translateX(-1000px);
+          opacity: 0;
+        }
+      }
+
+      @keyframes slide-out-left {
+        0% {
+          -webkit-transform: translateX(0);
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        100% {
+          -webkit-transform: translateX(-1000px);
+          transform: translateX(-1000px);
+          opacity: 0;
+        }
+      }
+
+      @-webkit-keyframes slide-in-right {
+        0% {
+          -webkit-transform: translateX(0);
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        100% {
+          -webkit-transform: translateX(-1000px);
+          transform: translateX(-1000px);
+          opacity: 0;
+        }
+      }
+
+      @keyframes slide-in-right {
+        0% {
+          -webkit-transform: translateX(0);
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        100% {
+          -webkit-transform: translateX(-1000px);
+          transform: translateX(-1000px);
+          opacity: 0;
+        }
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        padding: 5px;
+        border-radius: 5px;
+        border: 2px solid #333;
+        background-color: #EEE;
+        color: #333;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .file-input-wrapper input[type=file] {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .file-input-wrapper .file-name {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 10px;
+        overflow: hidden;
+        max-width: 150px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    </style>
+
+  </div>

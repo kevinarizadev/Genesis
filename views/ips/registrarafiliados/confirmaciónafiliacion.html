@@ -1,0 +1,844 @@
+<div>
+  <div class="row">
+    <div class="col l12 m12 s12">
+      <div class="card">
+        <div class="card-content">
+          <h5 style="display: flex;"><strong>Confirmación De Afiliación
+              <!-- <i class="icon-arrows-ccw default-color cursor-pointer"
+                style="font-size:1rem;position: absolute;margin-top: 10px;line-height: 0;" title="Refrescar"
+                ng-click="ListarInformacion('destruir');"></i> -->
+            </strong></h5>
+        </div>
+        <div class="divider"></div>
+        <div class="card-content clearfix">
+          <div class="row">
+            <div class="col l12" style="zoom: 0.87;">
+              <div class="align-items-center black-text col d-flex justify-content-between s12 title-panel no-padding"
+                style="margin-bottom: 15px;">
+                <div style="display:grid">
+                  <small>Filtro:</small>
+                  <input ng-model="historial.filtrar" ng-change="filter();" id="search" type="text" autocomplete="off"
+                    class="border-none input-text-new margin input-out-new white" placeholder="Filtrar tabla"
+                    style="width: 120px;">
+                </div>
+                <!-- <div style="display:grid">
+                  <small>Afiliado:</small>
+                  <input id="normal8" ng-model="historial.afiliado" type="text" placeholder="Afiliado"
+                    class="border-none input-text-new margin input-out-new white">
+                </div> -->
+                <div>
+                  <small>Estado:</small>
+                  <select class="select-default-new input-out-new" ng-model="historial.estado">
+                    <option value="A">ACTIVOS</option>
+                    <option value="X">RECHAZADOS</option>
+                    <option value="P">PROCESADOS</option>
+                    <option value="T">TODOS</option>
+                  </select>
+                </div>
+                <div>
+                  <small>Inicio:</small>
+                  <input ng-model="historial.inicio" type="date" id="datepicker" max="{{maxDate}}"
+                    class="border-none input-date-new input-out-new margin white" />
+                </div>
+                <div>
+                  <small>Fin:</small>
+                  <input ng-model="historial.fin" type="date" id="datepicker" max="{{maxDate}}"
+                    class="border-none input-date-new input-out-new margin white" />
+                </div>
+                <div>
+                  <i ng-click="ListarInformacion('destruir')" class="btn btn-small cursor-pointer green icon-filter-1"
+                    title="Listar"></i>
+                  <i ng-click="Descargar_Excel()" class="btn btn-small cursor-pointer green icon-download"
+                    title="Descargar"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col l12" style="zoom: 0.87;">
+              <div class="table-over-box m-b" style="max-height: calc(100vh - 262px);overflow: auto;"
+                ng-show="informacion.length > 0">
+                <table class="striped table-bordered white" align="center" style="border-bottom: none;">
+                  <thead align="center">
+                    <tr>
+                      <td class="center-align"><strong>#</strong></td>
+                      <td class="center-align"><strong>DOCUMENTO</strong></td>
+                      <td class="center-align"><strong>NOMBRE AFILIADO</strong></td>
+                      <td class="center-align"><strong>DEPARTAMENTO</strong></td>
+                      <td class="center-align"><strong>MUNICIPIO</strong></td>
+                      <td class="center-align"><strong>FECHA REGISTRO</strong></td>
+                      <td class="center-align"><strong>NOMBRE IPS</strong></td>
+                      <td class="center-align"><strong>REGIMEN</strong></td>
+                      <td class="center-align"><strong>ESTADO</strong></td>
+                      <!-- <td class="center-align"><strong>PROCESO</strong></td> -->
+                      <!-- <td class="center-align"><strong>CORREO</strong></td>
+                      <td class="center-align"><strong>DIRECCION</strong></td>
+                      <td class="center-align"><strong>TELEFONO</strong></td> -->
+                      <td class="center-align"><strong>ORIGEN</strong></td>
+                      <td class="center-align"><strong>RESPONSABLE</strong></td>
+                      <td class="center-align"><strong>OPCION</strong></td>
+                    </tr>
+                  </thead>
+                  <tbody style="height: 40%; overflow: scroll;">
+                    <tr ng-if="informacion.length==0">
+                      <td colspan="13">No hay contenido.</td>
+                    </tr>
+                    <tr
+                      ng-repeat="listarinfo in informacion | filter:historial.filtrar | startFrom:currentPage*pageSize | limitTo:pageSize track by $index">
+                      <td class="center-align">{{$index + 1}}</td>
+                      <td class="center-align">{{listarinfo.tipo_doc}} - {{listarinfo.doc}}</td>
+                      <td class="center-align">{{listarinfo.nombre_completo}}</td>
+                      <td class="center-align">{{listarinfo.departamento}}</td>
+                      <td class="center-align">{{listarinfo.municipio}}</td>
+                      <td class="center-align">{{listarinfo.fecha_registro}}</td>
+                      <td class="center-align">{{listarinfo.nombre_ips}}</td>
+                      <td class="center-align">{{listarinfo.regimen}}</td>
+                      <td class="center-align" ng-if="listarinfo.Estado_Solicitud != 'PENDIENTE'">{{listarinfo.Estado_Solicitud}}</td>
+                      <!-- <td class="center-align" ng-if="listarinfo.Estado_Solicitud == 'PENDIENTE' || listarinfo.Origen == 'Inscripcion a IPS'">{{listarinfo.Formulario == 0 ? 'PENDIENTE POR FORMULARIO' : 'PENDIENTE POR CONFIRMAR' }}</td> -->
+
+                      <td class="center-align" ng-if="listarinfo.Estado_Solicitud == 'PENDIENTE' && listarinfo.Origen == 'Inscripcion a IPS'">PENDIENTE POR CONFIRMAR</td>
+                      <td class="center-align" ng-if="listarinfo.Estado_Solicitud == 'PENDIENTE' && listarinfo.Origen != 'Inscripcion a IPS'">{{listarinfo.Formulario == 0 ? 'PENDIENTE POR FORMULARIO' : 'PENDIENTE POR CONFIRMAR' }}</td>
+                      <td class="center-align">{{listarinfo.Origen}}</td>
+                      <td class="center-align">{{listarinfo.Responsable}}</td>
+                      <!-- <td class="center-align">{{listarinfo.proceso}}</td>   -->
+                      <!-- <td class="center-align">{{listarinfo.correo_estado}}</td>
+                      <td class="center-align">{{listarinfo.direccion}}</td>
+                      <td class="center-align">{{listarinfo.movil_estado}}</td> -->
+                      <td class="center-align" ng-if="listarinfo.Estado_Solicitud != 'PENDIENTE'">
+                        <div class="tooltip">
+                          <i ng-click="VerDetalle(listarinfo)" style="cursor: pointer !important;"
+                            class="Medium material-icons">remove_red_eye</i>
+                          <span class="tooltiptext" style="left: 9px;width: 75px;">Ver Detalle</span>
+                        </div>
+                      </td>
+                      <td class="center-align" ng-if="listarinfo.Estado_Solicitud == 'PENDIENTE' && listarinfo.Origen == 'Inscripcion a IPS'">
+                        <div class="tooltip">
+                          <i ng-click="VerDetalle(listarinfo)" style="cursor: pointer !important;"
+                            class="Medium material-icons">remove_red_eye</i>
+                          <span class="tooltiptext" style="left: 9px;width: 75px;">Ver Detalle</span>
+                        </div>
+                      </td>
+                      <td class="center-align" ng-if="listarinfo.Estado_Solicitud ==  'PENDIENTE' && listarinfo.Origen != 'Inscripcion a IPS'">
+                        <div class="tooltip" ng-if="listarinfo.Formulario == '0'">
+                          <i ng-click="verFormularioAfi(listarinfo.tipo_doc,listarinfo.doc)"
+                            style="cursor: pointer !important;" class="Medium material-icons">description</i>
+                          <span class="tooltiptext" style="left: -27px;">Cargar Formulario de registro</span>
+                        </div>
+                        <div class="tooltip" ng-if="listarinfo.Formulario != '0'">
+                          <i ng-click="VerDetalle(listarinfo)" style="cursor: pointer !important;"
+                            class="Medium material-icons">remove_red_eye</i>
+                          <span class="tooltiptext" style="left: 9px;width: 75px;">Ver Detalle</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="13" class="border-none no-padding" style="user-select: none">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <p style="font-size: 12px">Registros Filtrados: {{listDatosTemp.length}}</p>
+                          <p style="font-size: 12px">Registros Totales: {{informacion.length}}</p>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="13" class="border-none no-padding" style="user-select: none">
+                        <div class="black-text title-panel d-flex justify-content-between align-items-center"
+                          style="margin-top: 15px;">
+                          <select id="pageSize" ng-model="pageSize" class="gray-input select-default-new border-none"
+                            ng-change="currentPage=0" style="width: auto;max-width: 100px;">
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                          </select>
+                          <div>
+                            <button class="btn btn-small border-radius-none no-padding" ng-disabled="currentPage == 0"
+                              ng-click="btns_paginacion(currentPage-1)" style="box-shadow: none;">
+                              <i class="icon-left-small"></i>
+                            </button>
+                            <small style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                              Página {{currentPage+1}} de {{numberOfPages()}}
+                            </small>
+                            <button class="btn btn-small border-radius-none no-padding"
+                              ng-disabled="currentPage >= getData().length/pageSize - 1"
+                              ng-click="btns_paginacion(currentPage+1)" style="box-shadow: none;">
+                              <i class="icon-right-small"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal12" class="modal">
+    <div class="modal-content">
+      <h5 class="margin center-align" style="margin-bottom: .6rem!important;"> <strong>{{data.Estado_Solicitud ==
+          'PENDIENTE' ? 'APROBAR AFILIACIÓN' : 'AFILIACIÓN '+data.Estado_Solicitud }} </strong>
+      </h5>
+      <div class="divider"></div>
+      <div class="row margin">
+        <span ng-click="close()" class="close" title="Cerrar">&times;</span>
+        <div class="row margin">
+          <div class="col l12 s12">
+            <div class="divider"></div>
+            <div class="card-content clearfix">
+              <div class="row">
+                <div class="col l7 s7">
+                  <div id="Iframe-Master-CC-and-Rs" class="center-block-horiz no-padding" style="max-width: 100%;"
+                    ng-if="TablaSoporte">
+                    <div ng-if="!tipoImgPdf" ng-class="{'d-block':tipoImgPdf==false}" class="responsive-wrapper
+                                                     responsive-wrapper-wxh-572x612"
+                      style="-webkit-overflow-scrolling: touch; overflow: auto;">
+                      <iframe ng-src="{{file}}">
+
+                      </iframe>
+                    </div>
+                    <div ng-if="tipoImgPdf" ng-class="{'d-block':tipoImgPdf==true}" class="responsive-wrapper"
+                      style="height: 80vh;overflow: auto;">
+                      <!-- <img ng-src="{{file}}"> -->
+                      <img id="gear" ng-src="{{file}}" alt="bike gear by Markus Spiske" data-big="{{file}}"
+                        data-big2x="{{file}}" data-overlay="{{file}}" />
+                    </div>
+                  </div>
+                  <!-- <div class="Imagen_back" style="max-width: 100%;" ng-if="data.Estado_Solicitud == 'PENDIENTE' && !TablaSoporte">
+                    <div>
+                      <img src="assets\images\afiliacion\pendiente.png" alt="Imagen_pendiente">
+                    </div>
+                  </div>
+                  <div class="Imagen_back" style="max-width: 100%;" ng-if="data.Estado_Solicitud == 'RECHAZADA'">
+                    <div>
+                      <img src="assets\images\afiliacion\rechazada.png" alt="Imagen_rechazada">
+                    </div>
+                  </div>
+                  <div class="Imagen_back" style="max-width: 100%;" ng-if="data.Estado_Solicitud == 'PROCESADA'">
+                    <div>
+                      <img src="assets\images\afiliacion\procesada.png" alt="Imagen_procesada">
+                    </div>
+                  </div> -->
+                </div>
+                <div class="col l5 s5"
+                  style="padding-right: 1.2vw;overflow-y: auto;max-height: calc(100vh - 6em);overflow-x: hidden;">
+                  <span style="text-align: center;margin: 0.5em;" class="align-items">
+                    <strong>INFORMACIÓN DEL AFILIADO</strong>
+                  </span>
+                  <div ng-if="btns_activar">
+                    <spam ng-hide="TablaDeInformacion"
+                      style="position: relative;top: 13px;right: 0;cursor: pointer;left: 100%;">
+                      <i class="Medium material-icons" ng-click="EditarInformacion(data)">mode_edit</i>
+                    </spam>
+                    <spam ng-hide="EditarDeInformacion"
+                      style="position: relative;top: 13px;right: 0;cursor: pointer;left: 100%;">
+                      <i class="Medium material-icons" ng-click="EditarInformacion(infotemp)">save</i>
+                    </spam>
+                  </div>
+                  <table class="responsive-table table-bordered" ng-hide="TablaDeInformacion">
+                    <tbody>
+                      <tr>
+                        <th>NOMBRE AFILIADO</th>
+                        <td colspan="3" align="center">{{data.nombre_afiliado}}</td>
+                      </tr>
+                      <tr>
+                        <th>TIPO DOCUMENTO</th>
+                        <td>{{data.tipo_documento}}</td>
+                        <th>NUMERO DOCUMENTO</th>
+                        <td>{{data.documento}}</td>
+                      </tr>
+                      <tr>
+                        <th>DEPARTAMENTO</th>
+                        <td>{{data.departamento}}</td>
+                        <th>MUNICIPIO</th>
+                        <td>{{data.municipio}}</td>
+                      </tr>
+                      <tr>
+                        <th>FECHA NACIMIENTO</th>
+                        <td>{{data.fecha_nacimiento}}</td>
+                        <th>GENERO</th>
+                        <td>{{data.sexo}}</td>
+                      </tr>
+                      <tr>
+                        <th>REGIMEN</th>
+                        <td colspan="3">{{data.regimen_nombre}}</td>
+                      </tr>
+                      <tr>
+                        <th>FECHA REGISTRO</th>
+                        <td>{{data.fecha_afiliacion}}</td>
+                        <th>CORREO ELECTRONICO</th>
+                        <td>{{data.correo}}</td>
+                      </tr>
+                      <tr>
+                        <th>TELEFONO MOVIL</th>
+                        <td>{{data.movil}}</td>
+                        <th>TELEFONO FIJO</th>
+                        <td>{{data.fijo_estado}}</td>
+                      </tr>
+                      <tr>
+                        <th>DIRECCIÓN</th>
+                        <td colspan="3">{{data.direccion}}</td>
+                      </tr>
+                      <!--  -->
+                      <tr ng-if="data.tipodoc_CN">
+                        <th>TIPO DOCUMENTO CN</th>
+                        <td>{{data.tipodoc_CN}}</td>
+                        <th>NUMERO DOCUMENTO CN</th>
+                        <td>{{data.doc_CN}}</td>
+                      </tr>
+                      <!--  -->
+                      <tr>
+                        <th>NOMBRE DE CABEZA</th>
+                        <td colspan="3">{{data.nombre_cabeza}}</td>
+                      </tr>
+                      <tr>
+                        <th>TIPO DOCUMENTO CABEZA</th>
+                        <td>{{data.tipo_documento_cabeza}}</td>
+                        <th>DOCUMENTO CABEZA</th>
+                        <td>{{data.documento_cabeza}}</td>
+                      </tr>
+                      <!-- // -->
+                      <tr ng-show="data.regimen_estado == 'S'">
+                        <th>METODOLOGIA G.POBLACIONAL</th>
+                        <td colspan="3">{{data.metodologia_g_poblacional}}</td>
+                      </tr>
+                      <tr ng-show="data.regimen_estado == 'S'">
+                        <th>G.POBLACIONAL</th>
+                        <td colspan="3">{{data.gpoblacional}}</td>
+                      </tr>
+                      <!-- /SISBEN 3/ -->
+                      <tr ng-show="data.metodologia_g_poblacional.split('-')[0] == '1' && data.regimen_estado == 'S'">
+                        <!-- <th>NIVEL</th>
+                        <td>{{data.nivelsisben}}</td> -->
+                        <th>FICHA</th>
+                        <td colspan="3">{{data.fichasisben}}</td>
+                        <!-- <th>PUNTAJE</th> -->
+                        <!-- <td>{{data.puntaje_sisben}}</td> -->
+                      </tr>
+                      <!-- /SISBEN 4/ -->
+                      <tr ng-show="data.metodologia_g_poblacional.split('-')[0] == '2' && data.regimen_estado == 'S'">
+                        <th>GRUPO</th>
+                        <td>{{data.grupo_sisbeniv}}</td>
+                        <th>SUBGRUPO</th>
+                        <td>{{data.subgrupo_sisbeniv}}</td>
+                      </tr>
+                      <tr ng-show="data.metodologia_g_poblacional.split('-')[0] == '2' && data.regimen_estado == 'S'">
+                        <th>FICHA</th>
+                        <td colspan="3">{{data.fichasisben}}</td>
+                      </tr>
+                      <!-- /OFICIO == 31/ -->
+                      <tr ng-show="data.gpoblacional.split('-')[0] == '31' && data.regimen_estado == 'S'">
+                        <th>CAUSAL AFILIACION OFICIO</th>
+                        <td colspan="3">{{data.causal_oficio}}</td>
+                      </tr>
+                      <!-- /REPSONSABLES/ -->
+                      <tr>
+                        <th>RESPONSABLE INGRESO</th>
+                        <td colspan="3">{{data.Responsable}}</td>
+                      </tr>
+                      <tr ng-show="data.Estado_Solicitud == 'PENDIENTE'">
+                        <th>RESPONSABLE REVISION</th>
+                        <td colspan="3">{{data.Responsable_revision}}</td>
+                      </tr>
+                      <tr ng-show="data.Estado_Solicitud == 'PROCESADA'">
+                        <th>RESPONSABLE APROBACION</th>
+                        <td colspan="3">{{data.Responsable_aprobacion}}</td>
+                      </tr>
+                      <tr ng-show="data.Estado_Solicitud == 'RECHAZADA'">
+                        <th>RESPONSABLE ANULACION</th>
+                        <td colspan="3">{{data.Responsable_rechazo}}</td>
+                      </tr>
+
+                      <!-- // -->
+
+                    </tbody>
+                  </table>
+
+                  <div ng-hide="EditarDeInformacion">
+                    <div class="col s12">
+                      <div class="row margin">
+                        <div class="col s12 no-padding">
+                          <div class="input-field margin">
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column input-padding">
+                                <input id="normal1" type="text" ng-model="infotemp.primer_nombre"
+                                  style="text-transform:uppercase;"
+                                  onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                <label for="normal1" class="">1er Nombre</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="normal3" type="text" ng-model="infotemp.segundo_nombre"
+                                  style="text-transform:uppercase;"
+                                  onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                <label for="normal3" class="">2do Nombre</label>
+                              </div>
+                            </div>
+
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column input-padding">
+                                <input id="normal2" ng-model="infotemp.primer_apellido" type="text"
+                                  style="text-transform:uppercase;"
+                                  onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                <label for="normal2" class="">1er Apellido</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="normal4" ng-model="infotemp.segundo_apellido" type="text"
+                                  style="text-transform:uppercase;"
+                                  onkeyup="javascript:this.value=this.value.toUpperCase();" class="validate">
+                                <label for="normal4" class="">2do Apellido</label>
+                              </div>
+                            </div>
+
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column input-padding">
+                                <label style=" margin-top: -20px;">Tipo de
+                                  Documento</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.tipo_documento">
+                                  <option value="" selected>SELECCIONAR</option>
+                                  <option value="RC">REGISTRO CIVIL</option>
+                                  <option value="CN">CERTIFICADO NACIDO VIVO
+                                  </option>
+
+                                </select>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="normal8" ng-model="infotemp.documento" type="text" class="validate">
+                                <label for="normal8" class="">Número</label>
+                              </div>
+                            </div>
+
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <label style="margin-top: -20px;">
+                                  <i class="material-icons prefix">perm_contact_calendar</i>
+                                  <span style="padding-left: 1.5vw;">Fecha de Nacimiento</span>
+                                </label>
+                                <input ng-model="infotemp.fecha_nacimiento" type="date" id="datepicker"
+                                  max="{{maxDate}}" class="datepicker" />
+                              </div>
+
+                              <div class="input-list input-view-column" ng-init="obtenerSexo()">
+                                <label style="margin-top: -20px;">Genero</label>
+                                <select class="select-chosen-eps" id="sexoBeneficiario" ng-model="infotemp.genero">
+                                  <option value="" selected>SELECCIONAR</option>
+                                  <option value="M">MASCULINO</option>
+                                  <option value="F">FEMENINO</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <input id="normal8" ng-model="infotemp.correo" type="text" class="validate">
+                                <label for="normal8" class="">Email</label>
+                              </div>
+                              <div class="input-list input-view-column">
+                                <input id="normal8" ng-model="infotemp.movil" type="text" class="validate">
+                                <label for="normal8" class="">Telefono</label>
+                              </div>
+                            </div>
+                            <div class="input-list input-form margin">
+                              <div class="input-list input-view-column">
+                                <input id="normal8" ng-model="infotemp.direccion" disabled type="text" class="validate">
+                                <label for="normal8" class="">Dirección</label>
+                              </div>
+                              <div class="tooltip">
+                                <label ng-click="AbrirModalDireccion()">
+                                  <i class="material-icons"
+                                    style="cursor: pointer !important; color: #f50000;">info</i></label>
+                                <span class="tooltiptext">Click Para Digitar La Direccion</span>
+                              </div>
+                            </div>
+
+                            <!-- SISBEN -->
+                            <div class="input-list input-form margin" ng-show="infotemp.regimen_estado == 'S'">
+                              <div class="input-list input-view-column input-padding m-b">
+                                <label style=" margin-top: -20px;">Metodologia G.Poblacional</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.metodologia_g_poblacional"
+                                  ng-change="Cargar_GrupoPoblacional()">
+                                  <option value="" selected>Seleccionar</option>
+                                  <option ng-repeat="x in Listado_MetGPob" value="{{x.cod}}"
+                                    ng-selected="x.cod == infotemp.metodologia_g_poblacional">{{x.nombre}}</option>
+                                </select>
+                              </div>
+                              <div class="input-list input-view-column input-padding">
+                                <label style=" margin-top: -20px;">G.Poblacional</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.gpoblacional"
+                                  ng-change="CalcularGpoblacional()">
+                                  <option value="" selected>Seleccionar</option>
+                                  <option ng-repeat="x in Listado_Gpoblacional" value="{{x.codigo}}"
+                                    ng-selected="x.codigo == infotemp.gpoblacional">
+                                    {{x.Grupo_Poblacional}}</option>
+                                </select>
+                              </div>
+                            </div>
+                            <!--  -->
+                            <div class="input-list input-form margin" ng-show="mostrar_sisbeniv"
+                              ng-show="infotemp.regimen_estado == 'S'">
+                              <div class="input-list input-view-column input-padding m-b">
+                                <label style=" margin-top: -20px;">Grupos</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.grupo_sisbeniv"
+                                  ng-change="CalcularSubgrupoSisben()">
+                                  <option value="" selected>Seleccionar</option>
+                                  <option ng-repeat="x in Listado_GrupoSisben" value="{{x.Grupo}}"
+                                    ng-selected="x.Grupo == infotemp.grupo_sisbeniv">GRUPO {{x.Grupo}}</option>
+                                </select>
+                              </div>
+                              <div class="input-list input-view-column input-padding">
+                                <label style=" margin-top: -20px;">SubGrupos</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.subgrupo_sisbeniv">
+                                  <option value="" selected>Seleccionar</option>
+                                  <option ng-repeat="x in Listado_SubGrupoSisben" value="{{x.Sub_Grupo}}"
+                                    ng-selected="x.Sub_Grupo == infotemp.subgrupo_sisbeniv">{{x.Sub_Grupo}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <!--  -->
+                            <div class="input-list input-form margin" ng-show="infotemp.regimen_estado == 'S'">
+                              <div class="input-list input-view-column m-b"
+                                ng-show="mostrar_sisbeniii || mostrar_sisbeniv">
+                                <input id="normal8" ng-model="infotemp.fichasisben" type="text" class="validate"
+                                  maxlength="{{form.metodologia_g_poblacional == 1 ? 9 : 20}}" autocomplete="off"
+                                  numbers-only>
+                                <label for="normal8" class="">Ficha de Sisben</label>
+                              </div>
+                              <!-- <div class="input-list input-view-column" ng-show="mostrar_sisbeniii">
+                                <input id="normal8" ng-model="infotemp.nivelsisben" type="text" class="validate"
+                                  autocomplete="off" numbers-only>
+                                <label for="normal8" class="">Nivel de Sisben</label>
+                              </div> -->
+                            </div>
+                            <!--  -->
+                            <div class="input-list input-form margin"
+                              ng-show="mostrar_Listado_Gpoblacional_31 && infotemp.regimen_estado == 'S'">
+                              <div class="input-list input-view-column m-b">
+                                <label style=" margin-top: -20px;">Causal Afiliacion Oficio</label>
+                                <select class="select-chosen-eps" ng-model="infotemp.causal_oficio">
+                                  <option value="" selected>Seleccionar</option>
+                                  <option ng-repeat="x in Listado_Gpoblacional_31" value="{{x.CODIGO}}"
+                                    ng-selected="x.CODIGO == infotemp.causal_oficio">CAUSAL {{x.NOMBRE}}</option>
+                                </select>
+                              </div>
+                            </div>
+                            <!--  -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  <span style="text-align: center;margin: 0.5em;width: 100%;" class="align-items" ng-if="btns_activar">
+                    <strong>ANEXOS DOCUMENTOS</strong>
+                  </span>
+                  <span ng-if="btns_activar">
+                    <marquee class="li" direction="left"
+                      style="display: flex;align-items: center; color: rgb(238, 64, 53);">
+                      <strong style="display:flex">Para visualizar el soporte CLIC al Icono
+                        <i style="font-size: 20px !important;margin-left: 1em"
+                          class="Medium material-icons">photo_size_select_actual</i>
+                      </strong>
+                    </marquee>
+                  </span>
+
+                  <div style="overflow: auto;width: 100%;max-height: 17vh;" ng-if="btns_activar">
+                    <table class="responsive-table striped table-bordered" align="center" id="anexos"
+                      style="cursor: pointer !important;">
+                      <thead align="center">
+                        <tr>
+                          <th class="center-align"><strong>TIPO ANEXO</strong></th>
+                          <th class="center-align"><strong>FECHA ANEXO</strong></th>
+                          <th class="center-align"><strong>OPCIÓN</strong></th>
+                        </tr>
+                      </thead>
+                      <tbody style="height: 40%; overflow: scroll;">
+                        <tr ng-repeat="sop in soportes">
+                          <td class="center-align">{{sop.nombre_tipo}}</td>
+                          <td class="center-align">{{sop.fecha_abjunto}}</td>
+                          <td class="center-align">
+
+                            <div class="tooltip">
+                              <i ng-click="VerSoportes(sop.ruta,sop.ftp)" style="cursor: pointer !important;"
+                                class="Medium material-icons">photo_size_select_actual</i>
+                              <span class="tooltiptext">Visualizar Soportes</span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+
+
+                  <div style="width: 100%;text-align: center;" ng-if="btns_activar">
+                    <button ng-hide="Ocultar" class="black-text btn" type="submit"
+                      style="margin-top: 25px;border-radius: 50px 50px 50px 50px;background-color: #71c93df0;cursor: pointer !important;"
+                      ng-click="Aprobar(data)">Aprobar</button>
+                    <button class="btn black-text" type="submit"
+                      style="margin-top: 25px;background-color: #ee4035;border-radius: 50px 50px 50px 50px;cursor: pointer !important;"
+                      ng-click="Rechazar(data)">Rechazar</button>
+                  </div>
+                  <!--  -->
+                  <span style="font-size: 12px;" class="align-items li" ng-if="data.Estado_Solicitud == 'RECHAZADA'">
+                    <strong>MOTVO DE RECHAZO: </strong>{{data.Motivo_rechazo}}
+                  </span>
+                  <!--  -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- /////////////////////////////////////////MODAL SOPORTES///////////////////////////////////////// -->
+  <div id="modalFormularioAfi" class="modal"
+    style="margin: 0 auto;height:auto;width: 40%;top:10% !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;"
+        ng-click="closeModal()"></div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4">
+        <h5><span style="font-weight: 700;" class="default-color">Cargar Formulario de Registro Firmado</span></h5>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white" style="margin-bottom: 0px;">
+
+          <div class="col s12">
+            <div class="file-upload-wrapper file-field input-field" id="file-upload-wrapper" data-text="Cargar Archivo"
+              style="background-color: #f2f2f2;" ng-class="archivoSubir.base64 ? 'validCampo' : 'invalidCampo'">
+              <input type="file" id="fileAfi" name="fileAfi" style="height: 2rem;">
+              <i class="icon-check-1 green-text right" style="font-size: 1.3vw;" ng-show="archivosSubir.length"></i>
+            </div>
+          </div>
+
+          <div class="col s12 center m-t">
+            <button class="black-text btn" type="submit"
+              style="margin-top: 25px;border-radius: 50px 50px 50px 50px;background-color: #71c93df0;cursor: pointer !important;"
+              ng-click="guardarSoportesConf()">Guardar</button>
+            <button class="btn black-text" type="submit"
+              style="margin-top: 25px;background-color: #ee4035;border-radius: 50px 50px 50px 50px;cursor: pointer !important;"
+              ng-click="closeModal()">Cerrar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <style>
+    .invalidCampo {
+      border: 2px solid red !important;
+    }
+
+    .validCampo {
+      border: 2px solid #00ff00 !important;
+    }
+
+    #filesProyecto {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      /* width: 100%; */
+      /* height: 10vh; */
+      /* height: 44px; */
+      /* border: 1px solid #eeeeee; */
+      z-index: 1;
+      /* border-radius: 10px; */
+      /* border: 2px dashed #ccc; */
+      cursor: pointer;
+      /* border: 1px solid #8a88865e !important; */
+      height: 2.14rem;
+      border-radius: 2px;
+      margin: 0;
+      width: -webkit-fill-available;
+    }
+
+    .file-upload-wrapper:after {
+      text-align: center;
+      content: attr(data-text);
+      /* font-size: 3vh; */
+      position: absolute;
+      top: -5px;
+      left: 0;
+      /* background: #fff; */
+      padding: 10px 15px;
+      display: block;
+      width: 100%;
+      pointer-events: none;
+      z-index: 20;
+      line-height: 1;
+      color: #80868b;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 400;
+      height: 8vh;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: 10vh;
+    }
+
+
+    .Imagen_back {
+      cursor: pointer;
+      width: 30vw;
+      margin: 15vh auto;
+      opacity: .4;
+    }
+
+    th {
+      font-size: 11px !important;
+    }
+
+    td {
+      font-size: 11.5px !important;
+    }
+
+    .li {
+      float: left;
+      width: 100%;
+      padding: 1%;
+      margin: 0 0 1.5em;
+      height: 40px;
+      border-radius: 0;
+      box-shadow: none;
+      background-color: rgb(242, 242, 242);
+    }
+
+    .material-icons {
+      font-size: 18px !important;
+    }
+
+    .tooltip .tooltiptext {
+      left: -98%;
+    }
+
+    .tooltip .tooltiptext::after {
+      left: 80%;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+      float: right;
+      text-align: right;
+      margin-top: 0px !important;
+    }
+
+    /* The Close Button (x) */
+
+    .close {
+      position: absolute;
+      right: 25px;
+      top: 0;
+      color: #000;
+      font-size: 35px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: red;
+      cursor: pointer;
+    }
+
+    #modal12 {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      background-color: #fafafa;
+      padding: 0;
+      max-height: 90%;
+      width: 98%;
+      margin: auto;
+      overflow-y: auto;
+      border-radius: 0;
+      will-change: top, opacity;
+      top: 0 !important;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+    }
+
+    #Iframe-Master-CC-and-Rs {
+      max-width: 512px;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    .responsive-wrapper {
+      position: relative;
+      height: 0;
+    }
+
+    .responsive-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    .responsive-wrapper-wxh-572x612 {
+      padding-bottom: 86%;
+    }
+
+    .set-border {
+      border: 5px inset #4f4f4f;
+    }
+
+    .set-box-shadow {
+      -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+      -moz-box-shadow: 4px 4px 14px #4f4f4f;
+      box-shadow: 4px 4px 14px #4f4f4f;
+    }
+
+    .set-padding {
+      padding: 40px;
+    }
+
+    .set-margin {
+      margin: 30px;
+    }
+
+    .center-block-horiz {
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+
+    .modal .modal-content {
+      padding: 13px 24px !important;
+    }
+  </style>
+
+</div>

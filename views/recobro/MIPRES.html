@@ -1,0 +1,731 @@
+<div id="gestionaut">
+    <div class="row">
+        <div class="col s12 m12 l12 magazine margin widgets-tabs">
+            <div class="card-panel widgets-tabs col l12 no-padding">
+                <ul tabs reload="allTabContentLoaded" style="box-shadow: 0px 2px 2px #f3f3f3;">
+                    <li class="tab col s3" style="cursor: pointer;" ng-class="activeIcolor"><a style="border-top:0"
+                            ng-click="setTab(1);sumPrint = 0;" ng-class="activeI">Consultar</a></li>
+                    <li class="tab col s3" style="cursor: pointer;" ng-class="activeIIcolor"><a style="border-top:0"
+                            ng-click="setTab(2)" ng-class="activeII">Direccionamiento Masivo
+                        </a></li>
+                    <li class="tab col s3" style="cursor: pointer;" ng-class="activeIIIcolor"><a style="border-top:0"
+                            ng-click="setTab(3)" ng-class="activeIII">Anular Direccionamiento</a></li>
+                    <!-- <li class="tab col s3" style="cursor: pointer;" ng-class="activeIVcolor"><a style="border-top:0"
+                            ng-click="setTab(4)" ng-class="activeIV">No direccionamiento</a></li> -->
+                </ul>
+            <div ng-show="tabI" class="col s12">
+                <div class="row">
+                    <div class="col s7">
+                        <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                        <h5>Consultar Direccionamientos </h5>
+                    </div>
+                    <div class="col s5" style="text-align: right; margin-top: 15px;">
+                        <div class="btn-panel switch">
+                            <label>
+                                Fecha
+                                <input type="checkbox" ng-click="hide_serchdir()">
+                                <span class="lever"></span>
+                                No. Precripcion
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col s12" ng-hide="vw_dir">
+                        <form>
+                            <div class="col s12">
+                                <div class="input-list input-form margin">
+
+                                    <div class="input-list input-view-column">
+                                        <label for="normal8">Fecha Inicio</label>
+                                        <input id="normal8" ng-model="fecha_i" type="date" required>
+                                        <!--required-->
+                                        <label for="normal8">Fecha Fin</label>
+                                        <input id="normal8" ng-model="fecha_f" type="date" required>
+                                    </div>
+                                    
+                                    <div class="input-list input-view-column">
+                                        <label for="normal8">Regimen Afiliado</label>
+                                        <select class="select-chosen-eps" id="regimen" ng-model="regimen">
+                                            <option value="" disabled> Seleccionar</option>
+                                            <option value="S">Subsidiado</option>
+                                            <option value="C">Contributivo</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-field col m12 s12">
+                                        <button class="btn white-text" ng-click="search()" type="submit"
+                                            style="padding-right: 5px; padding-left: 5px; margin-top: 10px;">
+                                            <i style="position: relative;" class="material-icons prefix">search</i>
+                                        </button>
+
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </form>
+
+                </div>
+                <div class="col s12" ng-hide="!vw_dir">
+                    
+                    <div class="col s5 " ng-hide="check_option">
+                        <div class="input-field col m12 s12">
+                                
+                            <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>                                
+                            <input id="with_icon2" type="text" ng-model="no_pres"
+                                ng-required="!check_option? true:false">
+                                <label for="with_icon2">Numero Prescripción</label>
+                        </div>
+                    </div>
+                    <div class="col s5" ng-hide="check_option">
+                        <div class="input-list input-view-column">
+                            <!-- <label for="">Regimen Afiliado</label> -->
+                            <select class="select-chosen-eps" id="regimen" ng-model="regimenh">
+                                <option value="" disabled> Seleccionar</option>
+                                <option value="S">Subsidiado</option>
+                                <option value="C">Contributivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col s2">
+                        <div class="input-field col m12 s12">
+                            <button class="btn white-text" ng-click="buscar_no(no_pres,regimenh,url)" type="submit"
+                                style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                    style="position: relative;" class="material-icons prefix">search</i></button>
+                        </div>
+                    </div>
+
+                </div>
+                <!--Fin panel de busqueda-->
+            </div>
+            <div class="col s12" ng-hide="verMipres">
+                    <div>
+                            <button class="btn" ng-click="consolidado()"  style="padding-bottom:5px;">
+                                descargar
+                            </button>
+                           
+                        </div>
+                <div class="charts" style=" margin-bottom: 0px;width: 99%;"> <!--margin-top: 5em;-->
+                    <div class="card-content foot4"
+                        style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                        <div class="col s2">
+                            <h5 class="white-text">Direccionamientos</h5>
+                        </div>
+
+                        <div class="col s1">
+                            <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                    ng-click="verMipres = !verMipres" class="material-icons white-text">close</i>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+                        <div class="row">
+                            <div class="responsive" ng-hide="switchtable">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;">#</th>
+                                            <th style="text-align:center;">ID</th>
+                                            <th style="text-align:center;">Direccionamiento</th>
+                                            <th style="text-align:center;">No Prescripcion</th>
+                                            <th style="text-align:center;">Tipo Tec</th>
+                                            <th style="text-align:center;">Con Tec</th>
+                                            <!-- <th style="text-align:center;">TipoIDPaciente</th> -->
+                                            <!-- <th style="text-align:center;">NoIDPaciente</th> -->
+                                            <th style="text-align:center;">No. Entrega</th>
+                                            <th style="text-align:center;">No. SubEntrega</th>
+                                            <!-- <th style="text-align:center;">TipoIDProv</th> -->
+                                            <th style="text-align: center;"> No. ID Proveedor</th>
+                                            <!-- <th style="text-align: center;"> CodMunEnt </th> -->
+                                            <th style="text-align: center;"> Fecha Max Ent </th>
+                                            <th style="text-align: center;">Cant Tot Entrega</th>
+                                            <!-- <th style="text-align: center;"> DirPaciente </th> -->
+                                            <th style="text-align: center;">Cod Ser Tec Entrega</th>
+                                            <!-- <th style="text-align: center;">Direccionar</th> -->
+                                            <th style="text-align: center;"> Fecha Direccionamiento </th>
+                                            <th style="text-align: center;"> Estado Direccionamiento </th>
+                                            <!-- <th style="text-align: center;"> FecAnulacion </th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            <tr ng-repeat="data in direccionamientosTemp | inicio: currentPage * pageSize | limitTo: pageSize"
+                                            ng-hide="direccionamientosTemp.length == 0 ">
+                                            <td style="text-align: center"> <b>{{$index+1}}.</b></td>
+                                            <td class="center">{{data.ID}}</td>
+                                            <td class="center">{{data.IDDireccionamiento}}</td>
+                                            <td class="center">{{data.NoPrescripcion}}</td>
+                                            <td class="center">{{data.TipoTec}}</td>
+                                            <td class="center">{{data.ConTec}}</td>
+                                            <!-- <td>{{data.TipoIDPaciente}}</td>
+                                                <td>{{data.NoIDPaciente}}</td> -->
+                                            <td class="center">{{data.NoEntrega}}</td>
+                                            <td class="center">{{data.NoSubEntrega}}</td>
+                                            <!-- <td>{{data.TipoIDProv}}</td> -->
+                                            <td class="center"> {{data.NoIDProv}} </td>
+                                            <!-- <td> {{data.CodMunEnt}} </td> -->
+                                            <td class="center"> {{data.FecMaxEnt}} </td>
+                                            <td class="center"> {{data.CantTotAEntregar}} </td>
+                                            <!-- <td> {{data.DirPaciente}} </td> -->
+                                            <td class="center"> {{data.CodSerTecAEntregar}} </td>
+                                            <!-- <td>
+                                                    <center><button
+                                                            class="red btn-floating waves-effect waves-light"
+                                                            ng-click="open_modal('A',data)"
+                                                            title="Direccionamiento">
+                                                            <i class="material-icons">close</i>
+                                                        </button></center>
+                                                </td> -->
+                                            <td> {{data.FecDireccionamiento}} </td>
+                                            <td class="center"> {{data.EstDireccionamiento}} </td>
+                                            <!-- <td> {{data.FecAnulacion}} </td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <ul ng-hide="listaPRESTemp.length == 0" style="text-align: center;"
+                                class="pagination" ng-hide="listaPRESTemp.length > 0">
+                                <li><button ng-disabled='currentPage == 0' class="btn"
+                                        ng-click='currentPage = currentPage - 1'>&laquo;</button></li>
+                                <li ng-repeat='page in pages'><button
+                                        ng-disabled='currentPage == page.no - 1' class="btn"
+                                        ng-click='setPage(page.no)'>{{page.no}}</button></li>
+                                <li><button ng-disabled='currentPage >= listaPRESTemp.length/pageSize - 1'
+                                        class="btn"
+                                        ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+                            </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div ng-show="tabII" class="col  s12">
+                <div class="row" ng-hide="inactiveseccion4tab4">
+                    <div class="col s12">
+                        <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                        <h5>Cargue Masivo Direccionamientos</h5>
+                    </div>
+                    <div class="col s12">
+
+                        <div class="col s12" ng-hide="false">
+                            <div class="input-field col m11 s11">
+                                <div class="input-field col m10 s12 w-100"
+                                    style="padding-left: 0px; padding-right: 0px;">
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <i class="material-icons">insert_drive_file</i>
+                                            <input type="file" ng-model="adjunto" name="adjunto" id="adjunto">
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input id="inputFilePlaceHolder" class="file-path" type="text"
+                                                placeholder="Adjuntar archivo">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col s12 m12 l12">
+                                <center>
+                                    <button title="Cargar Archivo" class="center btn  white-text" type="submit"
+                                        ng-click="enviaradj()" style="margin-top: 10px;">
+                                        Cargar Archivo
+                                    </button>
+                                </center>
+                            </div>
+
+                        </div>
+                        <div class="s12" ng-hide="ver_dir">
+                            <div class="charts">
+                                <div class="card-content foot4"
+                                    style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                                    <div class="col s2">
+                                        <h5 class="white-text">Direccionamientos</h5>
+                                    </div>
+                                    <div class="col s9" style="text-align: center;">
+                
+                                    </div>
+                                    <div class="col s1">
+                                        <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="ver_dir = !ver_dir"
+                                                class="material-icons white-text">close</i></h5>
+                                    </div>
+                                </div>
+                                <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+                                    <div class="row">
+                                        <div class="responsive" ng-hide="switchtable">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>No. Prescripcion</th>
+                                                        <th>No. Entrega</th>
+                                                        <th>Respuesta</th>
+                                                        <th>Errores</th>
+                                                        <th>Opciones</th>
+                                                        <th>Editar</th>
+                                                        <th>Detalle</th>
+                                                    </tr>
+                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="dire in mapeado | orderBy : dire.noentrega">
+                                                        <td>{{$index + 1}}</td>
+                                                        <td>{{dire.idprescripcion}}</td>
+                                                        <td>{{dire.noentrega}}</td>
+                                                        <td>{{dire.respuesta.Message}}</td>
+                                                        <td>
+                                                            <center>
+                                                                <button class="btn-floating default-background waves-effect waves-light"
+                                                                    ng-click="open_modal('err',dire.respuesta)"
+                                                                    ng-disabled="{{!dire.modal && dire.success}}" title="Detalle Error">
+                                                                    <i class="material-icons">add_circle_outline</i></button>
+                                                            </center>
+                                                        </td>
+                                                        <td>
+                                                            <center>
+                                                                <button class="btn-floating default-background waves-effect waves-light"
+                                                                    ng-click="open_modal('modal',dire.respuesta)"
+                                                                    ng-disabled="{{!dire.modal && dire.success}}" title="Detalle Error">
+                                                                    <i class="material-icons">add_circle_outline</i></button>
+                                                            </center>
+                                                        </td>
+                                                        <td>
+                                                            <center>
+                                                                <button class="btn-floating default-background waves-effect waves-light"
+                                                                    ng-click="open_modal('edit',dire)" title="Editar direccionamiento"
+                                                                    ng-disabled="{{dire.success}}">
+                                                                   <i class=" material-icons">edit</i></button>
+                                                            </center>
+                                                        </td>
+                                                        <td>
+                                                            <center>
+                                                                <button class="btn-floating default-background waves-effect waves-light"
+                                                                    ng-click="open_modal('detail',dire)" title="Detalle Direccionamiento Exitoso" ng-disabled="{{!dire.success}}">
+                                                                    <i class="material-icons">check</i></button>
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col s6" ng-hide="false">
+                                <div class="col s12 m12 l12">
+                                    <center>
+                                        <button title="Cargar Archivo"  class="center btn  white-text" type="submit" ng-click="subirapi()" 
+                                            style="margin-top: 10px;">
+                                            <i style="position: relative;" class="material-icons prefix"></i>
+                                            Direccionar Archivo
+                                        </button>
+                                    </center>
+                                </div>    
+                             </div> -->
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <div ng-show="tabIII" class="col s12">
+                <div class="row" ng-hide="inactiveseccion4tab4">
+                    <div class="col s7">
+                        <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                        <h5>Anular Direccionamiento</h5>
+                    </div>
+                    <div class="col s5" style="text-align: right; margin-top: 15px;">
+                        <div class="btn-panel switch">
+                            <label>
+                                Individual
+                                <input type="checkbox" ng-click="hide_null()">
+                                <span class="lever"></span>
+                                Masivo
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col s12" ng-hide="vw_null">
+                        <form>
+                            <div class="col s12">
+                                <div class="input-list margin">
+
+                                    <div class="input-list input-view-column">
+                                        <label for="normal8">Id Direccionamiento</label>
+                                        <input id="normal8" ng-model="iddir" type="text" required>
+                                        <!--required-->
+                                    </div>
+                                    <div style="display: flex; justify-content:space-around">
+                                        <button class="btn default-background waves-effect waves-light"
+                                            ng-click="anular_direccionamiento(iddir)"
+                                            title="Click para Anular Direccionamiento">
+                                            Anular Direccionamiento
+                                        </button>
+                                        <button class="btn default-background waves-effect waves-light"
+                                            ng-click="historico_direccionados()" ng-hide="true"
+                                            title="Click para visualizar Histórico Direccionamientos">
+                                            Histórico Direccionamientos
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                      <div class="col s12" ng-hide="!vw_null">
+                        <form>
+                            <div class="col s12">
+                                 <div class="input-field col m11 s11">
+                                <div class="input-field col m10 s12 w-100"
+                                    style="padding-left: 0px; padding-right: 0px;">
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <i class="material-icons">insert_drive_file</i>
+                                            <input type="file" ng-model="adjunto_anular" name="adjunto_anular" id="adjunto_anular">
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input id="inputFilePlaceHolder" class="file-path" type="text"
+                                                placeholder="Adjuntar archivo">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col s12 m12 l12">
+                                <center>
+                                    <button title="Cargar Archivo" class="center btn  white-text" type="submit"
+                                        ng-click="enviaradj_anular()" style="margin-top: 10px;">
+                                        Cargar Archivo
+                                    </button>
+                                </center>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        
+        </div>
+    
+        <div class="s12" ng-hide="ver_historico">
+            <div class="charts">
+                <div class="card-content foot4"
+                    style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                    <div class="col s5">
+                        <h5 class="white-text">Historial Direccionamientos </h5>
+                    </div>
+                    <div class="col s6" style="text-align: center;">
+
+                    </div>
+                    <div class="col s1">
+                        <h5 style="text-align: end;"><i style="cursor:pointer;"
+                                ng-click="ver_historico = !ver_historico" class="material-icons white-text">close</i>
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+                    <div class="row">
+                        <div class="responsive" ng-hide="switchtable">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="center">Codigo</th>
+                                        <th class="center">No Direccionamiento</th>
+                                        <th class="center">No Prescripcion</th>
+                                        <th class="center">Responsable</th>
+                                        <th class="center">Tipo Doc</th>
+                                        <th class="center">Doc Paciente</th>
+                                        <th class="center">Doc Proveedor</th>
+                                        <th class="center">No ID Prov</th>
+                                        <th class="center">Consecutivo</th>
+                                        <th class="center">Estado</th>
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="data in historico">
+                                        <td>{{data.CODIGO}}</td>
+                                        <td><a style="cursor: pointer;"
+                                                ng-click="anular_direccionamiento(data.ID_DIRECCIONAMIENTO)">{{data.ID_DIRECCIONAMIENTO}}</a>
+                                        </td>
+                                        <td>{{data.NoPrescripcion}}</td>
+                                        <td>{{data.RESPON}}</td>
+                                        <td>{{data.TipoIDPaciente}}</td>
+                                        <td>{{data.NoIDPaciente}}</td>
+                                        <td>{{data.TipoIDProv}}</td>
+                                        <td>{{data.NoIDProv}}</td>
+                                        <td>{{data.TRANS}}</td>
+                                        <td>{{data.ESTADO}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
+    </div>
+    <style>
+        .tab a:hover {
+            background-color: #ddd !important;
+            color: white !important;
+        }
+
+        /* Style the active class (and buttons on mouse-over) */
+        .activebtn-step,
+        .activebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+        }
+
+        .step-item {
+            height: 100px;
+            width: 100px;
+            border-radius: 100px;
+            padding: 0px;
+        }
+
+        .donebtn-step,
+        .donebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+        }
+
+        .steper {
+            width: 60%;
+            display: inline-flex;
+            text-align: center;
+            padding-bottom: 10px;
+            margin-left: 20%;
+        }
+
+        .step-divider {
+            width: 100%;
+            position: relative;
+            top: 30px;
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 20px;
+        }
+
+        .btn-step-content {
+            position: relative;
+            display: none;
+            height: calc(100% - 132px);
+            width: inherit;
+            overflow: visible;
+            margin-left: 41px;
+            margin-right: 24px;
+        }
+
+        .step-option {
+            background: #eee;
+            height: 70px;
+            position: absolute;
+            bottom: -45px;
+            width: 100%;
+            margin-bottom: 6px;
+            left: 0px;
+            z-index: 2;
+        }
+
+        .back-step,
+        .back-step:hover {
+            margin-top: 7px;
+            position: absolute;
+            right: 80px;
+            background: #ff4350 !important;
+        }
+
+        .flex {
+            display: flex !important;
+        }
+
+        .btn-step {
+            background-color: rgba(0, 0, 0, .3);
+            color: white;
+        }
+
+        .hover-item:hover {
+            background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .hover-item:active {
+            background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .tabmenu>li:target>a {
+            background-color: rgba(221, 221, 221, 0.45);
+        }
+
+        .requerido {
+            color: red !important;
+        }
+
+        .tabactiva {
+            background-color: rgba(206, 206, 206, 0.71);
+        }
+
+        .colorblack {
+            color: black;
+        }
+
+        .itemsspam {
+            color: white !important;
+            border-radius: 12px !important;
+            box-shadow: 2px 2px 3px 0px #ccc !important;
+            position: relative !important;
+            top: 5px !important;
+            left: 11px !important;
+            cursor: pointer;
+        }
+
+        .hovpanel:hover {
+            background: #32364c2b;
+            color: #ffa51b;
+            cursor: pointer;
+        }
+
+        .mayus {
+            text-transform: uppercase;
+        }
+
+        #header-fixed {
+            position: fixed;
+            top: 0px;
+            display: none;
+        }
+
+        .cuadrado {
+            width: 25vh;
+            max-width: 240px;
+            height: 25vh;
+            max-height: 240px;
+            position: relative;
+            background: white;
+            box-shadow: 0 0 8px 1px #c7c7c7;
+        }
+
+        .coloritem {
+            color: black !important;
+        }
+
+        .autprocesada {
+            background-color: #4CAF50 !important;
+        }
+
+        .autactiva {
+            background-color: #ff9800 !important;
+        }
+
+        .switch label {
+            font-weight: 600;
+        }
+
+        .switch label .lever.check-c {
+            background-color: #818181 !important;
+        }
+
+        .switch label .lever.check-c:after {
+            background-color: #26a69a;
+        }
+
+        .switch label>span.activo {
+            color: #26a69a !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        div#modaldetalle {
+            top: 1% !important;
+        }
+
+        div#modalnovedades {
+            top: 1% !important;
+        }
+
+        .outer {
+            width: 1px;
+            height: 100%;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inner {
+            /* position: absolute; */
+            width: 100%;
+            height: 50vh;
+            background: grey;
+            top: 30%;
+            box-shadow: 0px 0px 30px 20px grey;
+        }
+
+        .style-table-default {
+            height: 350px;
+            overflow: auto;
+        }
+
+        /* Style Scroll */
+        .scrollTableDefault::-webkit-scrollbar {
+            /* width */
+            width: 5px;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-track {
+            /* Track */
+            background: #f1f1f1;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-thumb {
+            /* Handle */
+            background: #888;
+        }
+
+        .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+            /* Handle on hover */
+            background: #555;
+        }
+
+        .swal2-container {
+            z-index: 10000 !important;
+        }
+
+        #tautorizaciones_length,
+        #tautorizaciones_filter,
+        #tautorizacionespro_length,
+        #tautorizacionespro_filter {
+            margin-top: -150px;
+        }
+
+        #tautorizaciones_filter,
+        #tautorizacionespro_filter {
+            margin-right: 10px;
+        }
+
+        #tautorizacionespro {
+            width: 100% !important;
+        }
+
+        #tautorizaciones_paginate,
+        #tautorizacionespro_paginate {
+            margin-top: 15px;
+        }
+
+        .clase-gray {
+            color: #736a6a !important;
+        }
+    </style>
+</div>
+</div>

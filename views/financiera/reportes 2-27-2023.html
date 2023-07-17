@@ -1,0 +1,205 @@
+<div>
+   <div class="row">
+      <div class="col l12 m12 s12">
+         <div class="card">
+            <div class="card-title">
+               <div class="text-al switch" style="display:flex;">
+                  <strong>Reportes</strong>
+               </div>
+            </div>
+            <div class="card-content clearfix">
+               <div class="input-field col l3 m12 s12">
+                  <label style=" margin-top: -20px;">Tipo de Reporte:</label>
+                  <select class="select-chosen-eps" ng-model="tiporeporte" ng-change="buscaReporte()">
+                    <option value="0">Seleccionar</option>
+                    <option ng-repeat="reporte in Reportes" ng-value="reporte.CODIGO">{{reporte.NOMBRE}}</option>
+                     <!--<option value="0">Seleccionar</option>
+                        <option value="1">Circular 017</option>
+                        <option value="2">Trazabilidad Facturas</option>
+                        <option value="3">Saldos (PRSA)</option>
+                        <option value="4">Facturas Limbo (Krysrtalos)</option>
+                        <option value="5">Facturas Activas</option>
+                        <option value="6">Facturas Procesadas</option>
+                        <option value="7">Costo Menor a Mayor</option>
+                        <option value="8">Auxiliar por Tercero (Krat)</option>
+                        <option value="9">Balance de Prueba</option>
+                        <option value="10">Balance de Prueba Regimen</option>
+                        <option value="11">Balance de Prueba Homologado</option>
+                        <option value="12">Diferencias Auxiliares vs Contabilidad</option>
+                        <option value="13">Radicacion por dane de usuario</option>
+                        <option value="14">Pagos por dane de usuario</option>-->
+                  </select>
+               </div>
+            </div>
+            <!-- <div class="input-button" style="padding-bottom: 15px !important;">
+               <center><a class="waves-effect waves-light btn white-text" ng-click="buscaReporte()">Buscar</a></center><br>
+            </div> -->
+         </div>
+      </div>
+   </div>
+   <div class="row" ng-show="shw_parametros">
+      <div class="col l12 m12 s12">
+         <div class="card">
+            <div class="card-title">
+               <div class="text-al switch" style="display:flex;">
+                  <strong>Criterios de Consulta</strong>
+               </div>
+            </div>
+            <div class="col s12">
+               <div class="input-field col l2 m12 s12" ng-show="shw_regimen">
+                  <label style=" margin-top: -20px;">Régimen:</label>
+                  <select class="select-chosen-eps" ng-model="regimen">
+                     <option value="X">SELECCIONAR</option>
+                     <option value="A">AMBOS REGIMEN</option>
+                     <option value="C">CONTRIBUTIVO</option>
+                     <option value="S">SUBSIDIADO</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-init="cargaAnnos()" ng-show="shw_annos">
+                  <label style=" margin-top: -20px;">Año:</label>
+                  <select class="select-chosen-eps" ng-model="anno" ng-change="cargaCiclos()">
+                     <option ng-repeat="anno in Annos" ng-value="anno.ANNO">{{anno.ANNO}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_ciclo">
+                  <label style=" margin-top: -20px;">Ciclo:</label>
+                  <select class="select-chosen-eps" ng-model="ciclo" ng-disabled="true">
+                     <option ng-repeat="ciclo in Ciclos" ng-value="ciclo.IDE">{{ciclo.NOMBRE}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_periodo">
+                  <label style=" margin-top: -20px;">Periodo:</label>
+                  <select class="select-chosen-eps" ng-model="periodo">
+                     <option ng-repeat="periodo in Periodos" ng-value="periodo.IDE">{{periodo.NOMBRE}}</option>
+                  </select>
+               </div>
+
+               <div class="input-field col l2 m12 s12" ng-show="shw_periodo_trimestre">
+                  <input readonly id="ciclo_trimestral" type="text" ng-model="ciclo_trimestral">
+                  <label for="ciclo_trimestral"  >Ciclo:</label>
+               </div>
+
+               <div class="input-field col l2 m12 s12" ng-show="shw_periodo_trimestre">
+                  <label style=" margin-top: -20px;">Periodo:</label>
+                  <select class="select-chosen-eps" ng-model="trimestre">
+                     <option value="">SELECCIONAR</option>
+                     <option value="1">PRIMER TRIMESTRE</option>
+                     <option value="2">SEGUNDO TRIMESTRE</option>
+                     <option value="3">TERCER TRIMESTRE</option>
+                     <option value="4">CUARTO TRIMESTRE</option>
+                  </select>
+               </div>
+
+               
+               <div class="input-field col l3 m12 s12" ng-show="shw_nit">
+                  <input id="nit" type="text" ng-model="tercero">
+                  <label for="nit" class="">Nit:</label>
+
+
+
+
+
+               </div>
+               <div class="input-field col l3 m12 s12" ng-init="obtenerDepartamentos()" ng-show="shw_departamento">
+                  <label style=" margin-top: -20px;">Departamento</label>
+                  <select class="select-chosen-eps" ng-model="departamento" ng-change="obtenerMunicipios()">
+                     <option value="0">SELECCIONAR</option>
+                     <option ng-repeat="depa in Departamentos track by $index" ng-value="depa.CODIGO">{{depa.NOMBRE}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l3 m12 s12" ng-show="shw_municipio">
+                  <label style=" margin-top: -20px;">Municipio</label>
+                  <select class="select-chosen-eps" ng-model="municipio">
+                     <option value="0">SELECCIONAR</option>
+                     <option ng-repeat="municipio in Municipios track by $index" ng-value="municipio.CODIGO">{{municipio.NOMBRE}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_fecha_final">
+                  <label style=" margin-top: -20px;">Fecha de Inicio</label>
+                  <input type="date" name="" ng-model="fecha_inicio">
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_fecha_inicio">
+                  <label style=" margin-top: -20px;">Fecha de Final</label>
+                  <input type="date" name="" ng-model="fecha_final">
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_tipo_cuenta">
+                  <label style=" margin-top: -20px;">Tipo Cuenta:</label>
+                  <select class="select-chosen-eps" ng-model="tipo_cuenta">
+                     <option value="0">SELECCIONAR</option>
+                     <option value="1">Anticipo</option>
+                     <option value="2">Glosa</option>
+                     <option value="3">Autorizacion</option>
+                     <option value="4">Cuentas por pagar</option>
+                     <option value="5">Todas (Ant, Glo, Aut, CXP)</option>
+                     <option value="6">Activos y Pasivos</option>
+                     <option value="7">Estado de Resultado</option>
+                     <option value="8">Presupuesto Max AUT</option>
+                     <option value="9">Presupuesto Max CXP</option>
+                  </select>
+               </div>
+               <div class="input-field col l2 m12 s12" ng-show="shw_tipo_homologacion">
+                  <label style=" margin-top: -20px;">Tipo Cuenta:</label>
+                  <select class="select-chosen-eps" ng-model="tipo_homologacion">
+                     <option value="0">SELECCIONAR</option>
+                     <option value="1">Plan Caja</option>
+                     <option value="2">Plan Niff</option>
+                  </select>
+               </div>
+
+               <div class="input-field col l3 m12 s12" ng-show="shw_documento">
+                  <select class="select-chosen-eps" ng-model="documento" ng-change="obtenerConceptos()">
+                     <option ng-repeat="doc in Documentos track by $index" ng-value="doc.CODIGO">{{doc.CODIGO + ' - ' + doc.NOMBRE}}</option>
+                  </select>
+                  <label style=" margin-top: -20px;">Documento:</label>
+               </div>
+
+               <div class="input-field col l3 m12 s12" ng-show="shw_concepto">
+                  <select class="select-chosen-eps" ng-model="concepto">
+                     <option ng-repeat="con in Conceptos track by $index" ng-value="con.CODIGO">{{con.CODIGO + ' - ' + con.NOMBRE}}</option>
+                  </select>
+                  <label style=" margin-top: -20px;">Concepto:</label>
+               </div>
+
+               <div class="input-field col l3 m12 s12" ng-show="shw_numero">
+                  <input id="numero" type="text" ng-model="numero">
+                  <label for="numero" class="">Numero:</label>
+               </div>
+
+               <div class="input-field col l3 m12 s12" ng-show="shw_ubicacion">
+                  <input id="ubicacion" type="text" ng-model="ubicacion">
+                  <label for="ubicacion" class="">Ubicacion:</label>
+                  
+
+
+               </div>
+
+            </div>
+
+            <div ng-hide="mostrar_generar" class="input-button" >
+               <a class="waves-effect waves-light btn white-text" ng-click="generaReporte()">Generar</a><br>
+            </div>
+
+           
+        <div ng-show="mostrar_generasr" class="input-button">
+         <a class="waves-effect waves-light btn white-text" ng-click="enviar_goanywhere()">Generar en Goanywhere</a>
+         <br>
+     </div>
+
+
+        <div ng-show="mostrar_anexo1" class="input-button">
+      <a class="waves-effect waves-light btn white-text" ng-click="enviar_anexo1()">Generar Anexo 1 Circular 30 </a>
+      <br>
+   </div>
+
+   <div ng-show="mostrar_anexo3" class="input-button">
+      <a class="waves-effect waves-light btn white-text" ng-click="enviar_anexo3()">Generar Anexo 3 Circular 30 </a>
+      <br>
+   </div>
+
+         <div class="col s12" ng-hide="inactive2" style="margin-top: 30px;">
+            <img src="assets\images\cargando2.gif" alt="Cargando...">
+          </div>
+         </div>
+      </div>
+   </div>
+</div>

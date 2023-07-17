@@ -1,0 +1,146 @@
+<div style="width: 60%; margin: 0 auto;">
+   <div class="col s12 m6 l6 card">
+
+      <div class="card-content" style="padding: 10px;">
+         <h5>Activar Afiliado</h5>
+      </div>
+      <div style="width: 80%; margin: 0 auto;">
+         <form id="frmActivacion">
+            <div class="input-list input-view-column input-padding">
+               <label for="causal" style="margin-top: -20px;">Seleccione causal de ingreso</label>
+               <select class="select-chosen-eps" id="causl" ng-model="causal" 
+                  ng-options="causal.CODIGO as (causal.NOMBRE) for causal in Causales">
+               </select>
+            </div>
+
+            <div class="row">
+
+               <div class="col l6 m6 s12">
+                  <div class="input-list input-view-column input-padding">
+                     <label for="departamento" style="margin-top: -20px;">Departamento</label>
+                     <select class="select-chosen-eps" id="departamento" ng-model="departamento"
+                        ng-change="chg_departamento()"
+                        ng-options="departamento.CODIGO as (departamento.NOMBRE) for departamento in NewDepartamentos"
+                        required>
+                        <option value="" disabled>SELECCIONAR</option>
+                     </select>
+                  </div>
+               </div>
+
+               <div class="col l6 m6 s12">
+                  <div class="input-list input-view-column input-padding">
+                     <label for="municipio" style="margin-top: -20px;">Municipio</label>
+                     <select class="select-chosen-eps" id="municipio" ng-model="municipio" ng-change="chg_municipio()"
+                        ng-options="municipio.CODIGO as (municipio.NOMBRE) for municipio in NewMunicipios" required>
+                        <option value="" disabled>SELECCIONAR</option>
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div class="input-list input-view-column input-padding">
+               <label for="escenario" style="margin-top: -20px;">Red de Servicio</label>
+               <select class="select-chosen-eps" id="escenario" ng-model="escenario" required>
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option ng-repeat="x in NewEscenarios" value="{{x.CODIGO}}">{{x.NOMBRE}}
+                  </option>
+               </select>
+            </div>
+            <div class="input-list input-view-column input-padding" ng-show="shw_fecha_afiliacion_adres">
+               <label for="causal" style="margin-top: -20px;">Fecha de afiliación</label>
+               <input id="fecha_afiliacion" ng-model="fecha_afiliacion" type="date" ng-change="chg_boton()" required>
+            </div>
+            <div class="row m-t">
+               <div class="input-field col l5 m12 s12 m-b">
+                  <label style="margin-top: -20px;">Metodologia G.Poblacional</label>
+                  <select class="select-chosen-eps" ng-model="form.METODOLOGIA_G_POBLACIONAL"
+                     ng-change="obtenerGrupoPoblacional()">
+                     <option value="" selected>Seleccionar</option>
+                     <option value="1">Sisbén III</option>
+                     <option value="2">Sisbén IV</option>
+                     <option value="3">Listado Censales</option>
+                     <option value="4">Afiliacion de Oficio</option>
+                  </select>
+               </div>
+               <div class="input-field col l5 m12 s12">
+                  <label for="simple-select" style="margin-top: -20px;">G.Poblacional</label>
+                  <select class="select-chosen-eps" ng-model="form.GPOBLACIONAL" ng-change="CalcularGpoblacional()">
+                     <option value="" selected>Seleccionar</option>
+                     <option ng-repeat="x in Listado_Gpoblacional_v2" value="{{x.codigo}}">{{x.Grupo_Poblacional}}
+                     </option>
+                  </select>
+               </div>
+            </div>
+            <div class="row m-t">
+               <div class="input-field col l3 m12 s12" ng-show="mostrar_sisbeniii_v2">
+                  <input id="nivel_sisben" type="text" ng-model="form.NIVELSISBEN" maxlength="1" numbers-only>
+                  <label for="nivel_sisben">Nivel de Sisben</label>
+               </div>
+               <div class="input-field col l3 m12 s12"
+                  ng-show="form.METODOLOGIA_G_POBLACIONAL == 1 || form.METODOLOGIA_G_POBLACIONAL == 2">
+                  <input id="ficha_sisben" type="text" ng-model="form.FICHASISBEN"
+                     maxlength="{{form.METODOLOGIA_G_POBLACIONAL == 1 ? 9 : 20}}" numbers-only>
+                  <label for="ficha_sisben">Ficha de Sisben</label>
+               </div>
+               <div class="input-field col l3 m12 s12" ng-show="mostrar_sisbeniii_v2">
+                  <input id="nivel_sisben" type="text" ng-model="form.PUNTAJE_SISBEN" ng-keyup="FormatTexto('PUNTAJE_SISBEN')">
+                  <label for="nivel_sisben">Puntaje de Sisben</label>
+               </div>
+
+               <div class="input-field col l3 m12 s12" ng-show="mostrar_sisbeniv_v2">
+                  <label for="simple-select" style="margin-top: -20px;">Grupos</label>
+                  <select ng-change="CalcularSubgrupoSisben()" class="select-chosen-eps" id="GRUPO_SISBENIV"
+                     ng-model="form.GRUPO_SISBENIV">
+                     <option value="" selected>Seleccionar</option>
+                     <option ng-repeat="x in Listado_GrupoSisben_v2" value="{{x.Grupo}}">GRUPO {{x.Grupo}}</option>
+                  </select>
+               </div>
+               <div class="input-field col l3 m12 s12" ng-show="mostrar_sisbeniv_v2">
+                  <label for="simple-select" style="margin-top: -20px;">SubGrupos</label>
+                  <select class="select-chosen-eps" id="SUBGRUPO_SISBENIV" ng-model="form.SUBGRUPO_SISBENIV">
+                     <option value="" selected>Seleccionar</option>
+                     <option ng-repeat="x in Listado_SubGrupoSisben_v2" value="{{x.Sub_Grupo}}"
+                        ng-selected="x.Sub_Grupo == form.SUBGRUPO_SISBENIV">{{x.Sub_Grupo}}
+                     </option>
+                  </select>
+               </div>
+               <div class="input-field col l5 m12 s12" ng-show="mostrar_Listado_Gpoblacional_31_v2">
+                  <label for="simple-select" style="margin-top: -20px;">Causal Afiliacion Oficio</label>
+                  <select class="select-chosen-eps" id="CAUSAL_OFICIO" ng-model="form.CAUSAL_OFICIO">
+                     <option value="" selected>Seleccionar</option>
+                     <option ng-repeat="x in Listado_Gpoblacional_31_v2" value="{{x.CODIGO}}"
+                        ng-selected="x.CODIGO == form.CAUSAL_OFICIO">CAUSAL {{x.NOMBRE}}</option>
+                     </option>
+                  </select>
+               </div>
+            </div>
+
+            <div ng-hide="OcultarSoporte">
+               <table class="striped table-bordered responsive-table bordered" align="center"
+                  style="cursor: pointer !important;">
+                  <thead class="center">
+                     <tr>
+                        <td><strong>Nombre Documento</strong></td>
+                        <td><strong>Marcación</strong></td>
+                     </tr>
+                  </thead>
+                  <tbody class="center" style="height: 40%; overflow: scroll;">
+                     <tr data-ng-repeat="data in soporte track by $index">
+                        <td>{{data.nombre}}</td>
+                        <td>{{data.marcacion}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <br>
+            <center>
+               <a ng-hide="btnValidarDocumento" ng-click="ValidarDocumento()"
+                  class="waves-effect waves-light btn white-text">Validar Soportes</a>
+               <a ng-hide="btnGn" ng-click="reactivaafiliado()" class="waves-effect waves-light btn white-text">Generar
+                  Novedad</a>
+               <a ng-hide="btnGuarda" ng-click="ModalDigitalizacion('2')"
+                  class="waves-effect waves-light btn white-text">Cargar Documentos</a>
+            </center><br>
+         </form>
+      </div>
+   </div>
+</div>

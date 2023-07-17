@@ -1,0 +1,383 @@
+<div id="paneladmin" class="white newdesing" style="position:relative">
+  <style>
+    i {
+      cursor: pointer;
+    }
+
+    .select-input-new.select-chosen-eps {
+      height: 2rem !important;
+      padding: 0 0.5rem !important;
+      border-bottom: none !important;
+      box-shadow: 0 1px 0 0 #dadce0;
+      padding-right: 1rem !important;
+      border-radius: 0;
+    }
+
+    .newdesing .section-header ul>li>h5 {
+      font-family: 'Product Sans', Arial, sans-serif;
+      font-size: 22px;
+      line-height: 22px;
+      opacity: .54;
+      margin: 9px 0;
+    }
+
+    .newdesing td,
+    th {
+      font-size: 13px;
+      border-radius: 0;
+      padding: 5px 10px;
+    }
+
+    .select-iconos {
+      top: auto !important;
+      right: 100%;
+      bottom: 100%;
+      width: 254px !important;
+      min-width: 125px;
+      text-align: center;
+      overflow: auto;
+      height: 500px;
+      padding: 5px;
+    }
+
+    .select-iconos>ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    .select-iconos>ul>li {
+      width: 40px;
+      float: left;
+      font-size: 16px;
+    }
+
+    .select-iconos>input {
+      height: auto;
+      font-size: 13px !important;
+      padding: 0 .5em;
+      width: 85%;
+      margin-bottom: 5px !important;
+    }
+  </style>
+  <div id="TourStep" ng-show="TourInit.active" class="card margin" style="margin: 1em!important;">
+    <div id="StepTriangle">
+      <div></div>
+    </div>
+    <div class="card-content">
+      <span class="card-title transparent"
+        style="font-size: 1.5em;line-height: normal;font-weight: 600;">{{tituloStep}}</span>
+      <p>{{descripcionStep}}</p>
+    </div>
+    <div class="card-action" style="display: flex;justify-content: flex-end;">
+      <small>{{Now+1}}/{{steps.length}}</small>
+      <a href="javascript:void(0)" ng-click="backStep()">{{btnBack}}</a>
+      <a href="javascript:void(0)" ng-click="nextStep();">{{btnNext}}</a>
+    </div>
+  </div>
+  <div class="row section-header">
+    <i id="ayuda" ng-click="guideTour()" class="icon-help btn-floating"
+      style="position: fixed;bottom: 10px;right: 10px;z-index: 100000;display: flex;justify-content: center;align-items: center;font-size: 1.5em;"></i>
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Configurar:</h5>
+      </li>
+      <li style="display:flex;align-items: center;">
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!switch_view}">Modulos</span>
+            <input type="checkbox" ng-init="switch_view = false" ng-model="switch_view"
+              ng-change="(switch_view == true)?viewType(true):viewType(false);moduloTitle=''">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':switch_view}">Roles</span>
+          </label>
+        </div>
+      </li>
+      <li>
+        <a ui-sref="mara.configuracionacceso">
+          <i class="icon-list-3 blue-text">Configurar Permisos</i>
+        </a>
+      </li>
+      <!-- <li>
+        <form id="step3" name="paneladmin" method="post" ng-submit="filtrarUser()" autocomplete="off"
+          style="display: inline-flex;">
+          <input id="id_cedula" type="text" class="margin border-none white"
+            style="border-top-left-radius: 4px;border-top-right-radius: 4px;width: 240px;height: 2rem;padding: 0 1em;"
+            ng-model="id_user" placeholder="Buscar Usuario">
+        </form>
+      </li> -->
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div ng-if="!switch_view" id="step1" class="col s12 m12 l6">
+      <form class="title-panel" action="#" style="margin-bottom: 15px;">
+        <div>
+          <input ng-model="typeUser" ng-change="change_modulos(typeUser)" id="funcionarios" name="groupRadio"
+            type="radio" value="funcionarios" />
+          <label for="funcionarios" style="height: 25px!important;">FUNCIONARIOS</label>
+        </div>
+        <!-- <div>
+                  <input ng-model="typeUser" ng-change="change_modulos(typeUser)" id="afiliados" name="groupRadio" type="radio"
+                    value="afiliados" />
+                  <label for="afiliados" style="height: 25px!important;">AFILIADOS</label>
+                </div> -->
+        <div>
+          <input ng-model="typeUser" ng-change="change_modulos(typeUser)" id="ips" name="groupRadio" type="radio"
+            value="ips" />
+          <label for="ips" style="height: 25px!important;">IPS</label>
+        </div>
+        <!-- <div>
+                  <input ng-model="typeUser" ng-change="change_modulos(typeUser)" id="empresas" name="groupRadio" type="radio"
+                    value="empresas" />
+                  <label for="empresas" style="height: 25px!important;">EMPRESAS</label>
+                </div> -->
+        <i ng-click="saveJson()" class="icon-floppy-1" ng-hide="btn.icon"></i>
+      </form>
+      <!-- Todos los Usuarios -->
+      <div id="tabla_modulos" class="scroll_x h-c-273"
+        style="overflow: auto;position: relative;height: calc(100vh - 205px)">
+        <table id="tablaOriginal_1" class="striped table-bordered white">
+          <thead class="default-background white-text">
+            <tr style="position: relative;">
+              <th class="border-none" data-field="Titulo">
+                <input type="text" ng-model="filter_titulo_list" class="margin border-none"
+                  style="height: auto;font-size: 13px;" placeholder="Titulo">
+              </th>
+              <th class="center-align border-none" data-field="Icono">Icono</th>
+              <th class="center-align border-none">
+                <i class="icon-trash-empty white-text" title="Borrar"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="scroll-tbody-2 collapsible-body-new">
+            <tr ng-if="modulos_all.length == 0">
+              <td colspan="3" class="center-align">
+                No hay módulos para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat-start="modulo in modulos_all | filter:{titulo:filter_titulo_list} | orderBy:'titulo'"
+              ng-class="{'active':collapse.level_modulos == $index}">
+              <td
+                ng-click="(collapse.level_modulos != $index)? collapse.level_modulos = $index : collapse.level_modulos = null;">
+                {{modulo.titulo}} {{(collapse.level_modulos == $index)?'('+modulo.options.length+')':''}}</td>
+              <td class="center-align"><i class="{{modulo.icono}}"></i></td>
+              <td class="center-align">
+                <i ng-click="delete_modulo(modulo)" class="icon-trash-empty red-text"></i>
+              </td>
+            </tr>
+            <tr ng-repeat-end>
+              <td ng-if="collapse.level_modulos == $index" colspan="3" class="panel">
+                <!-- Submódulos -->
+                <table class="responsive-table">
+                  <tbody>
+                    <tr class="center-align" ng-repeat="submodulo in modulo.options | orderBy:'titulo' track by $index">
+                      <td>{{submodulo.titulo}}</td>
+                      <td>{{submodulo.url}}</td>
+                      <td class="center-align">
+                        <i ng-click="delete_submodulo(modulo,submodulo)" class="icon-trash-empty red-text"></i>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="text" ng-model="title_submodulo_add"
+                          ng-change="(title_submodulo_add!='')? url_submodulo_add = 'mara.'+url_auto(title_submodulo_add).toLowerCase() : url_submodulo_add = ''"
+                          class="margin border-none" style="height: auto;font-size: 13px;" placeholder="Titulo">
+                      </td>
+                      <td>
+                        <input type="text" ng-model="url_submodulo_add" class="margin border-none"
+                          style="height: auto;font-size: 13px;" placeholder="Url">
+                      </td>
+                      <td class="center-align">
+                        <i class="icon-plus green-text" style="font-size: 1.2em;cursor: pointer;color: teal;"
+                          ng-click="new_submodulo_add(modulo.titulo,title_submodulo_add,url_submodulo_add);title_submodulo_add='';url_submodulo_add=''"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td class="center-align">
+                <input type="text" ng-model="title_modulo_add" class="margin border-none"
+                  style="height: auto;font-size: 13px;" placeholder="Titulo">
+              </td>
+              <td class="center-align">
+                <div class="button-dropdown-angular">
+                  <i class="dropdown-toggle-angular {{icono_select}}" ng-class="{'active':ver_iconos}"
+                    ng-click="ver_iconos=!ver_iconos" title="Seleccionar icono" style="font-size: 15px;"></i>
+                  <div id="modulo_dropdown" class="dropdown-menu select-iconos">
+                    <input type="text" ng-model="fill_icon" placeholder="Buscar...">
+                    <ul>
+                      <li ng-repeat="icon in iconos | filter:fill_icon">
+                        <i ng-click="click_icon(icon);" class="{{icon}}"></i>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+              <td class="center-align">
+                <i class="icon-plus green-text" style="font-size: 1.2em;cursor: pointer;"
+                  ng-click="new_modulo_add(title_modulo_add,icono_select);title_modulo_add='';ver_iconos=false"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div ng-if="!switch_view" id="step1" class="col s12 m12 l6">
+
+    </div>
+    <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div ng-if="switch_view" id="step1" class="col s12 m12 l6">
+      <div class="black-text title-panel" style="margin-bottom: 15px;">Todos los roles:
+      </div>
+      <!-- Todos los roles -->
+      <div style="overflow: auto;position: relative;height: calc(100vh - 205px)">
+        <table class="striped table-bordered white">
+          <thead>
+            <tr class="default-background white-text">
+              <th class="border-none" data-field="Codigo" style="width: 20%;">
+                <input type="text" ng-model="filter_roles_cod" class="margin border-none"
+                  style="height: auto;font-size: 13px;" placeholder="Codigo">
+              </th>
+              <th class="border-none">
+                <input type="text" ng-model="filter_roles" class="margin border-none"
+                  style="height: auto;font-size: 13px;" placeholder="Titulo">
+              </th>
+            </tr>
+          </thead>
+          <tbody class="scroll-tbody">
+            <tr ng-if="roles.length == 0">
+              <td colspan="2" class="center-align">
+                No hay roles para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat="rol in roles | filter:{NOMBRE:filter_roles,CODIGO:filter_roles_cod} | orderBy:'CODIGO'">
+              <td>{{rol.CODIGO}}</td>
+              <td ng-click="getModulo(rol.CODIGO,rol.NOMBRE)" style="cursor:pointer">{{rol.NOMBRE}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div ng-if="switch_view" id="step2" class="col s12 m12 l6"
+      style="position: relative;min-height: calc(100vh - 229px);">
+      <div class="black-text title-panel" ng-if="moduloTitle!=''" style="margin-bottom: 15px;">{{moduloTitle}}
+        <div class="btn-panel">
+          <i class="icon-trash-empty" ng-click="BtnBorrar()" ng-hide="btn.icon"></i>
+          <i class="icon-floppy-1" ng-click="updateJson()" ng-hide="btn.icon"></i>
+          <div class="button-dropdown-angular">
+            <i class="icon-cancel dropdown-toggle-angular" ng-click="ModuloAdd()"
+              ng-class="{'active':btn.icon,'icon-plus':btn.icon==false}"></i>
+            <div id="modulo_dropdown" class="dropdown-menu">
+              <!-- Modulos para agregar -->
+              <div style="overflow: auto;position: relative;max-height: calc(100vh - 311px);min-height: auto;">
+                <table class="striped table-bordered" ng-show="moduloTitle!=''" style="background-color: white;">
+                  <thead class="default-background white-text">
+                    <tr>
+                      <th class="border-none" data-field="Titulo">
+                        <input type="text" ng-model="filter_modulosBase" class="margin border-none"
+                          style="height: auto;font-size: 13px;" placeholder="Titulo">
+                      </th>
+                      <th class="center-align border-none" data-field="Icono">Icono</th>
+                      <th class="center-align border-none default-background-dark" data-field="Estado"
+                        style="cursor: pointer;">
+                        <a class="white-text" href="app.php#/paneladmin" ng-click="BtnAgregar()">Agregar</a></th>
+                    </tr>
+                  </thead>
+
+                  <tbody class="scroll-tbody-2 top-menu">
+                    <tr ng-if="moduloAdd.length == 0">
+                      <td colspan="3" class="center-align">
+                        No hay módulos para agregar
+                      </td>
+                    </tr>
+                    <tr ng-repeat="moduloa in moduloAdd | filter:{titulo:filter_modulosBase} | orderBy:'titulo'"
+                      ng-class="{'active':collapse.level == $index}">
+                      <td>{{moduloa.titulo}}</td>
+                      <td class="center-align"><i class="{{moduloa.icono}}"></i></td>
+                      <td class="center-align"
+                        style="position:relative;display: flex;justify-content: space-around;align-items: center;">
+                        <input type="checkbox" class="filled-in" id="input_label_add{{$index}}"
+                          ng-init="check_agregar$index = false" ng-checked="check_agregar$index"
+                          ng-model="check_agregar$index"
+                          ng-change="checkboxAgregar($index,check_agregar$index,moduloa)">
+                        <label for="input_label_add{{$index}}" style="padding-left: 20px;height: 20px;"></label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <i class="icon-list-alt" ng-show="moduloTitle==''" style="position:absolute;top:50%;left:50%;font-size: 2em;"></i>
+      <!-- Modulos -->
+      <div style="overflow: auto;position: relative;height: calc(100vh - 205px)">
+        <table class="striped table-bordered white" ng-if="moduloTitle!=''">
+          <thead class="default-background white-text">
+            <tr>
+              <th class="border-none" data-field="Titulo">
+                <input type="text" ng-model="filter_modules" class="margin border-none"
+                  style="height: auto;font-size: 13px;" placeholder="Titulo">
+              </th>
+              <th id="step4" class="center-align border-none" data-field="Icono">Icono</th>
+              <th class="center-align border-none" data-field="Estado">Borrar</th>
+            </tr>
+          </thead>
+
+          <tbody class="scroll-tbody-2">
+            <tr ng-if="modulos.length == 0">
+              <td colspan="3" class="center-align">
+                No hay módulos para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat-start="modulo in modulos | filter:{titulo:filter_modules} | orderBy:'titulo'"
+              ng-class="{'active':collapse.level == $index}">
+              <td style="cursor:pointer"
+                ng-click="(collapse.level != $index)? collapse.level = $index : collapse.level = null;TourInit.valide = true;">
+                {{modulo.titulo}}</td>
+              <td class="center-align"><i class="{{modulo.icono}}"></i></td>
+              <td class="center-align"
+                style="position:relative;display: flex;justify-content: space-around;align-items: center;">
+                <input type="checkbox" class="filled-in checkbox_dele" id="input_label_delete{{$index}}"
+                  ng-init="check_borrar$index = false" ng-checked="check_borrar$index" ng-model="check_borrar$index"
+                  ng-change="checkboxBorrar($index,check_borrar$index,modulo)">
+                <label for="input_label_delete{{$index}}" style="padding-left: 20px;height: 20px;"></label>
+              </td>
+            </tr>
+            <tr ng-repeat-end>
+              <td colspan="3" class="panel">
+                <!-- Submódulos -->
+                <table class="responsive-table">
+                  <thead>
+                    <tr>
+                      <th data-field="Codigo">Titulo</th>
+                      <th data-field="Titulo">Url</th>
+                      <th class="center-align" data-field="Titulo">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="center-align" ng-repeat="submodulo in modulo.options | orderBy:'titulo' track by $index">
+                      <td>{{submodulo.titulo}}</td>
+                      <td>{{submodulo.url}}</td>
+                      <td style="position:relative" class="center-align switch">
+                        <label>
+                          <input type="checkbox" ng-model="check_estadoActive[$index]"
+                            ng-checked="(submodulo.estado == true)? check_estadoActive[$index] = true : check_estadoActive[$index] = false;"
+                            ng-change="checkboxEstado(modulo.titulo,submodulo.estado,submodulo.titulo)">
+                          <span class="lever"></span>
+                        </label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

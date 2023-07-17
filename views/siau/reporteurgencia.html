@@ -1,0 +1,564 @@
+<div class="white newdesing" id="pantalla">
+    <style>
+      .newdesing .content-container {
+        min-height: 0;
+      }
+    </style>
+    <div class="row section-header margin">
+      <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+        <li id="inicio">
+          <h5 class="cursor-pointer"
+            style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+            onclick="location.reload();">
+            <spam>
+                <h5 class="fontello-icon"><i class=" icon-file-excel"></i>Reporte por Fechas de Codigo de Urgencia
+                </h5>
+            </spam>
+          </h5>
+        </li>
+      </ul>
+    </div>
+
+    <div id="Form" class="card-content clearfix card"
+    style="width: 95%;margin: 1rem auto auto auto;border-radius: 15px;">
+<!-- //////////////////////////////////////////////////Seleccionar TAB //////////////////////////////// -->
+<div class="Hoja_2">
+<div class="row" style="width: 100%;">
+    <ul class="tabs nav" style="background-color: transparent;margin: .5vh;width: 99%;overflow: hidden;">
+      <li class="tab col w-auto active"><a id="tab_numero1" href ng-click="setTab(1)" class="active"><strong
+            style=" font-weight: bold;">REPORTE POR NIT Y FECHA</strong></a>
+      </li>
+      <li class="tab col w-auto"><a id="tab_numero2" href ng-click="setTab(2)"><strong
+            style="font-weight: bold;">REPORTE POR FECHA</strong></a></li>
+    </ul>
+</div>
+</div>
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <div ng-show="Tap == '1'">
+      <div class="row" style="margin-bottom: 13;width: 98%;margin-top: 1rem;">
+        <div style="padding:0px">
+            <div class="card-content clearfix" style="padding-bottom:0px">
+                <div class="col s12">
+                    <form id="busafi" class="row" ng-submit="obtenerhistorico()"
+                        style="margin-bottom: 10px !important;">
+                        <div class="row">
+                            <form class="col s12">
+                                <div class="row" style="margin:0px">
+                                    <div class="col l4 m4 s4">
+                                        <div class="input-field col s12 ">
+                                            <input id="nitips" ng-model="nitips" type="text" style="border: 1px solid #dee2e6;
+                                            border-radius: 0.25rem;
+                                            background-color: #fff;
+                                            background-clip: padding-box;
+                                            padding: 0 1em;">
+                                            <label for="nitips" class="search-label" style=" padding: 0 1em;">Nit IPS</label>
+                                        </div>
+                                    </div>
+                                    <div class="col l3 m3 s3">
+                                        <div class="input-field col s12 ">
+                                            <input id="fechai" ng-model="fechai" type="date" style="border: 1px solid #dee2e6;
+                                            border-radius: 0.25rem;
+                                            background-color: #fff;
+                                            background-clip: padding-box;
+                                            padding: 0 1em;">
+                                            <label for="fechai" class="active">Fecha Inicial</label>
+                                        </div>
+                                    </div>
+                                    <div class="col l3 m3 s3">
+                                        <div class="input-field col s12 ">
+                                            <input id="fechaf" ng-model="fechaf" type="date" style="border: 1px solid #dee2e6;
+                                            border-radius: 0.25rem;
+                                            background-color: #fff;
+                                            background-clip: padding-box;
+                                            padding: 0 1em;">
+                                            <label for="fechaf" class="active">Fecha Fin</label>
+                                        </div>
+                                    </div>
+                                    <div class="col l2 m2 s2">
+                                        <div class="input-field col s12">
+                                            <button class="btn white-text blue"
+                                            style="background:linear-gradient(to bottom left,#5870ae,#1a2e63,#5870ae);
+                                            height: 50%;width: 90%;padding: 3%;"
+                                                type="submit">Buscar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div ng-hide="inactive1">
+            <div class="card-action" style="padding:0px">
+                <div class="card-content clearfix" style="padding-bottom:0px">
+                    <div class="col s12">
+
+                        <div class="input-field col s1 ">
+
+                            <div class="tooltip" data-position="top" >
+                                <i ng-click="descarga()" class="fo fontello-icon  icon-file-excel"
+                                    style="font-size: 28px;"></i>
+                                <span class="tooltiptext" style="   background-color: #9095a254;
+														color: #131313;
+														border-radius: 9px;
+														border-bottom: 1px solid;">
+                                    Descargar</span>
+                            </div>
+                        </div>
+                        <div class="input-field col s3 ">
+                            <i class="material-icons prefix">search</i>
+                            <input id="with_icon" type="text" ng-model="filter" class="validate">
+                            <label for="with_icon">Filtro</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <i class="material-icons prefix icon-hospital"></i>
+                            <input style="color: black !important;" id="with_icon" type="text" ng-model="Nombre"
+                                disabled class="validate">
+                            <label for="with_icon">IPS</label>
+                        </div>
+                        <div class="input-field col s3">
+                            <i class="material-icons prefix">swap_vert</i>
+                            <input id="with_icon" type="number" ng-model="quantity" class="validate">
+                            <label for="with_icon">Limite <strong>{{quantity}}</strong> de
+                                <strong>{{total}}</strong></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-action" style="padding:0px">
+                <div class="card-content clearfix" style="padding-bottom:0px">
+                    <table class="responsive-table striped table-bordered" style="margin:1rem 0px">
+                        <thead class=" default-background white-text">
+                            <tr>
+                                <th class="center default-linear-gradient" data-field="Codigo">CODIGO</th>
+                                <th class="center default-linear-gradient" data-field="Fecha">DOCUMENTO </th>
+                                <th class="center default-linear-gradient" data-field="Servicio">NOMBRE DEL PACIENTE</th>
+                                <th class="center default-linear-gradient" data-field="Prestador">FECHA INGRESO</th>
+                                <th class="center default-linear-gradient" data-field="Acción">DIAGNOSTICO PRINCIPAL</th>
+                                <th class="center default-linear-gradient" data-field="Acción">DIAGNOSTICO SECUNDARIO</th>
+                                <th class="center default-linear-gradient" data-field="Acción">RED</th>
+                                <th class="center default-linear-gradient" data-field="Acción">NIT IPS</th>
+                                <th class="center default-linear-gradient" data-field="Acción">OBSERVACIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="urg in HistoricoUrgencia | limitTo:quantity | filter:filter">
+                                <td class="center-align ">{{urg.Codigo}}</td>
+                                <td class="center-align">{{urg.tipo_documento}} - {{urg.documento}}</td>
+                                <td>{{urg.Nombre_afiliado}}</td>
+                                <td>{{urg.Fecha_Ingreso}}</td>
+                                <td>{{urg.dx_ingreso1}}</td>
+                                <td>{{urg.dx_ingreso2}}</td>
+                                <td>{{urg.red}}</td>
+                                 <td>{{urg.nit}}</td>
+                                <td>{{urg.obsevacion}}</td>
+                            </tr>
+                            <tr ng-if="!HistoricoUrgencia">
+                                <td colspan="7" class="center-align">NO SE ENCONTRARON DATOS </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table ng-show="invisible" id="reporte" class="responsive-table striped table-bordered" style="margin:1rem 0px">
+                            <thead class=" default-background white-text">
+                                <tr>
+                                    <th class="center-align border-none" data-field="Codigo">CODIGO</th>
+                                    <th class="center-align border-none" data-field="Fecha">DOCUMENTO </th>
+                                    <th class="border-none" data-field="Servicio">NOMBRE DEL PACIENTE</th>
+                                    <th class="border-none" data-field="Prestador">FECHA INGRESO</th>
+                                    <th class="center-align border-none" data-field="Acción">DIAGNOSTICO PRINCIPAL</th>
+                                    <th class="center-align border-none" data-field="Acción">DIAGNOSTICO SECUNDARIO</th>
+                                    <th class="center-align border-none" data-field="Acción">RED</th>
+                                    <th class="center-align border-none" data-field="Acción">NIT IPS</th>
+                                    <th class="center-align border-none" data-field="Acción">OBSERVACIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="urg in HistoricoUrgencia">
+                                    <td class="center-align ">{{urg.Codigo}}</td>
+                                    <td class="center-align">{{urg.tipo_documento}} - {{urg.documento}}</td>
+                                    <td>{{urg.Nombre_afiliado}}</td>
+                                    <td>{{urg.Fecha_Ingreso}}</td>
+                                    <td>{{urg.dx_ingreso1}}</td>
+                                    <td>{{urg.dx_ingreso2}}</td>
+                                    <td>{{urg.red}}</td>
+                                    <td>{{urg.nit}}</td>
+                                    <td>{{urg.obsevacion}}</td>
+                                </tr>
+                                <tr ng-if="!HistoricoUrgencia">
+                                    <td colspan="7" class="center-align">NO SE ENCONTRARON DATOS </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+
+ <!-- Modal Structure -->
+ 
+      </div>
+    </div>
+    <div ng-show="Tap == '2'">
+      <div class="row" style="margin-bottom: 13;width: 98%;margin-top: 1rem;">
+        <div style="padding:0px">
+            <div class="card-content clearfix" style="padding-bottom:0px">
+                <div class="col s12">
+                    <form id="busafi1" class="row" ng-submit="obtenerhistorico1()"
+                        style="margin-bottom: 10px !important;">
+                        <div class="row">
+                            <form class="col s12">
+                                <div class="row" style="margin:0px">
+                                    <div class="col l5 m5 s5">
+                                        <div class="input-field col s12 ">
+                                            <input id="fechai" ng-model="fechai1" type="date" style="border: 1px solid #dee2e6;
+                                            border-radius: 0.25rem;
+                                            background-color: #fff;
+                                            background-clip: padding-box;
+                                            padding: 0 1em;">
+                                            <label for="fechai" class="active">Fecha Inicial</label>
+                                        </div>
+                                    </div>
+                                    <div class="col l5 m5 s5">
+                                        <div class="input-field col s12 ">
+                                            <input id="fechaf" ng-model="fechaf1" type="date" style="border: 1px solid #dee2e6;
+                                            border-radius: 0.25rem;
+                                            background-color: #fff;
+                                            background-clip: padding-box;
+                                            padding: 0 1em;">
+                                            <label for="fechaf" class="active">Fecha Fin</label>
+                                        </div>
+                                    </div>
+                                    <div class="col l2 m2 s2">
+                                        <div class="input-field col s12">
+                                            <button class="btn white-text blue"
+                                            style="background:linear-gradient(to bottom left,#5870ae,#1a2e63,#5870ae);
+                                                height: 50%;width: 90%;padding: 3%;"
+                                                type="submit">Buscar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div ng-hide="inactive2">
+            <div class="card-action" style="padding:0px">
+                <div class="card-content clearfix" style="padding-bottom:0px">
+                    <div class="col s12">
+
+                        <div class="input-field col s1 ">
+
+                            <div class="tooltip" data-position="top" >
+                                <i ng-click="descarga1()" class="fo fontello-icon  icon-file-excel"
+                                    style="font-size: 28px;"></i>
+                                <span class="tooltiptext" style="   background-color: #9095a254;
+														color: #131313;
+														border-radius: 9px;
+														border-bottom: 1px solid;">
+                                    Descargar</span>
+                            </div>
+                        </div>
+                        <div class="input-field col s3 ">
+                            <i class="material-icons prefix">search</i>
+                            <input id="with_icon" type="text" ng-model="filter" class="validate">
+                            <label for="with_icon">Filtro</label>
+                        </div>
+                        <div class="input-field col s3">
+                            <i class="material-icons prefix">swap_vert</i>
+                            <input id="with_icon" type="number" ng-model="quantity1" class="validate">
+                            <label for="with_icon">Limite <strong>{{quantity1}}</strong> de
+                                <strong>{{total1}}</strong></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-action" style="padding:0px">
+                <div class="card-content clearfix" style="padding-bottom:0px">
+                    <table class="responsive-table striped table-bordered" style="margin:1rem 0px">
+                        <thead class=" default-background white-text">
+                            <tr>
+                                <th class="center default-linear-gradient" data-field="Codigo">IPS</th>
+                                <th class="center-align border-none" data-field="Acción">NIT</th>
+                                <th class="center default-linear-gradient" data-field="Codigo">CODIGO</th>
+                                <th class="center default-linear-gradient" data-field="Fecha">DOCUMENTO </th>
+                                <th class="center default-linear-gradient" data-field="Servicio">NOMBRE DEL PACIENTE</th>
+                                <th class="center default-linear-gradient" data-field="Prestador">FECHA INGRESO</th>
+                                <th class="center default-linear-gradient" data-field="Acción">DIAGNOSTICO PRINCIPAL</th>
+                                <th class="center default-linear-gradient" data-field="Acción">DIAGNOSTICO SECUNDARIO</th>
+                                <th class="center default-linear-gradient" data-field="Acción">RED</th>
+                                <th class="center default-linear-gradient" data-field="Acción">OBSERVACIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="urg1 in HistoricoUrgencia1 | limitTo:quantity1 | filter:filter">
+                                <td class="center-align ">{{urg1.ips}}</td>
+                                <td class="center-align ">{{urg1.nit}}</td>
+                                <td class="center-align ">{{urg1.Codigo}}</td>
+                                <td class="center-align">{{urg1.tipo_documento}} - {{urg1.documento}}</td>
+                                <td>{{urg1.Nombre_afiliado}}</td>
+                                <td>{{urg1.Fecha_Ingreso}}</td>
+                                <td>{{urg1.dx_ingreso1}}</td>
+                                <td>{{urg1.dx_ingreso2}}</td>
+                                <td>{{urg1.red}}</td>
+                                <td>{{urg1.obsevacion}}</td>
+                            </tr>
+                            <tr ng-if="!HistoricoUrgencia1">
+                                <td colspan="7" class="center-align">NO SE ENCONTRARON DATOS </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table ng-show="invisible1" id="reporte1" class="responsive-table striped table-bordered" style="margin:1rem 0px">
+                            <thead class=" default-background white-text">
+                                <tr>
+                                    <th class="center-align border-none" data-field="Codigo">IPS</th>
+                                    <th class="center-align border-none" data-field="Codigo">NIT</th>
+                                    <th class="center-align border-none" data-field="Codigo">CODIGO</th>
+                                    <th class="center-align border-none" data-field="Fecha">DOCUMENTO </th>
+                                    <th class="border-none" data-field="Servicio">NOMBRE DEL PACIENTE</th>
+                                    <th class="border-none" data-field="Prestador">FECHA INGRESO</th>
+                                    <th class="center-align border-none" data-field="Acción">DIAGNOSTICO PRINCIPAL</th>
+                                    <th class="center-align border-none" data-field="Acción">DIAGNOSTICO SECUNDARIO</th>
+                                    <th class="center-align border-none" data-field="Acción">RED</th>
+                                    <th class="center-align border-none" data-field="Acción">OBSERVACIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="urg1 in HistoricoUrgencia1">
+                                    <td class="center-align ">{{urg1.ips}}</td>
+                                    <td class="center-align ">{{urg1.nit}}</td>
+                                    <td class="center-align ">{{urg1.Codigo}}</td>
+                                    <td class="center-align">{{urg1.tipo_documento}} - {{urg1.documento}}</td>
+                                    <td>{{urg1.Nombre_afiliado}}</td>
+                                    <td>{{urg1.Fecha_Ingreso}}</td>
+                                    <td>{{urg1.dx_ingreso1}}</td>
+                                    <td>{{urg1.dx_ingreso2}}</td>
+                                    <td>{{urg1.red}}</td>
+                                    <td>{{urg1.obsevacion}}</td>
+                                </tr>
+                                <tr ng-if="!HistoricoUrgencia1">
+                                    <td colspan="7" class="center-align">NO SE ENCONTRARON DATOS </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+      </div>
+    </div>
+    
+  </div>
+
+
+    <style>
+        /* td, th {
+        font-size: 15px;
+    } */
+    
+    #licenciamiento td,
+    th,
+    .newdesing td,
+    th {
+        font-size: 15px;
+    }
+    
+        th.default-linear-gradient {
+          background-image: linear-gradient(0deg, #5870ae, #1a2e63, #5870ae) !important;
+        }
+        
+        .default-linear-gradient {
+          border-radius: 0px !important;
+        }
+    
+        .Valid_Campo {
+          border: 1px solid red !important;
+        }
+    
+    
+        @keyframes Anim_Show {
+          0% {
+            opacity: 0;
+          }
+    
+          100% {
+            opacity: 1;
+          }
+        }
+    
+        .Anim_Show {
+          animation-name: Anim_Show;
+          animation-duration: 1s;
+        }
+    
+        #Imagen_back {
+          cursor: pointer;
+          width: 50vw;
+          margin: auto;
+          opacity: .4;
+        }
+    
+        .card-panel,
+        .card,
+        .btn {
+          box-shadow: 0 2px 5px 0 rgb(197 208 239), 0 2px 10px 0 rgb(197 208 239) !important;
+        }
+    
+        .tabs {
+          height: 30px !important;
+        }
+    
+        .tabs .tab {
+          line-height: 30px !important;
+          height: 30px !important;
+        }
+    
+    
+        /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+    
+        .list-group-item:last-child {
+          margin-bottom: 0;
+          border-bottom-right-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+    
+        .list-group-item:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+        }
+    
+        .list-group-item:hover {
+          color: #1a2e63;
+          cursor: pointer;
+          font-weight: bold;
+        }
+    
+        .list-group-item.hover {
+          color: #1a2e63;
+          cursor: pointer;
+          font-weight: bold;
+        }
+    
+        .list-group-item {
+          position: relative;
+          display: block;
+          padding: 10px 15px;
+          margin-bottom: -1px;
+          background-color: #fff;
+          border: 1px solid #ddd;
+          font-size: 0.7em;
+        }
+    
+        .list-group {
+          font-size: 14px;
+          overflow: auto;
+          max-height: 13vh;
+          position: absolute;
+          margin: 0;
+          width: inherit;
+          margin-top: 2.2em;
+          z-index: 3;
+        }
+    
+        .tabla_estilo_0 th {
+          position: sticky;
+          top: 0;
+          z-index: 9;
+        }
+    
+        .label-new>label {
+          display: table;
+        }
+    
+        input.input-text-new {
+          background-color: #f1f3f4 !important;
+        }
+    
+        .gray-input {
+          background-color: #f1f3f4 !important;
+        }
+    
+    
+        .select_maxheigth ul {
+          max-height: 125px;
+        }
+    
+        .dropdown-content li {
+          min-height: 23px;
+        }
+    
+        .dropdown-content li>span {
+          line-height: 32px;
+          padding: 0px 16px;
+        }
+    
+        #toast-container .toast {
+          border-radius: 10px !important;
+          font-weight: 600;
+          text-align: center !important;
+          word-break: keep-all;
+          padding: 10px 25px;
+          width: auto;
+          background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+        }
+    
+    
+        ul::-webkit-scrollbar {
+          width: 6px;
+          background-color: #F5F5F5;
+        }
+    
+        .select-wrapper input.select-dropdown:disabled {
+          color: black;
+        }
+    
+        .Green_Est {
+          background-color: green !important;
+        }
+    
+        .Red_Est {
+          background-color: red !important;
+        }
+        
+        .form-control {
+    font-size: .875rem;
+    height: calc(1.5em + 1.25rem + 5px);
+    transition: all .15s ease-in-out;
+}
+
+.form-control {
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 1.25rem + 2px);
+    padding: 0.625rem 0.75rem;
+    transition: all .15s cubic-bezier(.68, -.55, .265, 1.55);
+    color: #8898aa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    background-clip: padding-box;
+    box-shadow: 0 3px 2px rgb(233 236 239 / 5%);
+}
+input, button, select, optgroup, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0;
+}
+    
+        /* //////////////////////////////////////////////////////////////////////////////// */
+      </style>
+    </div>
+
+
+
+
+
+
+
+
+   

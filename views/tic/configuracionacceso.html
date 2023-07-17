@@ -1,0 +1,532 @@
+<div id="configuracionacceso" class="white newdesing" style="position:relative">
+  <style>
+    #configuracionacceso .ng-leave,
+    #configuracionacceso .ng-leave-active,
+    #configuracionacceso .ng-animate {
+      transition: all 0s ease !important;
+    }
+
+    .h-c-204 {
+      height: calc(100vh - 204px);
+    }
+
+    .h-c-250 {
+      height: calc(100vh - 250px);
+    }
+
+    .h-c-273 {
+      height: calc(100vh - 273px);
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .h-auto {
+      height: auto;
+    }
+
+    .tabla-1 {
+      overflow: auto;
+      height: calc(100vh - 265px) !important;
+      margin-bottom: 20px !important;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .newdesing td,
+    th {
+      font-size: 13px;
+    }
+
+    #listausuarios .scroll-tbody-2 tr:not(.active)+tr>.panel {
+      display: none;
+    }
+
+    #listausuarios td,
+    th {
+      border-radius: 0;
+    }
+
+    #listausuarios .active.dropdown-toggle-angular~div#modulo_dropdown {
+      display: block !important;
+    }
+
+    #listausuarios #modulo_dropdown {
+      top: 30px;
+      width: 400px;
+    }
+
+    [type="checkbox"].filled-in:not(:checked)+label:after {
+      border: 2px solid #26a69a;
+    }
+
+    [type="checkbox"].filled-in:checked+label:after {
+      border: 2px solid #26a69a;
+      background-color: #26a69a;
+    }
+
+    [type="radio"]:checked+label:after,
+    [type="radio"].with-gap:checked+label:after {
+      background-color: #009688;
+      z-index: 0;
+    }
+
+    [type="radio"]:checked+label:after,
+    [type="radio"].with-gap:checked+label:before,
+    [type="radio"].with-gap:checked+label:after {
+      border: 2px solid #009688;
+    }
+
+    .h-auto {
+      height: auto;
+    }
+
+    td,
+    th {
+      padding: 5px 10px;
+    }
+
+    .border-b {
+      border-bottom: 1px solid darkgrey;
+    }
+
+    /* .select-input-new>ul {
+      top: 31px !important;
+      max-height: 68vh !important;
+    } */
+
+    .select-input-new.select-chosen-eps {
+      height: 2rem !important;
+      padding: 0 0.5rem !important;
+      border-bottom: none !important;
+      box-shadow: 0 1px 0 0 #dadce0;
+      padding-right: 1rem !important;
+      border-radius: 0;
+    }
+
+    #tabla_usuarios,
+    #tabla_modulos {
+      transition-timing-function: ease-in;
+      transition-property: height;
+      transition-duration: 500ms;
+      transition-delay: 250ms;
+    }
+
+    #tabla_usuarios:hover {
+      height: 270px !important;
+    }
+
+    #tabla_usuarios:hover+#tabla_modulos {
+      height: calc(100vh - 450px) !important;
+    }
+
+    #menu_modulos {
+      position: absolute;
+      right: -27px;
+      top: 113px;
+    }
+
+    #menu_modulos>li {
+      padding: 1em 0;
+    }
+  </style>
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          Configurar Permisos</h5>
+      </li>
+      <li>
+        <a ui-sref="mara.paneladmin">
+          <i class="icon-list-3 blue-text">Configurar Modulos</i>
+        </a>
+      </li>
+      <li class="d-flex align-items-center">
+        <div class="switch">
+          <label>
+            <span class="{{(vista.panel_title_2==true)?'':'activo'}}">Lista</span>
+            <input type="checkbox" ng-model="vista.panel_title_2">
+            <span class="lever check-c"></span>
+            <span class="{{(vista.panel_title_2==true)?'activo':''}}">Unico</span>
+          </label>
+        </div>
+      </li>
+      <li>
+        <form class="form-input-icon-new" method="post" ng-submit="filtrarUser(usuario_genesis)" autocomplete="off">
+          <input ng-model="usuario_genesis" ng-change="usuario_genesis=usuario_genesis.toLowerCase()" type="text"
+            class="margin border-none" placeholder="Usuario, Cedula o Cedulas" title="Tambien puede ingresar una lista de cedulas separadas por coma">
+        </form>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div ng-show="vista.panel_1" class="col s12 m12 l6" style="position: relative;">
+      <form class="title-panel" action="#" style="margin-bottom: 15px;">
+        <div>
+          <input ng-model="typeUser" ng-change="radio_type_user(typeUser)" id="funcionarios" name="groupRadio"
+            type="radio" value="funcionarios" />
+          <label for="funcionarios" style="height: 25px!important;">FUNCIONARIOS</label>
+        </div>
+        <div>
+          <input ng-model="typeUser" ng-change="radio_type_user(typeUser)" id="afiliados" name="groupRadio" type="radio"
+            value="afiliados" />
+          <label for="afiliados" style="height: 25px!important;">AFILIADOS</label>
+        </div>
+        <div>
+          <input ng-model="typeUser" ng-change="radio_type_user(typeUser)" id="ips" name="groupRadio" type="radio"
+            value="ips" />
+          <label for="ips" style="height: 25px!important;">IPS</label>
+        </div>
+        <div>
+          <input ng-model="typeUser" ng-change="radio_type_user(typeUser)" id="empresas" name="groupRadio" type="radio"
+            value="empresas" />
+          <label for="empresas" style="height: 25px!important;">EMPRESAS</label>
+        </div>
+      </form>
+      <div ng-if="typeUser=='funcionarios'" class="black-text title-panel"
+        style="margin-bottom: 15px;align-items: center;">
+        <div class="margin no-padding label-new col s4">
+          <select ng-model="filter_fun_1" ng-change="change_filter_fun_1(filter_fun_1)" id="filter_fun_1"
+            class="select-new gray-input m-r" style="box-shadow: none;" material-select watch>
+            <option ng-repeat="fd1 in filter_datos_1" value="{{fd1.codigo}}">{{fd1.nombre}}</option>
+          </select>
+        </div>
+        <div ng-if="filter_fun_1!='' && filter_fun_1!='T'" class="margin no-padding label-new col s8">
+          <select ng-model="filter_fun_2" ng-change="change_filter_fun_2(filter_fun_1,filter_fun_2)" id="filter_fun_2"
+            class="select-new gray-input select-input-new select-chosen-eps" style="box-shadow: none;display: block;">
+            <option ng-repeat="fd2 in filter_datos_2 | orderBy:'nombre'" value="{{fd2.codigo}}">{{fd2.nombre}}
+              {{fd2.codigo}}</option>
+          </select>
+          <!-- <select ng-model="filter_fun_2" ng-change="change_filter_fun_2(filter_fun_1,filter_fun_2)" id="filter_fun_2"
+            class="select-new gray-input select-input-new" style="box-shadow: none;display: block;" material-select
+            watch>
+            <option ng-repeat="fd2 in filter_datos_2 | orderBy:'nombre'" value="{{fd2.codigo}}">{{fd2.nombre}}
+              {{fd2.codigo}}</option>
+          </select> -->
+          <!-- <input ng-model="filter_fun_2" ng-change="change_filter_fun_2(filter_fun_1,filter_fun_2)" list="browsers" name="browser" class="margin border-none input-text-new gray-input w-100">
+          <datalist id="browsers">
+              <option ng-repeat="fd2 in filter_datos_2" value="{{fd2.codigo}}">{{fd2.nombre}}</option>
+          </datalist> -->
+        </div>
+      </div>
+      <!-- Todos los Usuarios -->
+      <!-- <div class="scroll_x" style="position: absolute;z-index: 10;overflow: hidden;">
+        <table id="tablaClone_0" class="striped table-bordered white" style="position: relative;">
+
+        </table>
+      </div> -->
+      <div ng-class="{'h-c-250': typeUser=='funcionarios'}" class="scroll_x h-c-204"
+        style="overflow: auto;position: relative;">
+        <table id="tablaOriginal_0" class="striped table-bordered white">
+          <thead>
+            <tr class="default-background white-text">
+              <th class="border-none">
+                {{(lis_users.length>0)?lis_users.length:'#';}}
+              </th>
+              <th class="border-none">
+                <input type="text" ng-model="filter_cedula_list" ng-change="clear_all_check()"
+                  class="margin border-none ng-pristine ng-valid ng-touched" style="height: auto;font-size: 13px;"
+                  placeholder="Cedula">
+              </th>
+              <th class="border-none">
+                <input type="text" ng-model="filter_nombre_list" ng-change="clear_all_check()"
+                  class="margin border-none ng-pristine ng-valid ng-touched" style="height: auto;font-size: 13px;"
+                  placeholder="Nombre">
+              </th>
+              <th colspan="2" class="border-none center-align">
+                Opciones
+              </th>
+              <th class="border-none center-align">
+                <div ng-show="lis_users.length > 0" style="display: flex;">
+                  <input type="checkbox" class="filled-in" id="select_all" ng-model="select_all"
+                    ng-change="checkboxAllSelect(select_all)">
+                  <label title="Seleccionar Todos" for="select_all"
+                    style="padding-left: 20px;height: 20px;transform: scale(.8);"></label>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="lis_users.length == 0">
+              <td colspan="6" class="center-align">
+                No hay usuarios para mostrar
+              </td>
+            </tr>
+            <tr
+              ng-repeat="user in lis_users | filter:{cedula:filter_cedula_list,nombre:filter_nombre_list} | orderBy:'nombre' track by user.usuario">
+              <td>{{($index+1)}}</td>
+              <td>{{user.cedula}}</td>
+              <td>{{user.nombre}}</td>
+              <td class="center-align">
+                <i ng-click="editarUser(user);vista.add_modulos=false;collapse.level = null" title="Configurar"
+                  class="icon-cog-5 margin"></i>
+              </td>
+              <td class="center-align">
+                <i ng-click="playJson(user);vista.playJson=true" title="Vista Previa"
+                  class="icon-play pink-text margin"></i>
+              </td>
+              <td class="center-align" style="line-height: 10px;">
+                <input type="checkbox" class="filled-in" name="user" id="chk-{{user.cedula}}"
+                  ng-model="check_user[$index]" ng-value="user"
+                  ng-change="checkbox_select_users($index,check_user[$index],user);collapse.level = null">
+                <label title="Seleccionar" for="chk-{{user.cedula}}"
+                  style="padding-left: 20px;height: 20px;transform: scale(.8);"></label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div ng-if="vista.playJson"
+        style="position: absolute;top: 96px;left: -17px;height: auto;max-height: calc(100vh - 273px);width: auto;background-color: #e5e6e6;z-index: 10;margin: 0 0.75rem;border: 1px solid;overflow: auto;">
+        <aside class="sidebar-left">
+          <ul class="side-nav fixed clearfix left" id="nav-mobile"
+            style="left: 0;position: relative;top: 0;padding: 0;">
+            <li>
+              <ul class="collapsible" data-collapsible="accordion">
+                <li class="center-align"><b>{{nombre_play}}</b><br>{{cedula_play}}</li>
+                <li data-ng-repeat="menus in json_play | orderBy:'titulo'">
+                  <div class="collapsible-header {{menus.class}}">
+                    <i class="{{menus.icono}}"></i>
+                    <div class="title-sidebar">{{menus.titulo}}</div>
+                    <div class="icon-sidebar">
+                      <i class="zmdi zmdi-chevron-down"></i>
+                      <i class="zmdi zmdi-chevron-up"></i>
+                    </div>
+                  </div>
+                  <div class="collapsible-body">
+                    <ul>
+                      <li data-ng-repeat="option in menus.options | orderBy:'titulo'">
+                        <a ui-sref="{{option.url}}" target="_blank" current>{{option.titulo}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </aside>
+      </div>
+      <i ng-if="vista.playJson" ng-click="vista.playJson=false;" class="icon-cancel" title="Agregar modulo"
+        style="position: absolute;left: -27px;top: 112px;"></i>
+      <i ng-if="vista.playJson" ng-click="copiar_text('json_play')" class="icon-docs"
+        style="position: absolute;left: -27px;top: 150px;"></i>
+    </div>
+    <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div ng-if="vista.panel_2" class="col s12 m12 l6" style="position: relative;">
+      <div ng-if="vista.panel_title_2" style="position: relative;overflow: auto;height: 93px;margin-bottom: 15px;">
+        <div class="row margin">
+          <div class="col s6 no-padding m-b h-auto">
+            <p class="margin"><b>Nit:</b> {{form.nit}}</p>
+          </div>
+          <div class="col s6 no-padding m-b h-auto">
+            <p class="margin"><b>Cedula:</b> {{form.cedula}}</p>
+          </div>
+          <div class="col s12 no-padding m-b h-auto">
+            <p class="margin"><b>Nombre:</b> {{form.nombre}}</p>
+          </div>
+          <div class="col s6 no-padding m-b h-auto">
+            <p class="margin"><b>Rol:</b> ({{form.crol}}){{form.nrol}}</p>
+          </div>
+          <div class="col s6 no-padding m-b h-auto">
+            <p class="margin"><b>Cargo:</b> ({{form.ccargo}}){{form.ncargo}}</p>
+          </div>
+        </div>
+      </div>
+      <div id="tabla_usuarios" ng-if="!vista.panel_title_2"
+        style="position: relative;overflow: auto;height: 93px;margin-bottom: 15px;">
+        <div class="row margin">
+          <table class="striped table-bordered white">
+            <thead>
+              <tr class="default-background white-text">
+                <th class="border-none">
+                  {{(list_users_update_json.length>0)?list_users_update_json.length:'#';}}
+                </th>
+                <th class="border-none">
+                  <input type="text" ng-model="filter_cedula_list_user" class="margin border-none"
+                    style="height: auto;font-size: 13px;" placeholder="Cedula">
+                </th>
+                <th class="border-none">
+                  <input type="text" ng-model="filter_nombre_list_user" class="margin border-none"
+                    style="height: auto;font-size: 13px;" placeholder="Nombre">
+                </th>
+                <th class="border-none center-align">
+                  Json
+                </th>
+                <th class="border-none center-align">
+                  <i ng-click="delete_list_user_all();" title="Borrar toda la lista" class="icon-trash-empty red-text"
+                    style="cursor:pointer"></i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="list_users_update_json.length == 0">
+                <td colspan="5" class="center-align">
+                  No hay usuarios para mostrar
+                </td>
+              </tr>
+              <tr
+                ng-repeat="user in list_users_update_json | filter:{cedula:filter_cedula_list_user,nombre:filter_nombre_list_user} | orderBy:'nombre'">
+                <td>{{($index+1)}}</td>
+                <td>{{user.cedula}}</td>
+                <td>{{user.nombre}}</td>
+                <td class="center-align">
+                  <i ng-click="down_json(user);" title="Descargar Permisos" class="icon-down-circled-1 margin"></i>
+                </td>
+                <td class="center-align">
+                  <i ng-click="delete_list_user(user);" title="Borrar de la lista"
+                    class="icon-trash-empty red-text"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Modulos -->
+      <!-- <div class="scroll_x" style="position: absolute;z-index: 10;overflow: hidden;">
+        <table id="tablaClone_1" class="striped table-bordered white" style="position: relative;">
+
+        </table>
+      </div> -->
+      <div id="tabla_modulos" class="scroll_x h-c-273" style="overflow: auto;position: relative;">
+        <table id="tablaOriginal_1" class="striped table-bordered white">
+          <thead class="default-background white-text">
+            <tr style="position: relative;">
+              <th class="border-none" data-field="Titulo">
+                <input type="text" ng-model="filter_titulo_list" class="margin border-none"
+                  style="height: auto;font-size: 13px;" placeholder="Titulo">
+              </th>
+              <th title="Numero Submodulos" class="border-none center-align">
+                #
+              </th>
+              <th class="center-align border-none" data-field="Icono">Icono</th>
+              <th class="center-align border-none">
+                <i ng-click="clear_json()" class="icon-trash-empty red-text" title="Borrar todos los modulos"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="scroll-tbody-2 collapsible-body-new">
+            <tr ng-if="modulos.length == 0">
+              <td colspan="4" class="center-align">
+                No hay módulos para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat-start="modulo in modulos | filter:{titulo:filter_titulo_list} | orderBy:'titulo'"
+              ng-class="{'active':collapse.level == $index}">
+              <td
+                ng-click="(collapse.level != $index)? collapse.level = $index : collapse.level = null;collapse.level_add=false">
+                {{modulo.titulo}} {{(collapse.level == $index)?'('+modulo.options.length+')':''}}</td>
+              <td class="center-align">{{(collapse.level != $index)?modulo.options.length:'';}}
+                <i ng-if="collapse.level == $index"
+                  ng-click="addSubmodulos(modulo,modulo.options,collapse.level_add);collapse.level_add=!collapse.level_add"
+                  ng-class="{'icon-plus green-text':!collapse.level_add}" class="icon-cancel"></i>
+              </td>
+              <td class="center-align"><i class="{{modulo.icono}}"></i></td>
+              <td class="center-align">
+                <i ng-click="delete_modulo(modulo)" class="icon-trash-empty red-text"></i>
+              </td>
+            </tr>
+            <tr ng-repeat-end>
+              <td ng-if="collapse.level == $index" colspan="4" class="panel">
+                <!-- Submódulos -->
+                <table class="responsive-table">
+                  <!-- <thead>
+                    <tr>
+                      <th>Titulo</th>
+                      <th>Url</th>
+                      <th style="cursor: pointer;" class="center-align">Borrar</th>
+                    </tr>
+                  </thead> -->
+                  <tbody>
+                    <tr ng-if="collapse.level_add" class="center-align" ng-class="{'border-b':$last}"
+                      ng-repeat="submodulo in submodulos_add | orderBy:'titulo' track by $index">
+                      <td>{{submodulo.titulo}}</td>
+                      <td>{{submodulo.url}}</td>
+                      <td class="center-align">
+                        <i ng-click="add_delete_submodulos(true,modulo,submodulo)" class="icon-plus green-text"></i>
+                      </td>
+                    </tr>
+                    <tr class="center-align" ng-repeat="submodulo in modulo.options | orderBy:'titulo' track by $index">
+                      <td>{{submodulo.titulo}}</td>
+                      <td>{{submodulo.url}}</td>
+                      <td class="center-align">
+                        <i ng-click="add_delete_submodulos(false,modulo,submodulo)"
+                          class="icon-trash-empty red-text"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <input id="json_string" type="text" ng-model="modulos_string" ng-change="change_modulos(modulos_string)"
+                  class="margin border-none" style="height: auto;font-size: 13px;"
+                  placeholder="Pega un JSON de permisos">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div ng-if="vista.add_modulos"
+        style="position: absolute;top: 96px;right: -17px;height: auto;max-height: calc(100vh - 273px);width: calc(76% - 1.5rem);background-color: #e5e6e6;z-index: 10;margin: 0 0.75rem;border: 1px solid;overflow: auto;">
+        <table id="tablaOriginal_2" class="striped table-bordered white">
+          <thead class="default-background white-text">
+            <tr style="position: relative;">
+              <th class="border-none">
+                Titulo
+              </th>
+              <th title="Numero Submodulos" class="border-none center-align">
+                #
+              </th>
+              <th class="center-align border-none" data-field="Icono">Icono</th>
+              <th ng-click="add_all_modulo()" class="center-align border-none" style="cursor:pointer">All</th>
+            </tr>
+          </thead>
+          <tbody class="scroll-tbody-2 collapsible-body-new">
+            <tr ng-if="json_temp.length == 0">
+              <td colspan="4" class="center-align">
+                No hay módulos para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat="modulo in json_temp | filter:{titulo:filter_modules} | orderBy:'titulo'"
+              ng-class="{'active':collapse.level == $index}">
+              <td>{{modulo.titulo}}</td>
+              <td class="center-align">{{modulo.options.length}}</td>
+              <td class="center-align"><i class="{{modulo.icono}}"></i></td>
+              <td class="center-align">
+                <i ng-click="add_modulo(modulo)" class="icon-plus green-text"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ul id="menu_modulos">
+        <li>
+          <i ng-click="addModulos(vista.add_modulos);vista.add_modulos=!vista.add_modulos;collapse.level = null;collapse.level_add=false"
+            ng-class="{'icon-plus':!vista.add_modulos}" class="icon-cancel" title="Agregar modulo"></i>
+        </li>
+        <li>
+          <i ng-click="copiar_text('modulos')" class="icon-docs" title="Copiar Json"></i>
+        </li>
+        <li ng-if="!vista.add_modulos && vista.panel_title_2">
+          <i class="icon-floppy-1" ng-click="saveJson()" title="Conceder permisos"></i>
+        </li>
+        <li ng-if="!vista.add_modulos && !vista.panel_title_2">
+          <i class="icon-key-4 green-text" ng-click="save_json_list_users(1)" title="Conceder permisos"></i>
+        </li>
+        <li ng-if="!vista.add_modulos && !vista.panel_title_2">
+          <i class="icon-lock-2 red-text" ng-click="save_json_list_users(2)" title="Bloquear permisos a Submodulos"></i>
+        </li>
+        <li ng-if="!vista.add_modulos && !vista.panel_title_2">
+          <i class="icon-lock-filled red-text" ng-click="save_json_list_users(3)"
+            title="Bloquear permisos a Modulos"></i>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

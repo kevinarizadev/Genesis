@@ -1,0 +1,137 @@
+  <div class="row section-header">
+    <h4 class="page-title">Consulta pagos ips</h4>
+    <div class="card h550">
+      <div class="col s12 m12 s12">
+        <div class="card charts">
+          <div class="card-content">
+            <div class="card-action">
+              <div class="row">
+                <div class="col s12">
+                  <form id="busafi" ng-submit="buscarDocumento()" class="ng-valid ng-dirty ng-valid-parse">
+                    <div class="col m4 s12 ">
+                        <div class="col s10">
+                          <div class="input-field col m12 s12">
+                            <input id="buscar" ng-model="nitips" ng-disabled="inactivenit" ng-blur="validarips()" type="text" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                            <label for="buscar" class="search-label active">Nit IPS</label>
+                            <p class="ng-binding">{{nomips}}</p>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col m4 s12">
+                      <div class="input-field col m12 s12">
+                        <!-- <i class="material-icons prefix">view_list</i> -->
+                        <label for="simple-select" class="active">Año</label>
+                        <select class="select-chosen-eps" ng-model="anno" ng-change="obtenerperiodo()" id="simple-select">
+                          <option value="0" disabled>SELECCIONAR</option>
+                          <option ng-value="{{an.anno}}" ng-repeat = "an in annos">{{an.anno}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col m4 s12">
+                      <div class="input-field col m12 s12">
+                        <!-- <i class="material-icons prefix">view_list</i> -->
+                        <label for="simple-select" class="active">Periodo</label>
+                        <select class="select-chosen-eps" ng-model="periodo" id=" simple-select">
+                          <option value="0" disabled>SELECCIONAR</option>
+                          <option ng-value="{{pr.periodo}}" ng-repeat = "pr in periodos">{{pr.periodo}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col m2 s12">
+                      <div class="input-field col m12 s12">
+                        <center><button class="waves-effect waves-light btn-large white-text pink" type="submit">Buscar</button></center>
+                        <br>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="col s12">
+                  <!-- informacion basica del afiliado -->
+                  <div class="col s12" ng-hide="ver_documento">
+                    <center><b>Valor Total Cancelado {{valor_total}}</b></center><br>
+                    <table class="responsive-table table-bordered" style="height:100px;">
+                      <thead>
+                        <tr>
+                          <th data-field="Documento" class="center-align">Documento</th>
+                          <th data-field="Concepto Documento" class="center-align">Concepto Documento</th>
+                          <th data-field="Valor Cancelado" class="center-align">Valor Cancelado</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="doc in documentos">
+                          <td class="center-align ng-binding"><a style="cursor:pointer;" ng-click="buscarDocumentoDet(doc)">{{doc.cruc_documento}}</a></td>
+                          <td class="center-align ng-binding">{{doc.documento_concepto}}</td>
+                          <td class="center-align ng-binding">{{doc.cuov_valor}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col s12">
+                  <!-- informacion basica del afiliado -->
+                  <div class="col s12" ng-hide="ver_documento_det">
+                    <br> <center><b>{{nomdocumento}}</b></center>  <br>
+                    <table class="responsive-table table-bordered" style="height:100px;">
+                      <thead>
+                        <tr>
+                          <th data-field="Documento" class="center-align">Documento</th>
+                          <th data-field="Concepto Documento" class="center-align">Numero</th>
+                          <th data-field="Nit" class="center-align">Ubicacion</th>
+                          <th data-field="Valor Cancelado" class="center-align">Fecha de Pago</th>
+                          <th data-field="Valor Cancelado" class="center-align">Valor</th>
+                          <th data-field="Valor Cancelado" class="center-align">Descargar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="doc2 in documentos_det">
+                          <td class="center-align ng-binding"><a style="cursor:pointer;" ng-click="buscarDocumentoDetDet(doc2)">{{doc2.cruc_documento}}</a></td>
+                          <td class="center-align ng-binding">{{doc2.crun_numero}}</td>
+                          <td class="center-align ng-binding">{{doc2.crun_ubicacion}}</td>
+                          <td class="center-align ng-binding">{{doc2.fecha_pago}}</td>
+                          <td class="center-align ng-binding">{{doc2.cruv_valor}}</td>
+                          <td class="center-align ng-binding"><a style="cursor:pointer;" ng-click="exporta_pago(doc2)">Descargar Aqui</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col s12">
+                  <!-- informacion basica del afiliado -->
+                  <div class="col s12" ng-hide="ver_documento_det_det">
+                    <br> <center><b>DETALLE {{nomdocumento}}</b></center>  <br>
+                    <div style="height: 400px; overflow: auto;">
+                      <table class="responsive-table table-bordered" style="height:100px;">
+                        <thead>
+                          <tr>
+                            <th data-field="Documento" class="center-align">Documento</th>
+                            <th data-field="Concepto Documento" class="center-align">Numero</th>
+                            <th data-field="Nit" class="center-align">Ubicacion</th>
+                            <th data-field="Valor Cancelado" class="center-align">Fecha de Pago</th>
+                            <th data-field="Valor Cancelado" class="center-align">Valor Cancelado</th>
+                            <th data-field="Valor Cancelado" class="center-align">Fecha de Radicacion</th>
+                            <th data-field="Valor Cancelado" class="center-align">Numero de Factura</th>
+                            <th data-field="Valor Cancelado" class="center-align">Numero de Contrato</th>
+                          </tr>
+                        </thead>
+                        <tbody style="height: 40%; overflow: scroll;">
+                          <tr ng-repeat="doc3 in documentos_det_det">
+                            <td class="center-align ng-binding">{{doc3.cruc_documento}}</a></td>
+                            <td class="center-align ng-binding">{{doc3.crun_numero}}</td>
+                            <td class="center-align ng-binding">{{doc3.crun_ubicacion}}</td>
+                            <td class="center-align ng-binding">{{doc3.fecha_pago}}</td>
+                            <td class="center-align ng-binding">{{doc3.cruv_valor}}</td>
+                            <td class="center-align ng-binding">{{doc3.cuof_fecha}}</td>
+                            <td class="center-align ng-binding">{{doc3.cuoc_factura}}</td>
+                            <td class="center-align ng-binding">{{doc3.numero_contrato}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>

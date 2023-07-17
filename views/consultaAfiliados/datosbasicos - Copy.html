@@ -1,0 +1,614 @@
+<div ng-init="validador_De_fecha()">
+   <div>
+      <div class="row" ng-hide="busquedaFuncionario">
+         <div class="col l12 m6 s12">
+            <div class="card" ng-init="obtenerDocumento()">
+               <div class="card-content">
+                  <h5 style="display: flex;">Búsqueda de Afiliado</h5>
+                  <!-- CNVU -->
+                  <a class="btn-floating btn waves-effect waves-light blue" style="float: right;bottom: 30px;" ng-click="openModalNacimientos()" ng-hide="sesdata.cedula == '1045739217' || sesdata.cedula == '1143450658' || sesdata.cedula == '1045692607' || sesdata.cedula == '79218502' || sesdata.cedula == '32856342' || sesdata.cedula == '3731037' ? false : true">
+                     <i class="material-icons dp48">search</i>
+                  </a>
+                  <!--  -->
+               </div>
+               <form id="datosform" ng-submit="busquedaAfiliado()">
+                  <div class="card-action">
+                     <div class="row">
+                        <div class="col l12 m12 s12">
+                           <blockquote>
+                              Ingrese tipo y número de documento del afiliado. Si no obtiene resultados puede intentar
+                              buscar por sus
+                              <a style="cursor: pointer;" ng-click="busquedaDetalles()"
+                                 title="Búsqueda por detalles del afiliado">datos basicos</a>
+                           </blockquote>
+                           <div class="input-field col l4 m12 s12">
+                              <label class="active">Tipo de Documento</label>
+                              <select class="select-chosen-eps" ng-model="type" ng-change="solobusqueda()">
+                                 <option value="" disabled>SELECCIONAR</option>
+                                 <!-- <option ng-repeat="documento in Documentos.Documento" ng-value="documento.Codigo">
+                                    {{documento.Nombre}}</option> -->
+                                 <option value="{{x.CODIGO}}" ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                              </select>
+                           </div>
+                           <div class="input-field col l4 m12 s12">
+                              <input id="id" type="text" class="validate" ng-model="id" ng-change="solobusqueda()">
+                              <label for="id" class="">Número de identificación</label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="input-button">
+                     <center>
+                        <button class="btn btn-primary" type="submit">Buscar Afiliado</button>
+                     </center>
+                  </div>
+               </form>
+               <br>
+            </div>
+         </div>
+      </div>
+      <div ng-hide="nucleo">
+         <div class="row">
+            <div class="col l12 m12 s12">
+               <div class="card">
+                  <div class="card-content">
+                     <h5 style="display: flex;">Núcleo Familiar</h5>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="card-content clearfix">
+                     <blockquote style="border-left: 5px solid #000000 !important">
+                        Sr.(a) afiliado, seleccione el miembro del nucleo familiar del cual quiera ver información.
+                     </blockquote>
+                     <table class="highlight responsive-table bordered" align="center" id="tablanucleo"
+                        style="cursor: pointer !important;">
+                        <thead align="center">
+                           <tr>
+                              <td><strong>TIPO</strong></td>
+                              <td><strong>DOCUMENTO</strong></td>
+                              <td><strong>NOMBRE</strong></td>
+                              <td><strong>TIPO AFILIADO</strong></td>
+                              <td ng-hide="vistacarne">
+                                 <center><strong>CARNETIZADO</strong></center>
+                              </td>
+                              <td><strong>FICHA OASIS</strong></td>
+                              <td ng-if="ocultacolumna"><strong>OPCIONES</strong></td>
+                           </tr>
+                        </thead>
+                        <tbody style="height: 40%; overflow: scroll;">
+                           <tr data-ng-repeat="data in afildata track by $index"
+                              ng-click="mostrarAfiliado(data.TIPODOCUMENTO,data.DOCUMENTO,data.CARNE,data.GRUPOPOBLACIONAL)">
+                              <td>{{data.TIPODOCUMENTO}}</td>
+                              <td>{{data.DOCUMENTO}}</td>
+                              <td>{{data.NOMBRECOMPLETO}}</td>
+                              <td>{{data.TIPO+' - '+data.PARENTESCO}}</td>
+                              <td ng-hide="vistacarne">
+                                 <center>
+                                    <input type="checkbox" id="test7" ng-checked="{{data.CARNE}}" disabled="disabled" />
+                                    <label for="test7"></label>
+                                 </center>
+                              </td>
+                              <td ng-click="mostrarAfiliado(data.TIPODOCUMENTO,data.DOCUMENTO,data.CARNE)">
+                                 {{data.FICHASISBEN}}</td>
+                              <td ng-if="ocultacolumna">
+                                 <div class="tooltip">
+                                    <i style="margin-right:20px;" ng-hide="{{data.TIPO_AFI_ESTADO}}"
+                                       ng-click="AgregarBeneficiario(data.TIPODOCUMENTO,data.DOCUMENTO,data.TIPO,data.SEXO)"
+                                       class="Medium material-icons">group_add</i>
+                                    <span class="tooltiptext">Agregar Beneficiario</span>
+                                 </div>
+                                 <div class="tooltip">
+                                    <i style="margin-right: 20px;"
+                                       ng-click="ActualizarFichaxUsuario(data.FICHASISBEN,data.TIPODOCUMENTO,data.DOCUMENTO,data.CODIGOUBICACIONGEOGRAFICA,data.NOMBREIPS,data.COD_PARTENTESCO,data.ZONA,data.DISCAPACIDAD,data.CELULAR,data.GRUPOPOBLACIONAL,data.PRIMER_NOMBRE,data.SEGUNDO_NOMBRE,data.PRIMER_APELLIDO,data.SEGUNDO_APELLIDO,data.DIRECCION,data.NIVEL_SISBEN,data.LOCALIDAD)"
+                                       class="Medium material-icons">chrome_reader_mode</i>
+                                    <span class="tooltiptext">Actualizar Informacion</span>
+                                 </div>
+                                 <div class="tooltip">
+                                    <i ng-hide="{{data.TIPO_AFI_ESTADO_DESVINCULACION}}"
+                                       ng-click="EliminarBeneficiarioDelNucleo(data.TIPODOCUMENTO,data.DOCUMENTO,data.TIP_AFIL)"
+                                       class="Medium material-icons">compare_arrows</i></span></i>
+                                    <span class="tooltiptext">Devincular Beneficiario</span>
+                                 </div>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row" ng-hide="hdeUserComfacor">
+         <div class="col l12 m6 s12">
+            <div class="card" ng-init="obtenerDocumento()">
+               <div class="card-content" >
+                  <h5 style="display: flex;">Información</h5>
+               </div>
+               <div class="card-action">
+                  <blockquote>
+                     ATENCIÓN USUARIO ASIGNADO DE COMFACOR, ES NECESARIO <b>ACTUALIZAR DATOS, LEGALIZAR SU AFILIACIÓN Y CAPTURAR SOPORTES</b>.
+                  </blockquote>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row" ng-hide="hdeDesmovilizado">
+         <div class="col l12 m6 s12">
+            <div class="card">
+               <div class="card-content" >
+                  <h5 style="display: flex;">Información</h5>
+               </div>
+               <div class="card-action">
+                  <blockquote>
+                     Usuario Sentencia T-045 de 2010 - VICTIMA DE CONFLICTO ARMADO INTERNO QUE OSTENTA LA CALIDAD DE DESPLAZADO
+                  </blockquote>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="container" ng-hide="contenedor">
+         <div class="row">
+            <div class="col s12 m12 l7">
+               <div class="card card-default ">
+                  <div class="card-content" style="position: relative; height: 69px; border: 1px solid #e0e0e0;">
+                     <h5 style="display: flex;">Información General</h5>
+
+                     <div ng-show="panelanexos" class="fixed-action-btn click-to-toggle direction-top direction-left " style="position: absolute; top:1%;  right:24px bottom: 90px; ">
+                        <a class="btn">
+                           <i class="small material-icons">reorder</i>
+                        </a>
+                        <ul
+                           style="    text-align: right;    right: 85px;    top: 50%;    -webkit-transform: translateY(-50%);    transform: translateY(-30%);    height: 100%;    left: auto;    width: 500px;">
+                           <div ng-style="animacion()" class="tooltip">
+                              <li>
+                                 <a class="btn btn-floating" ng-click="cambiarcontrasena()">
+                                    <i class="material-icons">lock_open</i>
+                                 </a>
+                              </li>
+                              <span class="tooltiptext">Cambiar Contraseña</span>
+                           </div>
+                           
+                            <div ng-if="ocultar_icono" ng-style="animacion()" class="tooltip">
+                              <li>
+                                 <a class="btn btn-floating" ng-click="confirmarindependiente()">
+                                    <i class="material-icons">accessibility</i>
+                                 </a>
+                              </li>
+                              <span class="tooltiptext">Confirmar Independiente</span>
+                           </div>
+
+                        </ul>
+                     </div>
+
+                  </div>
+                  <div class="divider"></div>
+                  <div class="card-content">
+                     <div class="col m6 s12">
+                        <span class="title fs-24 text-bold">{{nombre_afiliado}}</span>
+                        <p><strong>{{tipo_documento + ' - ' + documento}}</strong></p>
+                        <p class="grey-text"><i
+                              class="material-icons tiny ">perm_contact_calendar</i>{{fecha_nacimiento}}
+                        </p>
+                        <input type="checkbox" id="checkbox2" disabled="true">
+                        <p>{{departamento}} - {{municipio}}</p>
+                        <p>{{localidad}}</p><br>
+                        <p><strong>Sexo: </strong>{{genero}}</p>
+                        <p><strong>Regimen: </strong>{{regimen + ' - '}} <strong style="color: {{color_estado}}"><b>{{estado}}</b></strong></p>
+                        <p><strong>Estado BDUA: </strong>{{estadobdua}}</p>
+                        
+                        <p><strong>Fecha Afiliación:</strong> {{fecha_afiliacion}}</p><br>
+                        <p><strong>Sexo: </strong>{{genero}}</p><br>
+
+
+                        <p><strong>Metodologia G. Poblacional: </strong>{{metodo_grupo_poblacional.split("-")[1]}}</p>
+                           <div ng-show="metodo_grupo_poblacional.split('-')[0] == 1 || metodo_grupo_poblacional.split('-')[0] == 2">
+                              <p><strong>Grupo Poblacional: </strong>{{nombre_grupo_p}}</p>
+                              <p><strong>Subgrupo Poblacional: </strong>{{nombre_subgrupo_p}}</p>
+                              <p ng-show="metodo_grupo_poblacional.split('-')[0] == 1"><strong>Nivel: </strong>{{nivel}}</p>
+                              <p ng-show="metodo_grupo_poblacional.split('-')[0] == 1"><strong>Puntaje: </strong>{{puntaje_sisben}}</p>
+                              <p ng-show="metodo_grupo_poblacional.split('-')[0] == 1 || metodo_grupo_poblacional.split('-')[0] == 2"><strong>Ficha Sisben: </strong>{{ficha}}</p>
+                              <p ng-show="metodo_grupo_poblacional.split('-')[0] == 2"><strong>Grupo SISBEN IV: </strong>{{grupo_sisben_iv}}</p>
+                              <p ng-show="metodo_grupo_poblacional.split('-')[0] == 2"><strong>Subgrupo SISBEN IV: </strong>{{sub_grupo_sisben_iv}}</p>
+                           </div>
+
+                           <div ng-show="metodo_grupo_poblacional.split('-')[0] == 3">
+                              <p><strong>Grupo Poblacional: </strong>{{nombre_grupo_p}}</p>
+                           </div>
+
+                           <div ng-show="metodo_grupo_poblacional.split('-')[0] == 4">
+                              <p><strong>Grupo Poblacional: </strong>{{nombre_grupo_p}}</p>
+                              <p ng-show="grupopoblacionalcodigo == 31"><strong>Causal Afiliacion Oficio: </strong>{{causal_oficio}}</p>
+                           </div>
+                        
+                        <br ng-show="Siniestros.length > 0 && Rol_Rol != '-1'">
+                        <p ng-show="Siniestros.length > 0 && Rol_Rol != '-1'"><strong><span class="status orange">ALTO
+                                 COSTO</span></strong></p>
+                        <p ng-show="cert_port"><strong><span class="status light-blue">PORTABILIDAD</span></strong></p>
+                     </div>
+                     <div class="col l6 s12">
+                        <div class="input-field col m12 s12">
+                           <i class="material-icons prefix">phone</i>
+                           <input type="tel" id="fijo" mask='999-9999' ng-model="telefono" disabled>
+                           <label for="tel" class="">Teléfono fijo</label>
+                        </div>
+                        <div class="input-field col m12 s12">
+                           <i class="material-icons prefix">stay_current_portrait</i>
+                           <input id="celular" type="text" ng-model="celular" disabled>
+                           <label for="celular" class="">Número celular</label>
+                        </div>
+                        <div class="input-field col m12 s12">
+                           <i class="material-icons prefix">stay_current_portrait</i>
+                           <input id="celular" type="text" ng-model="celular2" disabled>
+                           <label for="celular" class="">Otro Celular</label>
+                        </div>
+                        <div class="input-field col m12 s12">
+                           <i class="material-icons prefix">email</i>
+                           <input id="celular" type="email" ng-model="correoelectronico" disabled>
+                           <label for="celular" class="">Correo electrónico</label>
+                        </div>
+                        <div class="input-field col m12 s12">
+                           <i class="material-icons prefix">location_on</i>
+                           <input id="direccion" type="text" ng-model="direccion" disabled>
+                           <label for="direccion" class="">Dirección</label>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="input-button">
+                     <center>
+                        <a class="waves-effect waves-light btn white-text primary-button" ng-click="generaFormatos()"
+                           ng-disabled="btnGenera">Generar Certificados</a>
+                        <a class="waves-effect waves-light btn white-text primary-button"
+                           ng-click="editarinfo()">Actualizar Información</a><br><br>
+                       <!-- <a class="waves-effect waves-light btn white-text primary-button" ng-click="confirmainfo()"
+                           ng-show="confirmar">Mis datos ya estan actualizados</a> -->
+                     </center>
+                  </div><br>
+               </div>
+            </div>
+            <div class="col s12 m12 l5" ng-show="paneltwitter">
+               <div class="card card-default ">
+                  <div class="card-content">
+                     <h5 style="display: flex;">Noticias</h5>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="card-content">
+                     <a class="twitter-timeline" data-lang="es" data-height="478" data-theme="light"
+                        data-link-color="#2B7BB9" href="https://twitter.com/CajacopiEps">Tweets by CajacopiEps</a>
+                     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                  </div>
+               </div>
+            </div>
+            <div class="col l5 m6 s12" ng-show="panelanexos">
+               <div class="card card-default" style="max-height: 557px !important; overflow: auto !important;">
+                  <div class="card-content">
+                     <h5 style="display: flex;">Documentos Anexos</h5>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="card-content clearfix">
+                     <table class="highlight responsive-table bordered" align="center"
+                        style="cursor: pointer !important;">
+                        <thead align="center">
+                           <tr>
+                              <td><strong>Tipo Anexo</strong></td>
+                              <td><strong>Fecha Anexo</strong></td>
+                              <td><strong>Estado</strong></td>
+                           </tr>
+                        </thead>
+                        <tbody style="height: 40%; overflow: scroll;">
+                           <tr data-ng-repeat="data in anexodata track by $index" ng-click="estadoanexo(data)">
+                              <td>{{data.TIPO}}</td>
+                              <td>{{data.FECHA}}</td>
+                              <td>{{data.ESTADO}}</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="input-button">
+                     <center>
+                        <!-- <a class="waves-effect waves-light btn white-text primary-button" ng-click="nuevoAdjunto()">Subir Nuevo</a> -->
+                        <a class="waves-effect waves-light btn white-text primary-button"
+                           ng-click="ProcesosDigitalizacion('6')">Subir Nuevo</a>
+                        <a class="waves-effect waves-light btn white-text primary-button"
+                           ng-click="CargarSoporte()" ng-hide="SisbenSoporte" >Consultar DNP</a>
+                  </div>
+                  <br>
+               </div>
+            </div>
+         </div>
+         <div class="row" ng-hide="panelips">
+            <div class="col l4 m6 s12">
+               <div class="card">
+                  <div class="card-content">
+                     <h5 style="display: flex;">IPS de Atención</h5>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="col s12">
+                     <div class="input-field col l12 m12 s12">
+                        <label class="active">Institución Prestadora de Salud</label>
+                        <select class="select-chosen-eps" ng-change="mostrarIpsdetalle()" ng-model="selectedIps">
+                           <option ng-repeat="ips in ipss track by $index" ng-value="ips.NIT">{{ips.CLASE}}</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col s12">
+                     <div class="input-field col m12 s12">
+                        <input type="text" id="nitips" ng-model="nitips" disabled="true">
+                        <label for="nitips" class="active">NIT</label>
+                     </div>
+                  </div>
+                  <div class="col s12">
+                     <div class="input-field col m12 s12">
+                        <input id="nombreips" type="text" ng-model="nombreips" disabled="true">
+                        <label for="nombreips" class="">Nombre</label>
+                     </div>
+                  </div>
+                  <div class="col s12">
+                     <div class="input-field col m12 s12">
+                        <input id="direccion" type="text" disabled="true" ng-model="direccionips" disabled="true">
+                        <label for="direccion" class="">Dirección</label>
+                     </div>
+                  </div>
+                  <div class="col s12">
+                     <div class="input-field col m12 s12">
+                        <input id="telefonoips" type="text" disabled="true" ng-model="telefonoips" disabled="true">
+                        <label for="telefonoips" class="">Telefono</label>
+                     </div>
+                  </div>
+                  <div class="input-button">
+                     <center>{{muniips + ' - ' + dptoips}}</center>
+                  </div>
+                  <br>
+               </div>
+            </div>
+
+            <div class="col s12 m12 l8">
+               <div class="card">
+                  <div class="card-content">
+                     <h5>Ubicación de la IPS {{tipo_ubicacion}}<i class="material-icons right">location_on</i></h5>
+                  </div>
+                  <div class="card-action" style="height: 380px;">
+                     <!-- <div id="mapa"></div> -->
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="row" ng-show="Siniestros.length > 0" ng-if="Rol_Rol != '-1'">
+            <div class="col s12 m12 l12">
+               <div class="card card-default" style="max-height: 557px !important; overflow: auto !important;">
+                  <div class="card-content">
+                     <h5 style="display: flex;">Siniestros Procesados del Afiliado</h5>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="card-content clearfix">
+                     <table class="highlight responsive-table bordered" align="center"
+                        style="cursor: pointer !important;">
+                        <thead align="center">
+                           <tr>
+                              <td><strong>Siniestro</strong></td>
+                              <td><strong>Cohorte</strong></td>
+                              <td><strong>Diagnóstico</strong></td>
+                              <td><strong>Clasificación</strong></td>
+                              <td><strong>Fecha de Identificación</strong></td>
+                              <td><strong>Fecha de Confirmación</strong></td>
+                              <td><strong>Fecha de Procesamiento</strong></td>
+                           </tr>
+                        </thead>
+                        <tbody style="height: 40%; overflow: scroll;">
+                           <tr data-ng-repeat="data in Siniestros">
+                              <td>{{data.RADICADO}}</td>
+                              <td>{{data.DESCRIPCION_COHORTE}}</td>
+                              <td>{{data.DIAGNO}}</td>
+                              <td>{{data.CLASE_CONCEPTO}}</td>
+                              <td>{{data.FECHA_IDENTIFICACION}}</td>
+                              <td>{{data.FECHA_PROCESAMIENTO}}</td>
+                              <td>{{data.FECHA_CONF_DIAGNOSTICO}}</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <br>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLKP7vivMbumkm_pk9QdyoBGP3D0FL55E">
+      </script>
+   </div>
+   <div id="modalvisual" class="modal">
+      <div class="row margin">
+         <div id="Iframe-Master-CC-and-Rs" class="center-block-horiz no-padding" style="max-width: 100%;">
+            <div ng-if="!tipoImgPdf" ng-class="{'d-block':tipoImgPdf==false}" class="d-none responsive-wrapper 
+                              responsive-wrapper-wxh-572x612"
+               style="-webkit-overflow-scrolling: touch; overflow: auto;">
+               <iframe ng-src="{{file}}">
+                  <p style="font-size: 110%;"><em><strong>ERROR: </strong>
+                        An &#105;frame should be displayed here but your browser version does not support &#105;frames.
+                     </em>Please update your browser to its most recent version and try again.</p>
+               </iframe>
+            </div>
+            <div ng-if="tipoImgPdf" ng-class="{'d-block':tipoImgPdf==true}" class="d-none responsive-wrapper"
+               style="height: auto;overflow: auto;">
+               <button ng-click="VisualizarDocumento(file)" style="margin: auto;cursor: pointer;display: block;" class="btn btn-primary"> 
+                  <strong style="margin-left: 20px;">Imprimir Documento</strong> </button>
+               <!-- <img ng-src="{{file}}"> -->
+               <img id="gear" src="{{file}}" alt="Error al abrir el soporte" data-big="{{file}}" data-big2x="{{file}}" data-overlay="{{file}}" />
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- CNVU -->
+   <div id="modalDatosNacimientos" class="modal" style="width:1280px;">
+      <div class="modal-content">
+         <div class="row">
+            <span ng-click="close()" class="close" title="Cerrar">&times;</span>
+         </div>
+         <form id="datosform" ng-submit="busquedaInfoNacimiento()">
+            <div class="card-action">
+               <div class="row">
+                  <div class="input-field col l4 m6 s12">
+                     <label class="active">Tipo de Documento</label>
+                     <select class="select-chosen-eps" ng-model="tipoIdNacimiento">
+                        <option ng-repeat="documento in Documentos.Documento" ng-value="documento.Codigo">
+                           {{documento.Nombre}}</option>
+                     </select>
+                  </div>
+                  <div class="input-field col l4 m6 s12">
+                     <input id="idNacimiento" type="text" class="validate" ng-model="idNacimiento">
+                     <label for="idNacimiento" class="">Número de Identificación</label>
+                  </div>
+                  <div class="input-field col l3 m6 s12">
+                     <center>
+                        <button class="btn btn-primary" type="submit">Consultar</button>
+                     </center>
+                  </div>
+               </div>
+            </div>
+            <!-- <div class="input-button">
+               <center>
+                  <button class="btn btn-primary" type="submit">Consultar</button>
+               </center>
+            </div> -->
+         </form>
+         <table class="striped table-bordered white w-100" style="cursor: pointer !important;margin-top: 25px;" ng-hide="hdeTablaNacimientos">
+            <thead class="default-background">
+               <tr class="default-background white-text">         
+                  <th class="border-none center-align">DOCUMENTO NACIMIENTO</th>         
+                  <th class="border-none center-align">DOCUMENTO CABEZA</th>       
+                  <th class="border-none center-align">NOMBRE RESPONSABLE</th>       
+                  <th class="border-none center-align">RESPONSABLE REVISION</th>
+                  <th class="border-none center-align">FECHA APROBACIÓN</th>
+                  <th class="border-none center-align">NOMBRE RESPONSABLE RECHAZO</th>
+                  <!-- <th class="border-none center-align">RESPONSABLE RECHAZO</th> -->
+                  <!-- <th class="border-none center-align">RESPONSABLE REVISION</th> -->
+                  <th class="border-none center-align">OBSERVACIÓN RECHAZO</th>
+                  <th class="border-none center-align">FECHA RECHAZO</th>
+                  <th class="border-none center-align">ESTADO</th>
+                  <th class="border-none center-align">RUTA SOPORTE</th>
+               </tr>         
+            </thead>
+         
+            <tbody>         
+               <tr ng-if="datos.soportes_cargados.length == 0">         
+                  <td colspan="4" class="center-align">         
+                     No hay datos para mostrar.         
+                  </td>         
+               </tr>
+         
+               <tr ng-repeat="infoNac in infoNacimientos">         
+                  <td class="center-align">{{infoNac.documento_nacimiento}}</td>      
+                  <td class="center-align">{{infoNac.documento_cabeza}}</td>
+                  <td class="center-align">{{infoNac.nombre_responsable}}</td>
+                  <td class="center-align">{{infoNac.responsable_revision}}</td>
+                  <td class="center-align">{{infoNac.fecha_aprobacion}}</td>
+                  <td class="center-align">{{infoNac.nombre_responsable_rechazo}}</td>
+                  <td class="center-align">{{infoNac.observacion_rechazo}}</td>
+                  <td class="center-align">{{infoNac.fecha_rechazo}}</td>
+                  <td class="center-align">{{infoNac.estado}}</td>
+                  <td class="center-align">
+                     <div class="tooltip">
+                        <i ng-hide="{{infoNac.ruta_soporte == ''}}" ng-click="verSoporte(infoNac.ruta_soporte)"
+                           class="Medium material-icons">visibility</i></span></i>
+                        <span class="tooltiptext">Ver Soporte</span>
+                     </div>
+                  </td>
+
+               </tr>         
+            </tbody>         
+         </table>
+      </div>
+   </div>
+   <!--  -->
+   <style>
+
+
+      #mapa {
+         width: 100%;
+         height: 100%
+      }
+
+      .d-none {
+         display: none;
+      }
+
+      .d-block {
+         display: block !important;
+      }
+
+      #Iframe-Master-CC-and-Rs {
+         max-width: 512px;
+         max-height: 100%;
+         overflow: hidden;
+      }
+
+      /* inner wrapper: make responsive */
+      .responsive-wrapper {
+         position: relative;
+         height: 0;
+         /* gets height from padding-bottom */
+
+         /* put following styles (necessary for overflow and scrolling handling on mobile devices) inline in .responsive-wrapper around iframe because not stable in CSS:
+            -webkit-overflow-scrolling: touch; overflow: auto; */
+
+      }
+
+      .responsive-wrapper iframe {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+
+         margin: 0;
+         padding: 0;
+         border: none;
+      }
+
+      /* padding-bottom = h/w as % -- sets aspect ratio */
+      /* YouTube video aspect ratio */
+      .responsive-wrapper-wxh-572x612 {
+         padding-bottom: 107%;
+      }
+
+      /* general styles */
+      /* ============== */
+      .set-border {
+         border: 5px inset #4f4f4f;
+      }
+
+      .set-box-shadow {
+         -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+         -moz-box-shadow: 4px 4px 14px #4f4f4f;
+         box-shadow: 4px 4px 14px #4f4f4f;
+      }
+
+      .set-padding {
+         padding: 40px;
+      }
+
+      .set-margin {
+         margin: 30px;
+      }
+
+      .center-block-horiz {
+         margin-left: auto !important;
+         margin-right: auto !important;
+      }
+
+      /*CNVU*/
+      .close {
+      position: absolute;
+      right: 25px;
+      top: 0;
+      color: #000;
+      font-size: 35px;
+      font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+      color: red;
+      cursor: pointer;
+      }
+      /**/
+   </style>
+</div>

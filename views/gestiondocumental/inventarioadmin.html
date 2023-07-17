@@ -1,0 +1,2116 @@
+<div>
+  <div class="col l12 m12 s12 row">
+      <!-- <div class="col l12 m12 s12 row" ng-show="Rol_Cedula==1042454684"> -->
+    <!-- <div class="row section-header"
+      style="padding-left: 30px;margin: 0;box-shadow: 1px 2px 2px -1px rgba(0, 0, 0, 0.12);background-color: #F1F3F4;">
+      <h5 style="position: relative;float: right;cursor: pointer;" onclick="location.reload()">Inventario Administrativo
+      </h5>
+      <ul class="tabs nav nav-pills nav-stacked tabmenu col s8"
+        style="box-shadow: 5px 4px 1px 0px rgba(0, 0, 0, 0.12);padding: 0;">
+        <li ng-class="{ active: isSet(1) }" class="tab col s1 tabI tabactiva"><a href ng-click="setTab(1)"><strong
+              style="font-weight: bold;">Gestionar Requerimiento (OREQ)</strong></a></li>
+        <li ng-class="{ active: isSet(2) }" class="tab col s1 tabII" ng-if="rol==1"><a href ng-click="setTab(2)"
+            class="active"><strong style="font-weight: bold;">Gestionar orden de compra (OORD)</strong></a></li>
+        <li ng-class="{ active: isSet(3) }" class="tab col s1 tabIII"><a href ng-click="setTab(3)"><strong
+              style="font-weight: bold;">Inventario Bodegas</strong></a></li>
+      </ul>
+    </div> -->
+
+
+    <div class="row section-header margin" style="padding-bottom: 0;">
+      <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+        <li>
+          <ul class="tabs transparent">
+            <li class="tab col w-auto">
+              <a ng-click="SetTab(1)" id="Sol" href class="active">Gestionar Requerimiento (OREQ)
+                <i class="icon-cart-plus"></i></a>
+            </li>
+            <li class="tab col w-auto" ng-if="rol==1">
+              <a ng-click="SetTab(2);" href>Gestionar orden de compra (OORD)<i class="icon-dollar-1"></i></a>
+            </li>
+            <li class="tab col w-auto">
+              <a ng-click="SetTab(3);" href>Inventario Bodegas<i class="icon-building-filled"></i></a>
+            </li>
+          </ul>
+        </li>
+        <li id="inicio">
+          <h5 class="cursor-pointer"
+            style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+            onclick="location.reload();">
+            Inventario Administrativo
+          </h5>
+
+          <!-- <h5 ng-click="Ver()">Ver</h5> -->
+        </li>
+      </ul>
+    </div>
+    <!-- //////////////////////////////////// -->
+
+    <!-- //////////////////////////////////// -->
+    <div class="col l12 m12 s12 card">
+      <!-- //////////////////////////////////////////////////////////////////////// HOJA2222222222222  -->
+      <div class="col s12 m12" ng-show="Tabs==1">
+        <!-- <div class="col s12 m12" ng-show="isSet(1)"> -->
+        <div class="col 12" id="H1_SCROLL">
+          <!-- PESTAÑA 0 -->
+          <div class="foot4 divcardcustom">
+            <div class="text-al divcardcustom2">
+              <strong class="switch">Requerimiento de compra (OREQ)</strong>
+              <div class="tooltip">
+                <i class="icon-cw-circle" style="cursor: pointer;font-size: 18px;" ng-click="H1_RESTART_TODO()"></i>
+                <span class="tooltiptext" style="font-size: 13px">Nuevo</span>
+              </div>
+              <div style="float:right">
+
+                <label style="color:white !important;"><label
+                    style="font-weight:800;color:white !important;">Ubicación:</label> {{h1dpto}}</label>
+                <label style="padding-left:30px;padding-right:10px;color:white !important;"><label
+                    style="font-weight:800;color:white !important;">Fecha del Requerimiento:</label></label>
+                <input type="date"
+                  style="width: auto;border: none;height: auto;color:white !important;padding-right:20px;"
+                  ng-model="h1fecha" readonly>
+              </div>
+            </div>
+          </div>
+          <!-- PESTAÑA 1 -->
+          <div class="col s12">
+            <div class="col s2">
+              <blockquote class="default-border-color" style="width: max-content;">
+                <p>Información inicial
+                  <label style="padding-left: 2em;font-weight:800;" ng-show="h1Num_Req!=''"><label
+                      class="default-color">Número de OREQ:</label><span style="font-size: 18px;"> {{h1Num_Req}}</span>
+                  </label>
+                </p>
+              </blockquote class="default-border-color">
+            </div>
+            <div class="tooltip" style="float: right;" ng-show="Btn_Ver_Productos_OREQS">
+              <i class="material-icons default-color Btn_Ver_Productos_OREQS_ANIMACION"
+                style="float: right;font-size: 70px;cursor: pointer;" ng-click="Abrir_modalPRO_OREQ()">shopping_cart</i>
+              <span class="tooltiptext" style="font-size: 12px;">{{MPCantidadtotal_OREQS}} Productos</span>
+            </div>
+            <!-- LINEA 1 -->
+            <div class="col s12">
+              <div class="col s12">
+                <div class="col s5">
+                  <label>Concepto:</label>
+                  <select id="h1concepto" ng-model="h1concepto" class="select-chosen-eps material-select">
+                    <option value="" disabled selected>SELECCIONAR</option>
+                    <option ng-repeat="x in ReqsConp" value="{{x.CODIGO}}">{{x.NOMBRE}}</option>
+                  </select>
+                </div>
+                <div class="col s2">
+                  <label>Estado</label>
+                  <select id="h1estado" class="select-chosen-eps material-select" ng-model="h1estado">
+                    <option value="" disabled selected>SELECCIONAR</option>
+                    <option value="A">ACTIVO</option>
+                    <option value="P" ng-show="h1estado_P=='P'">PROCESADO</option>
+                    <option value="X" ng-show="h1respuesta==1">ANULADO</option>
+                  </select>
+                </div>
+                <div class="col s5">
+                  <label>Solicitante</label>
+                  <input id="h1solicitante" type="text" style="text-transform:uppercase;margin:0;" autocomplete="off"
+                    required title="Presione Enter para buscar" ng-model="h1solicitante"
+                    ng-keyup="Complete_H1_Solicitante(h1solicitante);Find_Solicitante_enter($event);"
+                    ng-blur="Blur_H1_Solicitante()" readonly>
+                  <ul class="list-group" id="list-group-solicitante"
+                    style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;">
+                    <li class="list-group-item" ng-repeat="x in Filter_H1_Solicitante"
+                      ng-click="FillTextbox_H1_Solicitante(x.Solicitante.CODIGO,x.Solicitante.NOMBRE)">
+                      {{x.Solicitante.CODIGO}} - {{x.Solicitante.NOMBRE}}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- LINEA 2 -->
+          </div>
+          <div class="col s12">
+            <div class="col s12 input-padding" style="margin-top: 20px;padding-left: 2.3rem;">
+              <input type="checkbox" class="filled-in" id="h1cargarbodega" ng-model="h1cargarbodega">
+              <label for="h1cargarbodega"  title="Si Activas esta opción, no se realizará orden de compra, pero los productos serán cargados a su correspondiente bodega una vez sea aprobado su solicitud por un funcionario de la Nacional.">Cargar a la Bodega</label>
+            </div>
+          </div>
+          <!-- PESTAÑA 2 -->
+          <div class="col s12">
+            <div class="col s12">
+              <blockquote class="default-border-color">
+                <p>Información de adicional</p>
+              </blockquote class="default-border-color">
+            </div>
+            <!-- LINEA 5 -->
+            <div class="col s12">
+              <textarea id="h1observacion2" placeholder="Descripción de la Observación"
+                title="Se permiten un máximo de 1000 caracteres" class="materialize-textarea" maxlength="1000"
+                ng-model="h1observacion2"></textarea>
+            </div>
+            <!-- // -->
+            <div class="col l12 m12 s12 row" style="display: flex;
+              align-items: center;justify-content: center;">
+              <div class="col l12 m12 s12"
+                style="margin-bottom: 0;display: flex;align-items: center;justify-content: center;">
+                <button class="btn" style="border-radius: 20px;margin-right: 1em;" ng-click="MPActualizar_PRO_OREQ('P')"
+                  ng-if="(h1respuesta==1 && h1estado=='A' && (h1solicitante_COD==Rol_Cedula || h1solicitante==Rol_Cedula))">Procesar</button>
+                <button id="h1_BtnGuardar" class="btn" style="border-radius: 20px;" ng-click="MPGuardar_PRO_OREQ()"
+                  ng-if="h1_BtnGuardar">Guardar</button>
+                <button class="btn" style="border-radius: 20px;" ng-click="MPActualizar_PRO_OREQ('A')"
+                  ng-if="(h1respuesta==1 && h1estado=='A' && (h1solicitante_COD==Rol_Cedula || h1solicitante==Rol_Cedula))">Actualizar</button>
+                <button class="btn" style="border-radius: 20px;margin-left: 1em;" ng-click="MPActualizar_PRO_OREQ('X')"
+                  ng-if="(h1respuesta==1 && h1estado=='X' && (h1solicitante_COD==Rol_Cedula || h1solicitante==Rol_Cedula) && h1_Req_Cerrado==false)">Anular</button>
+
+                <button class="btn" style="border-radius: 20px;margin-left: 1em;" ng-click="MPCargarBodega_OREQ()"
+                  ng-if="h1estado=='P' && rol==1 && h1cargarbodega==true && h1respcargarbodega=='0'">Cargar a la
+                  Bodega</button>
+              </div>
+
+
+            </div>
+            <!-- // -->
+          </div>
+        </div>
+        <!-- //////////////////////////////////////////////// -->
+        <div class="card">
+          <div class="col s12">
+            <div style="margin-bottom:20px;">
+              <ul class="collapsible" data-collapsible="expandable"
+                style="background-color: transparent;border: 0;box-shadow: none;">
+                <li>
+                  <div id="collapsible-header-h1" class="collapsible-header" style="line-height: 3rem;    padding: 0;">
+                    <div class="foot4 divcardcustom">
+                      <div class="text-al divcardcustom2" style="line-height: normal;text-align: center;"
+                        ng-click="ScrollDown_H(1)">
+                        <strong class="switch"><i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i>Histórico Requerimientos<i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i></strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapsible-body">
+                    <div style="float: right;margin-top: -35px;margin-right: 30px;z-index: 200;">
+                      <div class="tooltip">
+                        <i class="icon-cw-circle" style="cursor: pointer;font-size: 18px;color:white;"
+                          ng-click="H1_ACTUALIZAR_LISTA_OREQS()"></i>
+                        <span class="tooltiptext" style="font-size: 13px">Actualizar</span>
+                      </div>
+                      <div class="tooltip">
+                        <i class="icon-chart-bar" style="cursor: pointer;font-size: 18px;color:white;"
+                          ng-click="Abrir_modalESTAD();Ver_Grafico('Requerimientos','ver_grafico_oreqs')"></i>
+                        <span class="tooltiptext" style="font-size: 12px;">Estadisticas</span>
+                      </div>
+                    </div>
+                    <div class="col s12" style="margin-bottom: 20px;">
+                      <div class="col s12">
+                        <table id="Datatable_OREQS" style="width:100%;">
+                          <thead>
+                            <th class="center" style="width: 20px;">-</th>
+                            <th class="center">Número de Req.</th>
+                            <th class="center" ng-if="rol==1">Orden de compra</th>
+                            <th class="center">Ubicación</th>
+                            <th class="center">Estado</th>
+                            <th class="center">Concepto</th>
+                            <th class="center">Cantidad de productos</th>
+                            <th class="center">Fecha</th>
+                            <th class="center">Solicitante</th>
+                          </thead>
+                          <tbody>
+                            <tr style="cursor:pointer" class="selctt" ng-repeat="x in Array_OREQS">
+                              <td class="center" style="width: 20px;">
+                                <div class="tooltip">
+                                  <i class="icon-print-3" style="cursor: pointer;font-size: 15px;"
+                                    ng-style="{color: (x.MARCA=='G')? '#30A4DC':'#8CC63F'}"
+                                    ng-click="Do_Imprimir(x.NUMERO, 'Oreq')"></i>
+                                  <span class="tooltiptext"
+                                    style="font-size: 10px;width: 56px;margin-left: -28px;">Imprimir</span>
+                                </div>
+                              </td>
+                              <!-- /* color: #30A4DC; */ -->
+                              <!-- /* color: #8CC63F; */ -->
+                              <td class="center" ng-click="H1_DataTable_Buscar(x.NUMERO)">{{x.NUMERO}}</td>
+                              <td class="center" ng-click="H1_DataTable_Buscar(x.NUMERO)" ng-if="rol==1">
+                                {{x.OORD}}</td>
+                              <td class="center" ng-click="H1_DataTable_Buscar(x.NUMERO)">{{x.UBICACION}}</td>
+                              <td class="center" style="color:white" ng-click="H1_DataTable_Buscar(x.NUMERO)">
+                                <div ng-style="Estado({{'x.ESTADO'}})" ng-click="H1_DataTable_Buscar(x.NUMERO)"
+                                  style="border-radius: 3px;padding: 0px 4px;">
+                                  {{x.ESTADO}}</div>
+                              </td>
+                              <td class="center" ng-click="H1_DataTable_Buscar(x.NUMERO)">{{x.CONCEPTO}}</td>
+                              <td class="center" ng-click="H1_DataTable_Buscar(x.NUMERO)">{{x.CANTIDAD}}</td>
+                              <td class="center" ng-click="H1_DataTable_Buscar(x.NUMERO)">{{x.FECHA}}</td>
+                              <td class="center" style="font-size: 11px;" ng-click="H1_DataTable_Buscar(x.NUMERO)">
+                                {{x.NOM_SOLICITANTE}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- //////////////////////////////////////////////////////////////////////// HOJA1111111111111  -->
+      <div class="col s12 m12" ng-show="Tabs==2" ng-if="quitar_oord">
+        <!-- <div class="col s12 m12" ng-show="isSet(2)" ng-if="quitar_oord"> -->
+        <div class="col s12" id="H2_SCROLL">
+          <!-- PESTAÑA 0 -->
+          <div class="foot4 divcardcustom">
+            <div class="text-al divcardcustom2">
+              <strong class="switch">Orden de compra (OORD)</strong>
+              <div class="tooltip">
+                <i class="icon-cw-circle" style="cursor: pointer;font-size: 18px;" ng-click="H2_RESTART_TODO()"></i>
+                <span class="tooltiptext" style="font-size: 13px">Nueva</span>
+              </div>
+              <div class="tooltip" ng-if="Rol_Cedula==1129537597">
+                <i class="icon-list-add" style="cursor: pointer;font-size: 18px;"
+                  ng-click="Abrir_modal_Crear_Producto()"></i>
+                <span class="tooltiptext" style="font-size: 13px">Crear Un Nuevo Producto</span>
+              </div>
+              <div style="float:right">
+
+                <label style="color:white !important;"><label
+                    style="font-weight:800;color:white !important;">Ubicación:</label> {{h2dpto}}</label>
+                <label style="padding-left:30px;padding-right:10px;color:white !important;"><label
+                    style="font-weight:800;color:white !important;">Fecha de Compra:</label></label>
+                <input type="date"
+                  style="width: auto;border: none;height: auto;color:white !important;padding-right:20px;"
+                  ng-model="$parent.h2fecha" ng-readonly="h2fecharead" ng-dblclick="DB_h2fecha()"
+                  ng-change="CH_h2fecha()">
+              </div>
+            </div>
+          </div>
+          <!-- PESTAÑA 1 -->
+          <div class="col s12">
+            <div class="col s2">
+              <blockquote class="default-border-color" style="width: max-content;">
+                <p>Información inicial
+                  <label style="padding-left: 2em;font-weight:800;" ng-show="h2Num_Ord!=''"><label
+                      class="default-color">Número de OORD:</label><span style="font-size: 18px;"> {{h2Num_Ord}}</span>
+                  </label>
+                </p>
+              </blockquote class="default-border-color">
+            </div>
+            <div class="tooltip" style="float: right;" ng-show="Btn_Ver_Productos_OORDS">
+              <i class="material-icons default-color Btn_Ver_Productos_OORDS_ANIMACION"
+                style="float: right;font-size: 70px;cursor: pointer;" ng-click="Abrir_modalPRO_OORD()">shopping_cart</i>
+              <span class="tooltiptext" style="font-size: 12px;">{{MPCantidadtotal_OORDS}} Productos</span>
+            </div>
+            <!-- LINEA 1 -->
+            <div class="col s12">
+              <div class="col s6">
+                <label>Proveedor</label>
+                <input id="h2proveedor" type="text" style="text-transform:uppercase;margin:0;" autocomplete="off"
+                  required title="Presione Enter para buscar" ng-model="$parent.h2proveedor"
+                  ng-keyup="Complete_H2_Proveedor(h2proveedor);Find_Proveedor_enter($event);"
+                  ng-blur="Blur_H2_Proveedor()">
+                <ul class="list-group" id="list-group-proveedor"
+                  style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;">
+                  <li class="list-group-item" ng-repeat="x in Filter_H2_Proveedor"
+                    ng-click="FillTextbox_H2_Proveedor(x.Proveedor.CODIGO,x.Proveedor.NOMBRE)">
+                    {{x.Proveedor.CODIGO}} - {{x.Proveedor.NOMBRE}}</li>
+                </ul>
+              </div>
+              <div>
+              </div>
+            </div>
+          </div>
+          <!-- PESTAÑA 2 -->
+          <div class="col s12">
+            <div class="col s12">
+              <blockquote class="default-border-color">
+                <p>Información de pagos</p>
+              </blockquote class="default-border-color">
+              <!-- LINEA 1 -->
+            </div>
+            <div class="col s12">
+              <div class="col s5">
+                <label>Condición de pago</label>
+                <select id="h2condicion" class="select-chosen-eps material-select" ng-model="$parent.h2condicion">
+                  <option value="" disabled selected>SELECCIONAR</option>
+                  <option value="0">A PRESENTACION</option>
+                  <option value="1">CONTADO</option>
+                  <option value="2">CONTRAENTREGA</option>
+                  <option value="3">30-60 DIAS</option>
+                  <option value="4">12 CUOTAS MENSUALES</option>
+                  <option value="5">2 CUOTAS TRIMESTRALES</option>
+                  <option value="6">UN MES</option>
+                  <option value="7">CREDITO UN DIA</option>
+                  <option value="10">CREDITO 10 DIAS</option>
+                  <option value="15">CREDITO 15 DIAS</option>
+                  <!-- <option value="20">CREDITO 20 DIAS</option> -->
+                  <!-- <option value="25">CREDITO 25 DIAS</option> -->
+                  <option value="30">CREDITO 30 DIAS</option>
+                  <option value="45">CREDITO 45 DIAS</option>
+                  <!-- <option value="50">CREDITO 50 DIAS</option> -->
+                  <option value="51">50% POR ADELANTADO 50% CONTRA ENTREGA</option>
+                  <option value="60">CREDITO 60 DIAS</option>
+                  <option value="90">CREDITO A 90 DIAS</option>
+                  <option value="91">PREPAGADO (PAGO DE CONTADO)</option>
+                  <option value="92">61-90 DIAS</option>
+                  <!-- <option value="93">91-120 DIAS</option> -->
+                  <option value="94">CREDITO A 120 DIAS</option>
+                  <!-- <option value="95">PAGO REALIZADO DE ACUERDO A NORMATIVIDAD</option> -->
+                </select>
+              </div>
+              <div class="col s2">
+                <label>Descuento 1 (%)</label>
+                <input class="validate" id="h2descuento1" type="number" min="0" max="100" step="0.01"
+                  ng-model="$parent.h2descuento1" ng-change="format('h2descuento1')" required>
+              </div>
+              <div class="col s2">
+                <label>Estado</label>
+                <select id="h2estado" class="select-chosen-eps material-select" ng-model="$parent.h2estado">
+                  <option value="" disabled selected>SELECCIONAR</option>
+                  <option value="A">ACTIVO</option>
+                  <option value="P" ng-show="h2estado_P=='P'">PROCESADO</option>
+                  <option value="X" ng-show="h2respuesta==1">ANULADO</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- PESTAÑA 3 -->
+          <div class="col s12">
+            <div class="col s12">
+              <blockquote class="default-border-color">
+                <p>Información de la orden</p>
+              </blockquote class="default-border-color">
+            </div>
+            <!-- LINEA 1 -->
+            <div class="col s12">
+              <div class="col s2">
+                <label>N° Requerimiento</label>
+                <input id="h2requerimiento" type="text" maxlength="6" title="Presione Enter para buscar"
+                  ng-model="$parent.h2requerimiento" ng-change="format('h2requerimiento')"
+                  ng-keyup="Find_OreqenOord_enter($event)" ng-readonly="" autocomplete="off">
+              </div>
+              <div class="col s1">
+                <label>Concepto</label>
+                <input id="h2documento" type="text" ng-model="$parent.h2documento" ng-readonly="true">
+              </div>
+              <div class="col s3">
+                <label>Ubicación</label>
+                <input id="h2ubicacion" type="text" ng-model="$parent.h2ubicacion" ng-readonly="true">
+              </div>
+            </div>
+          </div>
+          <!-- PESTAÑA 3 -->
+          <div class="col s12">
+            <div class="col s12">
+              <blockquote class="default-border-color">
+                <p>Información Adicional</p>
+              </blockquote class="default-border-color">
+            </div>
+            <!-- LINEA 4 -->
+            <div class="col s12">
+              <label><span></label>
+              <textarea id="h2observacion2" placeholder="Descripción de la Observación"
+                title="Se permiten un máximo de 500 caracteres" class="materialize-textarea" maxlength="500"
+                ng-model="$parent.h2observacion2"></textarea>
+            </div>
+          </div>
+          <!-- LINEA 5 -->
+          <div class="col s12" style="margin:14px;text-align:center;">
+            <button class="btn" style="border-radius: 20px;margin-right: 1em;" ng-click="MPDesprocesar_PRO_OORD('D')"
+              ng-if="(h2respuesta==1 && h2estado=='P')">Desprocesar</button>
+            <button class="btn" style="border-radius: 20px;margin-right: 1em;" ng-click="MPActualizar_PRO_OORD('P')"
+              ng-if="(h2respuesta==1 && h2estado=='A')">Procesar</button>
+            <button id="h2_BtnGuardar" class="btn" style="border-radius: 20px;" ng-click="MPGuardar_PRO_OORD()"
+              ng-if="h2_BtnGuardar">Guardar</button>
+            <button class="btn" style="border-radius: 20px;" ng-click="MPActualizar_PRO_OORD('A')"
+              ng-if="(h2respuesta==1 && h2estado=='A')">Actualizar</button>
+            <button class="btn" style="border-radius: 20px;margin-left: 1em;" ng-click="MPActualizar_PRO_OORD('X')"
+              ng-if="(h2respuesta==1 && h2estado=='X' && h2_Ord_Cerrado==false)">Anular</button>
+          </div>
+          <!-- //////////////////////////////////////////////// -->
+        </div>
+        <!-- /////////////////////////////////////////////////////////////////////////////////////// -->
+        <div class="card">
+          <div class="col s12">
+            <div style="margin-bottom:20px;">
+              <ul class="collapsible" data-collapsible="expandable"
+                style="background-color: transparent;border: 0;box-shadow: none;">
+                <li>
+                  <div id="collapsible-header-h2" class="collapsible-header" style="line-height: 3rem;    padding: 0;">
+                    <div class="foot4 divcardcustom">
+                      <div class="text-al divcardcustom2" style="line-height: normal;text-align: center;"
+                        ng-click="ScrollDown_H(2)">
+                        <strong class="switch" style="cursor:pointer;"><i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i>Histórico Ordenes de compra<i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i></strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapsible-body">
+                    <div style="float: right;margin-top: -35px;margin-right: 30px;z-index: 200;">
+                      <div class="tooltip">
+                        <i class="icon-cw-circle" style="cursor: pointer;font-size: 18px;color:white;"
+                          ng-click="H2_ACTUALIZAR_LISTA_OORDS()"></i>
+                        <span class="tooltiptext" style="font-size: 13px">Actualizar</span>
+                      </div>
+                      <div class="tooltip">
+                        <i class="icon-chart-bar" style="cursor: pointer;font-size: 18px;color:white;"
+                          ng-click="Abrir_modalESTAD();Ver_Grafico('Ordenes de compra','ver_grafico_oords')"></i>
+                        <span class="tooltiptext" style="font-size: 12px;">Estadisticas</span>
+                      </div>
+                    </div>
+                    <div class="col s12" style="margin-bottom: 20px;">
+                      <div class="col s12">
+                        <table id="Datatable_OORDS" style="width:100%;">
+                          <thead>
+                            <th class="center" style="width: 20px;">-</th>
+                            <th class="center">Número de Orden.</th>
+                            <th class="center">Ubicación</th>
+                            <th class="center">Estado</th>
+                            <th class="center">Proveedor</th>
+                            <th class="center">Total</th>
+                            <th class="center">Fecha</th>
+                            <th class="center">Responsable</th>
+                          </thead>
+                          <tbody>
+                            <tr style="cursor:pointer" class="selctt" ng-repeat="x in Array_OORDS">
+                              <td class="center" style="width: 20px;">
+                                <div class="tooltip">
+                                  <i class="icon-print-3" style="cursor: pointer;font-size: 15px;"
+                                    ng-style="{color: (x.MARCA=='G')? '#30A4DC':'#8CC63F'}"
+                                    ng-click="Do_Imprimir(x.NUMERO, 'Oord')"></i>
+                                  <span class="tooltiptext"
+                                    style="font-size: 10px;width: 56px;margin-left: -28px;">Imprimir</span>
+                                </div>
+                              </td>
+                              <td class="center" ng-click="H2_DataTable_Buscar(x.NUMERO)">{{x.NUMERO}}</td>
+                              <td class="center" ng-click="H2_DataTable_Buscar(x.NUMERO)">{{x.UBICACION}}</td>
+                              <td class="center" style="color:white" ng-click="H2_DataTable_Buscar(x.NUMERO)">
+                                <div ng-style="Estado({{'x.ESTADO'}})" ng-click="H2_DataTable_Buscar(x.NUMERO)"
+                                  style="border-radius: 3px;padding: 0px 4px;">{{x.ESTADO}}</div>
+                              </td>
+                              <td class="center" ng-click="H2_DataTable_Buscar(x.NUMERO)">
+                                {{x.PROVEEDOR + ' - '+ x.PROVEEDOR_NOM}}</td>
+                              <td class="center" ng-click="H2_DataTable_Buscar(x.NUMERO)">
+                                ${{formatPeso2((x.TOTAL).replace(',', '.'))}}</td>
+                              <td class="center" ng-click="H2_DataTable_Buscar(x.NUMERO)">{{x.FECHA}}</td>
+                              <td class="center" style="font-size: 11px;" ng-click="H2_DataTable_Buscar(x.NUMERO)">
+                                {{x.NOM_EMPLEADO}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+          <!-- /////////////////////////////////////////////////////////////////////////////////////// -->
+        </div>
+      </div>
+      <!-- //////////////////////////////////////////////////////////////////////// HOJA3333333333333   -->
+      <div class="col s12 m12" ng-show="Tabs==3">
+        <!-- <div class="col s12 m12" ng-show="isSet(3)"> -->
+        <div class="col s12" id="H3_SCROLL">
+          <div class="foot4 divcardcustom">
+            <div class="text-al divcardcustom2">
+              <strong class="switch">Orden de entrega
+              </strong>
+              <div class="tooltip">
+                <i class="icon-cw-circle" style="cursor: pointer;font-size: 18px;" ng-click="H3_RESTART_TODO()"></i>
+                <span class="tooltiptext" style="font-size: 13px">Nueva</span>
+              </div>
+              <div style="float:right" ng-show="!h3Actualizar">
+                <label style="color:white !important;"><label
+                    style="font-weight:800;color:white !important;">Ubicación:</label> {{h3dpto}}</label>
+                <label style="padding-left:30px;padding-right:10px;color:white !important;"><label
+                    style="font-weight:800;color:white !important;">Fecha:</label></label>
+                <input type="date"
+                  style="width: auto;border: none;height: auto;color:white !important;padding-right:20px;"
+                  ng-model="h3fecha" ng-readonly="true">
+              </div>
+            </div>
+          </div>
+          <div class="col s12">
+            <div class="tooltip" style="float: right;" ng-show="Btn_Ver_Productos_ENTREGA">
+              <i class="material-icons default-color Btn_Ver_Productos_ENTREGA_ANIMACION"
+                style="float: right;font-size: 70px;cursor: pointer;"
+                ng-click="Abrir_modalPRO_ENTREGA()">shopping_cart</i>
+              <span class="tooltiptext" style="font-size: 12px;">{{MPCantidadtotal_ENTREGA}} Productos</span>
+            </div>
+            <blockquote class="default-border-color">
+              <p>Información de entrega</p>
+            </blockquote class="default-border-color">
+            <div class="col s5" ng-show="!h3Actualizar">
+              <label>Responsable de entrega</label>
+              <input id="h3responsable" type="text" style="text-transform:uppercase;margin:0;" autocomplete="off"
+                required ng-model="h3responsable" readonly>
+            </div>
+            <!-- // -->
+            <div class="col s5" ng-show="h3Actualizar">
+              <label>Responsable de entrega</label>
+              <input type="text" style="text-transform:uppercase;margin:0;" autocomplete="off"
+                ng-model="h3responsable_Entrega" readonly>
+            </div>
+            <!-- // -->
+            <div class="col s2" ng-show="!h3Actualizar">
+              <label>Fecha de entrega</label>
+              <input id="h3fecha_entrega" type="date" required ng-model="h3fecha_entrega" readonly>
+            </div>
+            <!-- // -->
+            <div class="col s2" ng-show="h3Actualizar">
+              <label>Fecha de entrega</label>
+              <input type="date" ng-model="h3fecha_entrega_Entrega" readonly>
+            </div>
+            <!-- // -->
+            <div class="col s3" ng-show="!h3Actualizar">
+              <label>Mesa de ayuda</label>
+              <input id="h3mesadeayuda" type="text" style="text-transform:uppercase;margin:0;" autocomplete="off"
+                title="Pulse clic para ver las mesas de ayuda" ng-click="Abrir_modalACAS()" required readonly
+                ng-model="h3mesadeayuda">
+            </div>
+            <!-- // -->
+            <div class="col s2" ng-show="h3Actualizar">
+              <label>Mesa de ayuda</label>
+              <input id="h3mesadeayuda_Entrega" type="text" style="text-transform:uppercase;margin:0;"
+                autocomplete="off" required readonly ng-model="h3mesadeayuda_Entrega">
+            </div>
+            <div class="col s2" ng-show="h3Actualizar">
+              <label>Bodega</label>
+              <input type="text" style="text-transform:uppercase;margin:0;" autocomplete="off" readonly
+                ng-model="h3bodega_Entrega">
+            </div>
+            <!-- // -->
+            <div class="col s8">
+              <label>Funcionario que recibe los productos</label>
+              <input id="h3funcionario" type="text" style="text-transform:uppercase;margin:0;"
+                title="Funcionario asociado a la mesa de ayuda" autocomplete="off" required ng-model="h3funcionario"
+                readonly>
+            </div>
+            <div class="col s12">
+              <label>Descripción de la mesa de ayuda</label>
+              <textarea id="h3mesadeayudades" class="materialize-textarea"
+                title="Descripción asociada a la mesa de ayuda" ng-model="h3mesadeayudades" readonly></textarea>
+            </div>
+            <!-- // -->
+            <label style="display: inline-block;font-weight: 600;font-style: italic;">Tener en cuenta: Si en dado caso
+              no va a entregar la totalidad de los productos al solicitante, por favor acordar con el funcionario por
+              medio de la mesa de ayuda los productos que se le harán entrega.</label>
+            <div class="col s12 center-align" style="margin:14px;" ng-show="!h3Actualizar">
+              <button class="btn" style="border-radius: 20px;" ng-click="MPGuardar_PRO_ENTREGA()">Guardar</button>
+            </div>
+            <div class="col s12 center-align" style="margin:14px;" ng-show="h3Actualizar">
+              <button class="btn" style="border-radius: 20px;"
+                ng-click="H3Guardar_EntregaActualizada()">Actualizar</button>
+            </div>
+
+          </div>
+        </div>
+        <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+        <div class="card">
+          <div class="col s12">
+            <div style="margin-bottom:20px;">
+              <ul class="collapsible" data-collapsible="expandable"
+                style="background-color: transparent;border: 0;box-shadow: none;">
+                <li>
+                  <div id="collapsible-header-h4" class="collapsible-header"
+                    style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                    <div class="foot4 divcardcustom">
+                      <div class="text-al divcardcustom2" style="line-height: normal;text-align: center;"
+                        ng-click="ScrollDown_H(4)">
+                        <strong class="switch" style="cursor:pointer;"><i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i>Histórico de Entregas<i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i></strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapsible-body white" style="border-bottom: 0;">
+                    <div style="float: right;margin-top: -35px;margin-right: 30px;z-index: 200;">
+                      <div class="tooltip">
+                        <i class="icon-cw-circle" style="cursor: pointer;font-size: 18px;color:white;"
+                          ng-click="H3_ACTUALIZAR_LISTA_ENTREGAS()"></i>
+                        <span class="tooltiptext" style="font-size: 13px">Actualizar</span>
+                      </div>
+                    </div>
+                    <div style="margin-top:-54px;margin-right: 70px;z-index: 200;width: 112px;color: white;font-weight: 600;" ng-show="rol == 1">
+                      <select class="select-chosen-eps" ng-model="h3VerEntregasxSecc" ng-change="H3_ACTUALIZAR_LISTA_ENTREGAS()" title="Selecciona una opción para visualizar las ordenes de entrega.">
+                        <option value="99" style="color: black;">Todos</option>
+                        <option value="1" style="color: black;">Nacional</option>
+                        <option value="8" style="color: black;">Atlántico</option>
+                        <option value="13" style="color: black;">Bolivar</option>
+                        <option value="15" style="color: black;">Boyacá</option>
+                        <option value="20" style="color: black;">Cesar</option>
+                        <option value="23" style="color: black;">Cordoba</option>
+                        <option value="44" style="color: black;">Guajira</option>
+                        <option value="47" style="color: black;">Magdalena</option>
+                        <option value="50" style="color: black;">Meta</option>
+                        <option value="70" style="color: black;">Sucre</option>
+                      </select>
+                    </div>
+                    <div class="col s12 white" style="margin-bottom: 20px;">
+                      <div class="col s12">
+                        <table id="Datatable_ENTREGAS" class=" highlight" style="width:100%;">
+                          <thead>
+                            <th class="center" style="cursor:pointer">-</th>
+                            <th class="center" style="cursor:pointer">Mesa de ayuda</th>
+                            <th class="center" style="cursor:pointer">Ubicación</th>
+                            <th class="center" style="cursor:pointer">Bodega</th>
+                            <th class="center" style="cursor:pointer">Cantidad de productos</th>
+                            <th class="center" style="cursor:pointer">Fecha de entrega</th>
+                            <th class="center" style="cursor:pointer">Solicitante</th>
+
+                            <th class="center" style="cursor:pointer">Editar</th>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="x in Array_ENTREGAS">
+                              <td class="center" style="width: 20px;">
+                                <div class="tooltip">
+                                  <i class="icon-print-3" style="cursor: pointer;font-size: 15px;color:#30A4DC"
+                                    ng-click="Do_Imprimir(x.ACAS,'Entrega')"></i>
+                                  <span class="tooltiptext"
+                                    style="font-size: 10px;width: 56px;margin-left: -28px;">Imprimir</span>
+                                </div>
+                              </td>
+                              <td class="center">{{x.ACAS}}</td>
+                              <td class="center">
+                                <span style="font-weight: 700;">{{x.DPTO}}</span><br>
+                                {{x.MUNI}}
+                              </td>
+                              <td class="center">
+                                <span style="font-weight: 700;">{{x.BODEGA}}</span></td>
+                              <td class="center">{{x.CANTIDAD}}</td>
+                              <td class="center">{{x.FECHA}}</td>
+                              <td class="center">{{x.SOLICITANTE}}</td>
+
+                              <td class="center">
+                                <div class="tooltip">
+                                  <i class="icon-edit-alt default-color" style="cursor: pointer;font-size: 15px;"
+                                    ng-click="H3_EDITAR_ENTREGA(x)"></i>
+                                  <span class="tooltiptext"
+                                    style="font-size: 10px;width: 56px;margin-left: -28px;">Editar</span>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div id="collapsible-header-h3" class="collapsible-header"
+                    style="line-height: 3rem;padding: 0;min-height: 0;border-bottom: 0;background-color: #fff;">
+                    <div class="foot4 divcardcustom">
+                      <div class="text-al divcardcustom2" style="line-height: normal;text-align: center;"
+                        ng-click="ScrollDown_H(3)">
+                        <strong class="switch" style="cursor:pointer;"><i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i>Inventario<i class="icon-down-2"
+                            style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                            title="Desplegar lista"></i></strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapsible-body" style="border-bottom: 0;">
+                      <div style="float: right;margin-top: -35px;margin-right: 100px;z-index: 200;" ng-show="Ver_BtnActualizar_Prods">
+                          <div class="tooltip">
+                            <i class="icon-cw-circle" style="cursor: pointer;font-size: 18px;color:white;"
+                            ng-click="Ver_Bodegas_Conceptos_Productos(h3concepto_con,h3concepto_nom)"></i>
+                            <span class="tooltiptext" style="font-size: 13px">Actualizar</span>
+                          </div>
+                        </div>
+                    <div style="float: right;margin-top: -35px;margin-right: 60px;z-index: 200;" ng-show="!H3_Hojas">
+                      <div class="tooltip">
+                        <i class="icon-print-3" style="cursor: pointer;font-size: 18px;color:white;"
+                          ng-click="Abrir_modalInventario()"></i>
+                        <span class="tooltiptext" style="font-size: 13px">Descargar Inventario Actual</span>
+                      </div>
+                    </div>
+                    <div style="float: right;margin-top: -35px;margin-right: 60px;z-index: 200;">
+                      <div class="tooltip" ng-show="H3_Hojas">
+                        <i class="icon-cw-circle"
+                          style="cursor: pointer;font-size: 18px;color:white; display: contents !important;"
+                          title="Desplegar lista" ng-click="H3_ACTUALIZAR_LISTA_GESTIONES()"></i>
+                        <span class="tooltiptext" style="font-size: 13px">Actualizar</span>
+                      </div>
+                    </div>
+                    <!-- //// -->
+                    <div class="col s12 center">
+                      <div class="switch">
+                        <label>
+                          <span class="default-color">Bodegas</span>
+                          <input type="checkbox" ng-model="H3_ChkHojas" ng-change="H3_Hojas = !H3_Hojas"
+                            class="ng-valid ng-touched ng-dirty ng-valid-parse">
+                          <span class="lever check-c"></span>
+                          <span class="default-color">Recepción</span>
+                        </label>
+                      </div>
+                    </div>
+                    <!-- //// -->
+                    <div ng-show="!H3_Hojas">
+                      <div class="col s12" style="margin-bottom: 20px;z-index: 0" ng-show="!H3Ver_Productos">
+                        <div class="center-align">
+                          <b ng-show="H3Ver_Bodegas" class="default-color" style="font-size: 30px;">Bodegas</b>
+                          <ul style="display: flex;" ng-show="H3Ver_Bodegas">
+                            <li ng-repeat="x in bodegas" style="display: grid;margin:auto;"
+                              ng-click="Ver_Conceptos(x.CODIGO, x.NOMBRE)">
+                              <i class="icon-building vamous"
+                                style="font-size:50px;cursor: pointer;border-radius: 15px;"></i>
+                              <b style="font-size:10px;">{{x.NOMBRE}}</b>
+
+                              <span style="position: absolute;
+                                background-color: #fb404b;
+                                text-align: center;
+                                border-radius: 10px;
+                                min-width: 18px;
+                                padding: 0 5px;
+                                height: 18px;
+                                font-size: 12px;
+                                color: #fff;
+                                font-weight: 700;
+                                line-height: 18px;
+                                " ng-show="H3Ver_Bodegas">{{x.CANTIDAD}}</span>
+                            </li>
+                          </ul>
+                          <div ng-show="H3Ver_Conceptos" style="display: inline-block;">
+                            <b ng-show="true" ng-click="Ver_Bodegas()" class="default-color"
+                              style="cursor: pointer;">Bodega:
+                              {{h3bodega_nom.replace('BODEGA ', '')}}</b>
+                            <i class="icon-right-2 default-color" style="cursor: pointer;font-size: 21px;"
+                              title="Volver" ng-show="true"></i>
+                            <b class="default-color" ng-show="true">Conceptos</b>
+                          </div>
+
+                          <ul style="display: flex;" ng-show="H3Ver_Conceptos">
+                            <li ng-repeat="x in bodegas_conceptos" style="display: grid;margin:auto;">
+                              <i class="vamous" id="{{x.CODIGO}}"
+                                ng-class="(x.CODIGO=='AC')? 'icon-cafe': (x.CODIGO=='BOT')? 'icon-medkit': (x.CODIGO=='PA')? 'icon-scissors' : 'icon-camera-alt'"
+                                style="font-size:50px;cursor: pointer;border-radius: 15px;"
+                                ng-click="Ver_Bodegas_Conceptos_Productos(x.CODIGO,x.CONCEPTO)"></i>
+                              <b style="font-size:10px;">{{x.CONCEPTO}}</b>
+                              <span style="position: absolute;
+                                background-color: #fb404b;
+                                text-align: center;
+                                border-radius: 10px;
+                                min-width: 18px;
+                                padding: 0 5px;
+                                height: 18px;
+                                font-size: 12px;
+                                color: #fff;
+                                font-weight: 700;
+                                line-height: 18px;
+                                " ng-show="H3Ver_Conceptos">{{x.CANTIDAD}}</span>
+                            </li>
+                          </ul>
+                          <ul style="display: flex;" ng-show="H3Ver_Conceptos==true && bodegas_conceptos==''">
+                            <li style="display: grid;margin:auto;">
+                              <i class="vamous icon-alert" style="font-size:50px;border-radius: 15px;"></i>
+                              <b style="font-size:10px;">¡NO EXISTEN PRODUCTOS!</b>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                      <div class="col s12 center-align" style="margin-bottom: 20px;" ng-show="H3Ver_Productos">
+                        <div ng-show="H3Ver_Productos" style="display: inline-block;">
+                          <b ng-click="Ver_Bodegas()" class="default-color" style="cursor: pointer;">Bodega:
+                            {{h3bodega_nom.replace('BODEGA ', '')}}</b>
+                          <i class="icon-right-2" style="cursor: pointer;font-size: 21px;"></i>
+                          <b ng-click="Ver_Conceptos()" class="default-color" style="cursor: pointer;">Concepto:
+                            {{h3concepto_nom}}</b>
+                          <i class="icon-right-2" style="cursor: pointer;font-size: 21px;"></i>
+                          <b ng-show="true" class="default-color">Productos</b>
+                        </div>
+                        <table id="datatable_INVT" style="width:100%;">
+                          <thead>
+                            <th class="center">Codigo del producto</th>
+                            <th class="center">Producto</th>
+                            <th class="center">Cantidad actual</th>
+                            <th class="center">Último cargue</th>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="x in Array_inventario" style="cursor:pointer" class="selctt">
+                              <td class="center">{{x.COD_PRO}}</td>
+                              <td class="center">{{x.NOM_PRO}}</td>
+                              <td class="center">{{x.CANTIDAD}}</td>
+                              <td class="center">{{x.FECHA_ACEP}}</td>
+                            </tr>
+                          </tbody>
+                          <tr class="Aquino" ng-show="Array_inventario==null || Array_inventario==''">
+                            <td colspan="4" class="center-align">
+                              No existen registros aún.
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                    <!-- //// -->
+                    <div ng-show="H3_Hojas">
+                      <div class="col s12 center-align" style="margin-bottom: 20px;margin-top: 30px;">
+                        <table id="Datatable_Gestion" style="width:100%;">
+                          <thead>
+                            <th class="center">Bodega</th>
+                            <th class="center">Código Oreq</th>
+                            <th class="center">Cantidad total de productos</th>
+                            <th class="center">Fecha</th>
+                            <th class="center">Estado</th>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="x in Array_Gestiones" style="cursor:pointer" class="selctt"
+                              ng-click="H3_Ver_Productos_Gestion(x.BODEGA,x.OREQ,x.OORD,x.ESTADO)">
+                              <td class="center" style="font-weight: 800;">{{x.NOMBRE}}</td>
+                              <td class="center">{{x.OREQ}}</td>
+                              <td class="center">{{x.CANTIDAD}}</td>
+                              <th class="center">{{x.FECHAREG}}</th>
+                              <td class="center" style="color:white">
+                                <div ng-style="Estado({{'x.ESTADO'}})" style="border-radius: 3px;padding: 0px 4px;">
+                                  {{x.ESTADO}}</div>
+                              </td>
+                            </tr>
+                          </tbody>
+                          <tr class="Aquino" ng-show="Array_Gestiones==null || Array_Gestiones==''">
+                            <td colspan="5" class="center-align">
+                              No existen registros aún.
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- //////////////////////////////////////////////// -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <!-- <<<<<<<<<<<<<<<<<<<<<MODAL ESTADISTICAS>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+  <!-- ////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <div id="modalESTAD" class="modal" style="margin: 0 auto;max-height: 100%;width: 80%;top:0%;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;"
+        ng-click="Cerrar_modalESTAD()">
+      </div>
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!-- ELEGIR -->
+        <div class="col s12" ng-show="Grafico_TIPO=='Requerimientos' || Grafico_TIPO=='Ordenes de compra'">
+          <div class="row col s12">
+            <div class="col s12 center">
+              <div class="col s12 input-padding" style="padding-left: 2.3rem;">
+                <input type="checkbox" id="check_option_todo" ng-model="check_option_todo"
+                  ng-init="check_option_todo = false" ng-change="change_temp()">
+                <label for="check_option_todo" style="font-size: .8rem;padding-left: 20px;">Todo</label>
+              </div>
+            </div>
+            <div class="switch center">
+              <label>
+                <span ng-class="{'activo':!check_option}">Genesis</span>
+                <input type="checkbox" ng-init="check_option = false" ng-model="check_option" ng-change="change_temp()">
+                <span class="lever check-c"></span>
+                <span ng-class="{'activo':check_option}">Oasis</span>
+              </label>
+            </div>
+            <div class="col s6" style="text-align: right;">
+              <label style="padding-right: 3.5em;">Mes</label>
+              <div>
+                <select ng-model="EST_Mes" ng-change="change_temp()"
+                  class="select-chosen-eps material-select col s2 select-css"
+                  style="width: 21.666667% !important;float: right;text-align-last: center;">
+                  <option value="">----------------</option>
+                  <option value="01">Enero</option>
+                  <option value="02">Febrero</option>
+                  <option value="03">Marzo</option>
+                  <option value="04">Abril</option>
+                  <option value="05">Mayo</option>
+                  <option value="06">Junio</option>
+                  <option value="07">Julio</option>
+                  <option value="08">Agosto</option>
+                  <option value="09">Septiembre</option>
+                  <option value="10">Octubre</option>
+                  <option value="11">Noviembre</option>
+                  <option value="12">Diciembre</option>
+                </select>
+              </div>
+            </div>
+            <div class="col s6" style="text-align: left;">
+              <label style="padding-left: 3.5em;">Año</label>
+              <div>
+                <select id="EST_Anio" ng-model="EST_Anio" ng-change="change_temp()"
+                  class="select-chosen-eps material-select col s2 select-css"
+                  style="width: 21.666667% !important;float: left;text-align-last: center;">
+                  <option value="">----------------</option>
+                  <option ng-repeat="x in EST_Anio_Array" value="{{x.pos}}">20{{x.pos}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s6 container" id="container" style="width: 100%">
+        </div>
+        <div class="col s6 container" id="container_sub" style="width: 100%">
+        </div>
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+  <div id="modal_Crear_Producto" class="modal" style="margin: 0 auto;max-height:80%;width: 65%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+        ng-click="Cerrar_modal_Crear_Producto()"></div>
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <h5 class="margin">Crear Producto Nuevo</h5>
+        </div>
+      </div>
+      <div class="card-action" id="card-action" style="display: inline-block;width: 100%;padding-bottom: 0;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12">
+          <div class="col s12">
+            <!-- CAMPOS -->
+            <div class="col s12">
+              <div class="col l12 m12 s12 row" style="margin-bottom: 0px;">
+                <div class="col l6 m12 s12">
+                  <label>Nombre del Producto</label>
+                  <input id="MP_Crear_producto" class="form-control margin" type="text" style="text-transform:uppercase"
+                    autocomplete="off" required ng-model="MP_Crear_producto">
+                </div>
+                <div class="col l3 m12 s12" style="padding-left: 1%;">
+                  <label>Unidad</label>
+                  <select id="MP_Crear_unidad" ng-model="MP_Crear_unidad" class="select-chosen-eps material-select"
+                    autocomplete="off" required>
+                    <option value="" disabled selected>SELECCIONAR</option>
+                    <option value="{{x.Codigo}}" ng-repeat="x in Array_Unidades">{{x.Unidad}}</option>
+                  </select>
+                </div>
+                <div class="col l3 m12 s12" style="padding-left: 1%;">
+                  <label>Concepto</label>
+                  <select id="MP_Crear_concepto" ng-model="MP_Crear_concepto" class="select-chosen-eps material-select"
+                    autocomplete="off" required>
+                    <option value="" disabled selected>SELECCIONAR</option>
+                    <option value="ASEO Y CAFETERIA">ASEO Y CAFETERIA</option>
+                    <option value="BOTIQUIN">BOTIQUIN</option>
+                    <option value="PAPELERIA">PAPELERIA</option>
+                    <option value="PUBLICIDAD">PUBLICIDAD</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col l12" style="text-align:center;margin: 20px 0;">
+                <button id="MP_BtnCrear_Pro" class="btn" style="border-radius: 20px;"
+                  ng-click="MPCrear_Productos_Val()">Crear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<MODAL PRODUCTOS OREQS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+  <div id="modalPRO_OREQ" class="modal" style="margin: 0 auto;max-height:90%;width: 95%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+        ng-click="Cerrar_modalPRO_OREQ()"></div>
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <h5 class="margin">Productos del Requerimiento</h5>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12"
+          ng-show="(h1estado=='A' && h1solicitante==Rol_Cedula) || (h1estado=='A' && h1solicitante_COD==Rol_Cedula)">
+          <div class="col s12">
+            <!-- CAMPOS -->
+            <div class="col s12">
+              <div class="col l12 m12 s12 row" style="margin-bottom: 0px;">
+                <div class="col l6 m12 s12">
+                  <label>Producto</label>
+                  <i class="icon-search default-color" title="Buscar Producto" style="cursor:pointer;"
+                    ng-click="MPBuscarProductos_Oreq()" ng-hide="!MP_BtnAgAc_OREQ"></i>
+                  <input id="MPproducto_Oreq" class="form-control margin" type="text" style="text-transform:uppercase"
+                    autocomplete="off" required ng-model="MPproducto_Oreq"
+                    ng-keyup="Complete_MP_Productos_Oreq(MPproducto_Oreq);Find_Producto_Oreq($event);"
+                    ng-blur="Blur_MP_Productos_Oreq()" ng-disabled="!MP_BtnAgAc_OREQ">
+                  <ul class="list-group" id="list-group-producto-oreq"
+                    style="overflow: auto;max-height: 150px;position:absolute;margin: 0;width: inherit;">
+                    <li class="list-group-item" ng-repeat="x in Filter_MD_Productos_Oreq"
+                      ng-click="FillTextbox_MP_Productos_Oreq(x.CODIGO,x.NOMBRE,x.TIPO)">
+                      {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                  </ul>
+                </div>
+                <div class="col l1 m12 s12">
+                  <label>Cantidad</label>
+                  <input id="MPcantidad_Oreq" type="number" min="1" max="100000" maxlength="100000" class="validate"
+                    style="text-align:center;" ng-model="MPcantidad_Oreq" ng-change="format('MPcantidad_Oreq');"
+                    autocomplete="off" required>
+                </div>
+                <div class="col l3 m12 s12" style="padding-left: 1%;">
+                  <label>Unidad</label>
+                  <select id="MPunidad_Oreq" ng-model="MPunidad_Oreq" class="select-chosen-eps material-select"
+                    autocomplete="off" required>
+                    <option value="" disabled selected>SELECCIONAR</option>
+                    <option value="{{x.Codigo}}" ng-repeat="x in Array_Unidades">{{x.Unidad}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+                <button id="MP_BtnAgAc_OREQ" style="border-radius: 20px;" class="btn" ng-hide="!MP_BtnAgAc_OREQ"
+                  ng-click="MPAgregar_PRO_OREQ()"><i class="icon-down-circled"></i>Agregar<i
+                    class="icon-down-circled"></i></button>
+                <button class="btn" style="border-radius: 20px;" ng-show="MP_BtnAcAg_OREQ"
+                  ng-click="MPActuaCalc_PRO_OREQ_Lista(MPproducto_Oreq_RENGLON)"><i class="icon-cw-circle"></i>
+                  Actualizar
+                  <span style="transform: rotateY(180deg);"><i class="icon-cw-circle"></i></span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="foot4 divcardcustom">
+            <div class="text-al divcardcustom2">
+              <strong class="switch">Detalle de Productos a Solicitar</strong>
+            </div>
+          </div>
+          <div style="max-height:300px;overflow:auto;border: 2px solid;" class="default-color">
+            <table id="tabla_modal_OREQ" class="bordered" style="width:100%;color: black;">
+              <thead>
+                <th class="center" style="cursor:pointer">Renglón</th>
+                <th class="center" style="cursor:pointer">Codigo del producto</th>
+                <th class="center" style="cursor:pointer">Producto</th>
+                <th class="center" style="cursor:pointer">Cantidad</th>
+                <th class="center" style="cursor:pointer">Unidad</th>
+                <th class="center" style="cursor:pointer"
+                  ng-show="(h1estado=='A' && h1solicitante==Rol_Cedula) || (h1estado=='A' && h1solicitante_COD==Rol_Cedula)">
+                  -</th>
+              </thead>
+              <tbody id="idpro">
+                <tr ng-repeat="x in MPproductos_OREQ_lista" style="cursor:pointer"
+                  class="selctt IdPro_{{x.COD_PRO}}_Oreq">
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OREQ_Lista(x)">{{x.RENGLON}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OREQ_Lista(x)">{{x.COD_PRO}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OREQ_Lista(x)">{{x.NOM_PRO}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OREQ_Lista(x)">{{x.CANTIDAD}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OREQ_Lista(x)">
+                    {{MP_Mostrar_Unidad(x.UNIDAD)}}
+                  </td>
+                  <td class="center"
+                    ng-show="(h1estado=='A' && h1solicitante==Rol_Cedula) || (h1estado=='A' && h1solicitante_COD==Rol_Cedula)">
+                    <div class="tooltip">
+                      <i class="material-icons default-color icon-trash btnRotate" style="cursor: pointer;"
+                        ng-click="MPBorrarCalc_PRO_OREQ_Lista(x)"></i>
+                      <span class="tooltiptext" style="font-size: 12px;width: 45px;margin-left: -24px;">Borrar</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="Aquino" ng-show="MPproductos_OREQ_lista==null || MPproductos_OREQ_lista==''">
+                  <td colspan="6" class="center-align">
+                    No existen registros aún.
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="default-background white-text" style="font-weight: 600;">
+                <td colspan="6" class="center" style="padding: 0;">Cantidad total de productos:
+                  {{(MPCantidadtotal_OREQS==null || MPCantidadtotal_OREQS==undefined) ? '0' : MPCantidadtotal_OREQS}}
+                </td>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <!-- //-// -->
+        <div class="col s12 right tooltip">
+          <button class="btn" style="border-radius: 15px;margin-top: 8px;" ng-click="Cerrar_modalPRO_OREQ()">
+            <i class="icon-ok-circled2"></i>
+            <span class="tooltiptext" style="font-size: 12px;width: 72px;padding: 0px;margin-left:-40px;">Aceptar</span>
+          </button>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+
+  <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+  <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<MODAL PRODUCTOS OORDS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+  <div id="modalPRO_OORD" class="modal" style="margin: 0 auto;max-height:95%;width: 95%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+        ng-click="Cerrar_modalPRO_OORD()"></div>
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <h5 class="margin">Productos de la Orden de Compra</h5>
+        </div>
+      </div>
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;padding-bottom: 0;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12" ng-show="h2estado=='A'">
+          <div class="col s12">
+            <!-- CAMPOS -->
+            <div class="col s12">
+              <div class="col l12 m12 s12 row" style="margin-bottom: 0px;">
+                <div class="col l5 m12 s12">
+                  <label>Producto</label>
+                  <i class="icon-search default-color" title="Buscar Producto" style="cursor:pointer;"
+                    ng-click="MPBuscarProductos_Oord()" ng-show="MP_BtnAgAc_OORD"></i>
+                  <input id="MPproducto_Oord" class="form-control margin" type="text" style="text-transform:uppercase"
+                    autocomplete="off" required ng-model="MPproducto_Oord"
+                    ng-keyup="Complete_MP_Productos_Oord(MPproducto_Oord);Find_Producto_Oord($event);"
+                    ng-blur="Blur_MP_Productos_Oord()" ng-disabled="!MP_BtnAgAc_OORD">
+                  <ul class="list-group" id="list-group-producto-oord"
+                    style="overflow: auto;max-height: 150px;position:absolute;margin: 0;width: inherit;">
+                    <li class="list-group-item" ng-repeat="x in Filter_MD_Productos_Oord"
+                      ng-click="FillTextbox_MP_Productos_Oord(x.CODIGO,x.NOMBRE,x.TIPO,x.IVA,x.PRECIO)">
+                      {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                  </ul>
+                </div>
+                <div class="col l1 m12 s12">
+                  <label>Cantidad</label>
+                  <input id="MPcantidad_Oord" type="number" min="1" max="100000" maxlength="6" class="validate"
+                    style="text-align:center;" ng-model="MPcantidad_Oord" ng-change="format('MPcantidad_Oord');"
+                    ng-keyup="MPChange_PRO_OORD();" autocomplete="off" required>
+                </div>
+                <div class="col l2 m12 s12" style="padding-left: 1%;">
+                  <label>Unidad</label>
+                  <select id="MPunidad_Oord" ng-model="MPunidad_Oord" class="select-chosen-eps material-select"
+                    autocomplete="off" required>
+                    <option value="" disabled selected>SELECCIONAR</option>
+                    <option value="{{x.Codigo}}" ng-repeat="x in Array_Unidades">{{x.Unidad}}</option>
+                  </select>
+                </div>
+                <div class="col l1 m12 s12" style="padding-left: 1%;">
+                  <label>IVA</label>
+                  <input id="MPiva_Oord" type="number" min="0" max="100" maxlength="3" class="validate"
+                    style="text-align:center;" ng-model="MPiva_Oord" ng-change="MPChange_PRO_OORD();"
+                    autocomplete="off">
+                </div>
+                <div class="col l1 m12 s12">
+                  <label>Descuento</label>
+                  <input id="MPdescuento_Oord" class="validate" type="number" style="text-align:center;" min="0"
+                    max="100" maxlength="3" ng-model="MPdescuento_Oord" ng-change="MPChange_PRO_OORD();"
+                    autocomplete="off" required>
+                </div>
+                <div class="col l2 m12 s12">
+                  <label>Precio C/u</label>
+                  <input id="MPprecio_Oord" class="currency" type="text" style="padding-left: 22px;" maxlength="13"
+                    ng-model="MPprecio_Oord" ng-keyup="formatPeso('MPprecio_Oord');MPChange_PRO_OORD();"
+                    autocomplete="off" required>
+                </div>
+              </div>
+              <label style="font-weight: 600;font-size: 15px;float:right" title="Subtotal + Descuento - Impuesto">Total
+                del producto:
+                ${{(MPtotal_Total_OORD==null || MPtotal_Total_OORD==undefined) ? '0' : MPtotal_Total_OORD}}</label>
+              <label style="font-weight: 600;font-size: 15px;float:right;padding-left: 30px;padding-right: 30px;"
+                title="Cantidad * Precio">Subtotal
+                del producto:
+                ${{(MPtotal_Sub_OORD==null || MPtotal_Sub_OORD==undefined) ? '0' : MPtotal_Sub_OORD}}</label>
+              <label style="font-weight: 600;font-size: 15px;float:right;padding-left: 30px;"
+                title="Cantidad * Precio * Descuento">Descuento del producto:
+                ${{(MPtotal_Descuento_OORD==null || MPtotal_Descuento_OORD==undefined) ? '0' : MPtotal_Descuento_OORD}}</label>
+              <label style="font-weight: 600;font-size: 15px;float:right">Impuesto del producto:
+                ${{(MPtotal_Impuesto_OORD==null || MPtotal_Impuesto_OORD==undefined) ? '0' : MPtotal_Impuesto_OORD}}</label>
+              <div class="col l12" style="text-align:center;padding: 3em 0 3em 0;">
+                <button id="MP_BtnAgAc_OORD" class="btn" style="border-radius: 20px;" ng-show="MP_BtnAgAc_OORD"
+                  ng-click="MPAgregar_PRO_OORD();"><i class="icon-down-circled"></i>Agregar<i
+                    class="icon-down-circled"></i></button>
+                <button class="btn" style="border-radius: 20px;" ng-show="!MP_BtnAgAc_OORD"
+                  ng-click="MPActuaCalc_PRO_OORD_Lista(MPproducto_Oord_RENGLON)"><i class="icon-cw-circle"></i>
+                  Actualizar
+                  <span style="transform: rotateY(180deg);"><i class="icon-cw-circle"></i></span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="foot4 divcardcustom">
+            <div class="text-al divcardcustom2">
+              <strong class="switch">Detalle de Productos a Solicitar</strong>
+            </div>
+          </div>
+          <div style="max-height:300px;overflow:auto;border: 2px solid;" class="default-color">
+            <table id="tabla_modal_OORD" class="bordered" style="width:100%;color: black;">
+              <thead>
+                <th class="center" style="cursor:pointer">Renglón</th>
+                <th class="center" style="cursor:pointer">Codigo del producto</th>
+                <th class="center" style="cursor:pointer">Producto</th>
+                <th class="center" style="cursor:pointer">Cantidad</th>
+                <th class="center" style="cursor:pointer">Unidad</th>
+                <th class="center" style="cursor:pointer">Precio</th>
+                <th class="center" style="cursor:pointer">Descuento</th>
+                <th class="center" style="cursor:pointer">IVA</th>
+                <th class="center" style="cursor:pointer">Total</th>
+                <th class="center" style="cursor:pointer" ng-show="h2estado=='A'">-</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="x in MPproductos_OORD_lista" style="cursor:pointer"
+                  class="selctt IdPro_{{x.COD_PRO}}_Oord">
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">{{x.RENGLON}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">{{x.COD_PRO}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">{{x.NOM_PRO}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">{{x.CANTIDAD}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">{{MP_Mostrar_Unidad(x.UNIDAD)}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">${{formatPeso2(x.PRECIO)}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">{{x.DESCUENTO}}%</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">{{x.IVA}}%</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_OORD_Lista(x)">
+                    ${{                      
+                        formatPeso2(
+                          ((x.CANTIDAD * x.PRECIO) + (x.CANTIDAD * x.PRECIO * x.IVA/100))-(((x.CANTIDAD * x.PRECIO) + (x.CANTIDAD * x.PRECIO * x.IVA/100))*x.DESCUENTO/100)
+                        )
+                    }}
+                    <!--(x.CANTIDAD * x.PRECIO - (x.CANTIDAD * x.PRECIO * x.DESCUENTO/100 + (x.CANTIDAD * x.PRECIO * x.DESCUENTO/100 * x.IVA/100)) + (x.CANTIDAD * x.PRECIO * x.IVA/100  ))
+                  -->
+                  </td>
+                  <td class="center" ng-show="h2estado=='A'">
+                    <div class="tooltip">
+                      <i class="material-icons default-color icon-trash btnRotate" style="cursor: pointer;"
+                        ng-click="MPBorrarCalc_PRO_OORD_Lista(x)"></i>
+                      <span class="tooltiptext" style="font-size: 12px;width: 45px;margin-left: -24px;">Borrar</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="Aquino" ng-show="MPproductos_OORD_lista==null">
+                  <td colspan="11" class="center-align">
+                    No existen registros aún.
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="default-background white-text" style="font-weight: 600;">
+                <td class="center" colspan="5" style="padding: 0;">Cantidad total de productos:
+                  {{(MPCantidadtotal_OORDS==null || MPCantidadtotal_OORDS==undefined) ? '0' : MPCantidadtotal_OORDS}}
+                </td>
+                <td class="center" style="padding: 0;">Subtotal:
+                  ${{(MPSubTotal_OORDS==null || MPSubTotal_OORDS==undefined) ? '0' : MPSubTotal_OORDS}}</td>
+                <td class="center" style="padding: 0;">Desc. Items:
+                  ${{(MPDescuentoItem_OORDS==null || MPDescuentoItem_OORDS==undefined) ? '0' : MPDescuentoItem_OORDS}}
+                </td>
+                <td class="center" style="padding: 0;">Impuesto:
+                  ${{(MPImpuesto_OORDS==null || MPImpuesto_OORDS==undefined) ? '0' : MPImpuesto_OORDS}}</td>
+                <td class="center" colspan="2" style="padding: 0;">Total:
+                  ${{(MPTotal_OORDS==null || MPTotal_OORDS==undefined) ? '0' : MPTotal_OORDS}}</td>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="col s12 right tooltip">
+          <button class="btn" style="border-radius: 15px;margin-top: 8px;" ng-click="Cerrar_modalPRO_OORD()">
+            <i class="icon-ok-circled2"></i>
+            <span class="tooltiptext" style="font-size: 12px;width: 72px;padding: 0px;margin-left:-40px;">Aceptar</span>
+          </button>
+        </div>
+        <!-- //-// -->
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <div id="modal_Gestion_Detalle" class="modal" style="margin: 0 auto;max-height:90%;width: 95%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <h5 class="margin">Detalle de Productos</h5>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12" ng-show="false">
+          <div class="col s12">
+            <!-- CAMPOS -->
+            <div class="col s12">
+              <div class="col l12 m12 s12 row" style="margin-bottom: 0px;">
+                <div class="col l6 m12 s12">
+                  <label>Producto</label>
+                  <input id="MPproducto_Recep" class="form-control margin" type="text" style="text-transform:uppercase"
+                    autocomplete="off" required ng-model="MPproducto_Recep" ng-disabled="true">
+                </div>
+                <div class="col l1 m12 s12">
+                  <label>Cantidad</label>
+                  <input id="MPcantidad_Recep" type="number" min="1" max="100000" maxlength="100000" class="validate"
+                    style="text-align:center;" ng-model="MPcantidad_Recep" ng-change="format('MPcantidad_Recep');"
+                    autocomplete="off" required>
+                </div>
+              </div>
+              <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+                <button class="btn" style="border-radius: 20px;" ng-show="MP_BtnAcAg_OREQ"
+                  ng-click="MPActuaCalc_PRO_OREQ_Lista(MPproducto_Oreq_RENGLON)"><i class="icon-cw-circle"></i>
+                  Actualizar
+                  <span style="transform: rotateY(180deg);"><i class="icon-cw-circle"></i></span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="foot4 divcardcustom">
+            <div class="text-al divcardcustom2">
+              <strong class="switch">Detalle de Productos a Aceptar</strong>
+            </div>
+          </div>
+          <div style="max-height:400px;overflow:auto;border: 2px solid;" class="default-color">
+            <table id="tabla_modal_RECEPCION" class="bordered" style="width:100%;color: black;">
+              <thead>
+                <th class="center" style="cursor:pointer">#</th>
+                <th class="center" style="cursor:pointer">Codigo del Producto</th>
+                <th class="center" style="cursor:pointer">Producto</th>
+                <th class="center" style="cursor:pointer">Concepto</th>
+                <th class="center" style="cursor:pointer">Cantidad Total</th>
+                <th class="center" style="cursor:pointer">Cantidad Aceptada</th>
+                <th class="center" style="cursor:pointer">Cantidad Pendiente Por Recibir</th>
+              </thead>
+              <tbody id="idpro">
+                <tr ng-repeat="x in Array_Gestiones_Detalle">
+                  <td class="center">{{$index + 1}}</td>
+                  <td class="center">{{x.COD_PRO}}</td>
+                  <td class="center">{{x.NOM_PRO}}</td>
+                  <td class="center">{{x.TIP_PRO}}</td>
+                  <td class="center">{{x.CANTIDAD_TOTAL}}</td>
+                  <td class="center">{{x.CANTIDAD_ACEPTADA}}</td>
+                  <td class="center">
+                    <input id="{{'Producto_'+x.COD_PRO}}" type="number" min="0"
+                      max="{{x.CANTIDAD_TOTAL-x.CANTIDAD_ACEPTADA}}" maxlength="{{x.CANTIDAD_TOTAL.length}}"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      ng-class="(x.CANTIDAD_TOTAL==x.CANTIDAD_ACEPTADA)?'': 'validate'"
+                      style="text-align:center;width: 40%;margin: 0;" ng-model="x.CANTIDAD_PENDIENTE"
+                      ng-keyup="formatNumero(x.COD_PRO);" autocomplete="off"
+                      ng-readonly="x.CANTIDAD_TOTAL==x.CANTIDAD_ACEPTADA" required>
+                    <!-- {{x.CANTIDAD}} -->
+                  </td>
+                  <!-- <td class="center">{{x.CANTIDAD}}</td> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col s12 center-align" ng-if="h3g_estado!='CARGADO A LA BODEGA'">
+          <button class="btn" style="border-radius: 15px;margin-top: 8px;" ng-click="H3_Confirmar_Productos_Gestion()">
+            Cargar productos a la bodega
+          </button>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+
+  <div id="modalPRO_ENTREGA" class="modal" style="margin: 0 auto;max-height:90%;width: 85%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+        ng-click="Cerrar_modalPRO_ENTREGA()"></div>
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <h5 class="margin">Entrega de productos</h5>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12" ng-show="true">
+          <div class="col s12">
+            <!-- CAMPOS -->
+            <div class="col s12">
+              <div class="col l12 m12 s12 row" style="margin-bottom: 0px;">
+                <div class="col l10 m12 s12">
+                  <label>Producto</label>
+                  <i class="icon-search default-color" title="Buscar Producto" style="cursor:pointer;"
+                    ng-click="MPBuscarProductos_Entrega()" ng-hide="!MP_BtnAgAc_ENTREGA"></i>
+                  <label ng-show="MPcantidadmax_Entrega != 0">Cantidad Disponible: {{MPcantidadmax_Entrega}}</label>
+
+                  <input id="MPproducto_Entrega" class="form-control margin" type="text"
+                    style="text-transform:uppercase" autocomplete="off" required ng-model="MPproducto_Entrega"
+                    ng-keyup="Complete_MP_Productos_Entrega(MPproducto_Entrega);Find_Producto_Entrega($event);"
+                    ng-blur="Blur_MP_Productos_Entrega()" ng-disabled="!MP_BtnAgAc_ENTREGA">
+                  <ul class="list-group" id="list-group-producto-entrega"
+                    style="overflow: auto;max-height: 150px;position:absolute;margin: 0;width: inherit;">
+                    <li class="list-group-item" ng-repeat="x in Filter_MD_Productos_Entrega"
+                      ng-click="FillTextbox_MP_Productos_Entrega(x.CODIGO,x.NOMBRE,x.CANTIDAD)">
+                      {{x.CODIGO}} - {{x.NOMBRE}}</li>
+                  </ul>
+                </div>
+                <div class="col l2 m12 s12">
+                  <label>Cantidad</label>
+                  <input id="MPcantidad_Entrega" type="number" min="1" max="0" class="validate"
+                    style="text-align:center;" ng-model="MPcantidad_Entrega" ng-change="format('MPcantidad_Entrega');"
+                    autocomplete="off" required>
+                </div>
+              </div>
+              <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+                <button id="MP_BtnAgAc_ENTREGA" style="border-radius: 20px;" class="btn" ng-hide="!MP_BtnAgAc_ENTREGA"
+                  ng-click="MPAgregar_PRO_ENTREGA()"><i class="icon-down-circled"></i>Agregar<i
+                    class="icon-down-circled"></i></button>
+                <button class="btn" style="border-radius: 20px;" ng-show="MP_BtnAcAg_ENTREGA"
+                  ng-click="MPActuaCalc_PRO_ENTREGA_Lista(MPproducto_Entrega_RENGLON)"><i class="icon-cw-circle"></i>
+                  Actualizar
+                  <span style="transform: rotateY(180deg);"><i class="icon-cw-circle"></i></span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="foot4 divcardcustom">
+            <div class="text-al divcardcustom2">
+              <strong class="switch">Detalle de Productos a Entregar</strong>
+            </div>
+          </div>
+          <div style="max-height:300px;overflow:auto;border: 2px solid;" class="default-color">
+            <table id="tabla_modal_ENTREGA" class="bordered" style="width:100%;color: black;">
+              <thead>
+                <th class="center" style="cursor:pointer">Renglón</th>
+                <th class="center" style="cursor:pointer">Codigo del producto</th>
+                <th class="center" style="cursor:pointer">Producto</th>
+                <th class="center" style="cursor:pointer">Cantidad</th>
+                <th class="center" style="cursor:pointer" ng-show="!h3Actualizar">
+                  -</th>
+                <th class="center" style="cursor:pointer" ng-show="h3Actualizar">
+                  Eliminar</th>
+              </thead>
+              <tbody id="idpro">
+                <tr ng-repeat="x in MPproductos_ENTREGA_lista" style="cursor:pointer"
+                  class="selctt IdPro_{{x.COD_PRO}}_Entrega">
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_ENTREGA_Lista(x)">{{x.RENGLON}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_ENTREGA_Lista(x)">{{x.COD_PRO}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_ENTREGA_Lista(x)">{{x.NOM_PRO}}</td>
+                  <td class="center" ng-click="MPSelActuaCalc_PRO_ENTREGA_Lista(x)">{{x.CANTIDAD}}</td>
+                  <td class="center" ng-show="!h3Actualizar">
+                    <div class="tooltip">
+                      <i class="material-icons default-color icon-trash btnRotate" style="cursor: pointer;"
+                        ng-click="MPBorrarCalc_PRO_ENTREGA_Lista(x)"></i>
+                      <span class="tooltiptext" style="font-size: 12px;width: 45px;margin-left: -24px;">Borrar</span>
+                    </div>
+                  </td>
+                  <td class="center" ng-show="h3Actualizar">
+                    <input type="checkbox" class="filled-in" id="check_{{$index}}" ng-model="options[$index]"
+                      ng-change="h3Change_Check($index)" ng-if="x.EXIST == true">
+                    <label for="check_{{$index}}" style="padding: 12px;" ng-if="x.EXIST == true"></label>
+                    <div class="tooltip" ng-if="x.EXIST == false">
+                      <i class="material-icons default-color icon-trash btnRotate" style="cursor: pointer;"
+                        ng-click="MPBorrarCalc_PRO_ENTREGA_Lista(x)"></i>
+                      <span class="tooltiptext" style="font-size: 12px;width: 45px;margin-left: -24px;">Borrar</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="Aquino" ng-show="MPproductos_ENTREGA_lista==null || MPproductos_ENTREGA_lista==''">
+                  <td colspan="6" class="center-align">
+                    No existen registros aún.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="default-background divcardcustom" style="display:flex;justify-content:space-around;height: 20px;">
+            <label class="white-text" style="font-weight: 600;font-size: 15px;">Cantidad total de productos:
+              {{(MPCantidadtotal_ENTREGA==null || MPCantidadtotal_ENTREGA==undefined) ? '0' : MPCantidadtotal_ENTREGA}}</label>
+          </div>
+        </div>
+        <!-- //-// -->
+        <div class="col s12 right tooltip">
+          <button class="btn" style="border-radius: 15px;margin-top: 8px;" ng-click="Cerrar_modalPRO_ENTREGA()">
+            <i class="icon-ok-circled2"></i>
+            <span class="tooltiptext" style="font-size: 12px;width: 72px;padding: 0px;margin-left:-40px;">Aceptar</span>
+          </button>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+
+
+  <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <div id="modalACAS" class="modal"
+    style="margin: 0 auto;max-height:90%;width: 90%;top:0px !important;overflow: hidden;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <div class="col s5">
+            <span class="margin" style="font-size: 1.64rem;">Mesas de ayuda ({{Array_ACAS_Count}})</span>
+          </div>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12">
+          <div class="col s3">
+            <label>Filtrar</label>
+            <input ng-model="MPFiltrar_Acas" type="text">
+          </div>
+          <div style="max-height:500px;overflow:auto;border: 2px solid;" class="default-color">
+            <table id="tabla_modal_ACAS" class="bordered highlight" style="width:100%;color: black;">
+              <thead>
+                <th class="center" style="cursor:pointer">Acas</th>
+                <th class="center" style="cursor:pointer">Ubicación</th>
+                <th class="center" style="cursor:pointer">Fecha de solicitud</th>
+                <th class="center" style="cursor:pointer">Solicitante</th>
+                <th class="center" style="cursor:pointer">Concepto</th>
+                <th class="center" style="cursor:pointer">Descripción</th>
+              </thead>
+              <tbody id="idpro">
+                <tr ng-repeat="x in Array_ACAS | filter:MPFiltrar_Acas" ng-click="Sel_ACAS(x.ACAS,x.UBICACION)"
+                  style="cursor: pointer;">
+                  <td class="center">{{x.ACAS}}</td>
+                  <td class="center"> <span style="font-weight: 600;">{{x.UBICACION_DEP}}</span><br>{{x.UBICACION_NOM}}
+                  </td>
+                  <td class="center">{{x.FECHA}}</td>
+                  <td class="center">{{x.SOLICITANTE}}</td>
+                  <td class="center">{{x.CONCEPTO}}</td>
+                  <td class="center">{{x.DESCRIPCION}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+
+  <!-- --------------------------------------------------------------------------------------- -->
+  <!-- --------------------------------------------------------------------------------------- -->
+  <!-- --------------------------------------------------------------------------------------- -->
+
+  <div id="modal_Inventario_Actual" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
+        ng-click="Cerrar_modalInventario()"></div>
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <h5 class="margin">Reporte de Inventario Actual
+          </h5>
+        </div>
+      </div>
+      <!-- CUERPO -->
+      <div class="row card-action" style="margin: 0;">
+        <div class="col s6">
+          <label>Seccional</label>
+          <select class="select-chosen-eps material-select" ng-model="ReporteInv.Seccional">
+              <option value="99" ng-show="rol==1">Todos</option>
+              <option value="1" ng-show="rol==1">Nacional</option>
+              <option value="8" ng-show="rol==1 || rol==8">Atlántico</option>
+              <option value="13" ng-show="rol==1 || rol==13">Bolivar</option>
+              <option value="15" ng-show="rol==1 || rol==15">Boyacá</option>
+              <option value="20" ng-show="rol==1 || rol==20">Cesar</option>
+              <option value="23" ng-show="rol==1 || rol==23">Cordoba</option>
+              <option value="44" ng-show="rol==1 || rol==44">Guajira</option>
+              <option value="47" ng-show="rol==1 || rol==47">Magdalena</option>
+              <option value="50" ng-show="rol==1 || rol==50">Meta</option>
+              <option value="70" ng-show="rol==1 || rol==70">Sucre</option>
+          </select>
+        </div>
+        <div class="col s6">
+          <label id="ReporteInv_Estado">Concepto</label>
+          <select class="select-chosen-eps material-select" ng-model="ReporteInv.Concepto">
+            <option value="">Todos</option>
+            <option value="AC">Aseo y Cafetería</option>
+            <option value="PA">Papelería</option>
+            <option value="PB">Publicidad</option>
+            <option value="BOT">Botiquín</option>
+          </select>
+        </div>
+      </div>
+      <!-- ///////////////// -->
+
+      <div class="row" style="margin-top: 2em;margin-bottom: 0;">
+
+        <div class="col s12 center-align" style="margin-bottom: 2em">
+          <button class="btn" style="border-radius: 20px;" ng-click="Do_Imprimir_Inventario()">Generar</button>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+  <!-- /////////////////////STYLE////////////////////////////// -->
+  <style>
+    /* /////// */
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    /* /////// */
+    .switch label .lever.check-c:after {
+      background-color: #ffffff;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #ffffff;
+    }
+
+    /* ///////////////////////////////////////////// */
+    .select-css {
+      display: block;
+      font-size: 16px;
+      font-family: sans-serif;
+      font-weight: 700;
+      color: #444;
+      line-height: 1.3;
+      padding: .6em 1.4em .5em .8em;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      border: 1px solid #aaa;
+      box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+      border-radius: .5em;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      background-color: #fff;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+        linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+      background-repeat: no-repeat, repeat;
+      background-position: right 50% top 95%, 0 0;
+      background-size: .65em auto, 100%;
+    }
+
+    .select-css::-ms-expand {
+      display: none;
+    }
+
+    .select-css:hover {
+      border-color: #888;
+    }
+
+    .select-css:focus {
+      border-color: #aaa;
+      box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+      box-shadow: 0 0 0 3px -moz-mac-focusring;
+      color: #222;
+      outline: none;
+    }
+
+    .select-css option {
+      font-weight: normal;
+    }
+
+    /* //////////////////////////////////////// */
+    .shake {
+      /* animation: zoomInLeft 5s infinite normal; */
+      animation: 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) 0s infinite normal shake;
+      /* animation: cubic-bezier(0.455, 0.03, 0.515, 0.955) 0s 1 normal both running shake; */
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+        /* transform-origin: 50% 0; */
+      }
+
+      10%,
+      90% {
+        transform: rotate(2deg);
+      }
+
+      20%,
+      40%,
+      60% {
+        transform: rotate(-4deg);
+      }
+
+      30%,
+      50%,
+      70% {
+        transform: rotate(4deg);
+      }
+
+      80% {
+        transform: rotate(-2deg);
+      }
+    }
+
+    .mainmenubtn {
+      background-color: transparent;
+      color: white;
+      border: none;
+      cursor: pointer;
+      /* padding: 20px; */
+      /* margin-top: 20px; */
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-child {
+      display: none;
+      background-color: black;
+      /* min-width: 200px; */
+    }
+
+    .dropdown-child a {
+      color: white;
+      /* padding: 20px; */
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown:hover .dropdown-child {
+      display: block;
+      position: absolute;
+    }
+
+
+
+
+
+    /* //////////////////////////////////////// */
+    @keyframes scale-in-center {
+      0% {
+        /* -webkit-transform: scale(0); */
+        /* transform: scale(0); */
+        opacity: 0;
+      }
+
+      100% {
+        /* -webkit-transform: scale(1); */
+        /* transform: scale(1); */
+        opacity: 1;
+      }
+    }
+
+
+    @keyframes scale-back-center {
+      0% {
+        /* -webkit-transform: scale(0); */
+        /* transform: scale(1); */
+        opacity: 1;
+      }
+
+      100% {
+        /* -webkit-transform: scale(1); */
+        /* transform: scale(0); */
+        opacity: 0;
+      }
+    }
+
+
+
+
+    .selected {
+      background-color: #5e85d2;
+      color: white;
+      /* pointer-events: none; */
+    }
+
+    .MP_selected_OREQ {
+      background-color: #5e85d2;
+      color: white;
+      pointer-events: none;
+    }
+
+    .MP_selected_OORD {
+      background-color: #5e85d2;
+      color: white;
+      pointer-events: none;
+    }
+
+    /* ///////////////////////////////// */
+
+
+    #toast-container .toast {
+      /* width: 470px; */
+      /* width: fit-content; */
+      border-radius: 25px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+    }
+
+    /* ///////////////////////////////// */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    /* <<<<<<<<<<<<<<<<<<TOOLTIPS>>>>>>>>>>>>>>>> */
+
+    .tip:hover {
+      cursor: help;
+    }
+
+    .tip span {
+      display: none;
+      font-weight: 600;
+    }
+
+    .tip:hover span {
+      /* border: #c0c0c0 1px dotted; */
+      display: block;
+      z-index: 100;
+      left: 20px;
+      margin: 10px;
+      position: absolute;
+      top: 10px;
+      width: 150px;
+    }
+
+
+    /* <<<<<<<<<<<<<<<<<<BUTON SEARCH>>>>>>>>>>>>>>>> */
+    .fsearch {
+      position: relative;
+      top: 50%;
+      /* left: 50%; */
+      /* transform: translate(-50%, -50%); */
+      transition: all 1s;
+      width: 50px;
+      height: 50px;
+      background: white;
+      box-sizing: border-box;
+      border-radius: 25px;
+      border: 4px solid;
+      padding: 5px;
+    }
+
+    .search {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 42.5px;
+      line-height: 30px;
+      outline: 0;
+      border: 0;
+      display: none;
+      font-size: 1em;
+      border-radius: 20px;
+      padding: 0 20px;
+      border-bottom: none;
+      color: #1a2e63;
+      text-align: center;
+    }
+
+    .fa {
+      box-sizing: border-box;
+      padding: 10px;
+      width: 42.5px;
+      height: 42.5px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      border-radius: 50%;
+      /* color: #1a2e63; */
+      text-align: center;
+      font-size: 1.2em;
+      transition: all 1s;
+    }
+
+    .fa:hover {
+      background-color: transparent;
+    }
+
+    .verbutton {
+      width: 200px;
+      cursor: pointer;
+      display: block;
+    }
+
+    .escribirinput {
+      display: block;
+    }
+
+    /* <<<<<<<<<<<<<<<<<<BUTON SEARCH>>>>>>>>>>>>>>>> */
+    .fyh {
+      background-color: #00000010;
+      border-radius: 10px;
+    }
+
+    .bloquearlabel {
+      pointer-events: none;
+    }
+
+    .selctt:hover {
+      /* background-color: rgb(102, 158, 231); */
+      background-color: rgba(0, 0, 0, 0.13);
+    }
+
+    .tabactiva {
+      /* border: 1px solid black; */
+      background-color: #00000021;
+    }
+
+    .dataTables_filter {
+      padding-top: 70px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+      float: right;
+      text-align: right;
+      padding-top: 0px;
+      margin-top: 0px;
+    }
+
+    /* /////////////////////////////////// */
+    .currency-input {
+      position: relative;
+    }
+
+    .currency {
+      padding-left: -22px;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      font-size: 21px;
+    }
+
+    /* //////////////////////////////////////////*/
+    .btnOpacity {
+      animation: opacity 2s ease-in-out infinite;
+    }
+
+    /* ////////////////////////////////////////////////// */
+    html body.cyan-scheme .vamous {
+      color: #00abc0 !important;
+    }
+
+    html body.cyan-scheme .vamous:hover,
+    html body.cyan-scheme .vamous:focus {
+      border-color: #00abc0 !important;
+      box-shadow: inset 0 0 0 2em #00abc0 !important;
+      color: white !important;
+    }
+
+    html body.blue-scheme .vamous {
+      color: #1565c0 !important;
+    }
+
+    html body.blue-scheme .vamous:hover,
+    html body.blue-scheme .vamous:focus {
+      border-color: #1565c0 !important;
+      box-shadow: inset 0 0 0 2em #1565c0 !important;
+      color: white !important;
+    }
+
+    html body.green-scheme .vamous {
+      color: #558A2F !important;
+    }
+
+    html body.green-scheme .vamous:hover,
+    html body.green-scheme .vamous:focus {
+      border-color: #558A2F !important;
+      box-shadow: inset 0 0 0 2em #558A2F !important;
+      color: white !important;
+    }
+
+    html body.purple-scheme .vamous {
+      color: #6A1B99 !important;
+    }
+
+    html body.purple-scheme .vamous:hover,
+    html body.purple-scheme .vamous:focus {
+      border-color: #6A1B99 !important;
+      box-shadow: inset 0 0 0 2em #6A1B99 !important;
+      color: white !important;
+    }
+
+    html body.yellow-scheme .vamous {
+      color: #FDA626 !important;
+    }
+
+    html body.yellow-scheme .vamous:hover,
+    html body.yellow-scheme .vamous:focus {
+      border-color: #FDA626 !important;
+      box-shadow: inset 0 0 0 2em #FDA626 !important;
+      color: white !important;
+    }
+
+    html body.dark-scheme .vamous {
+      color: #111 !important;
+    }
+
+    html body.dark-scheme .vamous:hover,
+    html body.dark-scheme .vamous:focus {
+      border-color: #111 !important;
+      box-shadow: inset 0 0 0 2em #111 !important;
+      color: white !important;
+    }
+
+    .vamous:hover,
+    .vamous:focus {
+      border-color: #1a2e63;
+      color: white !important;
+      box-shadow: inset 0 0 0 2em #1a2e63;
+    }
+
+    .vamous {
+      color: #1a2e63;
+      background: none;
+      border: 5px solid;
+      font: inherit;
+      font-weight: 600;
+      /* line-height: 1; */
+      margin: 0.1em;
+      /* padding: 1em 2em; */
+      transition: 0.25s;
+      -webkit-transition: 0.25s;
+    }
+
+    /* ============================================================================== */
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #304b92;
+      border-radius: 25px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      background: #1a2e63;
+      border-radius: 25px;
+      border: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      color: white !important;
+      border: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate,
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border: 0 !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border-right: 0;
+    }
+
+    .dt-buttons {
+      margin-bottom: -5em;
+    }
+  </style>

@@ -1,0 +1,509 @@
+<div id="adminautprog">
+  <div class="row">
+    <div class="col s12 m12 l12 magazine margin widgets-tabs">
+      <div class="card-panel widgets-tabs col l12" style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+        <div class="col no-padding" style="width: 100%;">
+          <div class="col s12 l12">
+            <div class="card" style="box-shadow: none;border: 1px solid rgba(160, 160, 160, 0.2);">
+              <div class="card-content" style="    display: flex;
+                      justify-content: space-between;
+                      align-items: center;">
+                <h5 style="text-align: center;">Excepciones Error 50</h5>
+              </div>
+              <div class="card-action" style="padding: 0;">
+                <div class="row">
+                  <div id="visitchart">
+                    <div class="col s12">
+
+                      <p style="text-align: center;padding-bottom: 20px;">Cantidad total de Excepciones =
+                        {{listaExcepciones.length}}</p>
+                      <div class="row" ng-hide="listaExcepciones.length==0">
+                        <div class="col s4">
+
+                          <span style="cursor: pointer;" ng-click="openmodals('nuevaexcepcion');">Nuevo <i
+                              class="icon-plus"></i></span>
+                        </div>
+                        <div class="col s4 text-center">
+                          <span style="cursor: pointer;" ng-click="listarexpeciones();">Refrescar <i
+                              class="icon-loop-2"></i></span>
+                        </div>
+                        <div class="col s4">
+                          <input type="text" style="float: right;margin-bottom: 10px"
+                            class="margin border-none input-text-new" ng-keyup="filterExcepcion(filtroMipres)"
+                            ng-model="filtroMipres" placeholder="Buscar">
+                        </div>
+
+                      </div>
+                      <table class="responsive-table table-bordered striped" style="height:100px;">
+                        <thead>
+                          <tr>
+                            <th class="text-center"> #</th>                            
+                            <th class="text-center"> TIPO DOCUMENTO </th>
+                            <th class="text-center"> DOCUMENTO </th>
+                            <th class="text-center"> REGIMEN </th>
+                            <th class="text-center"> FECHA AUTORIZADO </th>
+                            <th class="text-center"> OBSERVACION </th>
+                            <th class="text-center"> AUTORIZADO POR </th>                            
+                            <th class="text-center">ACCIONES</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            ng-repeat="item in listaExcepcionesprogTemp | inicio: currentPageExcepciones * pageSizeExcepciones | limitTo: pageSizeExcepciones"
+                            ng-hide="listaExcepcionesprogTemp.length == 0">
+                            <td class="text-center">
+                              {{$index+1}}
+                            </td>
+                           
+                            <td class="text-center"> {{item.tipo_doc}} </td>
+                            <td class="text-center"> {{item.documento}} </td>
+                            <td class="text-center"> {{item.regimen=='S' ? 'SUBSIDIADO':'CONTRIBUTIVO'}} </td>
+                            <td class="text-center"> {{item.fecha_autorizado}} </td>
+                            <td class="text-center"> {{item.observacion}} </td>
+                            <td class="text-center"> {{item.autorizado_por}} </td>
+                            <td class="text-center">
+                              <i class=" icon-trash cursor-pointer" ng-click="accionexcepcion(item,'U');">
+                                Remover
+                              </i>
+                            </td>
+                          </tr>
+                          <tr ng-show="listaExcepcionesprogTemp.length==0">
+                            <td class="text-center" colspan="8">No hay EXCEPCIONES</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <ul style="padding-top: 20px;" class="pagination text-center">
+                        <li><button ng-disabled='currentPageExcepciones == 0' class="btn-floating default-background"
+                            ng-click="pasoExcepciones('back')">&laquo;</button></li>
+                        <li ng-repeat='page in pagesExcepciones'><button
+                            ng-disabled='currentPageExcepciones == page.no - 1' class="btn-floating default-background"
+                            ng-click='setPageExcepciones(page.no)'>{{page.no}}</button></li>
+                        <li><button
+                            ng-disabled='currentPageExcepciones >= listaExcepcionesprogTemp.length/pageSizeExcepciones - 1'
+                            class="btn-floating default-background" ng-click="pasoExcepciones('next')">&raquo;</button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+       
+
+          <div id="nuevaexcepcion" class="modal" style="width: 80%!important; max-height: 100%;">
+            <div class="modal-content" style="padding: 0px !important;">
+              <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+                <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+                  <div class="card-content foot4" style="padding: 0">
+                    <div class="col s11">
+                      <h5 class="white-text">Nueva Excepción</h5>
+                    </div>
+                    <div class="col s1">
+                      <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('nuevaexcepcion')"
+                          class="material-icons white-text">close</i></h5>
+                    </div>
+                  </div>
+                 <div class="card-action" style="border-top: 0">                  
+                  <div class="row" ng-hide="hideSearchafiliado">
+                    <div class="col s12">
+                      <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+                      <h5>Consultar Afiliado</h5>
+                    </div>
+                    <div class="col s12">
+                      <form ng-submit="buscarAfiliado(vtipodocumento,vdocumento)">
+                        <div class="col s12">
+                          <div class="col s4 offset-s3">
+                            <div class="input-field col m12 s12">
+                              <label style=" margin-top: -20px;">Tipo Documento:</label>
+                              <select class="select-chosen-eps" ng-model="vtipodocumento" required>
+                                <option value="">SELECCIONAR</option>
+                                <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+                                <option value="TI">TARJETA DE IDENTIDAD</option>
+                                <option value="RC">REGISTRO CIVIL</option>
+                                <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                                <option value="PA">PASAPORTE</option>
+                                <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                                <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                                <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                                <option value="CD">CARNET DIPLOMÁTICO</option>
+                                <option value="SC">SALVO CONDUCTO</option>
+                                <option value="CN">NACIDO VIVO </option> -->
+                                <option value="{{x.CODIGO}}"  ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col s4">
+                            <div class="input-field col m12 s12">
+                              <input id="with_icon" type="text" ng-model="vdocumento" class="validate" required>
+                              <label for="with_icon" class="">Documento</label>
+                            </div>
+                          </div>
+                          <div class="col s1">
+                            <div class="input-field col m12 s12">
+                              <button class="btn white-text" type="submit"
+                                style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                                  class="material-icons prefix">search</i></button>
+                            </div>
+                          </div>
+                      </form>
+                    </div>                  
+                  </div>                                               
+                  </div>
+                  <div class="row" ng-show="hideSearchafiliado">
+                    <div class="col s12">
+                      <blockquote class="display-flex noselectxtpqr" style="margin: 10px 0;">
+                        <strong class="c-none">DATOS DEL AFILIADO</strong>
+                      </blockquote>
+                      <table class="responsive-table table-bordered" style="height:100px;">
+                        <thead>
+                          <tr>
+                            <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                            <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                            <th data-field="NACIMIENTO de Nacimiento" class="center-align">NACIMIENTO</th>
+                            <th data-field="EDAD" class="center-align">EDAD</th>
+                            <th data-field="UBICACION" class="center-align">UBICACION</th>
+                            <th data-field="GENERO" class="center-align">GENERO</th>
+                            <th data-field="REGIMEN" class="center-align">REGIMEN</th>              
+                            <th ng-if="infoafiliado.CodigoRegimen=='S'" data-field="SISBEN" class="center-align">SISBEN</th>                  
+                            <th ng-if="infoafiliado.CodigoRegimen=='C'" data-field="CONTRIBUTIVO" class="center-align">CONTRIBUTIVO</th>                  
+                            <th data-field="IPS ANTERIOR" class="center-align" ng-if="infoafiliado.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                            <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="center-align">{{infoafiliado.NombreCompleto}}</td>
+                            <td class="center-align">{{infoafiliado.TipoDocumento}} - {{infoafiliado.Documento}}
+                            </td>
+                            <td class="center-align">{{infoafiliado.FechaNacimiento}}</td>
+                            <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                            <td class="center-align">{{infoafiliado.Municipio}}</td>
+                            <td class="center-align">{{infoafiliado.Sexo}}</td>
+                            <td class="center-align">{{infoafiliado.Regimen}}</td>                  
+                            <td class="center-align">NIVEL {{infoafiliado.NIVEL}}</td>
+                              <td class="center-align" ng-if="infoafiliado.SUPERSALUD!='CajacopiEPS'">
+                              <span class="status purple" style="text-transform: uppercase;">{{infoafiliado.SUPERSALUD}}</span>                    
+                            </td>
+                            <td class="center-align"><span class="status green">{{infoafiliado.Estado}}</span></td>
+                           
+                            <td ng-show="infoafiliado.SINIESTRO == 'true'" class="center-align"><span
+                                class="status orange">ALTO
+                                COSTO</span></td>
+                            <td ng-show="infoafiliado.TUTELA == 'true'" class="center-align"><span
+                                class="status red">TUTELA</span></td>
+                            <td ng-show="infoafiliado.PORTABILIDAD=='S'">
+                              <span class="status light-blue">PORTABILIDAD</span>
+                            </td>
+                            <td ng-show="infoafiliado.ERROR_50=='true'" class="center-align">
+                              <span class="status black" style="color:#fff">ERROR_50</span>
+                            </td>
+                            <td ng-if="infoafiliado.AFIC_T045=='S'" class="center-align">
+                              <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                          </td>                        
+                          </tr>
+                        </tbody>
+                      </table>
+  
+                    </div>  
+                    <div class="row">
+                      <div class="col s12">
+                      <div class="input-field col s12" style="margin-top: 15px;">
+                        <textarea id="observacion" class="materialize-textarea" ng-model="observacion"
+                          style="padding-top: 0px; padding-bottom: 0px;"></textarea>
+                        <label for="observacion" class="textarea-label">Observación</label>
+                      </div>
+                    </div>
+                    </div>
+                  </div>    
+                  <div class="row">
+                    <div class="col s12" style="display: flex;justify-content: center;align-items: center">
+                      <button class="btn white-text red" type="button"
+                        ng-click="hideSearchafiliado==false ?closemodals('nuevaexcepcion'): restSearch()">CANCELAR</button>
+                      <button ng-show="hideSearchafiliado" class="btn white-text m-l" ng-click="accionexcepcion(observacion, 'I');">GUARDAR</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <style>
+          .tab a:hover {
+            background-color: #ddd !important;
+            color: white !important;
+          }
+
+          /* Style the active class (and buttons on mouse-over) */
+          .activebtn-step,
+          .activebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+          }
+
+          .step-item {
+            height: 100px;
+            width: 100px;
+            border-radius: 100px;
+            padding: 0px;
+          }
+
+          .donebtn-step,
+          .donebtn-step:hover {
+            background-color: #2196f3 !important;
+            color: white !important;
+          }
+
+          .steper {
+            width: 60%;
+            display: inline-flex;
+            text-align: center;
+            padding-bottom: 10px;
+            margin-left: 20%;
+          }
+
+          .step-divider {
+            width: 100%;
+            position: relative;
+            top: 30px;
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 20px;
+          }
+
+          .btn-step-content {
+            position: relative;
+            display: none;
+            height: calc(100% - 132px);
+            width: inherit;
+            overflow: visible;
+            margin-left: 41px;
+            margin-right: 24px;
+          }
+
+          .step-option {
+            background: #eee;
+            height: 70px;
+            position: absolute;
+            bottom: -45px;
+            width: 100%;
+            margin-bottom: 6px;
+            left: 0px;
+            z-index: 2;
+          }
+
+          .back-step,
+          .back-step:hover {
+            margin-top: 7px;
+            position: absolute;
+            right: 80px;
+            background: #ff4350 !important;
+          }
+
+          .flex {
+            display: flex !important;
+          }
+
+          .btn-step {
+            background-color: rgba(0, 0, 0, .3);
+            color: white;
+          }
+
+          .hover-item:hover {
+            background-color: rgba(221, 221, 221, 0.45);
+          }
+
+          .hover-item:active {
+            background-color: rgba(221, 221, 221, 0.45);
+          }
+
+          .tabmenu>li:target>a {
+            background-color: rgba(221, 221, 221, 0.45);
+          }
+
+          .requerido {
+            color: red !important;
+          }
+
+          .tabactiva {
+            background-color: rgba(206, 206, 206, 0.71);
+          }
+
+          .colorblack {
+            color: black;
+          }
+
+          .itemsspam {
+            color: white !important;
+            border-radius: 12px !important;
+            box-shadow: 2px 2px 3px 0px #ccc !important;
+            position: relative !important;
+            top: 5px !important;
+            left: 11px !important;
+            cursor: pointer;
+          }
+
+          .hovpanel:hover {
+            background: #32364c2b;
+            color: #ffa51b;
+            cursor: pointer;
+          }
+
+          .mayus {
+            text-transform: uppercase;
+          }
+
+          #header-fixed {
+            position: fixed;
+            top: 0px;
+            display: none;
+          }
+
+          .cuadrado {
+            width: 25vh;
+            max-width: 240px;
+            height: 25vh;
+            max-height: 240px;
+            position: relative;
+            background: white;
+            box-shadow: 0 0 8px 1px #c7c7c7;
+          }
+
+          .coloritem {
+            color: black !important;
+          }
+
+          .autprocesada {
+            background-color: #4CAF50 !important;
+          }
+
+          .autactiva {
+            background-color: #ff9800 !important;
+          }
+
+          .switch label {
+            font-weight: 600;
+          }
+
+          .switch label .lever.check-c {
+            background-color: #818181 !important;
+          }
+
+          .switch label .lever.check-c:after {
+            background-color: #26a69a;
+          }
+
+          .switch label>span.activo {
+            color: #26a69a !important;
+          }
+
+          .text-center {
+            text-align: center;
+          }
+
+          div#modaldetalle {
+            top: 1% !important;
+          }
+
+          div#modalnovedades {
+            top: 1% !important;
+          }
+
+          .outer {
+            width: 1px;
+            height: 100%;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+          }
+
+          .inner {
+            /* position: absolute; */
+            width: 100%;
+            height: 50vh;
+            background: grey;
+            top: 30%;
+            box-shadow: 0px 0px 30px 20px grey;
+          }
+
+          .style-table-default {
+            height: 350px;
+            overflow: auto;
+          }
+
+          /* Style Scroll */
+          .scrollTableDefault::-webkit-scrollbar {
+            /* width */
+            width: 5px;
+          }
+
+          .scrollTableDefault::-webkit-scrollbar-track {
+            /* Track */
+            background: #f1f1f1;
+          }
+
+          .scrollTableDefault::-webkit-scrollbar-thumb {
+            /* Handle */
+            background: #888;
+          }
+
+          .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+            /* Handle on hover */
+            background: #555;
+          }
+
+          .swal2-container {
+            z-index: 10000 !important;
+          }
+
+          #tautorizaciones_length,
+          #tautorizaciones_filter,
+          #tautorizacionespro_length,
+          #tautorizacionespro_filter {
+            margin-top: -150px;
+          }
+
+          #tautorizaciones_filter,
+          #tautorizacionespro_filter {
+            margin-right: 10px;
+          }
+
+          #tautorizacionespro {
+            width: 100% !important;
+          }
+
+          #tautorizaciones_paginate,
+          #tautorizacionespro_paginate {
+            margin-top: 15px;
+          }
+
+          .clase-gray {
+            color: #736a6a !important;
+          }
+
+          .spancount {
+            position: absolute;
+            font-size: 10px;
+            height: 15px;
+            width: auto;
+            min-height: 15px;
+            min-width: 20px;
+            border-radius: 50%;
+            top: 10px;
+            left: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .d-flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        </style>
+      </div>
+    </div>

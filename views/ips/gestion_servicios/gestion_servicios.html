@@ -1,0 +1,313 @@
+<div >
+	<div id="my_menu" class="row section-header" style="background: #9897e81f;margin-bottom: 0">
+		<div class="col l12">
+			<ul class="left mailbox-custom-search list-inline"
+				style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+				<li>
+					<h5
+						style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;">
+						Gestión Agendamientos de
+						Autorizaciones</h5>
+				</li>
+				<li style="display:flex;align-items: center;margin-top: 16px;" ng-show="isSet(1)">
+					<i class="icon-search-2" ng-hide="verfiltrar" ng-click="verfiltrar=true;" style="
+																				top: 164px;cursor: pointer;
+																				">Filtrar</i>
+					<input id="buscarautaa" ng-show="verfiltrar"
+						style=" width: 300px; background: rgb(235, 235, 245); margin-bottom: -9px;  margin-top: -19px;   transition: none;"
+						ng-change="filter(val)" type="text" ng-model="val" placeholder="Filtrar..."
+						class="ng-pristine ng-valid ng-touched">
+					<i ng-click="verfiltrar=false;filter('');val=''" ng-show="verfiltrar" class="icon-cancel-3"></i>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="container" style="width: 95%">
+		<div class="row">
+			<div class="col l12 m12 s12" ng-hide="mostra_formulario">
+
+				<div class="card inbox-element inbox-4" style="">
+					<div class="row card-content">
+						<div class="col l12 m12 s12">
+							<ul tabs="" reload="allTabContentLoaded"
+								class="ng-isolate-scope tabs ui-tabs ui-corner-all ui-widget ui-widget-content">
+								<li class="tab col l12" style="cursor: pointer;">
+									<a ng-class="{ active: isSet(1) }" ng-click="val='';setTab(1)" id="tab"
+										class="col l12 large waves-effect waves-pink tabI">
+										Agendamiento unico
+									</a>
+								</li>
+								<li class="tab col l12" style="cursor: pointer;">
+									<a ng-class="{ active: isSet(2) }" ng-click="setTab(2); cargar_datos()"
+										class="col l12 large waves-effect waves-pink tabII">
+										Agendamiento Masivo
+									</a>
+								</li>
+								<li class="tab col l12" style="cursor: pointer;">
+									<a ng-class="{ active: isSet(3) }" ng-click="setTab(3); cargar_datos()"
+										class="col l12 large waves-effect waves-pink tabIII">
+										Autorizaciones
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row" ng-hiden="isSet(2)">
+						<div class="row" ng-show="isSet(3)">
+							<div class="row">
+								<form class="col s12">
+									<div class="row">
+										<div class="input-field col s8 offset-s1">
+											<input id="with_icon" type="text" ng-model="coincidencia" class="validate">
+											<label for="with_icon">Buscar por código de autorización o Número Documento
+												del
+												paciente</label>
+										</div>
+										<div class="input-field col s2">
+											<center><button class="waves-effect waves-light btn-large white-text pink"
+													ng-click="carga_listado_agendadas()">Buscar</button></center>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="col l12 m12 s12 responsive" ng-show="mostrar_tabla" style="padding:20px">
+							<table class="table table-bordered table-striped">
+								<thead class="white-text default-background">
+									<tr>
+										<th style="text-align:center;font-size: 14px">#</th>
+										<th style="text-align:center; width: 90px;font-size: 14px">NUMERO</th>
+										<th style="text-align:center;font-size: 14px">FECHA DE AUTORIZACIÓN</th>
+										<th style="text-align:center;font-size: 14px">DOCUMENTO</th>
+										<th style="text-align:center;font-size: 14px;">NOMBRE AFILIADO</th>
+										<th style="text-align:center;font-size: 14px;">SERVICIO</th>
+										<th style="text-align:center;font-size: 14px;">RÉGIMEN</th>
+										<th style="text-align:center;font-size: 14px;">CLASE</th>
+										<th style="text-align:center;font-size: 14px;">DETALLE</th>
+										<th ng-show="Mostrar_gestion" style="text-align:center;font-size: 14px;">ACCIÓN
+										</th>
+										<th ng-hide="Mostrar_gestion" style="text-align:center;font-size: 14px;">FECHA
+											AGENDAMIENTO</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="mda in mesasayudasTemp  | inicio: currentPage * pageSize  | limitTo: pageSize "
+										ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}">
+										<td>{{$index+1 + (currentPage * pageSize)}}</td>
+										<td>{{mda.NUMERO}}</td>
+										<td>{{mda.FECHA}}</td>
+										<td>{{mda.DOCUMENTO}}</td>
+										<td>{{mda.NOMBRE_AFI}}</td>
+										<td>{{mda.SERVICIO}}</td>
+										<td>{{mda.REGIMEN}}</td>
+										<td>{{mda.CLASE}}</td>
+										<td ng-click="detalle(mda.DETALLE,mda.SERVICIO)" style="text-align:center;">
+											<div class="tooltip" style="border-bottom: 0px !important;">
+												<span class="tooltiptext"
+													style="width: 120px; background-color: #34446dc2; border-radius :14px; margin-top: -1px;  padding: 1px 0;">
+													Ver detalles de Autorización
+												</span>
+												<i class="icon-eye-outline"
+													style="margin-top: -1px;font-size: 24px"></i>
+											</div>
+										</td>
+										<td ng-hide="mda.FECHAGENERADA" ng-click="gestion(mda.NUMERO,mda.FECHA)"
+											style="text-align:center;">
+											<div class="tooltip" style="border-bottom: 0px !important;">
+												<span class="tooltiptext"
+													style="width: 120px;      background-color: #34446dc2;      border-radius :14px;      margin-top: -1px;        padding: 1px 0;">
+													Gestionar Autorización
+												</span>
+												<i class="icon-cog-alt" style="margin-top: -1px;font-size: 24px"></i>
+											</div>
+										</td>
+										<td ng-show="mda.FECHAGENERADA">{{mda.FECHAGENERADA}}</td>
+									</tr>
+
+								</tbody>
+								<tfoot>
+									<tr ng-if="mostrar_registros">
+										<td colspan="10">
+											<center>
+												<h5>No se ha encontrado Registros</h5>
+											</center>
+										</td>
+									</tr>
+								</tfoot>
+							</table>
+							<ul style="text-align: right;" class="pagination" ng-if="!mostrar_registros">
+								<li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+										ng-click="paso('back')">&laquo;</button></li>
+								<li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+										class="btn-floating default-background"
+										ng-click='setPage(page.no)'>{{page.no}}</button></li>
+								<li><button ng-disabled='currentPage >= mesasayudasTemp.length/pageSize - 1'
+										class="btn-floating default-background" ng-click="paso('next')">&raquo;</button>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row" ng-show="isSet(2)">
+						<div class="col s12" style="padding: 8px 10%;">
+							<div class="box-body table-responsive">
+								<!-- form start -->
+								<form role="form" class="form-horizontal" name="bulkDirectForm" method="post"
+									enctype="multipart/form-data" novalidate>
+									<div class="box-body">
+										<div id="messages" class="alert alert-success" data-ng-show="messages"
+											data-ng-bind="messages"></div>
+										<div id="warning" class="alert alert-warning" data-ng-show="warning"
+											data-ng-bind="warning"></div>
+
+										<div class="row">
+											<div class="col l12 ">
+												<h6>
+													<i class="icon-doc"></i>
+													Para agendar más de una Autorización subir un archivo con los
+													siguientes instrucciones</h6>
+											</div>
+											<div class="col l12 ">
+												<div class="col l12 m12 s12"
+													style="border: 1px solid #1a2e6345;padding: 10px;">
+													<h6><i class="icon-check-1">El Archivo .txt delimitado por ( , )
+														</i><br>
+														<i class="icon-check-1">El Archivo solo debe contener dos
+															columnas, (CODIGO, FECHA) en mayuscula</i><br>
+														<i class="icon-check-1">El numero de la autorización sin comas
+															ni puntos</i><br>
+														<i class="icon-check-1">La fecha de agendamiento con el
+															siguiente formato DD/MM/AAAA</i><br>
+													</h6>
+												</div>
+
+											</div>
+											<div class="col l12 file-field input-field">
+												<div class="btn">
+													<span class="white-text">Archivo</span>
+													<input type="file" id="bulkDirectFile"
+														placeholder="CSV file with phone numbers and amount"
+														ng-model="prd.bulk_direct_file" required accept=".txt">
+												</div>
+												<div class="file-path-wrapper">
+													<input id="nombreadjunto" class="file-path" type="text"
+														ng-change="submitForm()" placeholder="Seleccione Archivo"
+														ng-model="nombreadjunto">
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col l6 m6 s12" ng-show="title" id="Table">
+													<h6 style="
+													text-transform: uppercase;
+													padding: 10px;
+												" class="fontello-icon">Autorizaciónes a  Subir</h6>
+												<div style="width:300px;height: 481px;overflow: auto;margin-top:31px">
+													<table style="cursor:pointer;" id="tabla_json_csv">
+														<thead
+															style="margin-top:-30px;position: absolute;z-index: 1;background: #ffffff">
+															<tr>
+																<td style="width:10em"><b>CÓDIGO</b></td>
+																<td style="width: 171px;"><b>FECHA</b></td>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}"
+																id="DM{{cp.NUMERO}}" class="c-pointer"
+																ng-repeat="cp in json_csv2 ">
+																<!-- <td style="width:60px">{{$index}}</td> -->
+																<td style="width:10em">{{cp.NUMERO}}</td>
+																<td style="width: 220px;">{{cp.FECHA}}</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<div class="col l6 m6 s12" ng-show=title>
+												<div ng-hide="json_csv3" class="col l12 ">
+													<i ng-click="subir_masivo()" class="icon-upload-cloud"
+														style="border: 1px solid;border-radius: 7px;padding: 10px;color: #039be5;text-align: center;display: flex; margin: 10px; align-items: center;width: 17em;">
+														<strong style="margin-left: 7px;font-style: normal;">Desea subir
+															la Información </strong> </i>
+												</div>
+												<div ng-show="json_csv3"
+													style="height: 481px;overflow: auto;margin-top:80px">
+												
+													<table style="cursor:pointer;" id="tabla_json_csv">
+														<thead
+															style="margin-top:-87px;position: absolute;z-index: 1;background: #ffffff">
+															<tr>
+																
+																	<td colspan="3"><b>	<h6 style="
+																		text-transform: uppercase;
+																	" class="fontello-icon">Resumen de las Autorizaciónes subida</h6></b></td>
+															</tr>
+															<tr>
+
+																<td style="width:10em"><b>CÓDIGO</b></td>
+																<td style="width: 122px;"><b>SUBIDO</b></td>
+																<td style="width: 122px;"><b>MENSAJE</b></td>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-style="{background:  [($index%2)==0?'#fff':'#ebebf5']}"
+																id="DM{{sub.NUMERO}}" class="c-pointer"
+																ng-repeat="sub in json_csv3 ">
+																<!-- <td style="width:60px">{{$index}}</td> -->
+																<td style="width: 12em">{{sub.Autorizacion}}</td>
+																<td style="width: 220px;"><i ng-class="sub.Codigo!=1?'icon-check':'icon-check-empty'"></i>
+																<td style="width: 24em;">{{sub.Mensaje}}</td>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div ng-show="json_csv3" class="col l3" style="">
+											</div>
+											<div ng-show="json_csv3" class="col l6 ">
+												<i ng-click="json_csv3=undefined;json_csv2=undefined;title=false"
+													class="icon-erase"
+													style="border: 1px solid;border-radius: 7px;padding: 10px;color: #039be5;text-align: center;display: flex; margin: 10px; align-items: center;width: 17em;">
+													<strong style="margin-left: 7px;font-style: normal;">Desea subir
+														nueva Información </strong> </i>
+											</div>
+
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<style>
+		.content {
+			background: #efefef;
+			padding: 20px;
+			margin-top: 25px;
+			line-height: 1.8;
+		}
+
+		a.active {
+			border-bottom: 1px solid;
+		}
+
+		th {
+			border: none !important;
+		}
+
+		li {
+			cursor: pointer !important;
+		}
+
+		i {
+			cursor: pointer !important;
+		}
+	</style>
+</div>

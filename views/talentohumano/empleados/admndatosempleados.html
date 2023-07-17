@@ -1,0 +1,1439 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer"
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+          onclick="location.reload();">
+          Administracion Información del Funcionario
+        </h5>
+      </li>
+    </ul>
+  </div>
+
+  <!-- //////////////////////////////////IMAGEN DE FONDO////////////////////////////////// -->
+  <div class="row dashboard-wrapper content-container white" style="height: 83vh;">
+    <div class="col l12 m12 s12 center" ng-show="img">
+      <div style="position: absolute;width: 66vw;margin-top: 11em;margin-left: 5em;">
+        <div id="Imagen_back">
+          <img src="images\administrativa\consultatercero.svg" alt="Imagen">
+        </div>
+      </div>
+    </div>
+    <!-- //FIN IMAGEN DE FONDO// -->
+    <!-- Div tipo de busqueda -->
+    <div class="card-content clearfix card" id="card-content" ng-style="{ 'width' : (!tipoPorCedula) ? '30%' : '60%' }"
+      style="width: 30%;margin: 1rem auto auto auto;border-radius: 15px;">
+      <div class="row" style="margin-bottom: 0;margin-top: 1rem;" ng-show="search">
+        <!--  ng-show="search" -->
+        <div class="col s12">
+          <div class="col s12 no-padding label-new m-b center">
+            <input type="text" id="Form_Nombre" class="margin border-none input-text-new w-100 m-l"
+              style="text-transform:uppercase" autocomplete="off" ng-model="form.InputNombre"
+              ng-keyup="KeyFind_Usuario($event);">
+            <label>Nombre de Funcionario o Cedula
+            </label>
+          </div>
+
+        </div>
+        <div class="col s12 center m-b" style="margin-bottom: 15px;">
+          <!-- <button class="btn waves-effect waves-light" ng-click="Change()" style="border-radius: 15px;"><i
+              class="icon-arrows-cw"></i></button> -->
+          <button class="btn waves-effect waves-light" ng-click="BuscarUsuarios(form.InputNombre)"
+            style="border-radius: 15px;" ng-show="!divInfo"><i class="icon-search"></i></button>
+          <button class="btn waves-effect waves-light" ng-click="Cerrar()" style="border-radius: 15px;"
+            ng-show="divInfo"><i class="icon-cancel"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- ///fin Div tipo de busqueda// -->
+
+    <!-- tabla resultado de busqueda por nombre -->
+    <div id="Form" class="card-content clearfix card" ng-show="resultadoBusqueda"
+      style="width: 80%; margin: 1rem auto auto auto;border-radius: 15px;">
+      <div class="Anim_Show Form_Desactivados" style="margin: auto;width: 90;">
+        <div class="row" style="margin-bottom: 0;width: 98%;margin-top: 1rem;">
+          <div class="foot4 divcardcustom default-linear-gradient border-none">
+            <div class="text-al divcardcustom2">
+              <div class="row">
+                <div class="col">
+                  <strong style="font-weight:600">Resultados de busqueda</strong>
+                </div>
+                <div class="col right">
+                  <input type="text" placeholder="Filtro" id="filter" ng-model="filter"
+                    style="height: 23px;width: 231px;">
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="tabla-result" style="max-height: 57vh;">
+            <table class="responsive-table" id="resultados">
+              <thead>
+                <tr>
+                  <th style="text-align: center;">Documento</th>
+                  <th style="text-align: center;">Nombre</th>
+                  <th style="text-align: center;">Cargo</th>
+                  <th style="text-align: center;">Estado</th>
+                  <th style="text-align: center;">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="us in usuarios | filter: filter">
+                  <td style="text-align: center;">{{us.cedula}}</td>
+                  <td style="text-align: center;">{{us.nombre}}</td>
+                  <td style="text-align: center;">{{us.cargo}}</td>
+                  <td style="text-align: center;">{{us.estado}}</td>
+                  <td><i ng-click="SearchCedula(us.tipo, us.cedula)"
+                      style="cursor:pointer; position: relative; left: 40%;" class="material-icons">visibility</i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- fin tabla resultado de busqueda por nombre -->
+
+
+    <div class="Hoja_2" ng-show="divInfo">
+      <div class="row" style="width: 100%;">
+        <div class="card-content clearfix card" style="width: 100%;margin: 1rem auto auto auto;border-radius: 15px;">
+          <ul class="tabs nav" style="background-color: transparent;margin: .5vh;width: 99%;overflow: hidden;">
+            <li class="tab col w-auto active"><a id="Tab1" href ng-click="setTab(1)" class="active"><strong
+                  style=" font-weight: bold;">Empresarial</strong></a>
+            </li>
+            <li class="tab col w-auto"><a id="Tab2" href ng-click="setTab(2)"><strong
+                  style="font-weight: bold;">Adicional</strong></a></li>
+            <li class="tab col w-auto"><a id="Tab3" href ng-click="setTab(3)"><strong
+                  style="font-weight: bold;">Educativa</strong></a></li>
+            <li class="tab col w-auto"><a id="Tab4" href ng-click="setTab(4)"><strong
+                  style="font-weight: bold;">Beneficiarios</strong></a></li>
+            <li class="tab col w-auto"><a id="Tab5" href ng-click="setTab(5)"><strong
+                  style="font-weight: bold;">Medidas</strong></a>
+            </li>
+            <li class="tab col w-auto"><a id="Tab6" href ng-click="setTab(6)"><strong
+                  style="font-weight: bold;">Novedades</strong></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 0;margin-top: 1rem;" ng-show="divInfo">
+      <div class="col s12 " style="width: 100%; margin-left: 14vh; margin: 0;margin-bottom: 17px;">
+        <div class="col s5 card" style="border-radius: 15px; margin-right: 3vh;" id="s5-dairo">
+          <div style="margin-top: 10px;">
+            <div>
+              <strong class="default-color" style="font-weight: bold; margin-left: 2vw;">INFORMACION PERSONAL</strong>
+              <hr class="default-background" style="height: 2px;">
+            </div>
+          </div>
+          <div class="row" ng-show="form.status3 == 0"
+            style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;">
+            <div class="col" style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(65vh + 15px);">
+              <div class="row" ng-hide="cardempresarial2">
+                <div class="card-content" style="padding: 0px;">
+                  <spam>
+                    <h5 style="font-size: x-large; margin-left: 2vw">{{datos.pnombre}} {{datos.snombre}}
+                      {{datos.papellido}} {{datos.sapellido}}</h5>
+                  </spam>
+                </div>
+                <ul class="collection border-none profile-collection">
+                  <li class="collection-item transparent avatar">
+                    <div class="foot4 circle">
+                      <div class="default-color"
+                        style="margin-left: -9px; color: #ffffff; font-size: 50px; padding-top: 8px;">
+                        {{datos.iniciales}}</div>
+                    </div>
+                    <div>
+                      <P><strong class="default-color">Tipo Documento: </strong>
+                        <spam>{{datos.tipo == 'C' ? 'CC' : 'TI'}}</spam>
+                      </P>
+                      <P><strong class="default-color">Documento: </strong>
+                        <spam>{{datos.cedula}}</spam>
+                      </P>
+                      <P><strong class="default-color">Fecha Nacimiento: </strong>
+                        <spam>{{datos.nacimiento}}</spam>
+                      </P>
+                      <P><strong class="default-color">Sexo: </strong>
+                        <spam>{{datos.sexo}}</spam>
+                      </P>
+                      <P><strong class="default-color">Grupo Sanguineo: </strong>
+                        <spam>{{datos.rh}}</spam>
+                      </P>
+                      <P><strong class="default-color">Estado Civil: </strong>
+                        <spam>{{datos.estado_civil}}</spam>
+                      </P>
+                      <P><strong class="default-color">Peso: </strong>
+                        <spam>{{datos.peso}}Kg</spam>
+                      </P>
+                      <P><strong class="default-color">Estatura: </strong>
+                        <spam>{{datos.estatura}} cm</spam>
+                      </P>
+                      <P><strong class="default-color">Telefono: </strong>
+                        <spam>{{datos.telefono}}</spam>
+                      </P>
+                      <P><strong class="default-color">Celular: </strong>
+                        <spam>{{datos.celular}}</spam>
+                      </P>
+                      <P><strong class="default-color">Departamento: </strong>
+                        <spam>{{datos.dpto_nom}}</spam>
+                      </P>
+                      <P><strong class="default-color">Ciudad: </strong>
+                        <spam>{{datos.mun_nom}}</spam>
+                      </P>
+                      <P><strong class="default-color">Barrio: </strong>
+                        <spam>{{datos.barrio}}</spam>
+                      </P>
+                      <P><strong class="default-color">direccion: </strong>
+                        <spam>{{datos.direccion}}</spam>
+                      </P>
+                      <P><strong class="default-color">Email: </strong>
+                        <spam>{{datos.email_personal}}</spam>
+                      </P>
+                      <P><strong class="default-color">Rethus: </strong>
+                        <spam>{{datos.rethus_nom}}</spam>
+                      </P>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row" ng-show="form.status2 == 3"
+            style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;">
+            <div class="col" style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(68vh + 15px);">
+              <div class="row" ng-hide="cardempresarial2">
+                <table id="table-infoPersonal" class="responsive-table table-bordered">
+                  <tr>
+                    <th>Tipo Documentos <span style="color: #e32;">*</span></th>
+                    <td><select ng-model="form.tipoDoc" id="tipoDoc" class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="C">CEDULA DE CIUDADANÍA</option>
+                        <option value="T">TARJETA DE IDENTIDAD</option>
+                      </select></td>
+                    <th>Documento<span style="color: #e32;">*</span></th>
+                    <td><input type="text" ng-model="form.numDoc" id="numDoc" class="gray-input"></td>
+                  </tr>
+                  <tr>
+                    <th>Primer nombre<span style="color: #e32;">*</span></th>
+                    <td><input type="text" ng-model="form.nombre1" id="nombre1" class="gray-input"></td>
+                    <th>Segundo nombre</th>
+                    <td><input type="text" ng-model="form.nombre2" id="nombre2" class="gray-input"></td>
+                  </tr>
+                  <tr>
+                    <th>Primer Apellido<span style="color: #e32;">*</span></th>
+                    <td><input type="text" ng-model="form.apellido1" id="apellido1" class="gray-input"></td>
+                    <th>Segundo Apellido<span style="color: #e32;">*</span></th>
+                    <td><input type="text" ng-model="form.apellido2" id="apellido2" class="gray-input"></td>
+                  </tr>
+                  <tr>
+                    <th>Fecha Nacimiento<span style="color: #e32;">*</span></th>
+                    <td><input type="date" id="date1" class="input-date-new" ng-model="form.fechaNac" required></td>
+                    <th>Sexo<span style="color: #e32;">*</span></th>
+                    <td><select ng-model="form.sexo" id="sexo" ng-disabled="todo" class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="M" selected>MASCULINO</option>
+                        <option value="F">FEMENINO</option>
+                      </select></td>
+                  </tr>
+                  <tr>
+                    <th>Grupo Sanguineo<span style="color: #e32;">*</span></th>
+                    <td><select ng-disabled="todo" id="gruposanguineo" ng-model="form.grupo_sanguineo"
+                        class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-repeat="sg in grupossanguineos.Rh" ng-selected="sg.Codigo == form.grupo_sanguineo"
+                          value="{{sg.Codigo}}">
+                          {{sg.Nombre}}</option>
+                      </select></td>
+                    <th>Estado Civil<span style="color: #e32;">*</span></th>
+                    <td><select ng-disabled="todo" id="estadocivil" ng-model="form.estado_civil"
+                        class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-repeat="ec in estadosciviles.estadocivil" ng-value="ec.Codigo">{{ec.Nombre}}</option>
+                      </select></td>
+                  </tr>
+                  <tr>
+                    <th>Peso</th>
+                    <td><input type="text" ng-model="form.peso" class="gray-input" numbers-only></td>
+                    <th>Estatura</th>
+                    <td><input type="text" ng-model="form.estatura" class="gray-input" numbers-only></td>
+                  </tr>
+                  <tr>
+                    <th>Telefono</th>
+                    <td><input type="text" ng-model="form.telefono" class="gray-input"></td>
+                    <th>Celular</th>
+                    <td><input type="text" ng-model="form.celular" class="gray-input"></td>
+                  </tr>
+                  <tr>
+                    <th>Departamento<span style="color: #e32;">*</span></th>
+                    <td> <select ng-disabled="todo" ng-model="form.depto" id="departamento"
+                        ng-change="FuncSelectDependiente('departamentoper',form.depto, 'municipios')"
+                        class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-selected="x3.codigo == departamento" ng-repeat="x3 in ubi.dptoper"
+                          ng-value="x3.codigo">{{x3.nombre}}
+                        </option>
+                      </select></td>
+                    <th>Ciudad<span style="color: #e32;">*</span></th>
+                    <td><select ng-disabled="todo" ng-model="form.mpio" id="municipios"
+                        class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-repeat="municipio in municipios" value="{{municipio.codigo}}">{{municipio.nombre}}
+                        </option>
+                      </select></td>
+                  </tr>
+                  <tr>
+                    <th>Barrio</th>
+                    <td><input type="text" ng-model="form.barrio" class="gray-input" disabled></td>
+                    <th>direccion</th>
+                    <td>
+                      <div class="input-group">
+                        <input type="text" class="gray-input" ng-model="form.direccion" style="width: 70%;" disabled>
+                        <div class="tooltip">
+                          <a class="btn-floating btn waves-effect waves-light campo17" ng-disabled="habi"
+                            ng-click="Abrir_Modal_Direccion()"><i class="icon icon-location"></i></a>
+                          <span class="tooltiptext">Agregar Direccion!</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Email</th>
+                    <td><input type="text" ng-model="form.email" class="gray-input"></td>
+                    <th>Rethus<span style="color: #e32;">*</span></th>
+                    <td><select ng-disabled="todo" ng-model="form.rethus" id="rethus"
+                        class="select-new-style gray-input">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-selected="1 == rethus" value=1>SI</option>
+                        <option ng-selected="2 == rethus" value=0>NO</option>
+                      </select></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informacion personal editable -->
+
+        <!-- fin Informacion personal editable -->
+
+        <div class="col s6 card" style="border-radius: 15px; margin-right: 3vh; width: 54%" id="s5-dairo">
+          <div style="margin-top: 10px;" ng-show="Tap == 1">
+            <div>
+              <strong class="default-color" style="font-weight: bold; margin-left: 2vw;">INFORMACION
+                EMPRESARIAL</strong>
+              <hr class="default-background" style="height: 2px;">
+            </div>
+          </div>
+          <div class="row" style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;"
+            ng-show="Tap == 1">
+            <div class="col" id="card1"
+              style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(77vh + 15px);">
+              <div class="row" ng-show="form.status == 0">
+                <table id="table-infoEmpresarial" class="responsive-table table-bordered">
+                  <tr>
+                    <th class="default-color">Seccional
+                    </th>
+                    <td>{{datos.dptoe_nom}}</td>
+                    <th class="default-color">Sede
+                    <td>{{datos.mune_nom}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Tipo Contrato
+                    <td>{{datos.tipo_contrato_nom}}</td>
+                    </th>
+                    <th class="default-color">Empleador
+                    <td>{{datos.empleador_nom}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Unidad Estrategica
+                    <td>{{datos.unidad_estrategica_nom}}</td>
+                    </th>
+                    <th class="default-color">Unidad Funcional
+                    <td>{{datos.unidad_funcional_nom}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Cargo
+                    <td>{{datos.cargo_nom}}</td>
+                    </th>
+                    <th class="default-color">Tipo Remuneración
+                    <td>{{datos.remuneracion_nom}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Fecha Ingreso
+                    <td>{{datos.fecha_ingreso}}</td>
+                    </th>
+                    <th class="default-color">Fecha Egreso
+                    <td>{{datos.fecha_egreso}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Numero Cuenta
+                    <td>{{datos.numero_cuenta}}</td>
+                    </th>
+                    <th class="default-color">Tipo Cuenta
+                    <td>{{datos.tipo_cuenta_nom}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Banco
+                    <td>{{datos.banco_nom}}</td>
+                    </th>
+                    <th class="default-color">Estado
+                    <td>{{datos.estado_empleado_nom}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Salario
+                    <td>{{datos.salario_nom}}</td>
+                    </th>
+                    <th class="default-color">Casual De Ingreso
+                    <td>{{datos.estado_empleado_nom}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Puesto De Trabajo
+                    <td>{{datos.puesto_trabajo_nom}}</td>
+                    </th>
+                    <th class="default-color">Email Empresa
+                    <td>{{datos.email_empresa}}</td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Rol
+                    <td colspan="1">{{datos.rol_nom}}</td>
+                    </th>
+                    <th class="default-color">Jefe Inmediato
+                    <td colspan="2">{{datos.jefe}}</td>
+                    </th>
+                  </tr>
+                </table>
+                <div class="center" style="padding: 1vh">
+                  <!-- <button type="button" class="btn btn-success" ng-click="EditarDatos()">Editar</button> -->
+
+                  <button class="btn waves-effect waves-light" ng-click="EditarDatos()" style="border-radius: 15px;"><i
+                      class="icon-floppy-1">Editar</i></button>
+
+
+                </div>
+              </div>
+              <div class="row" ng-show="form.status == 1">
+                <table id="table-infoEmpresarial" class="responsive-table table-bordered">
+                  <tr>
+                    <th class="default-color" style="width: 20%;">Seccional
+                    </th>
+                    <td style="width: 30%;">
+                      <select ng-model="form.seccional" id="form_seccional"
+                        ng-Change="FuncSelectDependiente('departamentoemp',form.seccional, 'seccional')"
+                        class="select-new-style gray-input">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-selected="seccional.codigo == form.seccional" ng-repeat="seccional in ubi.dptoemp"
+                          value="{{seccional.codigo}}" ng-value="{{seccional.codigo}}">{{seccional.nombre}}</option>
+                      </select>
+                    </td>
+                    <th class="default-color" style="width: 20%;">Sede
+                    <td style="width: 30%;">
+                      <select ng-model="form.sede" class="select-new-style gray-input" id="form_sede">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-selected="sede.codigo == form.sede" ng-repeat="sede in sedes"
+                          value="{{sede.codigo}}">{{sede.nombre}}</option>
+                      </select>
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Tipo Contrato
+                    <td>
+                      <select ng-model="form.tipoCont" id="form_tipoCont" ng-change="funcTipocontrato(form.tipoCont)"
+                        class="select-new-style gray-input">
+                        <option value="" disabled> SELECCIONAR</option>
+                        <option ng-selected="tipoCont.codigo == form.tipoCont" ng-repeat="tipoCont in ubi.contrato"
+                          ng-value="tipoCont.codigo">
+                          {{tipoCont.nombre}}</option>
+                      </select>
+                    </td>
+                    </th>
+                    <th class="default-color">Empleador
+                    <td>
+                      <select ng-model="form.empleador" id="form_empleador" class="select-new-style gray-input">
+                        <option value="" disabled> SELECCIONAR</option>
+                        <option ng-selected="empleador.codigo == form.empleador" ng-repeat="empleador in info.empleador"
+                          ng-value="empleador.codigo">
+                          {{empleador.nombre}}</option>
+                      </select>
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Unidad Estrategica
+                    <td>
+                      <select ng-model="form.undEstrat" id="formundEstrat"
+                        ng-Change="FuncSelectDependiente('unidadfuncional',form.undEstrat, 'unidadE')"
+                        class="select-new-style gray-input">
+                        <option value="" disabled> SELECCIONAR</option>
+                        <option ng-selected="unidadestrategica.codigo == form.undEstrat"
+                          ng-repeat="unidadestrategica in info.unidadestrategica" ng-value="unidadestrategica.codigo">
+                          {{unidadestrategica.nombre}}</option>
+                      </select>
+                    </td>
+                    </th>
+                    <th class="default-color">Unidad Funcional
+                    <td><select ng-model="form.undFunc" id="formundFunc"
+                        ng-Change="FuncSelectDependiente('cargo',form.undFunc, 'unidadF')"
+                        class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-selected="unidad.codigo == form.undFunc" ng-repeat="unidad in unidadE"
+                          value="{{unidad.codigo}}" ng-value="{{unidad.codigo}}">{{unidad.nombre}}</option>
+                      </select></td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Cargo
+                    <td>
+                      <select ng-model="form.cargo" id="formcargo"
+                        ng-Change="FuncObtenerSalario('valorsalarial',form.cargo)" class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-selected="cargo.codigo == form.cargo" ng-repeat="cargo in unidadF"
+                          value="{{cargo.codigo}}">{{cargo.nombre}}</option>
+                      </select>
+                    </td>
+                    </th>
+                    <th class="default-color">Tipo Remuneración
+                    <td>
+                      <select ng-model="form.tipoRemu" id="formTipoRemu" class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <!-- <option ng-selected="tipoRem.codigo == form.tipoRemu" ng-repeat="tipoRem in info.remuneracion"
+                          value="{{tipoRem.codigo}}" ng-value="{{tipoRem.codigo}}">{{tipoRem.nombre}}</option> -->
+                        <option value="A">AUXILIO</option>
+                        <option value="H">HONORARIOS</option>
+                        <option value="N">SALARIO BASICO</option>
+                        <option value="I">SALARIO INTEGRAL</option>
+                      </select>
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Salario
+                    <td>
+                      <select ng-model="form.salario" id="formSalario"
+                        ng-Change="FuncSelectDependiente('gruposalarial',form.salario, 'GrupoS')"
+                        class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option ng-selected="form.salario == salario.valor"
+                          ng-repeat="salario in salarios track by $index" value="{{salario.valor}}">{{salario.nombre}}
+                        </option>
+                      </select>
+                    </td>
+                    </th>
+                    <th class="default-color">Grupo Salarial
+                    <td><input type="text" class="gray-input" id="formGrupos" validate disabled ng-model="form.grupos">
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Fecha Ingreso
+                    <td>
+                      <input type="date" id="date2" class="input-date-new" ng-model="form.fechaingreso"
+                        id="form_fechaingreso" required>
+                    </td>
+                    </th>
+                    <th class="default-color">Fecha Egreso
+                    <td>
+                      <input type="date" id="date1" class="input-date-new" ng-model="form.fechaengreso"
+                        id="form_fechaengreso" required>
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Numero Cuenta
+                    <td><input type="text" class="gray-input" ng-model="form.numCuentas" id="formNumCuentas"
+                        ng-disabled="DisableXTipoCont"></td>
+                    </th>
+                    <th class="default-color">Tipo Cuenta
+                    <td>
+                      <select ng-model="form.tipoCuenta" class="select-new-style gray-input" id="formTipoCuenta"
+                        ng-disabled="DisableXTipoCont">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="C">CORRIENTE</option>
+                        <option value="A">AHORRO</option>
+                      </select>
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Banco
+                    <td>
+                      <select id="formBanco" ng-model="form.banco" ng-disabled="DisableXTipoCont"
+                        class="select-new-style gray-input">
+                        <option value=""> SELECCIONAR</option>
+                        <option ng-selected="banc.codigo == form.banco" ng-repeat="banc in info.banco"
+                          value="{{banc.codigo}}">
+                          {{banc.nombre}}
+                        </option>
+                      </select>
+                    </td>
+                    </th>
+                    <th class="default-color">Estado
+                    <td>
+                      <select ng-model="form.estado" id="formEstado" class="select-new-style gray-input">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="A">ACTIVO</option>
+                        <option value="R">RETIRADO</option>
+                        <option value="P">VACACIONES/VACIO</option>
+                      </select>
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Puesto De Trabajo
+                    <td>
+                      <select ng-model="form.pTrabajo" id="formPTrabajo" class="select-new-style gray-input">
+                        <option value="" disabled> SELECCIONAR
+                        </option>
+                        <option value="S">SI</option>
+                        <option value="N">NO</option>
+                      </select>
+                    </td>
+                    </th>
+                    <th class="default-color">Causal De Ingreso
+                    <td>
+                      <select ng-model="form.causaIngeso" id="formCausaIngeso" class="select-new-style gray-input">
+                        <option value="" disabled> SELECCIONAR</option>
+                        <option ng-selected="causal.codigo == form.causaIngeso" ng-repeat="causal in info.causalingreso"
+                          value="{{causal.codigo}}">{{causal.nombre}}</option>
+                      </select>
+                    </td>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Jefe inmediato
+                    <td>
+                      <select ng-model="form.jefeCed" id="formJefe" class="select-new-style gray-input">
+                        <option value="">SELECCIONAR</option>
+                        <option ng-selected="jefe.CEDULA == form.jefeCed" ng-repeat="jefe in jefes"
+                          value="{{jefe.CEDULA}}" ng-value="{{jefe.CEDULA}}">{{jefe.NOMBRE}}</option>
+                      </select>
+                      <!-- <select ng-model="form.pTrabajo" id="formPTrabajo" class="select-new-style gray-input">
+                          <option value="" disabled> SELECCIONAR</option>
+                          <option value="S">SI</option>
+                          <option value="N">NO</option>
+                        </select> -->
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="default-color">Observaciones
+                    <td colspan="3"><textarea id="form_observacion" ng-model="form.observacion" maxlength="160"
+                        style="margin: 0px; height: 99px;">
+                                            </textarea></td>
+                  </tr>
+                </table>
+                <div class="center" style="margin: 1vh" ng-show="btn_actualizar">
+                  <!-- <button type="button" class="btn btn-success"
+                    ng-click="Actualizar_Datos_Empresarial('2')">Actualizar</button>
+                    <button type="button" class="btn btn-success"
+                    ng-click="form.status = 0">Cerrar</button> -->
+
+                  <button class="btn waves-effect waves-light" ng-click="Actualizar_Datos_Empresarial('2')"
+                    style="border-radius: 15px;"><i class="icon-edit">Actualizar</i></button>
+                  <button class="btn waves-effect waves-light" ng-click="form.status = 0"
+                    style="border-radius: 15px;"><i class="icon-cancel">Cerrar</i></button>
+                </div>
+                <div class="center" ng-show="!search">
+                  <button class="btn waves-effect waves-light" ng-click="guardarNuevoFuncionario('1')"
+                    style="border-radius: 15px;"><i class="icon-floppy-1">GUARDAR</i></button>
+                  <button class="btn waves-effect waves-light" ng-click="Cerrar()" style="border-radius: 15px;"><i
+                      class="icon-cancel">CANCELAR</i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- INFORMACION EMPRESARIAL EDITABLE -->
+          <!-- HOJA ADICIONAL -->
+          <div style="margin-top: 10px;" ng-show="Tap == '2'">
+            <div>
+              <strong class="default-color" style="font-weight: bold; margin-left: 2vw;">INFORMACION
+                ADICIONAL</strong>
+              <hr class="default-background" style="height: 2px;">
+            </div>
+          </div>
+          <div class="row" style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;"
+            ng-show="Tap == '2'">
+            <div class="col s12" ng-show="form.status2 != 3"
+              style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(77vh + 15px);overflow: auto;">
+              <div class="col s5">
+                <label for="simple-select chosen" class="active">Tipo Entidad</label>
+                <select ng-model="form.TipoEntidad"
+                  ng-Change="FuncSelectDependienteProd(form.TipoEntidad, 'TipoEntidad')"
+                  class="select-new-style gray-input">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="R">ARL</option>
+                  <option value="J">CAJA DE COMPENSACION</option>
+                  <option value="C">CESANTIAS</option>
+                  <option value="P">PENSION</option>
+                  <option value="S">SALUD</option>
+                </select>
+              </div>
+              <div class="col s5">
+                <label for="simple-select chosen" class="active">Entidad</label>
+                <select ng-model="form.entidad" class="select-new-style gray-input">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option ng-selected="entidad.codigo == form.entidad" ng-repeat="entidad in entidades"
+                    value="{{entidad.codigo}}">{{entidad.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col s12" ng-show="form.status2 != 3" style="margin-top: 10px;">
+              <div class="col s5">
+                <label for="date4" class="active">Fecha Inicial</label>
+                <input type="date" id="date2" class="input-date-new" ng-model="form.fechaInicial" required>
+              </div>
+              <div class="col s5">
+                <label for="date5" class="active">Fecha Final</label>
+                <input type="date" id="date2" class="input-date-new" ng-model="form.fechaFinal" required>
+              </div>
+              <div class="col s2">
+                <div ng-show="!bntinfoAdicional" class="col" style="padding: 0;">
+                  <a class="btn-floating btn waves-effect waves-light green campo17"
+                    ng-click="btnEditarAdicional('insert')"><i class="icon icon-plus"></i></a>
+                </div>
+                <div ng-show="bntinfoAdicional" class="col" style="padding: 0;">
+                  <a class="btn-floating btn waves-effect waves-light green campo17"
+                    ng-click="btnEditarAdicional('update')"><i class="icon icon-arrows-ccw"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="col s12">
+              <table>
+                <tr>
+                  <th class="default-color">Causal De Ingreso
+                  <th class="default-color">Causal De Ingreso
+                  <th class="default-color">Causal De Ingreso
+                  <th class="default-color">Causal De Ingreso
+                  <th class="default-color">Causal De Ingreso
+                </tr>
+                <tr>
+                  <td>
+                    <select ng-model="form.TipoEntidad"
+                      ng-Change="FuncSelectDependienteProd(form.TipoEntidad, 'TipoEntidad')"
+                      class="select-new-style gray-input">
+                      <option value="" disabled>SELECCIONAR</option>
+                      <option value="R">ARL</option>
+                      <option value="J">CAJA DE COMPENSACION</option>
+                      <option value="C">CESANTIAS</option>
+                      <option value="P">PENSION</option>
+                      <option value="S">SALUD</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select ng-model="form.entidad" class="select-new-style gray-input">
+                      <option value="" disabled>SELECCIONAR</option>
+                      <option ng-selected="entidad.codigo == form.entidad" ng-repeat="entidad in entidades"
+                        value="{{entidad.codigo}}">{{entidad.nombre}}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="date" id="date2" class="input-date-new" ng-model="form.fechaInicial"
+                      id="form_fechaingreso" required>
+                  </td>
+                  <td>
+                    <input type="date" id="date2" class="input-date-new" ng-model="form.fechaFinal"
+                      id="form_fechaingreso" required>
+                  </td>
+                  <td>
+                    <div ng-show="bntinfoAdicional" class="col" style="padding: 0;">
+                      <a class="btn-floating btn waves-effect waves-light green campo17"
+                        ng-click="accionestablasadiciones('entidad','insert','-')"><i class="icon icon-arrows-ccw"></i></a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div> -->
+            <div class="col s12">
+              <hr class="default-background" style="height: .3vh;" ng-show="form.status2 != 3">
+              <table>
+                <tr id="tabla-taps" class="default-color">
+                  <th>Seleccionar</th>
+                  <th>Tipo Entidad</th>
+                  <th>Entidad</th>
+                  <th>Fecha Inicial </th>
+                  <th>Fecha Final</th>
+                </tr>
+                <tr id="tabla-taps" ng-repeat="ent in dataadicional.entidad">
+                  <td data-field="marcar" class="center-align">
+
+                    <input type="checkbox" name="group1" class="filled-in checkbox-info checkent"
+                      ng-click="accionesentidad(ent)" id="{{ent.tipoentidad}}">
+                    <label for="{{ent.tipoentidad}}"></label>
+
+                  </td>
+                  <td>{{ent.nombretipo}}</td>
+                  <td>{{ent.nombreentidad}}</td>
+                  <td>{{ent.fechinicial}}</td>
+                  <td>{{ent.fechafinal}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- HOJA INFORMACION EDUCATIVA -->
+          <div style="margin-top: 10px;" ng-show="Tap == 3">
+            <div>
+              <strong class="default-color" style="font-weight: bold; margin-left: 2vw;">INFORMACION
+                EDUCATIVA</strong>
+              <hr class="default-background" style="height: 2px;">
+            </div>
+          </div>
+          <div class="row" style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;"
+            ng-show="Tap == '3'">
+            <div class="col"
+              style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(56vh + 15px);overflow: auto;">
+              <div class="center" ng-show="dataadicional.estudio.length == 0">
+                <div class="row">
+                  <div class="col s12">
+                    <img src="images\administrativa\not_found.svg" alt="Imagen" style="width: 65vh;">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <span class="default-color" style="font-size: 2.1rem;font-weight: 700;">SIN DATOS</span>
+                  </div>
+                </div>
+              </div>
+              <table ng-show="dataadicional.estudio.length != 0" style="zoom: .8">
+                <tr id="tabla-taps" class="default-color">
+                  <th>Institución</th>
+                  <th>Título</th>
+                  <th>Programa</th>
+                  <th>Nivel</th>
+                  <th>Tipo Periodo</th>
+                  <th>Periodo</th>
+                  <th>Año</th>
+                  <th>Ubicación</th>
+                </tr>
+                <tr id="tabla-taps" ng-repeat="est in dataadicional.estudio">
+                  <td>{{est.institucion}}</td>
+                  <td>{{est.titulo}}</td>
+                  <td>{{est.programa}}</td>
+                  <td>{{est.nivel}}</td>
+                  <td>{{est.tipoperiodo}}</td>
+                  <td>{{est.periodo}}</td>
+                  <td>{{est.ano}}</td>
+                  <td>{{est.ubicacion}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- HOJA INFORMACION BENEFICIARIOS -->
+          <div style="margin-top: 10px;" ng-show="Tap == '4'">
+            <div>
+              <strong class="default-color" style="font-weight: bold; margin-left: 2vw;">INFORMACION
+                BENEFICIARIOS</strong><i style="cursor:pointer;" class="icon-plus" ng-click="modalNuevoBeneficiario(dataadicional.beneficiarios)">Nuevo</i>
+              <hr class="default-background" style="height: 2px;">
+            </div>
+          </div>
+          <div class="row" style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;"
+            ng-show="Tap == '4'">
+            <div class="col"
+              style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(56vh + 15px);overflow: auto;">
+              <div class="center" ng-show="dataadicional.beneficiarios.length == 0">
+                <div class="row">
+                  <div class="col s12">
+                    <img src="images\administrativa\not_found.svg" alt="Imagen" style="width: 65vh;">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <span class="default-color" style="font-size: 2.1rem;font-weight: 700;">SIN DATOS</span>
+                  </div>
+                </div>
+              </div>
+              <table ng-show="dataadicional.beneficiarios.length != 0" style="zoom: .8;">
+                <tr id="tabla-taps" class="default-color">
+                  <th>Tipo</th>
+                  <th>Documento</th>
+                  <th>Nombre</th>
+                  <th>Parentezco</th>
+                  <th>Sexo</th>
+                  <th>Nacimiento</th>
+                  <th>Edad</th>
+                </tr>
+                <tr id="tabla-taps" ng-repeat="ben in dataadicional.beneficiarios">
+                  <td>{{ben.tipodoc}}</td>
+                  <td>{{ben.cedula}}</td>
+                  <td>{{ben.nombre}}</td>
+                  <td>{{ben.parentezco}}</td>
+                  <td>{{ben.sexo}}</td>
+                  <td>{{ben.nacimiento}}</td>
+                  <td>{{ben.edad}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- HOJA INFORMACION MEDIDAS -->
+          <div style="margin-top: 10px;" ng-show="Tap == 5">
+            <div>
+              <strong class="default-color" style="font-weight: bold; margin-left: 2vw;">INFORMACION MEDIDAS</strong>
+              <hr class="default-background" style="height: 2px;">
+            </div>
+          </div>
+          <div class="row" style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;"
+            ng-show="Tap == 5">
+            <div class="col"
+              style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(56vh + 15px);overflow: auto;">
+              <div class="center" ng-show="dataadicional.medidas.length == 0">
+                <div class="row">
+                  <div class="col s12">
+                    <img src="images\administrativa\not_found.svg" alt="Imagen" style="width: 65vh;">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <span class="default-color" style="font-size: 2.1rem;font-weight: 700;">SIN DATOS</span>
+                  </div>
+                </div>
+              </div>
+              <table ng-show="dataadicional.medidas.length != 0" style="zoom: .9">
+                <tr id="tabla-taps" class="default-color">
+                  <th>Sueter</th>
+                  <th>Camisa</th>
+                  <th>Pantalon</th>
+                  <th>Zapato</th>
+                </tr>
+                <tr id="tabla-taps" ng-repeat="med in dataadicional.medidas">
+                  <td>{{med.suater}}</td>
+                  <td>{{med.camisa}}</td>
+                  <td>{{med.pantalon}}</td>
+                  <td>{{med.zapato}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- HOJA INFORMACION NOVEDADES -->
+          <div style="margin-top: 10px;" ng-show="Tap == 6">
+            <div>
+              <strong class="default-color" style="font-weight: bold; margin-left: 2vw;">INFORMACION
+                NOVEDADES</strong>
+              <hr class="default-background" style="height: 2px;">
+            </div>
+          </div>
+          <div class="row" style="display: flex;margin-right: -15px;margin-left: -15px;flex-wrap: wrap;"
+            ng-show="Tap == 6">
+            <div class="col"
+              style="max-width: 100%;flex-basis: 0;flex-grow: 1;max-height: calc(56vh + 15px);overflow: auto;">
+              <div class="center" ng-show="datanovedad.length == 0">
+                <div class="row">
+                  <div class="col s12">
+                    <img src="images\administrativa\not_found.svg" alt="Imagen" style="width: 65vh;">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <span class="default-color" style="font-size: 2.1rem;font-weight: 700;">SIN DATOS</span>
+                  </div>
+                </div>
+              </div>
+              <table ng-show="datanovedad.length != 0">
+                <tr id="tabla-taps" class="default-color">
+                  <th>Documento</th>
+                  <th>Tipo de Novedad</th>
+                  <th>Usuario</th>
+                  <th>Fecha</th>
+                </tr>
+                <tr id="tabla-taps" ng-repeat="nov in datanovedad">
+                  <td>{{nov.documento_novedad}}</td>
+                  <td>{{nov.nomconcep}}</td>
+                  <td>{{nov.usuario}}</td>
+                  <td>{{nov.fecha}}</td>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fabs" style="margin-right: 40px;" ng-show="AddFuncionario">
+      <a target="_blank" ng-click="DescargaFile()" class="fab green" tooltip="Descargar File"><i
+          class="prime zmdi animated rotateIn  icon-doc-text"></i></a>
+      <a target="_blank" ng-click="nuevoFuncionario()" class="fab red" tooltip="Nuevo"><i
+          class="prime zmdi animated rotateIn zmdi-plus"></i></a>
+    </div>
+
+
+  </div><!-- Fin img -->
+
+  <div id="Modal_Direccion" class="modal" style="margin: 0 auto;max-height: 100%;width: 50%;top:0%;">
+    <div class="col s12 m6 l6 card margin">
+
+      <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+        ng-click="closeModal()">
+      </div>
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <div class="col s5" style="display: inline-flex;">
+            <span class="margin" style="font-size: 1.64rem;">Dirección</span>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin: 0;">
+        <!-- <div class="col s12" style="margin-top: 1vh;">
+          <div class="col s12 no-padding label-new">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" type="text" autocomplete="off" id="Dir_Actual"
+               ng-model="Dir_Actual">
+            <label>Dirección Actual</label>
+          </div>
+        </div> -->
+        <!-- //////// -->
+        <div class="col s12" style="margin-top: 1em;">
+          <div class="col s6 no-padding label-new m-b select_maxheigth">
+            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select ng-model="selectViap"
+              ng-change="Chg_Direccion()">
+              <option value="{{viap.Codigo}}" ng-selected="viap.Codigo == selectViap"
+                ng-repeat="viap in viaprincipal.Viaprincipal">{{viap.Nombre}}</option>
+            </select>
+            <label>Via Principal</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off" ng-model="numeroN"
+              ng-change="Chg_Direccion()">
+            <label>Número/Nombre</label>
+          </div>
+
+        </div>
+        <!--NumeroVG y letraVG Numero de placa-->
+        <div class="col s12">
+          <div class="col s6 no-padding label-new m-b select_maxheigth">
+            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select ng-model="selectLetra"
+              ng-change="Chg_Direccion()">
+              <option value="{{letra.Codigo}}" ng-selected="letra.Codigo == selectLetra"
+                ng-repeat="letra in letras.Letra">{{letra.Nombre}}</option>
+            </select>
+            <label>Letra</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+              ng-model="numeroNVG" ng-change="Chg_Direccion()">
+            <label>Número VG</label>
+          </div>
+
+        </div>
+        <div class="col s12">
+          <div class="col s6 no-padding label-new m-b select_maxheigth">
+            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select ng-model="selectLetraVG"
+              ng-change="Chg_Direccion()">
+              <option value="{{letravg.Codigo}}" ng-selected="letravg.Codigo == selectLetraVG"
+                ng-repeat="letravg in letras.Letra">{{letravg.Nombre}}</option>
+            </select>
+            <label>Letra VG</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b select_maxheigth">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off" ng-model="barrio"
+              ng-change="Chg_Direccion()">
+            <label>Barrio</label>
+          </div>
+        </div>
+        <!--CuadranteVG Complemento Direccion-->
+        <div class="col s12">
+          <div class="col s12 no-padding label-new m-b">
+            <input class="margin border-none input-text-new gray-input w-100 m-l" type="text" autocomplete="off"
+              id="direccionmodal">
+            <label>Direccion</label>
+          </div>
+        </div>
+        <div class="col s12 center" style="margin-bottom: 1em;">
+          <button id="buton" class="btn" style="border-radius: 20px;" ng-click="Cargar_Dir()">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="Modal_Beneficiarios" class="modal" style="margin: 0 auto;max-height: 100%;width: 90%;top:0%;">
+    <div class="modal-content" style="padding: 0px !important;">
+      <div class="col s12 m6 l6 card margin">
+        <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+          ng-click="closeModal()">
+        </div>
+        <div class="card-content default-background white-text">
+          <div class="col s11">
+            <div class="col s5" style="display: inline-flex;">
+              <span class="margin" style="font-size: 1.64rem;">Actualizar soporte</span>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin: 0;">
+          <div class="col s12" style="margin-top: 1em;">
+
+            <div class="col s12" style="padding: 0;">
+              <div class="row Anim_Show" style="margin-bottom: 0;">
+                <!-- // -->
+                <div id="Hoja4" class="row Form_Desactivados" style="margin-bottom: 0;width: 98%;margin-top: 1rem;">
+                  <div class="col s12 m12 l12">
+                    <div class="col s3 no-padding label-new m-b select_maxheigth">
+                      <select id="Hoja4_Tipo_Doc" class="select-new-style gray-input m-l" style="box-shadow: none;"
+                        ng-model="Hoja4.Tipo_Doc">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="CC">CEDULA DE CIUDADANÍA</option>
+                        <option value="TI">TARJETA DE IDENTIDAD</option>
+                        <option value="RC">REGISTRO CIVIL</option>
+                        <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                        <option value="PA">PASAPORTE</option>
+                        <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                        <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                        <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                        <option value="CD">CARNET DIPLOMÁTICO</option>
+                      </select>
+                      <label>Tipo de Documento</label>
+                    </div>
+                    <div class="col s3 no-padding label-new m-b">
+                      <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                        maxlength="20" id="Hoja4_Documento" ng-model="Hoja4.Documento"
+                        ng-keyup="FormatSoloNumero('Hoja4_Documento')">
+                      <label>Documento</label>
+                    </div>
+                    <div class="col s6 no-padding label-new m-b">
+                      <input class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                        id="Hoja4_Nombre" ng-model="Hoja4.Nombre" ng-keyup="FormatTexto('Hoja4_Nombre')">
+                      <label>Nombre Completo</label>
+                    </div>
+
+                  </div>
+                  <div class="col s12 m12 l12">
+                    <div class="col s3 no-padding label-new m-b select_maxheigth">
+                      <select id="Hoja4_Parentesco" class="select-new-style gray-input m-l" style="box-shadow: none;"
+                        ng-model="Hoja4.Parentesco">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="1">PADRE</option>
+                        <option value="2">HIJO/A</option>
+                        <option value="3">CONYUGE</option>
+                        <option value="4">ABUELO/A</option>
+                        <option value="6">PRIMO/A</option>
+                        <option value="10">HERMANO/A</option>
+                        <option value="11">MADRE</option>
+                      </select>
+                      <label>Parentesco</label>
+                    </div>
+                    <div class="col s3 no-padding label-new m-b select_maxheigth">
+                      <select id="Hoja4_Sexo" class="select-new-style gray-input m-l" style="box-shadow: none;"
+                        ng-model="Hoja4.Sexo">
+                        <option value="" disabled>SELECCIONAR</option>
+                        <option value="M">MASCULINO</option>
+                        <option value="F">FEMENINO</option>
+                        <option value="I">INDETERMINADO</option>
+                      </select>
+                      <label>Sexo</label>
+                    </div>
+                    <div class="col s3 no-padding label-new m-b">
+                      <input type="date" class="margin border-none input-date-new w-100 m-l" id="Hoja4_Nacimiento"
+                        max="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="Hoja4.Nacimiento">
+                      <label>Fecha Nacimiento</label>
+                    </div>
+                  </div>
+
+                  <div class="col s12 center">
+                    <input class="btn white-text"
+                      style="background:linear-gradient(to bottom left,#888988,#313231,#888988);border-radius: 15px;margin-right: 1vw;"
+                      type="submit" value="Deshacer" ng-if="Hoja4.Status == 1" ng-click="Hoja4_Deshacer();">
+                    <input class="btn white-text"
+                      style="background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);border-radius: 15px;"
+                      type="submit" value="Guardar" ng-if="Hoja4.Status == 0"
+                      ng-click="Hoja4_Guardar_Actualizar_Beneficiarios('insert');">
+                    <input class="btn white-text"
+                      style="background:linear-gradient(to bottom left,#50ba58,#049210,#50ba58);border-radius: 15px;"
+                      type="submit" value="Actualizar" ng-if="Hoja4.Status == 1"
+                      ng-click="Hoja4_Guardar_Actualizar_Beneficiarios('update');">
+                  </div>
+                </div>
+                <!-- // -->
+                <hr class="default-background" style="height: .3vh;">
+                <!-- // -->
+                <div class="row" style="margin-top:1vh;">
+                  <div class="col s12 m12 l12 m-b">
+                    <table class="table_tabs">
+                      <tbody>
+                        <tr class="default-color">
+                          <th>Seleccionar</th>
+                          <th>Tipo</th>
+                          <th>Documento</th>
+                          <th>Nombre</th>
+                          <th>Parentezco</th>
+                          <th>Sexo</th>
+                          <th>Nacimiento</th>
+                          <th>Edad</th>
+                          <!-- <th>Adjunto</th> -->
+                        </tr>
+                        <tr ng-repeat="x in datosBeneficiarios">
+                          <td data-field="marcar" class="center-align">
+                            <center>
+                              <input type="checkbox" class="filled-in checkbox_Ben"
+                                ng-click="Hoja4_Actualizar_Beneficiarios(x)" id="Ben_{{x.renglon}}">
+                              <label for="Ben_{{x.renglon}}"></label>
+                            </center>
+                          </td>
+                          <td>{{x.tipodoc}}</td>
+                          <td>{{x.cedulafamiliar}}</td>
+                          <td>{{x.nombre}}</td>
+                          <td>{{x.parentezco}}</td>
+                          <td>{{x.sexo}}</td>
+                          <td>{{x.nacimiento}}</td>
+                          <td>{{x.edad}}</td>
+                          <!-- <td style="text-align: center;">
+                            <a style="margin-right: 0px; cursor:pointer;" ng-click="verAdjunto(x.ruta)"><i
+                                class="icon-attach"></i></a>
+                          </td> -->
+                        </tr>
+                        <tr ng-show="Hoja4.Datos.length == 0">
+                          <th colspan="8">No existen registros</th>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- // -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .card-profile-stats {
+      text-align: center;
+      text-align: center;
+      margin: 4px;
+    }
+
+    .card-profile-stats span:first-child {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: block;
+      text-align: center;
+      margin: -10px 0px;
+    }
+
+    .card-profile-stats span:last-child {
+      font-size: .875rem;
+      color: #686b6e;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    @keyframes Anim_Show {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .Anim_Show {
+      animation-name: Anim_Show;
+      animation-duration: 1s;
+    }
+
+    #Imagen_back {
+      cursor: pointer;
+      width: 50vw;
+      margin: auto;
+      opacity: .4;
+    }
+
+    .card-panel,
+    .card,
+    .btn {
+      box-shadow: 0 2px 5px 0 rgb(197 208 239), 0 2px 10px 0 rgb(197 208 239) !important;
+    }
+
+
+    #Diag_3 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      font-size: 0.7em;
+    }
+
+    .list-group {
+      font-size: 14px;
+      overflow: auto;
+      max-height: 13vh;
+      position: absolute;
+      margin: 0;
+      width: inherit;
+      margin-top: 2.2em;
+      z-index: 3;
+    }
+
+    .tabla_estilo_0 th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+    .label-new>label {
+      display: table;
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+
+    ul::-webkit-scrollbar {
+      width: 6px;
+      background-color: #F5F5F5;
+    }
+
+    .select-wrapper input.select-dropdown:disabled {
+      color: black;
+    }
+
+    .Green_Est {
+      background-color: green !important;
+    }
+
+    .Red_Est {
+      background-color: red !important;
+    }
+
+    .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+    }
+
+
+    .tabla-result {
+      overflow: scroll;
+      overflow-x: hidden;
+    }
+
+    #resultados th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      background-color: white;
+    }
+
+    #InfoEducativa tr>* {
+      display: block;
+    }
+
+    #InfoEducativa tr {
+      display: table-cell;
+    }
+
+    #tabla-taps th {
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    #tabla-taps td {
+      text-align: center;
+      font-size: .875rem;
+      color: #686b6e;
+    }
+
+    #table-infoEmpresarial th {
+      width: 141px;
+    }
+
+    #table-infoPersonal th {
+      width: 20%;
+    }
+
+    #table-infoPersonal td {
+      width: 30%;
+    }
+
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>
