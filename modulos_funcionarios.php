@@ -64,23 +64,6 @@ function stripAccents($str) {
           }
         }
 
-
-
-
-
-
-
-        // if($row['JSON'] == null){
-      //   echo stripAccents($row['TERC_NOMBRE']);
-      //   }
-        // echo "<tr>";
-        // echo "<td>";echo $row['AREC_NOMBRE'];echo "</td>";
-        // echo "<td>";echo $row['CARC_NOMBRE'];echo "</td>";
-        // echo "<td>";echo $row['TERC_NOMBRE'];echo "</td>";
-        // echo "<td>";echo $row['JSON']->load();echo "</td>";
-      // print_r(json_decode($row['JSON']->load()));
-
-        // echo "</tr>";
     }
 
     oci_close($c);
