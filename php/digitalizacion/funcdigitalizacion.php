@@ -24,7 +24,7 @@ function obtenercantidadXmunicpio(){
 	require_once('../config/dbcon_prod.php');
     global $request;
 	$ubicacion = $request->ubicacion;
-	
+
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_municipios(:v_departamento,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_departamento',$ubicacion);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -41,9 +41,9 @@ function obtenercantidadXmunicpio(){
 function obtenerinforevision(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$tipo_busqueda = $request->tipo_busqueda;	
-	$dpto = $request->dpto;	
-	$tipo_documento = $request->tipo_documento;	
+	$tipo_busqueda = $request->tipo_busqueda;
+	$dpto = $request->dpto;
+	$tipo_documento = $request->tipo_documento;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_sig_revisar (:v_tipo_busqueda,:v_municipio,:v_tipo_documento,:v_archivos,:v_afiliado,:v_mensaje); end;');
 	oci_bind_by_name($consulta,':v_tipo_busqueda',$tipo_busqueda);
 	oci_bind_by_name($consulta,':v_municipio',$dpto);
@@ -103,7 +103,7 @@ function obtenerprocesos(){
 function obtenerdptoXtipo(){
 	require_once('../config/dbcon_prod.php');
     global $request;
-	$tipo = $request->tipo;	
+	$tipo = $request->tipo;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_departamentos_x_tipo(:v_tipo_documento,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_tipo_documento',$tipo);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -121,7 +121,7 @@ function obtenerdptoXtipo(){
 function obtenerdptoXGrupo(){
 	require_once('../config/dbcon_prod.php');
     global $request;
-	$grupo = $request->grupo;	
+	$grupo = $request->grupo;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_departamentos_x_grupo(:v_grupo,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_grupo',$grupo);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -139,8 +139,8 @@ function obtenerdptoXGrupo(){
 function obtenermunicipioXtipo(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$dpto = $request->dpto;	
-	$tipo = $request->tipo;	
+	$dpto = $request->dpto;
+	$tipo = $request->tipo;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_municipios_x_tipo(:v_departamento,:v_tipo_documento,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_departamento',$dpto);
 	oci_bind_by_name($consulta,':v_tipo_documento',$tipo);
@@ -159,8 +159,8 @@ function obtenermunicipioXtipo(){
 function obtenermunicipioXGrupo(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$dpto = $request->dpto;	
-	$grupo = $request->grupo;	
+	$dpto = $request->dpto;
+	$grupo = $request->grupo;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_municipio_x_grupo(:v_departamento,:v_grupo,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_departamento',$dpto);
 	oci_bind_by_name($consulta,':v_grupo',$grupo);
@@ -178,7 +178,7 @@ function obtenermunicipioXGrupo(){
 function obtenerpaquetes(){
 	require_once('../config/dbcon_prod.php');
     global $request;
-	$proceso = $request->proceso;	
+	$proceso = $request->proceso;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_paquetes(:v_proceso,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_proceso',$proceso);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -197,7 +197,7 @@ function obtenerparametros(){
 	require_once('../config/dbcon_prod.php');
     global $request;
 	$paquete = $request->paquete;
-	$proceso = $request->proceso;	
+	$proceso = $request->proceso;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_parametros(:v_paquete,:v_clasificacion,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_paquete',$paquete);
 	oci_bind_by_name($consulta,':v_clasificacion',$proceso);
@@ -266,7 +266,7 @@ function actualizaanexos(){
 	require_once('../config/dbcon_prod.php');
     global $request;
 	$ruta = $request->ruta;
-	$estado = $request->estado;	
+	$estado = $request->estado;
 	$comentario = $request->comentario;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_actualiza_estado(:v_ruta,:v_estado,:v_comentario,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_ruta',$ruta);
@@ -283,47 +283,6 @@ function actualizaanexos(){
 	}
 	oci_close($c);
 }
-/*
-function subirftp_digital(){
-	require_once('../config/dbcon_prod.php');
-	require_once('../config/sftp_con.php');
-	require_once('../upload_file/subir_archivo.php');
-	global $request;
-	$data = $request->data;
-	$info = json_decode($request->data);
-	$arrlength=count($request->data);
-	$tipo_documento = $request->tipo_documento;
-	$documento = $request->documento;
-	$hoy = date('dmY');
-	$path = 'Aseguramiento/Digitalizacion/'.$hoy.'/';
-	if ($arrlength == 0) {
-		$res = array('codigo' => 1, 'mensaje' => 'No Hay Documentos Cargados Para Su Envio');
-		echo json_encode($res);
-	} else {
-		$estado = 0;
-		for ($i=0; $i < $arrlength ; $i++) {
-			$name =$data[$i]->codigo.'_'.$tipo_documento.'_'.$documento.'_'.$hoy;
-			if ($data[$i]->extension=='pdf'){
-				$ext=$data[$i]->extension;
-			} else {
-				$ext='tiff';
-			}
-			$subio = subirDigitalizacionFTP($data[$i]->base,$path,$name,$ext);
-			if ($subio != '0 - Error') {
-				$rutas[$i]->ruta = $subio;
-				$rutas[$i]->tipo = $data[$i]->codigo;
-			}else {
-				$estado = $estado + 1;
-			}
-		}
-		if($estado == 0){
-			echo json_encode($rutas);
-		}else{
-			echo '0';
-		}
-	}
-}
-*/
 function subirftp_digital(){
 	require_once('../config/dbcon_prod.php');
 	require_once('../config/sftp_con.php');
@@ -356,6 +315,7 @@ function subirftp_digital(){
 				$estado = $estado + 1;
 			}
 		}
+    echo $estado;
 		if($estado == 0){
 			echo json_encode($rutas);
 		}else{
@@ -370,11 +330,11 @@ function subirarchivos(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
 	$tipo_documento = $request->tipo_documento;
-	$documento = $request->documento;	
+	$documento = $request->documento;
 	$paquete = $request->paquete;
 	$rutas = $request->rutas;
-	$cantidad = $request->cantidad;	
-	$tipo_ftp = '1';	
+	$cantidad = $request->cantidad;
+	$tipo_ftp = '1';
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_inserta_adjuntos(:v_tipo_documento,:v_documento,:v_paquete,:v_rutas,:v_cantidad,:v_tipo_ftp,:v_respuesta); end;');
 	oci_bind_by_name($consulta,':v_tipo_documento',$tipo_documento);
 	oci_bind_by_name($consulta,':v_documento',$documento);
@@ -398,7 +358,7 @@ function obtenerareas(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
 	$cedula = $request->cedula;
-	
+
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_area(:v_documento,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_documento',$cedula);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -416,7 +376,7 @@ function obtenerareas(){
 function obtenermodulos(){
 	require_once('../config/dbcon_prod.php');
     global $request;
-	$codigo_area = $request->codigo_area;	
+	$codigo_area = $request->codigo_area;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_modulos(:v_codigo_area,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_codigo_area',$codigo_area);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -437,7 +397,7 @@ function crearprocesos(){
 	$area = $request->area;
 	$modulo = $request->modulo;
 	$nombre = $request->nombre;
-	$regimen = $request->regimen;	
+	$regimen = $request->regimen;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_inserta_proceso(:v_codigoarea,:v_nombre,:v_modulo,:v_regimen,:v_respuesta); end;');
 	oci_bind_by_name($consulta,':v_codigoarea',$area);
 	oci_bind_by_name($consulta,':v_nombre',$nombre);
@@ -459,7 +419,7 @@ function crearpaquete(){
 	require_once('../config/dbcon_prod.php');
     global $request;
 	$codigo = $request->codigo;
-	$nombre = $request->nombre;	
+	$nombre = $request->nombre;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_inserta_paquetes(:v_pcodigoproceso,:v_nombre,:v_respuesta); end;');
 	oci_bind_by_name($consulta,':v_pcodigoproceso',$codigo);
 	oci_bind_by_name($consulta,':v_nombre',$nombre);
@@ -480,9 +440,9 @@ function creacionparametros(){
     global $request;
 	$parametros = $request->parametros;
 	$cantidad = $request->cantidad;
-	$responsable = $request->responsable;		
+	$responsable = $request->responsable;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_inserta_parametro(:v_json_in,:v_cantidad,:v_responsable,:v_respuesta); end;');
-	
+
 	$json_parametros = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_in', $json_parametros, -1, OCI_B_CLOB);
 	$json_parametros->writeTemporary($parametros);
@@ -506,7 +466,7 @@ function creacionparametros(){
 function eliminarprocesos(){
 	require_once('../config/dbcon_prod.php');
     global $request;
-	$codigo = $request->codigo;	
+	$codigo = $request->codigo;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_eliminar_proceso (:v_codigoproceso,:v_respuesta); end;');
 	oci_bind_by_name($consulta,':v_codigoproceso',$codigo);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -524,7 +484,7 @@ function eliminarprocesos(){
 function eliminarpaquete(){
 	require_once('../config/dbcon_prod.php');
     global $request;
-	$codigo = $request->codigo;	
+	$codigo = $request->codigo;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_eliminar_paquete(:v_codigo_pq,:v_respuesta); end;');
 	oci_bind_by_name($consulta,':v_codigo_pq',$codigo);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -542,11 +502,11 @@ function eliminarpaquete(){
 function eliminarparametro(){
 	require_once('../config/dbcon_prod.php');
     global $request;
-	$codigopaquete = $request->codigopaquete;	
+	$codigopaquete = $request->codigopaquete;
 	$codigoparametro = $request->codigoparametro;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_eliminar_parametro(:v_codigo_pq,:v_codigo_sp,:v_respuesta); end;');
 	oci_bind_by_name($consulta,':v_codigo_pq',$codigopaquete);
-	oci_bind_by_name($consulta,':v_codigo_sp',$codigoparametro);	
+	oci_bind_by_name($consulta,':v_codigo_sp',$codigoparametro);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_respuesta', $clob,-1,OCI_B_CLOB);
 	oci_execute($consulta,OCI_DEFAULT);
@@ -562,7 +522,7 @@ function eliminarparametro(){
 function tipodocumentalcantidad(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$v_tipo = $request->v_tipo;	
+	$v_tipo = $request->v_tipo;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_tipo_documental_cantidad_pendiente(:v_tipo,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_tipo',$v_tipo);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
@@ -580,7 +540,7 @@ function tipodocumentalcantidad(){
 function tipodocumentalcantidadmun(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$v_tipo = $request->v_tipo;	
+	$v_tipo = $request->v_tipo;
 	$v_dpto = $request->v_dpto;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_obtener_tipo_documental_cantidad_mun(:v_tipo,:v_dpto,:v_json_res); end;');
 	oci_bind_by_name($consulta,':v_tipo',$v_tipo);
@@ -733,7 +693,7 @@ function VerDocumentosRevision(){
 	oci_close($c);
 }
 
-function descargararchivo (){  
+function descargararchivo (){
 	global $request;
 	$fileexists = false;
 	if (file_exists('ftp://ftp_genesis:Senador2019!@192.168.50.10/' . $request->ruta) == TRUE) {
@@ -775,7 +735,7 @@ function generarnovedaddigital(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
 	$v_ptipo_documento=$request->type;
-	$v_pdocumento=$request->id;	
+	$v_pdocumento=$request->id;
 	$v_new_primer_nombre=$request->nombrep;
 	$v_new_segundo_nombre=$request->nombres;
 	$v_new_primer_apellido=$request->apellidop;
@@ -996,7 +956,7 @@ function subirftp_afiliacion (){
 	$hoy = date('dmY');
 	$id = uniqid();
 	$path1 = '/cargue_ftp/Digitalizacion/Genesis/Movilidad/Afiliaciones/'.$hoy.'/';
-	
+
 	if (is_dir('ftp://genesis_ftp:Cajacopi2022!@192.168.50.36/'.$path1) == TRUE) {
 		$path = $path1.$id.'/';
 		if ($arrlength == 0) {
@@ -1019,7 +979,7 @@ function subirftp_afiliacion (){
 					$estado = $estado + 1;
 				}
 			}
-			if($estado == 0){		
+			if($estado == 0){
 				echo json_encode(array ('codigo' => 0,'rutas' => $rutas , 'id' => $id));
 			}else{
 				echo '0';
@@ -1062,10 +1022,10 @@ function subirarchivos_afiliacion (){
 	require_once('../config/dbcon_prod.php');
 	global $request;
 	$tipo_documento = $request->tipo_documento;
-	$documento = $request->documento;	
+	$documento = $request->documento;
 	$paquete = $request->paquete;
 	$rutas = $request->rutas;
-	$cantidad = $request->cantidad;	
+	$cantidad = $request->cantidad;
 	$consulta = oci_parse($c,'begin pq_genesis_digital.p_inserta_adjuntos(:v_tipo_documento,:v_documento,:v_paquete,:v_rutas,:v_cantidad,:v_respuesta); end;');
 	oci_bind_by_name($consulta,':v_tipo_documento',$tipo_documento);
 	oci_bind_by_name($consulta,':v_documento',$documento);
