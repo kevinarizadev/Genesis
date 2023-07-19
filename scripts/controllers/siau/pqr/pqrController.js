@@ -30,8 +30,8 @@ angular.module('GenesisApp')
       // }, 3000);
 
       // $scope.selectedtipoSolicitud = 'C';
-      // // 
-      // setTimeout(() => { 
+      // //
+      // setTimeout(() => {
       //   $scope.pqrData.selectedmediosRecepcion = '17';
       //   // $scope.pqrData.selectedtipoSolicitud = 'A';
       //   $scope.pqrData.selectedtipoRadicacion = 'A';
@@ -58,7 +58,7 @@ angular.module('GenesisApp')
       inactivecorrespondenciaseccional: true
     }
     $scope.pqrData = {
-      selectedtipoSolicitud: null, selectedRv: 'N',selectedRdS:"", selectedCriteriObjetivo: null, selectedCriterioSubjetivo: null,
+      selectedtipoSolicitud: null, selectedRv: 'N', selectedRdS: "", selectedCriteriObjetivo: null, selectedCriterioSubjetivo: null,
       selectedCriteriComplementario: null, selectedSujetosProteccionEspecial: null, selectedServicios: null, selectedMedicamentos: null,
       selectedmediosRecepcion: null, selectedOtrosEntesDeControl: null, sede: null, enteCodigo: null, selectedEntidad: null, textCodNurc: null, textCodPqrSuperSalud: null, selectedtipoRadicacion: null,
       User: {
@@ -70,7 +70,7 @@ angular.module('GenesisApp')
         }
       }, Ips: { nit: null, ips: null, codmunicipio: null, municipio: null, direccion: null, ubicacion: null, email: null, telefono: null },
       Empleador: { tipodocumento: null, documento: null, nombre: null, codmunicipio: null, municipio: null, direccion: null, ubicacion: null, email: null, telefono: null },
-      selectedMotivoEspecifico: null, pqrFile: null, ext: null, observaciones: null, selectedDias: null,selectedHoras:null, selectedRespuesta: null, fecha_recibido: null,
+      selectedMotivoEspecifico: null, pqrFile: null, ext: null, observaciones: null, selectedDias: null, selectedHoras: null, selectedRespuesta: null, fecha_recibido: null,
       selectedTramite: 'S', selectedCorrespondencia: null, seccional: null, numfolio: null,
       tipo_tercero: null, tipo_documento_rad: null, documento_rad: null,
       Tercero: { documento: null, nombre: null, telefono: null, email: null, municipio: null, barrio: null, direccion: null, senor: null },
@@ -437,7 +437,7 @@ angular.module('GenesisApp')
       if ($scope.data.requiredFile == false) {
         // if($scope.pqrData.selectedRdS){
         if ($scope.pqrData.selectedtipoSolicitud != 'E' && $scope.pqrData.selectedtipoRadicacion == 'A') {
-         // $scope.pqrData.motivosEspecificos
+          // $scope.pqrData.motivosEspecificos
           // $scope.pqrData.submotivosEspecificos
           if ($scope.pqrData.motivoAltoCosto && $scope.pqrData.motivoPatologia && $scope.pqrData.motivosEspecificos && $scope.pqrData.submotivosEspecificos) {
             $scope.insert();
@@ -447,9 +447,9 @@ angular.module('GenesisApp')
         } else {
           $scope.insert();
         }
-      // }else{
-      //   swal('No completado', 'seleccione por favor Riesgo de Solicitud!', 'info').catch(swal.noop);
-      // }
+        // }else{
+        //   swal('No completado', 'seleccione por favor Riesgo de Solicitud!', 'info').catch(swal.noop);
+        // }
       } else {
         swal('No completado', 'Verifica la extensión o peso del archivo!', 'error').catch(swal.noop);
       }
@@ -687,18 +687,18 @@ angular.module('GenesisApp')
           $scope.data.collapsePqrComplement = true;
           $scope.seletedcorrepondencia = 'P';
         }
-        if($scope.tempsol.Codigo == 'R'){
+        if ($scope.tempsol.Codigo == 'R') {
           $scope.pqrDatariesgodevidaver = true;
-        }else{
+        } else {
           $scope.pqrDatariesgodevidaver = false;
         }
 
       } else {
         $scope.data.inactiveSolicitud = true; $scope.resetDataForm(); $scope.resetIps(); $scope.resetEmpleador();
       }
-       // var now = new Date();
-          // var formattedDateTime = now.toISOString().slice(0, 16);
-          // $scope.pqrData.fecha_recibido = now;
+      // var now = new Date();
+      // var formattedDateTime = now.toISOString().slice(0, 16);
+      // $scope.pqrData.fecha_recibido = now;
     }//Fin
     $scope.resetDataForm = function () {//Funcion para reset data form
       $scope.pqrData.selectedRv = 'N'; $scope.pqrData.selectedmediosRecepcion = null; $scope.pqrData.selectedtipoRadicacion = '';
@@ -742,7 +742,7 @@ angular.module('GenesisApp')
       }
       $scope.validateDias();
       console.log($scope.pqrData.selectedRdS);
-        
+
     }//Fin
     $scope.collapseRiegoVida = function () {//Funcion para collapse riesgo vida
       $scope.data.collapseRv = !$scope.data.collapseRv;
@@ -1594,7 +1594,7 @@ angular.module('GenesisApp')
                 //
                 $scope.pqrServicios.obligAut = data.value.oblig_aut;
                 console.log(data.value)
-                $scope.Optener_Motivos_Especificos($scope.macro_motivo,$scope.motivo_general,$scope.motivo.codigo);
+                $scope.Optener_Motivos_Especificos($scope.macro_motivo, $scope.motivo_general, $scope.motivo.codigo);
               }
             });
           }
@@ -1835,7 +1835,7 @@ angular.module('GenesisApp')
             setTimeout(() => {
               $scope.arrayPages = $filter('filter')($scope.pqrs, val);
               $scope.resultsP = $scope.arrayPages;
-              // $scope.filterAreas = '';            
+              // $scope.filterAreas = '';
             }, 800);
             setTimeout(() => { $scope.$apply(); }, 1200);
           } else {
@@ -1843,7 +1843,7 @@ angular.module('GenesisApp')
               $scope.arrayPages = $filter('filter')($scope.pqrs, val);
               $scope.resultsP = $scope.arrayPages;
               $scope.$apply();
-              // $scope.filterAreas = '';            
+              // $scope.filterAreas = '';
             }, 500);
           }
         }
@@ -3921,21 +3921,21 @@ angular.module('GenesisApp')
       })
     }
     // -- --------------------------------yordis 16/06/2023------------------------------------------------------ --
-    $scope.Optener_Motivos_Especificos = function (macro_motivo,motivo_general,motivo_especifico) {
+    $scope.Optener_Motivos_Especificos = function (macro_motivo, motivo_general, motivo_especifico) {
       $scope.pqrData.macromotivo = macro_motivo;
       $scope.pqrData.motivogeneral = motivo_general;
-      pqrHttp.get_Tipos_Motivos_Especificos(macro_motivo,motivo_general,motivo_especifico).then(function (response) {
+      pqrHttp.get_Tipos_Motivos_Especificos(macro_motivo, motivo_general, motivo_especifico).then(function (response) {
         console.log(response);
         $scope.Lista_Motivos_Especificos = response;
       })
     }
     $scope.Optener_Sub_Motivos_Especificos = function (tipo_motivo_especifico) {
       $scope.pqrData.submotivosEspecificos = "";
-      pqrHttp.get_Sub_Motivos_Especificos($scope.macro_motivo,$scope.motivo_general,$scope.motivo.codigo,tipo_motivo_especifico).then(function (response) {
+      pqrHttp.get_Sub_Motivos_Especificos($scope.macro_motivo, $scope.motivo_general, $scope.motivo.codigo, tipo_motivo_especifico).then(function (response) {
         $scope.Lista_Sub_Motivos_Especificos = response;
-        if($scope.Lista_Sub_Motivos_Especificos.length > 1){
+        if ($scope.Lista_Sub_Motivos_Especificos.length > 1) {
           $scope.pqrData.submotivosEspecificos = "1";
-        }else{
+        } else {
           $scope.pqrData.submotivosEspecificos = "0";
         }
       })
@@ -4372,6 +4372,23 @@ angular.module('GenesisApp')
       });
     }
     $scope.Obtener_Tipos_Documentos();
+
+
+    $scope.cedulausuario = sessionStorage.getItem('cedula');
+    $scope.validarPermisosSoporte = function (cedula) {
+
+      const usuarios =
+      {
+        1042454684: Symbol(), //Ka
+        1046816549: Symbol(), //alvaro.villa
+        1123637114: Symbol(), //hillary powell
+        1002142857: Symbol()  //katya.alvarado
+      };
+      return usuarios[cedula]
+    }
+    $scope.permisosActualizarSoporte = $scope.validarPermisosSoporte(parseInt($scope.cedulausuario))
+
+
 
   }])
   .directive("selectFilesPqr", function ($timeout) {
