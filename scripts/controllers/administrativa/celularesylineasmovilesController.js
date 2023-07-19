@@ -889,8 +889,9 @@ angular.module('GenesisApp')
           if (data.length) {
             $scope.hojaAsig.listadoEquipos = data.filter(e => e.GESC_ESTADO == 'D');
             setTimeout(() => { $scope.$apply(); }, 500);
-          } else {
-            $scope.hojaAsig.formulario.equipo = 'NO EXISTEN EQUIPOS DISPONIBLES'
+            if (!$scope.hojaAsig.listadoEquipos.length) {
+              $scope.hojaAsig.formulario.equipo = 'NO EXISTEN EQUIPOS DISPONIBLES'
+            }
           }
         });
         $http({
@@ -906,8 +907,9 @@ angular.module('GenesisApp')
           if (data.length) {
             $scope.hojaAsig.listadoLineas = data.filter(e => e.GESC_ESTADO == 'D');
             setTimeout(() => { $scope.$apply(); }, 500);
-          } else {
-            $scope.hojaAsig.formulario.linea = 'NO EXISTEN LINEAS DISPONIBLES'
+            if (!$scope.hojaAsig.listadoLineas.length) {
+              $scope.hojaAsig.formulario.linea = 'NO EXISTEN LINEAS DISPONIBLES'
+            }
           }
         });
         $http({
@@ -923,8 +925,9 @@ angular.module('GenesisApp')
           if (data.length) {
             $scope.hojaAsig.listadoModems = data.filter(e => e.GESC_ESTADO == 'D');
             setTimeout(() => { $scope.$apply(); }, 500);
-          } else {
-            $scope.hojaAsig.formulario.modem = 'NO EXISTEN MODEMS DISPONIBLES'
+            if (!$scope.hojaAsig.listadoModems.length) {
+              $scope.hojaAsig.formulario.modem = 'NO EXISTEN MODEMS DISPONIBLES'
+            }
           }
         });
 

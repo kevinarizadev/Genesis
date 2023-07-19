@@ -771,7 +771,7 @@ angular.module('GenesisApp')
         $scope.modalObtenerDatosActores(x);
 
         $scope.openModal('modalCrearIndicadores');
-        document.getElementById('modalCrearIndicadores_Scroll').scrollIntoView({ block: 'start', behavior: 'smooth' });
+        document.getElementById('modalCrearIndicadores_Scroll').scrollIntoView({ block: 'top', behavior: 'smooth' });
         if (!$scope.validarPermisos(['AS'])) {
           angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Admin input'), function (i) {
             i.setAttribute("readonly", true);
