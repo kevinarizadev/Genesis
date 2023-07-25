@@ -96,7 +96,7 @@ angular.module('GenesisApp')
           ],
           listadoEstado: [
             { codigo: 'D', nombre: 'Disponible' },
-            { codigo: 'E', nombre: 'Entregado' },
+            { codigo: 'E', nombre: 'Asignado' },
             { codigo: 'X', nombre: 'Dado de Baja' },
             { codigo: 'S', nombre: 'En Stock' },
             { codigo: 'R', nombre: 'En Revisión' },
@@ -335,7 +335,7 @@ angular.module('GenesisApp')
           ],
           listadoEstado: [
             { codigo: 'D', nombre: 'Disponible' },
-            { codigo: 'E', nombre: 'Entregado' },
+            { codigo: 'E', nombre: 'Asignado' },
             { codigo: 'X', nombre: 'Dado de Baja' },
             { codigo: 'S', nombre: 'En Stock' },
             { codigo: 'R', nombre: 'En Revisión' },
@@ -545,7 +545,7 @@ angular.module('GenesisApp')
           ],
           listadoEstado: [
             { codigo: 'D', nombre: 'Disponible' },
-            { codigo: 'E', nombre: 'Entregado' },
+            { codigo: 'E', nombre: 'Asignado' },
             { codigo: 'X', nombre: 'Dado de Baja' },
             { codigo: 'S', nombre: 'En Stock' },
             { codigo: 'R', nombre: 'En Revisión' },

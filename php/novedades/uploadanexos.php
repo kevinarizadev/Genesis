@@ -2,10 +2,10 @@
 	// $postdata = file_get_contents("php://input");
  //  	$request = json_decode($postdata);
 	require_once('../config/dbcon_prod.php');
-	require_once('../config/ftpcon.php');
+	require_once('../config/sftp_con.php');
 	$type = $_POST['type'];
  	$id = $_POST['id'];
-	$path_login = 'ftp://ftp_genesis:Senador2019!@192.168.50.10/';
+	$path_login = 'ftp://genesis_ftp:Cajacopi2022!@192.168.50.36/';
 	$day = date("dmY");
 	$path_of_storage = "/cargue_ftp/Digitalizacion/Genesis/Aseguramiento/". $day."/";
 	if (is_dir($path_login.$path_of_storage) == TRUE) {

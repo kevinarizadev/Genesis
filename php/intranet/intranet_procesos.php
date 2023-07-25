@@ -21,12 +21,12 @@
         require_once('../config/dbcon_prod.php');
         global $param;
         $id = "1";
-        $json_send = $param->json;		
+        $json_send = $param->json;
         $consulta = oci_parse($c,'begin PQ_GENESIS_INTRANET.P_ACTUALIZA_SMOD(:v_prol,:v_pjsonin,:v_json_row); end;');
         $json_parametros = oci_new_descriptor($c, OCI_D_LOB);
         oci_bind_by_name($consulta, ':v_prol',$id);
         oci_bind_by_name($consulta, ':v_pjsonin', $json_parametros, -1, OCI_B_CLOB);
-        $json_parametros->writeTemporary($json_send); 
+        $json_parametros->writeTemporary($json_send);
         $clob = oci_new_descriptor($c,OCI_D_LOB);
         oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
         oci_execute($consulta,OCI_COMMIT_ON_SUCCESS);
@@ -54,8 +54,8 @@
             echo json_encode($res);
         } else {
             $estado = 0;
-            for ($i=0; $i < $arrlength; $i++) { 
-                $name = $hoy.'_'.$array_PDFs[$i]->name;   
+            for ($i=0; $i < $arrlength; $i++) {
+                $name = $hoy.'_'.$array_PDFs[$i]->name;
                 $SubirFTPintra = subirFTPIntranet($array_PDFs[$i]->base64,$path,$name,$array_PDFs[$i]->ext);
                 if ($SubirFTPintra != '0 - Error') {
                     $rutas[$i]->url = $SubirFTPintra;
@@ -84,7 +84,7 @@
         $hoy = date('dmY');
         $path = '/cargue_ftp/Digitalizacion/Genesis/Calidad/Procesos/';
         $estado = 0;
-        $name = $hoy.'_'.$fileRuta->name;  
+        $name = $hoy.'_'.$fileRuta->name;
         $SubirFTPintra = subirFTPIntranet($fileRuta->base64,$path,$name,$fileRuta->ext);
         if ($SubirFTPintra != '0 - Error') {
             $rutas->url = $SubirFTPintra;
@@ -109,10 +109,10 @@
         list(, $file) = explode(',', $file);
         $base64 = base64_decode($file);
         file_put_contents('../../temp/'.$name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
-    
-        $day = date("dmY_His");
+
+        $hoy = date("dmY");
         $path = 'Calidad/Procesos';
-        $ruta = $path.'/'.$day;
+        $ruta = $path.'/'.$hoy;
         require('../sftp_cloud/UploadFile.php');
         $subio = UploadFile($ruta, $name);
         $rutas=[];
@@ -169,8 +169,8 @@
         $json = $clob->read($clob->size());
         echo $json;
         oci_close($c);
-    } 
-    
+    }
+
     function listar_tipo_documentos(){
         require_once('../config/dbcon_prod.php');
         $consulta = oci_parse($c,'begin PQ_GENESIS_SGC.P_LISTA_TIPO_DOCUMENTO(:v_json_row); end;');
@@ -180,7 +180,7 @@
         $json = $clob->read($clob->size());
         echo $json;
         oci_close($c);
-    } 
+    }
 
     function guardar_documento(){
         require_once('../config/dbcon_prod.php');
@@ -397,8 +397,8 @@
         global $param;
         $nombre = $param->nombre;
         $url = $param->url;
-        $responsable = $param->responsable;	
-        $estado = $param->estado;	
+        $responsable = $param->responsable;
+        $estado = $param->estado;
         $consulta = oci_parse($c,'begin PQ_GENESIS_SGC.P_INSERTAR_PLANTILLA(:v_plav_nombre,:v_plav_url,:v_plac_estado,:v_plan_responsable,:v_pjson_row); end;');
         oci_bind_by_name($consulta, ':v_plav_nombre', $nombre);
         oci_bind_by_name($consulta, ':v_plav_url', $url);
@@ -432,7 +432,7 @@
         $codigo = $param->codigo;
         $nombre = $param->nombre;
         $url = $param->url;
-        $responsable = $param->responsable;	
+        $responsable = $param->responsable;
         $estado = $param->estado;
         $consulta = oci_parse($c,'begin PQ_GENESIS_SGC.P_ACTUALIZA_PLANTILLA(:v_codigo,:v_plav_nombre,:v_plav_url,:v_plac_estado,:v_plan_responsable,:v_pjson_row); end;');
         oci_bind_by_name($consulta, ':v_codigo', $codigo);
@@ -449,20 +449,29 @@
     }
 
     function get_url_ftp(){
-        require_once('../config/dbcon_prod.php');
-        //require_once('../config/ftpcon.php');
-        require_once('../config/sftp_con.php');
-        include('../upload_file/subir_archivo.php');
         global $param;
         $base64 = json_decode($param->base64);
         $hoy = date('dmY');
-        $path = '/cargue_ftp/Digitalizacion/Genesis/'.$param->location.'/';
+        $path = $param->location.'/'.$hoy;
+        // $path = '/cargue_ftp/Digitalizacion/Genesis/'.$param->location.'/';
         $estado = 0;
-        $name = $hoy.'_'.$param->name;  
-        // echo 'Ruta:'.$path, 'Nombre:'.$name, 'Ext:'.$param->ext, 'Base64:'.$base64;
-        $SubirFTPintra = subirFTP3jeff($base64,$path,$name,$param->ext);
+        $name = $param->name.'.'.$param->ext;
+
+        list(, $base64) = explode(';', $base64); // Proceso para traer el Base64
+        list(, $base64) = explode(',', $base64); // Proceso para traer el Base64
+        $base = base64_decode($base64); // Proceso para traer el Base64
+        file_put_contents('../../temp/' . $name, $base); // El Base64 lo guardamos como archivo en la carpeta temp
+
+        $rutas = new class{};
+
+        include('../sftp_cloud/UploadFile.php');
+        $SubirFTPintra = UploadFile($path, $name);
+
         if ($SubirFTPintra != '0 - Error' && $SubirFTPintra.substr(0, 3) != '<br' && $SubirFTPintra.substr(0, 1) != '0' && $SubirFTPintra != '') {
-            $rutas->url = $SubirFTPintra;
+            // $rutas->url = $SubirFTPintra;
+            $rutas = (object) [
+              'url' => $SubirFTPintra,
+            ];
         } else {
             $estado = $estado + 1;
         }
@@ -473,26 +482,29 @@
         }
     }
     function descargaAdjunto(){
-		// require_once('../config/ftpcon.php');
-		// global $param;
-		// $name = uniqid();
-		// $ext = pathinfo($param->ruta, PATHINFO_EXTENSION);
-		// $name = substr(pathinfo($param->ruta, PATHINFO_BASENAME), 0, strrpos(pathinfo($param->ruta, PATHINFO_BASENAME), ".")).'.'.$ext;
-		// $local_file = '../../temp/'.$name;
-		// $handle = fopen($local_file, 'w');
-		// if (ftp_fget($con_id, $handle, $param->ruta, FTP_ASCII, 0)) {
-		//  	echo $name;
-		// } else {
-		//  	echo "Error";
-		// }
-		// ftp_close($con_id);
-		// fclose($handle);
         global $param;
-        if ($param->ftp == 1) {
-            require_once('../config/ftpcon.php');
-        } else {
-            require_once('../config/sftp_con.php');
-        }
+        $fileexists = false;
+
+      if (file_exists('ftp://genesis_ftp:Cajacopi2022!@192.168.50.36/' . $param->ruta) == TRUE) {
+        require_once('../config/sftp_con.php');
+        $fileexists = true;
+      }
+
+      if (file_exists('ftp://ftp_genesis:Senador2019!@192.168.50.10/' . $param->ruta) == TRUE && $fileexists == false) {
+        require_once('../config/ftpcon.php');
+        $fileexists = true;
+      }
+
+      if (file_exists('ftp://ftp:Cajacopi2022.@192.168.50.36/' . $param->ruta) == TRUE && $fileexists == false) {
+        require_once('../config/sftp_con_2.php');
+        $fileexists = true;
+      }
+      if (file_exists('ftp://l_ftp_genesis:Troja2020!@192.168.50.10/' . $param->ruta) == TRUE && $fileexists == false) {
+        require_once('../config/l_ftpcon.php');
+        $fileexists = true;
+      }
+
+      if($fileexists) {
         //echo $param->ruta;
 
         $file_size = ftp_size($con_id, $param->ruta);
@@ -513,6 +525,10 @@
         } else {
             echo "Error";
         }
+      }else{
+        require('../sftp_cloud/DownloadFile.php');
+        echo( DownloadFile($param->ruta) );
+      }
 	}
 
     function descargaAdjunto_sgc(){
@@ -524,10 +540,10 @@
         if (file_exists('ftp://genesis_ftp:Cajacopi2022!@192.168.50.36/' . $param->ruta) == TRUE) {
             require('../config/sftp_con.php'); $fileexists = true;
         }
-        
+
         if($fileexists) {
             $file_size = ftp_size($con_id, $param->ruta);
-            
+
             if ($file_size != -1) {
                 $ruta = $param->ruta;
                 $name = explode("/", $ruta)[count(explode("/", $ruta))-1];//Encontrar el nombre y la posicion de la ultima carpeta que contenga / en la ruta
