@@ -47,7 +47,7 @@ function ObtenerInformeNotificacionGlosaWin()
 		echo json_encode($array);
 	}else{
 		echo json_encode($json);
-	}	
+	}
 	oci_free_statement($consulta);
 	oci_free_statement($curs);
 	oci_close($c);
@@ -181,11 +181,17 @@ function subir_adjuntos()
 	global $request;
 	// variables de parametros
 	$seccional =	$request->seccional;
-	$path = '/cargue_ftp/Digitalizacion/Genesis/Cuentasmedicas/Notificacionglosa/'. $seccional.'/';
-	$archivo_base =	$request->achivobase;
-	$ext =	$request->ext;
-	$name =	$request->nombre;
-	$subio = subirFTP($archivo_base, $path, $name, $ext);
-	$rutas = $subio;
-	echo $rutas;
+	$hoy = date('Ymd');
+	$path = 'Cuentasmedicas/Notificacionglosa/'. $seccional.'/'.$hoy;
+	// $path = '/cargue_ftp/Digitalizacion/Genesis/Cuentasmedicas/Notificacionglosa/'. $seccional.'/';
+	// $subio = subirFTP($archivo_base, $path, $name, $ext);
+	$name =	$request->nombre.'.'.$request->ext;
+  list(, $request->archivo_base) = explode(';', $request->archivo_base); // Proceso para traer el Base64
+  list(, $request->archivo_base) = explode(',', $request->archivo_base); // Proceso para traer el Base64
+  $base64 = base64_decode($request->archivo_base); // Proceso para traer el Base64
+  file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+  include('../sftp_cloud/UploadFile.php');
+  $subio = UploadFile($path, $name);
+
+	echo $subio;
 }

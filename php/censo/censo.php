@@ -22,7 +22,7 @@ function buscarcenso()
 
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -48,7 +48,7 @@ function buscarcodigocenso()
 
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -70,7 +70,7 @@ function buscarcodigocensoubi()
 
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -165,7 +165,7 @@ function buscaravanzada()
 
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -188,7 +188,7 @@ function descargarcenso()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -210,7 +210,7 @@ function obtener_glosas()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -239,7 +239,7 @@ function print_formato()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -259,7 +259,7 @@ function detallecenso()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -282,7 +282,7 @@ function obtenerListaCenso()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -300,7 +300,7 @@ function obtenerPreguntasPsi()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -341,7 +341,7 @@ function obtenerTipoEstancia()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -361,7 +361,7 @@ function obtenercamposautorizacion()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -404,7 +404,7 @@ function obtenercampospordocumento()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -484,7 +484,7 @@ function listaIps()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -508,7 +508,7 @@ function listaMunicipio()
 
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -537,7 +537,7 @@ function obtenersolicitudesafiliacion()
 
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -557,7 +557,7 @@ function obtenerHospitalizacion()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -575,7 +575,7 @@ function obtenerEventosadv()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -593,7 +593,7 @@ function obtenerMotivoglosa()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -613,7 +613,7 @@ function obtenerEventosadvdeta()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -630,7 +630,7 @@ function listaDiagnosticos()
 
 	// $cursor = oci_new_cursor($c);
 	$consulta = oci_parse($c, 'begin
-  	
+
   		pq_genesis_tut.p_obtener_diagnostico(:v_pcoincidencia, :v_json_row);end;');
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_pcoincidencia', $request->keyword);
@@ -658,7 +658,7 @@ function obtenerMotivoEgreso()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -678,7 +678,7 @@ function obtenerEvolucionPaciente()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -717,7 +717,7 @@ function obtenerFichaPaciente()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -738,7 +738,7 @@ function obtenerEvolucionDetalleHospitalizacion()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -804,17 +804,29 @@ end;
 function CargarSoportes()
 {
 	require_once('../config/dbcon.php');
-	require_once('../config/ftpcon.php');
-	require_once('../upload_file/subir_archivo.php');
+	// require_once('../config/ftpcon.php');
+	// require_once('../upload_file/subir_archivo.php');
 	global $request;
 	$archivos = json_decode($request->archivos);
 	$tipodocumento = $request->tipodocumento;
 	$documento = $request->numero;
 	$hoy = date('dmY');
-	$path = '/cargue_ftp/Digitalizacion/Genesis/Censo/';
-	$estado = 0;
-	$name = $tipodocumento . '_' . $documento . '_'  . $hoy;
-	$subio = subirDigitalizacionFTP($archivos[0]->base64, $path, $name, $archivos[0]->extension);
+	// $path = '/cargue_ftp/Digitalizacion/Genesis/Censo/';
+	$path = 'Censo/'.$hoy;
+	// $estado = 0;
+  $day = date("dmY_His");
+
+	$name = $tipodocumento . '_' . $documento. '_' . $day . '.' . $archivos[0]->extension;
+  include('../sftp_cloud/UploadFile.php');
+
+  list(, $archivos[0]->base64) = explode(';', $archivos[0]->base64); // Proceso para traer el Base64
+  list(, $archivos[0]->base64) = explode(',', $archivos[0]->base64); // Proceso para traer el Base64
+  $base64 = base64_decode($archivos[0]->base64); // Proceso para traer el Base64
+  file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+
+  $subio = UploadFile($path, $name);
+
+	// $subio = subirDigitalizacionFTP($archivos[0]->base64, $path, $name, $archivos[0]->extension);
 	echo $subio;
 }
 
@@ -837,7 +849,7 @@ function notificacion_nacimiento()
 											:v_pnumerodocumento_cabeza,
 											:v_ruta,
 											:v_prespuesta)
-										
+
 										; end;');
 
 	oci_bind_by_name($consulta, ':v_ptipodocumento', $request->tipodocumento);
@@ -871,22 +883,22 @@ function regafiliado()
 {
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'begin pq_genesis_censo_hospitalario.P_INSERTAR_AFILIADO(:v_ptipodocumento,   
+	$consulta = oci_parse($c, 'begin pq_genesis_censo_hospitalario.P_INSERTAR_AFILIADO(:v_ptipodocumento,
 																		  :v_pnumerodocumento ,
-																		  :v_pprimernombre,    
-																		  :v_psegundonombre ,  
-																		  :v_pprimerapellido,  
+																		  :v_pprimernombre,
+																		  :v_psegundonombre ,
+																		  :v_pprimerapellido,
 																		  :v_psegundoapellido ,
-																		  :v_pgenero,          
-																		  :v_pubicacion,       
-																		  :v_pfechanacimiento, 
-																		  :v_ptelefono,        
-																		  :v_pcelular,         
-																		  :v_pcorreo ,         
-																		  :v_pdireccion,       
-																		  :v_presponsable,     
-																		  :v_pproceso, 
-																		  :v_ubicacionter,        
+																		  :v_pgenero,
+																		  :v_pubicacion,
+																		  :v_pfechanacimiento,
+																		  :v_ptelefono,
+																		  :v_pcelular,
+																		  :v_pcorreo ,
+																		  :v_pdireccion,
+																		  :v_presponsable,
+																		  :v_pproceso,
+																		  :v_ubicacionter,
 																		  :v_pruta,
 																		  :v_prespuesta); end;');
 
@@ -925,11 +937,11 @@ function insertarChat()
 	global $request;
 	$cursor = oci_new_cursor($c);
 
-	$consulta = oci_parse($c, 'begin pq_genesis_censo_hospitalario.P_INSERTAR_CHAT(:v_pproceso,   
-																	  :v_pnumero,     
-																	  :v_pubicacion,  
+	$consulta = oci_parse($c, 'begin pq_genesis_censo_hospitalario.P_INSERTAR_CHAT(:v_pproceso,
+																	  :v_pnumero,
+																	  :v_pubicacion,
 																	  :v_presponsable,
-																	  :v_pmensaje,    
+																	  :v_pmensaje,
 																	  :v_response); end;');
 	oci_bind_by_name($consulta, ':v_pproceso', $request->proceso);
 	oci_bind_by_name($consulta, ':v_pnumero', $request->numerocenso);
@@ -939,7 +951,7 @@ function insertarChat()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -961,7 +973,7 @@ function obtenerChat()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -981,7 +993,7 @@ function listaIpsNC()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
@@ -1046,7 +1058,7 @@ function obtenerChatdisponibles()
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
-	$datos = null;
+	$datos = [];
 	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);

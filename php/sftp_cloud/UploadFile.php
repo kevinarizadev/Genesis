@@ -7,12 +7,12 @@ function Connect_FTP()
     $ftp_port = "22";
     $ftp_user = "opc"; // <--- SCP
 
-    // $pubkeyfile = '/Users/kevin.ariza/.ssh/id_rsa.pub'; // <---- Usar en equipo local
-    // $privkeyfile = '/Users/kevin.ariza/.ssh/id_rsa'; // <---- Usar en equipo local
+    $pubkeyfile = '/Users/kevin.ariza/.ssh/id_rsa.pub'; // <---- Usar en equipo local
+    $privkeyfile = '/Users/kevin.ariza/.ssh/id_rsa'; // <---- Usar en equipo local
     //$pubkeyfile = '../.ssh/id_rsa.pub'; // <---- Usar en servidor
     //$privkeyfile = '../.ssh/id_rsa'; // <---- Usar en servidor
-    $pubkeyfile = 'C:\inetpub\wwwroot\Genesis\php\.ssh\id_rsa.pub';
-    $privkeyfile = 'C:\inetpub\wwwroot\Genesis\php\.ssh\id_rsa';
+    // $pubkeyfile = 'C:\inetpub\wwwroot\Genesis\php\.ssh\id_rsa.pub';
+    // $privkeyfile = 'C:\inetpub\wwwroot\Genesis\php\.ssh\id_rsa';
 
     if (!$con_id = ssh2_connect($ftp_server, $ftp_port)) die('0 - Error al conectar');
     if (!ssh2_auth_pubkey_file($con_id,$ftp_user,$pubkeyfile,$privkeyfile)) die('0 - Error al conectar pub');
@@ -20,16 +20,16 @@ function Connect_FTP()
     return $con_id;
 }
 
-function UploadFile($dir /*Directorio del proyecto Ejemp: ( carpeta/subcarpeta/... )*/, 
+function UploadFile($dir /*Directorio del proyecto Ejemp: ( carpeta/subcarpeta/... )*/,
 $file /*Nombre del archivo y su extension Ejemp: ( archivo.zip )*/)//
 {
-    // $root = $_SERVER['DOCUMENT_ROOT'].'/genesis/';
-    $root = $_SERVER['DOCUMENT_ROOT'].'/'; //<---- Usar en servidor
+    $root = $_SERVER['DOCUMENT_ROOT'].'/genesis/';
+    // $root = $_SERVER['DOCUMENT_ROOT'].'/'; //<---- Usar en servidor
 	$con_id = Connect_FTP();
     $host_path = '/data/sftpuser/cargue_ftp/Digitalizacion/Genesis/';//Ruta Host
-    
+
     $sftp = ssh2_sftp($con_id); // Abrimos la conexion sftp
-    
+
     $parts = explode('/',$dir); // Calculamos cuantos directorios existen
     foreach($parts as $part){ // Iniciamos el recorrido para crear los directorios si es que no existen algunos
         $host_path = $host_path.$part.'/'; // Concatenamos la ruta $host_path con la carpeta del proyecto

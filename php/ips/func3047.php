@@ -229,19 +229,30 @@ function CargarSoportes()
 function CargarSoportes()
 {
   require_once('../config/dbcon.php');
-  require_once('../config/ftpcon.php');
-  require_once('../upload_file/subir_archivo.php');
+  // require_once('../config/ftpcon.php');
+  // require_once('../upload_file/subir_archivo.php');
   global $request;
   $archivos = json_decode($request->archivos);
   $tipodocumento = $request->tipodocumento;
   $documento = $request->numero;
   $hoy = date('dmY');
-  $path = '/cargue_ftp/Digitalizacion/Genesis/IPS/' . $hoy . '/';
+  // $path = '/cargue_ftp/Digitalizacion/Genesis/IPS/' . $hoy . '/';
+  $path = 'IPS/' . $hoy;
   $estado = 0;
   $rutas = [];
+  include('../sftp_cloud/UploadFile.php');
   for ($i = 0; $i < count($archivos); $i++) {
-    $name = $tipodocumento . '_' . $documento . '_' . $archivos[$i]->codigo . '_' . $hoy;
-    $subio = subirDigitalizacionFTP($archivos[$i]->base64, $path, $name, $archivos[$i]->extension);
+    $name = $tipodocumento . '_' . $documento . '_' . $archivos[$i]->codigo . '_' . $day . '.' . $archivos[$i]->extension;
+    // $subio = subirDigitalizacionFTP($archivos[$i]->base64, $path, $name, $archivos[$i]->extension);
+
+    list(, $archivos[0]->base64) = explode(';', $archivos[0]->base64); // Proceso para traer el Base64
+    list(, $archivos[0]->base64) = explode(',', $archivos[0]->base64); // Proceso para traer el Base64
+    $base64 = base64_decode($archivos[0]->base64); // Proceso para traer el Base64
+    file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+
+    $subio = UploadFile($path, $name);
+
+
     if ($subio != '0 - Error') {
       array_push($rutas, (object)[
         'ruta' => $subio,
@@ -835,7 +846,7 @@ function cargarSoporteConf()
   require('../sftp_cloud/UploadFile.php');
   global $request;
   $hoy = date('dmY');
-  
+
   $path = 'IPS/CONF/' . $hoy;
   // for ($i = 0; $i < count($archivos); $i++) {
   $hoyHora = date('dmY_His');
