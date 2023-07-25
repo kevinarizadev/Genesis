@@ -289,3 +289,21 @@ function p_exportar_informacion()
   oci_free_statement($cursor);
   echo json_encode($datos);
 }
+
+function p_obtener_funcionario()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'begin pq_gestion_equipos.p_obtener_funcionario(:v_pdocumento,:v_json_row); end;');
+  oci_bind_by_name($consulta, ':v_pdocumento', $request->cedula);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}

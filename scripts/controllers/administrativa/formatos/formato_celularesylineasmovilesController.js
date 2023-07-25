@@ -101,25 +101,25 @@ angular.module('GenesisApp', [])
         }
       }
 
-      document.addEventListener('contextmenu', event => event.preventDefault());
-      const body = document.querySelector('body');
+      // document.addEventListener('contextmenu', event => event.preventDefault());
+      // const body = document.querySelector('body');
 
-      body.onkeydown = function (e) {
-        if (e.keyCode === 17 || e.keyCode === 80) {
-        } else {
-          return false;
-        }
-      }
-      var mediaQueryList = window.matchMedia('print');
-      mediaQueryList.addListener(function (mql) {
-        if (mql.matches) {
-          console.log('se hizo antes de imprimir');
-        } else {
-          console.log('se hizo despues de imprimir');
-          setTimeout(function () {
-            window.close();
-          }, 10);
-        }
-      });
+      // body.onkeydown = function (e) {
+      //   if (e.keyCode === 17 || e.keyCode === 80) {
+      //   } else {
+      //     return false;
+      //   }
+      // }
+      // var mediaQueryList = window.matchMedia('print');
+      // mediaQueryList.addListener(function (mql) {
+      //   if (mql.matches) {
+      //     console.log('se hizo antes de imprimir');
+      //   } else {
+      //     console.log('se hizo despues de imprimir');
+      //     setTimeout(function () {
+      //       window.close();
+      //     }, 10);
+      //   }
+      // });
 
     }]);

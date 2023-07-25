@@ -10,6 +10,7 @@ if (!isset($_SESSION['nombre'])) {
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Acta de Entrega</title>
+  <link rel="stylesheet" type="text/css" href="../../../bower_components/sweetalert/css/sweetalert2.css">
   <link rel="icon" href="../../../assets/images/icon.ico" />
   <style type="text/css">
     @page {
@@ -52,12 +53,14 @@ if (!isset($_SESSION['nombre'])) {
       border-collapse: collapse;
       padding: 4px;
     }
+
     .tableFirmas,
     .tableFirmas th,
     .tableFirmas td {
       text-align: left !important;
     }
   </style>
+  <script src="../../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
   <script src="../../../bower_components/angular/angular.js"></script>
   <script src="../../../bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="../../../js/qr-code-styling@1.5.0.js"></script>
@@ -133,7 +136,7 @@ if (!isset($_SESSION['nombre'])) {
     <br><br>
     <h2 class="tleft">OBSERVACIONES:</h2>
     <span>
-    {{DATA.OBSERVACION}}.
+      {{DATA.OBSERVACION}}.
       <br><br>
       Favor firmar documento y remitirlo al correo electrónico: <u>{{DATA.CORREO}}</u>
     </span>
