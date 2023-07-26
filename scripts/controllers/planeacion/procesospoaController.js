@@ -21,6 +21,7 @@ angular.module('GenesisApp')
           if ($scope.validarPermisos(['AS'])) {
             $scope.hojaProcesosLimpiar()
             $scope.hojaProcesosListar();
+            $scope.hojaProcesosListarlistadoPerspectiva()
             $scope.hojaProcesosListarObjetivoEstrategico()
           }
         }, 1000);
@@ -109,6 +110,7 @@ angular.module('GenesisApp')
               { codigo: 2, nombre: 'Subgerencia' },
               { codigo: 3, nombre: 'Coordinacion Nacional o Regional' },
             ],
+            listadoObjetivoPerspectiva: [],
             listadoObjetivoEstrategico: []
             // listadoObjetivoEstrategico: [
             //   { codigo: 1, nombre: 'Mejorar calidad en la atención en salud' },
@@ -119,6 +121,25 @@ angular.module('GenesisApp')
           }
         }
 
+      }
+
+      $scope.hojaProcesosListarlistadoPerspectiva = function () {
+        $scope.hojaProcesos.formulario.listadoObjetivoPerspectiva = [];
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: 'p_obtener_objetivos_perspectiva',
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.length) {
+            $scope.hojaProcesos.formulario.listadoObjetivoPerspectiva = data
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        });
       }
 
       $scope.hojaProcesosListarObjetivoEstrategico = function () {
@@ -196,21 +217,19 @@ angular.module('GenesisApp')
         }
         $scope.hojaProcesos.formulario.listadoObjetivos.push(
           {
+            codigo_perspectiva: $scope.hojaProcesos.formulario.perspectiva,
+            nombre_perspectiva: $scope.hojaProcesos.formulario.listadoObjetivoPerspectiva.find(e => e.codigo == $scope.hojaProcesos.formulario.perspectiva).nombre,
             codigo_estrategico: $scope.hojaProcesos.formulario.objetivoEstrategico,
             nombre_estrategico: $scope.hojaProcesos.formulario.listadoObjetivoEstrategico.find(e => e.codigo == $scope.hojaProcesos.formulario.objetivoEstrategico).nombre,
             codigo_tactico: 0,
             nombre_tactico: $scope.hojaProcesos.formulario.objetivoTactivo,
           }
         );
+        $scope.hojaProcesos.formulario.perspectiva = '';
         $scope.hojaProcesos.formulario.objetivoEstrategico = '';
         $scope.hojaProcesos.formulario.objetivoTactivo = '';
 
         $scope.actualizarConsObjetivo();
-        // v_posicion1:= '$[' || j || '].codigo_estrategico';
-        // v_posicion2:= '$[' || j || '].nombre_estrategico';
-        // v_posicion3:= '$[' || j || '].codigo_tactico';
-        // v_posicion4:= '$[' || j || '].nombre_tactico';
-        // v_posicion5:= '$[' || j || '].soporte';
 
       }
       $scope.quitarObjetivo = function (index) {
@@ -402,6 +421,8 @@ angular.module('GenesisApp')
           data.forEach(x => {
             $scope.hojaProcesos.formulario.listadoObjetivos.push(
               {
+                codigo_perspectiva: x.CODIGO_PERSPECTIVA,
+                nombre_perspectiva: x.NOMBRE_PERSPECTIVA,
                 codigo_estrategico: x.UNIN_OBJETIVO_COD_ESTR,
                 nombre_estrategico: x.NOMBRE,
                 codigo_tactico: x.UNIN_OBJETIVO_COD_TACT,
@@ -1226,7 +1247,16 @@ angular.module('GenesisApp')
                       enabled: false
                     },
                     // enableMouseTracking: false,
+                  },
+                  //
+                  {
+                    name: 'Linea base',
+                    //color: '#00e8ff',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.REGN_LINEA_BASE.toString().replace(',', '.'))], [dataSerie.length, parseFloat($scope.modalGraficoVars.REGN_LINEA_BASE.toString().replace(',', '.'))]],
                   }
+                  //
                 ],
                 // exporting: { enabled: false },
                 credits: { enabled: false },

@@ -61,6 +61,23 @@ function p_consulta_proceso()
 }
 
 
+function p_obtener_objetivos_perspectiva()
+{
+  // global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_obtener_objetivo_perspectiva(:v_pjson_row); end;');
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}
+
 function p_obtener_objetivo_estrategico()
 {
   // global $request;
