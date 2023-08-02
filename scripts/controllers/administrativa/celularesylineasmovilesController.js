@@ -550,6 +550,12 @@ angular.module('GenesisApp')
             { codigo: 'S', nombre: 'En Stock' },
             { codigo: 'R', nombre: 'En Revisión' },
           ],
+          listadoFechaCorte: [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31
+          ]
         }
       }
       $scope.hojaLinea_ObtenerEstado = function (tipo = null) {
@@ -629,12 +635,13 @@ angular.module('GenesisApp')
         $scope.hojaLinea.formulario.idLinea = x.GESN_CODIGO
         $scope.hojaLinea.formulario.operador = x.GESC_OPERADOR
         $scope.hojaLinea.formulario.numeroLinea = x.GESN_NUMERO_LINEA
-        $scope.hojaLinea.formulario.tipo = x.GESC_TIPO_LINEA.split('-')[0]
+        $scope.hojaLinea.formulario.tipo = x.GESC_TIPO_LINEA ? x.GESC_TIPO_LINEA.split('-')[0] : ''
         $scope.hojaLinea.formulario.descripcionPlan = x.GESC_DESCRIPCION_PLAN
         $scope.hojaLinea.formulario.gigas = x.GESC_GIGAS
         $scope.hojaLinea.formulario.numeroCuenta = x.GESC_NUMERO_CUENTA
         $scope.hojaLinea.formulario.valorPlan = x.GESN_VALOR_PLAN
-        $scope.hojaLinea.formulario.fechaCorte = x.GESF_FECHA_CORTE ? new Date(x.GESF_FECHA_CORTE.split('/')[2], x.GESF_FECHA_CORTE.split('/')[1], x.GESF_FECHA_CORTE.split('/')[0]) : ''
+        $scope.hojaLinea.formulario.fechaCorte = x.GESF_FECHA_CORTE ? x.GESF_FECHA_CORTE.trim() : ''
+        // $scope.hojaLinea.formulario.fechaCorte = x.GESF_FECHA_CORTE ? new Date(x.GESF_FECHA_CORTE.split('/')[2], x.GESF_FECHA_CORTE.split('/')[1], x.GESF_FECHA_CORTE.split('/')[0]) : ''
         $scope.hojaLinea.formulario.estado = x.GESC_ESTADO
         $scope.hojaLinea.formulario.observacion = x.GESC_OBSERVACION
 
@@ -684,7 +691,7 @@ angular.module('GenesisApp')
                 showConfirmButton: false,
                 animation: false
               });
-              const fechaCorte = $scope.hojaLinea.formulario.fechaCorte ? parsedia($scope.hojaLinea.formulario.fechaCorte) : '';
+              const fechaCorte = $scope.hojaLinea.formulario.fechaCorte;
               const data = {
                 codigo: !$scope.hojaLinea.formulario.idLinea ? '' : $scope.hojaLinea.formulario.idLinea,
                 operador: $scope.hojaLinea.formulario.operador,
@@ -999,6 +1006,9 @@ angular.module('GenesisApp')
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data.length == 0) {
             swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.Codigo == 1) {
+            swal("Error", data.Nombre, "warning").catch(swal.noop); return
           }
           if (data.length) {
             swal.close()

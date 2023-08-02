@@ -63,7 +63,7 @@ if (!isset($_SESSION['nombre'])) {
   <script src="../../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
   <script src="../../../bower_components/angular/angular.js"></script>
   <script src="../../../bower_components/jquery/dist/jquery.js"></script>
-  <script type="text/javascript" src="../../../js/qr-code-styling@1.5.0.js"></script>
+  <!-- <script type="text/javascript" src="../../../js/qr-code-styling@1.5.0.js"></script> -->
   <script src="../../../scripts/controllers/administrativa/formatos/formato_celularesylineasmovilesController.js"></script>
 </head>
 

@@ -24,6 +24,27 @@
     };
   });
   //
+  angular.module('GenesisApp').directive('numbersDecimalOnly', function () {
+    return {
+      require: 'ngModel',
+      link: function (scope, element, attr, ngModelCtrl) {
+        function fromUser(text) {
+          if (text) {
+            var transformedInput = text.replace(/[^0-9\.]/g, '');
+            // console.log(transformedInput.split('.'));
+            if ((transformedInput.split('.')).length == 3) { transformedInput = 0 }
+            if (transformedInput !== text) {
+              ngModelCtrl.$setViewValue(transformedInput);
+              ngModelCtrl.$render();
+            }
+            return transformedInput;
+          }
+          return undefined;
+        }
+        ngModelCtrl.$parsers.push(fromUser);
+      }
+    };
+  });
   angular.module('GenesisApp').directive('textOnly', function () {
     return {
       require: 'ngModel',

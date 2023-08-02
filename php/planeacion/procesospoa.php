@@ -332,3 +332,19 @@ function p_eliminar_indicador()
   oci_close($c);
 }
 
+function p_u_metaVigencia()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_u_metaVigencia(:v_pjson,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pjson', $request->datos, 4000);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}
+
