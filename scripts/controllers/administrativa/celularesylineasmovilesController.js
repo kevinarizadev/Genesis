@@ -550,6 +550,12 @@ angular.module('GenesisApp')
             { codigo: 'S', nombre: 'En Stock' },
             { codigo: 'R', nombre: 'En Revisión' },
           ],
+          listadoFechaCorte: [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31
+          ]
         }
       }
       $scope.hojaLinea_ObtenerEstado = function (tipo = null) {
@@ -613,6 +619,7 @@ angular.module('GenesisApp')
         $scope.hojaLinea.formulario.tipo = ''
         $scope.hojaLinea.formulario.descripcionPlan = ''
         $scope.hojaLinea.formulario.gigas = ''
+        $scope.hojaLinea.formulario.numeroCuenta = ''
         $scope.hojaLinea.formulario.valorPlan = ''
         $scope.hojaLinea.formulario.fechaCorte = ''
         $scope.hojaLinea.formulario.estado = 'S'
@@ -628,11 +635,13 @@ angular.module('GenesisApp')
         $scope.hojaLinea.formulario.idLinea = x.GESN_CODIGO
         $scope.hojaLinea.formulario.operador = x.GESC_OPERADOR
         $scope.hojaLinea.formulario.numeroLinea = x.GESN_NUMERO_LINEA
-        $scope.hojaLinea.formulario.tipo = x.GESC_TIPO_LINEA.split('-')[0]
+        $scope.hojaLinea.formulario.tipo = x.GESC_TIPO_LINEA ? x.GESC_TIPO_LINEA.split('-')[0] : ''
         $scope.hojaLinea.formulario.descripcionPlan = x.GESC_DESCRIPCION_PLAN
         $scope.hojaLinea.formulario.gigas = x.GESC_GIGAS
+        $scope.hojaLinea.formulario.numeroCuenta = x.GESC_NUMERO_CUENTA
         $scope.hojaLinea.formulario.valorPlan = x.GESN_VALOR_PLAN
-        $scope.hojaLinea.formulario.fechaCorte = x.GESF_FECHA_CORTE ? new Date(x.GESF_FECHA_CORTE.split('/')[2], x.GESF_FECHA_CORTE.split('/')[1], x.GESF_FECHA_CORTE.split('/')[0]) : ''
+        $scope.hojaLinea.formulario.fechaCorte = x.GESF_FECHA_CORTE ? x.GESF_FECHA_CORTE.trim() : ''
+        // $scope.hojaLinea.formulario.fechaCorte = x.GESF_FECHA_CORTE ? new Date(x.GESF_FECHA_CORTE.split('/')[2], x.GESF_FECHA_CORTE.split('/')[1], x.GESF_FECHA_CORTE.split('/')[0]) : ''
         $scope.hojaLinea.formulario.estado = x.GESC_ESTADO
         $scope.hojaLinea.formulario.observacion = x.GESC_OBSERVACION
 
@@ -649,6 +658,7 @@ angular.module('GenesisApp')
           if (!$scope.hojaLinea.formulario.tipo) resolve(false);
           if (!$scope.hojaLinea.formulario.descripcionPlan) resolve(false);
           if (!$scope.hojaLinea.formulario.gigas) resolve(false);
+          // if (!$scope.hojaLinea.formulario.numeroCuenta) resolve(false);
           if (!$scope.hojaLinea.formulario.valorPlan) resolve(false);
           // if (!$scope.hojaLinea.formulario.fechaCorte) resolve(false);
           if (!$scope.hojaLinea.formulario.estado) resolve(false);
@@ -681,7 +691,7 @@ angular.module('GenesisApp')
                 showConfirmButton: false,
                 animation: false
               });
-              const fechaCorte = $scope.hojaLinea.formulario.fechaCorte ? parsedia($scope.hojaLinea.formulario.fechaCorte) : '';
+              const fechaCorte = $scope.hojaLinea.formulario.fechaCorte;
               const data = {
                 codigo: !$scope.hojaLinea.formulario.idLinea ? '' : $scope.hojaLinea.formulario.idLinea,
                 operador: $scope.hojaLinea.formulario.operador,
@@ -689,6 +699,7 @@ angular.module('GenesisApp')
                 tipo: $scope.hojaLinea.formulario.tipo,
                 descripcionPlan: $scope.hojaLinea.formulario.descripcionPlan,
                 gigas: $scope.hojaLinea.formulario.gigas,
+                numeroCuenta: $scope.hojaLinea.formulario.numeroCuenta,
                 valorPlan: $scope.hojaLinea.formulario.valorPlan.replace(/\./g, ''),
                 fechaCorte: fechaCorte,
                 estado: $scope.hojaLinea.formulario.estado,
@@ -832,11 +843,13 @@ angular.module('GenesisApp')
         $scope.hojaAsig.formulario.equipo = ''
         $scope.hojaAsig.formulario.modem = ''
         $scope.hojaAsig.formulario.mesaAyuda = ''
+        $scope.hojaAsig.formulario.idFuncJefe = ''
         $scope.hojaAsig.formulario.nombre = ''
         $scope.hojaAsig.formulario.cargo = ''
         $scope.hojaAsig.formulario.area = ''
         $scope.hojaAsig.formulario.regional = ''
         $scope.hojaAsig.formulario.correo = '';
+        $scope.hojaAsig.formulario.observacionAcas = '';
         $scope.hojaAsig.formulario.observacion = '';
         $scope.hojaAsig_ObtenerListado();
         setTimeout(() => { $scope.$apply(); }, 500);
@@ -875,6 +888,7 @@ angular.module('GenesisApp')
         $scope.hojaAsig.listadoLineas = []; //GESN_CODIGO - GESN_NUMERO_LINEA
         $scope.hojaAsig.listadoModems = []; //GESN_CODIGO - GESC_REFERENCIA_MODEM
         $scope.hojaAsig.listadoAcas = [];
+        $scope.hojaAsig.listadoFuncsJefe = [];
 
         $http({
           method: 'POST',
@@ -884,7 +898,8 @@ angular.module('GenesisApp')
           }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data.length == 0) {
-            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+            $scope.hojaAsig.formulario.equipo = 'NO EXISTEN EQUIPOS DISPONIBLES'
+            return
           }
           if (data.length) {
             $scope.hojaAsig.listadoEquipos = data.filter(e => e.GESC_ESTADO == 'D');
@@ -902,7 +917,8 @@ angular.module('GenesisApp')
           }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data.length == 0) {
-            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+            $scope.hojaAsig.formulario.linea = 'NO EXISTEN LINEAS DISPONIBLES'
+            return
           }
           if (data.length) {
             $scope.hojaAsig.listadoLineas = data.filter(e => e.GESC_ESTADO == 'D');
@@ -920,7 +936,8 @@ angular.module('GenesisApp')
           }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data.length == 0) {
-            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+            $scope.hojaAsig.formulario.modem = 'NO EXISTEN MODEMS DISPONIBLES'
+            return
           }
           if (data.length) {
             $scope.hojaAsig.listadoModems = data.filter(e => e.GESC_ESTADO == 'D');
@@ -939,7 +956,8 @@ angular.module('GenesisApp')
           }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data.length == 0) {
-            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+            $scope.hojaAsig.formulario.mesaAyuda = 'NO EXISTEN MESAS DE AYUDA DISPONIBLES'
+            return
           }
           if (data.length) {
             $scope.hojaAsig.listadoAcas = data
@@ -961,27 +979,79 @@ angular.module('GenesisApp')
         const dato = $scope.hojaAsig.listadoAcas.filter(e => (e.CASN_NUMERO + ' - ' + e.TERC_NOMBRE) == $scope.hojaAsig.formulario.mesaAyuda);
         if (dato.length) {
 
-          $scope.hojaAsig.formulario.nombre = dato[0].TERC_NOMBRE
-          $scope.hojaAsig.formulario.cargo = dato[0].CARC_NOMBRE
-          $scope.hojaAsig.formulario.area = dato[0].FUNC_NOMBRE
-          $scope.hojaAsig.formulario.regional = dato[0].UBGC_NOMBRE
-          $scope.hojaAsig.formulario.correo = dato[0].TERC_EMAIL
+          $scope.hojaAsig.formulario.observacionAcas = dato[0].CAST_DIAGNOSTICO
 
+          $scope.obtenerFuncsJefe(dato[0].CASV_SOLICITANTE);
           setTimeout(() => { $scope.$apply(); }, 500);
+        } else {
+          $scope.hojaAsig.formulario.observacionAcas = ''
         }
       }
+      $scope.obtenerFuncsJefe = function (cedula) {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/administrativa/celularesylineasmoviles.php",
+          data: {
+            function: 'p_obtener_funcionario',
+            cedula
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data.length == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.Codigo == 1) {
+            swal("Error", data.Nombre, "warning").catch(swal.noop); return
+          }
+          if (data.length) {
+            swal.close()
+            $scope.hojaAsig.listadoFuncsJefe = data
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        })
+      }
 
+      $scope.obtenerFuncsJefeSeleccionado = function () {
+        const dato = $scope.hojaAsig.listadoFuncsJefe.filter(e => (e.CODIGO + ' - ' + e.NOMBRE) == $scope.hojaAsig.formulario.idFuncJefe);
+        if (dato.length) {
+
+          $scope.hojaAsig.formulario.nombre = dato[0].NOMBRE
+          $scope.hojaAsig.formulario.cargo = dato[0].CARGO
+          $scope.hojaAsig.formulario.area = dato[0].AREA
+          $scope.hojaAsig.formulario.regional = dato[0].REGIONAL
+          $scope.hojaAsig.formulario.correo = dato[0].EMAIL
+
+          setTimeout(() => { $scope.$apply(); }, 500);
+        } else {
+          $scope.hojaAsig.formulario.nombre = ''
+          $scope.hojaAsig.formulario.cargo = ''
+          $scope.hojaAsig.formulario.area = ''
+          $scope.hojaAsig.formulario.regional = ''
+          $scope.hojaAsig.formulario.correo = ''
+        }
+      }
       $scope.validarFormAsig = function () {
         return new Promise((resolve) => {
           if (!$scope.hojaAsig.formulario.linea) resolve(false);
           if (!$scope.hojaAsig.formulario.tipoLinea) resolve(false);
-          if ($scope.hojaAsig.formulario.tipoLinea == 'C' && !$scope.hojaAsig.formulario.equipo) resolve(false);
-          if ($scope.hojaAsig.formulario.tipoLinea == 'M' && !$scope.hojaAsig.formulario.modem) resolve(false);
+          // if ($scope.hojaAsig.formulario.tipoLinea == 'C' && !$scope.hojaAsig.formulario.equipo) resolve(false);
+          // if ($scope.hojaAsig.formulario.tipoLinea == 'M' && !$scope.hojaAsig.formulario.modem) resolve(false);
           if (!$scope.hojaAsig.formulario.mesaAyuda) resolve(false);
           if (!$scope.hojaAsig.formulario.observacion) resolve(false);
+          if (!$scope.hojaAsig.formulario.idFuncJefe) resolve(false);
+          if (!$scope.hojaAsig.formulario.nombre) resolve(false);
           resolve(true)
         });
       }
+
+
       $scope.guardarFormAsig = function () {
         $scope.validarFormAsig().then(res => {
           if (!res) { swal("¡Importante!", "Diligencia los campos requeridos (*)", "warning").catch(swal.noop); return }
@@ -1006,15 +1076,19 @@ angular.module('GenesisApp')
                 animation: false
               });
 
+              const equipoCelular = $scope.hojaAsig.formulario.equipo.indexOf('-') != -1 ? $scope.hojaAsig.formulario.equipo.split('-')[0].trim() : ''
+              const equipoModem = $scope.hojaAsig.formulario.modem.indexOf('-') != -1 ? $scope.hojaAsig.formulario.modem.split('-')[0].trim() : ''
+
               const data = [{
                 lineaMovil: $scope.hojaAsig.formulario.linea.split('-')[0].trim(),
 
-                equipoCelular: $scope.hojaAsig.formulario.tipoLinea == 'C' ? $scope.hojaAsig.formulario.equipo.split('-')[0].trim() : '',
-                equipoModem: $scope.hojaAsig.formulario.tipoLinea == 'M' ? $scope.hojaAsig.formulario.modem.split('-')[0].trim() : '',
+                equipoCelular,
+                equipoModem,
 
                 mesaAyuda: $scope.hojaAsig.formulario.mesaAyuda.split('-')[0].trim(),
-                observacion: $scope.hojaAsig.formulario.observacion,
+                funcionario: $scope.hojaAsig.formulario.idFuncJefe.split('-')[0].trim(),
 
+                observacion: $scope.hojaAsig.formulario.observacion,
 
                 responsable: $scope.Rol_Cedula
               }]
@@ -1037,6 +1111,11 @@ angular.module('GenesisApp')
                 if (data.Codigo == 0) {
                   swal("Mensaje", data.Nombre, "success").catch(swal.noop);
                   $scope.hojaAsig_Listar(1);
+
+                  $scope.hojaEquipo_Listar(1);
+                  $scope.hojaModem_Listar(1);
+                  $scope.hojaLinea_Listar(1);
+
                   $scope.closeModal()
                 }
                 if (data.Codigo == 1) {

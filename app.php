@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['nombre'])) {
-  header("Location: index.html");
+  // header("Location: index.html");
 }
   header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
   ?>

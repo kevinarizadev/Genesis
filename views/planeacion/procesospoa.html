@@ -203,7 +203,16 @@
               </blockquote>
             </div>
             <div class="col s12 m12 l12">
-              <div class="col s4 no-padding label-new m-b">
+              <div class="col s3 no-padding label-new m-b">
+                <select class="select-default-new input-out-new m-l" ng-model="hojaProcesos.formulario.perspectiva">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="{{x.codigo}}" ng-selected="x.codigo == hojaProcesos.formulario.perspectiva"
+                    ng-repeat="x in hojaProcesos.formulario.listadoObjetivoPerspectiva">
+                    {{x.nombre}}</option>
+                </select>
+                <label>Perspectiva</label>
+              </div>
+              <div class="col s3 no-padding label-new m-b">
                 <select class="select-default-new input-out-new m-l"
                   ng-model="hojaProcesos.formulario.objetivoEstrategico">
                   <option value="" disabled>SELECCIONAR</option>
@@ -213,10 +222,10 @@
                 </select>
                 <label>Objetivo Estrategico</label>
               </div>
-              <div class="col s6 no-padding label-new m-b">
+              <div class="col s4 no-padding label-new m-b">
                 <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
                   autocomplete="off" ng-model="hojaProcesos.formulario.objetivoTactivo" text-upper>
-                <label>Objetivo Tactico</label>
+                <label>Indicador Tactico</label>
               </div>
               <!--  -->
               <div class="col s1 no-padding label-new m-l">
@@ -232,13 +241,15 @@
               <table class="bordered default-border">
                 <thead>
                   <tr>
+                    <th>Perspectiva</th>
                     <th>Objetivo Estrategico</th>
-                    <th>Objetivo Tactico</th>
+                    <th>Indicador Tactico</th>
                     <th>-</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr ng-repeat="x in hojaProcesos.formulario.listadoObjetivos">
+                    <td>{{x.codigo_perspectiva+ ' - ' +x.nombre_perspectiva}}</td>
                     <td>{{x.codigo_estrategico+ ' - ' +x.nombre_estrategico}}</td>
                     <td>{{x.codigo_tactico+ ' - ' +x.nombre_tactico}}</td>
                     <td>
@@ -297,6 +308,7 @@
             style="width:100%;font-size:6px !important;color: black;border:3px solid;">
             <thead class="default-border default-color">
               <th>Indicador</th>
+              <th>Año</th>
               <th>Prioridad</th>
               <th>Clasificacion</th>
               <th>Tipo/Medicion</th>
@@ -309,9 +321,10 @@
             <tbody>
               <tr style="cursor:pointer;"
                 ng-repeat="x in hojaIndicadores.listadoTablaTemp | inicio: hojaIndicadores.varsTabla.currentPage * hojaIndicadores.varsTabla.pageSize | limitTo: hojaIndicadores.varsTabla.pageSize">
-                <td ng-click="modalEditarIndicador(x)">
-                  {{x.REGN_PROCESO+x.REGN_COD_ESTR+x.REGN_COD_TACT+x.REGN_COD_INDICADOR +' - '+ x.REGN_NOM_INDICADOR}}
+                <td class="left-align" ng-click="modalEditarIndicador(x)">
+                  {{x.REGN_PROCESO.toString()+x.REGN_COD_ESTR.toString()+x.REGN_COD_TACT.toString()+x.REGN_COD_INDICADOR.toString() +' - '+ x.REGN_NOM_INDICADOR}}
                 </td>
+                <td ng-click="modalEditarIndicador(x)">{{x.REGN_ANNO}}</td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGC_PRIORIDAD.split('-')[1]}}</td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGC_CLASIFICACION.split('-')[1]}}</td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGC_TIPO_CALCULO.split('-')[1]}}</td>
@@ -326,9 +339,9 @@
                   <i class="iconFontSize icon-doc-text-1 default-color c-pointer" title="Ficha del Indicador"
                     ng-click="modalFichaTecnica(x)"></i>
                   <i class="iconFontSize icon-chart-line default-color c-pointer"
-                    title="Grafico de Estado del Indicador" ng-click="modalGraficoIndicador(x)"></i>
+                    title="Grafico de Estado del Indicador" ng-click="modalGraficoIndicador(x);"></i>
                   <i class="iconFontSize icon-calendar-3 default-color c-pointer" title="Datos Periodo Correspondiente"
-                    ng-click="modalDatosCorresp(x)"></i>
+                    ng-click="modalDatosCorresp(x);"></i>
                 </td>
               </tr>
               <tr ng-show="hojaIndicadores.listadoTablaTemp.length==0">
@@ -371,10 +384,20 @@
       <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
       </div>
       <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
-        <h5><span style="font-weight: 700;" class="default-color">
+        <h5><span style="font-weight: 700;display: flex;" class="default-color">
             {{!hojaIndicadores.formulario.idIndicadorSeleccionado
             ?
             'Crear Nuevo Indicador':'Editar Indicador'}}
+
+            <select class="select-default-new input-out-new m-l" style="width: 7%;font-size: 1rem;"
+              ng-model="hojaIndicadores.formulario.anio" ng-show="!hojaIndicadores.formulario.idIndicadorSeleccionado"
+              required>
+              <option value="" disabled>Año</option>
+              <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.anio"
+                ng-repeat="x in hojaIndicadores.listadoAnio">
+                {{x.codigo}}</option>
+            </select>
+
           </span></h5>
       </div>
       <div class="card-action">
@@ -494,7 +517,17 @@
                 autocomplete="off" ng-model="hojaIndicadores.formulario.metaVigencia" readonly required>
               <label>Meta Vigencia (*)</label>
             </div>
-            <div class="col s4 no-padding label-new m-b formIndicador_Desactivar">
+            <div class="col s2 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.tipoVigencia"
+                ng-disabled="hojaIndicadores.formulario.tipoVigenciaDsb" required>
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.tipoVigencia"
+                  ng-repeat="x in hojaIndicadores.listadoTipoVigencia">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Tipo Vigencia (*)</label>
+            </div>
+            <div class="col s2 no-padding label-new m-b formIndicador_Desactivar">
               <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.unidadMedida"
                 required>
                 <option value="" disabled>SELECCIONAR</option>
@@ -517,13 +550,13 @@
             <div class="col s5 no-padding label-new m-b">
               <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
                 autocomplete="off" ng-model="hojaIndicadores.formulario.fuenteNumerador" maxlength="180" text-upper
-                title="Pulsa enter para buscar" text-description required>
+                text-description required>
               <label>Fuente del Numerador (*)</label>
             </div>
             <div class="col s5 no-padding label-new m-b">
               <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
                 autocomplete="off" ng-model="hojaIndicadores.formulario.fuenteDenominador" maxlength="180" text-upper
-                title="Pulsa enter para buscar" text-description required>
+                text-description required>
               <label>Fuente del Denominador (*)</label>
             </div>
           </div>
@@ -584,7 +617,7 @@
           </div>
           <!--  -->
           <div class="col s12 m12 l12 m-t formIndicador_Desactivar">
-            <div class="col s2 no-padding label-new m-b">
+            <!-- <div class="col s2 no-padding label-new m-b">
               <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.frecuencia"
                 required>
                 <option value="" disabled>SELECCIONAR</option>
@@ -593,7 +626,7 @@
                   {{x.nombre}}</option>
               </select>
               <label>Frecuencia (*)</label>
-            </div>
+            </div> -->
             <div class="col s2 no-padding label-new m-b">
               <select class="select-default-new input-out-new m-l"
                 ng-model="hojaIndicadores.formulario.periodicidadReporte" required>
@@ -720,6 +753,28 @@
               <label>Tipo de Orden (*)</label>
             </div>
           </div>
+          <div class="col s12 m12 l12">
+            <div class="col s5 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.descripcionNumerador" maxlength="180" text-upper
+                text-description>
+              <label>Descripción del Numerador</label>
+            </div>
+            <div class="col s5 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.descripcionDenominador" maxlength="180"
+                text-upper text-description>
+              <label>Descripción del Denominador</label>
+            </div>
+            <div class="col s5 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.descripcionConstante" maxlength="180" text-upper
+                text-description>
+              <label>Descripción del Constante</label>
+            </div>
+          </div>
+
+
           <div class="col s12 m12 l12 formIndicador_Desactivar"
             ng-show="hojaIndicadores.formulario.semaforizacionEstado == 'S'">
             <div class="col s2 no-padding label-new m-b">
@@ -806,12 +861,12 @@
                   <td>{{modalFichaTecnicaVars.definicion}}</td>
                 </tr>
                 <tr>
-                  <th>Fuente Numerador:</th>
-                  <td>{{modalFichaTecnicaVars.fuenteNumerador}}</td>
+                  <th>Numerador:</th>
+                  <td>{{modalFichaTecnicaVars.numerador}}</td>
                 </tr>
                 <tr>
-                  <th>Fuente Denominador:</td>
-                  <td>{{modalFichaTecnicaVars.fuenteDenominador}}</td>
+                  <th>Denominador:</td>
+                  <td>{{modalFichaTecnicaVars.denominador}}</td>
                 </tr>
 
                 <!--  -->
@@ -830,10 +885,10 @@
                   <th>Prioridad:</td>
                   <td>{{modalFichaTecnicaVars.prioridad}}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <th>Tipo de Norma:</td>
                   <td>{{modalFichaTecnicaVars.tipoNorma}}</td>
-                </tr>
+                </tr> -->
                 <tr>
                   <th>Periodicidad del Reporte:</th>
                   <td>{{modalFichaTecnicaVars.periodicidadReporte}}</td>
@@ -965,14 +1020,15 @@
       </div>
       <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
         <h5><span style="font-weight: 700;display: flex;" class="default-color">
-            Grafico del Indicador
-            <select class="select-default-new input-out-new m-l" style="width: 7%;font-size: 1rem;"
+            Gráfico del Indicador
+            <i class="icon-right-circle-1 f-20 c-pointer" ng-click="closeModal();modalDatosCorresp(modalDatosCambio)" title="Ver Datos"></i>
+            <!-- <select class="select-default-new input-out-new m-l" style="width: 7%;font-size: 1rem;"
               ng-model="modalGraficoVars.anio" ng-change="cargarGraficoPeriodoChange()" required>
               <option value="" disabled>Seleccionar</option>
               <option value="{{x.codigo}}" ng-selected="x.codigo == modalGraficoVars.anio"
                 ng-repeat="x in hojaIndicadores.listadoAnio">
                 {{x.codigo}}</option>
-            </select>
+            </select> -->
           </span></h5>
       </div>
       <div class="card-action">
@@ -990,19 +1046,20 @@
   <div id="modalDatosCorresp" class="modal"
     style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
     <div class="col s12 m12 l12 card margin" style="padding: 0;">
-      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+        <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
       </div>
       <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
         <h5><span style="font-weight: 700;display: flex;" class="default-color">
             Datos Correspondiente del Periodo
-            <select class="select-default-new input-out-new m-l" style="width: 7%;font-size: 1rem;"
+            <i class="icon-right-circle-1 f-20 c-pointer" ng-click="closeModal();modalGraficoIndicador(modalDatosCambio)" title="Ver Gráfica"></i>
+            <!-- <select class="select-default-new input-out-new m-l" style="width: 7%;font-size: 1rem;"
               ng-model="modalDatosCorrespVars.anio" ng-show="modalDatosCorrespVars.vista == 1"
               ng-change="cargarDatosPeriodoChange()" required>
               <option value="" disabled>Seleccionar</option>
               <option value="{{x.codigo}}" ng-selected="x.codigo == modalDatosCorrespVars.anio"
                 ng-repeat="x in hojaIndicadores.listadoAnio">
                 {{x.codigo}}</option>
-            </select>
+            </select> -->
           </span></h5>
       </div>
       <div class="card-action">
@@ -1015,17 +1072,19 @@
                 <th>Periodo</th>
                 <th>Formula</th>
                 <th>Acumulado</th>
+                <th ng-show="validarPermisos(['AS']) && modalDatosCorrespVars.REGC_TIPO_VIGENCIA.split('-')[0] == 'M'">
+                  Meta Vigencia</th>
                 <th>Analisis</th>
                 <th>Responsable del dato</th>
                 <th style="width:1%"></th>
               </tr>
               <tr ng-repeat="x in modalDatosCorrespVars.listado"
-                class="{{x.GESN_ACUMULADO == '0' ? 'resaltadoRojo':''}}">
+                class="{{x.GESV_RESPONSABLE == '-' ? 'resaltadoRojo':''}}">
                 <th>{{x.GESN_ANNO}}</th>
                 <th>{{x.GESN_PERIODO_NOMBRE}}</th>
                 <td>
                   <div style="font-size: 1.2rem;"
-                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CA' && x.GESN_ACUMULADO != '0'">
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CA' && x.GESV_RESPONSABLE != '-'">
                     <math display="inline">
                       <mrow>
                         <mn>{{x.GESN_CONSTANTE}}</mn>
@@ -1033,7 +1092,7 @@
                     </math>
                   </div>
                   <div style="font-size: 1.2rem;"
-                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'PO' && x.GESN_ACUMULADO != '0'">
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'PO' && x.GESV_RESPONSABLE != '-'">
                     <math display="inline">
                       <mfrac>
                         <msup>
@@ -1044,11 +1103,11 @@
                       <mo>*</mo>
                       <mn>100</mn>
                       <mo>=</mo>
-                      <mn>{{x.GESN_RESULTADO}}</mn>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
                     </math>
                   </div>
                   <div style="font-size: 1.2rem;"
-                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'RA' && x.GESN_ACUMULADO != '0'">
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'RA' && x.GESV_RESPONSABLE != '-'">
                     <math display="inline">
                       <mfrac>
                         <msup>
@@ -1057,11 +1116,11 @@
                         <mn>{{x.GESN_DENOMINADOR}}</mn>
                       </mfrac>
                       <mo>=</mo>
-                      <mn>{{x.GESN_RESULTADO}}</mn>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
                     </math>
                   </div>
                   <div style="font-size: 1.2rem;"
-                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TA' && x.GESN_ACUMULADO != '0'">
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TA' && x.GESV_RESPONSABLE != '-'">
                     <math display="inline">
                       <mfrac>
                         <msup>
@@ -1072,11 +1131,11 @@
                       <mo>*</mo>
                       <mn>{{x.GESN_CONSTANTE}}</mn>
                       <mo>=</mo>
-                      <mn>{{x.GESN_RESULTADO}}</mn>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
                     </math>
                   </div>
                   <div style="font-size: 1.2rem;"
-                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DI' && x.GESN_ACUMULADO != '0'">
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DI' && x.GESV_RESPONSABLE != '-'">
                     <math display="inline">
                       <mn>100</mn>
                       <mo>-</mo>
@@ -1087,11 +1146,11 @@
                         <mn>{{x.GESN_DENOMINADOR}}</mn>
                       </mfrac>
                       <mo>=</mo>
-                      <mn>{{x.GESN_RESULTADO}}</mn>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
                     </math>
                   </div>
                   <div style="font-size: 1.2rem;"
-                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'AJ' && x.GESN_ACUMULADO != '0'">
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'AJ' && x.GESV_RESPONSABLE != '-'">
                     <math display="inline">
                       <mn>{{x.GESN_CONSTANTE}}</mn>
                       <mo>-</mo>
@@ -1104,16 +1163,20 @@
                         <mn>{{x.GESN_DENOMINADOR}}</mn>
                       </mfrac>
                       <mo>=</mo>
-                      <mn>{{x.GESN_RESULTADO}}</mn>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
                     </math>
                   </div>
                 </td>
                 <td>
-                  <span ng-show="x.GESN_ACUMULADO != '0'">{{x.GESN_ACUMULADO}}</span>
+                  <span ng-show="x.GESV_RESPONSABLE != '-'">{{x.GESN_ACUMULADO.startsWith(',') ? ('0'+x.GESN_ACUMULADO)
+                    : x.GESN_ACUMULADO}}</span>
                 </td>
+                <td ng-show="validarPermisos(['AS']) && modalDatosCorrespVars.REGC_TIPO_VIGENCIA.split('-')[0] == 'M'">
+                  {{x.GESN_META_VIGENCIA}} <i class="icon-arrows-cw c-pointer" title="Gestionar Meta Vigencia"
+                    style="font-size: 1rem;" ng-click="editarMetaVigencia(x)" ></i></td>
                 <td>{{x.GESC_OBSERVACION}}</td>
                 <td>
-                  <span ng-show="x.GESN_ACUMULADO != '0'">{{x.GESV_RESPONSABLE.split('-')[1]}}</span>
+                  <span ng-show="x.GESV_RESPONSABLE != '-'">{{x.GESV_RESPONSABLE.split('-')[1]}}</span>
                 </td>
                 <td>
                   <i class="icon-list-add c-pointer" title="Gestionar Periodo" style="font-size: 1rem;"
@@ -1170,7 +1233,7 @@
                         <h6 class="fw600 margin">
                           Numerador
                         </h6>
-                        <label>{{modalDatosCorrespVars.REGN_FUENTE_NUMERADOR}}</label>
+                        <label>{{modalDatosCorrespVars.REGN_DESCRIPCION_NUMERADOR}}</label>
                       </div>
                     </li>
                     <li>
@@ -1178,7 +1241,15 @@
                         <h6 class="fw600 margin">
                           Denominador
                         </h6>
-                        <label>{{modalDatosCorrespVars.REGN_FUENTE_DENOMINADOR}}</label>
+                        <label>{{modalDatosCorrespVars.REGN_DESCRIPCION_DENOMINADOR}}</label>
+                      </div>
+                    </li>
+                    <li ng-show="modalDatosCorrespVars.REGN_DESCRIPCION_CONSTANTE">
+                      <div class="default-color m-b" style="padding: .6rem; border: 2px solid;">
+                        <h6 class="fw600 margin">
+                          Denominador
+                        </h6>
+                        <label>{{modalDatosCorrespVars.REGN_DESCRIPCION_CONSTANTE}}</label>
                       </div>
                     </li>
                     <li>

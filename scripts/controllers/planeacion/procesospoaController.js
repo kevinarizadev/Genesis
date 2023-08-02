@@ -5,7 +5,9 @@ angular.module('GenesisApp')
 
       $scope.Inicio = function () {
         console.log($(window).width());
-        document.querySelector("#content").style.backgroundColor = "white";
+        setTimeout(() => {
+          document.querySelector("#content").style.backgroundColor = "white";
+        }, 2000);
         $scope.Ajustar_Pantalla();
 
         $scope.Rol_Cedula = sessionStorage.getItem('cedula');
@@ -14,16 +16,19 @@ angular.module('GenesisApp')
         $scope.Tabs = 1;
         $scope.SysDay = new Date();
 
-
         $scope.cargarPermisosUsuario();
 
         setTimeout(() => {
+          console.log($scope.permisos)
           if ($scope.validarPermisos(['AS'])) {
+            // debugger
             $scope.hojaProcesosLimpiar()
             $scope.hojaProcesosListar();
+            $scope.hojaProcesosListarlistadoPerspectiva()
             $scope.hojaProcesosListarObjetivoEstrategico()
+            setTimeout(() => { $scope.$apply(); }, 500);
           }
-        }, 1000);
+        }, 1500);
         $scope.hojaIndicadoresLimpiar()
         $scope.hojaIndicadoresListar();
 
@@ -31,7 +36,7 @@ angular.module('GenesisApp')
         // $scope.activarCamposDesactivados()
         setTimeout(() => {
           $scope.$apply();
-        }, 500);
+        }, 1500);
 
         //////////////////////////////////////////////////////////
       }
@@ -66,9 +71,9 @@ angular.module('GenesisApp')
             } else {
               $scope.Tabs = 1
             }
+            setTimeout(() => { $scope.$apply(); }, 500);
             setTimeout(() => {
               $('.tabs').tabs();
-              setTimeout(() => { $scope.$apply(); }, 500);
             }, 1500);
             console.table(data)
           }
@@ -109,6 +114,7 @@ angular.module('GenesisApp')
               { codigo: 2, nombre: 'Subgerencia' },
               { codigo: 3, nombre: 'Coordinacion Nacional o Regional' },
             ],
+            listadoObjetivoPerspectiva: [],
             listadoObjetivoEstrategico: []
             // listadoObjetivoEstrategico: [
             //   { codigo: 1, nombre: 'Mejorar calidad en la atención en salud' },
@@ -119,6 +125,25 @@ angular.module('GenesisApp')
           }
         }
 
+      }
+
+      $scope.hojaProcesosListarlistadoPerspectiva = function () {
+        $scope.hojaProcesos.formulario.listadoObjetivoPerspectiva = [];
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: 'p_obtener_objetivos_perspectiva',
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.length) {
+            $scope.hojaProcesos.formulario.listadoObjetivoPerspectiva = data
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        });
       }
 
       $scope.hojaProcesosListarObjetivoEstrategico = function () {
@@ -196,21 +221,19 @@ angular.module('GenesisApp')
         }
         $scope.hojaProcesos.formulario.listadoObjetivos.push(
           {
+            codigo_perspectiva: $scope.hojaProcesos.formulario.perspectiva,
+            nombre_perspectiva: $scope.hojaProcesos.formulario.listadoObjetivoPerspectiva.find(e => e.codigo == $scope.hojaProcesos.formulario.perspectiva).nombre,
             codigo_estrategico: $scope.hojaProcesos.formulario.objetivoEstrategico,
             nombre_estrategico: $scope.hojaProcesos.formulario.listadoObjetivoEstrategico.find(e => e.codigo == $scope.hojaProcesos.formulario.objetivoEstrategico).nombre,
             codigo_tactico: 0,
             nombre_tactico: $scope.hojaProcesos.formulario.objetivoTactivo,
           }
         );
+        $scope.hojaProcesos.formulario.perspectiva = '';
         $scope.hojaProcesos.formulario.objetivoEstrategico = '';
         $scope.hojaProcesos.formulario.objetivoTactivo = '';
 
         $scope.actualizarConsObjetivo();
-        // v_posicion1:= '$[' || j || '].codigo_estrategico';
-        // v_posicion2:= '$[' || j || '].nombre_estrategico';
-        // v_posicion3:= '$[' || j || '].codigo_tactico';
-        // v_posicion4:= '$[' || j || '].nombre_tactico';
-        // v_posicion5:= '$[' || j || '].soporte';
 
       }
       $scope.quitarObjetivo = function (index) {
@@ -402,6 +425,8 @@ angular.module('GenesisApp')
           data.forEach(x => {
             $scope.hojaProcesos.formulario.listadoObjetivos.push(
               {
+                codigo_perspectiva: x.CODIGO_PERSPECTIVA,
+                nombre_perspectiva: x.NOMBRE_PERSPECTIVA,
                 codigo_estrategico: x.UNIN_OBJETIVO_COD_ESTR,
                 nombre_estrategico: x.NOMBRE,
                 codigo_tactico: x.UNIN_OBJETIVO_COD_TACT,
@@ -476,6 +501,10 @@ angular.module('GenesisApp')
             { codigo: '4', nombre: 'Subregional' },
           ],
           listadoDependencias: [],
+          listadoTipoVigencia: [
+            { codigo: 'A', nombre: 'Automática' },
+            { codigo: 'M', nombre: 'Manual' },
+          ],
           listadoUnidadMedida: [
             { codigo: '1', nombre: 'Numérica' },
             { codigo: '2', nombre: 'Porcentaje' },
@@ -597,8 +626,10 @@ angular.module('GenesisApp')
 
       $scope.hojaIndicadoresCrearNuevo = function () {
         $scope.activarCamposDesactivados()
-        console.log($scope.hojaIndicadores.formulario.idIndicadorSeleccionado, $scope.hojaIndicadores.formulario.nombre)
+        // console.log($scope.hojaIndicadores.formulario.idIndicadorSeleccionado, $scope.hojaIndicadores.formulario.nombre)
         // if ($scope.hojaIndicadores.formulario.idIndicadorSeleccionado != '' && $scope.hojaIndicadores.formulario.nombre) {
+        $scope.hojaIndicadores.formulario.anio = $scope.SysDay.getFullYear();;
+
         $scope.hojaIndicadores.formulario.nombre = '';
         $scope.hojaIndicadores.formulario.estado = 'A';
         $scope.hojaIndicadores.formulario.proceso = '';
@@ -612,6 +643,8 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.lineaBase = '';
         $scope.hojaIndicadores.formulario.meta = '';
         $scope.hojaIndicadores.formulario.metaVigencia = '';
+        $scope.hojaIndicadores.formulario.tipoVigencia = '';
+        $scope.hojaIndicadores.formulario.tipoVigenciaDsb = false;
         $scope.hojaIndicadores.formulario.unidadMedida = '';
         $scope.hojaIndicadores.formulario.frecuencia = '';
         //
@@ -636,6 +669,10 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.actores = '';
         $scope.hojaIndicadores.formulario.listadoActores = [];
         $scope.hojaIndicadores.formulario.listadoActoresTabla = [];
+
+        $scope.hojaIndicadores.formulario.descripcionNumerador = '';
+        $scope.hojaIndicadores.formulario.descripcionDenominador = '';
+        $scope.hojaIndicadores.formulario.descripcionConstante = '';
 
         $scope.hojaIndicadores.formulario.tipoCalculo = '';
         $scope.hojaIndicadores.formulario.semaforizacionEstado = '';
@@ -703,6 +740,11 @@ angular.module('GenesisApp')
           i.setAttribute("disabled", true);
         });
 
+        if ($scope.graficoSemaforizacion) {
+          $scope.graficoSemaforizacion.destroy()
+          $scope.graficoSemaforizacion = null;
+        }
+
         setTimeout(() => { $scope.$apply(); }, 500);
       }
 
@@ -712,7 +754,7 @@ angular.module('GenesisApp')
         $scope.activarCamposDesactivados()
         $scope.hojaIndicadores.formulario.idIndicadorSeleccionado = x.REGN_COD_INDICADOR;
 
-
+        $scope.hojaIndicadores.formulario.anio = x.REGN_ANNO;
         $scope.hojaIndicadores.formulario.nombre = x.REGN_NOM_INDICADOR;
         $scope.hojaIndicadores.formulario.estado = x.REGC_ESTADO;
         $scope.hojaIndicadores.formulario.proceso = x.REGN_PROCESO;
@@ -728,8 +770,13 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.lineaBase = x.REGN_LINEA_BASE.replace(',', '.');
         $scope.hojaIndicadores.formulario.meta = x.REGN_META.replace(',', '.');
         $scope.hojaIndicadores.formulario.metaVigencia = x.REGN_META_VIGENCIA.replace(',', '.');
+        $scope.hojaIndicadores.formulario.tipoVigencia = x.REGC_TIPO_VIGENCIA.split('-')[0];
+        $scope.hojaIndicadores.formulario.tipoVigenciaDsb = true;
+        if ($scope.validarPermisos(['AS'])) {
+          $scope.hojaIndicadores.formulario.tipoVigenciaDsb = false
+        }
         $scope.hojaIndicadores.formulario.unidadMedida = x.REGN_UNIDAD_MEDIDA.split('-')[0];
-        $scope.hojaIndicadores.formulario.frecuencia = x.REGC_FRECUENCIA.split('-')[0];
+        // $scope.hojaIndicadores.formulario.frecuencia = x.REGC_FRECUENCIA.split('-')[0];
         //
         $scope.hojaIndicadores.formulario.acumulativo = x.REGC_ACUMULATIVO;
         $scope.hojaIndicadores.formulario.fuenteNumerador = x.REGN_FUENTE_NUMERADOR;
@@ -753,6 +800,10 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.listadoActores = [];
         $scope.hojaIndicadores.formulario.listadoActoresTabla = [];
 
+        $scope.hojaIndicadores.formulario.descripcionNumerador = x.REGN_DESCRIPCION_NUMERADOR;
+        $scope.hojaIndicadores.formulario.descripcionDenominador = x.REGN_DESCRIPCION_DENOMINADOR;
+        $scope.hojaIndicadores.formulario.descripcionConstante = x.REGN_DESCRIPCION_CONSTANTE;
+
         $scope.hojaIndicadores.formulario.tipoCalculo = x.REGC_TIPO_CALCULO.split('-')[0];
         $scope.hojaIndicadores.formulario.semaforizacionEstado = x.REGC_SEMAFORIZACION;
         $scope.hojaIndicadores.formulario.semaforizacionSentido = x.REGC_TIPO.split('-')[0];
@@ -771,7 +822,7 @@ angular.module('GenesisApp')
         $scope.modalObtenerDatosActores(x);
 
         $scope.openModal('modalCrearIndicadores');
-        document.getElementById('modalCrearIndicadores_Scroll').scrollIntoView({ block: 'top', behavior: 'smooth' });
+        document.getElementById('modalCrearIndicadores_Scroll').scrollIntoView({ block: 'start', behavior: 'smooth' });
         if (!$scope.validarPermisos(['AS'])) {
           angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Admin input'), function (i) {
             i.setAttribute("readonly", true);
@@ -859,15 +910,18 @@ angular.module('GenesisApp')
       }
 
       $scope.modalFichaTecnica = function (x) {
+
         $scope.modalFichaTecnicaVars = {}
         $scope.modalFichaTecnicaVars.nombre = x.REGN_NOM_INDICADOR
         $scope.modalFichaTecnicaVars.definicion = x.REGC_OBJETIVO_INDICADOR
-        $scope.modalFichaTecnicaVars.fuenteNumerador = x.REGN_FUENTE_NUMERADOR
-        $scope.modalFichaTecnicaVars.fuenteDenominador = x.REGN_FUENTE_DENOMINADOR
+        $scope.modalFichaTecnicaVars.numerador = x.REGN_DESCRIPCION_NUMERADOR
+        $scope.modalFichaTecnicaVars.denominador = x.REGN_DESCRIPCION_DENOMINADOR
+        // $scope.modalFichaTecnicaVars.fuenteNumerador = x.REGN_FUENTE_NUMERADOR
+        // $scope.modalFichaTecnicaVars.fuenteDenominador = x.REGN_FUENTE_DENOMINADOR
 
         $scope.modalFichaTecnicaVars.clasificacionIndicador = x.REGC_CLASIFICACION.split('-')[1]
         $scope.modalFichaTecnicaVars.prioridad = x.REGC_PRIORIDAD.split('-')[1]
-        $scope.modalFichaTecnicaVars.tipoNorma = x.REGC_TIPO_NORMA ? x.REGC_TIPO_NORMA.split('-')[1] : ''
+        // $scope.modalFichaTecnicaVars.tipoNorma = x.REGC_TIPO_NORMA ? x.REGC_TIPO_NORMA.split('-')[1] : ''
         $scope.modalFichaTecnicaVars.periodicidadReporte = x.REGC_PERIODICIDAD_REPORTE.split('-')[1]
         $scope.modalFichaTecnicaVars.periodicidadAnalisis = x.REGC_PERIODICIDAD_ANALISIS.split('-')[1]
         $scope.modalFichaTecnicaVars.responsableRegistro = x.REGV_RESPONSABLE.split('-')[1]
@@ -967,18 +1021,21 @@ angular.module('GenesisApp')
 
       $scope.modalGraficoIndicador = function (x) {
         // $scope.modalDatosCorrespVars.listado
+        $scope.modalDatosCambio = x;
         if (x.REGC_SEMAFORIZACION == 'N') {
           swal("Mensaje", "Semaforización no activa", "warning").catch(swal.noop);
           return
         }
-        $scope.openModal('modalGraficoIndicador');
+        setTimeout(() => {
+          $scope.openModal('modalGraficoIndicador');
+        }, 1000);
         $scope.modalGraficoVars = {};
         $scope.modalGraficoVars = x;
-
+        // console.log()
         // GESN_ANNO: "2023"
         // GESN_PERIODO_NOMBRE: "Enero"
         // GESN_ACUMULADO: "5"
-        $scope.modalGraficoVars.anioAnterior = $scope.SysDay.getFullYear();
+        // $scope.modalGraficoVars.anioAnterior = $scope.SysDay.getFullYear();
         $scope.modalGraficoVars.anio = $scope.SysDay.getFullYear();
 
         $scope.modalGraficoObtenerdatos(x);
@@ -986,10 +1043,10 @@ angular.module('GenesisApp')
       }
 
       $scope.cargarGraficoPeriodoChange = function () {
-        if ($scope.modalGraficoVars.anioAnterior != $scope.modalGraficoVars.anio) {
-          $scope.modalGraficoVars.anioAnterior = $scope.modalGraficoVars.anio;
-          $scope.modalGraficoObtenerdatos($scope.modalGraficoVars);
-        }
+        // if ($scope.modalGraficoVars.anioAnterior != $scope.modalGraficoVars.anio) {
+        // $scope.modalGraficoVars.anioAnterior = $scope.modalGraficoVars.anio;
+        $scope.modalGraficoObtenerdatos($scope.modalGraficoVars);
+        // }
       }
 
       $scope.modalGraficoObtenerdatos = function (x) {
@@ -1006,7 +1063,7 @@ angular.module('GenesisApp')
             codigoEstrategico: x.REGN_COD_ESTR,
             codigoTactico: x.REGN_COD_TACT,
             codigoIndicador: x.REGN_COD_INDICADOR,
-            anio: $scope.modalGraficoVars.anio
+            anio: x.REGN_ANNO
           }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data == 0) {
@@ -1022,7 +1079,7 @@ angular.module('GenesisApp')
 
             $scope.modalGraficoVars.listado = data;
             setTimeout(() => {
-              var dataMeses, dataSerie, dataMeta, dataPlotBands, dato1_Max, dato2_Min, dato2_Max, dato3_Min
+              var dataMeses, dataSerie, dataMeta = [], dataPlotBands, dato1_Max, dato2_Min, dato2_Max, dato3_Min
 
               if ($scope.modalGraficoVars.REGC_TIPO.split('-')[0] == 'A') { // Orden Ascendente
                 dato1_Max = parseFloat($scope.modalGraficoVars.REGC_DATO1);
@@ -1070,17 +1127,21 @@ angular.module('GenesisApp')
                   }
                 ]
               } else { // Orden Descendente
-                dato3_Min = 100 - parseFloat($scope.modalGraficoVars.REGC_DATO2);
+                dato3_Min = 100 - parseFloat($scope.modalGraficoVars.REGC_DATO1);
                 dato2_Max = dato3_Min
                 dato2_Min = dato2_Max - parseFloat($scope.modalGraficoVars.REGC_DATO2);
                 dato1_Max = dato2_Min;
+                // dato3_Min = 100 - parseFloat($scope.modalGraficoVars.REGC_DATO2);
+                // dato2_Max = dato3_Min
+                // dato2_Min = dato2_Max - parseFloat($scope.modalGraficoVars.REGC_DATO2);
+                // dato1_Max = dato2_Min;
                 dataPlotBands = [
                   { // Light air
                     from: dato3_Min,
                     to: 100,
                     color: 'rgba(255, 0, 0, 0.2)',
                     label: {
-                      text: 'Baja',
+                      text: 'Alta',
                       style: {
                         color: '#000000'
                       }
@@ -1100,7 +1161,7 @@ angular.module('GenesisApp')
                     to: dato1_Max,
                     color: 'rgba(0, 128, 0, 0.3)',
                     label: {
-                      text: 'Alta',
+                      text: 'Baja',
                       style: {
                         color: '#000000'
                       }
@@ -1112,7 +1173,8 @@ angular.module('GenesisApp')
               if (x.REGC_PERIODICIDAD_ANALISIS.split('-')[0] == 'M') {// Mensual
                 dataMeses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
                 dataSerie = [
-                  $scope.filtrarPeriodoAcumulado(1) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  // $scope.filtrarPeriodoAcumulado(1) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  $scope.filtrarPeriodoAcumulado(1),
                   $scope.filtrarPeriodoAcumulado(2),
                   $scope.filtrarPeriodoAcumulado(3),
                   $scope.filtrarPeriodoAcumulado(4),
@@ -1125,52 +1187,80 @@ angular.module('GenesisApp')
                   $scope.filtrarPeriodoAcumulado(11),
                   $scope.filtrarPeriodoAcumulado(12)
                 ];
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(1))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(2))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(3))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(4))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(5))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(6))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(7))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(8))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(9))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(10))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(11))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(12))
               }
               if (x.REGC_PERIODICIDAD_ANALISIS.split('-')[0] == 'B') {// Bimestral
                 dataMeses = ['Feb', 'Abr', 'Jun', 'Ago', 'Oct', 'Dic'];
                 dataSerie = [
-                  $scope.filtrarPeriodoAcumulado(2) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  // $scope.filtrarPeriodoAcumulado(2) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  $scope.filtrarPeriodoAcumulado(2),
                   $scope.filtrarPeriodoAcumulado(4),
                   $scope.filtrarPeriodoAcumulado(6),
                   $scope.filtrarPeriodoAcumulado(8),
                   $scope.filtrarPeriodoAcumulado(10),
                   $scope.filtrarPeriodoAcumulado(12)
                 ];
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(2))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(4))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(6))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(8))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(10))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(12))
               }
               if (x.REGC_PERIODICIDAD_ANALISIS.split('-')[0] == 'T') {// Trimestral
                 dataMeses = ['Mar', 'Jun', 'Sep', 'Dic'];
                 dataSerie = [
-                  $scope.filtrarPeriodoAcumulado(3) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  // $scope.filtrarPeriodoAcumulado(3) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  $scope.filtrarPeriodoAcumulado(3),
                   $scope.filtrarPeriodoAcumulado(6),
                   $scope.filtrarPeriodoAcumulado(9),
                   $scope.filtrarPeriodoAcumulado(12)
                 ];
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(3))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(6))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(9))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(12))
               }
               if (x.REGC_PERIODICIDAD_ANALISIS.split('-')[0] == 'S') {// Semestral
                 dataMeses = ['Jun', 'Dic'];
                 dataSerie = [
-                  $scope.filtrarPeriodoAcumulado(6) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  // $scope.filtrarPeriodoAcumulado(6) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.')),
+                  $scope.filtrarPeriodoAcumulado(6),
                   $scope.filtrarPeriodoAcumulado(12)
                 ];
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(6))
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(12))
               }
               if (x.REGC_PERIODICIDAD_ANALISIS.split('-')[0] == 'A') {// Anual
                 dataMeses = ['Dic'];
                 dataSerie = [
+                  // $scope.filtrarPeriodoAcumulado(12)
                   $scope.filtrarPeriodoAcumulado(12) + parseFloat((x.REGN_LINEA_BASE.toString()).replace(',', '.'))
                 ];
+                dataMeta.push($scope.filtrarPeriodoMetaVigencia(12))
               }
 
-              console.table(dataSerie)
-              const meses = ($scope.hojaIndicadores.listadoFrecuencia.find(e => e.codigo === x.REGC_PERIODICIDAD_ANALISIS.split('-')[0])).meses;
+              // const meses = ($scope.hojaIndicadores.listadoFrecuencia.find(e => e.codigo === x.REGC_PERIODICIDAD_ANALISIS.split('-')[0])).meses;
               // parseInt($scope.modalGraficoVars.REGN_META_VIGENCIA)
-              dataMeta = []
-              let meta = x.REGC_ACUMULATIVO == 'S' ? parseFloat($scope.modalGraficoVars.REGN_META_VIGENCIA) : parseFloat($scope.modalGraficoVars.REGN_META);
+              // dataMeta = []
+              // let meta = x.REGC_ACUMULATIVO == 'S' ? parseFloat($scope.modalGraficoVars.REGN_META_VIGENCIA) : parseFloat($scope.modalGraficoVars.REGN_META);
 
-              for (let i = 0; i < meses; i++) {
-                dataMeta.push(meta)
-                // parseInt($scope.modalGraficoVars.REGN_META_VIGENCIA)
-                meta = x.REGC_ACUMULATIVO == 'S' ? (meta + parseFloat($scope.modalGraficoVars.REGN_META_VIGENCIA)) : meta;
-              }
+              // for (let i = 0; i < meses; i++) {
+              // dataMeta.push(meta)
+              // parseInt($scope.modalGraficoVars.REGN_META_VIGENCIA)
+              // meta = x.REGC_ACUMULATIVO == 'S' ? (meta + parseFloat($scope.modalGraficoVars.REGN_META_VIGENCIA)) : meta;
+              // }
 
               // if (x.REGC_ACUMULATIVO == 'N') {
               //   dataMeta = [[0, meta], [meses, meta]]
@@ -1183,7 +1273,7 @@ angular.module('GenesisApp')
                   type: 'line'
                 },
                 title: {
-                  text: $scope.modalGraficoVars.UNIC_NOMBRE
+                  text: $scope.modalGraficoVars.REGN_NOM_INDICADOR
                 },
                 // subtitle: {
                 //   text: $scope.modalGraficoVars.UNIC_NOMBRE
@@ -1226,7 +1316,16 @@ angular.module('GenesisApp')
                       enabled: false
                     },
                     // enableMouseTracking: false,
+                  },
+                  //
+                  {
+                    name: 'Linea base',
+                    //color: '#00e8ff',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.REGN_LINEA_BASE.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.REGN_LINEA_BASE.toString().replace(',', '.'))]],
                   }
+                  //
                 ],
                 // exporting: { enabled: false },
                 credits: { enabled: false },
@@ -1245,8 +1344,14 @@ angular.module('GenesisApp')
         const dato = parseFloat((($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))[0].GESN_ACUMULADO.toString()).replace(',', '.'));
         return dato == 0 ? null : dato
       }
+      $scope.filtrarPeriodoMetaVigencia = function (periodo) {
+        // console.log($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo)[0].GESN_ACUMULADO)
+        const dato = parseFloat((($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))[0].GESN_META_VIGENCIA.toString()).replace(',', '.'));
+        return dato == 0 ? null : dato
+      }
 
       $scope.modalDatosCorresp = function (x) {
+        $scope.modalDatosCambio = x;
         swal({
           html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
           width: 200,
@@ -1291,7 +1396,7 @@ angular.module('GenesisApp')
             codigoEstrategico: x.REGN_COD_ESTR,
             codigoTactico: x.REGN_COD_TACT,
             codigoIndicador: x.REGN_COD_INDICADOR,
-            anio: $scope.modalDatosCorrespVars.anio
+            anio: x.REGN_ANNO
           }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data == 0) {
@@ -1714,6 +1819,7 @@ angular.module('GenesisApp')
       $scope.validarFormIndicadores = function () {
         return new Promise((resolve) => {
 
+          if (!$scope.hojaIndicadores.formulario.anio) resolve(false);
           if (!$scope.hojaIndicadores.formulario.nombre) resolve(false);
           if (!$scope.hojaIndicadores.formulario.proceso) resolve(false);
           if (!$scope.hojaIndicadores.formulario.tipoProceso) resolve(false);
@@ -1726,6 +1832,7 @@ angular.module('GenesisApp')
           if (!$scope.hojaIndicadores.formulario.periodicidadAnalisis) resolve(false);
           if (!$scope.hojaIndicadores.formulario.meta) resolve(false);
           if (!$scope.hojaIndicadores.formulario.metaVigencia) resolve(false);
+          if (!$scope.hojaIndicadores.formulario.tipoVigencia) resolve(false);
           if (!$scope.hojaIndicadores.formulario.unidadMedida) resolve(false);
           if (!$scope.hojaIndicadores.formulario.lineaBase) resolve(false);
           if (!$scope.hojaIndicadores.formulario.fuenteNumerador) resolve(false);
@@ -1736,7 +1843,7 @@ angular.module('GenesisApp')
           if (!$scope.hojaIndicadores.formulario.prioridad) resolve(false);
           // if (!$scope.hojaIndicadores.formulario.tipoNorma) resolve(false);
           // if (!$scope.hojaIndicadores.formulario.norma) resolve(false);
-          if (!$scope.hojaIndicadores.formulario.frecuencia) resolve(false);
+          // if (!$scope.hojaIndicadores.formulario.frecuencia) resolve(false);
           if (!$scope.hojaIndicadores.formulario.periodicidadReporte) resolve(false);
           if (!$scope.hojaIndicadores.formulario.responsableReporte) resolve(false);
           if (!$scope.hojaIndicadores.formulario.responsableAnalisis) resolve(false);
@@ -1776,9 +1883,10 @@ angular.module('GenesisApp')
             pestado: $scope.hojaIndicadores.formulario.estado,
             pdependencia: $scope.hojaIndicadores.formulario.dependencia,
             pobjetivo_indicador: $scope.hojaIndicadores.formulario.definicion,
-            plinea_base: $scope.hojaIndicadores.formulario.lineaBase.replace(',', '.'),
-            pmeta: $scope.hojaIndicadores.formulario.meta.replace(',', '.'),
-            pmeta_vigencia: $scope.hojaIndicadores.formulario.metaVigencia.replace(',', '.'),
+            plinea_base: $scope.hojaIndicadores.formulario.lineaBase.replace('.', ','),
+            pmeta: $scope.hojaIndicadores.formulario.meta.replace('.', ','),
+            pmeta_vigencia: $scope.hojaIndicadores.formulario.metaVigencia.replace('.', ','),
+            ptipo_vigencia: $scope.hojaIndicadores.formulario.tipoVigencia,
             punidad_medida: $scope.hojaIndicadores.formulario.unidadMedida,
             pfrecuencia: $scope.hojaIndicadores.formulario.frecuencia,
             pacumulativo: $scope.hojaIndicadores.formulario.acumulativo,
@@ -1793,6 +1901,11 @@ angular.module('GenesisApp')
             pperiodicidad_analisis: $scope.hojaIndicadores.formulario.periodicidadAnalisis,
             presponsable_reporte: $scope.hojaIndicadores.formulario.responsableReporte.split('-')[0].trim(),
             presponsable_analisis: $scope.hojaIndicadores.formulario.responsableAnalisis.split('-')[0].trim(),
+
+            pdescripcion_numerador: $scope.hojaIndicadores.formulario.descripcionNumerador,
+            pdescripcion_denominador: $scope.hojaIndicadores.formulario.descripcionDenominador,
+            pdescripcion_constante: $scope.hojaIndicadores.formulario.descripcionConstante,
+            panno: $scope.hojaIndicadores.formulario.anio,
 
             psemaforizacion: $scope.hojaIndicadores.formulario.semaforizacionEstado,
             ptipo_calculo: $scope.hojaIndicadores.formulario.tipoCalculo,
@@ -1812,7 +1925,7 @@ angular.module('GenesisApp')
               nom_responsable: e.nombre
             })
           })
-
+          console.log(dato);
           const text = $scope.hojaIndicadores.formulario.idIndicadorSeleccionado == '' ? '¿Desea crear el indicador?' : '¿Desea actualizar el indicador?';
           swal({
             title: 'Confirmar',
@@ -1863,6 +1976,62 @@ angular.module('GenesisApp')
         })
       }
 
+      $scope.editarMetaVigencia = function (x) {
+        swal({
+          title: 'Meta Vigencia',
+          input: 'number',
+          inputValue: x.GESN_META_VIGENCIA.toString().replace(',', '.'),
+          inputAttributes: {
+            maxlength: 32
+          }
+        }).then((result) => {
+          if (result) {
+            console.log(x);
+            const datos = {
+              gesn_proceso: x.GESN_PROCESO,
+              gesn_cod_estr: x.GESN_COD_ESTR,
+              gesn_cod_tact: x.GESN_COD_TACT,
+              gesn_cod_indicador: x.GESN_COD_INDICADOR,
+              anno: x.GESN_ANNO,
+              periodo: x.GESN_PERIODO,
+              meta_vigencia: result.toString().replace('.', ',')
+            }
+
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/planeacion/procesospoa.php",
+              data: {
+                function: 'p_u_metaVigencia',
+                datos: JSON.stringify(datos),
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                swal("Mensaje", "Meta Actualizada", "success").catch(swal.noop);
+
+                $scope.modalDatosCorrespObtenerdatos($scope.modalDatosCorrespVars);
+
+                setTimeout(() => { $scope.$apply(); }, 500);
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            });
+
+          }
+        })
+
+      }
 
       /////// INDICADORES ///////
 
