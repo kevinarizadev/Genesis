@@ -8,7 +8,7 @@ angular.module('GenesisApp', [])
     });
   })
   .controller('formatominutacontratoController', ['$scope', '$http', '$location', '$sce',
-    function ($scope, $http,  $location, $sce) {
+    function ($scope, $http, $location, $sce) {
       $(document).ready(function () {
         $scope.trustSrc = function (src) {
           return $sce.trustAsResourceUrl(src);
@@ -25,7 +25,7 @@ angular.module('GenesisApp', [])
       $scope.Get_Data = function () {
         $http({
           method: 'POST',
-          url: "../../../php/contratacion/formatos/formatominutacontrato.php",
+          url: "../../../../php/contratacion/formatos/formatominutacontrato.php",
           data: {
             function: 'P_OBTENER_CONTRATO_MINUTA',
             v_pnumero: $location.search().v_pnumero.toString(),
@@ -51,6 +51,8 @@ angular.module('GenesisApp', [])
       }
 
       $scope.Fijar_data = function () {
+        $scope.DATA.DOC_CONTRATO = $location.search().v_pdocumento.toString() == 'KS' ? 'RS' : 'RC';;
+        $scope.DATA.TIPOCONTRATO = $location.search().v_ptipominuta.toString();
         $scope.DATA.NUMERO_CONTRATO = $scope.DATA.NUMERO_CONTRATO == null ? '' : $scope.DATA.NUMERO_CONTRATO;
         $scope.DATA.SUBSIDIADO = $scope.DATA.SUBSIDIADO == null ? '' : $scope.DATA.SUBSIDIADO;
         $scope.DATA.CONTRIBUTIVO = $scope.DATA.CONTRIBUTIVO == null ? '' : $scope.DATA.CONTRIBUTIVO;
@@ -110,6 +112,50 @@ angular.module('GenesisApp', [])
         if (inicia >= fechaNuevaEmpresa) {
           $scope.mostrar_div_firmas = false;
         }
+
+        const minuta = parseInt($location.search().v_minuta.toString()) || 5;
+        switch (minuta) {
+          case 1:
+            $scope.tipoMinuta = 'MODALIDAD DE RECUPERACION';
+            break;
+          case 2:
+            $scope.tipoMinuta = 'MODALIDAD DE PYM';
+            break;
+          case 3:
+            $scope.tipoMinuta = 'MODALIDAD DE DISPENSACION DE MEDICAMENTOS, DISPOSITIVOS E INSUMOS DE CÁPITA';
+            break;
+          // case 4:
+          //   $scope.tipoMinuta = '';
+          //   break;
+          case 5:
+            $scope.tipoMinuta = 'MODALIDAD DE EVENTO';
+            break;
+          // case 6:
+          //   $scope.tipoMinuta = '';
+          //   break;
+          case 7:
+            $scope.tipoMinuta = 'MODALIDAD DE DISPENSACION DE MEDICAMENTOS, DISPOSITIVOS E INSUMOS DE PAGO POR EVENTO';
+            break;
+          case 8:
+            $scope.tipoMinuta = 'MODALIDAD DE PAGO POR BOLSA';
+            break;
+          // case 9:
+          //   $scope.tipoMinuta = '';
+          //   break;
+
+          default:
+            $scope.tipoMinuta = 'MODALIDAD DE EVENTO';
+            break;
+        }
+        // 5	GENERAL
+        // 6	NO ASISTENCIAL
+        // 2	PYM
+        // 1	RECUPERACION
+        // 3	MEDICAMENTO
+        // 7	MEDICAMENTO - EVENTO
+        // 4	ESPECIAL - NO ASISTENCIAL
+        // 9	PGP GENERAL
+        // 8	BOLSA
         setTimeout(() => { $scope.$apply(); }, 500);
         setTimeout(() => { window.print() }, 2000);
       }

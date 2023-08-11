@@ -32,9 +32,12 @@ angular.module('GenesisApp', [])
       $scope.Get_Data = function () {
         $http({
           method: 'POST',
-          url: "../../../php/contratacion/formatos/formatominutacontrato.php",
+          url: "../../../../php/contratacion/formatos/formatominutacontrato.php",
           data: {
             function: 'P_OBTENER_CONTRATO_MINUTA',
+            // v_pnumero: '8103',
+            // v_pubicacion: '1',
+            // v_pdocumento: 'KS',
             v_pnumero: $location.search().v_pnumero.toString(),
             v_pubicacion: $location.search().v_pubicacion.toString(),
             v_pdocumento: $location.search().v_pdocumento.toString()
@@ -58,6 +61,7 @@ angular.module('GenesisApp', [])
       }
 
       $scope.Fijar_data = function () {
+        $scope.DATA.DOC_CONTRATO = $location.search().v_pdocumento.toString() == 'KS' ? 'RS' : 'RC';
         $scope.DATA.NUMERO_CONTRATO = $scope.DATA.NUMERO_CONTRATO == null ? '' : $scope.DATA.NUMERO_CONTRATO;
         $scope.DATA.SUBSIDIADO = $scope.DATA.SUBSIDIADO == null ? '' : $scope.DATA.SUBSIDIADO;
         $scope.DATA.CONTRIBUTIVO = $scope.DATA.CONTRIBUTIVO == null ? '' : $scope.DATA.CONTRIBUTIVO;

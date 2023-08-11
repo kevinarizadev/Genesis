@@ -17,13 +17,15 @@
     {
       global $request;
 
-      //require('../php/config/dbcon_qa.php');
-      require_once('../php/config/dbcon_api.php');
+      require('../php/config/dbcon_qa.php');
+      //require_once('../php/config/dbcon_api.php');
       $consulta = oci_parse($c, 'begin oasis.PQ_WEBSERVICES_IPS.P_UI_CABEZA_AUT_WEB(
         :v_pautorizacion,:v_pproductos,
       :v_pjson_out); end;');
-      oci_bind_by_name($consulta, ':v_pautorizacion', $request->autorizacion);
-      oci_bind_by_name($consulta, ':v_pproductos', $request->productos);
+      $autorizacion = json_encode($request->autorizacion);
+      $productos = json_encode($request->productos);
+      oci_bind_by_name($consulta, ':v_pautorizacion', $autorizacion);
+      oci_bind_by_name($consulta, ':v_pproductos', $productos);
       $clob = oci_new_descriptor($c, OCI_D_LOB);
       oci_bind_by_name($consulta, ':v_pjson_out', $clob, -1, OCI_B_CLOB);
       oci_execute($consulta, OCI_DEFAULT);
@@ -34,9 +36,9 @@
       if (property_exists($data, 'Codigo') && $data->Codigo == '0' && $data->Celular != '0') {
         include('../php/tic/enviomensajephp.php');
         EnviarMensajeSMS($data->Celular, $data->SMS);
-        EnviarMensajeSMS('3002722292',$data->SMS);//moises
-        EnviarMensajeSMS('3004837683',$data->SMS);//aug
-        EnviarMensajeSMS('3045947779',$data->SMS);//kev
+        //EnviarMensajeSMS('3002722292',$data->SMS);//moises
+        //EnviarMensajeSMS('3004837683',$data->SMS);//aug
+        //EnviarMensajeSMS('3045947779',$data->SMS);//kev
       }
       echo $json;
       exit;

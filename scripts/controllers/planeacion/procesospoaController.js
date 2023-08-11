@@ -227,6 +227,7 @@ angular.module('GenesisApp')
             nombre_estrategico: $scope.hojaProcesos.formulario.listadoObjetivoEstrategico.find(e => e.codigo == $scope.hojaProcesos.formulario.objetivoEstrategico).nombre,
             codigo_tactico: 0,
             nombre_tactico: $scope.hojaProcesos.formulario.objetivoTactivo,
+            existen_indicador: 0
           }
         );
         $scope.hojaProcesos.formulario.perspectiva = '';
@@ -567,6 +568,7 @@ angular.module('GenesisApp')
             { codigo: 'VA', nombre: 'Variación' },
             { codigo: 'DI', nombre: 'Diferencia' },
             { codigo: 'AJ', nombre: 'Ajuste' },
+            { codigo: 'DE', nombre: 'Desempeño' },
           ],
           listadoAnio: []
 
@@ -680,6 +682,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.semaforizacionValor1 = '';
         $scope.hojaIndicadores.formulario.semaforizacionValor2 = '';
         $scope.hojaIndicadores.formulario.semaforizacionValor3 = '';
+        $scope.hojaIndicadores.formulario.semaforizacionValorMax = '';
 
         $scope.hojaIndicadores.formulario.idIndicadorSeleccionado = '';
         // }
@@ -736,9 +739,12 @@ angular.module('GenesisApp')
 
         // $scope.hojaIndicadores.formulario.idIndicadorSeleccionado = '';
         ////////////////////////////////////////////////
-        angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Estado select'), function (i) {
-          i.setAttribute("disabled", true);
-        });
+
+        setTimeout(() => {
+          angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Estado select'), function (i) {
+            i.setAttribute("disabled", true);
+          });
+        }, 1000);
 
         if ($scope.graficoSemaforizacion) {
           $scope.graficoSemaforizacion.destroy()
@@ -810,6 +816,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.semaforizacionValor1 = x.REGC_DATO1.replace(',', '.');
         $scope.hojaIndicadores.formulario.semaforizacionValor2 = x.REGC_DATO2.replace(',', '.');
         $scope.hojaIndicadores.formulario.semaforizacionValor3 = x.REGC_DATO3.replace(',', '.');
+        $scope.hojaIndicadores.formulario.semaforizacionValorMax = x.REGC_DATOMAX.replace(',', '.');
 
         setTimeout(() => {
           $scope.calcularGraficoSemaforizacion();
@@ -823,26 +830,28 @@ angular.module('GenesisApp')
 
         $scope.openModal('modalCrearIndicadores');
         document.getElementById('modalCrearIndicadores_Scroll').scrollIntoView({ block: 'start', behavior: 'smooth' });
-        if (!$scope.validarPermisos(['AS'])) {
-          angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Admin input'), function (i) {
-            i.setAttribute("readonly", true);
-          });
-        }
+        setTimeout(() => {
+          if (!$scope.validarPermisos(['AS'])) {
+            angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Admin input'), function (i) {
+              i.setAttribute("readonly", true);
+            });
+          }
 
-        if (!$scope.validarPermisos(['AS', 'AM'])) {
-          angular.forEach(document.querySelectorAll('.formIndicador_Desactivar input'), function (i) {
-            i.setAttribute("readonly", true);
-          });
-          angular.forEach(document.querySelectorAll('.formIndicador_Desactivar textarea'), function (i) {
-            i.setAttribute("readonly", true);
-          });
-          angular.forEach(document.querySelectorAll('.formIndicador_Desactivar select'), function (i) {
-            i.setAttribute("disabled", true);
-          });
-          angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Estado select'), function (i) {
-            i.setAttribute("disabled", true);
-          });
-        }
+          if (!$scope.validarPermisos(['AS', 'AM'])) {
+            angular.forEach(document.querySelectorAll('.formIndicador_Desactivar input'), function (i) {
+              i.setAttribute("readonly", true);
+            });
+            angular.forEach(document.querySelectorAll('.formIndicador_Desactivar textarea'), function (i) {
+              i.setAttribute("readonly", true);
+            });
+            angular.forEach(document.querySelectorAll('.formIndicador_Desactivar select'), function (i) {
+              i.setAttribute("disabled", true);
+            });
+            angular.forEach(document.querySelectorAll('.formIndicador_Desactivar_Estado select'), function (i) {
+              i.setAttribute("disabled", true);
+            });
+          }
+        }, 1000);
       }
 
       $scope.calcularMetaVigencia = function () {
@@ -1090,8 +1099,11 @@ angular.module('GenesisApp')
                 dataPlotBands = [
                   {
                     color: 'hsl(206deg 90% 69.5% / 10%)', // Color value
-                    from: -100,
-                    to: 1000
+                    from: parseFloat($scope.modalGraficoVars.REGC_DATOMAX),
+                    to: 10000000,
+                    label: {
+                      text: 'Exceso'
+                    }
                   },
                   { // Light air
                     from: 0,
@@ -1116,7 +1128,7 @@ angular.module('GenesisApp')
                     }
                   }, { // Light breeze
                     from: dato3_Min,
-                    to: 100,
+                    to: parseFloat($scope.modalGraficoVars.REGC_DATOMAX),
                     color: 'rgba(0, 128, 0, 0.3)',
                     label: {
                       text: 'Alta',
@@ -1127,7 +1139,7 @@ angular.module('GenesisApp')
                   }
                 ]
               } else { // Orden Descendente
-                dato3_Min = 100 - parseFloat($scope.modalGraficoVars.REGC_DATO1);
+                dato3_Min = parseFloat($scope.modalGraficoVars.REGC_DATOMAX) - parseFloat($scope.modalGraficoVars.REGC_DATO1);
                 dato2_Max = dato3_Min
                 dato2_Min = dato2_Max - parseFloat($scope.modalGraficoVars.REGC_DATO2);
                 dato1_Max = dato2_Min;
@@ -1138,7 +1150,7 @@ angular.module('GenesisApp')
                 dataPlotBands = [
                   { // Light air
                     from: dato3_Min,
-                    to: 100,
+                    to: parseFloat($scope.modalGraficoVars.REGC_DATOMAX),
                     color: 'rgba(255, 0, 0, 0.2)',
                     label: {
                       text: 'Alta',
@@ -1458,6 +1470,7 @@ angular.module('GenesisApp')
             100 - (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador))
           ).toFixed(2)
         }
+
         if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'AJ') {
           if ($scope.modalDatosCorrespVarsPeriodo.constante == '') return
 
@@ -1466,6 +1479,16 @@ angular.module('GenesisApp')
             ((parseFloat($scope.modalDatosCorrespVarsPeriodo.constante) * parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador)) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador))
           ).toFixed(2)
         }
+
+        if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DE') {
+          if ($scope.modalDatosCorrespVarsPeriodo.constante == '') return
+
+          $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
+            1 -
+            (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador) * parseFloat($scope.modalDatosCorrespVarsPeriodo.constante))
+          ).toFixed(2)
+        }
+
       }
 
       $scope.atrasModalPeriodo = function () {
@@ -1480,6 +1503,7 @@ angular.module('GenesisApp')
           if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TA' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
           if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CA' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
           if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'AJ' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
+          if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DE' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
           if (!$scope.modalDatosCorrespVarsPeriodo.nota) resolve(false)
           resolve(true)
         });
@@ -1691,14 +1715,15 @@ angular.module('GenesisApp')
         }
         if ($scope.hojaIndicadores.formulario.semaforizacionValor1 == '' ||
           $scope.hojaIndicadores.formulario.semaforizacionValor2 == '' ||
-          $scope.hojaIndicadores.formulario.semaforizacionValor3 == '') {
+          $scope.hojaIndicadores.formulario.semaforizacionValor3 == '' ||
+          $scope.hojaIndicadores.formulario.semaforizacionValorMax == '') {
           return false
         }
 
         if ((parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1) +
           parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor2) +
-          parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor3)) != 100) {
-          swal("Error", 'La suma de los valores debe dar el 100%', "warning").catch(swal.noop); return
+          parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor3)) != parseFloat($scope.hojaIndicadores.formulario.semaforizacionValorMax)) {
+          swal("Error", 'La suma de los valores debe dar el 100% del valor máximo', "warning").catch(swal.noop); return
         }
 
         if ($scope.hojaIndicadores.formulario.semaforizacionSentido == 'A') {
@@ -1714,10 +1739,10 @@ angular.module('GenesisApp')
             {
               name: 'Alta', y: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor3), color: "#06FA12",
               datoAnterior: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1) + parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor2),
-              datoSiguiente: 100
+              datoSiguiente: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValorMax)
             }]
         } else {
-          var dato3_Min = 100 - parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1);
+          var dato3_Min = parseFloat($scope.hojaIndicadores.formulario.semaforizacionValorMax) - parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1);
           var dato2_Max = dato3_Min
           var dato2_Min = dato2_Max - parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor2);
           var dato1_Max = dato2_Min;
@@ -1726,7 +1751,7 @@ angular.module('GenesisApp')
           data = [
             {
               name: 'Alta', y: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1), color: "#FA0501",
-              datoAnterior: 100, datoSiguiente: dato3_Min
+              datoAnterior: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValorMax), datoSiguiente: dato3_Min
             },
             {
               name: 'Media', y: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor2), color: "#FADE09",
@@ -1861,7 +1886,7 @@ angular.module('GenesisApp')
           if ($scope.hojaIndicadores.formulario.semaforizacionEstado == 'S' &&
             ((parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1) +
               parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor2) +
-              parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor3)) != 100)) {
+              parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor3)) != parseFloat($scope.hojaIndicadores.formulario.semaforizacionValorMax))) {
             resolve(false);
           }
 
@@ -1913,6 +1938,8 @@ angular.module('GenesisApp')
             pdato1: $scope.hojaIndicadores.formulario.semaforizacionValor1.replace(',', '.'),
             pdato2: $scope.hojaIndicadores.formulario.semaforizacionValor2.replace(',', '.'),
             pdato3: $scope.hojaIndicadores.formulario.semaforizacionValor3.replace(',', '.'),
+
+            pdatomax: $scope.hojaIndicadores.formulario.semaforizacionValorMax.replace(',', '.'),
 
             presponsable: $scope.Rol_Cedula,
 
