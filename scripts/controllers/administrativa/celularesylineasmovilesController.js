@@ -32,8 +32,9 @@ angular.module('GenesisApp')
           $scope.$apply();
         }, 500);
         setTimeout(() => {
-          document.querySelector("#open-theme-settings").style.display = 'none';
-        }, 1500);
+          if (document.querySelector("#open-theme-settings"))
+            document.querySelector("#open-theme-settings").style.display = 'none';
+        }, 2500);
         //////////////////////////////////////////////////////////
       }
       /////// FUNCIONES RECURSIVAS ///////
@@ -103,6 +104,7 @@ angular.module('GenesisApp')
           ],
 
         }
+        setTimeout(() => { $scope.$apply(); }, 500);
       }
 
       $scope.hojaEquipo_ObtenerEstado = function (tipo = null) {
@@ -145,8 +147,9 @@ angular.module('GenesisApp')
           if (data.length) {
             $scope.hojaEquipo.listadoTabla = data
             $scope.hojaEquipo.listadoTablaTemp = data
+            // $scope.hojaEquipo.varsTabla.pages
             $scope.initPaginacion('hojaEquipo', $scope.hojaEquipo.listadoTabla);
-            setTimeout(() => { $scope.$apply(); }, 500);
+            setTimeout(() => { $scope.$apply(); }, 1500);
           }
         });
         // const data = [
@@ -1369,13 +1372,13 @@ angular.module('GenesisApp')
         var fin = $scope[hoja].varsTabla.currentPage + 5;
         if (ini < 1) {
           ini = 1;
-          if (Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize) > $scope.valmaxpag)
+          if (Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize) > $scope[hoja].varsTabla.valmaxpag)
             fin = 10;
           else
             fin = Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize);
         } else {
-          if (ini >= Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize) - $scope.valmaxpag) {
-            ini = Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize) - $scope.valmaxpag;
+          if (ini >= Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize) - $scope[hoja].varsTabla.valmaxpag) {
+            ini = Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize) - $scope[hoja].varsTabla.valmaxpag;
             fin = Math.ceil($scope[hoja].listadoTablaTemp.length / $scope[hoja].varsTabla.pageSize);
           }
         }
@@ -1424,6 +1427,7 @@ angular.module('GenesisApp')
             i = 1;
             fin = $scope[hoja].varsTabla.pages.length;
           }
+
         }
         $scope.calcular(hoja, i, fin);
       }
@@ -1548,4 +1552,14 @@ angular.module('GenesisApp')
         });
       }
 
-    }]);
+    }]).filter('inicio', function () {
+      return function (input, start) {
+        if (input != undefined && start != NaN) {
+          start = +start;
+          return input.slice(start);
+        } else {
+          return null;
+        }
+      }
+    });
+

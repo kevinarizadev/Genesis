@@ -9,6 +9,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         }
         // console.log("width:" + document.querySelector("#pantalla").offsetWidth);
         // console.log("height:" +document.querySelector("#pantalla").offsetHeight);
+        // Nit: 802009806 - Usuario: 72176922 - Clave: Cajacopi2022.
+
         $scope.Pantalla = {
             Altura: 0,
             Anchura: document.querySelector("#pantalla").offsetWidth
@@ -1621,7 +1623,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             $scope.Consulta_Financiera();
         }
 
-        if (x == 8) { //Busqueda OCR            
+        if (x == 8) { //Busqueda OCR
             $scope.Vistas_Informativa = 8;
             $scope.Vistas_Informativa_Titulo = 'Busqueda OCR  N° Factura: ' + $scope.HojaGest.FACTURA + ' IPS: ' + $scope.HojaGest.IPS;
             $scope.Consulta_Financiera();

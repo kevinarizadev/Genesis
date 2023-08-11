@@ -7,7 +7,7 @@ $function();
 
 function P_OBTENER_CONTRATO_MINUTA()
 {
-	require_once('../../config/dbcon_prod.php');
+	require_once('../../config/dbcon_QA.php');
 	global $request;
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_OBTENER_CONTRATO_MINUTA(:v_pnumero,:v_pubicacion,:v_pdocumento,:v_pjson_row); end;');
 	oci_bind_by_name($consulta, ':v_pnumero', $request->v_pnumero);

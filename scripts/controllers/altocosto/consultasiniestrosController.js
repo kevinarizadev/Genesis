@@ -120,6 +120,8 @@ angular.module('GenesisApp')
           { CODIGO: 'VH', NOMBRE: 'VIH' },
           { CODIGO: 'EH', NOMBRE: 'ENFERMEDADES HUERFANAS' },
           { CODIGO: 'TP', NOMBRE: 'TRASPLANTES' },
+          { CODIGO: 'LU', NOMBRE: 'LUPUS' },
+          { CODIGO: 'OS', NOMBRE: 'OSTEOPOROSIS' },
           { CODIGO: 'X', NOMBRE: 'TODAS' },
         ]
 
