@@ -53,27 +53,27 @@ angular.module('GenesisApp')
 
 
       // Tabla fixed star
-    /*   $scope.cloneHeadFixed = function (id) {
-        // if (id != undefined && id != null && id != "") {
-        setTimeout(() => {
-          var original = $('#tablaOriginal_' + id + '>thead');
-          var clone = $('#tablaOriginal_' + id + '>thead').clone();
-          var list = original[0].children[0].children;
-          for (var i = 0; i < list.length; i++) {
-            clone[0].children[0].children[i].style.width = list[i].offsetWidth + "px";
-          }
-          $('#tablaClone_' + id).html(clone).css("width", original[0].parentElement.offsetWidth + "px");
-        }, 600);
-        // }
-      } */
+      /*   $scope.cloneHeadFixed = function (id) {
+          // if (id != undefined && id != null && id != "") {
+          setTimeout(() => {
+            var original = $('#tablaOriginal_' + id + '>thead');
+            var clone = $('#tablaOriginal_' + id + '>thead').clone();
+            var list = original[0].children[0].children;
+            for (var i = 0; i < list.length; i++) {
+              clone[0].children[0].children[i].style.width = list[i].offsetWidth + "px";
+            }
+            $('#tablaClone_' + id).html(clone).css("width", original[0].parentElement.offsetWidth + "px");
+          }, 600);
+          // }
+        } */
       // $(".scroll_x").on("scroll", function () {
       //   $(".scroll_x").scrollLeft($(this).scrollLeft());
       // });
-     /*  $(window).resize(function () {
-        $scope.cloneHeadFixed(0);
-        $scope.cloneHeadFixed(1);
-      });
-      $scope.cloneHeadFixed(0); */
+      /*  $(window).resize(function () {
+         $scope.cloneHeadFixed(0);
+         $scope.cloneHeadFixed(1);
+       });
+       $scope.cloneHeadFixed(0); */
       // Tabla fixed end
 
 
@@ -146,6 +146,7 @@ angular.module('GenesisApp')
               documento: userDesc.Cedula
             }
           }).then(function (response) {
+            console.log(response.data.Modulos);
             $scope.modulos = angular.copy(response.data.Modulos.filter(modulo => (modulo.icono != "icon-key-4" && modulo.icono != "icon-logout-3")));
             $scope.form = {
               nit: response.data.Nit,
@@ -162,13 +163,30 @@ angular.module('GenesisApp')
               modulos: $scope.modulos,
               tipo: "F"
             };
+
             $scope.modulos.forEach(function (modulo, i) {
               $scope.modulos[i] = Object.assign(modulo, { id: i });
               modulo.options.forEach(function (submodulo, j) {
                 $scope.modulos[i].options[j] = Object.assign(submodulo, { id: i + "-" + j, estado: true });
               });
             });
-            console.log(response.data);
+
+            $scope.modulos.forEach((m, i) => {
+              m.options.forEach((o, j) => {
+                const x = $scope.menu.find(a => a.titulo == m.titulo)
+                if (x) {
+                  x.options.forEach(y => {
+                    if (m.options.find(xx => xx.url == y.url) == undefined && y.url != o.url) {
+                      $scope.modulos[i].options.push({ titulo: y.titulo, url: y.url, id: i + "-" + j, estado: false });
+                    }
+                  });
+                }
+              });
+            });
+
+            // console.log($scope.modulos);
+            // console.log($scope.menu);
+            // console.log(response.data);
             $scope.collapse.level = null;
             $scope.moduloTitle = "Modulos de: " + $scope.userSelect;
             $scope.vista.tabla_0 = false;
@@ -257,8 +275,8 @@ angular.module('GenesisApp')
                       $scope.form.modulos = angular.copy($scope.modulos);
                       for (const i in $scope.form.modulos) {
                         // console.log("Normal", $scope.form.modulos[i].options);
-                        for (const k in $scope.form.modulos[i].options){
-                          if(!$scope.form.modulos[i].options[k].estado){
+                        for (const k in $scope.form.modulos[i].options) {
+                          if (!$scope.form.modulos[i].options[k].estado) {
                             $scope.form.modulos[i].options.splice(k, 1)
                           }
                         }
