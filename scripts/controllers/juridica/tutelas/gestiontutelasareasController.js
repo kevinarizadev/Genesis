@@ -44,9 +44,9 @@ angular.module('GenesisApp')
         if ($scope.List.listadoCargos.findIndex(e => e.cod == $scope.Rol_Cargo && e.nac == 'S') != -1) {
           $scope.tipoRol = "N";
         }
-        // if ($scope.Rol_Cedula == '1042454684') {
-        //   $scope.tipoRol = "N";
-        // }
+        if ($scope.Rol_Cedula == '1042454684') {
+          $scope.tipoRol = "N";
+        }
         //////////////////////////////////////////////////////////
         setTimeout(() => {
           $scope.obtenerListadoTutelas();
@@ -307,7 +307,7 @@ angular.module('GenesisApp')
                 // }
               }
 
-              if ($scope.Form.gestionaRegional) {
+              if ($scope.Form.gestionaRegional || $scope.Form.gestionaNacional) {
                 if (e.estado == 'G') {
                   $scope.Form.listadoGestionesPendientes.push(e);
                 }
@@ -315,9 +315,9 @@ angular.module('GenesisApp')
                   $scope.Form.listadoGestiones.push(e);
                 }
               }
-              if ($scope.Form.gestionaNacional) {
-                $scope.Form.listadoGestiones.push(e);
-              }
+              // if ($scope.Form.gestionaNacional) {
+              //   $scope.Form.listadoGestiones.push(e);
+              // }
             });
             setTimeout(() => {
               if (!$scope.Form.codRenglon) {

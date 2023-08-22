@@ -3,6 +3,9 @@ header("Content-Type: text/html;charset=utf-8");
 $postdata = file_get_contents("php://input");
 $request = json_decode($postdata);
 $function = $request->function;
+if (!isset($_SESSION)) {
+  session_start();
+}
 $function();
 
 
@@ -41,6 +44,8 @@ function carga_acas_ips()
   require_once('../../config/dbcon.php');
   global $request;
   $cedula = isset($_SESSION['cedula']) ? $_SESSION['cedula'] : $_SESSION['nit'];
+
+
   // echo $cedula;
   // $cedula=$_SESSION['cedula'];
   $consulta = oci_parse($c, 'begin pq_genesis_mesa_ayuda_ips.p_obtener_acas_ips(:v_ptercero,

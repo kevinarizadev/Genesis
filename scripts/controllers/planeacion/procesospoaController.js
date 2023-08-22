@@ -633,6 +633,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.anio = $scope.SysDay.getFullYear();;
 
         $scope.hojaIndicadores.formulario.nombre = '';
+        $scope.hojaIndicadores.formulario.nombreDsb = false;
         $scope.hojaIndicadores.formulario.estado = 'A';
         $scope.hojaIndicadores.formulario.proceso = '';
         $scope.hojaIndicadores.formulario.tipoProceso = '';
@@ -762,6 +763,7 @@ angular.module('GenesisApp')
 
         $scope.hojaIndicadores.formulario.anio = x.REGN_ANNO;
         $scope.hojaIndicadores.formulario.nombre = x.REGN_NOM_INDICADOR;
+        $scope.hojaIndicadores.formulario.nombreDsb = false
         $scope.hojaIndicadores.formulario.estado = x.REGC_ESTADO;
         $scope.hojaIndicadores.formulario.proceso = x.REGN_PROCESO;
         // $scope.hojaIndicadores.formulario.tipoProceso = '';
@@ -779,6 +781,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.tipoVigencia = x.REGC_TIPO_VIGENCIA.split('-')[0];
         $scope.hojaIndicadores.formulario.tipoVigenciaDsb = true;
         if ($scope.validarPermisos(['AS'])) {
+          $scope.hojaIndicadores.formulario.nombreDsb = false
           $scope.hojaIndicadores.formulario.tipoVigenciaDsb = false
         }
         $scope.hojaIndicadores.formulario.unidadMedida = x.REGN_UNIDAD_MEDIDA.split('-')[0];

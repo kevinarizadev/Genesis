@@ -523,7 +523,7 @@
                   <div style="width: 45%;">
                     <label for="modalidad_1">PAGO POR CAPITACIÓN</label>
                     <input type="checkbox" id="modalidad_1" name="modalidad_1" ng-checked="DATA.P_CAPITACION != ''" onclick="return false;">
-                    <span ng-show="DATA.P_CAPITACION != ''" style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span>
+                    <!-- <span ng-show="DATA.P_CAPITACION != ''" style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span> -->
                   </div>
                   <div style="width: 55%;">
                     <label for="modalidad_2">PAQUETE</label>
@@ -1114,10 +1114,11 @@
           <div class="header-info text-left d-flex">
             <img style="width: 8em;" src="../../../../assets/images/logo_cajacopieps.png" alt="cajacopi">
             <div class="text-bold7">
-              CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE
-              PRESTACION DE SERVICIOS DE SALUD PARA LA RECUPERACIÓN DE LA SALUD MEDIANTE LA {{tipoMinuta}}
+              ANEXO 18 CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE
+              PRESTACION DE SERVICIOS DE {{tipoServicioTitulo}} MEDIANTE LA {{tipoMinuta}}
               SUSCRITO ENTRE {{DATA.RAZON_SOCIAL}} Y {{DATA.RAZON_SOCIAL_IPS}}</div>
           </div>
+
         </th>
       </tr>
     </thead>
@@ -1138,7 +1139,7 @@
             <div class="minuta_titulo mb">Anexo 18. Acuerdo de confidencialidad y protección sobre la información
               personal</div>
 
-            <div class="minuta_anexo_subtitulo mb">PARTES.</div>
+            <div class="minuta_anexo_subtitulo">PARTES.</div>
             <!--  -->
             <!--  -->
             <div class="mb">
@@ -1477,7 +1478,7 @@
                     <div class="ml_1">
                       CAJA DE COMPENSACIÓN FAMILIAR CAJACOPI ATLÁNTICO
                     </div>
-                    <br><br><br><br>
+                    <br><br><br>
 
                     <div class="ml_1">{{DATA.REPRESENTANTE}}</div>
                     <div class="ml_1">CC N°: {{DATA.DOCUMENTO_REPRESENTANTE}} DE BARRANQUILLA</div>
@@ -1487,7 +1488,7 @@
                     <div class="text-bold7 ml_1">
                       {{DATA.RAZON_SOCIAL_IPS}}
                     </div>
-                    <br><br><br><br>
+                    <br><br><br>
 
                     <div class="ml_1">{{DATA.NOM_REPRESENTANTE}}</div>
                     <div class="ml_1">CC N°: {{DATA.COD_REPRESENTANTE}} DE {{DATA.EXPEDICION}}</div>
@@ -1543,7 +1544,7 @@
             <div class="minuta_titulo mb">Anexo 18. Acuerdo de confidencialidad y protección sobre la información
               personal</div>
 
-            <div class="minuta_anexo_subtitulo mb">PARTES.</div>
+            <div class="minuta_anexo_subtitulo">PARTES.</div>
             <!--  -->
             <!--  -->
             <div class="mb">
@@ -1887,7 +1888,7 @@
                     <div class="ml_1">
                       CAJACOPI EPS SAS
                     </div>
-                    <br><br><br><br>
+                    <br><br><br>
 
                     <div class="ml_1">{{DATA.REPRESENTANTE}}</div>
                     <div class="ml_1">CC N°: {{DATA.DOCUMENTO_REPRESENTANTE}} DE BARRANQUILLA</div>
@@ -1897,7 +1898,7 @@
                     <div class="ml_1">
                       {{DATA.RAZON_SOCIAL_IPS}}
                     </div>
-                    <br><br><br><br>
+                    <br><br><br>
 
                     <div class="ml_1">{{DATA.NOM_REPRESENTANTE}}</div>
                     <div class="ml_1">CC N°: {{DATA.COD_REPRESENTANTE}} DE {{DATA.EXPEDICION}}</div>

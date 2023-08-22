@@ -117,27 +117,33 @@ angular.module('GenesisApp', [])
         switch (minuta) {
           case 1:
             $scope.tipoMinuta = 'MODALIDAD DE RECUPERACION';
+            $scope.tipoServicioTitulo = 'SALUD PARA LA RECUPERACIÓN DE LA SALUD';
             break;
           case 2:
             $scope.tipoMinuta = 'MODALIDAD DE PYM';
+            $scope.tipoServicioTitulo = 'FOMENTO, PROMOCION Y PREVENCION, DEMANDA INDUCIDA, ATENCION DE ENFERMEDADES DE INTERES EN SALUD PUBLICA';
             break;
           case 3:
             $scope.tipoMinuta = 'MODALIDAD DE DISPENSACION DE MEDICAMENTOS, DISPOSITIVOS E INSUMOS DE CÁPITA';
+            $scope.tipoServicioTitulo = 'SALUD PARA LA RECUPERACIÓN DE LA SALUD';
             break;
           // case 4:
           //   $scope.tipoMinuta = '';
           //   break;
           case 5:
             $scope.tipoMinuta = 'MODALIDAD DE EVENTO';
+            $scope.tipoServicioTitulo = 'SALUD PARA LA RECUPERACIÓN DE LA SALUD';
             break;
           // case 6:
           //   $scope.tipoMinuta = '';
           //   break;
           case 7:
             $scope.tipoMinuta = 'MODALIDAD DE DISPENSACION DE MEDICAMENTOS, DISPOSITIVOS E INSUMOS DE PAGO POR EVENTO';
+            $scope.tipoServicioTitulo = 'SALUD PARA EL SUMINISTRO DE MEDICAMENTOS';
             break;
           case 8:
             $scope.tipoMinuta = 'MODALIDAD DE PAGO POR BOLSA';
+            $scope.tipoServicioTitulo = 'SALUD PARA LA RECUPERACIÓN DE LA SALUD';
             break;
           // case 9:
           //   $scope.tipoMinuta = '';
@@ -145,6 +151,7 @@ angular.module('GenesisApp', [])
 
           default:
             $scope.tipoMinuta = 'MODALIDAD DE EVENTO';
+            $scope.tipoServicioTitulo = 'SALUD PARA LA RECUPERACIÓN DE LA SALUD';
             break;
         }
         // 5	GENERAL

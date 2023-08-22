@@ -128,6 +128,8 @@ angular.module('GenesisApp')
         setTimeout(() => {
           $scope.Vista1.Tipo_Doc = ''
           $scope.Vista1.Num_Doc = '';
+          // $scope.Vista1.Tipo_Doc = 'CC'
+          // $scope.Vista1.Num_Doc = '40799601';
           $scope.$apply();
         }, 1500);
 
@@ -347,8 +349,9 @@ angular.module('GenesisApp')
             }
           }).then(function (result) {
             if (result.fecha != '') {
+              //YYYY/MM/DD
               var fecha = result.fecha.toString().split('-');
-              var Fecha_Inicio = fecha[2] + '-' + fecha[1] + '-' + fecha[0];
+              var Fecha_Inicio = fecha[0] + '/' + fecha[1] + '/' + fecha[2];
               result.fecha = Fecha_Inicio;
               if (result.motivo != '') {
 
@@ -403,6 +406,9 @@ angular.module('GenesisApp')
             }
           }).then(function (resultx) {
             if (resultx.fecha != '' && resultx.motivo != '') {
+              var fecha = resultx.fecha.toString().split('-');
+              var Fecha_Inicio = fecha[2] + '/' + fecha[1] + '/' + fecha[0];
+              resultx.fecha = Fecha_Inicio;
               console.log(resultx)
               // swal({
               //   title: 'Observacion de Anulación',
@@ -519,8 +525,8 @@ angular.module('GenesisApp')
                         Ced: $scope.Rol_Cedula,
                         Tipo: cod,
                         Motivo: result.motivo,
-                        Fecha_Accion: [fecha[0], fecha[1], fecha[2]].join('/'),
-
+                        Fecha_Accion: result.fecha,
+                        //Fecha_Accion: [fecha[2], fecha[1], fecha[0]].join('/'),
                       }
                     }).then(function (response) {
                       if (response.data.Codigo != undefined) {
@@ -779,6 +785,10 @@ angular.module('GenesisApp')
         $scope.Vista1.Busqueda.Diagnostico.Listado = null;
         $scope.Vista1.Busqueda.Diagnostico.Filtro = null;
         $scope.Vista1.Modal_Consulta_Clase = X.COD_CLASE_CONCEPTO;
+
+
+        $scope.abrirModalCambioClasificacionyDiagnostico(X);
+
         var XFECHA_INIC_IPS_ASIG = X.FECHA_INICIO_TTO.toString().split('/');
         var FECHA_INIC_IPS_ASIG = new Date(XFECHA_INIC_IPS_ASIG[2], XFECHA_INIC_IPS_ASIG[1] - 1, XFECHA_INIC_IPS_ASIG[0]);
         var XFECHA_IDENT = X.FECHA_IDENTIFICACION.toString().split('/');
@@ -835,19 +845,90 @@ angular.module('GenesisApp')
         }
       }
 
-      $scope.Hoja1_Actualiza_Diag = function () {
-        var Campos_Empty = false;
-        // actualizar diagnostico
-        if ($scope.Vista1.Modal_Consulta_Diagnostico_Cod != $scope.Vista1.Modal_Consulta_Diagnostico_Save) {
-          if ($scope.Vista1.Modal_Consulta_Diagnostico_Cod == undefined || $scope.Vista1.Modal_Consulta_Diagnostico_Cod == null || $scope.Vista1.Modal_Consulta_Diagnostico_Cod == '') {
-            Campos_Empty = true; document.querySelector('#Modal_Consulta_Cod_Diag_Label').classList.add('red-text');
-          }
-          if ($scope.Vista1.Modal_Consulta_Clasificacion != '' && $scope.Vista1.Modal_Consulta_Clasificacion != undefined) {
+      $scope.abrirModalCambioClasificacionyDiagnostico = function (x) {
+        $scope.formCambioClasyDiag = {
+          radicado: '',
+          cohorte: '',
+          clasificacionAnt: '',
+          diagnosticoAnt: '',
 
+          listadoClasificacion: '',
+          listadoDiagnostico: '',
+
+          // cohorteNuevo : '',
+          clasificacionNuevo: '',
+          diagnosticoNuevo: '',
+        }
+        $scope.formCambioClasyDiag.radicado = x.RADICADO;
+        $scope.formCambioClasyDiag.cohorte = x.COHORTE
+          ;
+        $scope.formCambioClasyDiag.clasificacionAnt = `${x.COD_CLASE_CONCEPTO} - ${x.CLASE_CONCEPTO}`;
+        $scope.formCambioClasyDiag.diagnosticoAnt = x.DIAGNO;
+
+
+        $scope.formCambioClasyDiag.listadoClasificacion = [];
+        $scope.formCambioClasyDiag.listadoDiagnostico = [];
+
+        $scope.formCambioClasyDiag.clasificacionNuevo = '';
+        $scope.formCambioClasyDiag.diagnosticoNuevo = '';
+
+        $scope.obtenerClasificacion(x.COHORTE);
+
+      }
+
+
+      $scope.obtenerClasificacion = function (cohorte) {
+        $scope.formCambioClasyDiag.listadoClasificacion = [];
+        $http({
+          method: 'POST',
+          url: "php/altocosto/siniestros/gestionsiniestros.php",
+          data: {
+            function: 'obtenerClasificacion',
+            cohorte
           }
-          if (Campos_Empty == false) {
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) != '<br') {
+            $scope.formCambioClasyDiag.listadoClasificacion = data;
+          }
+        })
+      }
+
+      $scope.obtenerDiagnostico = function () {
+        $scope.formCambioClasyDiag.listadoDiagnostico = [];
+        if ($scope.formCambioClasyDiag.diagnosticoNuevo.length > 2)
+          $http({
+            method: 'POST',
+            url: "php/altocosto/siniestros/gestionsiniestros.php",
+            data: {
+              function: 'Obtener_Diagnostico_F',
+              Conc: $scope.formCambioClasyDiag.diagnosticoNuevo.toUpperCase(),
+              Coh: $scope.formCambioClasyDiag.cohorte,
+              Cla: $scope.formCambioClasyDiag.clasificacionNuevo.toString().split('-')[0].trim()
+            }
+          }).then(function (response) {
+            if (response.data.toString().substr(0, 3) != '<br') {
+              if (response.data.length == 0) {
+                swal("¡Importante!", "No se encontro el diagnostico", "info").catch(swal.noop);
+              }
+              // if (response.data.length > 0) {
+              $scope.formCambioClasyDiag.listadoDiagnostico = response.data;
+              // }
+            } else {
+              swal({
+                title: "¡Importante!",
+                text: response.data,
+                type: "warning"
+              }).catch(swal.noop);
+            }
+          })
+      }
+
+      $scope.guardarCambioClasificacionyDiagnostico = function () {
+        if ($scope.formCambioClasyDiag.diagnosticoNuevo.toString().split('-')[0] != '' && $scope.formCambioClasyDiag.clasificacionNuevo.toString().split('-')[0] != '')
+          // debugger
+          if ($scope.formCambioClasyDiag.cohorte == 'CA' || $scope.formCambioClasyDiag.cohorte == 'EH') {
             swal({
-              title: '¿Está seguro que desea actualizar el Diagnostico?',
+              title: "¿Está seguro que actualizar el diagnóstico y la clasificación?",
               type: "question",
               showCancelButton: true,
               allowOutsideClick: false
@@ -856,47 +937,102 @@ angular.module('GenesisApp')
                 if (willDelete) {
                   swal({ title: 'Cargando...', allowOutsideClick: false });
                   swal.showLoading();
+
                   $http({
                     method: 'POST',
-                    url: "php/altocosto/siniestros/consultasiniestros.php",
+                    url: "php/altocosto/siniestros/gestionsiniestros.php",
                     data: {
-                      function: 'Hoja1_Actualiza_Diag',
-                      Rad: $scope.Vista1.Modal_Consulta_Radicado,
-                      Tipo_Doc: $scope.Vista1.Tipo_Doc,
-                      Num_Doc: $scope.Vista1.Num_Doc,
-                      Ced: $scope.Rol_Cedula,
-                      Diag: $scope.Vista1.Modal_Consulta_Diagnostico_Cod,
+                      function: 'Actualizar_Diag_Clase',
+                      Rad: $scope.formCambioClasyDiag.radicado,
+                      Conc: $scope.formCambioClasyDiag.diagnosticoNuevo.toString().split('-')[0].trim(),
+                      Cla: $scope.formCambioClasyDiag.clasificacionNuevo.toString().split('-')[0].trim()
                     }
-                  }).then(function (response) {
-                    if (response.data && response.data.toString().substr(0, 3) != '<br') {
-                      if (response.data.Codigo == 0) {
+                  }).then(function ({ data }) {
+                    if (data.toString().substr(0, 3) != '<br') {
+                      if (data.Codigo == 0) {
+                        $scope.HNAC_ObtenerListado();
+                        swal("¡Importante!", data.Nombre, "success").catch(swal.noop);
                         $scope.closeModal();
-                        swal({
-                          title: "Mensaje",
-                          text: response.data.Nombre,
-                          type: "success",
-                        }).catch(swal.noop);
                       } else {
-                        swal({
-                          title: response.data.Nombre,
-                          type: "warning",
-                        }).catch(swal.noop);
+                        swal("¡Importante!", data.Nombre, "warning").catch(swal.noop);
                       }
-                      setTimeout(() => {
-                        $scope.Hoja1_Consultar_Siniestros();
-                      }, 2000);
+                    } else {
+                      swal("¡Importante!", data, "info").catch(swal.noop);
                     }
-                  });
+
+                  })
+
                 }
               })
+          } else {
+            swal("¡No se permite esta acción para esta cohorte!", data, "info").catch(swal.noop);
+
           }
-        } else {
-          swal({
-            title: 'El diagnostico seleccionado es el mismo al actual.',
-            type: "info",
-          }).catch(swal.noop);
-        }
+
       }
+
+      // $scope.Hoja1_Actualiza_Diag = function () {
+      //   var Campos_Empty = false;
+      //   // actualizar diagnostico
+      //   if ($scope.Vista1.Modal_Consulta_Diagnostico_Cod != $scope.Vista1.Modal_Consulta_Diagnostico_Save) {
+      //     if ($scope.Vista1.Modal_Consulta_Diagnostico_Cod == undefined || $scope.Vista1.Modal_Consulta_Diagnostico_Cod == null || $scope.Vista1.Modal_Consulta_Diagnostico_Cod == '') {
+      //       Campos_Empty = true; document.querySelector('#Modal_Consulta_Cod_Diag_Label').classList.add('red-text');
+      //     }
+      //     if ($scope.Vista1.Modal_Consulta_Clasificacion != '' && $scope.Vista1.Modal_Consulta_Clasificacion != undefined) {
+
+      //     }
+      //     if (Campos_Empty == false) {
+      //       swal({
+      //         title: '¿Está seguro que desea actualizar el Diagnostico?',
+      //         type: "question",
+      //         showCancelButton: true,
+      //         allowOutsideClick: false
+      //       }).catch(swal.noop)
+      //         .then((willDelete) => {
+      //           if (willDelete) {
+      //             swal({ title: 'Cargando...', allowOutsideClick: false });
+      //             swal.showLoading();
+      //             $http({
+      //               method: 'POST',
+      //               url: "php/altocosto/siniestros/consultasiniestros.php",
+      //               data: {
+      //                 function: 'Hoja1_Actualiza_Diag',
+      //                 Rad: $scope.Vista1.Modal_Consulta_Radicado,
+      //                 Tipo_Doc: $scope.Vista1.Tipo_Doc,
+      //                 Num_Doc: $scope.Vista1.Num_Doc,
+      //                 Ced: $scope.Rol_Cedula,
+      //                 Diag: $scope.Vista1.Modal_Consulta_Diagnostico_Cod,
+      //               }
+      //             }).then(function (response) {
+      //               if (response.data && response.data.toString().substr(0, 3) != '<br') {
+      //                 if (response.data.Codigo == 0) {
+      //                   $scope.closeModal();
+      //                   swal({
+      //                     title: "Mensaje",
+      //                     text: response.data.Nombre,
+      //                     type: "success",
+      //                   }).catch(swal.noop);
+      //                 } else {
+      //                   swal({
+      //                     title: response.data.Nombre,
+      //                     type: "warning",
+      //                   }).catch(swal.noop);
+      //                 }
+      //                 setTimeout(() => {
+      //                   $scope.Hoja1_Consultar_Siniestros();
+      //                 }, 2000);
+      //               }
+      //             });
+      //           }
+      //         })
+      //     }
+      //   } else {
+      //     swal({
+      //       title: 'El diagnostico seleccionado es el mismo al actual.',
+      //       type: "info",
+      //     }).catch(swal.noop);
+      //   }
+      // }
 
       $scope.Hoja1_Actualiza_Fecha = function () {
         //actualizar fecha

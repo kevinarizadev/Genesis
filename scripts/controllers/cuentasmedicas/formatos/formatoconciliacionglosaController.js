@@ -101,9 +101,9 @@ angular.module('GenesisApp', [])
             $timeout(function () {
               $scope.$apply();
             }, 100);
-            // $timeout(function () {
-            //   window.print();
-            // }, 300);
+            $timeout(function () {
+              window.print();
+            }, 300);
 
           } else {
             setTimeout(function () {

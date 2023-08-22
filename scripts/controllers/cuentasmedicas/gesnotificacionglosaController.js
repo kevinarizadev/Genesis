@@ -2,8 +2,10 @@
 angular.module('GenesisApp')
   .controller('gesnotificacionglosaController', ['$scope', '$http', '$filter', '$q',
     function ($scope, $http, $filter, $q) {
-      $(document).ready(function () {
+      $scope.Inicio = function () {
         $('.modal').modal();
+        $scope.Ajustar_Pantalla();
+
         $scope.Rol_Nit = sessionStorage.getItem('nit');
         // $scope.Rol_Nit = 900465319;
         console.log(sessionStorage.getItem('nit'));
@@ -21,7 +23,7 @@ angular.module('GenesisApp')
         $scope.SysDay = new Date();
         $scope.Responder_NOIPS_Fecha = new Date();
 
-      });
+      };
       (function ($) {
         $.fn.currencyInput = function () {
           this.each(function () {
@@ -150,7 +152,7 @@ angular.module('GenesisApp')
 
           $('#modalcomentarios').modal('open');
           if (response.data.length != 0) {
-            var Height = document.querySelector("#gesnotglosa").offsetHeight;
+            var Height = document.querySelector("#pantalla").offsetHeight;
             $scope.List_Comentarios = response.data;
             setTimeout(function () {
               var Width = document.querySelector(".chat_titulo").offsetWidth;
@@ -961,6 +963,27 @@ angular.module('GenesisApp')
           return 'ROJO'
         }
         return 'VERDE'
+      }
+
+      $scope.Ajustar_Pantalla = function () {
+        if ($(window).width() < 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.7;
+        }
+        if ($(window).width() > 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.8;
+        }
+      }
+
+      $(window).on('resize', function () {
+        $scope.Ajustar_Pantalla();
+      });
+
+      if (document.readyState !== 'loading') {
+        $scope.Inicio();
+      } else {
+        document.addEventListener('DOMContentLoaded', function () {
+          $scope.Inicio();
+        });
       }
 
 

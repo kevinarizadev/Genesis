@@ -554,8 +554,8 @@
                   <div style="width: 45%;">
                     <label for="modalidad_1">PAGO POR CAPITACIÓN</label>
                     <input type="checkbox" id="modalidad_1" name="modalidad_1" onclick="return false;">
-                    <span ng-show="DATA.P_CAPITACION != ''"
-                      style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span>
+                    <!-- <span ng-show="DATA.P_CAPITACION != ''"
+                      style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span> -->
                   </div>
                   <div style="width: 55%;">
                     <label for="modalidad_2">PAQUETE</label>
