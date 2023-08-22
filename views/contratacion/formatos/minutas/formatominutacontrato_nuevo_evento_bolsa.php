@@ -190,7 +190,7 @@
     }
 
     .div_firmas_2 {
-      margin-top: 10vh;
+      margin-top: 7vh;
       /* position: fixed; */
       /* position: absolute; */
       /* width: 97%; */
@@ -552,8 +552,8 @@
                   <div style="width: 45%;">
                     <label for="modalidad_1">PAGO POR CAPITACIÓN</label>
                     <input type="checkbox" id="modalidad_1" name="modalidad_1" onclick="return false;">
-                    <span ng-show="DATA.P_CAPITACION != ''"
-                      style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span>
+                    <!-- <span ng-show="DATA.P_CAPITACION != ''"
+                      style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span> -->
                   </div>
                   <div style="width: 55%;">
                     <label for="modalidad_2">PAQUETE</label>
@@ -1788,7 +1788,7 @@
           <div class="header-info text-left d-flex">
             <img style="width: 8em;" src="../../../../assets/images/logo_cajacopieps.png" alt="cajacopi">
             <div class="text-bold7">
-            ANEXO N° 18 CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE PAGO POR BOLSA
+            ANEXO N° 18 CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO
               SUSCRITO ENTRE {{DATA.RAZON_SOCIAL}} Y {{DATA.RAZON_SOCIAL_IPS}}</div>
           </div>
         </th>

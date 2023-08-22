@@ -136,7 +136,7 @@
     #table_anexos tr td {
       border: 1px solid black;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .display_none {
@@ -155,6 +155,14 @@
 
     #firma2 {
       margin-top: 4em;
+      margin-left: 3em;
+      width: 100%;
+      font-size: 11px;
+      display: flex;
+      /* display: none; */
+    }
+    #firma3 {
+      margin-top: 3em;
       margin-left: 3em;
       width: 100%;
       font-size: 11px;
@@ -191,11 +199,9 @@
 
     .div_firmas_2 {
       margin-top: 10vh;
-      /* position: fixed; */
-      /* position: absolute; */
-      /* width: 97%; */
-
-      /* bottom: 0; */
+    }
+    .div_firmas_3 {
+      margin-top: 2vh;
     }
 
     .d-flex {
@@ -553,8 +559,8 @@
                     <label for="modalidad_1">PAGO POR CAPITACIÓN</label>
                     <input type="checkbox" id="modalidad_1" name="modalidad_1" ng-checked="true"
                       onclick="return false;">
-                    <span ng-show="DATA.P_CAPITACION != ''"
-                      style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span>
+                    <!-- <span ng-show="DATA.P_CAPITACION != ''"
+                      style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span> -->
                   </div>
                   <div style="width: 55%;">
                     <label for="modalidad_2">PAQUETE</label>
@@ -1797,14 +1803,9 @@
               suscripción:
             </div>
 
-
-            <div class="minuta_texto page_break_after display_none">Son anexos del presente contrato, además de la
-              documentación legal de cada una de las partes, los siguientes:</div>
-            <br>
-
-            <table id="table_anexos" class="">
+            <table id="table_anexos">
               <thead>
-                <tr class="">
+                <tr >
                   <th>ANEXO CONTRACTUAL</th>
                   <th class="text-center">APLICA (SI/NO)</th>
                   <th>ANEXO CONTRACTUAL</th>
@@ -1905,7 +1906,7 @@
           </div>
 
           <!--  -->
-          <div id="firma2">
+          <div id="firma3">
             <div style="width:49%">
               <div>
                 <span> _________________________________________________________</span>
@@ -1940,7 +1941,7 @@
             </div>
           </div>
           <!--  -->
-          <div class="div_firmas_2">
+          <div class="div_firmas_3">
             <table class="table_firma" width="100%" style="border: #FFF;">
               <tr class="border_white">
                 <td colspan="1" style="width: 33%"></td>
@@ -1961,7 +1962,7 @@
               </tr>
               <tr>
 
-                <td><br><br></td>
+                <td><br></td>
                 <td></td>
                 <td></td>
               </tr>

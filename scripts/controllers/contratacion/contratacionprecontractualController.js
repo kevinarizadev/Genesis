@@ -2885,12 +2885,12 @@ angular.module('GenesisApp')
         var fechaNuevaMinuta = new Date('2023/07/01');
         console.log(v_fecha_inicio, fechaNuevaMinuta)
         if (v_fecha_inicio >= fechaNuevaMinuta) {
-          switch (tipominuta) {
+          switch (parseInt(tipominuta)) {
             case 1:
               $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_recuperacion.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
               break;
             case 2:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_PYM.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_PYM.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
               break;
             case 3:
               $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_medicamento_capita.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);

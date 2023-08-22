@@ -18,7 +18,7 @@
 			$nit = "890102044";
 			$usuario =   $_SESSION['cedula'];
 		}
-		
+
 		$consulta = oci_parse($c,'begin pq_genesis_login.P_LISTA_MODULOS(:v_pnit,:v_pusuario,:v_json_row); end;');
 		oci_bind_by_name($consulta,':v_pnit',$nit);
 		oci_bind_by_name($consulta,':v_pusuario',$usuario);

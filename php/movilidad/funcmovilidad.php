@@ -966,17 +966,18 @@ function guardaradjuntosempresasnuevas3()
   $path = 'Movilidad/Empresas/' . $hoy;
   $estado = 0;
   $rutas = [];
+  include('../sftp_cloud/UploadFile.php');
   for ($i = 0; $i < count($archivos); $i++) {
     // $tipodoc = $archivos[$i]->tipodoc;
     // $numdoc = $archivos[$i]->numero;
     $name = $archivos[$i]->tipodoc . '_' . $archivos[$i]->numero . '_' . $archivos[$i]->codigo . '_' . $hora . '.' . $archivos[0]->ext;
     // $subio = subirFTP($archivos[$i]->achivobase, $path, $name, $archivos[$i]->ext);
-    list(, $archivos[0]->achivobase) = explode(';', $archivos[0]->achivobase); // Proceso para traer el Base64
-    list(, $archivos[0]->achivobase) = explode(',', $archivos[0]->achivobase); // Proceso para traer el Base64
-    $base64 = base64_decode($archivos[0]->achivobase); // Proceso para traer el Base64
+    list(, $archivos[$i]->achivobase) = explode(';', $archivos[$i]->achivobase); // Proceso para traer el Base64
+    list(, $archivos[$i]->achivobase) = explode(',', $archivos[$i]->achivobase); // Proceso para traer el Base64
+    $base64 = base64_decode($archivos[$i]->achivobase); // Proceso para traer el Base64
     file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
     // $subio = subirFTP($archivos[0]->achivobase,$path,$name,$archivos[0]->ext);
-    include('../sftp_cloud/UploadFile.php');
+
     $subio = UploadFile($path, $name);
 
     if ($subio != '0 - Error') {

@@ -31,7 +31,7 @@ if ($res == "1") {
     $_SESSION['tipoaportante'] =  $noj->{'tipo_aportante'};
     $_SESSION['rolcod'] = $noj->{'rolcod'};
     $_SESSION['usu'] = $noj->{'usu'};
-    $_SESSION['acc'] = 'KHR]E24ZAg{OvR';
+    $_SESSION['acc'] = 'Cajacopi2022.';
 } else {
     echo $res;
 }

@@ -134,9 +134,9 @@ function adjunto()
   list(, $request->achivobase) = explode(';', $request->achivobase); // Proceso para traer el Base64
   list(, $request->achivobase) = explode(',', $request->achivobase); // Proceso para traer el Base64
   $base64 = base64_decode($request->achivobase); // Proceso para traer el Base64
-  file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+  file_put_contents('../../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
 
-  include('../sftp_cloud/UploadFile.php');
+  include('../../sftp_cloud/UploadFile.php');
   $subio = UploadFile($path, $name);
 
   // $subio = subirFTP($request->achivobase, $path, $name, $request->ext);

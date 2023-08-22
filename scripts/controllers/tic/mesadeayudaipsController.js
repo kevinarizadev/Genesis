@@ -1,7 +1,7 @@
 'use strict';
 angular.module('GenesisApp')
-  .controller('mesadeayudaipsController', ['$scope', '$http', 'notification', 'acasHttp', 'ngDialog', '$filter', 'communication', '$rootScope',
-    function ($scope, $http, notification, acasHttp, ngDialog, $filter, communication, $rootScope) {
+  .controller('mesadeayudaipsController', ['$scope', '$http', 'acasHttp', 'ngDialog', '$filter',
+    function ($scope, $http, acasHttp, ngDialog, $filter) {
       $scope.cardips = true;
       $scope.gifsolicitudacas = false;
       $scope.solicitudacas = false;
@@ -454,6 +454,11 @@ angular.module('GenesisApp')
 
       }
 
+      $scope.filtroasuntoChange = function () {
+        if ($scope.filtromotivo == '1' && $scope.filtroasunto == '2') {
+          swal("Información Importante", 'En la descripcion de su solicitud debe anexar (Tipo y Número de Documento del afiliado y Radicado de solicitud)', "info").catch(swal.noop); return
+        }
+      }
 
       // yaaaaaaaaaa
       $scope.filter = function (val) {

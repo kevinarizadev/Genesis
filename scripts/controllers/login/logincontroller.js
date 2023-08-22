@@ -36,12 +36,12 @@ angular.module('GenesisApp', ['ngStorage', 'toastr', 'ngDialog', 'chieffancypant
         $scope.userIps = "777888999";
         $scope.passIps = "Cajacopi2022.";
 
-        $scope.nitEmpr = '5796371';
-        $scope.passEmpr = 'T5A8B6';
-        // $scope.nitempresa = '13832280';
-        // $scope.passempresa = 'CD3B664C67F';
-        // $scope.nitempresa = '901551415';
-        // $scope.passempresa = 'O875EIY';
+        // $scope.nitEmpr = '5796371';
+        // $scope.passEmpr = 'T5A8B6';
+        $scope.nitEmpr = '13832280';
+        $scope.passEmpr = 'CD3B664C67F';
+        // $scope.nitEmpr = '901551415';
+        // $scope.passEmpr = 'O875EIY';
 
         /**************************Func**************************/
         $scope.loginFunc = function () {
