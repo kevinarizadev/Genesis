@@ -170,3 +170,18 @@ function p_lista_bitacora_area()
   }
   oci_close($c);
 }
+
+function v_informe_gestion_areas_tutelas()
+{
+  require_once('../../config/dbcon_prod.php');
+  $cursor = oci_new_cursor($c);
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_tut.V_INFORME_GESTION_AREAS_TUTELAS(:v_response); end;');
+  oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}

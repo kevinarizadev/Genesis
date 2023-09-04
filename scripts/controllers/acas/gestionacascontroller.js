@@ -1,7 +1,7 @@
 'use strict';
 angular.module('GenesisApp')
-  .controller('gestionacascontroller', ['$scope', '$http', 'notification', 'acasHttp', 'ngDialog', 'communication', '$rootScope', '$interval',
-    function ($scope, $http, notification, acasHttp, ngDialog, communication, $rootScope, $interval) {
+  .controller('gestionacascontroller', ['$scope', '$http', 'acasHttp', 'ngDialog', '$rootScope',
+    function ($scope, $http, acasHttp, ngDialog, $rootScope) {
       $scope.filtroarea = ' ';
       $scope.descripcion = '';
       $scope.filtroconcepto = ' ';
@@ -14,6 +14,8 @@ angular.module('GenesisApp')
       $scope.titulo = '';
       $scope.enlace = 0;
       $scope.filtrarestado = ' ';
+      $('.modal').modal();
+
       if ($(window).width() < 1100) {
         document.querySelector("#gacas").style.zoom = 0.7;
       }
@@ -28,6 +30,7 @@ angular.module('GenesisApp')
       var dat = { prov: 'navb' }
       $.getJSON("php/obtenersession.php", dat).done(function (respuesta) {
         $scope.sesdata = respuesta;
+        console.log($scope.sesdata);
         $scope.cedula = $scope.sesdata.cedula;
         $scope.ubicacion = $scope.sesdata.codmunicipio;
         acasHttp.obtenerInformacionCOCE($scope.cedula).then(function (response) {
@@ -198,6 +201,176 @@ angular.module('GenesisApp')
         $scope.obtenerlistaacas('A');
       }, 1000);
 
+
+      /////////////////////////////////////////////////////
+      $scope.closeModal = function () {
+        $(".modal").modal("close");
+      }
+
+      $scope.abrirModalActualizar = function (numero, ubicacion) {
+        $http({
+          method: 'POST',
+          url: "php/acas/gestionacasauto.php",
+          data: {
+            function: "p_mostrar_mesa",
+            numero,
+            ubicacion
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) != '<br') {
+            console.log(data)
+            $(`#modalActualizar`).modal('open');
+            $scope.modalActualizar = {
+              numero,
+              ubicacion,
+
+              area: '19',
+
+              // concepto: 'SF',
+              // motivo: '11',
+              // asunto: '840',
+
+              // concepto: 'SF',
+              // motivo: '11',
+              // asunto: '840'
+              // area: '19',
+              concepto: '',
+              motivo: '',
+              asunto: ''
+
+              // CONCEPTO: "SF"
+              // MOTIVO: "11"
+              // ASUNTO: "840"
+            }
+
+
+            console.log(data[0]);
+            // $scope.modalActualizar.area;
+            // $scope.modalActualizar.concepto;
+            // $scope.modalActualizar.motivo;
+            // $scope.modalActualizar.asunto;
+
+            // debugger
+            $scope.selectDsb = true;
+            $scope.obtenerconcepto();
+            setTimeout(() => {
+              $scope.modalActualizar.concepto = data[0].CONCEPTO;
+              $scope.$apply();
+              setTimeout(() => {
+                $scope.obtenermotivo();
+                setTimeout(() => {
+                  $scope.modalActualizar.motivo = data[0].MOTIVO;
+                  $scope.$apply();
+                  setTimeout(() => {
+                    $scope.obtenerasunto();
+                    setTimeout(() => {
+                      $scope.modalActualizar.asunto = data[0].ASUNTO;
+                      $scope.selectDsb = false;
+                      $scope.$apply();
+                    }, 1000);
+                  }, 1000);
+                }, 1000);
+              }, 1000);
+            }, 2000);
+
+
+
+            ///////////////////////
+          } else {
+            swal("Mensaje", data, "warning").catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.cargarSelects = function () {
+
+      }
+
+      acasHttp.obtenerArea().then(function (response) {
+        $scope.areas = response.data;
+      })
+
+      $scope.obtenerconcepto = function () {
+        $scope.conceptos = [];
+        if ($scope.modalActualizar.area != '0' && $scope.modalActualizar.area != '? undefined:undefined ?') {
+          acasHttp.obtenerConcepto($scope.modalActualizar.area).then(function (response) {
+            $scope.conceptos = response.data;
+          })
+        }
+      }
+
+      $scope.obtenermotivo = function () {
+        if ($scope.modalActualizar.concepto != '0' && $scope.modalActualizar.concepto != '? undefined:undefined ?') {
+          $scope.motivos = [];
+          acasHttp.obtenerMotivo('RE', $scope.modalActualizar.concepto).then(function (response) {
+            $scope.motivos = response.data;
+          })
+        }
+      }
+
+      $scope.obtenerasunto = function () {
+        $scope.asuntos = [];
+        acasHttp.obtenerAsunto('RE', $scope.modalActualizar.concepto, $scope.modalActualizar.motivo).then(function (response) {
+          $scope.asuntos = response.data;
+        })
+      }
+
+      $scope.guardarAcasActualizado = function () {
+        if (!$scope.modalActualizar.area) { return false }
+        if (!$scope.modalActualizar.concepto) { return false }
+        if (!$scope.modalActualizar.motivo) { return false }
+        if (!$scope.modalActualizar.asunto) { return false }
+
+        swal({
+          title: '¿Estas seguro que desea actualizar?',
+          // text,
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            $http({
+              method: 'POST',
+              url: "php/acas/gestionacasauto.php",
+              data: {
+                function: "p_actualiza_asunto",
+
+                numero: $scope.modalActualizar.numero,
+                ubicacion: $scope.modalActualizar.ubicacion,
+
+                area: $scope.modalActualizar.area,
+                concepto: $scope.modalActualizar.concepto,
+                motivo: $scope.modalActualizar.motivo,
+                asunto: $scope.modalActualizar.asunto,
+                usuario: $scope.sesdata.cedula
+
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                $scope.closeModal()
+                setTimeout(() => {
+                  $scope.obtenerlistaacas('G');
+                }, 3000);
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            })
+          }
+        })
+
+      }
+
+
+
+      /////////////////////////////////////////////////////
       $scope.reverse2 = true;
       $scope.sortBy2 = function (propertyName2) {
         $scope.reverse2 = ($scope.propertyName2 === propertyName2) ? !$scope.reverse2 : false;

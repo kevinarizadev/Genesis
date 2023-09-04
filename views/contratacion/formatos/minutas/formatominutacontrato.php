@@ -709,7 +709,7 @@
           <div id="minuta_contrato">
             <div class="minuta_titulo">MINUTA DEL CONTRATO - NUMERO: {{DATA.NUMERO_CONTRATO}}</div>
             <div class="minuta_texto_1 mb">
-              Entre los suscritos a saber: {{DATA.REPRESENTANTE}} identificado con cédula de ciudadanía Nº {{DATA.DOCUMENTO_REPRESENTANTE}} expedida en la ciudad de Barranquilla en su calidad de representante legal de {{DATA.RAZON_SOCIAL}} entidad identificada con NIT: {{DATA.EPS}}, según consta en el certificado de existencia y representación legal adjunto, quien en adelante se denominará LA ERP y {{DATA.NOM_REPRESENTANTE}} identificado(a) con cédula de ciudadanía Nº {{DATA.COD_REPRESENTANTE}} expedida en la ciudad de {{DATA.EXPEDICION}} en su calidad de representante legal de {{DATA.RAZON_SOCIAL_IPS}} entidad identificada con NIT: {{DATA.NIT}}, según consta en el certificado de existencia y representación legal adjunto, entidad debidamente habilitada para operar en el Sistema General de Seguridad Social en Salud, quien en adelante se denominará EL PSS o EL PTS; hemos decidido suscribir el presente acuerdo de voluntades, el cual se regirá por las siguientes cláusulas:
+              Entre los suscritos a saber: {{DATA.REPRESENTANTE}} identificado con cédula de ciudadanía Nº {{DATA.DOCUMENTO_REPRESENTANTE}} expedida en la ciudad de Barranquilla en su calidad de representante legal de {{DATA.RAZON_SOCIAL}} entidad identificada con NIT: {{DATA.EPS}}, según consta en el certificado de existencia y representación legal adjunto, quien en adelante se denominará LA ERP y {{DATA.NOM_REPRESENTANTE}} identificado(a) con cédula de ciudadanía Nº {{DATA.COD_REPRESENTANTE}} expedida en la ciudad de {{DATA.EXPEDICION}} en su calidad de representante legal de {{DATA.RAZON_SOCIAL_IPS}} entidad identificada con NIT: {{DATA.NIT}}, según consta en el certificado de existencia y representación legal y/o acta de nombramiento, entidad debidamente habilitada para operar en el Sistema General de Seguridad Social en Salud, quien en adelante se denominará EL PSS o EL PTS; hemos decidido suscribir el presente acuerdo de voluntades, el cual se regirá por las siguientes cláusulas:
             </div>
             <div class="minuta_titulo">CLAUSULADO</div>
 
@@ -1107,7 +1107,7 @@
 
 
   <!-- ANEXOS EPS VIEJA -->
-  <table class="report-container" style="page-break-before:always">
+  <table class="report-container" style="page-break-before:always" ng-if="mostrar_div_firmas">
     <thead class="report-header">
       <tr>
         <th class="report-header-cell">
