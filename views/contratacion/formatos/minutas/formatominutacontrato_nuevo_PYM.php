@@ -580,7 +580,7 @@
                     </li>
                     <li>
                       <label for="tipo_capita_2">PROMOCIÓN Y MANTENIMIENTO</label>
-                      <input type="checkbox" id="tipo_capita_2" name="tipo_capita_2" onclick="return false;">
+                      <input type="checkbox" id="tipo_capita_2" name="tipo_capita_2" ng-checked="true" onclick="return false;">
                     </li>
                     <li>
                       <div style="width: 100%;">
@@ -1900,7 +1900,7 @@
               por cumplimiento.</div>
             <br>
             <div class="minuta_texto">Leído el presente documento lo suscriben las partes como aparecen, en señal de
-              conformidad, en dos originales, en la ciudad de Barranquilla el {{dia}} de {{mes}} de {{anio}},
+              conformidad, en dos originales, en la ciudad de Barranquilla,
               entendiéndose perfeccionado con la firma de este.</div>
 
           </div>

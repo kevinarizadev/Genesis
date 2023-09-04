@@ -1,0 +1,1679 @@
+<div id="versionamiento" class="white newdesing">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5 onclick="location.reload();">Seguimiento telefónico</h5>
+      </li>
+
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="mostrarVista('tablaSeguimiento')" id="Sol" href class="active">Seguimiento General
+              <i class="icono fa fa-tasks"></i></a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="mostrarVista('tablaGestion')" id="Nueva" href>Gestion
+              <i class="icono fa fa-cube"></i></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+  </div>
+
+
+
+  <!-- tabla Gestion -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="vista=='tablaSeguimiento'">
+
+
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- FILTRADO -->
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600"> Filtrado de seguimiento general</strong>
+              <div class="col s3 no-padding label-new right"
+              ng-click="nuevoAfiliado()" style="    width: 25%;
+                  display: inline-flex;
+                  margin-top: -2px;
+                  flex-direction: row-reverse;">
+                <strong class="switch" style=" font-weight: 600;
+                  font-size: 14px;
+                  color: #d7e36b;
+                  cursor: pointer;
+                  text-decoration-line: underline;">
+                  <i class="fas fa-plus " style="padding-right: 2px; padding-left: 2px; "></i>Nuevo afiliado</strong>
+              </div>
+            </div>
+          </div>
+
+
+
+          <form>
+            <div style="display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            gap: 1em;
+            border-left: 3px solid #111;
+            border-right: 3px solid #111;">
+              <!-- <div class="row">
+                <div class="col l12 text-center">
+                  <button class="btn btn-primary" ng-click="guardar()" type="submit">Agregar nuevo afiliado</button>
+                </div>
+              </div> -->
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Tipo de Documento</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="Vista1.Tipo_Doc">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Vista1.Tipo_Doc"
+                    ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                </select>
+              </div>
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Número de Documento</label>
+                </div>
+                <input id="Num_Doc" type="text" autocomplete="off" ng-model="Vista1.Num_Doc">
+              </div>
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Siniestro Procesado</label>
+                </div>
+                <input id="estado" type="text" autocomplete="off" ng-model="Vista1.siniestro">
+              </div>
+              <div style="display: flex;">
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="filtrado()"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                        class="material-icons prefix">search</i></button>
+                  </div>
+                </div>
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="iniciarFormulario();"
+                      style="background: red; padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                        style="position: relative; background: red;" class="material-icons prefix">clear</i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+          <!-- FILTRADO -->
+
+          <!-- /TABLA/ -->
+          <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Seguimiento</strong>
+
+
+              <div class="col s3 no-padding label-new right"
+                style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                <input class="margin border-none input-text-new black-text gray-input w-100 m-l"
+                  style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="MPFiltrar_Diag"
+                  ng-keyup="filter($event)">
+              </div>
+            </div>
+          </div>
+          <div style="width:100%;">
+            <table id="H1_Tabla" class="bordered table_center_align highlight border-color"
+              style="width:100%;font-size:6px !important;border:3px solid;  ">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>No de siniestro</th>
+                  <th>Regional</th>
+                  <th>Tipo </th>
+                  <th>Número de documento</th>
+                  <th>Afiliado</th>
+                  <th>Estado afiliado</th>
+                  <th>Cohorte a la que pertenece</th>
+                  <th>Pluripatológico </th>
+                  <th>Fuente </th>
+                  <th>Ver Afiliados</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="siniestro in siniestros  | inicio: currentPage * pageSize | limitTo: pageSize "
+                  style="color: black;cursor:pointer; ">
+                  <td>{{ siniestro.NumeroSiniestro }}</td>
+                  <td>{{ siniestro.Regional }}</td>
+                  <td>{{ siniestro.TipoDocumento }} </td>
+                  <td>{{ siniestro.NumDocumento }}</td>
+                  <td>{{ siniestro.Nombres }} {{ siniestro.Apellidos }}</td>
+                  <td>
+                    <span style=" padding: 2px 10px;
+                    border-radius: 0.5em;" ng-class="siniestro.EstadoAfiliacion=='ACTIVO'?'color-verde':'color-rojo'">
+                      {{ siniestro.EstadoAfiliacion }}
+                    </span>
+                  </td>
+                  <td>{{ siniestro.DescripcionCohorte }}</td>
+                  <td>{{ siniestro.Pluripatologico=='N'?'NO':'SI' }}</td>
+                  <td>{{ siniestro.TipoFuente }}</td>
+                  <td><i ng-click="dataSiniestro(siniestro)" class="icono fas fa-eye "></i></td>
+                </tr>
+                <tr ng-show="siniestros.length==0">
+                  <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="width: 100%;display: flex;">
+              <label for="normal">Total de informacion: <strong>{{siniestros.length}} </strong> registros encontrados:
+              </label>
+            </div>
+
+
+            <ul class="pagination" ng-show="siniestros.length > 0">
+              <li><button ng-disabled='currentPage == 0' class="btn-floating white-text default-linear-gradient"
+                  ng-click="paso('back')">&laquo;</button></li>
+              <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                  class="btn-floating white-text default-linear-gradient"
+                  ng-click='setPage(page.no)'>{{page.no}}</button>
+              </li>
+              <li><button ng-disabled='currentPage >= siniestros.length/pageSize - 1'
+                  class="btn-floating white-text default-linear-gradient" ng-click="paso('next')">&raquo;</button></li>
+            </ul>
+          </div>
+          <!-- FIN TABLA -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  fin tabla Gestion -->
+
+  <!-- informacion del afiliado -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="vista=='formularioSeguimiento'">
+
+    <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Información del afiliado</strong>
+      </div>
+    </div>
+    <div class="col s12" style="padding: 1px; border-left: 3px solid #111;
+    border-right: 3px solid #111;">
+      <div class="row" style="padding: 1em;">
+        <div class="col l12 card-content">
+
+          <!-- fila 1 -->
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s3">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-clipboard" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Número siniestro:</span>
+              </label>
+            </div>
+            <div class="col s3">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-globe" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Regional:</span>
+              </label>
+            </div>
+            <div class="col s3">
+              <label style="font-size: 0.9rem;">
+                <i class="fa fa-id-card" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Tipo documento:</span>
+              </label>
+            </div>
+            <div class="col s3">
+              <label style="font-size: 0.9rem;">
+                <i class="fa fa-id-card" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Número Documento:</span>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s3">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearSiniestro"
+                  ng-model="formSeguimiento.NumeroSiniestro">
+              </div>
+            </div>
+            <div class="col s3">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearRegional"
+                  ng-model="formSeguimiento.Regional">
+              </div>
+            </div>
+            <div class="col s3">
+              <div class="input-group">
+                <select class="select-chosen-eps" ng-style="{'color': textoColor}" style="padding-top: 0px;"
+                  ng-model="formSeguimiento.TipoDocumento" disabled>
+                  <option value="">SELECCIONAR</option>
+                  <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == formSeguimiento.TipoDocumento"
+                    ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                </select>
+                <!-- <input ng-style="{'color': textoColor}" ng-disabled="bloquearNumdoc"
+                  ng-model="formSeguimiento.TipoDoc"> -->
+              </div>
+            </div>
+            <div class="col s3">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearNumdoc"
+                  ng-model="formSeguimiento.NumDocumento">
+              </div>
+            </div>
+          </div>
+          <!-- fin file 1 -->
+
+
+          <!-- fila 2 -->
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s9">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-user" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Nombres del afiliado</span>
+              </label>
+            </div>
+            <div class="col s3">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-check-circle" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Estado del afilido:</span>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s9">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearNombresyapellidos"
+                  ng-style="{'color': textoColor}" ng-model="formSeguimiento.NombreCompleto">
+              </div>
+            </div>
+            <div class="col s3">
+              <div style="    padding-top: 10px;
+                  padding-bottom: 11px;
+                  border-bottom: 1px solid #bdbdbd;
+                  width: 100%;">
+                <span style=" padding: 2px 10px; border-radius: 0.5em;" ng-show="formSeguimiento.EstadoAfiliacion"
+                  ng-class="formSeguimiento.EstadoAfiliacion=='ACTIVO'?'color-verde':'color-rojo1'">
+                  {{formSeguimiento.EstadoAfiliacion}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <!-- fin de fila 2 - -->
+
+          <!-- fila 3- -->
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s4">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-calendar" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Edad:</span>
+              </label>
+            </div>
+            <div class="col s4">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-male" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Género:</span>
+              </label>
+            </div>
+            <div class="col s4">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-exchange-alt" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Portabilidad:</span>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s4">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearEdad" ng-model="formSeguimiento.Edad">
+              </div>
+            </div>
+            <div class="col s4">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearGenero" ng-model="formSeguimiento.Genero">
+              </div>
+            </div>
+            <div class="col s4">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearPortabilidad"
+                  ng-model="formSeguimiento.Portabilidad">
+              </div>
+            </div>
+          </div>
+          <!-- fin fila 3  -->
+          <!-- fila 4 -->
+          <div class="row" style="margin: 0; padding: 0;" ng-show="formSeguimiento.Portabilidad === 'SI'">
+            <div class="col s4">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-calendar" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Descripción portabilidad:</span>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin: 0; padding: 0;" ng-show="formSeguimiento.Portabilidad === 'SI'">
+            <div class="col s4">
+              <div class="input-group">
+                <input ng-style="{'color': textoColor}" ng-disabled="bloquearDescripcioPortabilidad"
+                  ng-model="formSeguimiento.DescripcioPortabilidad">
+              </div>
+            </div>
+          </div>
+          <!-- fin fila 4 -->
+        </div>
+      </div>
+    </div>
+
+    <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Actualizar datos del afiliado</strong>
+      </div>
+    </div>
+    <div class="col s12" style="padding: 1px; border-left: 3px solid #111;
+          border-right: 3px solid #111;">
+      <div class="row" style="padding: 1em;">
+        <div class="col l12 card-content">
+          <!-- fila 4 -->
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s12">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-location-arrow" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Dirección:</span>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s12">
+              <div class="input-group">
+                <input ng-click="AbrirModalDireccion()" ng-style="{'color': textoColor}" readonly="false"
+                  ng-model="formSeguimiento.Direccion">
+                <span class="edit-icon"><i class="fas fa-edit" ng-click="AbrirModalDireccion()"></i></span>
+              </div>
+            </div>
+          </div>
+          <!-- fin fila 4  -->
+
+          <!-- fila 5 -->
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s6">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-phone" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Teléfono:</span>
+              </label>
+            </div>
+            <div class="col s6">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-envelope" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Correo Electrónico:</span>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s6">
+              <div class="input-group">
+                <input type="text" ng-disabled="bloquearTelefono" ng-model="formSeguimiento.Telefono"
+                  ng-change="validarTelefono ()">
+                <span class="edit-icon"><i class="fas fa-edit" ng-click="editartelefono()"></i></span>
+              </div>
+              <div ng-show="telefonoInvalido" class="error-message">El telefono es inválido</div>
+            </div>
+            <div class="col s6">
+              <div class="input-group">
+                <input ng-model="formSeguimiento.Correo" ng-disabled="bloquearCorreo" ng-change="validarCorreo()">
+
+                <span class="edit-icon"><i class="fas fa-edit" ng-click="editarcorreo()"></i></span>
+
+              </div>
+              <div ng-show="correoInvalido" class="error-message">El correo es inválido</div>
+
+            </div>
+            <!--fin fila 5 -->
+
+          </div>
+        </div>
+      </div>
+
+      <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+        <div class="text-al divcardcustom2">
+          <strong class="switch" style="font-weight:600">Patología seleccionada</strong>
+        </div>
+      </div>
+      <div class="col s12" style="padding: 1px; border-left: 3px solid #111;
+          border-right: 3px solid #111;">
+        <div class="row" style="padding: 1em;">
+          <div class="col l12 card-content">
+
+            <!-- fila 6 -->
+            <div class="row" style="margin: 0; padding: 0;">
+              <div class="col s4">
+                <label style="font-size: 0.9rem;">
+                  <i class="fas fa-medkit" style="margin-right: 5px;"></i>
+                  <span style="vertical-align: middle;">CIE10:</span>
+                </label>
+              </div>
+              <div class="col s4">
+                <label style="font-size: 0.9rem;">
+                  <i class="fas fa-people-carry" style="margin-right: 5px;"></i>
+                  <span style="vertical-align: middle;">Cohorte a la que pertenece:</span>
+                </label>
+              </div>
+              <div class="col s4">
+                <label style="font-size: 0.9rem;">
+                  <i class="fas fa-calendar-alt" style="margin-right: 5px;"></i>
+                  <span style="vertical-align: middle;">Fecha de
+                    diagnóstico:</span>
+                </label>
+              </div>
+            </div>
+            <div class="row" style="margin: 0; padding: 0;">
+              <div class="col s4">
+                <div class="input-group">
+                  <input ng-style="{'color': textoColor}" ng-model="formSeguimiento.CIE10" ng-disabled="bloquearCIE10">
+                </div>
+              </div>
+              <div class="col s4">
+                <div class="input-group">
+                  <input ng-style="{'color': textoColor}" ng-disabled="bloquearCohorte"
+                    ng-model="formSeguimiento.DescripcionCohorte">
+                </div>
+              </div>
+              <div class="col s4">
+                <div class="input-group">
+                  <input ng-style="{'color': textoColor}" ng-disabled="bloquearCohorte"
+                    ng-model="formSeguimiento.FechaDiagnostico">
+                </div>
+              </div>
+            </div>
+            <!-- fila 6 -->
+
+            <!-- fila 7 -->
+            <div class="row" style="margin: 0; padding: 0;">
+              <div class="col s12">
+                <label style="font-size: 0.9rem;">
+                  <i class="fas fa-file-medical" style="margin-right: 5px;"></i>
+                  <span style="vertical-align: middle;">Clasificación de
+                    patología:</span>
+                </label>
+              </div>
+            </div>
+            <div class="row" style="margin: 0; padding: 0;">
+              <div class="col s12">
+                <div class="input-group">
+                  <input ng-model="formSeguimiento.Clasificacion">
+                </div>
+              </div>
+            </div>
+            <!-- fin fila 7 -->
+
+            <!--  fila 8 -->
+            <div class="row" style="margin: 0; padding: 0;">
+              <div class="col s3">
+                <label style="font-size: 0.9rem;">
+                  <i class="fas fa-heartbeat" style="margin-right: 5px;"></i>
+                  <span style="vertical-align: middle;">Pluripatológico::</span>
+                </label>
+              </div>
+            </div>
+            <div class="row" style="margin: 0; padding: 0;">
+              <div class="col s3">
+                <div class="input-group">
+                </div>
+                <input readonly ng-value="formSeguimiento.Pluripatologico=='N'?'NO':'SI'">
+              </div>
+            </div>
+          </div>
+          <!--  fila 8 -->
+
+        </div>
+      </div>
+    </div>
+
+
+    <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Patologías asociadas</strong>
+      </div>
+    </div>
+
+    <table id="H2_Tabla" class="bordered table_center_align highlight border-color"
+      style="width:100%;font-size:6px !important;border:3px solid;  ">
+      <thead class="default-border default-color">
+        <tr>
+          <th>Proceso</th>
+          <th>No de siniestro</th>
+          <th>Estado siniestro </th>
+          <th>Origen</th>
+          <th>CIE10</th>
+          <th>Clasificación</th>
+          <th>Cohorte</th>
+          <th>Patologías asociadas </th>
+          <th>Descripción cohorte</th>
+          <th>Fecha diagnóstico</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in patologiaAfiliados">
+          <td class="center-align">
+            {{item.Proceso}}
+          </td>
+          <td class="center-align">
+            {{item.NumeroSiniestro}}
+          </td>
+          <td class="center-align">
+            {{item.EstadoSiniestro}}
+          </td>
+          <td class="center-align">
+            {{item.Origen}}
+          </td>
+          <td class="center-align">
+            {{item.CIE10}}
+          </td>
+          <td class="center-align">
+            {{item.Clasificacion}}
+          </td>
+          <td class="center-align">
+            {{item.Cohorte}}
+          </td>
+          <td class="center-align">
+            {{item.PatologiasAsociadas}}
+          </td>
+          <td class="center-align">
+            {{item.DescripcionCohorte}}
+          </td>
+          <td class="center-align">
+            {{item.FechaDiagnostico}}
+          </td>
+
+        </tr>
+
+        <tr>
+          <td class="center-align" colspan="9" ng-if="listado.patologiaAfiliados.length" style="font-weight: bolder;">No
+            se encontraron
+            resultados.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Gestión de seguimiento</strong>
+
+      </div>
+    </div>
+    <div class="col s12" style="padding: 1px; border-left: 3px solid #111;
+          border-right: 3px solid #111; border-bottom: 3px solid #111;">
+      <div class="row" style="padding: 1em;">
+        <div class="col l12 card-content">
+          <!--  fila 9 -->
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s6">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-phone-volume" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Estado De la llamada:</span>
+              </label>
+            </div>
+            <div class="col s6" ng-show="selectedEstado == 5">
+              <label style="font-size: 0.9rem;">
+                <i class="fas fa-phone-volume" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Responsable de atender la llamada::</span>
+              </label>
+            </div>
+            <div class="col s6">
+              <label style="font-size: 0.9rem;" ng-show="selectedEstado >= 1 && selectedEstado <= 4">
+                <i class="fas fa-edit" style="margin-right: 5px;"></i>
+                <span style="vertical-align: middle;">Observación:</span>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin: 0; padding: 0;">
+            <div class="col s6">
+              <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="selectedEstado">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.Codigo}}" ng-repeat="x in listado.EstadoLlamada">
+                  {{x.Descripcion}}</option>
+              </select>
+            </div>
+            <div class="col s6" ng-show="selectedEstado == 5">
+              <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="selectedResponsable">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.Codigo}}" ng-repeat="x in listado.Reponsable">
+                  {{x.Descripcion}}</option>
+              </select>
+            </div>
+            <div class="col s6" ng-show="selectedEstado >= 1 && selectedEstado <= 4">
+              <div class="input-group">
+                <textarea requerid ng-model="observacion" name="" id="" cols="30" rows="10">
+                           </textarea>
+              </div>
+            </div>
+          </div>
+          <!--  fin fila 9 -->
+
+          <!-- fila boton  -->
+          <div class="row" style="margin-top: 10px; padding: 0;">
+            <div class="col l12 text-center">
+              <button class="btn btn-primary" ng-click="guardar()" type="submit">Guardar seguimiento</button>
+            </div>
+          </div>
+          <!-- fin fila boton  -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- fin de informacion del afiliado -->
+
+
+
+  <!-- tabla seguimiento  -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="vista=='tablaGestion'">
+
+    <!-- FILTRADO -->
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- // -->
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600"> Filtrado de gestión</strong>
+            </div>
+          </div>
+
+          <form>
+            <div style="display: flex;
+          justify-content: end;
+          flex-direction: row;
+          gap: 1em;
+          border-left: 3px solid #111;
+          border-right: 3px solid #111;">
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Tipo de Documento</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="Vista2.Tipo_Doc">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Vista2.Tipo_Doc"
+                    ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                </select>
+              </div>
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Número de Documento</label>
+                </div>
+                <input id="Num_Doc" type="text" autocomplete="off" ng-model="Vista2.Num_Doc">
+              </div>
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Siniestro Procesado</label>
+                </div>
+                <input id="estado" type="text" autocomplete="off" ng-model="Vista2.siniestro">
+              </div>
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Estado</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="Vista2.estado">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Vista2.estado" ng-repeat="x in estado">
+                    {{x.NOMBRE}}</option>
+                </select>
+              </div>
+              <div style="display: flex;">
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="filtrado2()"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                        class="material-icons prefix">search</i></button>
+                  </div>
+                </div>
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="iniciarFormularioVista2();"
+                      style="background: red; padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                        style="position: relative; background: red;" class="material-icons prefix">clear</i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+
+              <strong class="switch" style="font-weight:600">
+                Gestión</strong>
+
+              <div class="col s3 no-padding label-new right" ng-click="excel()" style="    width: 25%;
+                display: inline-flex;
+                margin-top: -2px;
+                flex-direction: row-reverse;">
+                <strong class="switch" style=" font-weight: 600;
+                font-size: 14px;
+                color: #79e36b;
+                cursor: pointer;
+                text-decoration-line: underline;">
+                  <i class="fas fa-file-excel " style="padding-right: 2px; padding-left: 2px; "></i> Exportar
+                  información</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- /TABLA/ -->
+          <div style="width:100%;">
+            <table id="H1_Tabla" class="bordered table_center_align highlight border-color"
+              style="width:100%;font-size:6px !important;border:3px solid;  ">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>No de siniestro</th>
+                  <th>Tipo </th>
+                  <th>Número de documento</th>
+                  <th>Afiliado</th>
+                  <th>Fecha anterior gestión</th>
+                  <th>Fecha ultimo seguimiento</th>
+                  <th>Fecha reprogramación</th>
+                  <th>Pluripatológico </th>
+                  <th>Semaforización y/o prioridad</th>
+                  <th>Gestión</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  ng-repeat="siniestro in siniestrosGestion.slice(currentPageG * pageSizeG, (currentPageG * pageSizeG) + pageSizeG)"
+                  style="color: black; cursor: pointer;" style="color: black;cursor:pointer; ">
+                  <td>{{ siniestro.NumeroSiniestro }}</td>
+                  <td>{{ siniestro.TipoDocumento }} </td>
+                  <td>{{ siniestro.NumDocumento }}</td>
+                  <td>{{ siniestro.Nombres }} {{ siniestro.Apellidos }}</td>
+                  <td>{{ siniestro.FechaAnteriorGestion }}</td>
+                  <td>{{ siniestro.FechaUltimoSeguimiento }}</td>
+                  <td>{{ siniestro.FechaReprogramacion }}</td>
+                  <td>{{ siniestro.Pluripatologico=='S'?'SI':'NO' }}</td>
+                  <td>
+                    <!-- <span style="padding: 2px 10px;
+                                 border-radius: 50%;
+                                 border: {}" ng-style="{'background': siniestro.Semaforizacion}">
+                    </span> -->
+                    <div class="tooltip">
+                      <i class="icon-circle" style="color: transparent;font-size: 9px;"
+                        ng-class="Estado_Solicitud_Clase(siniestro.DescripcionSemaforizacion)"
+                        ng-style="Estado_Solicitud_Color(siniestro.DescripcionSemaforizacion)"></i>
+                      <!-- <span class="tooltiptext"
+                        style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{Estado_Solicitud_Tooltip(siniestro.Semaforizacion)}}</span> -->
+                    </div>
+                    <!-- {{ siniestro.DescripcionSemaforizacion?'':'NO TIENE' }} -->
+                  </td>
+                  <td><i ng-click="obtener_preguntasGestion(siniestro.IdSeguimiento, siniestro)"
+                      class="icono fas fa-eye "></i></td>
+
+                </tr>
+                <tr ng-show="siniestrosGestion.length==0">
+                  <td class="center-align" colspan="8" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="width: 100%;display: flex;">
+              <label for="normal">Total de informacion <strong>{{siniestrosGestion.length}} </strong> registros
+                encontrados
+              </label>
+            </div>
+          </div>
+
+          <ul class="pagination" ng-show="siniestrosGestion.length > 0">
+            <li><button ng-disabled='currentPageG == 0' class="btn-floating white-text default-linear-gradient"
+                ng-click="pasoG('back')">&laquo;</button></li>
+            <li ng-repeat='pageG in pagesG'><button ng-disabled='currentPageG == pageG.no - 1'
+                class="btn-floating white-text default-linear-gradient"
+                ng-click='setPageG(pageG.no)'>{{pageG.no}}</button>
+            </li>
+            <li><button ng-disabled='currentPageG >= siniestrosGestion/pageSizeG - 1'
+                class="btn-floating white-text default-linear-gradient" ng-click="pasoG('next')">&raquo;</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- fin tabla seguimiento  -->
+
+
+
+  <!-- preguntas -->
+  <div class="row dashboard-wrapper content-container white " ng-show="vista=='preguntas'"
+    style="zoom: 0.9;padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Información del afiliado</strong>
+            </div>
+          </div>
+          <div class="col s12" style="padding: 1px; border-left: 3px solid #111;
+        border-right: 3px solid #111;">
+            <div class="row" style="padding: 1em;">
+              <div class="col l12 card-content">
+
+                <!-- fila 1 -->
+                <div class="row" style="margin: 0; padding: 0;">
+                  <div class="col s3">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fas fa-clipboard" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Número siniestro:</span>
+                    </label>
+                  </div>
+                  <div class="col s3">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fas fa-globe" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Regional:</span>
+                    </label>
+                  </div>
+                  <div class="col s3">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fa fa-id-card" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Tipo documento:</span>
+                    </label>
+                  </div>
+                  <div class="col s3">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fa fa-id-card" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Número Documento:</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="row" style="margin: 0; padding: 0;">
+                  <div class="col s3">
+                    <div class="input-group">
+                      <input ng-style="{'color': textoColor}" ng-disabled="bloquearSiniestro"
+                        ng-model="formSeguimiento.NumeroSiniestro">
+                    </div>
+                  </div>
+                  <div class="col s3">
+                    <div class="input-group">
+                      <input ng-style="{'color': textoColor}" ng-disabled="bloquearRegional"
+                        ng-model="formSeguimiento.Regional">
+                    </div>
+                  </div>
+                  <div class="col s3">
+                    <div class="input-group">
+                      <select class="select-chosen-eps" ng-style="{'color': textoColor}" style="padding-top: 0px;"
+                        ng-model="formSeguimiento.TipoDocumento" disabled>
+                        <option value="">SELECCIONAR</option>
+                        <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == formSeguimiento.TipoDocumento"
+                          ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                      </select>
+                      <!-- <input ng-style="{'color': textoColor}" ng-disabled="bloquearNumdoc"
+                      ng-model="formSeguimiento.TipoDoc"> -->
+                    </div>
+                  </div>
+                  <div class="col s3">
+                    <div class="input-group">
+                      <input ng-style="{'color': textoColor}" ng-disabled="bloquearNumdoc"
+                        ng-model="formSeguimiento.NumDocumento">
+                    </div>
+                  </div>
+                </div>
+                <!-- fin file 1 -->
+
+
+                <!-- fila 2 -->
+                <div class="row" style="margin: 0; padding: 0;">
+                  <div class="col s9">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fas fa-user" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Nombres del afiliado</span>
+                    </label>
+                  </div>
+                  <div class="col s3">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fas fa-check-circle" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Estado del afilido:</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="row" style="margin: 0; padding: 0;">
+                  <div class="col s9">
+                    <div class="input-group">
+                      <input ng-style="{'color': textoColor}" ng-disabled="bloquearNombresyapellidos"
+                        ng-style="{'color': textoColor}" ng-model="formSeguimiento.NombreCompleto">
+                    </div>
+                  </div>
+                  <div class="col s3">
+                    <div style="    padding-top: 10px;
+                      padding-bottom: 11px;
+                      border-bottom: 1px solid #bdbdbd;
+                      width: 100%;">
+                      <span style=" padding: 2px 10px; border-radius: 0.5em;" ng-show="formSeguimiento.EstadoAfiliacion"
+                        ng-class="formSeguimiento.EstadoAfiliacion=='ACTIVO'?'color-verde':'color-rojo1'">
+                        {{formSeguimiento.EstadoAfiliacion}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <!-- fin de fila 2 - -->
+
+                <!-- fila 3- -->
+                <div class="row" style="margin: 0; padding: 0;">
+                  <div class="col s4">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fas fa-calendar" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Edad:</span>
+                    </label>
+                  </div>
+                  <div class="col s4">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fas fa-male" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Género:</span>
+                    </label>
+                  </div>
+                  <div class="col s4">
+                    <label style="font-size: 0.9rem;">
+                      <i class="fas fa-exchange-alt" style="margin-right: 5px;"></i>
+                      <span style="vertical-align: middle;">Portabilidad:</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="row" style="margin: 0; padding: 0;">
+                  <div class="col s4">
+                    <div class="input-group">
+                      <input ng-style="{'color': textoColor}" ng-disabled="bloquearEdad"
+                        ng-model="formSeguimiento.Edad">
+                    </div>
+                  </div>
+                  <div class="col s4">
+                    <div class="input-group">
+                      <input ng-style="{'color': textoColor}" ng-disabled="bloquearGenero"
+                        ng-model="formSeguimiento.Genero">
+                    </div>
+                  </div>
+                  <div class="col s4">
+                    <div class="input-group">
+                      <input ng-style="{'color': textoColor}" ng-disabled="bloquearPortabilidad"
+                        ng-model="formSeguimiento.Portabilidad">
+                    </div>
+                  </div>
+                </div>
+                <!-- fin fila 3  -->
+              </div>
+            </div>
+          </div>
+
+          <!-- data -->
+          <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient ">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">
+                <span>{{dataPregunta.cohorte}}</span></strong>
+            </div>
+          </div>
+
+          <form>
+            <div
+              style="display: flex;justify-content: end;flex-direction: row; gap: 1em; border-left: 3px solid #111;border-right: 3px solid #111;border-bottom: 3px solid #111; padding: 1em;">
+              <div style="display: grid; width: 100%; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div ng-repeat="item in preguntas" ng-if="item.aparecer=='N'?false:true">
+
+                  <label for="{{item.id}}">{{item.orden}}. {{item.pregunta}}</label>
+
+                  <!-- selec -->
+                  <select class="select-new" ng-class="item.ClaseRequerido" style="box-shadow: none;display: block;
+                              background: white;" ng-show="item.objhtml == 'select'" ng-model="item.respuesta"
+                    name="name{{item.id}}" ng-change="mostrarPregunta(item);item.ClaseRequerido='' "
+                    ng-options="options.id as options.descripcion for options in item.listado">
+                    <option value="" disabled>SELECCIONAR</option>
+
+                  </select>
+                  <!-- fin del select -->
+
+                  <!-- input -->
+                  <input placeholder="{{item.input.textPlaceHolder}}" ng-class="item.ClaseRequerido"
+                    name="name{{item.id}}" type="{{item.input.typeInput}}" ng-model="item.respuesta"
+                    ng-change="item.ClaseRequerido='' " max="{{validacionDinamica(item.input.metodo, 'fechaMaxHoy')}}"
+                    min="{{validacionDinamica(item.input.metodo, 'fechaMinHoy')}}" ng-show="item.objhtml == 'input'">
+                  <!-- fin del input -->
+
+                  <select class="select-new" style="box-shadow: none;display: block; 
+                          background: white;" ng-model="item.respuesta" name="name{{item.id}}"
+                    ng-class="item.ClaseRequerido" ng-show="item.objhtml == 'IPS'" ng-change="item.ClaseRequerido='' "
+                    ng-options="options.CODIGO as options.NOMBRE for options in ListarResultado">
+                    <option value="" disabled>SELECCIONAR</option>
+                  </select>
+                  <!-- fin de ips  -->
+
+                  <!-- texarea  -->
+                  <textarea ng-show="item.objhtml == 'textarea'" name="name{{item.id}}" ng-class="item.ClaseRequerido"
+                    id="{{item.id}}" cols="30" rows="10" ng-model="item.respuesta" ng-change="item.ClaseRequerido='' "
+                    style="resize: vertical !important;"></textarea>
+                  <!-- fin teztarea -->
+
+
+
+
+                </div>
+              </div>
+            </div>
+
+            <!-- <p class="alert ">
+              <strong style="    font-size: 23px;"><i class="icon-attention"></i>Educación</strong><br>
+              {{dataPregunta.educacion }}
+            </p>
+            <style>
+              .alert {
+                padding: 10px;
+                /* Agregar un espacio de relleno de 10px */
+                color: #856404;
+                font-size: 17px;
+                background-color: #fff3cd;
+                border-color: #ffeeba;
+                box-shadow: -4px 3px 10px 2px rgba(0, 0, 0, 0.3);
+              }
+            </style> -->
+          </form>
+
+          <!-- Trazabilidad -->
+          <div ng-show="trazabilidad === 1">
+            <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Observaciones asociadas</strong>
+              </div>
+            </div>
+            <table id="H2_Tabla" class="bordered table_center_align highlight border-color"
+              style="width:100%;font-size:6px !important;border:3px solid;  ">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>Observación</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in observaciones">
+                  <td class="center-align">
+                    {{item.Descripcion}}
+                  </td>
+                  <td class="center-align">
+                    {{item.Fecha}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="center-align" colspan="9" ng-if="listado.observaciones.length"
+                    style="font-weight: bolder;">
+                    No
+                    se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- fila boton  -->
+          <div class="row" style="margin-top: 10px; padding: 0;">
+            <div class="col l12 text-center">
+              <button class="btn btn-primary" ng-click="guardarPreguntas()" type="submit">Guardar
+                seguimiento</button>
+            </div>
+          </div>
+          <!-- fin fila boton  -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  fin preguntas -->
+
+
+
+
+  <style>
+    .requerido {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 5px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      padding: 3px;
+      font-size: 12px;
+      animation: shake 0.5s;
+      display: inline-block;
+      /* Opcionalmente, puedes usar 'inline' */
+    }
+
+
+
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-5px);
+      }
+
+      40% {
+        transform: translateX(5px);
+      }
+
+      60% {
+        transform: translateX(-5px);
+      }
+
+      80% {
+        transform: translateX(5px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+
+
+
+
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .edit-icon {
+      display: inline-block;
+      margin-left: 5px;
+    }
+
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    #tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+
+    .table_border,
+    .table_border th,
+    .table_border td {
+      border: 1px solid #c2c2c2;
+    }
+
+    .table_center_align,
+    .table_center_align th,
+    .table_center_align td {
+      text-align: center;
+    }
+
+    .swal-wide {
+      width: 850px !important;
+    }
+
+    .invalid-email {
+      border-color: red;
+    }
+
+    /* ng-style="{'color' : (siniestro.codigoEstado == 'A' ? '#0e8d0' : '#8d0202')};{'background' : (siniestro.codigoEstado == 'A') ? '#3cc321' : '#ff43508'}" */
+    .color-verde {
+      color: #0e8d01;
+      background: #3cc32163;
+    }
+
+    .color-rojo {
+      color: #8d0202;
+      background: #ff435045;
+    }
+
+    .label-ajustado {
+      margin-right: 10px;
+      /* ajustar según sea necesario */
+    }
+
+
+    #Diag_1 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+    #Diag_2 {
+      border-radius: 0px;
+    }
+
+    #Diag_3 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+    .foot4 .tabs .indicator {
+      background-color: #edf0f9 !important;
+      top: 1px;
+    }
+
+    @keyframes Anim_Show {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .Anim_Show {
+      animation-name: Anim_Show;
+      animation-duration: 1s;
+    }
+
+    .Con_pulse_VERDE {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_VERDE 5s linear infinite;
+    }
+
+    @keyframes animate-pulse_VERDE {
+      0% {
+        box-shadow: 0 0 0 0 rgba(155, 155, 155, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_ROJO {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_ROJO 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_ROJO {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    .Con_pulse_AZUL {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_AZUL 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_AZUL {
+      0% {
+        box-shadow: 0 0 0 0 rgba(51, 70, 255, 0.7), 0 0 0 0 rgba(51, 70, 255, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(51, 70, 255, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      font-size: 0.7em;
+    }
+
+    .list-group {
+      font-size: 14px;
+      overflow: auto;
+      max-height: 13vh;
+      position: absolute;
+      margin: 0;
+      width: inherit;
+      margin-top: 2.2em;
+      z-index: 3;
+    }
+
+    #H2_Tabla th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+    .sortorder2:after {
+      content: '\25bc';
+    }
+
+    .sortorder2.reverse2:after {
+      content: '\25b2';
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+    .invalid-email {
+      border-color: red;
+    }
+
+    .md-card-buttons {
+      position: absolute;
+      z-index: -1;
+      top: -50px;
+      width: calc(100% - 30px);
+      left: 15px;
+      text-align: center;
+    }
+
+
+    #H1_Tabla>thead,
+    #H2_Tabla>thead {
+      font-size: 1em;
+      /* border: 3px; */
+      border-width: medium;
+      border-style: solid;
+      border-radius: .375rem;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    }
+
+
+    .tooltip_ab {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip_ab .tooltiptext_ab::after {
+      content: "";
+      position: absolute;
+      top: -37%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #00000000 #00000000 #555 #00000000;
+    }
+
+    .tooltip_ab:hover .tooltiptext_ab {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip_ab .tooltiptext_ab {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: -150%;
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    #toast-container .toast {
+      border-radius: 25px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    .modal {
+      border-radius: 10px;
+      overflow: hidden;
+      max-height: 88%;
+      z-index: 1003;
+      display: none;
+      opacity: 0;
+      transform: scaleX(0.7);
+      top: 4%;
+    }
+
+    .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+    }
+
+
+    /**/
+    /**/
+    /**/
+    .content-box2 {
+      background-color: #F1F3F4;
+      padding: 10px;
+      border: 1px solid #ebecec;
+      position: relative;
+      box-shadow: none !important;
+      margin-left: .55vw;
+    }
+
+    .chip_1 {
+      display: inline;
+      text-align: left;
+      color: #737373;
+      line-height: 1.7em;
+      font-size: 1em;
+      font-style: italic;
+      text-transform: uppercase;
+    }
+
+    .chip_2 {
+      background-color: #e4e4e4;
+      font-weight: 700;
+    }
+
+    #versionamiento .content-box {
+      border-bottom: 0px !important;
+    }
+
+    .timeline-page .timeline .timeline-milestone:not(:first-child)::before {
+      left: calc(10% - 1px);
+    }
+
+    .timeline-page .timeline .timeline-event .timeline-content {
+      position: relative;
+      width: calc(90% - 50px);
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(even) .timeline-content {
+      margin-left: calc(10% + 39px);
+    }
+
+    .timeline-page .timeline .timeline-badge {
+      right: calc(90% - 20px);
+    }
+
+    .timeline-page .timeline .timeline-milestone::after {
+      left: calc(10% - 1px);
+    }
+
+    .timeline-page .timeline .timeline-event::after {
+      left: calc(10% - 1px);
+    }
+
+    #versionamiento .timeline-page .timeline .timeline-event:nth-child(even) .timeline-content .content-box::before {
+      left: -54px;
+    }
+
+    #versionamiento .timeline-page .timeline .timeline-event .timeline-content .content-box::before {
+      width: calc(100% + 70px);
+    }
+
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    .timeline-page .timeline .timeline-badge {
+      right: calc(90% - 20px);
+    }
+
+    .timeline-page .timeline .timeline-badge {
+      right: calc(90% - 20px);
+    }
+
+    .timeline-badge4 {
+      background-color: #dd4bd6 !important;
+    }
+
+    .timeline-badge5 {
+      background-color: #52120b !important;
+    }
+
+    .timeline-badge6 {
+      background-color: #bb5964 !important;
+    }
+
+    .timeline-badge7 {
+      background-color: #3bf2dd !important;
+    }
+
+    .timeline-badge8 {
+      background-color: #6f19ce !important;
+    }
+
+    .timeline-badge9 {
+      background-color: #c54141 !important;
+    }
+
+    .timeline-badge10 {
+      background-color: #06965a !important;
+    }
+
+    .timeline-badge11 {
+      background-color: #fec035 !important;
+    }
+
+    .timeline-badge12 {
+      background-color: #0501e7 !important;
+    }
+
+    .timeline-badge13 {
+      background-color: #e182ba !important;
+    }
+
+    .timeline-badge14 {
+      background-color: #dd4bd6 !important;
+    }
+
+    .timeline-badge15 {
+      background-color: #52120b !important;
+    }
+
+    .timeline-badge16 {
+      background-color: #bb5964 !important;
+    }
+
+    .timeline-badge17 {
+      background-color: #3bf2dd !important;
+    }
+
+    .timeline-badge18 {
+      background-color: #6f19ce !important;
+    }
+
+    .timeline-badge19 {
+      background-color: #c54141 !important;
+    }
+
+    .timeline-badge20 {
+      background-color: #06965a !important;
+    }
+  </style>
+
+
+</div>

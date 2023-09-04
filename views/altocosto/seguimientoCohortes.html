@@ -1,0 +1,1891 @@
+<div id="versionamiento" class="white newdesing">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Seguimiento cohortes</h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="mostrarVista('subirArchivo')" id="Sol" href class="active">Cargue de información
+              <i class="icono fa fa-tasks"></i></a>
+
+
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="mostrarVista('tablaSeguimiento')" id="Nueva" href>Seguimiento
+              <i class="icono fa fa-cube"></i></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+
+  <!-- Vista subir archivo -->
+  <div class="row dashboard-wrapper content-container white" ng-show="vista=='subirArchivo'"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="row">
+        <div class="col s12 m12 l12" style="justify-content: center;">
+          <div class="row" style="margin-bottom: 0px;">
+            <!-- TITULO -->
+            <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Cargue de información </strong>
+                <div class="col s3 no-padding label-new right"
+                  ng-click="P_SC_GET_ARCHIVOS_COHORTE_CARGADOS();mostrarVista('vistaArchivosCargados')" style="    width: 25%;
+                  display: inline-flex;
+                  margin-top: -2px;
+                  flex-direction: row-reverse;">
+                  <strong class="switch" style=" font-weight: 600;
+                  font-size: 14px;
+                  color: #d7e36b;
+                  cursor: pointer;
+                  text-decoration-line: underline;">
+                    <i class="fas fa-search " style="padding-right: 2px; padding-left: 2px; "></i> Buscar archivos
+                    cargados</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- SUBIDA DE ARCHIVO -->
+            <div style="  border: 1px solid black; padding: 10px; ">
+              <div>
+                <form>
+                  <div class="row" style=" padding: 0;">
+                    <div class="col s4">
+                      <label style="font-size: 0.9rem;">
+                        <i class="fas fa-calendar" style="margin-right: 5px;"></i>
+                        <span style="vertical-align: middle;">Año (AAAA)</span>
+                      </label>
+                      <select class="select-chosen-eps form-control form-control-sm" ng-change="updateMonths()"
+                        ng-model="anno">
+                        <option value="">Selecciona un año</option>
+                        <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+                      </select>
+                    </div>
+
+                    <div class="col s4">
+                      <label style="font-size: 0.9rem;">
+                        <i class="fas fa-calendar-alt" style="margin-right: 5px;"></i>
+                        <span style="vertical-align: middle;">Mes (MM)</span>
+                      </label>
+                      <select class="select-chosen-eps form-control form-control-sm" ng-model="selectedMonth">
+                        <option value="" ng-select="selectedMonth==''">Selecciona un mes</option>
+                        <option ng-repeat="month in filteredMonths" ng-select="selectedMonth==month.value"
+                          ng-value="month.value">{{month.label}}</option>
+                      </select>
+                    </div>
+
+                    <div class="col s4">
+                      <label style="font-size: 0.9rem;">
+                        <i class="fas fa-users" style="margin-right: 5px;"></i>
+                        <span style="vertical-align: middle;">Cohortes:</span>
+                      </label>
+                      <select class="select-chosen-eps form-control form-control-sm" ng-init="validarCohortes()"
+                        ng-model="selectedCohorte" ng-change="obtenerVariablePorCodigo()">
+                        <option value="" disabled selected>SELECCIONAR</option>
+                        <option ng-repeat="cohortes in listCohorte" ng-value="cohortes.Codigo">{{cohortes.Descripcion}}
+                        </option>
+                      </select>
+
+                    </div>
+
+                  </div>
+
+                  <form class="form">
+                    <div class="row" style="display: flex; align-items: center;justify-content: space-between;
+                        flex-direction: row;  flex-wrap: nowrap; margin: 0px 1em;">
+                      <label class="file-upload-label col-8 w-100">ARCHIVO DE LA COHORTE
+                        {{cohorteSeleccionada.Descripcion}}:</label>
+                      <div class="file-upload-wrapper col-4 w-100" data-text="Cargar Archivo">
+                        <input name="file-upload-field" ng-disabled="cohorteSeleccionada==undefined" type="file"
+                          class="file-upload-field" value="">
+                      </div>
+                    </div>
+                  </form>
+
+
+
+                  <div class="row" style="margin: 0 1em;">
+                    <p class="alert ">
+                      <strong style="    font-size: 13px;">
+                        <i class="icon-attention"></i>Condiciones de Archivo</strong><br>
+                      - La extensión del archivo permitido es (.txt) <br>
+                      - Tamaño máximo del archivo (10mb)<br>
+                      - Archivo debe ser separado por " | " <br>
+                      - Contener solos las variables necesarias para la cohorte seleccionada (
+                      {{cohorteSeleccionada.Descripcion}} {{cohorteSeleccionada.Variables}} )<br>
+                    </p>
+                  </div>
+
+                  <div class="row" style="margin-top: 20px;">
+                    <div class="col-md-8" style="display: flex; align-items: flex-end; justify-content: flex-end;">
+                      <!-- Botón Guardar -->
+                      <div class="container">
+                        <button ng-click="guardar()" ng-disabled="!mostrar_guardar" class="btn btn-save">
+                          <i class="fas fa-save"></i>
+                          Guardar
+                        </button>
+                      </div>
+                      <!-- fin del boto guardar  -->
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- fin de subida de archivo  -->
+
+  <!-- tabla Gestion -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="vista=='vistaArchivosCargados'">
+
+
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- FILTRADO -->
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Archivos cargados</strong>
+
+            </div>
+          </div>
+
+          <form>
+            <div style="display: flex;
+            justify-content: end;
+            flex-direction: row;
+            gap: 1em;
+            border-left: 3px solid #111;
+            border-right: 3px solid #111;">
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Año</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="busquedas.anno"
+                  ng-change="updateMonthsBusqueda2()">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option ng-repeat="year in years" ng-selected="year == busquedas.anno" value="{{year}}">{{year}}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Mes</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="busquedas.mes">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option ng-repeat="month in filteredMonthsBusqueda2" ng-select="busquedas.mes==month.value"
+                    ng-value="month.value">{{month.label}}</option>
+                </select>
+              </div>
+
+
+              <div style="display: flex;">
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="ArchivosCargadosfiltrado()"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                        class="material-icons prefix">search</i></button>
+                  </div>
+                </div>
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="cancelarFiltrado2 ()"
+                      style="background: red; padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                        style="position: relative; background: red;" class="material-icons prefix">clear</i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+          <!-- FILTRADO -->
+
+          <!-- /TABLA/ -->
+          <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Tabla de archivos cargados</strong>
+
+
+
+            </div>
+          </div>
+
+
+          <div style="width:100%;">
+            <table id="H1_Tabla" class="bordered table_center_align highlight border-color"
+              style="width:100%;font-size:6px !important;border:3px solid;  ">
+              <thead class="default-border default-color">
+                <tr>
+
+                  <th>Código</th>
+                  <th>Periodo</th>
+                  <th>Cohorte </th>
+
+                  <th>Fecha</th>
+
+                  <th>Estado De Cargue</th>
+                  <th>Estado De Archivo</th>
+
+
+                  <th>Acción</th>
+
+
+
+
+
+
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr ng-repeat="siniestro in archivosCohorteCargados" style="color: black;cursor:pointer; ">
+
+                  <td>{{ siniestro.Codigo }}</td>
+
+                  <td>{{ siniestro.Periodo }}</td>
+                  <td>{{ siniestro.Cohorte}}</td>
+                  <td>{{ siniestro.Fecha}}</td>
+                  <td> <span style=" padding: 2px 10px;
+                    border-radius: 0.5em;" ng-class="siniestro.EstadoArchivo=='Procesado'?'color-verde':'color-rojo'">
+
+                      {{ siniestro.EstadoArchivo}}
+                    </span></td>
+
+                  <td>
+                    <span style=" padding: 2px 10px;
+                    border-radius: 0.5em;"
+                      ng-class="siniestro.EstadoDatoArchivo === 'Correcto' ? 'color-verde' : 'color-rojo'">
+                      {{ siniestro.EstadoDatoArchivo }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <i class="icono fas fa-eye"
+                      ng-click="P_SC_GET_INFO_ARCHIVOS_COHORTES_CARGADOS();gestiones(siniestro.Codigo,siniestro.Cohorte,siniestro.EstadoDatoArchivo,siniestro.EstadoArchivo, siniestro.Fecha,siniestro.NombreArchivo, siniestro.Periodo,siniestro.TipoCargue ,siniestro.NumeroCargue)"></i>
+
+                    <i class="icono fas fa-download m-l m-r" title="Descargar Errores"
+                      ng-click="exportarErrores(siniestro)"></i>
+
+
+                    <i class="fas fa-file-excel c-pointer"
+                      style="color: #79e36b;padding-right: 2px; padding-left: 2px; " ng-click="exceldinamico()"></i>
+                    </strong>
+
+
+
+
+                  </td>
+
+
+
+                </tr>
+                <tr ng-show="archivosCohorteCargados.length==0">
+                  <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+
+
+            </table>
+
+            <br>
+
+            <div style="width: 100%;display: flex;">
+              <label for="normal">Total de información: <strong>{{archivosCohorteCargados.length}} </strong> Registros
+                encontrados.
+              </label>
+            </div>
+
+
+            <ul class="pagination" ng-show="siniestro.length > 0">
+              <li><button ng-disabled='currentPage == 0' class="btn-floating white-text default-linear-gradient"
+                  ng-click="paso('back')">&laquo;</button></li>
+              <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                  class="btn-floating white-text default-linear-gradient"
+                  ng-click='setPage(page.no)'>{{page.no}}</button>
+              </li>
+              <li><button ng-disabled='currentPage >= siniestro.length/pageSize - 1'
+                  class="btn-floating white-text default-linear-gradient" ng-click="paso('next')">&raquo;</button></li>
+            </ul>
+          </div>
+          <!-- FIN TABLA -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  fin tabla Gestion -->
+
+
+  <!-- tabla Gestion -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="vista=='tablaSeguimiento'">
+
+
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- FILTRADO -->
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Buscar seguimiento</strong>
+            </div>
+          </div>
+
+          <form>
+            <div style="display: flex;
+            justify-content: end;
+            flex-direction: row;
+            gap: 1em;
+            border-left: 3px solid #111;
+            border-right: 3px solid #111;">
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Año</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="busqueda.anno"
+                  ng-change="updateMonthsBusqueda()">
+                  <option value="">SELECCIONAR</option>
+                  <option ng-repeat="year in years" ng-selected="year == busqueda.anno" value="{{year}}">{{year}}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Mes</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-model="busqueda.mes">
+                  <option value="" disabled ng-select="busqueda.mes==''">SELECCIONAR</option>
+                  <option ng-repeat="month in filteredMonthsBusqueda" ng-select="busqueda.mes==month.value"
+                    ng-value="month.value">{{month.label}}</option>
+                </select>
+              </div>
+
+              <div>
+                <div class="row" style="margin: 0">
+                  <label for="with_icon" style="margin-top: -20px;">Cohorte</label>
+                </div>
+                <select class="select-chosen-eps" style="padding-top: 0px;" ng-init="validarCohortes()"
+                  ng-model="busqueda.cohorte">
+                  <option value="" disabled>SELECCIONAR</option>
+                  <option value="{{x.Cohorte}}" ng-selected="x.Cohorte == busqueda.cohorte"
+                    ng-repeat="x in listCohorte">
+                    {{x.Descripcion}}</option>
+                </select>
+              </div>
+
+              <div style="display: flex;">
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="filtrado()"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                        class="material-icons prefix">search</i></button>
+                  </div>
+                </div>
+                <div>
+                  <div class="input-field col m12 s12">
+                    <button class="btn white-text" ng-click="iniciarFormulario();"
+                      style="background: red; padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                        style="position: relative; background: red;" class="material-icons prefix">clear</i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+          <!-- FILTRADO -->
+
+          <!-- /TABLA/ -->
+          <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Tabla de seguimiento</strong>
+
+              <div class="col s3 no-padding label-new right"
+                style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                <input class="margin border-none input-text-new black-text gray-input w-100 m-l"
+                  style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="filtrotse"
+                  ng-keyup="filter_tableseg(filtrotse)" ng-change="filter_tableseg()">
+              </div>
+
+
+              <div class="col s3 no-padding label-new right" ng-show="numSiniestrosSeleccionados.length > 0"
+                ng-click="excel()" style="    width: 25%;
+                display: inline-flex;
+                margin-top: -2px;
+                flex-direction: row-reverse;">
+                <strong class="switch" style=" font-weight: 600;
+                font-size: 14px;
+                color: #79e36b;
+                cursor: pointer;
+                text-decoration-line: underline;">
+                  <i class="fas fa-file-excel " style="padding-right: 2px; padding-left: 2px; "></i> Exportar
+                  información</strong>
+              </div>
+
+            </div>
+          </div>
+
+
+
+
+
+
+          <div style="width:100%;">
+
+
+
+            <table id="H1_Tabla" class="bordered table_center_align highlight border-color"
+              style="width:100%;font-size:6px !important;border:3px solid;  ">
+
+              <thead class="default-border default-color">
+                <tr>
+                  <th>No de siniestro</th>
+                  <th>Regional</th>
+                  <th>Tipo doc </th>
+                  <th>Documento </th>
+                  <th>Afiliado </th>
+                  <th>Estado</th>
+                  <th>Clasificación</th>
+                  <th>Cohorte</th>
+                  <th>Fuentes</th>
+                  <th>Semaforización</th>
+                  <th>Gestión</th>
+                  <th>
+
+                  </th>
+
+
+
+
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr ng-repeat="siniestro in siniestros | inicio: currentPage * pageSize | limitTo: pageSize "
+                  style="color: black;cursor:pointer; ">
+                  <td>{{ siniestro.NumeroSiniestro }}</td>
+                  <td>{{ siniestro.Seccional }}</td>
+                  <td>{{ siniestro.TipoDocumento }}</td>
+                  <td>{{ siniestro.NumDocumento }}</td>
+                  <td>{{ siniestro.Nombres }} {{ siniestro.Apellidos }}</td>
+                  <td>
+                    <span style=" padding: 2px 10px;
+                    border-radius: 0.5em;" ng-class="siniestro.EstadoAfiliacion=='ACTIVO'?'color-verde':'color-rojo'">
+                      {{ siniestro.EstadoAfiliacion }}
+                    </span>
+                  </td>
+                  <td>{{ siniestro.Clasificacion }}</td>
+                  <td>{{ siniestro.DescripcionCohorte }}</td>
+                  <td>{{ siniestro.TipoFuente}}</td>
+                  <td>
+
+
+                    <div class="tooltip">
+                      <i class="icon-circle" style="color: transparent;font-size: 9px;"
+                        ng-class="Estado_Solicitud_Clase(siniestro.Semaforizacion=='N'?'ROJO':'VERDE')"
+                        ng-style="Estado_Solicitud_Color(siniestro.Semaforizacion=='N'?'ROJO':'VERDE')"></i>
+
+                    </div>
+
+                  </td>
+
+
+
+
+
+
+
+
+
+                  <td ng-click="gestion(siniestro)"><i class="icono fas fa-eye "></i></td>
+
+                  <td>
+                    <div class="col s12">
+                      <input type="checkbox" class="filled-in" ng-model="siniestro.seleccionado"
+                        ng-click="seleccionarRegistro(siniestro.NumeroSiniestro)" ng-checked="siniestro.seleccionado"
+                        id="ID{{$index}}">
+                      <label for="ID{{$index}}"></label>
+                    </div>
+                  </td>
+
+                </tr>
+                <tr ng-show="siniestros.length==0">
+                  <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+
+
+            </table>
+
+            <br>
+
+            <div style="width: 100%;display: flex;">
+              <label for="normal">Total de informacion: <strong>{{siniestros.length}} </strong> registros encontrados.
+              </label>
+            </div>
+
+
+            <ul class="pagination" ng-show="siniestros.length > 0">
+              <li><button ng-disabled='currentPage == 0' class="btn-floating white-text default-linear-gradient"
+                  ng-click="paso('back')">&laquo;</button></li>
+              <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                  class="btn-floating white-text default-linear-gradient"
+                  ng-click='setPage(page.no)'>{{page.no}}</button>
+              </li>
+              <li><button ng-disabled='currentPage >= siniestros.length/pageSize - 1'
+                  class="btn-floating white-text default-linear-gradient" ng-click="paso('next')">&raquo;</button></li>
+            </ul>
+          </div>
+          <!-- FIN TABLA -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  fin tabla Gestion -->
+
+
+
+  <!-- tabla Gestion  DETALLE ARCHIVO-->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="vista=='vistaGestionArchivosCargados'">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- DESCRIPCION DEL ANTERIOR TABLA -->
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Detalle archivos cargados</strong>
+              <div class="col s3 no-padding label-new right" ng-click="atras()" style="    width: 25%;
+                display: inline-flex;
+                margin-top: -2px;
+                flex-direction: row-reverse;">
+                <strong class="switch" style=" font-weight: 600;
+                font-size: 14px;
+                color:#1ed69f;
+                cursor: pointer;
+                text-decoration-line: underline;">
+                  <i class="fas fa-arrow-left" style="padding-right: 2px; padding-left: 2px; "></i> Atrás</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="border: 3px solid #111; border-bottom:0px; padding: 1em; margin-bottom: -1em;">
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="icon-hospital"></i>
+                <strong>Código cargue:</strong>
+                <span>{{info_de_archivo.Codigo}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-users"></i>
+                <strong>Cohorte:</strong>
+                <span>{{info_de_archivo.Cohorte}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-calendar"></i>
+                <strong>Periodo:</strong>
+                <span>{{info_de_archivo.Periodo}}</span>
+              </h6>
+            </div>
+          </div>
+          <div class="row"
+            style="border: 3px solid #111; border-bottom:0px;border-top:0px ;padding: 1em; margin-bottom: -1em;">
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Estado cargue:</strong>
+                <span>{{info_de_archivo.EstadoArchivo}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Estado Archivo:</strong>
+                <span
+                  ng-class="info_de_archivo.EstadoDatoArchivo=='Inconsistente' ? 'color-rojo' : 'color-verde'">{{estadod}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 0em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-calendar"></i>
+                <strong> Fecha cargue:</strong>
+                <span>{{info_de_archivo.FechaCargue}}</span>
+              </h6>
+            </div>
+
+          </div>
+
+          <div class="row"
+            style="border: 3px solid #111;border-bottom:0px ;border-top:0px; padding: 1em; margin-bottom: -1em;">
+            <div class="col s4" style="margin-bottom: 0em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong> Cantidad cargue:</strong>
+                <span>{{info_de_archivo.CantidadCargue}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Cantidad Procesados:</strong>
+                <span>{{info_de_archivo.CantidadProcesado}}</span>
+              </h6>
+            </div>
+
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Cantidad Fuente:</strong>
+                <span>{{info_de_archivo.CantidadFuente}} </span>
+              </h6>
+            </div>
+
+
+
+
+          </div>
+
+
+          <div class="row" style="border: 3px solid #111; border-top:0px; padding: 1em; margin-bottom: -1em;">
+
+            <div class="col s12" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Cantidad Diferencia:</strong>
+                <span>{{info_de_archivo.CantidadDiferencia}} </span>
+              </h6>
+            </div>
+
+          </div>
+
+
+
+
+
+          <!-- FIN DE LA DESCRIPCION -->
+
+          <!-- /TABLA/ -->
+          <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Tabla archivos cargados detalle </strong>
+
+              <div class="col s3 no-padding label-new right"
+                style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+                <input class="margin border-none input-text-new black-text gray-input w-100 m-l"
+                  style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="filtreacd"
+                  ng-keyup="filter_cargados_detalle (filtreacd)">
+              </div>
+
+              <div class="col s3 no-padding label-new right" ng-click="exceldinamico()" style="    width: 25%;
+              display: inline-flex;
+              margin-top: -2px;
+              flex-direction: row-reverse;">
+                <strong class="switch" style=" font-weight: 600;
+              font-size: 14px;
+              color: #79e36b;
+              cursor: pointer;
+              text-decoration-line: underline;">
+                  <i class="fas fa-file-excel " style="padding-right: 2px; padding-left: 2px; "></i> Exportar
+                  información</strong>
+              </div>
+
+            </div>
+
+
+          </div>
+
+          <div style=" overflow-x: auto; width: auto;">
+            <table id="H1_Tabla" class="bordered table_center_align highlight border-color"
+              style="width:100%;font-size:6px !important;border:3px solid;  ">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>Ver observación</tH>
+
+                  <th ng-repeat="columna in columna">{{ columna }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  ng-repeat="dataRow in dataRows.slice(currentPagedataRows * pageSizedataRows, (currentPagedataRows * pageSizedataRows) + pageSizedataRows) ">
+                  <td><a class="eye-link" ng-if="dataRow['DatosInconsistentes']=='S'">
+                      <i ng-click="P_SC_GET_LISTAR_ARCHIVO_COHORTE_DETALLE_OBSERV( dataRow['IdDetalle'])"
+                        class="fas fa-eye fa-2x"></i> </a>
+
+                  </td>
+
+
+                  <td ng-repeat="columna in columnas">
+                    <span ng-if="!dataRow[columna] || dataRow[columna] === ''" class=" rounded-cell"> <i
+                        class="fas fa-question-circle fa-lg"></i></span>
+                    <span ng-if="dataRow[columna]">{{ dataRow[columna] }}</span>
+                  </td>
+
+
+
+
+                <tr ng-show="archivosCohorteCargados.length==0">
+                  <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <br>
+
+            <div style="width: 100%;display: flex;">
+              <label for="normal">Total de información: <strong>{{dataRows.length}} </strong> Registros
+                encontrados.
+              </label>
+
+
+
+
+            </div>
+
+
+          </div>
+          <ul class="pagination" ng-show="dataRows.length > 0">
+            <li><button ng-disabled='currentPagedataRows == 0' class="btn-floating white-text default-linear-gradient"
+                ng-click="pasodataRows('back')">&laquo;</button></li>
+            <li ng-repeat='pagedataRows in pagesdataRows'><button
+                ng-disabled='currentPagedataRows == pagedataRows.no - 1'
+                class="btn-floating white-text default-linear-gradient"
+                ng-click='setPagedataRows(pagedataRows.no)'>{{pagedataRows.no}}</button>
+            </li>
+            <li><button ng-disabled='currentPagedataRows >= dataRows.length/pageSizedataRows - 1'
+                class="btn-floating white-text default-linear-gradient" ng-click="pasodataRows('next')">&raquo;</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- tabla Gestion  DETALLE ARCHIVO OBSERVACION-->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="vista=='vistaGestionArchivosCargadosObservacion'">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+          <!-- DESCRIPCION DEL ANTERIOR TABLA -->
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Detalle archivos cargados</strong>
+
+              <div class="col s3 no-padding label-new right" ng-click="atras()" style="    width: 25%;
+                display: inline-flex;
+                margin-top: -2px;
+                flex-direction: row-reverse;">
+                <strong class="switch" style=" font-weight: 600;
+                font-size: 14px;
+                color:#1ed69f;
+                cursor: pointer;
+                text-decoration-line: underline;">
+                  <i class="fas fa-arrow-left" style="padding-right: 2px; padding-left: 2px; "></i> Atras</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="border: 3px solid #111; border-bottom:0px; padding: 1em; margin-bottom: -1em;">
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="icon-hospital"></i>
+                <strong>Código cargue:</strong>
+                <span>{{info_de_archivo.Codigo}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-users"></i>
+                <strong>Cohorte:</strong>
+                <span>{{info_de_archivo.Cohorte}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-calendar"></i>
+                <strong>Periodo:</strong>
+                <span>{{info_de_archivo.Periodo}}</span>
+              </h6>
+            </div>
+          </div>
+          <div class="row" style="border: 3px solid #111; border-top:0px; padding: 1em; margin-bottom: -1em;">
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Estado cargue:</strong>
+                <span>{{info_de_archivo.EstadoArchivo}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 1em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Estado Archivo:</strong>
+                <span
+                  ng-class="info_de_archivo.EstadoDatoArchivo=='Inconsistente' ? 'color-rojo' : 'color-verde'">{{estadod}}</span>
+              </h6>
+            </div>
+            <div class="col s4" style="margin-bottom: 0em;">
+              <h6 style="color: #08110e; margin: 0;">
+                <i class="fas fa-calendar"></i>
+                <strong> Fecha cargue:</strong>
+                <span>{{info_de_archivo.FechaCargue}}</span>
+              </h6>
+            </div>
+
+          </div>
+          <!-- FIN DE LA DESCRIPCION -->
+
+          <!-- /TABLA/ -->
+          <div id="Diag_2" class="foot4 divcardcustom default-linear-gradient">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">Tabla archivos cargados detalle </strong>
+            </div>
+          </div>
+
+          <div style=" overflow-x: auto; width: auto;">
+            <table id="H1_Tabla" class="bordered table_center_align highlight border-color"
+              style="width:100%;font-size:6px !important;border:3px solid;  ">
+              <thead class="default-border default-color">
+                <tr>
+                  <th>Columna</th>
+                  <th>Observación</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="dataRow in observacionData">
+                  <td>{{ dataRow.columna }}</td>
+                  <td>{{ dataRow.observacion }}</td>
+                </tr>
+                <tr ng-show="archivosCohorteCargados.length==0">
+                  <td class="center-align" colspan="2" style="font-weight: bolder;">No se encontraron
+                    resultados.</td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+            <div style="width: 100%;display: flex;">
+              <label for="normal">Total de información: <strong>{{archivosCohorteCargados.length}} </strong> Registros
+                encontrados.
+              </label>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- preguntas -->
+  <div class="row dashboard-wrapper content-container white " ng-show="vista=='preguntas'"
+    style="zoom: 0.9;padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="col s12 m12 l12" style="justify-content: center;">
+        <div class="row" style="margin-bottom: 0px;">
+
+          <!-- data -->
+          <div id="Diag_1" class="foot4 divcardcustom default-linear-gradient ">
+            <div class="text-al divcardcustom2">
+              <strong class="switch" style="font-weight:600">{{dataPregunta.cohorte}}
+              </strong>
+            </div>
+          </div>
+
+          <div style="width: auto" ng-show="dataPregunta">
+            <div class="card" style="border: none !important; width: auto; margin:0">
+              <div>
+                <div
+                  style="    justify-content: flex-end;  display: flex; flex-direction: row; align-items: center;flex-wrap: nowrap;">
+                  <button style="border: none;  font-size: 16px ;width: 180px;"
+                    ng-repeat="seccion in dataPregunta.secciones" ng-click="selectTab($index)"
+                    ng-class="{ 'active': selectedTab === $index }">
+                    <span class="roman-number">{{ toRomanNumeral($index + 1) }}</span>
+                  </button>
+                </div>
+
+                <div style="width: auto;">
+                  <div class="card-body">
+                    <form>
+                      <div style="display: flex; justify-content: end; flex-direction: row; gap: 1em;  padding: 1em;">
+                        <div style="display: grid; width: 100%; grid-template-columns: 1fr 1fr; gap: 10px;">
+                          <div ng-repeat="item in dataPregunta.secciones[selectedTab].preguntas"
+                            ng-if="item.aparecer=='N'?false:true" style="position: relative;">
+                            <label for="{{item}}">
+                              {{item.orden}}. {{item.pregunta}}
+                              <span ng-if="item.desactivado!='S'" style="color: #1a2e63;"><i
+                                  class="fas fa-pencil-alt"></i></span>
+                            </label>
+
+                            <!-- select -->
+                            <select class="select-new" ng-class="item.ClaseRequerido"
+                              ng-disabled="item.desactivado=='S'"
+                              style="box-shadow: none; display: block; background: white;color: #000;"
+                              ng-show="item.objhtml == 'select'" ng-model="item.respuesta" name="name{{item.id}}"
+                              ng-change="mostrarPregunta(item); item.ClaseRequerido=''"
+                              ng-options="options.id as options.descripcion for options in item.listado">
+                              <option value="" disabled>SELECCIONAR</option>
+                            </select>
+                            <!-- fin del select -->
+
+                            <!-- input -->
+
+                            <input placeholder="{{item.input.textPlaceHolder}}" ng-disabled="item.desactivado=='S'"
+                              ng-class="item.ClaseRequerido" name="name{{item.id}}" type="{{item.input.typeInput}}"
+                              ng-model="item.respuesta" ng-change="item.ClaseRequerido=''" style="color: #000;"
+                              max="{{validacionDinamica(item.input.metodo, 'max', item.input.typeInput)}}"
+                              min="{{validacionDinamica(item.input.metodo, 'min', item.input.typeInput)}}"
+                              ng-show="item.objhtml == 'input'" ng-if="item.input.mascara != 'DIRECCION'">
+                            <!-- Input para editar direccion -->
+                            <input placeholder="{{item.input.textPlaceHolder}}" disabled ng-class="item.ClaseRequerido"
+                              name="name{{item.id}}" type="{{item.input.typeInput}}" ng-model="item.respuesta"
+                              ng-change="item.ClaseRequerido=''" style="color: #000;" ng-show="item.objhtml == 'input'"
+                              ng-if="item.input.mascara == 'DIRECCION'">
+                            <span ng-if="(item.input.mascara == 'DIRECCION')&&(item.desactivado!='S')" style="position: absolute;
+                              right: 10px;
+                              top: 50%;
+                              transform: translateY(-50%);
+                              color: #1f336939;
+                              font-size: 24px;" ng-click="AbrirModalDireccion($index)">
+                              <i class="fas fa-pencil-alt"></i>
+                            </span>
+                            <!-- fin del input para editar direccion -->
+                            <!-- fin del input -->
+
+                            <!-- select para IPS -->
+                            <select class="select-new" ng-disabled="item.desactivado=='S'"
+                              style="box-shadow: none; display: block; background: white; color: #000;"
+                              ng-model="item.respuesta" name="name{{item.id}}" ng-class="item.ClaseRequerido"
+                              ng-show="item.objhtml == 'IPS'" ng-change="item.ClaseRequerido=''"
+                              ng-options="options.CODIGO as options.NOMBRE for options in ListarResultado">
+                              <option value="" disabled>SELECCIONAR</option>
+                            </select>
+                            <!-- fin de IPS -->
+
+                            <!-- textarea -->
+                            <textarea ng-show="item.objhtml == 'textarea'" ng-disabled="item.desactivado=='S'"
+                              name="name{{item.id}}" ng-class="item.ClaseRequerido" id="{{item.id}}" cols="30" rows="10"
+                              style="color: #000;resize: vertical;" ng-model="item.respuesta"
+                              ng-change="item.ClaseRequerido=''"></textarea>
+                            <!-- fin textarea -->
+
+                            <!-- <span class="edit-icon" ng-if="item.desactivado!='S'" style="position: absolute;
+                            right: 10px;
+                            color: #1f336939;
+                            font-size: 24px;"><i class="fas fa-pencil-alt"></i></span> -->
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px; padding: 0;"
+              ng-if="(dataPregunta.secciones.length-1)==selectedTab">
+              <div class="col l12 text-center">
+                <button class="btn btn-primary" ng-click="guardarPreguntas()">Guardar
+                  seguimiento</button>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px; padding: 0;"
+              ng-if="(dataPregunta.secciones.length-1)!=selectedTab">
+              <div class="col l6 text-center">
+                <button class="btn btn-primary" ng-disabled="selectedTab==0" ng-click="selectTab(selectedTab-1)">
+                  Anterior</button>
+              </div>
+              <div class="col l6 text-center">
+                <button class="btn btn-primary" ng-click="selectTab(selectedTab+1)">
+                  Siguiente</button>
+              </div>
+            </div>
+
+          </div>
+
+
+
+          <!-- fila boton  -->
+
+          <!-- fin fila boton  -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  fin preguntas -->
+  <style>
+    .Con_pulse_VERDE {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_VERDE 5s linear infinite;
+    }
+
+
+
+    @keyframes animate-pulse_VERDE {
+      0% {
+        box-shadow: 0 0 0 0 rgba(155, 155, 155, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+
+
+
+
+
+
+
+    .rounded-cell {
+      border-radius: 10px;
+      padding: 5px;
+      color: rgba(238, 84, 84, 0.685);
+
+
+    }
+
+
+    .Con_pulse_ROJO {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_ROJO 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_ROJO {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+
+
+
+
+
+    .eye-link {
+      cursor: pointer;
+    }
+
+    .eye-link:hover {
+      cursor: pointer;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 3em;
+      margin: 0 auto;
+
+    }
+
+    .form-group {
+      flex-basis: 50%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 2px;
+    }
+
+    button.active {
+      background: #2b407661;
+    }
+
+    button:focus {
+      background: #2b407661;
+    }
+
+    .roman-number {
+      color: #1a2e63;
+
+      font-size: 18px;
+      font-weight: bold;
+      gap: 10px;
+    }
+
+    .tab-container {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+
+    .export-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tab-container button {
+      background-color: #f2f2f2;
+      border: none;
+      padding: 15px 30px;
+      margin-right: 10px;
+      cursor: pointer;
+      color: #666;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .tab-container button.active {
+      background-color: #ccc;
+      color: #fff;
+
+    }
+
+    .requerido {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 5px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      padding: 3px;
+      font-size: 12px;
+      animation: shake 0.5s;
+      display: inline-block;
+      /* Opcionalmente, puedes usar 'inline' */
+    }
+
+    .alert {
+      padding: 10px;
+      color: #408e52;
+      font-size: 11px;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+      box-shadow: -4px 3px 10px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .green-dot {
+      color: green;
+      font-size: 30px;
+      /* Tamaño de la viñeta */
+    }
+
+    .custom-text {
+      font-family: Arial, sans-serif;
+      font-size: 8px;
+    }
+
+    .green-dot {
+      color: green;
+    }
+
+    .custom-text {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .green-dot {
+      color: green;
+      font-size: 16px;
+    }
+
+    .custom-text {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn-save {
+
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .fa-save {
+      margin-right: 4px;
+    }
+
+
+
+    .container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn-save {
+
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .fa-save {
+      margin-right: 4px;
+    }
+
+
+
+
+    #file-info {
+      display: none;
+      background-color: #d9edf7;
+      border: 1px solid #bce8f1;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .file-upload-label {
+      display: inline-block;
+      width: 30%;
+      height: 100%;
+      line-height: 50px;
+      font-weight: bold;
+      margin: 0;
+      padding: 0;
+    }
+
+    .file-upload-wrappe {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .file-upload-wrapper {
+      border: 1px solid #ccc;
+      padding: 3px;
+      position: relative;
+      width: 40%;
+      /* Ajusta el valor del ancho según tus necesidades */
+      height: 50px;
+      /* Ajusta el valor de la altura según tus necesidades */
+    }
+
+    .file-upload-wrapper:after {
+      text-align: center;
+      content: attr(data-text);
+      font-size: 18px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      height: 40px;
+      line-height: 24px;
+      color: #999;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 300;
+    }
+
+
+    .cuadro-informativo {
+      background-color: blue;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      width: 300px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+    }
+
+
+    .error-message {
+      color: red;
+      margin-top: 5px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      padding: 3px;
+      font-size: 12px;
+      animation: shake 0.5s;
+      display: inline-block;
+      /* Opcionalmente, puedes usar 'inline' */
+    }
+
+
+
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-5px);
+      }
+
+      40% {
+        transform: translateX(5px);
+      }
+
+      60% {
+        transform: translateX(-5px);
+      }
+
+      80% {
+        transform: translateX(5px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+
+
+
+
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .edit-icon {
+      display: inline-block;
+      margin-left: 5px;
+    }
+
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    #tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+
+    .table_border,
+    .table_border th,
+    .table_border td {
+      border: 1px solid #c2c2c2;
+    }
+
+    .table_center_align,
+    .table_center_align th,
+    .table_center_align td {
+      text-align: center;
+    }
+
+    .swal-wide {
+      width: 850px !important;
+    }
+
+    .invalid-email {
+      border-color: red;
+    }
+
+    /* ng-style="{'color' : (siniestro.codigoEstado == 'A' ? '#0e8d0' : '#8d0202')};{'background' : (siniestro.codigoEstado == 'A') ? '#3cc321' : '#ff43508'}" */
+    .color-verde {
+      color: #0e8d01;
+      background: #3cc32163;
+    }
+
+    .color-rojo {
+      color: #8d0202;
+      background: #ff435045;
+    }
+
+    .color-azul {
+      color: #020b8d;
+      background: #4343ff45;
+    }
+
+    .label-ajustado {
+      margin-right: 10px;
+      /* ajustar según sea necesario */
+    }
+
+
+    #Diag_1 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+    #Diag_2 {
+      border-radius: 0px;
+    }
+
+    #Diag_3 {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+    .foot4 .tabs .indicator {
+      background-color: #edf0f9 !important;
+      top: 1px;
+    }
+
+    @keyframes Anim_Show {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .Anim_Show {
+      animation-name: Anim_Show;
+      animation-duration: 1s;
+    }
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(155, 155, 155, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_X {
+      /* background: #FF6D4A; */
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      font-size: 0.7em;
+    }
+
+    .list-group {
+      font-size: 14px;
+      overflow: auto;
+      max-height: 13vh;
+      position: absolute;
+      margin: 0;
+      width: inherit;
+      margin-top: 2.2em;
+      z-index: 3;
+    }
+
+    #H2_Tabla th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+    .sortorder2:after {
+      content: '\25bc';
+    }
+
+    .sortorder2.reverse2:after {
+      content: '\25b2';
+    }
+
+    input.input-text-new {
+      background-color: #f1f3f4 !important;
+    }
+
+    .gray-input {
+      background-color: #f1f3f4 !important;
+    }
+
+    .invalid-email {
+      border-color: red;
+    }
+
+    .md-card-buttons {
+      position: absolute;
+      z-index: -1;
+      top: -50px;
+      width: calc(100% - 30px);
+      left: 15px;
+      text-align: center;
+    }
+
+
+    #H1_Tabla>thead,
+    #H2_Tabla>thead {
+      font-size: 1em;
+      /* border: 3px; */
+      border-width: medium;
+      border-style: solid;
+      border-radius: .375rem;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    }
+
+
+    .tooltip_ab {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip_ab .tooltiptext_ab::after {
+      content: "";
+      position: absolute;
+      top: -37%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #00000000 #00000000 #555 #00000000;
+    }
+
+    .tooltip_ab:hover .tooltiptext_ab {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip_ab .tooltiptext_ab {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: -150%;
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .select_maxheigth ul {
+      max-height: 125px;
+    }
+
+    #toast-container .toast {
+      border-radius: 25px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+
+    .modal {
+      border-radius: 10px;
+      overflow: hidden;
+      max-height: 88%;
+      z-index: 1003;
+      display: none;
+      opacity: 0;
+      transform: scaleX(0.7);
+      top: 4%;
+    }
+
+    .pagination {
+      text-align: center;
+      padding-top: 0px;
+      font-weight: 800;
+    }
+
+    /**/
+    /**/
+    /**/
+    .content-box2 {
+      background-color: #F1F3F4;
+      padding: 10px;
+      border: 1px solid #ebecec;
+      position: relative;
+      box-shadow: none !important;
+      margin-left: .55vw;
+    }
+
+    .chip_1 {
+      display: inline;
+      text-align: left;
+      color: #737373;
+      line-height: 1.7em;
+      font-size: 1em;
+      font-style: italic;
+      text-transform: uppercase;
+    }
+
+    .chip_2 {
+      background-color: #e4e4e4;
+      font-weight: 700;
+    }
+
+    #versionamiento .content-box {
+      border-bottom: 0px !important;
+    }
+
+    .timeline-page .timeline .timeline-milestone:not(:first-child)::before {
+      left: calc(10% - 1px);
+    }
+
+    .timeline-page .timeline .timeline-event .timeline-content {
+      position: relative;
+      width: calc(90% - 50px);
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(even) .timeline-content {
+      margin-left: calc(10% + 39px);
+    }
+
+    .timeline-page .timeline .timeline-badge {
+      right: calc(90% - 20px);
+    }
+
+    .timeline-page .timeline .timeline-milestone::after {
+      left: calc(10% - 1px);
+    }
+
+    .timeline-page .timeline .timeline-event::after {
+      left: calc(10% - 1px);
+    }
+
+    #versionamiento .timeline-page .timeline .timeline-event:nth-child(even) .timeline-content .content-box::before {
+      left: -54px;
+    }
+
+    #versionamiento .timeline-page .timeline .timeline-event .timeline-content .content-box::before {
+      width: calc(100% + 70px);
+    }
+
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    .timeline-page .timeline .timeline-badge {
+      right: calc(90% - 20px);
+    }
+
+    .timeline-page .timeline .timeline-badge {
+      right: calc(90% - 20px);
+    }
+
+    .timeline-badge4 {
+      background-color: #dd4bd6 !important;
+    }
+
+    .timeline-badge5 {
+      background-color: #52120b !important;
+    }
+
+    .timeline-badge6 {
+      background-color: #bb5964 !important;
+    }
+
+    .timeline-badge7 {
+      background-color: #3bf2dd !important;
+    }
+
+    .timeline-badge8 {
+      background-color: #6f19ce !important;
+    }
+
+    .timeline-badge9 {
+      background-color: #c54141 !important;
+    }
+
+    .timeline-badge10 {
+      background-color: #06965a !important;
+    }
+
+    .timeline-badge11 {
+      background-color: #fec035 !important;
+    }
+
+    .timeline-badge12 {
+      background-color: #0501e7 !important;
+    }
+
+    .timeline-badge13 {
+      background-color: #e182ba !important;
+    }
+
+    .timeline-badge14 {
+      background-color: #dd4bd6 !important;
+    }
+
+    .timeline-badge15 {
+      background-color: #52120b !important;
+    }
+
+    .timeline-badge16 {
+      background-color: #bb5964 !important;
+    }
+
+    .timeline-badge17 {
+      background-color: #3bf2dd !important;
+    }
+
+    .timeline-badge18 {
+      background-color: #6f19ce !important;
+    }
+
+    .timeline-badge19 {
+      background-color: #c54141 !important;
+    }
+
+    .timeline-badge20 {
+      background-color: #06965a !important;
+    }
+  </style>
+</div>

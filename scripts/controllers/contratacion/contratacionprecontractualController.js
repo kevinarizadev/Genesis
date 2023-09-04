@@ -115,8 +115,14 @@ angular.module('GenesisApp')
       $scope.caratula = function () {
         $window.open('views/contratacion/formatos/caratula.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
       }
-      $scope.anexo3 = function () {
-        $window.open('views/contratacion/formatos/anexo3.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
+      // $scope.anexo3 = function () {
+      //   $window.open('views/contratacion/formatos/anexo3.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
+      // }
+      $scope.anexo15 = function () {
+        $window.open('views/contratacion/formatos/anexo15.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
+      }
+      $scope.anexo14 = function () {
+        $window.open('views/contratacion/formatos/anexo14.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
       }
       $scope.descarga = function (tipo, JSONData, ReportTitle, ShowLabel) {
         switch (tipo) {
@@ -2881,69 +2887,56 @@ angular.module('GenesisApp')
           $window.open('views/contratacion/formatos/formatominutacontrato.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
       }*/
       $scope.Genera_Minuta = function (v_pnumero, v_pubicacion, v_pdocumento, fecha_inicio, tipominuta = '5') {
-        var v_fecha_inicio = new Date(fecha_inicio.split('/')[2] + '/' + fecha_inicio.split('/')[1] + '/' + fecha_inicio.split('/')[0]);
-        var fechaNuevaMinuta = new Date('2023/07/01');
-        console.log(v_fecha_inicio, fechaNuevaMinuta)
-        if (v_fecha_inicio >= fechaNuevaMinuta) {
-          switch (parseInt(tipominuta)) {
-            case 1:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_recuperacion.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-              break;
-            case 2:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_PYM.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-              break;
-            case 3:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_medicamento_capita.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-              break;
-            // case 4:
+        // var v_fecha_inicio = new Date(fecha_inicio.split('/')[2] + '/' + fecha_inicio.split('/')[1] + '/' + fecha_inicio.split('/')[0]);
+        // var fechaNuevaMinuta = new Date('2023/07/01');
+        // console.log(v_fecha_inicio, fechaNuevaMinuta)
+        swal({
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#1d930f',
+          confirmButtonText: 'Generar Minuta Nueva',
+          cancelButtonText: 'Generar Minuta Antigua'
+        }).then((result) => {
+          if (result) {
+            switch (parseInt(tipominuta)) {
+              case 1:
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_recuperacion.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                break;
+              case 2:
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_PYM.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                break;
+              case 3:
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_medicamento_capita.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                break;
+              // case 4:
 
-            //   break;
-            case 5:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_bolsa.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-              break;
-            // case 6:
+              //   break;
+              case 5:
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_bolsa.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                break;
+              // case 6:
 
-            //   break;
-            case 7:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_medicamento_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-              break;
-            case 8:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-              break;
-            // case 9:
+              //   break;
+              case 7:
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_medicamento_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                break;
+              case 8:
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                break;
+              // case 9:
 
-            //   break;
+              //   break;
 
-            default:
-              $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-              break;
+              default:
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                break;
+            }
           }
-          // 5	GENERAL
-          // 6	NO ASISTENCIAL
-          // 2	PYM
-          // 1	RECUPERACION
-          // 3	MEDICAMENTO
-          // 7	MEDICAMENTO - EVENTO
-          // 4	ESPECIAL - NO ASISTENCIAL
-          // 9	PGP GENERAL
-          // 8	BOLSA
-
-          // <span class="minuta_paragrafo">PARÁGRAFO. </span>
-
-          // <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. </span>
-          // <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. </span>
-          // <span class="minuta_paragrafo">PARÁGRAFO TERCERO. </span>
-          // <span class="minuta_paragrafo">PARÁGRAFO CUARTO. </span>
-
-          // <div class="minuta_clausula"></div>
-          // <div class="minuta_texto">
-
-          // </div>
-
-
-        } else {
-          $window.open('views/contratacion/formatos/minutas/formatominutacontrato.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento + '&v_ptipominuta=EVENTO&v_minuta=' + tipominuta);
-        }
+        }, function (dismiss) {
+          if (dismiss == 'cancel') {
+            $window.open('views/contratacion/formatos/minutas/formatominutacontrato.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento + '&v_ptipominuta=EVENTO&v_minuta=' + tipominuta);
+          }
+        })
       }
 
 

@@ -2,8 +2,7 @@
 angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '$http', '$filter',
   function ($scope, $http, $filter) {
     $(document).ready(function () {
-      $('#modalarchivosdetalle').modal();
-      $('#modalhistoricoerrores').modal();
+      $('.modal').modal();
       $scope.nit = sessionStorage.getItem('nit');
       $scope.Rol_Cedula = sessionStorage.getItem('cedula');
       $scope.pen = 0;
@@ -78,28 +77,59 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
       window.open('php/cuentasmedicas/rips/error_rips.php?archivo=' + archivo + '&proceso=' + proceso + '&texto=' + text);
     }
     $scope.print = async function (data) {
-      $scope.info = {
-        recibo: '',
-        nit: ''
-      };
-      $scope.info.recibo = data.recibo;
-      $scope.info.nit = data.nit;
-      $scope.info.codigo = data.codigo;
-      $scope.info.verificacion = data.codigov;
-      window.open('views/Cuentasmedicas/formatos/acta.php?datos=' + JSON.stringify($scope.info), '_blank', "width=900,height=1100");
-      if (data.nit === '901139193') {
-        const responseExisteActa = await $http({
-          url: '/php/cuentasmedicas/onbase.php',
-          method: 'POST',
-          data: $scope.info
+      if (data.estado == 'RADICADO') {
+        swal({
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#1d930f',
+          confirmButtonText: 'Generar Acta',
+          cancelButtonText: 'Radicar facturas digitalmente'
+        }).then((result) => {
+          if (result) {
+            $scope.info = {
+              recibo: '',
+              nit: ''
+            };
+            $scope.info.recibo = data.recibo;
+            $scope.info.nit = data.nit;
+            $scope.info.codigo = data.codigo;
+            $scope.info.verificacion = data.codigov;
+            window.open('views/Cuentasmedicas/formatos/acta.php?datos=' + JSON.stringify($scope.info), '_blank', "width=900,height=1100");
+          }
+        }, function (dismiss) {
+          if (dismiss == 'cancel') {
+            // Cargar Soporte Digitales
+            $scope.modalCargueSoporteDig();
+          }
         })
-        if (responseExisteActa.data.data.ACTA_GENERADA === 'S') {
-          const responseImportDocument = await $http({
-            url: `/php/onbase/acta.php?nit=${$scope.info.nit}&recibo=${$scope.info.recibo}&codigo=${$scope.info.codigo}&verificacion=${$scope.info.verificacion}`
-          })
-        }
+      } else {
+        $scope.info = {
+          recibo: '',
+          nit: ''
+        };
+        $scope.info.recibo = data.recibo;
+        $scope.info.nit = data.nit;
+        $scope.info.codigo = data.codigo;
+        $scope.info.verificacion = data.codigov;
+        window.open('views/Cuentasmedicas/formatos/acta.php?datos=' + JSON.stringify($scope.info), '_blank', "width=900,height=1100");
+        // if (data.nit === '901139193') {
+        //   const responseExisteActa = await $http({
+        //     url: '/php/cuentasmedicas/onbase.php',
+        //     method: 'POST',
+        //     data: $scope.info
+        //   })
+        //   if (responseExisteActa.data.data.ACTA_GENERADA === 'S') {
+        //     const responseImportDocument = await $http({
+        //       url: `/php/onbase/acta.php?nit=${$scope.info.nit}&recibo=${$scope.info.recibo}&codigo=${$scope.info.codigo}&verificacion=${$scope.info.verificacion}`
+        //     })
+        //   }
+        // }
       }
+
+
     }
+
+
 
     function validar_json(str) {
       try {
@@ -155,12 +185,12 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
       //   proceso: data.codigo
       // });
       // console.log(data);
-      // var datos = {
-      //   nit: data.nit,
-      //   habilitacion: data.habilitacion,
-      //   recibo: data.recibo,
-      //   codigo: data.codigo
-      // };
+      var datos = {
+        nit: data.nit,
+        habilitacion: data.habilitacion,
+        recibo: data.recibo,
+        codigo: data.codigo
+      };
       window.open('views/Cuentasmedicas/formatos/informe_validacion.php?datos=' + angular.toJson(datos), '_blank', "width=900,height=1100");
     }
     $scope.verdetalle = function (codigo) {
@@ -186,8 +216,7 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
       $scope.configPages();
     }
     $scope.closeModal = function () {
-      $('#modalarchivosdetalle').modal('close');
-      $('#modalhistoricoerrores').modal('close');
+      $('.modal').modal('close');
     }
     $scope.configPages = function () {
       $scope.pages.length = 0;
@@ -498,6 +527,171 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
         }
       })
     }
+
+    $scope.modalCargueSoporteDig = function () {
+      $scope.formSoporteDig = {
+        recibo: '654231',
+        fechaRegistro: new Date('01/01/2023'),
+        cantidadFacturas: 10,
+        valorTotal: '$ 1.000.000',
+
+        soporteNombre: '',
+        soporteB64: '',
+        soporteExt: '',
+
+        archivosPendientes: [
+          {
+            nombreArchivo: 'Factura 001.pdf',
+            error: 'Factura ilegible',
+            soporteNombre: '',
+            soporteB64: '',
+            soporteExt: ''
+          },
+          {
+            nombreArchivo: 'Factura 002.pdf',
+            error: 'Factura ilegible',
+            soporteNombre: '',
+            soporteB64: '',
+            soporteExt: ''
+          },
+          {
+            nombreArchivo: 'Factura 003.pdf',
+            error: 'Factura ilegible',
+            soporteNombre: '',
+            soporteB64: '',
+            soporteExt: ''
+          }
+        ]
+
+      }
+      document.querySelector('#fileFacturasDig').value = '';
+      setTimeout(() => { document.querySelector('#modalCargueSoporteDig').style.top = 1 + '%'; }, 600);
+
+      $('#modalCargueSoporteDig').modal('open');
+      setTimeout(() => { $scope.$apply(); }, 500);
+
+      setTimeout(() => {
+        document.querySelectorAll('.fileFacturasDigUnica').forEach((filef, index) => filef.addEventListener('change', function (e) {
+          $scope.formSoporteDig.archivosPendientes[index].soporteExt = '';
+          $scope.formSoporteDig.archivosPendientes[index].soporteB64 = '';
+          setTimeout(() => { $scope.$apply(); }, 500);
+          var files = e.target.files;
+          if (files.length != 0) {
+            for (let i = 0; i < files.length; i++) {
+              const x = files[i].name.split('.');
+              if (x[x.length - 1].toUpperCase() == 'JPG' || x[x.length - 1].toUpperCase() == 'PDF') {
+                if (files[i].size < 15485760 && files[i].size > 0) {
+                  $scope.getBase64(files[i]).then(function (result) {
+                    $scope.formSoporteDig.archivosPendientes[index].soporteExt = x[x.length - 1].toLowerCase();
+                    $scope.formSoporteDig.archivosPendientes[index].soporteB64 = result;
+                    setTimeout(function () { $scope.$apply(); }, 300);
+                    setTimeout(() => {
+                      console.log($scope.formSoporteDig.archivosPendientes)
+                    }, 2500);
+                  });
+                } else {
+                  // document.querySelector('#fileFacturasDig').value = '';
+                  swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
+                }
+              } else {
+                // document.querySelector('#fileFacturasDig').value = '';
+                swal('Advertencia', '¡El archivo seleccionado debe ser .JPG o .PDF!', 'info');
+              }
+            }
+          }
+
+        })
+        )
+          ;
+      }, 1500);
+    }
+
+    document.querySelector('#fileFacturasDig').addEventListener('change', function (e) {
+      $scope.formSoporteDig.soporteB64 = "";
+      setTimeout(() => { $scope.$apply(); }, 500);
+      var files = e.target.files;
+      if (files.length != 0) {
+        for (let i = 0; i < files.length; i++) {
+          const x = files[i].name.split('.');
+          if (x[x.length - 1].toUpperCase() == 'ZIP') {
+            if (files[i].size < 15485760 && files[i].size > 0) {
+              $scope.getBase64(files[i]).then(function (result) {
+                $scope.formSoporteDig.soporteExt = x[x.length - 1].toLowerCase();
+                $scope.formSoporteDig.soporteB64 = result;
+                setTimeout(function () { $scope.$apply(); }, 300);
+              });
+            } else {
+              document.querySelector('#fileFacturasDig').value = '';
+              swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
+            }
+          } else {
+            document.querySelector('#fileFacturasDig').value = '';
+            swal('Advertencia', '¡El archivo seleccionado debe ser .ZIP!', 'info');
+          }
+        }
+      }
+    });
+    $scope.getBase64 = function (file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    $scope.cargarFacturasDig = function () {
+      return new Promise((resolve) => {
+        if (!$scope.formSoporteDig.soporteB64) { resolve(''); return }
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: "cargarFacturasDig",
+
+            // codigo: "SoporteProceso",
+            // codigo: $scope.hojaProcesos.formulario.idProcesoSeleccionado,
+            // base64: $scope.hojaProcesos.formulario.soporteB64
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) != '<br') {
+            resolve(data);
+          } else {
+            resolve(false);
+          }
+        })
+      });
+    }
+
+    $scope.validarFacturasDig = function () {
+      const text = `Total: ${$scope.formSoporteDig.cantidadFacturas}`
+      swal({
+        title: '¿Adjuntó el total de las facturas esperadas?',
+        text,
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result) {
+        }
+      })
+      // asdasd
+    }
+
+
+
+
   }
 ]).filter('inicio', function () {
   return function (input, start) {

@@ -324,9 +324,9 @@ angular.module('GenesisApp')
         $scope.Hoja1 = {
           Afiliado:
           {
-             TipoDoc: '',
+            TipoDoc: '',
             //TipoDoc: 'CC',
-             NumeroDoc: '',
+            NumeroDoc: '',
             // NumeroDoc: '91102711',
             NombreUsu: '',
             MunicipioUsu: '',
@@ -2105,11 +2105,11 @@ angular.module('GenesisApp')
       }
 
       $scope.Selec_Ips_Solicitante = function (HOJA, BUSQUEDA) {
-        // $scope[HOJA].Servicio.Ips_Solicitante_Cod = 
+        // $scope[HOJA].Servicio.Ips_Solicitante_Cod =
         if ($scope[BUSQUEDA].Ips_Solicitante.Listado != null && $scope[BUSQUEDA].Ips_Solicitante.Listado.length) {
           const ipsSeleccionada = $scope[BUSQUEDA].Ips_Solicitante.Listado[$scope[BUSQUEDA].Ips_Solicitante.Listado.findIndex((element) => element.NOMBRE.trim() == $scope[HOJA].Servicio.Ips_Solicitante.trim())];
-          if (!ipsSeleccionada) return          
-          
+          if (!ipsSeleccionada) return
+
           $scope[HOJA].Servicio.Ips_Solicitante_Cod = ipsSeleccionada.CODIGO;
           $scope[HOJA].Servicio.Ips_Solicitante = ipsSeleccionada.NOMBRE;
           setTimeout(() => { $scope.$apply(); }, 500);
@@ -3156,7 +3156,11 @@ angular.module('GenesisApp')
                     RUT_CertBancaria_B64: '',
 
                     Cotizacion_DIR: response.data[0].Cotizacion1_DIR == '0' ? '' : response.data[0].Cotizacion1_DIR,
-                    Cotizacion_DIR_COD: response.data[0].Cotizacion1_DIR == '0' ? '' : response.data[0].Cotizacion1_DIR_COD
+                    Cotizacion_DIR_COD: response.data[0].Cotizacion1_DIR == '0' ? '' : response.data[0].Cotizacion1_DIR_COD,
+
+                    Contratada: response.data[0].Contratada1_Proc_aut != '' ?
+                    response.data[0].Contratada1_Proc_aut : response.data[0].Contratada1_Aut != '' ?
+                     response.data[0].Contratada1_Aut : response.data[0].Contratada1_Registro != '' ? response.data[0].Contratada1_Registro : ''
                   },
                   Cotizacion_2:
                   {
@@ -3174,7 +3178,11 @@ angular.module('GenesisApp')
                     RUT_CertBancaria_B64: '',
 
                     Cotizacion_DIR: response.data[0].Cotizacion2_DIR == '0' ? '' : response.data[0].Cotizacion2_DIR,
-                    Cotizacion_DIR_COD: response.data[0].Cotizacion2_DIR == '0' ? '' : response.data[0].Cotizacion2_DIR_COD
+                    Cotizacion_DIR_COD: response.data[0].Cotizacion2_DIR == '0' ? '' : response.data[0].Cotizacion2_DIR_COD,
+
+                    Contratada: response.data[0].Contratada2_Proc_aut != '' ?
+                    response.data[0].Contratada2_Proc_aut : response.data[0].Contratada2_Aut != '' ?
+                     response.data[0].Contratada2_Aut : response.data[0].Contratada2_Registro != '' ? response.data[0].Contratada2_Registro : ''
                   },
                   Cotizacion_3:
                   {
@@ -3192,7 +3200,11 @@ angular.module('GenesisApp')
                     RUT_CertBancaria_B64: '',
 
                     Cotizacion_DIR: response.data[0].Cotizacion3_DIR == '0' ? '' : response.data[0].Cotizacion3_DIR,
-                    Cotizacion_DIR_COD: response.data[0].Cotizacion3_DIR_COD == '0' ? '' : response.data[0].Cotizacion3_DIR_COD
+                    Cotizacion_DIR_COD: response.data[0].Cotizacion3_DIR_COD == '0' ? '' : response.data[0].Cotizacion3_DIR_COD,
+
+                    Contratada: response.data[0].Contratada3_Proc_aut != '' ?
+                    response.data[0].Contratada3_Proc_aut : response.data[0].Contratada3_Aut != '' ?
+                     response.data[0].Contratada3_Aut : response.data[0].Contratada3_Registro != '' ? response.data[0].Contratada3_Registro : ''
                   },
                   Cotizacion_4:
                   {

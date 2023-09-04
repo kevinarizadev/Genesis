@@ -20,10 +20,10 @@ angular.module('GenesisApp')
 
         setTimeout(() => {
           console.log($scope.permisos)
+          $scope.hojaProcesosLimpiar()
+          $scope.hojaProcesosListar();
           if ($scope.validarPermisos(['AS'])) {
             // debugger
-            $scope.hojaProcesosLimpiar()
-            $scope.hojaProcesosListar();
             $scope.hojaProcesosListarlistadoPerspectiva()
             $scope.hojaProcesosListarObjetivoEstrategico()
             setTimeout(() => { $scope.$apply(); }, 500);
@@ -373,11 +373,11 @@ angular.module('GenesisApp')
                 });
               } else {
                 document.querySelector('#procesosFile').value = '';
-                swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (5MB)!', 'info');
+                swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
               }
             } else {
               document.querySelector('#procesosFile').value = '';
-              swal('Advertencia', '¡El archivo seleccionado debe ser un formato diferente!', 'info');
+              swal('Advertencia', '¡El archivo seleccionado debe ser formato PDF!', 'info');
             }
           }
         }
@@ -492,6 +492,12 @@ angular.module('GenesisApp')
             valmaxpag: 10,
             pages: []
           },
+          filtros: {
+            activo: false,
+            proceso: '',
+            dependencia: '',
+            periodicidadAnalisis: ''
+          },
 
           formulario: {},
           listadoObjetivos: [],
@@ -501,6 +507,18 @@ angular.module('GenesisApp')
             { codigo: '3', nombre: 'Regional o Nacional' },
             { codigo: '4', nombre: 'Subregional' },
           ],
+          listadoRegionales: [
+            { codigo: '8001', nombre: 'Atlántico' },
+            { codigo: '13001', nombre: 'Bolivar' },
+            { codigo: '15001', nombre: 'Boyacá' },
+            { codigo: '20001', nombre: 'Cesar' },
+            { codigo: '23001', nombre: 'Cordoba' },
+            { codigo: '44001', nombre: 'Guajira' },
+            { codigo: '47001', nombre: 'Magdalena' },
+            { codigo: '50001', nombre: 'Meta' },
+            { codigo: '70001', nombre: 'Sucre' },
+          ],
+
           listadoDependencias: [],
           listadoTipoVigencia: [
             { codigo: 'A', nombre: 'Automática' },
@@ -569,6 +587,8 @@ angular.module('GenesisApp')
             { codigo: 'DI', nombre: 'Diferencia' },
             { codigo: 'AJ', nombre: 'Ajuste' },
             { codigo: 'DE', nombre: 'Desempeño' },
+            { codigo: 'TL', nombre: 'Talento' },
+            { codigo: 'CT', nombre: 'Capital de Trabajo' },
           ],
           listadoAnio: []
 
@@ -640,6 +660,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.tipoProcesoCod = '';
         $scope.hojaIndicadores.formulario.objetivoEstrategicoTactico = '';
         $scope.hojaIndicadores.formulario.nivel = '';
+        $scope.hojaIndicadores.formulario.regional = '';
         $scope.hojaIndicadores.formulario.dependencia = '';
         $scope.hojaIndicadores.formulario.definicion = '';
         //
@@ -758,6 +779,8 @@ angular.module('GenesisApp')
       // EDITAR INDICADOR
       $scope.modalEditarIndicador = function (x) {
         console.log(x);
+        $scope.modalDatosIndicador = x;
+
         $scope.activarCamposDesactivados()
         $scope.hojaIndicadores.formulario.idIndicadorSeleccionado = x.REGN_COD_INDICADOR;
 
@@ -772,6 +795,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.listadoObjetivos = [];
 
         $scope.hojaIndicadores.formulario.nivel = x.REGN_NIVEL.split('-')[0];
+        $scope.hojaIndicadores.formulario.regional = x.REGN_REGIONAL;
         $scope.hojaIndicadores.formulario.dependencia = x.REGN_DEPENDENCIA.split('-')[0];
         $scope.hojaIndicadores.formulario.definicion = x.REGC_OBJETIVO_INDICADOR;
         //
@@ -923,6 +947,7 @@ angular.module('GenesisApp')
 
       $scope.modalFichaTecnica = function (x) {
 
+        $scope.modalFichaTecnicaDatos = x
         $scope.modalFichaTecnicaVars = {}
         $scope.modalFichaTecnicaVars.nombre = x.REGN_NOM_INDICADOR
         $scope.modalFichaTecnicaVars.definicion = x.REGC_OBJETIVO_INDICADOR
@@ -1266,22 +1291,6 @@ angular.module('GenesisApp')
                 dataMeta.push($scope.filtrarPeriodoMetaVigencia(12))
               }
 
-              // const meses = ($scope.hojaIndicadores.listadoFrecuencia.find(e => e.codigo === x.REGC_PERIODICIDAD_ANALISIS.split('-')[0])).meses;
-              // parseInt($scope.modalGraficoVars.REGN_META_VIGENCIA)
-              // dataMeta = []
-              // let meta = x.REGC_ACUMULATIVO == 'S' ? parseFloat($scope.modalGraficoVars.REGN_META_VIGENCIA) : parseFloat($scope.modalGraficoVars.REGN_META);
-
-              // for (let i = 0; i < meses; i++) {
-              // dataMeta.push(meta)
-              // parseInt($scope.modalGraficoVars.REGN_META_VIGENCIA)
-              // meta = x.REGC_ACUMULATIVO == 'S' ? (meta + parseFloat($scope.modalGraficoVars.REGN_META_VIGENCIA)) : meta;
-              // }
-
-              // if (x.REGC_ACUMULATIVO == 'N') {
-              //   dataMeta = [[0, meta], [meses, meta]]
-              // }
-
-              //GENERAR GRAFICO
               //GENERAR GRAFICO
               $scope.graficoIndicador = Highcharts.chart('graficoIndicador', {
                 chart: {
@@ -1297,7 +1306,7 @@ angular.module('GenesisApp')
                   categories: dataMeses
                 },
                 yAxis: {
-                  min: 0,
+                  // min: 0,
                   // max: 110,
                   // tickInterval: 10,
                   gridLineColor: '',
@@ -1345,7 +1354,6 @@ angular.module('GenesisApp')
                 // exporting: { enabled: false },
                 credits: { enabled: false },
               });
-              //GENERAR GRAFICO
               //GENERAR GRAFICO
 
             }, 500);
@@ -1427,7 +1435,7 @@ angular.module('GenesisApp')
         })
       }
 
-      $scope.modalDatosCorrespGestionarPeriodo = function (x) {
+      $scope.modalDatosCorrespGestionarPeriodo = function (x, index) {
         console.log($scope.modalDatosCorrespVars);
         $scope.modalDatosCorrespVars.vista = 2;
         $scope.modalDatosCorrespVarsPeriodo.anio = x.GESN_ANNO
@@ -1439,6 +1447,23 @@ angular.module('GenesisApp')
         $scope.modalDatosCorrespVarsPeriodo.nota = x.GESC_OBSERVACION
         $scope.modalDatosCorrespVarsPeriodo.accion = x.GESN_ACUMULADO == '0' ? 'I' : 'U'
         $scope.modalDatosCorrespVarsPeriodo.resultado = x.GESN_RESULTADO;
+
+        document.querySelector('#fileGestionIndic').value = '';
+        $scope.modalDatosCorrespVarsPeriodo.soporteNombre = '';
+        $scope.modalDatosCorrespVarsPeriodo.soporteExt = '';
+        $scope.modalDatosCorrespVarsPeriodo.soporteB64 = '';
+        $scope.modalDatosCorrespVarsPeriodo.listadoAdjuntos = []
+        $scope.listarSoportesGestionIndi();
+
+        // Tipo de calculo Variacion - Buscar resultado del periodo anterior
+        // if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'VA') {
+        //   if (index == 0) {
+        //     $scope.modalDatosCorrespVarsPeriodo.numerador = 0;
+        //   } else {
+        //     $scope.modalDatosCorrespVarsPeriodo.numerador = $scope.modalDatosCorrespVars.listado[index - 1].GESN_RESULTADO.replace(',', '.')
+        //   }
+        // }
+
         $scope.calcularResultadoPeriodo()
         setTimeout(() => { $scope.$apply(); }, 500);
       }
@@ -1467,10 +1492,17 @@ angular.module('GenesisApp')
           ).toFixed(2)
         }
 
+        if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'VA') {
+          $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
+            ((parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) - parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador)) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador))
+            * 100
+          ).toFixed(2)
+        }
+
         if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DI') {
 
           $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
-            100 - (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador))
+            100 - (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador)) * 100
           ).toFixed(2)
         }
 
@@ -1491,6 +1523,20 @@ angular.module('GenesisApp')
             (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador) * parseFloat($scope.modalDatosCorrespVarsPeriodo.constante))
           ).toFixed(2)
         }
+        if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TL') {
+          if ($scope.modalDatosCorrespVarsPeriodo.constante == '') return
+
+          $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
+            ((parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) - parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador)) * parseFloat($scope.modalDatosCorrespVarsPeriodo.constante))
+          ).toFixed(2)
+        }
+        if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CT') {
+          if ($scope.modalDatosCorrespVarsPeriodo.constante == '') return
+
+          $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
+            (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) - parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador))
+          ).toFixed(2)
+        }
 
       }
 
@@ -1507,6 +1553,7 @@ angular.module('GenesisApp')
           if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CA' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
           if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'AJ' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
           if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DE' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
+          if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TL' && !$scope.modalDatosCorrespVarsPeriodo.constante) resolve(false)
           if (!$scope.modalDatosCorrespVarsPeriodo.nota) resolve(false)
           resolve(true)
         });
@@ -1854,6 +1901,7 @@ angular.module('GenesisApp')
           if (!$scope.hojaIndicadores.formulario.tipoProcesoCod) resolve(false);
           if (!$scope.hojaIndicadores.formulario.objetivoEstrategicoTactico) resolve(false);
           if (!$scope.hojaIndicadores.formulario.nivel) resolve(false);
+          if ($scope.hojaIndicadores.formulario.nivel === '2' && !$scope.hojaIndicadores.formulario.regional) resolve(false);
           if (!$scope.hojaIndicadores.formulario.dependencia) resolve(false);
           if (!$scope.hojaIndicadores.formulario.definicion) resolve(false);
           if (!$scope.hojaIndicadores.formulario.acumulativo) resolve(false);
@@ -1908,6 +1956,7 @@ angular.module('GenesisApp')
             pcod_indicador: $scope.hojaIndicadores.formulario.idIndicadorSeleccionado,
             pnombre: $scope.hojaIndicadores.formulario.nombre,
             pnivel: $scope.hojaIndicadores.formulario.nivel,
+            pregional: $scope.hojaIndicadores.formulario.nivel === '2' ? $scope.hojaIndicadores.formulario.regional : '',
             pestado: $scope.hojaIndicadores.formulario.estado,
             pdependencia: $scope.hojaIndicadores.formulario.dependencia,
             pobjetivo_indicador: $scope.hojaIndicadores.formulario.definicion,
@@ -2063,6 +2112,1045 @@ angular.module('GenesisApp')
 
       }
 
+      $scope.hojaIndicadoresActivarFiltro = function () {
+        $scope.hojaIndicadores.filtros.activo = !$scope.hojaIndicadores.filtros.activo;
+        $scope.hojaIndicadores.filtros.proceso = '';
+        $scope.hojaIndicadores.filtros.dependencia = '';
+        $scope.hojaIndicadores.filtros.periodicidadAnalisis = '';
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.hojaIndicadoresAplicarFiltro = function () {
+        // let listadoTabla;
+        let listadoTabla = $scope.hojaIndicadores.listadoTabla;
+
+        if ($scope.hojaIndicadores.filtros.proceso != '') {
+          listadoTabla = listadoTabla.filter(x => x.REGN_PROCESO === $scope.hojaIndicadores.filtros.proceso)
+        }
+        if ($scope.hojaIndicadores.filtros.dependencia != '') {
+          listadoTabla = listadoTabla.filter(x => x.REGN_DEPENDENCIA.split('-')[0] === $scope.hojaIndicadores.filtros.dependencia)
+        }
+        if ($scope.hojaIndicadores.filtros.periodicidadAnalisis != '') {
+          listadoTabla = listadoTabla.filter(x => x.REGC_PERIODICIDAD_ANALISIS.split('-')[0] === $scope.hojaIndicadores.filtros.periodicidadAnalisis)
+        }
+
+        $scope.initPaginacion('hojaIndicadores', listadoTabla);
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+
+
+      $scope.descargarFichaTecnica = function (x) {
+
+        window.open('views/planeacion/formatos/formatoFichaTecnica.php?cod_pro=' + x.REGN_PROCESO +
+          '&cod_estr=' + x.REGN_COD_ESTR +
+          '&cod_tac=' + x.REGN_COD_TACT +
+          '&cod_ind=' + x.REGN_COD_INDICADOR +
+          '&anno=' + x.REGN_ANNO
+          , '_blank', "width=1080,height=1100");
+
+      }
+
+      $scope.descargarInformeMultiple = function () {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: { function: 'p_descarga_informe_multiple' }
+        }).then(function ({ data }) {
+          if (data.length) {
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Exportado Multiple Indicadores.xlsx");
+            const text = `Registros encontrados ${data.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          } else {
+            swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.descargarInformeIndividual = function (x) {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: 'p_descarga_informe_individual',
+            cod_pro: x.REGN_PROCESO,
+            cod_estr: x.REGN_COD_ESTR,
+            cod_tac: x.REGN_COD_TACT,
+            cod_ind: x.REGN_COD_INDICADOR,
+            anno: x.REGN_ANNO,
+          }
+        }).then(function ({ data }) {
+          if (data.length) {
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Exportado Individual Indicadores.xlsx");
+            const text = `Registros encontrados ${data.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          } else {
+            swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+
+      document.querySelector('#fileGestionIndic').addEventListener('change', function (e) {
+        $scope.hojaProcesos.formulario.soporteB64 = "";
+        setTimeout(() => { $scope.$apply(); }, 500);
+        var files = e.target.files;
+        if (files.length != 0) {
+          for (let i = 0; i < files.length; i++) {
+            const x = files[i].name.split('.');
+            if (x[x.length - 1].toUpperCase() == 'ZIP') {
+              if (files[i].size < 15485760 && files[i].size > 0) {
+                $scope.getBase64(files[i]).then(function (result) {
+                  $scope.modalDatosCorrespVarsPeriodo.soporteExt = x[x.length - 1].toLowerCase();
+                  $scope.modalDatosCorrespVarsPeriodo.soporteNombre = `${files[i].name.replace(/(.ZIP|.zip|.PDF|.pdf)/g, '')}`;
+                  // $scope.modalDatosCorrespVarsPeriodo.soporteNombre = `${files[i].name.replace('(.ZIP|.zip)', '')}.${$scope.modalDatosCorrespVarsPeriodo.soporteExt}`;
+                  $scope.modalDatosCorrespVarsPeriodo.soporteB64 = result;
+                  $scope.guardarSoporteGestionIndic();
+                  setTimeout(function () { $scope.$apply(); }, 300);
+                });
+              } else {
+                document.querySelector('#fileGestionIndic').value = '';
+                swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
+              }
+            } else {
+              document.querySelector('#fileGestionIndic').value = '';
+              swal('Advertencia', '¡Los archivos seleccionados deben ser formato ZIP!', 'info');
+            }
+          }
+        }
+      });
+
+      $scope.listarSoportesGestionIndi = function () {
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+
+            function: 'p_listar_soportes_gestion_indicador',
+            cod_pro: $scope.modalDatosCorrespVars.REGN_PROCESO,
+            cod_estr: $scope.modalDatosCorrespVars.REGN_COD_ESTR,
+            cod_tac: $scope.modalDatosCorrespVars.REGN_COD_TACT,
+            cod_ind: $scope.modalDatosCorrespVars.REGN_COD_INDICADOR,
+            anno: $scope.modalDatosCorrespVars.REGN_ANNO,
+            periodo: $scope.modalDatosCorrespVarsPeriodo.periodo
+
+          }
+        }).then(function ({ data }) {
+          if (data.length) {
+            $scope.modalDatosCorrespVarsPeriodo.listadoAdjuntos = data;
+            setTimeout(() => { $scope.$apply(); }, 500);
+            // } else {
+            // swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.guardarSoporteGestionIndic = function () {
+        swal({
+          title: 'Confirmar',
+          text: '¿Desea cargar el soporte?',
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando Soporte...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $scope.cargarSoporteGestionIndic().then((resultSoporte) => {
+              $http({
+                method: 'POST',
+                url: "php/planeacion/procesospoa.php",
+                data: {
+                  function: "p_guardar_soporte_gestion_indicador",
+
+                  cod_pro: $scope.modalDatosCorrespVars.REGN_PROCESO,
+                  cod_estr: $scope.modalDatosCorrespVars.REGN_COD_ESTR,
+                  cod_tac: $scope.modalDatosCorrespVars.REGN_COD_TACT,
+                  cod_ind: $scope.modalDatosCorrespVars.REGN_COD_INDICADOR,
+                  anno: $scope.modalDatosCorrespVars.REGN_ANNO,
+                  periodo: $scope.modalDatosCorrespVarsPeriodo.periodo,
+                  nombre: `${$scope.modalDatosCorrespVarsPeriodo.soporteNombre}.${$scope.modalDatosCorrespVarsPeriodo.soporteExt}`,
+                  ruta: resultSoporte,
+                  responsable: $scope.Rol_Cedula
+                }
+              }).then(function ({ data }) {
+                if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                  swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                }
+                if (data.Codigo == 0) {
+                  swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                  $scope.listarSoportesGestionIndi();
+                }
+                if (data.Codigo == 1) {
+                  swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                }
+              })
+            })
+          }
+        }, function (dismiss) {
+          if (dismiss == 'cancel') {
+            document.querySelector('#fileGestionIndic').value = '';
+          }
+        }).catch(swal.noop);
+      }
+
+      $scope.cargarSoporteGestionIndic = function () {
+        return new Promise((resolve) => {
+          if (!$scope.modalDatosCorrespVarsPeriodo.soporteB64) { resolve(''); return }
+          swal({
+            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Guardando Soporte...</p>',
+            width: 200,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            animation: false
+          });
+          $http({
+            method: 'POST',
+            url: "php/planeacion/procesospoa.php",
+            data: {
+              function: "cargarSoporteGestionIndic",
+              nombre: $scope.modalDatosCorrespVarsPeriodo.soporteNombre,
+              base64: $scope.modalDatosCorrespVarsPeriodo.soporteB64,
+              ext: $scope.modalDatosCorrespVarsPeriodo.soporteExt
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+      // Compromisos
+      $scope.abrirModalCompromisos = function (x) {
+        $scope.closeModal()
+        setTimeout(() => {
+          $scope.openModal('modalCompromisos');
+          $scope.limpiarModalCompromisos(x);
+          $scope.listarCompromisosIndicador();
+        }, 700);
+      }
+
+      $scope.limpiarModalCompromisos = function (x) {
+        $scope.modalCompromisosVars = {
+          codPro: $scope.modalDatosCorrespVars.REGN_PROCESO,
+          codEstr: $scope.modalDatosCorrespVars.REGN_COD_ESTR,
+          codTac: $scope.modalDatosCorrespVars.REGN_COD_TACT,
+          codInd: $scope.modalDatosCorrespVars.REGN_COD_INDICADOR,
+          anio: $scope.modalDatosCorrespVars.REGN_ANNO,
+          periodo: x.GESN_PERIODO,
+          periodoNombre: x.GESN_PERIODO_NOMBRE,
+
+          listadoCompromisos: [],
+          idCompromiso: '',
+
+          nombre: '',
+          descripcion: '',
+          fechaInicio: '',
+          fechaVencimiento: '',
+          estado: 'P', // P Pendiente - C Cumplio - N No Cumplio
+
+          observacion: '',
+
+          soporteB64: '',
+          soporteExt: '',
+          soporteNombre: '',
+          listadoAdjuntos: [],
+
+          activarForm: 'N'
+        }
+        document.querySelector('#fileGestionIndic').value = '';
+
+      }
+
+      $scope.crearModalCompromisos = function () {
+        $scope.modalCompromisosVars.idCompromiso = '';
+        $scope.modalCompromisosVars.nombre = '';
+        $scope.modalCompromisosVars.descripcion = '';
+        $scope.modalCompromisosVars.fechaInicio = '';
+        $scope.modalCompromisosVars.fechaVencimiento = '';
+        $scope.modalCompromisosVars.estado = 'P';
+
+        $scope.modalCompromisosVars.soporteB64 = '';
+        $scope.modalCompromisosVars.soporteExt = '';
+        $scope.modalCompromisosVars.soporteNombre = '';
+
+        $scope.modalCompromisosVars.activarForm = 'S';
+        $scope.modalCompromisosVars.gestionTerminada = 'N';
+        document.querySelector('#fileGestionIndic').value = '';
+        $scope.modalCompromisosVars.listadoAdjuntos = [];
+
+        angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar input'), function (i) {
+          i.removeAttribute("readonly");
+        });
+        angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar textarea'), function (i) {
+          i.removeAttribute("readonly");
+        });
+        angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar select'), function (i) {
+          i.removeAttribute("disabled");
+        });
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.atrasModalCompromisos = function () {
+        $scope.modalCompromisosVars.activarForm = 'N';
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.editarModalCompromisos = function (x) {
+        $scope.modalCompromisosVars.nombre = x.GESC_NOMBRE;
+        $scope.modalCompromisosVars.descripcion = x.GESC_DESCRIPCION;
+        const fechaInicio = x.GESF_FECHA_INICIO.split('/');
+        const fechaVencimiento = x.GESF_FECHA_VENCIMIENTO.split('/');
+        $scope.modalCompromisosVars.fechaInicio = new Date(fechaInicio[2], fechaInicio[1], fechaInicio[0]);
+        $scope.modalCompromisosVars.fechaVencimiento = new Date(fechaVencimiento[2], fechaVencimiento[1], fechaVencimiento[0]);
+        $scope.modalCompromisosVars.estado = x.GESC_ESTADO.split('-')[0];
+
+        $scope.modalCompromisosVars.observacion = x.GESC_OBSERVACION;
+        $scope.modalCompromisosVars.listadoAdjuntos = [];
+
+        $scope.modalCompromisosVars.idCompromiso = x.GESN_ID_COMPROMISO;
+        $scope.modalCompromisosVars.activarForm = 'S';
+
+        $scope.modalCompromisosVars.gestionTerminada = x.GESC_ESTADO.split('-')[0] == 'P' ? 'N' : 'S';
+        $scope.listarSoportesCompromisos();
+
+        angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar input'), function (i) {
+          i.setAttribute("readonly", true);
+        });
+        angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar textarea'), function (i) {
+          i.setAttribute("readonly", true);
+        });
+        angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar select'), function (i) {
+          i.setAttribute("disabled", true);
+        });
+
+        if ($scope.modalCompromisosVars.gestionTerminada == 'S') {
+          angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar_Gest textarea'), function (i) {
+            i.setAttribute("readonly", true);
+          });
+          angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar_Gest select'), function (i) {
+            i.setAttribute("disabled", true);
+          });
+        } else {
+          angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar_Gest textarea'), function (i) {
+            i.removeAttribute("readonly");
+          });
+          angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar_Gest select'), function (i) {
+            i.removeAttribute("disabled");
+          });
+        }
+
+      }
+
+      $scope.listarCompromisosIndicador = function () {
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: "p_listar_compromisos_gestion_indicador",
+
+            cod_pro: $scope.modalCompromisosVars.codPro,
+            cod_estr: $scope.modalCompromisosVars.codEstr,
+            cod_tac: $scope.modalCompromisosVars.codTac,
+            cod_ind: $scope.modalCompromisosVars.codInd,
+            anno: $scope.modalCompromisosVars.anio,
+            periodo: $scope.modalCompromisosVars.periodo,
+            // idCompromiso: $scope.modalCompromisosVars.idCompromiso
+          }
+        }).then(function ({ data }) {
+          if (data.length) {
+            $scope.modalCompromisosVars.listadoCompromisos = data;
+            setTimeout(() => { $scope.$apply(); }, 500);
+            // } else {
+            // swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.validarFormCompromisos = function () {
+        return new Promise((resolve) => {
+
+          if (!$scope.modalCompromisosVars.nombre) resolve(false);
+          if (!$scope.modalCompromisosVars.descripcion) resolve(false);
+          if (!$scope.modalCompromisosVars.fechaInicio) resolve(false);
+          if (!$scope.modalCompromisosVars.fechaVencimiento) resolve(false);
+          if (!$scope.modalCompromisosVars.estado) resolve(false);
+
+          if ($scope.modalCompromisosVars.idCompromiso !== '' && !$scope.modalCompromisosVars.observacion) resolve(false);
+          if ($scope.modalCompromisosVars.idCompromiso !== '' && $scope.modalCompromisosVars.estado == 'P') resolve(false);
+
+          resolve(true)
+        });
+      }
+
+      $scope.guardarFormCompromisos = function () {
+        $scope.validarFormCompromisos().then(res => {
+          if (!res) { swal("¡Importante!", "Diligencia los campos requeridos (*)", "warning").catch(swal.noop); return }
+          const text = $scope.modalCompromisosVars.idCompromiso == '' ? '¿Desea crear el compromiso?' : '¿Desea actualizar el compromiso?';
+          swal({
+            title: 'Confirmar',
+            text,
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Continuar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result) {
+              const datos = {
+                codPro: $scope.modalCompromisosVars.codPro,
+                codEstr: $scope.modalCompromisosVars.codEstr,
+                codTac: $scope.modalCompromisosVars.codTac,
+                codInd: $scope.modalCompromisosVars.codInd,
+                anio: $scope.modalCompromisosVars.anio,
+                periodo: $scope.modalCompromisosVars.periodo,
+
+                nombre: $scope.modalCompromisosVars.nombre,
+                descripcion: $scope.modalCompromisosVars.descripcion,
+                fechaInicio: $scope.formatDate($scope.modalCompromisosVars.fechaInicio),
+                fechaVencimiento: $scope.formatDate($scope.modalCompromisosVars.fechaVencimiento),
+                estado: $scope.modalCompromisosVars.estado,
+
+                idCompromiso: $scope.modalCompromisosVars.idCompromiso,
+                observacion: $scope.modalCompromisosVars.observacion,
+                responsable: $scope.Rol_Cedula
+              }
+
+              swal({
+                html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                width: 200,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                animation: false
+              });
+              $http({
+                method: 'POST',
+                url: "php/planeacion/procesospoa.php",
+                data: {
+                  function: "p_ui_compromisos_gestion_indicador",
+                  datos: JSON.stringify(datos)
+                }
+              }).then(function ({ data }) {
+                if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                  swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                }
+                if (data.Codigo == 0) {
+                  swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                  $scope.atrasModalCompromisos();
+                  $scope.listarCompromisosIndicador();
+                }
+                if (data.Codigo == 1) {
+                  swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                }
+              })
+            }
+          })
+
+        })
+      }
+
+      document.querySelector('#fileGestionIndicCompromiso').addEventListener('change', function (e) {
+        $scope.hojaProcesos.formulario.soporteB64 = "";
+        setTimeout(() => { $scope.$apply(); }, 500);
+        var files = e.target.files;
+        if (files.length != 0) {
+          for (let i = 0; i < files.length; i++) {
+            const x = files[i].name.split('.');
+            if (x[x.length - 1].toUpperCase() == 'ZIP' || x[x.length - 1].toUpperCase() == 'PDF') {
+              if (files[i].size < 15485760 && files[i].size > 0) {
+                $scope.getBase64(files[i]).then(function (result) {
+                  $scope.modalCompromisosVars.soporteExt = x[x.length - 1].toLowerCase();
+                  $scope.modalCompromisosVars.soporteNombre = `${files[i].name.replace(/(.ZIP|.zip|.PDF|.pdf)/g, '')}`;
+                  $scope.modalCompromisosVars.soporteB64 = result;
+                  $scope.guardarSoporteCompromisos();
+                  setTimeout(function () { $scope.$apply(); }, 300);
+                });
+              } else {
+                document.querySelector('#fileGestionIndicCompromiso').value = '';
+                swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
+              }
+            } else {
+              document.querySelector('#fileGestionIndicCompromiso').value = '';
+              swal('Advertencia', '¡Los archivos seleccionados deben ser formato ZIP o PDF!', 'info');
+            }
+          }
+        }
+      });
+
+      $scope.listarSoportesCompromisos = function () {
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+
+            function: 'p_listar_soportes_compromisos',
+            cod_pro: $scope.modalCompromisosVars.codPro,
+            cod_estr: $scope.modalCompromisosVars.codEstr,
+            cod_tac: $scope.modalCompromisosVars.codTac,
+            cod_ind: $scope.modalCompromisosVars.codInd,
+            anno: $scope.modalCompromisosVars.anio,
+            periodo: $scope.modalCompromisosVars.periodo,
+            idCompromiso: $scope.modalCompromisosVars.idCompromiso,
+
+          }
+        }).then(function ({ data }) {
+          if (data.length) {
+            $scope.modalCompromisosVars.listadoAdjuntos = data;
+            setTimeout(() => { $scope.$apply(); }, 500);
+            // } else {
+            // swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.guardarSoporteCompromisos = function () {
+        swal({
+          title: 'Confirmar',
+          text: '¿Desea cargar el soporte?',
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando Soporte...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $scope.cargarSoporteCompromisos().then((resultSoporte) => {
+              const datos = {
+                codPro: $scope.modalCompromisosVars.codPro,
+                codEstr: $scope.modalCompromisosVars.codEstr,
+                codTac: $scope.modalCompromisosVars.codTac,
+                codInd: $scope.modalCompromisosVars.codInd,
+                anio: $scope.modalCompromisosVars.anio,
+                periodo: $scope.modalCompromisosVars.periodo,
+                idCompromiso: $scope.modalCompromisosVars.idCompromiso,
+
+                nombre: `${$scope.modalCompromisosVars.soporteNombre}.${$scope.modalCompromisosVars.soporteExt}`,
+                ruta: resultSoporte,
+                responsable: $scope.Rol_Cedula
+              }
+              $http({
+                method: 'POST',
+                url: "php/planeacion/procesospoa.php",
+                data: {
+                  function: "p_guardar_soporte_compromisos",
+                  datos: JSON.stringify(datos)
+                }
+              }).then(function ({ data }) {
+                if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                  swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                }
+                if (data.Codigo == 0) {
+                  swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                  $scope.listarSoportesCompromisos();
+                }
+                if (data.Codigo == 1) {
+                  swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                }
+              })
+
+
+            })
+          }
+        }, function (dismiss) {
+          if (dismiss == 'cancel') {
+            document.querySelector('#fileGestionIndicCompromiso').value = '';
+          }
+        }).catch(swal.noop);
+      }
+
+      $scope.cargarSoporteCompromisos = function () {
+        return new Promise((resolve) => {
+          if (!$scope.modalCompromisosVars.soporteB64) { resolve(''); return }
+          swal({
+            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Guardando Soporte...</p>',
+            width: 200,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            animation: false
+          });
+          $http({
+            method: 'POST',
+            url: "php/planeacion/procesospoa.php",
+            data: {
+              function: "cargarSoporteCompromisos",
+              nombre: $scope.modalCompromisosVars.soporteNombre,
+              base64: $scope.modalCompromisosVars.soporteB64,
+              ext: $scope.modalCompromisosVars.soporteExt
+
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+      // Compromisos
+
+      // Plan de Mejoramiento
+      $scope.abrirModalPlanMejora = function (x) {
+        $scope.closeModal()
+        setTimeout(() => {
+          $scope.openModal('modalPlanMejora');
+          $scope.limpiarModalPlanMejora(x);
+          $scope.listarPlanMejoraIndicador();
+        }, 700);
+      }
+
+      $scope.limpiarModalPlanMejora = function (x) {
+        $scope.modalPlanMejoraVars = {
+          codPro: $scope.modalDatosCorrespVars.REGN_PROCESO,
+          codEstr: $scope.modalDatosCorrespVars.REGN_COD_ESTR,
+          codTac: $scope.modalDatosCorrespVars.REGN_COD_TACT,
+          codInd: $scope.modalDatosCorrespVars.REGN_COD_INDICADOR,
+          anio: $scope.modalDatosCorrespVars.REGN_ANNO,
+          periodo: x.GESN_PERIODO,
+          periodoNombre: x.GESN_PERIODO_NOMBRE,
+
+          listadoPlanMejora: [],
+          idPlanMejora: '',
+
+          descripcion: '',
+          coreccion: '',
+          acciones: '',
+          accionMejora: '',
+          indicadores: '',
+          meta: '',
+          fechaInicio: '',
+          fechaTerminacion: '',
+          comentarios: '',
+
+          activarForm: 'N',
+          gestionTerminada: 'N',
+
+          listadoPlanMejoraSeguimiento: [],
+
+          fechaSeguimientoSeg: '',
+          porcentajeAvanceSeg: '',
+          verificacionSeg: '',
+          comentariosSeg: '',
+
+          activarFormSeg: 'N',
+
+        }
+      }
+
+      $scope.listarPlanMejoraIndicador = function () {
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: "p_listar_planmejora_gestion_indicador",
+
+            cod_pro: $scope.modalPlanMejoraVars.codPro,
+            cod_estr: $scope.modalPlanMejoraVars.codEstr,
+            cod_tac: $scope.modalPlanMejoraVars.codTac,
+            cod_ind: $scope.modalPlanMejoraVars.codInd,
+            anno: $scope.modalPlanMejoraVars.anio,
+            periodo: $scope.modalPlanMejoraVars.periodo,
+
+          }
+        }).then(function ({ data }) {
+          if (data.length) {
+            $scope.modalPlanMejoraVars.listadoPlanMejora = data;
+            setTimeout(() => { $scope.$apply(); }, 500);
+            // } else {
+            // swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.crearModalPlanMejora = function () {
+        $scope.modalPlanMejoraVars.idPlanMejora = '';
+        $scope.modalPlanMejoraVars.descripcion = '';
+        $scope.modalPlanMejoraVars.correccion = '';
+        $scope.modalPlanMejoraVars.acciones = '';
+        $scope.modalPlanMejoraVars.accionMejora = '';
+        $scope.modalPlanMejoraVars.indicadores = '';
+        $scope.modalPlanMejoraVars.meta = '';
+        $scope.modalPlanMejoraVars.fechaInicio = '';
+        $scope.modalPlanMejoraVars.fechaTerminacion = '';
+        $scope.modalPlanMejoraVars.comentarios = '';
+
+
+        $scope.modalPlanMejoraVars.activarForm = 'S';
+        $scope.modalPlanMejoraVars.gestionTerminada = 'N';
+
+        $scope.modalPlanMejoraVars.listadoPlanMejora = [];
+        $scope.modalPlanMejoraVars.listadoPlanMejoraSeguimiento = [];
+
+        $scope.modalPlanMejoraVars.fechaSeguimientoSeg = '';
+        $scope.modalPlanMejoraVars.porcentajeAvanceSeg = ''
+        $scope.modalPlanMejoraVars.verificacionSeg = ''
+        $scope.modalPlanMejoraVars.comentariosSeg = ''
+        $scope.modalPlanMejoraVars.activarFormSeg = 'N';
+
+        angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar input'), function (i) {
+          i.removeAttribute("readonly");
+        });
+        angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar textarea'), function (i) {
+          i.removeAttribute("readonly");
+        });
+        // angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar select'), function (i) {
+        //   i.removeAttribute("disabled");
+        // });
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.atrasModalPlanMejora = function () {
+        $scope.modalPlanMejoraVars.activarForm = 'N';
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.editarModalPlanMejora = function (x) {
+        $scope.modalPlanMejoraVars.descripcion = x.GESC_DESCRIPCION;
+        $scope.modalPlanMejoraVars.correccion = x.GESC_CORRECCION;
+        $scope.modalPlanMejoraVars.acciones = x.GESC_ACCIONES;
+        $scope.modalPlanMejoraVars.accionMejora = x.GESC_ACCION_MEJORA;
+        $scope.modalPlanMejoraVars.indicadores = x.GESC_INDICADORES;
+        $scope.modalPlanMejoraVars.meta = x.GESC_META;
+
+        const fechaInicio = x.GESF_FECHA_INICIO.split('/');
+        const fechaTerminacion = x.GESF_FECHA_TERMINACION.split('/');
+        $scope.modalPlanMejoraVars.fechaInicio = new Date(fechaInicio[2], fechaInicio[1], fechaInicio[0]);
+        $scope.modalPlanMejoraVars.fechaTerminacion = new Date(fechaTerminacion[2], fechaTerminacion[1], fechaTerminacion[0]);
+        $scope.modalPlanMejoraVars.comentarios = x.GESC_COMENTARIOS;
+
+        $scope.modalPlanMejoraVars.idPlanMejora = x.GESN_ID_PLANMEJORA;
+        $scope.modalPlanMejoraVars.activarForm = 'S';
+        $scope.modalPlanMejoraVars.gestionTerminada = 'S';
+
+        $scope.listarPlanMejoraIndicadorSeg();
+
+        angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar input'), function (i) {
+          i.setAttribute("readonly", true);
+        });
+        angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar textarea'), function (i) {
+          i.setAttribute("readonly", true);
+        });
+        // angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar select'), function (i) {
+        //   i.setAttribute("disabled", true);
+        // });
+      }
+
+      $scope.validarFormPlanMejora = function () {
+        return new Promise((resolve) => {
+
+          if (!$scope.modalPlanMejoraVars.descripcion) resolve(false);
+          if (!$scope.modalPlanMejoraVars.correccion) resolve(false);
+          if (!$scope.modalPlanMejoraVars.acciones) resolve(false);
+          if (!$scope.modalPlanMejoraVars.accionMejora) resolve(false);
+          if (!$scope.modalPlanMejoraVars.indicadores) resolve(false);
+          if (!$scope.modalPlanMejoraVars.meta) resolve(false);
+
+          if (!$scope.modalPlanMejoraVars.fechaInicio) resolve(false);
+          if (!$scope.modalPlanMejoraVars.fechaTerminacion) resolve(false);
+          if (!$scope.modalPlanMejoraVars.comentarios) resolve(false);
+
+          resolve(true)
+        });
+      }
+
+      $scope.guardarFormPlanMejora = function () {
+        $scope.validarFormPlanMejora().then(res => {
+          if (!res) { swal("¡Importante!", "Diligencia los campos requeridos (*)", "warning").catch(swal.noop); return }
+          const text = $scope.modalPlanMejoraVars.idPlanMejora == '' ? '¿Desea crear el plan de mejoramiento?' : '¿Desea actualizar el plan de mejoramiento?';
+          swal({
+            title: 'Confirmar',
+            text,
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Continuar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result) {
+              const datos = {
+                codPro: $scope.modalPlanMejoraVars.codPro,
+                codEstr: $scope.modalPlanMejoraVars.codEstr,
+                codTac: $scope.modalPlanMejoraVars.codTac,
+                codInd: $scope.modalPlanMejoraVars.codInd,
+                anio: $scope.modalPlanMejoraVars.anio,
+                periodo: $scope.modalPlanMejoraVars.periodo,
+
+                descripcion: $scope.modalPlanMejoraVars.descripcion,
+                correccion: $scope.modalPlanMejoraVars.correccion,
+                acciones: $scope.modalPlanMejoraVars.acciones,
+                accionMejora: $scope.modalPlanMejoraVars.accionMejora,
+                indicadores: $scope.modalPlanMejoraVars.indicadores,
+                meta: $scope.modalPlanMejoraVars.meta,
+
+                fechaInicio: $scope.formatDate($scope.modalPlanMejoraVars.fechaInicio),
+                fechaTerminacion: $scope.formatDate($scope.modalPlanMejoraVars.fechaTerminacion),
+                comentarios: $scope.modalPlanMejoraVars.comentarios,
+
+                idPlanMejora: $scope.modalPlanMejoraVars.idPlanMejora,
+                responsable: $scope.Rol_Cedula
+              }
+
+              swal({
+                html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                width: 200,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                animation: false
+              });
+              $http({
+                method: 'POST',
+                url: "php/planeacion/procesospoa.php",
+                data: {
+                  function: "p_ui_planmejora_gestion_indicador",
+                  datos: JSON.stringify(datos)
+                }
+              }).then(function ({ data }) {
+                if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                  swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                }
+                if (data.Codigo == 0) {
+                  swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                  $scope.atrasModalPlanMejora();
+                  $scope.listarPlanMejoraIndicador();
+                }
+                if (data.Codigo == 1) {
+                  swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                }
+              })
+            }
+          })
+
+        })
+      }
+
+
+
+
+      $scope.crearModalPlanMejoraSeg = function () {
+        $scope.modalPlanMejoraVars.fechaSeguimientoSeg = '';
+        $scope.modalPlanMejoraVars.porcentajeAvanceSeg = ''
+        $scope.modalPlanMejoraVars.verificacionSeg = ''
+        $scope.modalPlanMejoraVars.comentariosSeg = ''
+        $scope.modalPlanMejoraVars.activarFormSeg = 'S';
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.atrasModalPlanMejoraSeg = function () {
+        $scope.modalPlanMejoraVars.activarFormSeg = 'N';
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.listarPlanMejoraIndicadorSeg = function () {
+        $scope.modalPlanMejoraVars.listadoPlanMejoraSeguimiento = [];
+
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: "p_listar_planmejora_seg_gestion_indicador",
+
+            cod_pro: $scope.modalPlanMejoraVars.codPro,
+            cod_estr: $scope.modalPlanMejoraVars.codEstr,
+            cod_tac: $scope.modalPlanMejoraVars.codTac,
+            cod_ind: $scope.modalPlanMejoraVars.codInd,
+            anno: $scope.modalPlanMejoraVars.anio,
+            periodo: $scope.modalPlanMejoraVars.periodo,
+            idPlanMejora: $scope.modalPlanMejoraVars.idPlanMejora
+
+          }
+        }).then(function ({ data }) {
+          if (data.length) {
+            $scope.modalPlanMejoraVars.listadoPlanMejoraSeguimiento = data;
+            setTimeout(() => { $scope.$apply(); }, 500);
+            // } else {
+            // swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.validarFormPlanMejoraSeg = function () {
+        return new Promise((resolve) => {
+
+          if (!$scope.modalPlanMejoraVars.fechaSeguimientoSeg) resolve(false);
+          if (!$scope.modalPlanMejoraVars.porcentajeAvanceSeg) resolve(false);
+          if (!$scope.modalPlanMejoraVars.verificacionSeg) resolve(false);
+          if (!$scope.modalPlanMejoraVars.comentariosSeg) resolve(false);
+
+          resolve(true)
+        });
+      }
+
+      $scope.guardarFormPlanMejoraSeg = function () {
+        $scope.validarFormPlanMejoraSeg().then(res => {
+          if (!res) { swal("¡Importante!", "Diligencia los campos requeridos (*)", "warning").catch(swal.noop); return }
+          const text = '¿Desea crear el seguimiento?';
+          swal({
+            title: 'Confirmar',
+            text,
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Continuar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result) {
+              const datos = {
+                codPro: $scope.modalPlanMejoraVars.codPro,
+                codEstr: $scope.modalPlanMejoraVars.codEstr,
+                codTac: $scope.modalPlanMejoraVars.codTac,
+                codInd: $scope.modalPlanMejoraVars.codInd,
+                anio: $scope.modalPlanMejoraVars.anio,
+                periodo: $scope.modalPlanMejoraVars.periodo,
+                idPlanMejora: $scope.modalPlanMejoraVars.idPlanMejora,
+
+                fechaSeguimiento: $scope.formatDate($scope.modalPlanMejoraVars.fechaSeguimientoSeg),
+                porcentajeAvance: $scope.modalPlanMejoraVars.porcentajeAvanceSeg,
+                verificacion: $scope.modalPlanMejoraVars.verificacionSeg,
+                comentarios: $scope.modalPlanMejoraVars.comentariosSeg,
+
+                responsable: $scope.Rol_Cedula
+              }
+
+              swal({
+                html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                width: 200,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                animation: false
+              });
+              $http({
+                method: 'POST',
+                url: "php/planeacion/procesospoa.php",
+                data: {
+                  function: "p_ui_planmejora_seg_gestion_indicador",
+                  datos: JSON.stringify(datos)
+                }
+              }).then(function ({ data }) {
+                if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                  swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                }
+                if (data.Codigo == 0) {
+                  swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                  $scope.atrasModalPlanMejoraSeg();
+                  $scope.listarPlanMejoraIndicadorSeg();
+                }
+                if (data.Codigo == 1) {
+                  swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                }
+              })
+            }
+          })
+
+        })
+      }
+      // Plan de Mejoramiento
+
+
+      $scope.generarIndicadorNuevo = function (x) {
+
+        const text = '¿Desea crear el indicador para el año siguiente?';
+        swal({
+          title: 'Confirmar',
+          text,
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/planeacion/procesospoa.php",
+              data: {
+                function: "p_genera_nuevo_indicador",
+                cod_pro: x.REGN_PROCESO,
+                cod_estr: x.REGN_COD_ESTR,
+                cod_tac: x.REGN_COD_TACT,
+                cod_ind: x.REGN_COD_INDICADOR,
+                anno: x.REGN_ANNO,
+                responsable: $scope.Rol_Cedula
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                $scope.hojaIndicadoresListar(1);
+                $scope.closeModal()
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            })
+          }
+        })
+      }
+
       /////// INDICADORES ///////
 
       $scope.obtenerEstadoIndicadores = function (tipo = null) {
@@ -2073,6 +3161,26 @@ angular.module('GenesisApp')
           N: "Inactiva",
         };
         return tipos[tipo] || "Ninguno";
+      }
+
+      $scope.obtenerEstadoGestionIndicador = function (orden, tipo = null) {
+        if (orden == 'A') {
+          const tipos = {
+            BAJA: "etiquetaRoja",
+            MEDIA: "etiquetaNaranja",
+            ALTA: "etiquetaVerde",
+            EXCESO: "etiquetaGris"
+          }
+          return tipos[tipo] || "Ninguno";
+        } else {
+          const tipos = {
+            ALTA: "etiquetaRoja",
+            MEDIA: "etiquetaNaranja",
+            BAJA: "etiquetaVerde",
+            EXCESO: "etiquetaGris"
+          }
+          return tipos[tipo] || "Ninguno";
+        }
       }
 
       $scope.obtenerMesNombre = function (tipo = null, longitud = 3) {
@@ -2173,6 +3281,20 @@ angular.module('GenesisApp')
             no: i
           });
         }
+      }
+
+      $scope.formatDate = function (date) {
+        if (date === undefined) { return }
+        var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [day, month, year].join('/');
+        // return [year, month, day].join('-');
       }
 
       $scope.openModal = function (modal) {

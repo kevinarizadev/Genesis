@@ -3947,6 +3947,21 @@
       //controllerAs:'pcctrl'
     };
   }
+
+  angular.module('GenesisApp').directive('seguimientocohortes', seguimientocohortes);
+
+  seguimientocohortes.$inject = ['$rootScope', '$compile'];
+   function seguimientocohortes($rootScope, $compile) {
+     return {
+       restrict: 'EA',
+       templateUrl: 'views/altocosto/seguimientoCohortes.html',
+       replace: true,
+       link: function (scope, element) {
+         $compile(element.contents())($rootScope);
+       },
+       controller: 'seguimientoCohortesController',
+     };
+   }
   //fin
 
   indicadores.$inject = ['$rootScope', '$compile'];

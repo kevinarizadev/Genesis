@@ -307,11 +307,19 @@ angular.module('GenesisApp')
                 // }
               }
 
+              if (e.estado == 'A' && e.fun_responsable_area == $scope.Rol_Cedula && $scope.Form.gestionaNacional) {
+                $scope.Form.comentarioJuridicoRegArea = e.observacion_juridica;
+                $scope.Form.codArea = e.area_responsable;
+                $scope.Form.codRenglon = e.renglon;
+                // $scope.Form.gestionaArea
+                // $scope.Form.listadoGestionesPendientes.push(e);
+              }
+
               if ($scope.Form.gestionaRegional || $scope.Form.gestionaNacional) {
                 if (e.estado == 'G') {
                   $scope.Form.listadoGestionesPendientes.push(e);
                 }
-                if (e.estado != 'G') {
+                if (e.estado != 'G' && e.fun_responsable_area != $scope.Rol_Cedula) {
                   $scope.Form.listadoGestiones.push(e);
                 }
               }
@@ -668,7 +676,34 @@ angular.module('GenesisApp')
         swal("Comentario Regional:", obs, "info").catch(swal.noop);
       }
 
-
+      $scope.descargarInforme = function () {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/juridica/tutelas/gestiontutelasareas.php",
+          data: { function: 'v_informe_gestion_areas_tutelas' }
+        }).then(function ({ data }) {
+          if (data.length) {
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Exportado Tutelas General.xlsx");
+            const text = `Registros encontrados ${data.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          } else {
+            swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
 
       $scope.atras = function () {
         $scope.Form.Status = 0;

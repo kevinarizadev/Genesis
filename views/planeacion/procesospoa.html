@@ -188,7 +188,7 @@
             </div>
             <div class="col s12 m12 l12" ng-show="!hojaProcesos.formulario.soporteUrl">
               <div class="col s4 no-padding m-t">
-                <div class="file-upload-wrapper file-field input-field m-l" id="file-upload-wrapper"
+                <div class="file-upload-wrapper file-field input-field m-l"
                   data-text="{{hojaProcesos.formulario.soporteB64 ? 'Archivo Seleccionado' : 'Cargar Archivo'}}">
                   <input type="file" id="procesosFile" name="procesosFile">
                   <i class="icon-check-1 green-text right" style="font-size: 1.3vw;"
@@ -295,13 +295,55 @@
               <i class="icon-cw-circle cursor-pointer" ng-click="hojaIndicadoresListar()"></i>
               <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
             </div>
+            <div class="tooltip">
+              <i class="icon-filter-1 cursor-pointer" ng-click="hojaIndicadoresActivarFiltro()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Filtrar</span>
+            </div>
+            <div class="tooltip">
+              <i class="icon-download-1 cursor-pointer" ng-click="descargarInformeMultiple()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Informe Multiple</span>
+            </div>
             <div class="col s3 no-padding label-new right"
-              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;"
+              ng-show="!hojaIndicadores.filtros.activo">
               <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l black-text"
                 style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="hojaIndicadores.filtro"
                 ng-change="filter('hojaIndicadores',hojaIndicadores.filtro)">
             </div>
           </div>
+        </div>
+        <div class="foot4 divcardcustom default-linear-gradient black-text" ng-show="hojaIndicadores.filtros.activo">
+
+          <div class="col s3 no-padding m-b m-r">
+            <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.filtros.proceso"
+              ng-change="hojaIndicadoresAplicarFiltro()">
+              <option value="">Filtro Proceso</option>
+              <option value="{{x.UNIN_CODIGO}}" ng-selected="x.UNIN_CODIGO == hojaIndicadores.filtros.proceso"
+                ng-repeat="x in hojaProcesos.listadoTabla" ng-show="x.UNIC_ESTADO == 'A'">
+                {{x.UNIC_NOMBRE}}</option>
+            </select>
+          </div>
+
+          <div class="col s3 no-padding m-b m-r">
+            <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.filtros.dependencia"
+              ng-change="hojaIndicadoresAplicarFiltro()">
+              <option value="">Filtro Dependencias</option>
+              <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.filtros.dependencia"
+                ng-repeat="x in hojaIndicadores.listadoDependencias">
+                {{x.nombre}}</option>
+            </select>
+          </div>
+          <div class="col s3 no-padding m-b">
+            <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.filtros.periodicidadAnalisis"
+              ng-change="hojaIndicadoresAplicarFiltro()">
+              <option value="">Filtro Periodicidad</option>
+              <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.filtros.periodicidadAnalisis"
+                ng-repeat="x in hojaIndicadores.listadoFrecuencia">
+                {{x.nombre}}</option>
+            </select>
+          </div>
+
+
         </div>
         <div class="default-color">
           <table class="tablaListado bordered highlight"
@@ -312,29 +354,37 @@
               <th>Prioridad</th>
               <th>Clasificacion</th>
               <th>Tipo/Medicion</th>
-              <th>Semaforización</th>
+              <!-- <th>Semaforización</th> -->
+              <th>Periodicidad</th>
               <th>Diligenciamiento</th>
               <!-- <th>Analisis</th> -->
-              <th>Estado</th>
+              <!-- <th>Estado</th> -->
+              <th>Estado Gestión</th>
               <th>Acciones</th>
             </thead>
             <tbody>
               <tr style="cursor:pointer;"
                 ng-repeat="x in hojaIndicadores.listadoTablaTemp | inicio: hojaIndicadores.varsTabla.currentPage * hojaIndicadores.varsTabla.pageSize | limitTo: hojaIndicadores.varsTabla.pageSize">
                 <td class="left-align" ng-click="modalEditarIndicador(x)">
-                  {{x.REGN_PROCESO.toString()+x.REGN_COD_ESTR.toString()+x.REGN_COD_TACT.toString()+x.REGN_COD_INDICADOR.toString()
+                  {{[x.REGN_PROCESO,x.REGN_COD_ESTR,x.REGN_COD_TACT,x.REGN_COD_INDICADOR].join('.')
                   +' - '+ x.REGN_NOM_INDICADOR}}
                 </td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGN_ANNO}}</td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGC_PRIORIDAD.split('-')[1]}}</td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGC_CLASIFICACION.split('-')[1]}}</td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGC_TIPO_CALCULO.split('-')[1]}}</td>
-                <td ng-click="modalEditarIndicador(x)">{{obtenerEstadoIndicadores(x.REGC_SEMAFORIZACION)}}</td>
+                <td ng-click="modalEditarIndicador(x)">{{x.REGC_PERIODICIDAD_ANALISIS.split('-')[1]}}</td>
+                <!-- <td ng-click="modalEditarIndicador(x)">{{obtenerEstadoIndicadores(x.REGC_SEMAFORIZACION)}}</td> -->
                 <td ng-click="modalEditarIndicador(x)">{{x.DILIGENCIAMIENTO}} %</td>
                 <!-- <td ng-click="modalEditarIndicador(x)">{{x.analisis}}</td> -->
-                <td>
+                <!-- <td>
                   <span
                     class="status {{x.REGC_ESTADO == 'A' ? 'etiquetaVerde' : 'etiquetaRoja'}}">{{obtenerEstadoIndicadores(x.REGC_ESTADO)}}</span>
+                </td> -->
+                <td>
+                  <span
+                    class="status {{obtenerEstadoGestionIndicador(x.REGC_TIPO_CALCULO.split('-')[0], x.ESTADO_ACTUAL.split('-')[0])}}">{{x.ESTADO_ACTUAL.split('-')[0]}}</span>
+
                 </td>
                 <td>
                   <i class="iconFontSize icon-doc-text-1 default-color c-pointer" title="Ficha del Indicador"
@@ -399,6 +449,9 @@
                 {{x.codigo}}</option>
             </select>
 
+            <i class="icon-doc-new c-pointer" title="Crear nuevo indicador para el año siguiente"
+              ng-show="hojaIndicadores.formulario.idIndicadorSeleccionado" ng-click="generarIndicadorNuevo(modalDatosIndicador)"></i>
+
           </span></h5>
       </div>
       <div class="card-action">
@@ -456,7 +509,19 @@
               </select>
               <label>Nivel (*)</label>
             </div>
-            <div class="col s8 no-padding label-new m-b formIndicador_Desactivar">
+            <div class="col s2 no-padding label-new m-b formIndicador_Desactivar"
+              ng-show="hojaIndicadores.formulario.nivel === '2'">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.regional"
+                required>
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.regional"
+                  ng-repeat="x in hojaIndicadores.listadoRegionales">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Regional (*)</label>
+            </div>
+            <div
+              class="col {{hojaIndicadores.formulario.nivel === '2' ? 's6' : 's8'}} no-padding label-new m-b formIndicador_Desactivar">
               <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.dependencia"
                 required>
                 <option value="" disabled>SELECCIONAR</option>
@@ -846,7 +911,13 @@
       <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
         <h5><span style="font-weight: 700;" class="default-color">
             Ficha Técnica del Indicador
-          </span></h5>
+            <i class="icon-download c-pointer" title="Descargar Ficha Técnica" style="font-size: 1rem;"
+              ng-click="descargarFichaTecnica(modalFichaTecnicaDatos)"></i>
+            <i class="icon-file-excel c-pointer" title="Descargar Informe" style="font-size: 1rem;"
+              ng-click="descargarInformeIndividual(modalFichaTecnicaDatos)"></i>
+          </span>
+
+        </h5>
       </div>
       <div class="card-action">
         <div class="row bg-white white margin" style="max-height: 100vh;overflow-y: auto;">
@@ -1044,7 +1115,7 @@
       <div class="card-action">
         <div class="row bg-white white margin">
           <!--  -->
-          <div class="col s12 " id="graficoIndicador" style="zoom: 1.2;width: 100 !important;">
+          <div class="col s12" id="graficoIndicador" style="zoom: 1.2;width: 100 !important;">
           </div>
           <!--  -->
         </div>
@@ -1074,7 +1145,7 @@
           </span></h5>
       </div>
       <div class="card-action">
-        <div class="row bg-white white margin" style="max-height: 100vh;overflow-y: auto;">
+        <div class="row bg-white white margin w-100" style="max-height: 100vh;overflow-y: auto;">
           <!--  -->
           <div class="col s12 m12 l12" ng-show="modalDatosCorrespVars.vista == 1">
             <table id="tableDatosCorresp" class="table-bordered highlight">
@@ -1087,6 +1158,7 @@
                   Meta Vigencia</th>
                 <th>Analisis</th>
                 <th>Responsable del dato</th>
+                <th>Estado Gestión</th>
                 <th style="width:1%"></th>
               </tr>
               <tr ng-repeat="x in modalDatosCorrespVars.listado"
@@ -1146,6 +1218,23 @@
                     </math>
                   </div>
                   <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'VA' && x.GESV_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.GESN_NUMERADOR}}</mn>
+                          <mo>-</mo>
+                          <mn>{{x.GESN_DENOMINADOR}}</mn>
+                        </msup>
+                        <mn>{{x.GESN_DENOMINADOR}}</mn>
+                      </mfrac>
+                      <mo>*</mo>
+                      <mn>100</mn>
+                      <mo>=</mo>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
                     ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DI' && x.GESV_RESPONSABLE != '-'">
                     <math display="inline">
                       <mn>100</mn>
@@ -1156,6 +1245,8 @@
                         </msup>
                         <mn>{{x.GESN_DENOMINADOR}}</mn>
                       </mfrac>
+                      <mo>*</mo>
+                      <mn>100</mn>
                       <mo>=</mo>
                       <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
                     </math>
@@ -1186,10 +1277,32 @@
                         <msup>
                           <mn>{{x.GESN_NUMERADOR}}</mn>
                         </msup>
-                        <mn>{{x.GESN_DENOMINADOR}}</mn>
+                        <mn>{{x.GESN_DENOMINADOR}} * {{x.GESN_CONSTANTE}}</mn>
                       </mfrac>
+                      <mo>=</mo>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TL' && x.GESV_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mo>(</mo>
+                      <mn>{{x.GESN_NUMERADOR}}</mn>
+                      <mo>-</mo>
+                      <mn>{{x.GESN_DENOMINADOR}}</mn>
+                      <mo>)</mo>
                       <mo>*</mo>
                       <mn>{{x.GESN_CONSTANTE}}</mn>
+                      <mo>=</mo>
+                      <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CT' && x.GESV_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mn>{{x.GESN_NUMERADOR}}</mn>
+                      <mo>-</mo>
+                      <mn>{{x.GESN_DENOMINADOR}}</mn>
                       <mo>=</mo>
                       <mn>{{x.GESN_RESULTADO.startsWith(',') ? ('0'+x.GESN_RESULTADO) : x.GESN_RESULTADO}}</mn>
                     </math>
@@ -1207,15 +1320,26 @@
                   <span ng-show="x.GESV_RESPONSABLE != '-'">{{x.GESV_RESPONSABLE.split('-')[1]}}</span>
                 </td>
                 <td>
+                  <span ng-show="x.GESV_RESPONSABLE != '-'"
+                    class="status {{obtenerEstadoGestionIndicador(modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0], x.ESTADO_ACTUAL.split('-')[0])}}">{{x.ESTADO_ACTUAL.split('-')[0]}}</span>
+
+                  <i class="iconFontSize icon-doc-text-inv default-color c-pointer" title="Compromisos"
+                    ng-click="abrirModalCompromisos(x);" ng-show="x.ESTADO_ACTUAL.split('-')[1] == 'ROJO'"></i>
+                  <i class="iconFontSize icon-sitemap default-color c-pointer" title="Plan de Mejoramiento"
+                    ng-click="abrirModalPlanMejora(x);" ng-show="x.ESTADO_ACTUAL.split('-')[1] == 'ROJO'"></i>
+
+                </td>
+                <td>
                   <i class="icon-list-add c-pointer" title="Gestionar Periodo" style="font-size: 1rem;"
-                    ng-click="modalDatosCorrespGestionarPeriodo(x)" ng-if="validarPermisos(['AS', 'AM', 'US'])"></i>
+                    ng-click="modalDatosCorrespGestionarPeriodo(x, $index)"
+                    ng-if="validarPermisos(['AS', 'AM', 'US'])"></i>
                 </td>
               </tr>
             </table>
           </div>
           <!--  -->
           <div class="col s12 m12 l12" ng-show="modalDatosCorrespVars.vista == 2">
-            <blockquote class="blockquote_titulo m-b">
+            <blockquote class="blockquote_titulo m-b mt-0">
               Datos para {{modalDatosCorrespVarsPeriodo.periodoNombre}} de {{modalDatosCorrespVarsPeriodo.anio}} -
               Forma de Cálculo {{modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[1]}}
             </blockquote>
@@ -1236,18 +1360,50 @@
                     ng-change="calcularResultadoPeriodo()" maxlength="18" numbers-decimal-only required>
                   <label>Dato Denominador (*)</label>
                 </div>
-                <div class="col s4 no-padding label-new m-b"
-                  ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TA' || modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CA' || modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'AJ' || modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DE'">
+                <div class="col s6 no-padding label-new m-b" ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TA' || modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CA' ||
+                   modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'AJ' || modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DE' ||
+                   modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TL'">
                   <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
                     autocomplete="off" ng-model="modalDatosCorrespVarsPeriodo.constante"
                     ng-change="calcularResultadoPeriodo()" maxlength="18" numbers-decimal-only required>
                   <label>Dato Constante (*)</label>
                 </div>
+                <div class="col s6 no-padding label-new m-b">
+
+                  <div class="file-upload-wrapper file-field input-field m-l" data-text="Cargar Archivo">
+                    <input type="file" id="fileGestionIndic" name="fileGestionIndic">
+                    <i class="icon-check-1 green-text right" style="font-size: 1.3vw;"
+                      ng-show="archivosSubir.length"></i>
+                  </div>
+
+                  <!-- <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                    autocomplete="off" ng-model="modalDatosCorrespVarsPeriodo.denominador"
+                    ng-change="calcularResultadoPeriodo()" maxlength="18" numbers-decimal-only required>
+                  <label>Dato Denominador (*)</label> -->
+                </div>
                 <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
-                  <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1800"
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1800"
                     autocomplete="off" text-description text-upper
                     ng-model="modalDatosCorrespVarsPeriodo.nota"></textarea>
                   <label>Análisis (*)</label>
+                </div>
+                <div class="col s12 m12 l12 m-t m-l" style="padding: 0; border: 1px solid #8a88865e !important;"
+                  ng-show="modalDatosCorrespVarsPeriodo.listadoAdjuntos.length">
+                  <div class="" style="max-height: 20vh;overflow-y: auto;">
+                    <table id="table" class="highlight">
+                      <tr>
+                        <th width="50%">Archivo</th>
+                        <th width="20%">Fecha</th>
+                        <th width="30%">Responsable</th>
+                      </tr>
+                      <tr title="Ver Anexo" class="c-pointer" ng-click="descargarSoporte(x.GESC_RUTA)"
+                        ng-repeat="x in modalDatosCorrespVarsPeriodo.listadoAdjuntos">
+                        <td>{{x.GESC_NOMBRE}}</td>
+                        <td>{{x.GESF_FECHA}}</td>
+                        <td>{{x.RESPONSABLE}}</td>
+                      </tr>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1333,7 +1489,22 @@
                               <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
                             </math>
                           </div>
-
+                          <div class="m-t" ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'VA'">
+                            <math display="inline">
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                  <mo>-</mo>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              </mfrac>
+                              <mo>*</mo>
+                              <mn>100</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
                           <div class="m-t" ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'DI'">
                             <math display="inline">
                               <mn>100</mn>
@@ -1344,6 +1515,8 @@
                                 </msup>
                                 <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
                               </mfrac>
+                              <mo>*</mo>
+                              <mn>100</mn>
                               <mo>=</mo>
                               <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
                             </math>
@@ -1374,15 +1547,35 @@
                                 <msup>
                                   <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
                                 </msup>
-                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}} *
+                                  {{modalDatosCorrespVarsPeriodo.constante}}</mn>
                               </mfrac>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TL'">
+                            <math display="inline">
+                              <mo>(</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                              <mo>-</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              <mo>)</mo>
                               <mo>*</mo>
                               <mn>{{modalDatosCorrespVarsPeriodo.constante}}</mn>
                               <mo>=</mo>
                               <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
                             </math>
                           </div>
-
+                          <div class="m-t" ng-show="modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CT'">
+                            <math display="inline">
+                              <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                              <mo>-</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
 
                         </label>
                       </div>
@@ -1390,6 +1583,7 @@
                   </ul>
                 </div>
               </div>
+
             </div>
 
             <!--  -->
@@ -1414,13 +1608,434 @@
       <!--  -->
     </div>
   </div>
+  <!--  -->
+  <div id="modalCompromisos" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;display: flex;" class="default-color">
+            <i class="icon-left-circle-1 f-20 c-pointer" ng-click="closeModal();modalDatosCorresp(modalDatosCambio)"
+              title="Ver Datos"></i>
+            Compromisos
+          </span></h5>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin w-100" style="max-height: 100vh;overflow-y: auto;">
+          <!--  -->
+          <div class="col s12 m12 l12" ng-show="modalCompromisosVars.activarForm == 'N'">
+            <table id="tableDatosCorresp" class="table-bordered highlight">
+              <tr>
+                <th>#</th>
+                <th>Compromiso</th>
+                <th>Descripcion</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Venc.</th>
+                <th>Estado</th>
+                <th>Responsable Registro</th>
+                <th>Fecha Registro</th>
+                <th style="width:1%"></th>
+              </tr>
+              <tr ng-repeat="x in modalCompromisosVars.listadoCompromisos">
+                <td>{{x.GESN_ID_COMPROMISO}}</td>
+                <td>{{x.GESC_NOMBRE}}</td>
+                <td>{{x.GESC_DESCRIPCION}}</td>
+                <td>{{x.GESF_FECHA_INICIO}}</td>
+                <td>{{x.GESF_FECHA_VENCIMIENTO}}</td>
+                <td>{{x.GESC_ESTADO.split('-')[1]}}</td>
+                <td>{{x.GESN_RESPONSABLE_REGISTRO}}</td>
+                <td>{{x.GESF_FECHA_REGISTRO}}</td>
+                <td>
+                  <i class="icon-list-add c-pointer" title="Gestionar Compromiso" style="font-size: 1rem;"
+                    ng-click="editarModalCompromisos(x, $index)"></i>
+                  <!-- <i class="icon-list-add c-pointer" title="Gestionar Periodo" style="font-size: 1rem;"
+                    ng-click="modalDatosCorrespGestionarPeriodo(x, $index)"
+                    ng-if="validarPermisos(['AS', 'AM', 'US'])"></i> -->
+                </td>
+              </tr>
+              <tr ng-show="modalCompromisosVars.listadoCompromisos.length == 0">
+                <th colspan="9" style="text-align: center;">Sin registros</th>
+              </tr>
+            </table>
+            <div class="col s12 m12 l12 center m-t m-b">
 
+              <input class="btn white-text default-linear-gradient" type="submit" value="Crear Compromiso"
+                ng-click="crearModalCompromisos()">
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12" ng-show="modalCompromisosVars.activarForm == 'S'">
+            <blockquote class="blockquote_titulo m-b mt-0">
+              {{modalCompromisosVars.IdCompromiso == '' ? 'Compromiso Nuevo' : 'Actualizar Compromiso #' +
+              modalCompromisosVars.IdCompromiso}}
+            </blockquote>
+
+            <div class="row">
+              <div class="col s12 m12 l12 formIndicCompromisos_Desactivar">
+
+                <div class="col s12 no-padding label-new m-b">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                    autocomplete="off" ng-model="modalCompromisosVars.nombre" required>
+                  <label>Nombre (*)</label>
+                </div>
+
+              </div>
+              <div class="col s12 m12 l12 formIndicCompromisos_Desactivar">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalCompromisosVars.descripcion"></textarea>
+                  <label>Descripción (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 m-t">
+                <div class="col s3 no-padding label-new m-b formIndicCompromisos_Desactivar">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" type="date"
+                    autocomplete="off" ng-model="modalCompromisosVars.fechaInicio" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                  <label>Fecha de Inicio (*)</label>
+                </div>
+
+                <div class="col s3 no-padding label-new m-b">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" type="date"
+                    autocomplete="off" ng-model="modalCompromisosVars.fechaVencimiento"
+                    min="{{SysDay | date:'yyyy-MM-dd'}}">
+                  <label>Fecha de Vencimiento (*)</label>
+                </div>
+                <div class="col s3 no-padding label-new m-b formIndicCompromisos_Desactivar_Gest">
+                  <select class="select-default-new input-out-new m-l" ng-model="modalCompromisosVars.estado" required>
+                    <option value="P" ng-disabled="modalCompromisosVars.IdCompromiso != ''">Pendiente</option>
+                    <option value="C" ng-disabled="modalCompromisosVars.IdCompromiso == ''">Cumplio</option>
+                    <option value="N" ng-disabled="modalCompromisosVars.IdCompromiso == ''">No Cumplio</option>
+                  </select>
+                  <label>Estado (*)</label>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l12">
+                <div class="col s6 no-padding label-new m-b m-t"
+                  ng-show="modalCompromisosVars.IdCompromiso != '' && modalCompromisosVars.gestionTerminada == 'N'">
+                  <div class="file-upload-wrapper file-field input-field m-l" data-text="Cargar Archivo">
+                    <input type="file" id="fileGestionIndicCompromiso" name="fileGestionIndicCompromiso">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l12 formIndicCompromisos_Desactivar_Gest">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;"
+                  ng-show="modalCompromisosVars.IdCompromiso != ''">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalCompromisosVars.observacion"></textarea>
+                  <label>Observación (*)</label>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l12 m-t m-l" style="padding: 0; border: 1px solid #8a88865e !important;"
+                ng-show="modalCompromisosVars.listadoAdjuntos.length">
+                <div style="max-height: 20vh;overflow-y: auto;">
+                  <table id="table" class="highlight">
+                    <tr>
+                      <th width="50%">Archivo</th>
+                      <th width="20%">Fecha</th>
+                      <th width="30%">Responsable</th>
+                    </tr>
+                    <tr title="Ver Anexo" class="c-pointer" ng-click="descargarSoporte(x.GESC_RUTA)"
+                      ng-repeat="x in modalCompromisosVars.listadoAdjuntos">
+                      <td>{{x.GESC_NOMBRE}}</td>
+                      <td>{{x.GESF_FECHA}}</td>
+                      <td>{{x.RESPONSABLE}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col s12 m12 l12 center m-t m-b">
+              <input class="btn white-text red"
+                style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit" value="Cerrar"
+                ng-click="atrasModalCompromisos();">
+              <input class="btn white-text default-linear-gradient" type="submit"
+                value="{{modalCompromisosVars.IdCompromiso == '' ? 'Guardar':'Actualizar'}} Datos"
+                ng-click="guardarFormCompromisos()" ng-if="modalCompromisosVars.gestionTerminada == 'N'">
+            </div>
+          </div>
+        </div>
+        <!--  -->
+      </div>
+      <!--  -->
+
+      <!--  -->
+    </div>
+    <!--  -->
+  </div>
+  <!--  -->
+  <div id="modalPlanMejora" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;display: flex;" class="default-color">
+            <i class="icon-left-circle-1 f-20 c-pointer" ng-click="closeModal();modalDatosCorresp(modalDatosCambio)"
+              title="Ver Datos"></i>
+            Plan de Mejoramiento
+          </span></h5>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin w-100" style="max-height: 100vh;overflow-y: auto;">
+          <!--  -->
+          <div class="col s12 m12 l12" ng-show="modalPlanMejoraVars.activarForm == 'N'">
+            <table id="tableDatosCorresp" class="table-bordered highlight">
+              <tr>
+                <th>#</th>
+                <th>Descripción</th>
+                <!-- <th>Corrección</th>
+
+                <th>Acciones</th>
+                <th>Corrección</th>
+                <th>Corrección</th> -->
+
+                <th>Fecha Inicio</th>
+                <th>Fecha Term.</th>
+                <th>Comentarios</th>
+                <th>Estado</th>
+                <th>Responsable Registro</th>
+                <th>Fecha Registro</th>
+                <th>Seguimientos</th>
+                <th style="width:1%"></th>
+              </tr>
+              <tr ng-repeat="x in modalPlanMejoraVars.listadoPlanMejora">
+                <td>{{x.GESN_ID_PLANMEJORA}}</td>
+                <td>{{x.GESC_DESCRIPCION}}</td>
+
+                <!-- <td>{{x.GESC_CORRECCION}}</td>
+                <td>{{x.GESC_ACCIONES}}</td>
+                <td>{{x.GESC_ACCION_MEJORA}}</td>
+                <td>{{x.GESC_INDICADORES}}</td>
+                <td>{{x.GESC_META}}</td> -->
+
+                <td>{{x.GESF_FECHA_INICIO}}</td>
+                <td>{{x.GESF_FECHA_TERMINACION}}</td>
+                <td>{{x.GESC_COMENTARIOS}}</td>
+                <td>{{x.GESN_ESTADO}}</td>
+                <td>{{x.GESN_RESPONSABLE_REGISTRO}}</td>
+                <td>{{x.GESF_FECHA_REGISTRO}}</td>
+                <td>{{x.CANTIDAD_SEGUIMIENTOS}}</td>
+
+                <td>
+                  <i class="icon-list-add c-pointer" title="Gestionar Plan" style="font-size: 1rem;"
+                    ng-click="editarModalPlanMejora(x, $index)"></i>
+
+                </td>
+              </tr>
+              <tr ng-show="modalPlanMejoraVars.listadoPlanMejora.length == 0">
+                <th colspan="8" style="text-align: center;">Sin registros</th>
+              </tr>
+            </table>
+            <div class="col s12 m12 l12 center m-t">
+              <input class="btn white-text default-linear-gradient" type="submit" value="Crear Plan de Mejoramiento"
+                ng-click="crearModalPlanMejora()">
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12"
+            ng-show="modalPlanMejoraVars.activarForm == 'S' && modalPlanMejoraVars.activarFormSeg == 'N'">
+            <blockquote class="blockquote_titulo m-b mt-0">
+              {{modalPlanMejoraVars.idPlanMejora == '' ? 'Plan de Mejoramiento Nuevo' : 'Plan de Mejoramiento
+              #' +
+              modalPlanMejoraVars.idPlanMejora}}
+            </blockquote>
+
+            <div class="row">
+
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalPlanMejoraVars.descripcion"></textarea>
+                  <label>Descripción (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper ng-model="modalPlanMejoraVars.correccion"></textarea>
+                  <label>Corrección (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper ng-model="modalPlanMejoraVars.acciones"></textarea>
+                  <label>Acciones (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalPlanMejoraVars.accionMejora"></textarea>
+                  <label>Acciones Mejora (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalPlanMejoraVars.indicadores"></textarea>
+                  <label>Indicadores (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper ng-model="modalPlanMejoraVars.meta"></textarea>
+                  <label>Meta (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar m-t">
+
+                <div class="col s3 no-padding label-new m-b">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" type="date"
+                    autocomplete="off" ng-model="modalPlanMejoraVars.fechaInicio" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                  <label>Fecha de Inicio (*)</label>
+                </div>
+
+                <div class="col s3 no-padding label-new m-b">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" type="date"
+                    autocomplete="off" ng-model="modalPlanMejoraVars.fechaTerminacion"
+                    min="{{SysDay | date:'yyyy-MM-dd'}}">
+                  <label>Fecha de Terminación (*)</label>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l12 formIndicPlanMejora_Desactivar">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalPlanMejoraVars.comentarios"></textarea>
+                  <label>Comentarios (*)</label>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l12 center m-t">
+                <input class="btn white-text red"
+                  style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit"
+                  value="Cerrar" ng-click="atrasModalPlanMejora();">
+                <input class="btn white-text default-linear-gradient" type="submit" value="Guardar Datos"
+                  ng-click="guardarFormPlanMejora()" ng-if="modalPlanMejoraVars.gestionTerminada == 'N'">
+              </div>
+
+            </div>
+            <!-- SEGUIMIENTOS -->
+            <div class="col s12 m12 l12 m-b m-l" style="padding: 0; border: 1px solid #8a88865e !important;"
+              ng-show="modalPlanMejoraVars.listadoPlanMejoraSeguimiento.length">
+              <div style="max-height: 20vh;overflow-y: auto;">
+                <table id="table" class="highlight">
+                  <tr>
+                    <th># Seguimiento</th>
+                    <th>Fecha</th>
+                    <th>Porcentaje</th>
+                    <th>Verificación</th>
+                    <th>Comentario</th>
+                    <th>Responsable</th>
+                    <th>Fecha de Registro</th>
+                  </tr>
+                  <tr title="Ver Anexo" ng-repeat="x in modalPlanMejoraVars.listadoPlanMejoraSeguimiento">
+                    <td>{{x.GESN_ID_SEGUIMIENTO}}</td>
+                    <td>{{x.GESF_FECHA_SEGUIMIENTO}}</td>
+                    <td>{{x.GESC_PORCENTAJE_AVANCE}}</td>
+                    <td>{{x.GESC_VERIFICACION}}</td>
+                    <td>{{x.GESC_COMENTARIOS}}</td>
+                    <td>{{x.GESN_RESPONSABLE_REGISTRO}}</td>
+                    <td>{{x.GESF_FECHA_REGISTRO}}</td>
+                  </tr>
+                </table>
+              </div>
+              <!--  -->
+            </div>
+            <div class="col s12 m12 l12 center m-b"
+              ng-if="modalPlanMejoraVars.gestionTerminada == 'S' && modalPlanMejoraVars.listadoPlanMejoraSeguimiento.length <=2">
+              <input class="btn white-text default-linear-gradient" type="submit" value="Crear Seguimiento"
+                ng-click="crearModalPlanMejoraSeg()">
+            </div>
+
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12" ng-show="modalPlanMejoraVars.activarFormSeg == 'S'">
+            <blockquote class="blockquote_titulo m-b mt-0">
+              {{'Seguimiento Nuevo #' + modalPlanMejoraVars.listadoPlanMejoraSeguimiento.length + 1}}
+            </blockquote>
+
+            <div class="row">
+              <div class="col s12 m12 l12">
+                <div class="col s3 no-padding label-new m-b">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" type="date"
+                    autocomplete="off" ng-model="modalPlanMejoraVars.fechaSeguimientoSeg"
+                    max="{{SysDay | date:'yyyy-MM-dd'}}">
+                  <label>Fecha de Seguimiento (*)</label>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l12 m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalPlanMejoraVars.porcentajeAvanceSeg"></textarea>
+                  <label>Porcentaje de Avance (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalPlanMejoraVars.verificacionSeg"></textarea>
+                  <label>Verificación (*)</label>
+                </div>
+              </div>
+              <div class="col s12 m12 l12 m-t">
+                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
+                  <textarea class="white input-text-new input-out-new w-100 margin m-l" maxlength="1000"
+                    autocomplete="off" text-description text-upper
+                    ng-model="modalPlanMejoraVars.comentariosSeg"></textarea>
+                  <label>Comentarios (*)</label>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l12 center m-t m-b">
+                <input class="btn white-text red"
+                  style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit"
+                  value="Cerrar" ng-click="atrasModalPlanMejoraSeg();">
+                <input class="btn white-text default-linear-gradient" type="submit" value="Guardar Datos"
+                  ng-click="guardarFormPlanMejoraSeg()">
+              </div>
+
+            </div>
+          </div>
+
+          <!--  -->
+        </div>
+        <!--  -->
+      </div>
+      <!--  -->
+
+      <!--  -->
+    </div>
+    <!--  -->
+  </div>
   <!-- MODAL -->
   <!-- ///// -->
   <!-- ///// -->
 
 
   <style>
+    .cortar-texto {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
     .resaltadoRojo {
       background-color: #ff00001f;
     }
@@ -1475,6 +2090,14 @@
       background-color: green;
     }
 
+    .etiquetaNaranja {
+      background-color: rgb(208, 125, 2);
+    }
+
+    .etiquetaGris {
+      background-color: #6bbbf7;
+    }
+
     /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
     .btnAgregar {
       padding: 0 0.5rem;
@@ -1500,6 +2123,16 @@
     }
 
     #procesosFile {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    #fileGestionIndic {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    #fileGestionIndicCompromiso {
       height: 2rem;
       cursor: pointer;
     }

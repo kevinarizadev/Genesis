@@ -1015,7 +1015,30 @@ angular.module('GenesisApp')
           }
           if (data.length) {
             swal.close()
-            $scope.hojaAsig.listadoFuncsJefe = data
+            $scope.hojaAsig.listadoFuncsJefe = data;
+
+            const index = $scope.hojaAsig.listadoAcas.findIndex( x => x.CASN_NUMERO == $scope.hojaAsig.formulario.mesaAyuda.toString().split('-')[0].trim());
+
+
+            $scope.hojaAsig.listadoFuncsJefe.push({
+              "CODIGO": $scope.hojaAsig.listadoAcas[index].CASV_SOLICITANTE,
+              "NOMBRE": $scope.hojaAsig.listadoAcas[index].TERC_NOMBRE,
+              "CARGO": $scope.hojaAsig.listadoAcas[index].CARC_NOMBRE,
+              "AREA": $scope.hojaAsig.listadoAcas[index].AREA,
+              "REGIONAL": $scope.hojaAsig.listadoAcas[index].UBGC_NOMBRE,
+              "EMAIL": $scope.hojaAsig.listadoAcas[index].TERC_EMAIL
+            })
+
+            // AREA: "DIRECCION"
+            // ASUC_NOMBRE: "SOLICITUD EQUIPO CELULAR"
+            // CARC_NOMBRE: "JEFE DE OFICINA COMUNICACIONES"
+            // CASN_NUMERO: "580675"
+            // CAST_DIAGNOSTICO: "BUENOS DÍAS, FORMALMENTE SOLICITO QUE EL APARATO SOLICITADO SEA ASIGNADO A LA SIGUIENTE LINEA TELEFÓNICA QUE TENGO A EN MI AREA 3006342842"
+            // CASV_SOLICITANTE: "22736472"
+            // TERC_EMAIL: "giselle.barcelo@cajacopieps.com"
+            // TERC_NOMBRE: "BARCELO  CUNHA  GISELLE  MARGARITA "
+            // UBGC_NOMBRE: "SEDE NACIONAL"
+
             setTimeout(() => { $scope.$apply(); }, 500);
           }
         })

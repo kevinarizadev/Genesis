@@ -28,6 +28,38 @@ function cargarSoporte()
   echo $subio;
 }
 
+function cargarSoporteGestionIndic()
+{
+  require('../sftp_cloud/UploadFile.php');
+  global $request;
+  $archivo = $request->base64;
+  $path = 'Planeacion/POA/GestionPeriodo/' . date('dmY');
+  $hoy = date('dmY_His');
+  $name = $request->nombre .  '_' . $hoy .'.'.$request->ext;
+  list(, $archivo) = explode(';', $archivo); // Proceso para traer el Base64
+  list(, $archivo) = explode(',', $archivo); // Proceso para traer el Base64
+  $base64 = base64_decode($archivo); // Proceso para traer el Base64
+  file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+  $subio = UploadFile($path, $name);
+  echo $subio;
+}
+
+function cargarSoporteCompromisos()
+{
+  require('../sftp_cloud/UploadFile.php');
+  global $request;
+  $archivo = $request->base64;
+  $path = 'Planeacion/POA/Compromisos/' . date('dmY');
+  $hoy = date('dmY_His');
+  $name = $request->nombre .  '_' . $hoy .'.'.$request->ext;
+  list(, $archivo) = explode(';', $archivo); // Proceso para traer el Base64
+  list(, $archivo) = explode(',', $archivo); // Proceso para traer el Base64
+  $base64 = base64_decode($archivo); // Proceso para traer el Base64
+  file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+  $subio = UploadFile($path, $name);
+  echo $subio;
+}
+
 function p_consulta_permisos_usuario()
 {
   global $request;
@@ -283,14 +315,14 @@ function p_lista_gestion_indicador()
   oci_execute($consulta);
   oci_execute($cursor, OCI_DEFAULT);
   if (isset($json) && json_decode($json)->Codigo == 0) {
-		$datos = [];
-		oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
-		oci_free_statement($consulta);
-		oci_free_statement($cursor);
-		echo json_encode($datos);
-	} else {
-		echo json_encode($json);
-	}
+    $datos = [];
+    oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+    oci_free_statement($consulta);
+    oci_free_statement($cursor);
+    echo json_encode($datos);
+  } else {
+    echo json_encode($json);
+  }
 }
 
 function p_ui_gestion_indicador()
@@ -348,3 +380,293 @@ function p_u_metaVigencia()
   oci_close($c);
 }
 
+function p_descarga_ficha_tecnica()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.P_DESCARGA_FICHA_TECNICA(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+
+function p_descarga_informe_multiple()
+{
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_descarga_informe_multiple(:v_presponse); end;');
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function p_descarga_informe_individual()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_descarga_informe_individual(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function p_listar_soportes_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_listar_soportes_gestion_indicador(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_pperiodo,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_pperiodo', $request->periodo);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+
+function p_guardar_soporte_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_guardar_soporte_gestion_indicador(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_pperiodo,:v_pnombre,:v_pruta,:v_presponsable,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_pperiodo', $request->periodo);
+  oci_bind_by_name($consulta, ':v_pnombre', $request->nombre);
+  oci_bind_by_name($consulta, ':v_pruta', $request->ruta);
+  oci_bind_by_name($consulta, ':v_presponsable', $request->responsable);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}
+
+function p_ui_compromisos_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_ui_compromisos_gestion_indicador(:v_pdatos,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pdatos', $request->datos);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}
+
+function p_listar_compromisos_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_listar_compromisos_gestion_indicador(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_pperiodo,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_pperiodo', $request->periodo);
+  // oci_bind_by_name($consulta, ':v_pcompromiso', $request->idCompromiso);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function p_listar_soportes_compromisos()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_listar_soportes_compromisos(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_pperiodo,:v_pcompromiso,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_pperiodo', $request->periodo);
+  oci_bind_by_name($consulta, ':v_pcompromiso', $request->idCompromiso);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function p_guardar_soporte_compromisos()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_guardar_soporte_compromisos(:v_pdatos,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pdatos', $request->datos);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}
+
+function p_ui_planmejora_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_ui_planmejora_gestion_indicador(:v_pdatos,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pdatos', $request->datos);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}
+
+function p_listar_planmejora_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_listar_planmejora_gestion_indicador(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_pperiodo,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_pperiodo', $request->periodo);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+
+
+function p_ui_planmejora_seg_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_ui_planmejora_seg_gestion_indicador(:v_pdatos,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pdatos', $request->datos);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}
+
+function p_listar_planmejora_seg_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_listar_planmejora_seg_gestion_indicador(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,
+  :v_pperiodo,:v_pplanmejora,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_pperiodo', $request->periodo);
+  oci_bind_by_name($consulta, ':v_pplanmejora', $request->idPlanMejora);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function p_genera_nuevo_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_genera_nuevo_indicador(:v_pregn_proceso,:v_pcod_estr,:v_pcod_tact,:v_pcod_indicador,:v_panno,:v_presponsable,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pregn_proceso', $request->cod_pro);
+  oci_bind_by_name($consulta, ':v_pcod_estr', $request->cod_estr);
+  oci_bind_by_name($consulta, ':v_pcod_tact', $request->cod_tac);
+  oci_bind_by_name($consulta, ':v_pcod_indicador', $request->cod_ind);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_presponsable', $request->responsable);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}

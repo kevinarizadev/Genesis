@@ -28,12 +28,15 @@ angular.module('GenesisApp', ['ngStorage', 'toastr', 'ngDialog', 'chieffancypant
 
         $scope.userAfil = '1044227813';
         $scope.passAfil = '111901';
+
+        $scope.nitIps = "802009806";
+        $scope.userIps = "72176922";
         // $scope.nit = "802019914";
         // $scope.useripsaut = "72205929";
         // $scope.nit = "900500653";
         // $scope.useripsaut = "30838808";
-        $scope.nitIps = "900465319";
-        $scope.userIps = "777888999";
+        // $scope.nitIps = "900465319";
+        // $scope.userIps = "777888999";
         $scope.passIps = "Cajacopi2022.";
 
         // $scope.nitEmpr = '5796371';

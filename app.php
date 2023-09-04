@@ -692,6 +692,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/altocosto/adminsiniestrosController.js"></script>
 <script src="scripts/controllers/altocosto/seguimientoCancerController.js"></script>
 <script src="scripts/controllers/altocosto/seguimientoCACController.js"></script>
+<script src="scripts/controllers/altocosto/seguimientoCohortesController.js"></script>
 <!-- Servicios Digitalizacion -->
 <!-- Servicios Digitalizacion -->
 <!--<script src="https://asprise.azureedge.net/scannerjs/scanner.js" type="text/javascript"></script> -->

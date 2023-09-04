@@ -41,6 +41,7 @@ function generateExcelFile()
         $columna = $columnaInicial;
         $hoja->getColumnDimension($columna)->setWidth(24);
         $hoja->setCellValue($columna . $indiceFila, $elemento['NroSiniestro']);
+        $hoja->getStyle($columna . $indiceFila)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
         $columna++;
         $hoja->setCellValue($columna . $indiceFila, $elemento['Regional']);
         $columna++;
@@ -80,9 +81,57 @@ function generateExcelFile()
         $columna++;
         $hoja->setCellValue($columna . $indiceFila, $elemento['EstadoSeguimiento']);
         $columna++;
-        $hoja->setCellValue($columna . $indiceFila, $elemento['FechaInicioGestion']);
-        $columna++;
+        $fechaOriginal = $elemento['FechaInicioGestion'];
+        $fechaSinHora = substr($fechaOriginal, 0, 9);
+        
+        $hoja->setCellValue($columna . $indiceFila, $fechaSinHora);
+        
+        // Obtener el estilo de la celda
+        $style = $hoja->getStyle($columna . $indiceFila);
+        
+        // Aplicar alineación horizontal y vertical centrada
+        $style->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $style->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        
+        // Aplicar formato de fecha "dd/mm/yyyy"
+        $style->getNumberFormat()->setFormatCode('dd/mm/yyyy');
+        
+        // Reemplazar el formato de mes a número
+        $fechaCellValue = $hoja->getCell($columna . $indiceFila)->getValue();
+        $fechaCellValue = str_replace(['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
+                                      ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                      $fechaCellValue);
+        $hoja->getCell($columna . $indiceFila)->setValue($fechaCellValue);
+        
+        $columna++; // Incrementar la columna
+        
+
+
+
         $hoja->setCellValue($columna . $indiceFila, $elemento['FechaCierreGestion']);
+        $fechaCierreOriginal = $elemento['FechaCierreGestion'];
+$fechaCierreSinHora = substr($fechaCierreOriginal, 0, 9);
+
+$hoja->setCellValue($columna . $indiceFila, $fechaCierreSinHora);
+
+// Obtener el estilo de la celda
+$style = $hoja->getStyle($columna . $indiceFila);
+
+// Aplicar alineación horizontal y vertical centrada
+$style->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+$style->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+// Aplicar formato de fecha "dd/mm/yyyy"
+$style->getNumberFormat()->setFormatCode('dd/mm/yyyy');
+
+// Reemplazar el formato de mes a número
+$fechaCierreCellValue = $hoja->getCell($columna . $indiceFila)->getValue();
+$fechaCierreCellValue = str_replace(['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
+                                     ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                     $fechaCierreCellValue);
+$hoja->getCell($columna . $indiceFila)->setValue($fechaCierreCellValue);
+
+
         $hoja->getColumnDimension($columna)->setAutoSize(true);
 
         $indiceFila++; // Incrementar el índice para la siguiente fila
@@ -99,8 +148,6 @@ function generateExcelFile()
     // Imprimir el archivo
     $writer->save('php://output');
 }
-
-
 function P_ST_GET_SEGUIMIENTO_USUARIOS_FILTROS()
 {
 
@@ -120,7 +167,6 @@ function P_ST_GET_SEGUIMIENTO_USUARIOS_FILTROS()
     }
     echo $respuesta;
 }
-
 function P_ST_GET_GESTION_USUARIOS_FILTROS()
 {
 
@@ -140,7 +186,6 @@ function P_ST_GET_GESTION_USUARIOS_FILTROS()
     }
     echo $respuesta;
 }
-
 function P_ST_GET_PATOLOGIA_AFILIADOS()
 {
 
@@ -161,11 +206,26 @@ function P_ST_GET_PATOLOGIA_AFILIADOS()
     }
     echo $respuesta;
 }
+function P_ST_GET_SESION()
+{
 
-
-
-
-
+    require_once('../config/dbcon_prod.php');
+    global $request;
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_ST_GET_SESION(:P_NU_NUMERO,
+        :P_V_USUARIO,
+        :V_JSON_ROW); end;');
+    oci_bind_by_name($consulta, ':P_NU_NUMERO', $request->P_NU_NUMERO);
+    oci_bind_by_name($consulta, ':P_V_USUARIO', $request->P_V_USUARIO);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':V_JSON_ROW', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
 //Procedimiento para obtener las preguntas del lado de gestion
 function P_ST_INICIAR_GESTION()
 {
@@ -186,7 +246,6 @@ function P_ST_INICIAR_GESTION()
     }
     echo $respuesta;
 }
-
 
 function P_ST_GET_CONFIG_PREGUNTAS_TIPOS_GESTION()
 {
@@ -209,6 +268,27 @@ function P_ST_GET_CONFIG_PREGUNTAS_TIPOS_GESTION()
 }
 
 
+function P_ST_MOSTRAR_GESTION()
+{
+
+    require_once('../config/dbcon_prod.php');
+    global $request;
+    // echo $request->P_NU_NUMERO;
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_ST_MOSTRAR_GESTION(    :P_V_SINIESTRO,
+                                                                                                 :P_I_TIPO,
+                                                                                                 :V_JSON_ROW); end;');
+    oci_bind_by_name($consulta, ':P_V_SINIESTRO', $request->P_V_SINIESTRO);
+    oci_bind_by_name($consulta, ':P_I_TIPO', $request->P_I_TIPO);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':V_JSON_ROW', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
 
 
 
@@ -260,7 +340,7 @@ function P_ST_POST_GESTION_USUARIOS()
     global $request;
     $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_ST_POST_GESTION_USUARIOS( :P_V_JSON,
                                                                                                   :V_JSON_ROW); end;');;
-    oci_bind_by_name($consulta, ':P_V_JSON', $request->P_V_JSON);
+    oci_bind_by_name($consulta, ':P_V_JSON', $request->p_v_json);
     $clob = oci_new_descriptor($c, OCI_D_LOB);
     oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
     oci_execute($consulta, OCI_DEFAULT);
@@ -349,6 +429,24 @@ function P_LISTAR_IPS_ALTOCOSTO()
     echo $respuesta;
 }
 
+function P_LISTAR_IPS()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_LISTAR_IPS(:v_nit,:v_json_out); end;');
+    oci_bind_by_name($consulta, ':v_nit', $request->V_PCONCEPTO);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_json_out', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
+
 function P_ST_POST_RESPUESTA_PREGUNTA()
 {
     require_once('../config/dbcon_prod.php');
@@ -360,7 +458,6 @@ function P_ST_POST_RESPUESTA_PREGUNTA()
     oci_execute($consulta, OCI_DEFAULT);
     if (isset($clob)) {
         $respuesta = $clob->read($clob->size());
-        
     } else {
         $respuesta = json_encode([]);
     }
@@ -375,6 +472,117 @@ function P_ST_POST_RESPUESTA_PREGUNTA_GESTION()
     oci_bind_by_name($consulta, ':P_V_JSON', $request->P_V_JSON);
     $clob = oci_new_descriptor($c, OCI_D_LOB);
     oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
+
+function P_AG_GET_HISTORICO_RESPUESTA_PREGUNTA_GESTION()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_AG_GET_HISTORICO_RESPUESTA_PREGUNTA_GESTION(
+        :P_I_ID_SEGUIMIENTO,
+        :P_I_SINISTESTRO,
+        :V_JSON_ROW); end;');;
+    oci_bind_by_name($consulta, ':P_I_ID_SEGUIMIENTO', $request->P_I_ID_SEGUIMIENTO);
+    oci_bind_by_name($consulta, ':P_I_SINISTESTRO', $request->P_I_SINISTESTRO);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
+
+function P_ST_GET_EAFI_AFILIADOS()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_ST_GET_EAFI_AFILIADOS(
+        :P_V_TIPO_DOCUMENTO ,
+        :P_V_DOCUMENTO ,
+        :p_v_siniestro  ,
+        :p_v_marca ,
+        :V_JSON_ROW); end;');;
+    oci_bind_by_name($consulta, ':P_V_TIPO_DOCUMENTO', $request->tipoDocumento);
+    oci_bind_by_name($consulta, ':P_V_DOCUMENTO', $request->numDocumento);
+    oci_bind_by_name($consulta, ':p_v_siniestro', $request->siniestro);
+    oci_bind_by_name($consulta, ':p_v_marca', $request->marca);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
+
+function ObtenePListaCohortes()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_LISTADO_COHORTES(:v_pjson_row_out); end;');;
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_pjson_row_out', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
+function ObtenePListaClasificacion()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_LISTADO_CLASIFICACIONES(:v_p_cohorte,:v_pjson_row_out); end;');;
+    oci_bind_by_name($consulta, ':v_p_cohorte', $request->vpcohorte);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_pjson_row_out', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
+function ObtenePListaMarcaUsuario()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+    $consulta =  oci_parse($c, 'BEGIN OASIS.PQ_ST_SEGUIMIENTOTELEFONICO.P_MARCA_USUARIOS(:v_pjson_row_out); end;');;
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_pjson_row_out', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $respuesta = $clob->read($clob->size());
+    } else {
+        $respuesta = json_encode([]);
+    }
+    echo $respuesta;
+}
+function consulta_siniestro()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+    $consulta =  oci_parse($c, 'BEGIN oasis.PQ_GENESIS_GESTION_ACGS.P_CONSULTA_SINIESTRO(:v_ptipo_doc,:v_pnum_doc,:v_pjson_row); end;');;
+    oci_bind_by_name($consulta, ':v_ptipo_doc', $request->vptipodoc);
+    oci_bind_by_name($consulta, ':v_pnum_doc', $request->vpnumdoc);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
     oci_execute($consulta, OCI_DEFAULT);
     if (isset($clob)) {
         $respuesta = $clob->read($clob->size());

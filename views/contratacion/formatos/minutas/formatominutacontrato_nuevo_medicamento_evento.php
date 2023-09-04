@@ -1776,7 +1776,7 @@
             </div>
             <br>
             <div class="minuta_texto">Leído el presente documento lo suscriben las partes como aparecen, en señal de
-              conformidad, en dos originales, en la ciudad de Barranquilla el {{dia}} de {{mes}} de {{anio}},
+              conformidad, en dos originales, en la ciudad de Barranquilla,
               entendiéndose perfeccionado con la firma de este.</div>
 
           </div>
