@@ -550,7 +550,7 @@ angular.module('GenesisApp')
             { codigo: 'O', nombre: 'Operativo' },
             { codigo: 'T', nombre: 'Táctico' },
             { codigo: 'E', nombre: 'Estratégico' },
-            { codigo: 'P', nombre: 'Plan de Mejoramiento' },
+            // { codigo: 'P', nombre: 'Plan de Mejoramiento' },
             { codigo: 'R', nombre: 'Otros' },
           ],
           listadoPrioridad: [
@@ -681,6 +681,10 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.prioridad = '';
         $scope.hojaIndicadores.formulario.tipoNorma = '';
         $scope.hojaIndicadores.formulario.norma = '';
+
+        $scope.hojaIndicadores.formulario.planDeMejoramiento = '';
+        $scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento = '';
+
         $scope.hojaIndicadores.formulario.periodicidadReporte = '';
         $scope.hojaIndicadores.formulario.periodicidadAnalisis = '';
         //
@@ -820,6 +824,10 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.prioridad = x.REGC_PRIORIDAD.split('-')[0];
         $scope.hojaIndicadores.formulario.tipoNorma = x.REGC_TIPO_NORMA ? x.REGC_TIPO_NORMA.split('-')[0] : '';
         $scope.hojaIndicadores.formulario.norma = x.REGC_NORMA;
+
+        $scope.hojaIndicadores.formulario.planDeMejoramiento = x.REGC_PLANMEJORAMIENTO;
+        $scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento = x.REGV_DESC_PLANMEJORAMIENTO;
+
         $scope.hojaIndicadores.formulario.periodicidadReporte = x.REGC_PERIODICIDAD_REPORTE.split('-')[0];
         $scope.hojaIndicadores.formulario.periodicidadAnalisis = x.REGC_PERIODICIDAD_ANALISIS.split('-')[0];
         //
@@ -1920,6 +1928,10 @@ angular.module('GenesisApp')
           // if (!$scope.hojaIndicadores.formulario.tipoNorma) resolve(false);
           // if (!$scope.hojaIndicadores.formulario.norma) resolve(false);
           // if (!$scope.hojaIndicadores.formulario.frecuencia) resolve(false);
+
+          if (!$scope.hojaIndicadores.formulario.planDeMejoramiento) resolve(false);
+          if (!$scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento) resolve(false);
+
           if (!$scope.hojaIndicadores.formulario.periodicidadReporte) resolve(false);
           if (!$scope.hojaIndicadores.formulario.responsableReporte) resolve(false);
           if (!$scope.hojaIndicadores.formulario.responsableAnalisis) resolve(false);
@@ -1992,6 +2004,9 @@ angular.module('GenesisApp')
             pdato3: $scope.hojaIndicadores.formulario.semaforizacionValor3.replace(',', '.'),
 
             pdatomax: $scope.hojaIndicadores.formulario.semaforizacionValorMax.replace(',', '.'),
+
+            pplanmejoramiento: $scope.hojaIndicadores.formulario.planDeMejoramiento,
+            pdesc_planmejoramiento: $scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento,
 
             presponsable: $scope.Rol_Cedula,
 
