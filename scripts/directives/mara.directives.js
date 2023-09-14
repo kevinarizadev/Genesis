@@ -1938,6 +1938,20 @@
       //controllerAs:'pcctrl'
     };
   }
+  angular.module('GenesisApp').directive('conciliaciondeglosasips', conciliaciondeglosasips);
+  conciliaciondeglosasips.$inject = ['$rootScope', '$compile'];
+  function conciliaciondeglosasips($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/Cuentasmedicas/conciliaciondeglosasips.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'conciliaciondeglosasipsController'//,
+      //controllerAs:'pcctrl'
+    };
+  }
 
 
   seguimientopres.$inject = ['$rootScope', '$compile'];

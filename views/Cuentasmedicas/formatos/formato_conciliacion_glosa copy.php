@@ -79,11 +79,11 @@
   <script src="../../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
   <script src="../../../bower_components/angular/angular.js"></script>
   <script src="../../../bower_components/jquery/dist/jquery.js"></script>
-  <script src="../../../scripts/controllers/cuentasmedicas/formatos/formatoconciliacionrespuestaglosaController.js"></script>
+  <script src="../../../scripts/controllers/cuentasmedicas/formatos/formatoconciliacionglosaController.js"></script>
 </head>
 <!-- 1a2e63 -->
 
-<body ng-controller="formatoconciliacionrespuestaglosaController">
+<body ng-controller="formatoconciliacionglosaController">
   <table id="table1" width="100%" style="border: #FFF;">
     <tr class="border_white">
       <td width="3%"></td>
@@ -99,39 +99,39 @@
     <tr>
       <td colspan="2" rowspan="3" style="text-align: center;">
         <img style="width: 10em;" src="../../../assets/images/logo_cajacopieps.png">
-      <td colspan="5" rowspan="2" class="fs_10" style="text-align: center;padding:0.1% 0%;">FORMATO ACTA DE CONCILIACIÓN DE RESPUESTA DE GLOSAS</td>
+      <td colspan="5" rowspan="2" class="fs_10" style="text-align: center;padding:0.1% 0%;">FORMATO ACTA DE CONCILIACIÓN DE GLOSAS</td>
       <td colspan="1">
-        Código: CM-FR-04
+        Código: CM-FR-05
       </td>
     </tr>
     <tr>
-      <td colspan="1">Version: 01</td>
+      <td colspan="1">Version: 02</td>
     </tr>
     <tr>
       <td colspan="5" class="fs_10" style="text-align: center;padding:1% 0%;">
         PROCEDIMIENTO DE AUDITORIA DE CUENTAS MÉDICAS</td>
-      <td colspan="1">Fecha: Febrero 2023</td>
+      <td colspan="1">Fecha: Marzo 2023</td>
     </tr>
     <tr>
-      <td colspan="2" class="txtCenter">FECHA:</td>
-      <td colspan="2" class="txtCenter">{{datosCabeza.fecha_corte}}</td>
-      <td colspan="3" rowspan="2" class="txtCenter">COORDINACION NACIONAL DE CUENTAS MEDICAS</td>
+      <td colspan="2" class="txtCenter">FECHA DE CORTE:</td>
+      <td colspan="1" class="txtCenter">{{datosCabeza.fecha_corte}}</td>
+      <td colspan="3" class="txtCenter">COORDINACION NACIONAL DE CUENTAS MEDICAS</td>
       <td colspan="2" class="fondoAzul pad7 txtCenter">NOMBRE DEL PSS - NIT</td>
     </tr>
     <tr>
-      <td colspan="2" class="txtCenter pad7">LUGAR:</td>
+      <td colspan="2" class="txtCenter pad7">FECHA:</td>
       <td colspan="1" class="txtCenter">{{datosCabeza.fecha}}</td>
+      <td colspan="1" class="txtCenter">LUGAR:</td>
       <td colspan="2" class="txtCenter">{{datosCabeza.lugar}}</td>
       <td colspan="2" class="txtCenter">{{datosCabeza.nombre_pss_nit}}</td>
     </tr>
     <!--  -->
     <tr>
       <td colspan="2" class="txtCenter fondoAzul">FACTURA N°</td>
-      <td colspan="1" class="txtCenter fondoAzul">VALOR DE FACTURA</td>
       <td colspan="1" class="txtCenter fondoAzul">VALOR GLOSA</td>
+      <td colspan="1" class="txtCenter fondoAzul">VALOR GLOSA MANTENIDA</td>
       <td colspan="1" class="txtCenter fondoAzul">GLOSA ACEPTADA POR IPS</td>
-      <td colspan="1" class="txtCenter fondoAzul">VALOR LEVANTADO POR EPS</td>
-      <td colspan="1" class="txtCenter fondoAzul">GLOSA RATIFICADA POR EPS</td>
+      <td colspan="1" class="txtCenter fondoAzul">VALOR A PAGAR POR EPS</td>
       <td colspan="2" class="txtCenter fondoAzul">OBSERVACIONES</td>
     </tr>
     <tr ng-repeat="x in datosDetalle">
@@ -141,8 +141,8 @@
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_MANTENIDA)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_IPS)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_EPS)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_EPS)}}</td>
-      <td colspan="1" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA}}</td>
+      <td colspan="2" class="txtCenter">{{x.NTDC_COMENTARIO}}</td>
+      <!-- <td colspan="2" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA}}</td> -->
     </tr>
 
     <tr>
@@ -151,30 +151,58 @@
       <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorMantenida)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorIps)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorEps)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorEps)}}</td>
-      <td colspan="1" class="txtCenter"></td>
+      <td colspan="2" class="txtCenter"></td>
     </tr>
     <!--  -->
     <tr>
-      <td colspan="4" class="txtCenter fondoAzul">NOMBRE DEL PSS - NIT</td>
-      <td colspan="4" class="txtCenter fondoAzul">REPRESENTANTE DE  CUENTAS MÉDICAS                                                                                                                                                                                                                                                                                      CAJACOPI EPS  SAS</td>
+      <td colspan="3" class="txtCenter fondoAzul">NOMBRE DEL PSS - NIT</td>
+      <td colspan="3" class="txtCenter fondoAzul">NOMBRE Y FIRMA DEL AUDITOR QUE REALIZA LA CONCILIACIÓN</td>
+      <td colspan="2" class="txtCenter fondoAzul">GERENTE GENERAL</td>
     </tr>
     <tr>
-      <td colspan="4" rowspan="3" class="txtCenter">{{datosCabeza.nombre_pss_nit}}</td>
-      <td colspan="4" class="txtCenter verAlign_bottom pad_t25">
+      <td colspan="3" class="txtCenter">{{datosCabeza.nombre_pss_nit}}</td>
+      <td colspan="3" class="txtCenter verAlign_bottom pad_t25">
         <div class="d_grid ">
           <span>{{datosCabeza.auditor_nac_cm}}</span>
           <!-- <span>AUDITOR DE CONCILIACIÓN</span> -->
           <span>{{datosCabeza.nom_auditor_nac_cm}}</span>
+          <span>CAJACOPI EPS</span>
+        </div>
+      </td>
+      <td colspan="2" class="txtCenter verAlign_bottom">
+        <div class="d_grid ">
+          <span>REPRESENTANTE LEGAL</span>
+          <span>{{datosCabeza.nom_presidente}}</span>
+          <span>CAJACOPI EPS</span>
         </div>
       </td>
     </tr>
     <tr>
-      <td colspan="4" class="txtCenter fondoAzul">REPRESENTANTE DE IPS</td>
+      <td colspan="3" class="txtCenter fondoAzul">REPRESENTANTE DE IPS</td>
+      <td colspan="3" class="txtCenter fondoAzul">COORDINADOR NACIONAL DE CUENTAS MEDICAS</td>
+      <td colspan="2" class="txtCenter fondoAzul">SUBGERENTE ADMINISTRATIVA Y FINANCIERA</td>
     </tr>
     <tr>
-      <td colspan="4" class="txtCenter pad_t25 verAlign_bottom">
-
+      <td colspan="3" class="txtCenter pad_t25 verAlign_bottom">
+        <div class="d_grid ">
+          <span>AUDITOR DE CUENTAS MEDICAS</span>
+          <!-- <span>xxxxxxxx</span> -->
+          <span>{{datosCabeza.nombre_pss_nit}}</span>
+        </div>
+      </td>
+      <td colspan="3" class="txtCenter verAlign_bottom">
+        <div class="d_grid ">
+          <span>COORDINADOR NACIONAL DE CUENTAS MEDICAS</span>
+          <span>{{datosCabeza.nom_coord_nac_cm}}</span>
+          <span>CAJACOPI EPS</span>
+        </div>
+      </td>
+      <td colspan="2" class="txtCenter verAlign_bottom">
+        <div class="d_grid ">
+          <span>SUBGERENTE ADMINISTRADOR Y FINANCIERA</span>
+          <span>{{datosCabeza.nom_subdirector}}</span>
+          <span>CAJACOPI EPS</span>
+        </div>
       </td>
     </tr>
 

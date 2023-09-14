@@ -104,9 +104,11 @@ angular.module('GenesisApp')
       $scope.limpiar = function () {
         // $scope.filtroarea = ' ';
         // $scope.filtroconcepto = ' ';
-        $scope.filtromotivo = ' ';
+        $scope.motivos = []
+        $scope.asuntos = []
+        $scope.filtromotivo = '';
         $scope.filtromotivo_SAVE = ' ';
-        $scope.filtroasunto = ' ';
+        $scope.filtroasunto = '';
         $scope.vw_prioridad = true;
         $scope.nombreadjunto = null;
         $scope.adjunto = null;
@@ -120,6 +122,7 @@ angular.module('GenesisApp')
         $('#nombreadjunto')[0].value = '';
         $('input[type=file]')[0].value = '';
         $scope.count = 0;
+        setTimeout(() => { $scope.$apply(); }, 500);
       }
 
       $scope.handleKeyPress = function (e) {

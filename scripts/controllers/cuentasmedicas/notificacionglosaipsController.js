@@ -1,8 +1,13 @@
 'use strict';
 angular.module('GenesisApp')
-  .controller('notificacionglosaipsController', ['$scope', '$http', '$filter', '$q',
-    function ($scope, $http, $filter, $q) {
-      $(document).ready(function () {
+  .controller('notificacionglosaipsController', ['$scope', '$http', '$filter',
+    function ($scope, $http, $filter) {
+      $scope.Inicio = function () {
+        console.log($(window).width());
+        setTimeout(() => {
+          document.querySelector("#content").style.backgroundColor = "white";
+        }, 2000);
+        $scope.Ajustar_Pantalla();
         $('.modal').modal();
         $scope.Rol_Nit = sessionStorage.getItem('nit');
         // $scope.Rol_Nit = 900465319;
@@ -10,321 +15,160 @@ angular.module('GenesisApp')
         $scope.Rol_Cedula = sessionStorage.getItem('cedula');
         console.log($scope.Rol_Cedula);
         console.log($scope.nombre);
-        // $scope.Cont_Notificaciones = {
-        //   not: 0,
-        //   ace: 0,
-        //   con: 0
-        // }
-        $scope.Lista_Glosa = [];
-        $scope.Lista_GlosaTemp = [];
-
-        // $scope.Ver_Glosas();
-        $scope.Cargar_Estado();
         $scope.Vista = 0;
-      });
 
-      $scope.Cargar_Estado = function () {
-        // console.log(row);
-        $scope.List_Estados_CantTotal = 0;
-        $scope.List_Estados = [];
+        $scope.verNotificaciones();
+      };
+
+
+      $scope.verNotificaciones = function (msg) {
+        if (msg == null) {
+          swal({ title: 'Cargando...', allowOutsideClick: false });
+          swal.showLoading();
+        }
+        $scope.listadoNotificaciones = [];
+        $scope.listadoNotificacionesTemp = [];
+        $scope.filtroNotificaciones = '';
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/notificacionglosaips.php",
-          data: { function: 'Obtener_Cantidad_Glosas', origen: 'I', nit: $scope.Rol_Nit }
-        }).then(function (response) {
-          if (response.data[0] != undefined) {
-            // console.table(response.data);
-            response.data.forEach(e => {
-              $scope.List_Estados_CantTotal += parseInt(e.CANTIDAD);
-            });
-            setTimeout(() => {
-              response.data.forEach(e => {
-                $scope.List_Estados.push({ CODIGO: e.CODIGO, NOMBRE: e.NOMBRE, CANTIDAD: e.CANTIDAD, PORCENTAJE: ($scope.List_Estados_CantTotal == 0) ? 0 : (((parseInt(e.CANTIDAD) * 100) / $scope.List_Estados_CantTotal).toFixed(1)) })
-              });
-              // console.table($scope.List_Estados);
-              $scope.$apply();
-            }, 500);
+          data: { function: 'p_lista_glosas_estado_resp_agru', nit: $scope.Rol_Nit }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.length) {
+            $scope.listadoNotificaciones = data;
+            $scope.listadoNotificacionesTemp = data;
+
+            $scope.currentPage = 0;
+            $scope.pageSize = 10;
+            $scope.valmaxpag = 10;
+            $scope.pages = [];
+            $scope.configPages();
+            // $scope.Vista = 0;
+            setTimeout(() => { $scope.$apply(); }, 500);
+            if (msg == null) { swal.close(); }
           } else {
-            swal({
-              title: "¡Ocurrio un error!",
-              text: response.data.Nombre,
-              type: "warning"
-            }).catch(swal.noop);
+            swal.close();
           }
         })
       }
 
-
-      $scope.Ver_Glosas = function (row, msg) {
-        if (row.CANTIDAD != 0) {
-          if (msg == null) {
-            swal({ title: 'Cargando...', allowOutsideClick: false });
-            swal.showLoading();
-          }
-          $scope.EstadoGlosa = row.NOMBRE;
-          $scope.EstadoGlosaCod = row.CODIGO;
-          $scope.Lista_Glosa = [];
-          $http({
-            method: 'POST',
-            url: "php/cuentasmedicas/notificacionglosaips.php",
-            data: { function: 'Obtener_Glosas', Estado: row.CODIGO, Nit: $scope.Rol_Nit }
-          }).then(function (response) {
-            if (response.data != undefined) {
-              $scope.Lista_Glosa = response.data;
-              $scope.Lista_GlosaTemp = $scope.Lista_Glosa;
-              $scope.currentPage = 0;
-              $scope.pageSize = 10;
-              $scope.valmaxpag = 10;
-              $scope.pages = [];
-              $scope.configPages();
+      $scope.verNotificacionesDetalle = function (row, msg) {
+        if (msg == null) {
+          swal({ title: 'Cargando...', allowOutsideClick: false });
+          swal.showLoading();
+        }
+        $scope.ngSeleccionada = row;
+        $scope.listadoNotificacionesDetalle = [];
+        $scope.filtroNotificacionesDetalle = '';
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/notificacionglosaips.php",
+          data: { function: 'p_lista_glosas_estado_resp', estado: 'PE', nit: $scope.Rol_Nit, numero: row.NTDN_NUMERO, ubicacion: row.NTDN_UBICACION }
+        }).then(function ({ data }) {
+          if (data != undefined) {
+            if (data.length) {
+              $scope.listadoNotificacionesDetalle = data;
               $scope.Vista = 1;
+              setTimeout(() => { $scope.$apply(); }, 500);
               if (msg == null) { swal.close(); }
             } else {
-              swal.close();
+              swal("Error", 'Sin datos', "info").catch(swal.noop); return
             }
-          })
-        } else {
-
-        }
-      }
-
-      $scope.Descargar_Notificacion = function (row) {
-        $scope.Datos_Comentario = row;
-
-        swal({ title: 'Cargando...', allowOutsideClick: false });
-        swal.showLoading();
-        // $http({
-        //   method: 'POST',
-        //   url: "php/cuentasmedicas/notificacionglosaips.php",
-        //   data: {
-        //     function: 'Obtener_Listado_Glosas',
-        //     Num: row.NUMERO.toString(),
-        //     Ubi: row.UBICACION.toString(),
-        //     Renglon: row.RENGLON.toString(),
-        //   }
-        // }).then(function ({ data }) {
-        //   if (data) {
-        //     if (data.length == 0 || data[0].Codigo != undefined) {
-        //       var Array_ListadoGlosas = [];
-        //       swal({
-        //         title: "¡No se encontraron glosas!",
-        //         type: "info"
-        //       }).catch(swal.noop);
-        //     } else {
-        // var Array_ListadoGlosas = data;
-        swal({
-          title: '¿Está seguro que desea aceptar la Notificación?',
-          type: "info",
-          showCancelButton: true,
-        }).catch(swal.noop)
-          .then((willDelete) => {
-            if (willDelete) {
-              swal({
-                title: 'Observación',
-                input: 'textarea',
-                inputPlaceholder: 'Escribe una observación...',
-                showCancelButton: true,
-                allowOutsideClick: false,
-              }).then(function (result_obs) {
-                if (result_obs !== '') {
-                  swal({ title: 'Cargando...', allowOutsideClick: false });
-                  swal.showLoading();
-                  /* */
-                  $http({
-                    method: 'POST',
-                    url: "php/cuentasmedicas/notificacionglosaips.php",
-                    data: {
-                      function: 'DescargarNotificacion', numero: row.NUMERO, ubicacion: row.UBICACION, renglon: row.RENGLON, responsable: $scope.Rol_Cedula,
-                      observacion: result_obs
-                    }
-                  }).then(function (response) {
-                    if (response.data.Codigo == "0") {
-                      /* */
-
-                      // let array = []
-
-                      // Array_ListadoGlosas.forEach(e => {
-                      //   array.push({
-                      //     renglon: e.RENGLON_FD,
-                      //     cod_servicio: e.PRODUCTO,
-                      //     valor_fd: e.VALOR_GLOSA,
-                      //     valor_gl: '0',
-                      //     valor_gi: e.VALOR_GLOSA,
-                      //     // valor_gl: e.VALOR_GLOSA,
-                      //     // valor_gi: '0',
-                      //     observacion: '',
-                      //   })
-                      // })
-
-
-                      // $http({
-                      //   method: 'POST',
-                      //   url: "php/cuentasmedicas/notificacionglosaips.php",
-                      //   data: {
-                      //     function: 'AceptaGlosa',
-                      //     documento: $scope.Datos_Comentario.DOCUMENTO_FD,
-                      //     numero: $scope.Datos_Comentario.NUMERO_FD,
-                      //     ubicacion: $scope.Datos_Comentario.UBICACION_FD,
-                      //     tercero: $scope.Datos_Comentario.NIT,
-                      //     factura: $scope.Datos_Comentario.FACTURA.trim(),
-                      //     proyecto: $scope.Datos_Comentario.FACN_PROYECTO,
-                      //     concepto: $scope.Datos_Comentario.FACC_CONCEPTO,
-                      //     plan: $scope.Datos_Comentario.FACN_PLAN,
-                      //     responsable: $scope.Rol_Cedula,
-
-                      //     datos: JSON.stringify(array),
-                      //     cantidad: array.length
-
-                      //   }
-                      // }).then(function ({ data }) {
-                      //   console.log(data);
-                      // })
-
-
-                      /* */
-                      swal({
-                        title: "¡Glosa aceptada con exito!",
-                        type: "success"
-                      }).catch(swal.noop);
-                      setTimeout(() => {
-                        var data = {
-                          CODIGO: $scope.EstadoGlosaCod, NOMBRE: $scope.EstadoGlosa
-                        }
-                        $scope.Cargar_Estado();
-                        $scope.Ver_Glosas(data);
-                      }, 3000);
-                    } else {
-                      swal({
-                        title: "¡Ocurrio un error!",
-                        text: response.data.Nombre,
-                        type: "warning"
-                      }).catch(swal.noop);
-                    }
-                  });
-                  /* */
-                }
-              });
-            }
-          });
-        //     }
-        //   }
-        // })
-
-
-      }
-
-
-      $scope.Ver_Glosas_Detalle = function (row) {
-        $scope.Array_ListadoGlosas = []
-        swal({ title: 'Cargando...', allowOutsideClick: false });
-        swal.showLoading();
-        $http({
-          method: 'POST',
-          url: "php/cuentasmedicas/notificacionglosaips.php",
-          data: {
-            function: 'Obtener_Listado_Glosas',
-            Num: row.NUMERO.toString(),
-            Ubi: row.UBICACION.toString(),
-            Renglon: row.RENGLON.toString(),
-          }
-        }).then(function (response) {
-          if (response.data) {
-            if (response.data.length == 0 || response.data[0].Codigo != undefined) {
-              $scope.Array_ListadoGlosas = [];
-              swal({
-                title: "¡No se encontraron glosas!",
-                type: "info"
-              }).catch(swal.noop);
-            } else {
-              $scope.Array_ListadoGlosas = response.data;
-              $('#modal_Listado_Glosas').modal('open');
-              swal.close();
-            }
-          }
-        })
-        // $scope.Glosa_Descripcion = row.DETALLE_GLOSA;
-        // $('#modalglosadetalle').modal('open');
-        // $http({
-        //   method: 'POST',
-        //   url: "php/cuentasmedicas/notificacionglosaips.php",
-        //   data: { function: 'Marcar_Usu', Empresa: row.EMPRESA, Doc: row.DOCUMENTO, Numero: row.NUMERO, Ubi: row.UBICACION, Renglon: row.RENGLON, Cedula: $scope.Rol_Cedula }
-        // }).then(function (response) {
-        //   if (response.data != undefined) {
-        //     // console.table(response.data);
-        //     console.log(response.data)
-        //     // $scope.List_Glosas_Detalle = response.data;
-        //   } else {
-        //     // swal({
-        //     //   title: "¡Ocurrio un error!",
-        //     //   text: response.data.Nombre,
-        //     //   type: "warning"
-        //     // }).catch(swal.noop);
-        //   }
-        // })
-      }
-
-      $scope.Ver_Glosas_Comentarios = function (row, save) {
-        $scope.Comentario_R = 'N';
-        $scope.Datos_Comentario = row;
-        $scope.Glosa_Descripcion = row.DETALLE_GLOSA;
-        $scope.Array_ListadoGlosas = []
-        $scope.Comentario_Adjunto = {
-          Base: '',
-          Ruta: '',
-          Ext: '',
-          Act: (save == 'G') ? false : true
-        }
-        $scope.Comentario_Observacion = '';
-        document.querySelector('#Comentario_Adjunto').value = '';
-        $scope.List_Comentarios = [];
-        $http({
-          method: 'POST',
-          url: "php/cuentasmedicas/notificacionglosaips.php",
-          data: { function: 'Obtener_Comentarios', numero: row.NUMERO, ubicacion: row.UBICACION, renglon: row.RENGLON }
-        }).then(function (response) {
-          setTimeout(() => {
-            $scope.Comentario_R = row.RESPONDER;
-            $scope.$apply();
-          }, 500);
-          $('#modalcomentarios').modal('open');
-          setTimeout(() => {
-            document.querySelector('#modalcomentarios').style.top = 3 + '%';
-            document.querySelector('#modalcomentarios').style.maxHeight = (Height + 20) + 'px';
-          }, 500);
-          if (response.data[0] != undefined) {
-            $scope.List_Comentarios = response.data;
-            var Height = document.querySelector("#notglosa").offsetHeight;
-            setTimeout(function () {
-              var Width = document.querySelector(".chat_titulo").offsetWidth;
-              angular.forEach(document.querySelectorAll('.chat_triangle_der'), function (i) {
-                i.style.marginLeft = (Width - 30) + 'px';
-              });
-              // document.querySelector('.chat_triangle_der').style.marginLeft = (Width - 30) + 'px';
-
-            }, 600);
           } else {
-
-          }
-        })
-        $http({
-          method: 'POST',
-          url: "php/cuentasmedicas/notificacionglosaips.php",
-          data: {
-            function: 'Obtener_Listado_Glosas',
-            Num: row.NUMERO.toString(),
-            Ubi: row.UBICACION.toString(),
-            Renglon: row.RENGLON.toString(),
-          }
-        }).then(function (response) {
-          if (response.data) {
-            if (response.data.length == 0 || response.data[0].Codigo != undefined) {
-            } else {
-              $scope.Array_ListadoGlosas = response.data;
-            }
+            swal.close();
           }
         })
       }
 
+      $scope.descargarFormatoNotificacion = function (x) {
+
+        window.open('views/Cuentasmedicas/formatos/formato_notificacionglosaips.php?documento=' + x.NTDC_DOCUMENTO +
+          '&numero=' + x.NTDN_NUMERO +
+          '&ubicacion=' + x.NTDN_UBICACION
+          , '_blank', "width=1080,height=1100");
+
+      }
+
+
+      $scope.obtenerDetalleGlosas = function (row) {
+        const xx = $scope.nombre.toString().split('-');
+        const nombre = xx[xx.length - 1]
+        // $scope.cedula
+
+        $scope.modalGestion = {
+          listadoServicios: [],
+
+          numero: row.NUMERO,
+          ubicacion: row.UBICACION,
+          numeroFD: row.NUM_FD,
+          ubicacionFD: row.UBI_FD,
+          renglon: row.NTDN_RENGLON,
+
+          numeroFactura: row.FACC_FACTURA.trim(),
+          valorGlosa: `$ ${$scope.FormatPesoNumero(row.VALOR_GLOSA.replace(/\,/g, '.'))}`,
+
+          auditorIPS: nombre,
+          numeroCredito: row.FACV_VALOR_FN,
+          valorAceptado: 0,
+          observacion: '',
+
+          soporteExt: '',
+          soporteB64: '',
+
+        }
+        swal({ title: 'Cargando...', allowOutsideClick: false });
+        swal.showLoading();
+
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/notificacionglosaips.php",
+          data: { function: 'p_lista_glosas_estado_resp_detalle', renglon: row.NTDN_RENGLON, numero: row.NUMERO, ubicacion: row.UBICACION }
+        }).then(function ({ data }) {
+          if (data != undefined) {
+            data.forEach(e => {
+              e.VALOR_ACEPTADO = 0
+            })
+            $scope.modalGestion.listadoServicios = data;
+            $scope.openModal('modalGestion');
+            swal.close()
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        })
+
+        angular.forEach(document.querySelectorAll('.formGestion input'), function (i) {
+          i.setAttribute("readonly", true);
+        });
+
+      }
+
+      document.querySelector('#fileSoporte').addEventListener('change', function (e) {
+        $scope.modalGestion.soporteB64 = "";
+        setTimeout(() => { $scope.$apply(); }, 500);
+        var files = e.target.files;
+        if (files.length != 0) {
+          for (let i = 0; i < files.length; i++) {
+            const x = files[i].name.split('.');
+            if (x[x.length - 1].toUpperCase() == 'ZIP') {
+              if (files[i].size < 15485760 && files[i].size > 0) {
+                $scope.getBase64(files[i]).then(function (result) {
+                  $scope.modalGestion.soporteExt = x[x.length - 1].toLowerCase();
+                  $scope.modalGestion.soporteB64 = result;
+                  setTimeout(function () { $scope.$apply(); }, 300);
+                });
+              } else {
+                document.querySelector('#fileSoporte').value = '';
+                swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
+              }
+            } else {
+              document.querySelector('#fileSoporte').value = '';
+              swal('Advertencia', '¡El archivo seleccionado debe ser formato ZIP!', 'info');
+            }
+          }
+        }
+      });
       $scope.getBase64 = function (file) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -334,211 +178,175 @@ angular.module('GenesisApp')
         });
       }
 
-      $scope.loadFile = function () {
-        var fileInput = document.querySelector('#Comentario_Adjunto');
-        if (fileInput.files.length != 0) {
-          var x = fileInput.files[0].name.split('.');
-          // debugger
-          if ((x[x.length - 1].toUpperCase() == 'PDF') || (x[x.length - 1].toUpperCase() == 'ZIP')) {
-            if (fileInput.files[0].size < 7340032 && fileInput.files[0].size > 0) {
-              $scope.getBase64(fileInput.files[0]).then(function (result) {
-                $scope.Comentario_Adjunto.Base = result;
-                $scope.Comentario_Adjunto.Ext = x[x.length - 1].toUpperCase();
-                setTimeout(function () { $scope.$apply(); }, 300);
-              });
-            } else {
-              swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (7MB)!', 'info');
-              fileInput.value = '';
-              $scope.Comentario_Model_Adjunto = '';
-              $scope.Comentario_Adjunto.Base = '';
-              $scope.Comentario_Adjunto.Url = '';
-              setTimeout(function () { $scope.$apply(); }, 300);
-            }
-          } else {
-            swal('Advertencia', '¡El archivo seleccionado deber ser formato PDF o ZIP!', 'info');
-            fileInput.value = '';
-            $scope.Comentario_Model_Adjunto = '';
-            $scope.Comentario_Adjunto.Base = '';
-            $scope.Comentario_Adjunto.Url = '';
-            setTimeout(function () { $scope.$apply(); }, 300);
-          }
-        }
-      }
-
-
-      $scope.Antes_Inserta_Comentario = function () {
-        if ($scope.Comentario_Observacion.length > 0) {
+      $scope.cargarSoporte = function () {
+        return new Promise((resolve) => {
+          if (!$scope.modalGestion.soporteB64) { resolve(''); return }
           swal({
-            title: 'Importante',
-            text: '¿Está seguro que desea guardar el comentario?',
-            type: "info",
-            showCancelButton: true,
-          }).catch(swal.noop)
-            .then((willDelete) => {
-              if (willDelete) {
-                var Subir_Soportes = [
-                  $scope.Cargar_Soporte_FTP(),
-                ];
-                $q.all(Subir_Soportes).then(function (resultado) {
-                  var Archivos_Error = false;
-                  for (var x = 0; x < resultado.length; x++) {
-                    if (resultado[x].substr(0, 3) == '<br' || (resultado[x] == '' && $scope.Comentario_Adjunto.Base != '')) {
-                      Archivos_Error = true;
-                      swal({
-                        title: '¡Error al subir un archivo!',
-                        text: 'Nota: Si el error persiste, por favor actualizar la página (CONTROL + F5).',
-                        type: 'warning'
-                      }).catch(swal.noop);
-                    }
-                  }
-                  if (Archivos_Error == false) {
-                    $scope.Inserta_Comentario();
-                  }
-                });
-              }
-            });
-        } else {
-          swal({
-            title: '¡Debe escribir un comentario!',
-            type: 'info'
-          }).catch(swal.noop);
-        }
-      }
-
-
-      $scope.Cargar_Soporte_FTP = function () {
-        var defered = $q.defer();
-        var promise = defered.promise;
-        if ($scope.Comentario_Adjunto.Base != '') {
+            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Guardando Soporte...</p>',
+            width: 200,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            animation: false
+          });
           $http({
             method: 'POST',
-            url: "php/cuentasmedicas/notificacionglosa_Subir.php",
+            url: "php/cuentasmedicas/notificacionglosaips.php",
             data: {
-              function: 'Upload',
-              base: $scope.Comentario_Adjunto.Base,
-              ext: $scope.Comentario_Adjunto.Ext,
-              name: $scope.Rol_Nit + '_' + $scope.Rol_Cedula
+              function: "cargarSoporte",
+              codigo: `${$scope.modalGestion.numero}_${$scope.modalGestion.ubicacion}_${$scope.modalGestion.renglon}`,
+
+              base64: $scope.modalGestion.soporteB64
             }
-          }).then(function (response) {
-            $scope.Comentario_Adjunto.Url = response.data;
-            console.log(response.data);
-            defered.resolve(response.data);
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+      $scope.validarGestion = function () {
+        return new Promise((resolve) => {
+
+          // if (!$scope.modalGestion.nombre) resolve(false);
+          // if (!$scope.modalGestion.descripcion) resolve(false);
+          // if (!$scope.modalGestion.fechaInicio) resolve(false);
+          // if (!$scope.modalGestion.valorAceptado) resolve(false);
+          // if (!$scope.modalGestion.observacion) resolve(false);
+
+          $scope.modalGestion.listadoServicios.forEach(e => {
+            e.error = false
+
+            if (e.VALOR_ACEPTADO === undefined || e.VALOR_ACEPTADO === null || e.VALOR_ACEPTADO === '0' || e.VALOR_ACEPTADO === 0) {
+              e.error = true
+              resolve(false)
+            }
+
+            if (parseFloat(e.VALOR_GLOSA.toString().replace(',', '.')) <
+              (parseFloat(e.VALOR_ACEPTADO.toString().replace(/\./g, '').replace(/\,/g, '.')))
+            ) {
+              e.error = true
+              resolve(false)
+            }
           });
-        } else {
-          defered.resolve('xxx');
-        }
-        return promise;
-      }
 
-      $scope.Inserta_Comentario = function () {
-        swal({ title: 'Cargando...', allowOutsideClick: false });
-        swal.showLoading();
-        $http({
-          method: 'POST',
-          url: "php/cuentasmedicas/notificacionglosaips.php",
-          data: {
-            function: 'Inserta_Comentario', numero: $scope.Datos_Comentario.NUMERO, ubicacion: $scope.Datos_Comentario.UBICACION,
-            renglon: $scope.Datos_Comentario.RENGLON, responsable: $scope.Rol_Cedula,
-            comentario: $scope.Comentario_Observacion, adjunto: $scope.Comentario_Adjunto.Url, origen: 'I', fecha: ''
-          }
-        }).then(function (response) {
-          if (response.data.Codigo == "0") {
-            $scope.Comentario_Observacion = '';
-            $scope.Comentario_Model_Adjunto = '';
-            $scope.Comentario_Adjunto.Base = '';
-            $scope.Comentario_Adjunto.Url = '';
-            $scope.Comentario_Adjunto.Act = false;
-            setTimeout(function () { $scope.$apply(); }, 300);
-            var text = 'Radicado: ' + response.data.Radicado;
-            swal({
-              title: "¡Comentario agregado con exito!",
-              text: text,
-              type: "success"
-            }).catch(swal.noop);
-            setTimeout(() => {
-              // $scope.Ver_Glosas($scope.Datos_Glosa);
-              $scope.Cargar_Estado();
-              $scope.Ver_Glosas_Comentarios($scope.Datos_Comentario, 'G');
-            }, 3000);
-          } else {
-            swal({
-              title: "¡Ocurrio un error!",
-              text: response.data.Nombre,
-              type: "warning"
-            }).catch(swal.noop);
-          }
+          resolve(true)
         });
       }
 
+      $scope.guardarGestion = function () {
+        $scope.validarGestion().then(res => {
+          if (!res) { swal("¡Importante!", "Diligencia los campos requeridos (*)", "warning").catch(swal.noop); return }
+
+          swal({
+            title: 'Confirmar',
+            text: '¿Guardar gestion realizada?',
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Continuar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result) {
+
+              $scope.cargarSoporte().then((resultSoporte) => {
+
+                var data = []
+                $scope.modalGestion.listadoServicios.forEach(e => {
+                  data.push({
+                    renglon: e.RENGLON_FD,
+                    servicio: e.PRODUCTO,
+                    valor_fd: e.VALOR_GLOSA,
+                    valor_gl: 0,
+                    valor_gi: ((e.VALOR_ACEPTADO.toString().replace(/\./g, '')).replace(/\,/g, '.')),
+                    observacion: e.GLOSA,
+                    comentario: e.COMENTARIO
+                  })
+                });
+
+                swal({
+                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                  width: 200,
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  showConfirmButton: false,
+                  animation: false
+                });
+                $http({
+                  method: 'POST',
+                  url: "php/cuentasmedicas/notificacionglosaips.php",
+                  data: {
+                    function: 'p_guardar_servicios_glosas_resp_ips',
+
+                    documento: 'FD',
+                    numero: $scope.modalGestion.numeroFD,
+                    ubicacion: $scope.modalGestion.ubicacionFD,
+                    datos: JSON.stringify(data),
+                    cantidad: data.length,
+
+                    soporte: resultSoporte,
+
+                    responsable: $scope.Rol_Cedula
+                  }
+                }).then(function ({ data }) {
+                  if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                    swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                  }
+                  if (data.Codigo == 0) {
+                    swal("Mensaje", "Glosa Gestionada", "success").catch(swal.noop);
+                    $scope.closeModal();
+                    setTimeout(() => {
+                      // swal.close()
+                      $scope.verNotificaciones('x');
+                      $scope.verNotificacionesDetalle($scope.ngSeleccionada);
+                    }, 2000);
+                  }
+                  if (data.Codigo == 1) {
+                    swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                  }
+                })
+              })
+            }
+          })
 
 
-      $scope.DescargarRespuesta = function (ruta) {
-        // alert(ruta);
-        $http({
-          method: 'POST',
-          url: "php/cuentasmedicas/notificacionglosaips.php",
-          data: {
-            function: 'descargaAdjunto',
-            ruta: ruta
-          }
-        }).then(function (response) {
-          window.open("temp/" + response.data);
-        });
+        })
       }
 
-      $scope.Abrir = function () {
-        $('#modalcomentarios').modal('open');
-        setTimeout(function () {
-          var Width = document.querySelector(".chat_titulo").offsetWidth;
-          document.querySelector('.chat_triangle_der').style.marginLeft = (Width - 30) + 'px';
-          document.querySelector('#modalcomentarios').style.top = 1 + '%';
-          document.querySelector('#modalcomentarios').style.maxHeight = (Height + 20) + 'px';
-        }, 600);
-
-      }
-
-
-      $scope.Ver_Glosa_Informacion = function (x) {
-        swal({
-          title: 'Información de la Glosa',
-          input: 'textarea',
-          inputValue: x.DETALLE_GLOSA,
-          showCancelButton: true,
-          cancelButtonText: 'Cerrar',
-          showConfirmButton: false,
-          customClass: 'swal-wide'
-        }).then(function (result) {
-          $(".confirm").attr('disabled', 'disabled');
-        }).catch(swal.noop);
-        document.querySelector('.swal2-textarea').setAttribute("readonly", true);
-        document.querySelector('.swal2-textarea').style.height = '300px';
-      }
-
-      $scope.filter = function (val) {
-        $scope.Lista_GlosaTemp = $filter('filter')($scope.Lista_Glosa, ($scope.filter_save == val) ? '' : val);
-        if ($scope.Lista_GlosaTemp.length > 0) {
-          $scope.setPage(1);
-        }
-        $scope.configPages();
-        $scope.filter_save = val;
+      $scope.openModal = function (modal) {
+        $(`#${modal}`).modal('open');
+        setTimeout(() => { document.querySelector(`#${modal}`).style.top = 1 + '%'; }, 600);
       }
       $scope.closeModal = function () {
         $('.modal').modal('close');
       }
+
+      $scope.filter = function (val) {
+        $scope.listadoNotificacionesTemp = $filter('filter')($scope.listadoNotificaciones, val);
+        if ($scope.listadoNotificacionesTemp.length > 0) {
+          $scope.setPage(1);
+        }
+        $scope.filter_save = val;
+      }
+
       $scope.configPages = function () {
         $scope.pages.length = 0;
         var ini = $scope.currentPage - 4;
         var fin = $scope.currentPage + 5;
         if (ini < 1) {
           ini = 1;
-          if (Math.ceil($scope.Lista_GlosaTemp.length / $scope.pageSize) > $scope.valmaxpag)
+          if (Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize) > $scope.valmaxpag)
             fin = 10;
           else
-            fin = Math.ceil($scope.Lista_GlosaTemp.length / $scope.pageSize);
+            fin = Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize);
         } else {
-          if (ini >= Math.ceil($scope.Lista_GlosaTemp.length / $scope.pageSize) - $scope.valmaxpag) {
-            ini = Math.ceil($scope.Lista_GlosaTemp.length / $scope.pageSize) - $scope.valmaxpag;
-            fin = Math.ceil($scope.Lista_GlosaTemp.length / $scope.pageSize);
+          if (ini >= Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize) - $scope.valmaxpag) {
+            ini = Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize) - $scope.valmaxpag;
+            fin = Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize);
           }
         }
         if (ini < 1) ini = 1;
@@ -565,10 +373,10 @@ angular.module('GenesisApp')
           }
 
           $scope.currentPage = $scope.currentPage + 1;
-          if ($scope.Lista_GlosaTemp.length % $scope.pageSize == 0) {
-            var tamanomax = parseInt($scope.Lista_GlosaTemp.length / $scope.pageSize);
+          if ($scope.listadoNotificacionesTemp.length % $scope.pageSize == 0) {
+            var tamanomax = parseInt($scope.listadoNotificacionesTemp.length / $scope.pageSize);
           } else {
-            var tamanomax = parseInt($scope.Lista_GlosaTemp.length / $scope.pageSize) + 1;
+            var tamanomax = parseInt($scope.listadoNotificacionesTemp.length / $scope.pageSize) + 1;
           }
           if (fin > tamanomax) {
             fin = tamanomax;
@@ -636,11 +444,44 @@ angular.module('GenesisApp')
           return "0"
         }
       }
+      $scope.FormatPeso = function (NID) {
+        const input = document.getElementById('' + NID + '');
+        var valor = input.value;
+        valor = valor.replace(/[^0-9,]/g, '');
+        var array = null;
+        var regex = new RegExp("\\,");
+        if (!regex.test(valor)) {
+          valor = valor.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1.');
+          valor = valor.split('').reverse().join('').replace(/^[\.]/, '');
+        } else {
+          array = valor.toString().split(',');
+          if (array.length > 2) {
+            input.value = 0;
+          } else {
+            array[0] = array[0].toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1.');
+            array[0] = array[0].split('').reverse().join('').replace(/^[\.]/, '');
+            if (array[1].length > 2) {
+              array[1] = array[1].substr(0, 2);
+            }
+          }
+        }
+        if (!regex.test(valor)) {
+          input.value = valor;
+        } else {
+          if (valor == ',') {
+            input.value = 0;
+          } else {
+            if (valor.substr(0, 1) == ',') {
+              input.value = 0 + ',' + array[1];
+            } else {
+              input.value = array[0] + ',' + array[1];
+            }
+          }
+        }
+      }
 
       $scope.getNum = function (val) {
         var val2 = parseInt(val.toString());
-        console.log(val2);
-        console.log((val2 / $scope.List_Estados_CantTotal).toFixed(1));
         if (isNaN(val)) {
           return 0;
         }
@@ -657,6 +498,27 @@ angular.module('GenesisApp')
         return 'VERDE'
       }
 
+
+      $scope.Ajustar_Pantalla = function () {
+        if ($(window).width() < 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.7;
+        }
+        if ($(window).width() > 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.8;
+        }
+      }
+
+      $(window).on('resize', function () {
+        $scope.Ajustar_Pantalla();
+      });
+
+      if (document.readyState !== 'loading') {
+        $scope.Inicio();
+      } else {
+        document.addEventListener('DOMContentLoaded', function () {
+          $scope.Inicio();
+        });
+      }
 
     }]).filter('inicio', function () {
       return function (input, start) {

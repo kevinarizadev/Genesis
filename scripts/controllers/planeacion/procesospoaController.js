@@ -954,7 +954,7 @@ angular.module('GenesisApp')
       }
 
       $scope.modalFichaTecnica = function (x) {
-
+        $scope.itemSeleccionado = [x.REGN_PROCESO,x.REGN_COD_ESTR,x.REGN_COD_TACT,x.REGN_COD_INDICADOR].join('_')
         $scope.modalFichaTecnicaDatos = x
         $scope.modalFichaTecnicaVars = {}
         $scope.modalFichaTecnicaVars.nombre = x.REGN_NOM_INDICADOR
@@ -1065,6 +1065,7 @@ angular.module('GenesisApp')
       }
 
       $scope.modalGraficoIndicador = function (x) {
+        $scope.itemSeleccionado = [x.REGN_PROCESO,x.REGN_COD_ESTR,x.REGN_COD_TACT,x.REGN_COD_INDICADOR].join('_')
         // $scope.modalDatosCorrespVars.listado
         $scope.modalDatosCambio = x;
         if (x.REGC_SEMAFORIZACION == 'N') {
@@ -1382,6 +1383,8 @@ angular.module('GenesisApp')
       }
 
       $scope.modalDatosCorresp = function (x) {
+        // x.seleccionado = true
+        $scope.itemSeleccionado = [x.REGN_PROCESO,x.REGN_COD_ESTR,x.REGN_COD_TACT,x.REGN_COD_INDICADOR].join('_')
         $scope.modalDatosCambio = x;
         swal({
           html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
@@ -1930,7 +1933,7 @@ angular.module('GenesisApp')
           // if (!$scope.hojaIndicadores.formulario.frecuencia) resolve(false);
 
           if (!$scope.hojaIndicadores.formulario.planDeMejoramiento) resolve(false);
-          if (!$scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento) resolve(false);
+          if ($scope.hojaIndicadores.formulario.planDeMejoramiento == 'S' && !$scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento) resolve(false);
 
           if (!$scope.hojaIndicadores.formulario.periodicidadReporte) resolve(false);
           if (!$scope.hojaIndicadores.formulario.responsableReporte) resolve(false);
@@ -2784,6 +2787,7 @@ angular.module('GenesisApp')
           fechaInicio: '',
           fechaTerminacion: '',
           comentarios: '',
+          estado: '',
 
           activarForm: 'N',
           gestionTerminada: 'N',
@@ -2836,7 +2840,7 @@ angular.module('GenesisApp')
         $scope.modalPlanMejoraVars.fechaInicio = '';
         $scope.modalPlanMejoraVars.fechaTerminacion = '';
         $scope.modalPlanMejoraVars.comentarios = '';
-
+        $scope.modalPlanMejoraVars.estado = 'A';
 
         $scope.modalPlanMejoraVars.activarForm = 'S';
         $scope.modalPlanMejoraVars.gestionTerminada = 'N';
@@ -2881,6 +2885,7 @@ angular.module('GenesisApp')
         $scope.modalPlanMejoraVars.fechaInicio = new Date(fechaInicio[2], fechaInicio[1], fechaInicio[0]);
         $scope.modalPlanMejoraVars.fechaTerminacion = new Date(fechaTerminacion[2], fechaTerminacion[1], fechaTerminacion[0]);
         $scope.modalPlanMejoraVars.comentarios = x.GESC_COMENTARIOS;
+        $scope.modalPlanMejoraVars.estado = x.GESN_ESTADO.split('-')[0];
 
         $scope.modalPlanMejoraVars.idPlanMejora = x.GESN_ID_PLANMEJORA;
         $scope.modalPlanMejoraVars.activarForm = 'S';
@@ -2894,9 +2899,15 @@ angular.module('GenesisApp')
         angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar textarea'), function (i) {
           i.setAttribute("readonly", true);
         });
-        // angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar select'), function (i) {
-        //   i.setAttribute("disabled", true);
-        // });
+        angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar_Gest select'), function (i) {
+          i.setAttribute("disabled", true);
+        });
+        if (x.GESN_ESTADO.split('-')[0] == 'A') {
+          $scope.modalPlanMejoraVars.gestionTerminada = 'N';
+          angular.forEach(document.querySelectorAll('.formIndicPlanMejora_Desactivar_Gest select'), function (i) {
+            i.removeAttribute("disabled");
+          });
+        }
       }
 
       $scope.validarFormPlanMejora = function () {
@@ -2950,6 +2961,7 @@ angular.module('GenesisApp')
                 fechaInicio: $scope.formatDate($scope.modalPlanMejoraVars.fechaInicio),
                 fechaTerminacion: $scope.formatDate($scope.modalPlanMejoraVars.fechaTerminacion),
                 comentarios: $scope.modalPlanMejoraVars.comentarios,
+                estado: $scope.modalPlanMejoraVars.estado,
 
                 idPlanMejora: $scope.modalPlanMejoraVars.idPlanMejora,
                 responsable: $scope.Rol_Cedula

@@ -9,54 +9,6 @@ function Obt_Nit()
 	echo ($_SESSION["nit"]);
 }
 
-function Obt_Acas()
-{
-	require_once('../config/dbcon_prod.php');
-	global $request;
-	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PRUEBAS_SP.P_OBTENER_ACAS(:v_pjson_row_in,:v_pjson_row_out); end;');
-	// $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_ACAS.P_OBTENER_ACAS_2(:v_pjson_row_in,:v_pjson_row_out); end;');
-	oci_bind_by_name($consulta, ':v_pjson_row_in', $request->xdata);
-	$clob = oci_new_descriptor($c, OCI_D_LOB);
-	oci_bind_by_name($consulta, ':v_pjson_row_out', $clob, -1, OCI_B_CLOB);
-	oci_execute($consulta, OCI_DEFAULT);
-	if (isset($clob)) {
-		$json = $clob->read($clob->size());
-		// var_dump(json_decode($json));
-		echo $json;
-	} else {
-		echo 0;
-	}
-	oci_close($c);
-}
-
-function Obt_Funcs()
-{
-	require_once('../config/dbcon_prod.php');
-	global $request;
-	$consulta = oci_parse($c, 'begin PQ_GENESIS_FACTURACION.p_obtener_funcionario(:v_pdato,:v_json_out,:v_result); end;');
-    oci_bind_by_name($consulta, ':v_pdato', $request->Coincidencia);
-    oci_bind_by_name($consulta, ':v_json_out', $json, 4000);
-    $curs = oci_new_cursor($c);
-    oci_bind_by_name($consulta, ":v_result", $curs, -1, OCI_B_CURSOR);
-    oci_execute($consulta);
-    oci_execute($curs);
-	if (isset($json) && json_decode($json)->Codigo == 0) {
-		$array = array();
-		while (($row = oci_fetch_array($curs, OCI_ASSOC + OCI_RETURN_NULLS)) != false) {
-			array_push($array, array(
-				'DOCUMENTO' => $row['DOCUMENTO'],
-				'NOMBRE' => $row['NOMBRE'],
-			));
-		}
-		echo json_encode($array);
-	} else {
-		echo json_encode($json);
-	}
-	oci_free_statement($consulta);
-	oci_free_statement($curs);
-	oci_close($c);
-}
-
 function Consulta_EPS(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
