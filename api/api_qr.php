@@ -162,3 +162,23 @@ function p_descarga_soporte_aut()
 
 
 // p_descarga_soporte_aut();
+
+function p_inserta_factura_aut()
+{
+  global $request;
+  require('../php/config/dbcon_login.php');
+  $consulta = oci_parse($c, 'begin oasis.pq_webservices_ips.p_inserta_factura_aut(:p_factura,:p_valor_facrura,:p_autorizacion,:v_json); end;');
+  oci_bind_by_name($consulta, ':p_factura', $request->factura);
+  oci_bind_by_name($consulta, ':p_valor_facrura', $request->valorFactura);
+  oci_bind_by_name($consulta, ':p_autorizacion', $request->autorizacion);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  $json = $clob->read($clob->size());
+
+  oci_close($c);
+
+  echo $json;
+  exit;
+}
+

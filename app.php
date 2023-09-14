@@ -318,6 +318,7 @@ if (!isset($_SESSION['nombre'])) {
 
  <script src="scripts/controllers/cuentasmedicas/notificacionglosaController.js"></script>
  <script src="scripts/controllers/cuentasmedicas/conciliaciondeglosasController.js"></script>
+ <script src="scripts/controllers/cuentasmedicas/conciliaciondeglosasipsController.js"></script>
 <!-- -- contratacion  -- -->
 <script src="scripts/controllers/contratacion/gestionacascontratacion.js"></script>
 <script src="scripts/controllers/contratacion/modalgestionacascontratacion.js"></script>

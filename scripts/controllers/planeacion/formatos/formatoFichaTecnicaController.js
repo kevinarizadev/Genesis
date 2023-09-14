@@ -36,8 +36,12 @@ angular.module('GenesisApp', [])
             $scope.datos = data[0];
             $scope.datosMeses = JSON.parse(data[0].DATOS);
             $scope.generarGrafica($scope.datos, $scope.datosMeses);
-            console.log(data[0])
-            console.log(JSON.parse(data[0].DATOS));
+            // console.log(data[0])
+            // console.log(JSON.parse(data[0].DATOS));
+
+            setTimeout(() => {
+              window.print()
+             }, 3500);
 
           } else {
             // setTimeout(function () {
@@ -59,6 +63,10 @@ angular.module('GenesisApp', [])
             dato2_Min = dato1_Max
             dato2_Max = dato2_Min + parseFloat(x.REGC_DATO2);
             dato3_Min = dato2_Max;
+
+            $scope.datos.valorAlto = [dato3_Min, parseFloat(x.REGC_DATOMAX)].join(' - ');
+            $scope.datos.valorMedio = [dato2_Min, dato2_Max].join(' - ');
+            $scope.datos.valorBajo = [0, dato1_Max].join(' - ');
 
             dataPlotBands = [
               {
@@ -107,6 +115,10 @@ angular.module('GenesisApp', [])
             dato2_Max = dato3_Min
             dato2_Min = dato2_Max - parseFloat(x.REGC_DATO2);
             dato1_Max = dato2_Min;
+
+            $scope.datos.valorAlto = [parseFloat(x.REGC_DATOMAX), dato3_Min].join(' - ');
+            $scope.datos.valorMedio = [dato2_Max, dato2_Min].join(' - ');
+            $scope.datos.valorBajo = [dato1_Max, 0].join(' - ');
 
             dataPlotBands = [
               { // Light air
