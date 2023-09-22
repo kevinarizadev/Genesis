@@ -67,6 +67,10 @@
       display: grid;
     }
 
+    .pad10 {
+      padding: 10px;
+    }
+
     .Firma {
       background-size: cover;
       width: 200px;
@@ -97,9 +101,9 @@
     </tr>
     <!--  -->
     <tr>
-      <td colspan="2" rowspan="3" style="text-align: center;">
+      <td colspan="1" rowspan="3" style="text-align: center;">
         <img style="width: 10em;" src="../../../assets/images/logo_cajacopieps.png">
-      <td colspan="5" rowspan="2" class="fs_10" style="text-align: center;padding:0.1% 0%;">FORMATO ACTA DE CONCILIACIÓN DE RESPUESTA DE GLOSAS</td>
+      <td colspan="6" rowspan="2" class="fs_10" style="text-align: center;padding:0.1% 0%;">FORMATO ACTA DE CONCILIACIÓN DE RESPUESTA DE GLOSAS</td>
       <td colspan="1">
         Código: CM-FR-04
       </td>
@@ -108,25 +112,25 @@
       <td colspan="1">Version: 01</td>
     </tr>
     <tr>
-      <td colspan="5" class="fs_10" style="text-align: center;padding:1% 0%;">
+      <td colspan="6" class="fs_10" style="text-align: center;padding:1% 0%;">
         PROCEDIMIENTO DE AUDITORIA DE CUENTAS MÉDICAS</td>
       <td colspan="1">Fecha: Febrero 2023</td>
     </tr>
     <tr>
-      <td colspan="2" class="txtCenter">FECHA:</td>
-      <td colspan="2" class="txtCenter">{{datosCabeza.fecha_corte}}</td>
-      <td colspan="3" rowspan="2" class="txtCenter">COORDINACION NACIONAL DE CUENTAS MEDICAS</td>
-      <td colspan="2" class="fondoAzul pad7 txtCenter">NOMBRE DEL PSS - NIT</td>
+      <td colspan="1" class="txtCenter">FECHA:</td>
+      <td colspan="2" class="txtCenter">{{fecha}}</td>
+      <td colspan="4" rowspan="2" class="txtCenter">COORDINACION NACIONAL DE CUENTAS MEDICAS</td>
+      <td colspan="1" class="fondoAzul pad7 txtCenter">NOMBRE DEL PSS - NIT</td>
     </tr>
     <tr>
-      <td colspan="2" class="txtCenter pad7">LUGAR:</td>
-      <td colspan="1" class="txtCenter">{{datosCabeza.fecha}}</td>
-      <td colspan="2" class="txtCenter">{{datosCabeza.lugar}}</td>
-      <td colspan="2" class="txtCenter">{{datosCabeza.nombre_pss_nit}}</td>
+      <td colspan="1" class="txtCenter pad7">LUGAR:</td>
+      <td colspan="2" class="txtCenter">{{lugar}}</td>
+      <td colspan="1" class="txtCenter">{{ips}}</td>
+      <!-- <td colspan="2" class="txtCenter">{{datosCabeza.nombre_pss_nit}}</td> -->
     </tr>
     <!--  -->
     <tr>
-      <td colspan="2" class="txtCenter fondoAzul">FACTURA N°</td>
+      <td colspan="1" class="txtCenter fondoAzul">FACTURA N°</td>
       <td colspan="1" class="txtCenter fondoAzul">VALOR DE FACTURA</td>
       <td colspan="1" class="txtCenter fondoAzul">VALOR GLOSA</td>
       <td colspan="1" class="txtCenter fondoAzul">GLOSA ACEPTADA POR IPS</td>
@@ -135,46 +139,41 @@
       <td colspan="2" class="txtCenter fondoAzul">OBSERVACIONES</td>
     </tr>
     <tr ng-repeat="x in datosDetalle">
-      <td colspan="1" class="txtCenter">{{x.DOC_GL}}</td>
       <td colspan="1" class="txtCenter">{{x.NUM_FACTURA}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_MANTENIDA)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_IPS)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_EPS)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_EPS)}}</td>
-      <td colspan="1" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VALOR_FS)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VALOR_GLOSA)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.NTDV_VALOR_GI_IPS)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.NTDV_VALOR_GL_EPS)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.NTDV_VALOR_RATIFICADO)}}</td>
+      <td colspan="2" class="txtCenter">{{x.OBSERVACION}}</td>
     </tr>
 
     <tr>
-      <td colspan="2" class="txtCenter pad7">TOTAL</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorGlosa)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorMantenida)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorIps)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorEps)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorEps)}}</td>
-      <td colspan="1" class="txtCenter"></td>
+      <td colspan="1" class="txtCenter pad7">TOTAL</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalFactura)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalGlosa)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(Total_Glosa_IPS)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(Total_Glosa_EPS)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(Total_Glosa_MANT)}}</td>
+      <td colspan="2"></td>
     </tr>
     <!--  -->
     <tr>
       <td colspan="4" class="txtCenter fondoAzul">NOMBRE DEL PSS - NIT</td>
-      <td colspan="4" class="txtCenter fondoAzul">REPRESENTANTE DE  CUENTAS MÉDICAS                                                                                                                                                                                                                                                                                      CAJACOPI EPS  SAS</td>
+      <td colspan="4" class="txtCenter fondoAzul">REPRESENTANTE DE CUENTAS MÉDICAS CAJACOPI EPS SAS</td>
     </tr>
     <tr>
-      <td colspan="4" rowspan="3" class="txtCenter">{{datosCabeza.nombre_pss_nit}}</td>
-      <td colspan="4" class="txtCenter verAlign_bottom pad_t25">
-        <div class="d_grid ">
-          <span>{{datosCabeza.auditor_nac_cm}}</span>
-          <!-- <span>AUDITOR DE CONCILIACIÓN</span> -->
-          <span>{{datosCabeza.nom_auditor_nac_cm}}</span>
-        </div>
+      <td colspan="4" rowspan="3" class="txtCenter">{{ips}} - {{ipsNit}}</td>
+      <td colspan="4" rowspan="1" class="txtCenter pad10">
+        <span>{{responsableEPS}}</span>
       </td>
     </tr>
     <tr>
       <td colspan="4" class="txtCenter fondoAzul">REPRESENTANTE DE IPS</td>
     </tr>
     <tr>
-      <td colspan="4" class="txtCenter pad_t25 verAlign_bottom">
-
+      <td colspan="4" class="txtCenter pad10">
+        <span>{{responsableIPS}}</span>
       </td>
     </tr>
 

@@ -11,9 +11,10 @@
 	$ruta_respuesta=$_GET['ruta'];
 	$estado_res=$_GET['estado_res'];
 	$cierre=$_GET['cierre'];
+	$numeroserial=$_GET['numeroserial'];
 	// Preparamos la consulta para ser ejecutada y enlazamos los parametros
 	$consulta = oci_parse($c,'begin PQ_GENESIS_ACAS.P_INSERT_GESTION(:v_pdocumento,:v_pnumero,:v_pubicacion,:v_ptipo,
-																    :v_ptercero,:v_pobservacion,:v_ruta_respuesta,:v_estado_res,:v_cierre,:v_prespuesta); end;');
+																    :v_ptercero,:v_pobservacion,:v_ruta_respuesta,:v_estado_res,:v_cierre,:v_casc_serial_equipo,:v_prespuesta); end;');
 	// Asignamos los valores a los parametros
 	oci_bind_by_name($consulta,':v_pdocumento',$documento);
 	oci_bind_by_name($consulta,':v_pnumero',$numero);
@@ -24,6 +25,7 @@
 	oci_bind_by_name($consulta,':v_ruta_respuesta',$ruta_respuesta);
 	oci_bind_by_name($consulta,':v_estado_res',$estado_res);
 	oci_bind_by_name($consulta,':v_cierre',$cierre);
+	oci_bind_by_name($consulta,':v_casc_serial_equipo',$numeroserial);
 	$clob = oci_new_descriptor($c,OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_prespuesta', $clob,-1,OCI_B_CLOB);
 	// Ejecutamos la consulta

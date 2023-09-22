@@ -1938,7 +1938,7 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
         $scope.HNAC_motivosAnulacion(Accion).then((e) => {
           if (Accion != 'X' || (Accion == 'X' && e != '')) {
             //
-            var title = Accion == 'X' ? '¿Está seguro que desea anular?' : '¿Está seguro que desea procesar?';
+            var title = Accion == 'X' ? '¿Está seguro que desea anular?' :  Accion == 'P' ? '¿Está seguro que desea procesar?' : '¿Está seguro que desea enviarlo a estudio?';
             swal({
               title: title,
               // text: "¿Acepta registrar la gestión realizada?",

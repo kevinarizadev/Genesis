@@ -27,9 +27,9 @@ angular.module('GenesisApp').controller('homecontroller', ['$scope', 'consultaHT
   }).then(function (response) {
     // $scope.now = response.data;
     $scope.now = response.data.filter(e => e.area != '16');
-    if($scope.now.length){
-      $('#carouselCaracteristicas').gallery_carousel();
-    }
+    // if($scope.now.length){
+    //   $('#carouselCaracteristicas').gallery_carousel();
+    // }
     angular.element(document).ready(function () {
       $scope.empleadoMes();
     });
@@ -337,7 +337,7 @@ angular.module('GenesisApp').controller('homecontroller', ['$scope', 'consultaHT
     //{titulo:'', url:'Slider_eficacia.png'},
     /*{titulo:'', url:'Slider_evolucion.png'},
     {titulo:'', url:'Slider_afi.jpg'},*/
-    
+
   ];
 
     ///// Eventos cajacapi Eps ////
@@ -472,7 +472,7 @@ angular.module('GenesisApp').controller('homecontroller', ['$scope', 'consultaHT
     });
   }
 
- 
+
 
   angular.element(document).ready(function () {
     $scope.listarImagenesActuales();

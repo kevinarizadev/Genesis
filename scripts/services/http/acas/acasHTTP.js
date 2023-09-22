@@ -136,11 +136,11 @@
             });
            return (request.then(handleSuccessPost,handleError));
         },
-        insertarcomentario: function(documento,numero,ubicacion,tipo,cedula,observacion,ruta,cierre,estado_res){
+        insertarcomentario: function(documento,numero,ubicacion,tipo,cedula,observacion,ruta,cierre,estado_res,numeroserial){
          var request = $http({
           method:'get',
           url:"php/acas/insertarcomentario.php",
-          params: {documento:documento,numero:numero,ubicacion:ubicacion,tipo:tipo,cedula:cedula,observacion:observacion,ruta:ruta,cierre:cierre,estado_res:estado_res}
+          params: {documento:documento,numero:numero,ubicacion:ubicacion,tipo:tipo,cedula:cedula,observacion:observacion,ruta:ruta,cierre:cierre,estado_res:estado_res,numeroserial}
           });
          return (request.then(handleSuccessPost,handleError));
       },
@@ -167,7 +167,7 @@
             params: {documento:documento}
             });
            return (request.then(handleSuccessPost,handleError));
-        }   
+        }
     });
 
      function handleSuccessPost (response){

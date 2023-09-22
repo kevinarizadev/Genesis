@@ -171,7 +171,7 @@ angular.module('GenesisApp')
         });
       }
 
-      $scope.obteneracasinfo = function (numero, ubicacion, descripcion, estado, motivo, concepto, adjunto, oficina, fecha, cod_concepto) {
+      $scope.obteneracasinfo = function (numero, ubicacion, descripcion, estado, motivo, concepto, adjunto, oficina, fecha, cod_concepto, serialequipo) {
         $scope.numeroacas = numero;
         $scope.ubicacionacas = ubicacion;
         $scope.descripcionacas = descripcion;
@@ -182,6 +182,7 @@ angular.module('GenesisApp')
         $scope.codigo_concepto = cod_concepto;
         $scope.oficina = oficina ? oficina : null;
         $scope.fecha = fecha;
+        $scope.serialequipo = serialequipo;
         ngDialog.open({
           template: 'views/acas/acasinfo.html',
           className: 'ngdialog-theme-plain',

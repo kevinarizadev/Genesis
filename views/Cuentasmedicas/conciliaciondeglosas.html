@@ -68,17 +68,17 @@
       <div class="black-text title-panel"
         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
         <span>
-          Listado de Glosas ({{listaGlosaIPS.length}})
+          Listado de Glosas ({{Lista_Glosa.length}})
           <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="listarGlosasIPS()"></i>
         </span>
         <!-- <button class="btn" ng-click="aceptarGlosasMasivo()">Aceptar Glosas Masivo</button> -->
 
-        <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-model="filtroPorIps"
-          placeholder="Buscar en la tabla">
+        <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-change="filter(filtro)"
+          ng-model="filtro" placeholder="Buscar en la tabla">
       </div>
       <div id="tabla_scroll" class="scroll_x">
-        <div class="responsive" style="max-height: 70vh;overflow-y: auto;overflow-x: hidden;">
-          <table class="striped table-bordered white" style="zoom: 0.9;">
+        <div class="responsive">
+          <table class="striped table-bordered white">
             <thead>
               <tr>
                 <!-- <th style="text-align:center;">
@@ -99,7 +99,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="X in listaGlosaIPS | filter:filtroPorIps">
+              <tr ng-repeat="X in Lista_GlosaTemp | inicio: currentPage * pageSize | limitTo: pageSize"
+                ng-hide="Lista_GlosaTemp.length == 0">
                 <!-- <td style="text-align:center;">
                   <i class="{{X.SELECCIONADO ? 'icon-ok-squared' : 'icon-minus-squared'}} default-color cursor-pointer" title="Refrescar"
                     ng-click="X.SELECCIONADO=!X.SELECCIONADO"></i>
@@ -109,7 +110,8 @@
                 <td style="text-align:center;">{{X.CANTIDAD}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
-                <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}
+                </td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',',
@@ -126,14 +128,14 @@
                   </div>
                   <!-- </td>
                 <td style="text-align:center;" > -->
-                  <div class="tooltip" ng-show="X.NOTC_STATUS1 == 1">
+                  <div class="tooltip" ng-show="X.NOTC_STATUS1 == 1 && X.NTDV_VALOR_MANTENIDA == 0">
                     <i style="cursor:pointer;font-size: 2em;" ng-click="generarFormato(X)"
                       class="icon-doc-text-inv-1"></i>
                     <span class="tooltiptext">Generar Formato</span>
                   </div>
                   <!-- </td>
                 <td style="text-align:center;" > -->
-                  <div class="tooltip" ng-show="X.NOTC_STATUS1 == 1">
+                  <div class="tooltip" ng-show="X.NOTC_STATUS1 == 1 && X.NTDV_VALOR_MANTENIDA == 0">
                     <i style="cursor:pointer;font-size: 2em;" ng-click="abrirModalCargueFormato(X)"
                       class="icon-attach-5"></i>
                     <span class="tooltiptext">Cargar Formato</span>
@@ -154,87 +156,10 @@
                 </td>
 
               </tr>
-              <tr ng-show="listaGlosaIPS.length == 0">
-                <th colspan="11" class="center">
-                  No hay notificaciones para mostrar
-                </th>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Glosas Por Cada IPS -->
-  <div class="row dashboard-wrapper content-container white"
-    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 1">
-    <div class="col l12 m12 s12" style="position:relative">
-      <div class="black-text title-panel"
-        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
-        Listado de Glosas IPS ({{Lista_Glosa.length}}): {{ipsSeleccionada.NIT +' - '+
-        ipsSeleccionada.TERC_NOMBRE}} - Factura: {{ipsSeleccionada.DOC_NOT}}
-        <input type="text" class="margin border-none input-text-new" style="width: 15vw;" ng-change="filter(filtro)"
-          ng-model="filtro" placeholder="Buscar en la tabla">
-        <i class="icon-left-2 cursor-pointer" ng-click="Atras(0)">
-          Atras
-        </i>
-      </div>
-      <div id="tabla_scroll" class="scroll_x">
-        <div class="responsive">
-          <table class="striped table-bordered white">
-            <thead>
-              <tr>
-                <th style="text-align:center;">#</th>
-                <!-- <th style="text-align:center;"><b>RENGLON</b></th> -->
-                <th style="text-align:center;">NUMERO FD</th>
-                <!-- <th style="text-align:center;">NUMERO GLOSA</th> -->
-                <th style="text-align:center;">FACTURA</th>
-                <!-- <th style="text-align:center;">IPS</th> -->
-                <th style="text-align:center;">VALOR FACTURA</th>
-                <th style="text-align:center;">VALOR GLOSA</th>
-                <th style="text-align:center;">VALOR RETENCION</th>
-                <th style="text-align:center;">VALOR MANTENIDA</th>
-                <th style="text-align:center;">FECHA</th>
-                <!-- <th style="text-align:center;">ESTADO</th> -->
-                <th style="text-align:center;">ACCION</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="X in Lista_GlosaTemp | inicio: currentPage * pageSize | limitTo: pageSize"
-                ng-hide="Lista_GlosaTemp.length == 0">
-                <td style="text-align:center;">{{$index+1}}</td>
-                <!-- <td style="text-align:center;">{{X.RENGLON}}</td> -->
-                <!-- <td style="text-align:center;">{{X.DOCUMENTO+'-'+X.NUMERO+'-'+X.UBICACION}}</td> -->
-                <td style="text-align:center;">{{X.DOCUMENTO_FD+'-'+X.NUMERO_FD+'-'+X.UBICACION_FD}}</td>
-                <td style="text-align:center;">{{X.FACTURA}}</td>
-                <!-- <td style="text-align:center;">{{X.IPS+'-'+X.NIT}}</td> -->
-                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
-                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
-                <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}
-                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',',
-                  '.'))}}
-                <td style="text-align:center;">{{X.FECHA}}</td>
-                <!-- <td style="text-align:center;">
-                  <span class="status {{obtenerEstado(X.NTDC_STATUS)}}">{{obtenerEstado(X.NTDC_STATUS)}}</span>
-                </td> -->
-                <td style="text-align:center;">
-                  <div class="tooltip" ng-show="X.NTDC_STATUS == 0">
-                    <i style="cursor:pointer;font-size: 2em;" ng-click="listarGlosasServicios(X)"
-                      class="icon-eye-1"></i>
-                    <span class="tooltiptext">Conciliar Glosa</span>
-                  </div>
-                  <div class="tooltip">
-                    <i style="cursor:pointer;font-size: 2em;" class="icon-comment-alt-1"
-                      ng-click="Ver_Glosas_Comentarios(X)"></i>
-                    <span class="tooltiptext">Ver Comentarios</span>
-                  </div>
-                </td>
 
-
-              </tr>
               <tr ng-show="Lista_GlosaTemp.length == 0">
                 <th colspan="11" class="center">
-                  No hay notificaciones para mostrar
+                  No hay Glosas para mostrar
                 </th>
               </tr>
             </tbody>
@@ -248,6 +173,88 @@
           <li><button ng-disabled='currentPage >= Lista_GlosaTemp.length/pageSize - 1' class="btn"
               ng-click='paso("next")'>&raquo;</button></li>
         </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Glosas Por Cada IPS -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 1">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        Listado de Glosas Detalle ({{listadoGlosasDetalle.length}}):
+        <input type="text" class="margin border-none input-text-new" style="width: 15vw;" ng-model="filtroDetalle"
+          placeholder="Buscar en la tabla">
+        <i class="icon-left-2 cursor-pointer" ng-click="Atras(0)">
+          Atras
+        </i>
+      </div>
+      <div id="tabla_scroll" class="scroll_x">
+        <div class="responsive" style="max-height: 70vh;overflow-y: auto;overflow-x: hidden;">
+          <table class="striped table-bordered white">
+            <thead>
+              <tr>
+                <th style="text-align:center;">#</th>
+                <!-- <th style="text-align:center;"><b>RENGLON</b></th> -->
+                <th style="text-align:center;">NUMERO FD</th>
+                <!-- <th style="text-align:center;">NUMERO GLOSA</th> -->
+                <th style="text-align:center;">FACTURA</th>
+                <!-- <th style="text-align:center;">IPS</th> -->
+                <th style="text-align:center;">VALOR FACTURA</th>
+                <th style="text-align:center;">VALOR GLOSA</th>
+                <th style="text-align:center;">VALOR RETENCION</th>
+                <th style="text-align:center;">ACEPTADO IPS NOTIF.</th>
+                <th style="text-align:center;">ACEPTADO EPS NOTIF.</th>
+                <th style="text-align:center;">VALOR MANTENIDA</th>
+                <th style="text-align:center;">FECHA</th>
+                <!-- <th style="text-align:center;">ESTADO</th> -->
+                <th style="text-align:center;">ACCION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="X in listadoGlosasDetalle | filter:filtroDetalle">
+                <td style="text-align:center;">{{$index+1}}</td>
+                <!-- <td style="text-align:center;">{{X.RENGLON}}</td> -->
+                <!-- <td style="text-align:center;">{{X.DOCUMENTO+'-'+X.NUMERO+'-'+X.UBICACION}}</td> -->
+                <td style="text-align:center;">{{X.DOCUMENTO_FD+'-'+X.NUMERO_FD+'-'+X.UBICACION_FD}}</td>
+                <td style="text-align:center;">{{X.FACTURA}}</td>
+                <!-- <td style="text-align:center;">{{X.IPS+'-'+X.NIT}}</td> -->
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
+                <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI_IPS.toString().replace(',', '.'))}}
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL_EPS.toString().replace(',', '.'))}}
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',',
+                  '.'))}}
+                <td style="text-align:center;">{{X.FECHA}}</td>
+                <!-- <td style="text-align:center;">
+                  <span class="status {{obtenerEstado(X.NTDC_STATUS)}}">{{obtenerEstado(X.NTDC_STATUS)}}</span>
+                </td> -->
+                <td style="text-align:center;">
+                  <!-- <div class="tooltip" ng-show="X.NTDC_STATUS == 0"> -->
+                  <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" ng-click="listarGlosasServicios(X)"
+                      class="icon-eye-1"></i>
+                    <span class="tooltiptext">Conciliar/Ver Servicios</span>
+                  </div>
+                  <!-- <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" class="icon-comment-alt-1"
+                      ng-click="Ver_Glosas_Comentarios(X)"></i>
+                    <span class="tooltiptext">Ver Comentarios</span>
+                  </div> -->
+                </td>
+
+
+              </tr>
+              <tr ng-show="listadoGlosasDetalle.length == 0">
+                <th colspan="11" class="center">
+                  No hay notificaciones para mostrar
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   </div>
@@ -340,10 +347,12 @@
                       <th style="text-align:center;">VALOR GLOSA</th>
                       <th style="text-align:center;width: 5%;">VALOR RETENCION</th>
                       <th style="text-align:center;">VALOR MANTENIDA</th>
-                      <th style="text-align:center;width: 10%;">VALOR GLOSA EPS</th>
-                      <th style="text-align:center;width: 10%;">VALOR GLOSA IPS</th>
-                      <th style="text-align:center;width: 30%;">COMENTARIO</th>
-                      <th style="text-align:center;">DESCRIPCION GLOSA</th>
+                      <th style="text-align:center;">VALOR CONCILIADO EPS</th>
+                      <th style="text-align:center;">VALOR CONCILIADO IPS</th>
+                      <th style="text-align:center;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">VALOR GLOSA EPS</th>
+                      <th style="text-align:center;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">VALOR GLOSA IPS</th>
+                      <th style="text-align:center;width: 30%;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">COMENTARIO</th>
+                      <th style="text-align:center;width: 30%;">DESCRIPCION GLOSA</th>
 
                     </tr>
                   </thead>
@@ -354,30 +363,40 @@
                       <th style="text-align:center;">{{x.FCDV_PRODUCTO + ' - ' + x.CLAC_NOMBRE}}</th>
                       <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_PRECIO.toString().replace(',', '.'))}}
                       </td>
-                      <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA_RET.toString().replace(',', '.'))}}
+                      <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA_RET.toString().replace(',',
+                        '.'))}}
                       <td style="text-align:center;">${{FormatPesoNumero(x.MANT.toString().replace(',', '.'))}}
 
-                      <td style="text-align:center;">
-                        $<input type="text"
-                          class="margin border-none white input-text-new input-w-p input-out-new w-100"
-                          style="width: 75% !important;" id="Valor_Glosar_EPS_{{$index}}" maxlength="16"
-                          autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_EPS_'+$index)"
-                          ng-model="x.VALOR_GLOSAR_EPS">
-                        <br>
-                        <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_GLOSA_GL.toString().replace(',', '.'))}}
+                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_GLOSA_GI.toString().replace(',', '.'))}}
+
+                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
+                        <div >
+                          $<input type="text"
+                            class="margin border-none white input-text-new input-w-p input-out-new w-100"
+                            style="width: 75% !important;" id="Valor_Glosar_EPS_{{$index}}" maxlength="16"
+                            autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_EPS_'+$index)"
+                            ng-model="x.VALOR_GLOSAR_EPS">
+                          <br>
+                          <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                        </div>
                       </td>
-                      <td>
-                        $<input type="text"
-                          class="margin border-none white input-text-new input-w-p input-out-new w-100"
-                          style="width: 75% !important;" id="Valor_Glosar_IPS_{{$index}}" maxlength="16"
-                          autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_IPS_'+$index)"
-                          ng-model="x.VALOR_GLOSAR_IPS">
-                        <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
+                        <div >
+                          $<input type="text"
+                            class="margin border-none white input-text-new input-w-p input-out-new w-100"
+                            style="width: 75% !important;" id="Valor_Glosar_IPS_{{$index}}" maxlength="16"
+                            autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_IPS_'+$index)"
+                            ng-model="x.VALOR_GLOSAR_IPS">
+                          <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                        </div>
                       </td>
-                      <td>
-                        <textarea id="chat_textarea" placeholder="Escribe una Observación..." ng-model="x.COMENTARIO"
-                          maxlength="1000" text-description></textarea>
-                        <!-- <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span> -->
+                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
+                        <div >
+                          <textarea id="chat_textarea" placeholder="Escribe una Observación..." ng-model="x.COMENTARIO"
+                            maxlength="1000" text-description></textarea>
+                          <!-- <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span> -->
+                        </div>
                       </td>
                       <td style="text-align:center;">{{x.FCDC_OBSERVACION}}</td>
                     </tr>
@@ -385,7 +404,7 @@
                 </table>
               </div>
 
-              <div class="col s12 m12 l12 center m-t">
+              <div class="col s12 m12 l12 center m-t" ng-if="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
                 <button class="btn" ng-click="guardarValoresGlosaDetalle()">Guardar</button>
               </div>
             </div>
@@ -447,7 +466,7 @@
           Porcentaje a Conciliar
         </div>
       </div>
-      <div class="row center" style="display: flex;">
+      <div class="row center">
         <div class="col s12 m12 s12 center">
           <div class="col s12 no-padding label-new m-b" style="margin-left: auto;margin-right: auto;">
             <input type="text" class="margin border-none input-text-new m-l w-100 currency" maxlength="16"
@@ -463,6 +482,13 @@
             <input type="text" class="margin border-none input-text-new m-l w-100 currency" maxlength="3"
               autocomplete="off" numbers-only ng-model="valoresGlosa.porcentajeGI">
             <label>Porcentaje Aceptado Ips</label>
+          </div>
+        </div>
+        <div class="col s12 m12 s12 center">
+          <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5em;">
+            <textarea id="chat_textarea" style="background-color: #f1f3f4;" placeholder="Escribe una Observación..."
+              maxlength="4000" text-description ng-model="valoresGlosa.observacion"></textarea>
+            <label>Observación</label>
           </div>
         </div>
       </div>
@@ -500,7 +526,7 @@
                 <div class="chat_titulo" ng-if="Rol_Cedula.toLowerCase() != com.IDRESPONSABLE.toLowerCase()">
                   <span
                     class="chat_status {{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'blue':'green'}}"></span>
-                    <h2>ORIGEN: {{com.ORIGEN == 'I' ? 'IPS' : 'EPS'}} - </h2>
+                  <h2>ORIGEN: {{com.ORIGEN == 'I' ? 'IPS' : 'EPS'}} - </h2>
                   <h2>{{com.RESPONSABLE}}</h2>
                   <h3>{{com.FECHA +' - '+com.HORA}}</h3>
                   <span class="tooltiptext_ab" style="margin-left: 1em;" ng-if="com.ADJUNTO != null"

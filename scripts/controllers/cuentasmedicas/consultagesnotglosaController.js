@@ -1,147 +1,275 @@
 'use strict';
 angular.module('GenesisApp')
-  .controller('consultagesnotglosaController', ['$scope', '$http', '$filter',
-    function ($scope, $http, $filter) {
+  .controller('consultagesnotglosaController', ['$scope', '$http', '$filter', '$window',
+    function ($scope, $http, $filter, $window) {
       $scope.Inicio = function () {
         console.clear();
-        // $('.modal').modal();
+        $('.modal').modal();
         // $('.tabs').tabs();
-
-        $scope.SysDay = new Date();
-        $scope.Rol_Nit = sessionStorage.getItem('nit') == '0' ? '' : sessionStorage.getItem('nit');
+        $scope.Ajustar_Pantalla();
+        $scope.Rol_Nit = sessionStorage.getItem('nit');
+        // $scope.Rol_Nit = 900465319;
         $scope.Rol_Cedula = sessionStorage.getItem('cedula');
-        //////////////////////
+        $scope.Vista = 0;
 
-        $scope.limpiarForm();
+        $scope.verNotificaciones();
+        //////////////////////
 
         setTimeout(() => { $scope.$apply(); }, 500);
       };
 
-      $scope.limpiarForm = function () {
-        $scope.form = {
-          nit: $scope.Rol_Nit,
-          numero: '',
-          ubicacion: '',
-          estado: '',
-          fechaInicio: new Date(),
-          fechaFin: $scope.SysDay,
+
+
+      $scope.verNotificaciones = function (msg) {
+        if (msg == null) {
+          swal({ title: 'Cargando...', allowOutsideClick: false });
+          swal.showLoading();
         }
+        $scope.listadoNotificaciones = [];
+        $scope.listadoNotificacionesTemp = [];
+        $scope.filtroNotificaciones = '';
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/consultagesnotglosa.php",
+          data: { function: 'p_lista_glosas_estado_resp_agru_consulta', nit: $scope.Rol_Nit }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Mensaje", 'No existen glosas para mostrar', "warning").catch(swal.noop); return
+          }
+          if (data.length) {
+            $scope.listadoNotificaciones = data;
+            $scope.listadoNotificacionesTemp = data;
 
-        $scope.Listado = {
-          Lista: [],
-          ListaTemp: [],
-          Filtro: '',
-          Titulo: '',
-          Url: ''
-        };
+            $scope.currentPage = 0;
+            $scope.pageSize = 10;
+            $scope.valmaxpag = 10;
+            $scope.pages = [];
+            $scope.configPages();
+            // $scope.Vista = 0;
+            setTimeout(() => { $scope.$apply(); }, 500);
+            if (msg == null) { swal.close(); }
+          } else {
+            swal.close();
+          }
+        })
+      }
 
-        $scope.currentPage = 0;
-        $scope.pageSize = 15;
-        $scope.Listado.Filtro = "";
-        $scope.Listado.Lista = [];
-        setTimeout(() => { $scope.$apply(); }, 500);
+      $scope.verNotificacionesDetalle = function (row, msg) {
+        if (msg == null) {
+          swal({ title: 'Cargando...', allowOutsideClick: false });
+          swal.showLoading();
+        }
+        $scope.ngSeleccionada = row;
+        $scope.listadoNotificacionesDetalle = [];
+        $scope.filtroNotificacionesDetalle = '';
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/consultagesnotglosa.php",
+          data: { function: 'p_lista_glosas_estado_resp_consulta', nit: $scope.Rol_Nit, numero: row.NTDN_NUMERO, ubicacion: row.NTDN_UBICACION }
+        }).then(function ({ data }) {
+          if (data != undefined) {
+            if (data.length) {
+              $scope.listadoNotificacionesDetalle = data;
+              $scope.Vista = 1;
+              setTimeout(() => { $scope.$apply(); }, 500);
+              if (msg == null) { swal.close(); }
+            } else {
+              swal("Mensaje", 'No existen glosas para mostrar', "info").catch(swal.noop); return
+            }
+          } else {
+            swal.close();
+          }
+        })
       }
 
 
+      $scope.generalExcel = function (row) {
+        let datos = []
+
+        row.forEach(e => {
+          datos.push({
+            "RAZON SOCIAL": e.IPS,
+            "FECHA RADICACION": e.FECHA_RADICACION,
+
+            "FACTURA": e.FACC_FACTURA,
+            "VALOR FACTURA": e.VALOR_FACTURA,
+
+            "ESTADO GLOSA": $scope.obtenerNombreEstado(e.NOTC_ESTADO1),
+
+            "DOCUMENTO GLOSA": `${e.DOC_FD}-${e.NUM_FD}-${e.UBI_FD}`,
+            "FECHA NOTIFICACION GLOSA": e.FECHA_NOTIFICACION,
+            "VALOR GLOSA": e.VALOR_GLOSA,
+
+            "FECHA RESPUESTA IPS": e.FECHA_RESPUESTA_IPS,
+            "VALOR ACEPTADO IPS": e.NTDV_VALOR_GI_IPS,
+            "COMENTARIO_IPS": e.COMENTARIO_IPS,
 
 
-      $scope.Obt_Vista_Consultar = function () {
-        if ($scope.form.fechaInicio <= $scope.form.fechaFin) {
-          $scope.Consulta_EPS_IPS();
-          // $scope.Datos.responsable = $scope.Rol_Cedula;
-          // $scope.Datos.remitente = $scope.Rol_Cedula;
-          // setTimeout(() => {
-          //     $scope.$apply();
-          //     var data = JSON.stringify($scope.Datos);
-          //     window.open('views/acas/formatos/formato_consulta_acas.php?data=' + data, '_blank', "width=900,height=1100");
-          // }, 500);
+            "FECHA RESPUESTA EPS": e.FECHA_RESPUESTA_EPS,
+            "VALOR ACEPTADO EPS": e.NTDV_VALOR_GL_EPS,
+            "COMENTARIO_EPS": e.COMENTARIO_EPS,
 
+            "VALOR MANTENIDO": e.NTDV_VALOR_MANTENIDA1,
+          })
+        });
+
+        var ws = XLSX.utils.json_to_sheet(datos);
+        /* add to workbook */
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+        /* write workbook and force a download */
+        XLSX.writeFile(wb, "Reporte notificacion glosas.xlsx");
+        const text = `Registros encontrados ${data.length}`
+        swal('¡Mensaje!', text, 'success').catch(swal.noop);
+
+        swal.close();
+
+      }
+
+      $scope.abrirModalCargueFormato = function (x) {
+        $scope.Soportes = {}
+        $scope.Soportes.documento = x.DOC_NOTIFICACION.split('-')[0];
+        $scope.Soportes.numero = x.DOC_NOTIFICACION.split('-')[1];
+        $scope.Soportes.ubicacion = x.DOC_NOTIFICACION.split('-')[2];
+        $scope.Soportes.Soporte_B64 = '';
+
+        swal({
+          title: 'Cargar Soporte',
+          html: `
+          <div class="col s12 m12 l12 m-b" style="margin-bottom: 1.5rem;">
+              <div class="col s6 no-padding label-new m-b" id="AdjustSop">
+                <div class="file-field input-field gray-input m-l input-file-radiu input-file-radius-opcional"
+                  style="margin: 0;width: -webkit-fill-available;">
+                  <div class="right">
+                    <span class="black-text"><i class="icon-folder-open-1 default-color"
+                      style="line-height: 2rem;"></i></span>
+                      <input type="file" id="SoporteProces">
+                  </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path Soport" type="text" placeholder="Adjunte un archivo (zip)"
+                    readonly style="border-radius: 0;height: 2rem;border-bottom: 0;"
+                   >
+                </div>
+              </div>
+            </div>
+          </div>
+          `,
+
+          width: '500px',
+
+          preConfirm: function () {
+            return new Promise(function (resolve) {
+              resolve(
+                {
+                  soporte: $('#SoporteProces').val(),
+                }
+              )
+            })
+          }
+        }).then(function (result) {
+          $scope.loadFile();
+        })
+      }
+
+
+      $scope.loadFile = function () {
+        var fileInput = document.querySelector('#SoporteProces');
+        if (fileInput.files.length != 0) {
+          var x = fileInput.files[0].name.split('.');
+          if (x[x.length - 1].toUpperCase() == 'ZIP') {
+            if (fileInput.files.length > 0) {
+              if (fileInput.files[0].size < 10485760 && fileInput.files[0].size > 0) {
+                $scope.getBase64(fileInput.files[0]).then(function (result) {
+                  $scope.Soportes.Soporte_B64 = result;
+                  swal({
+                    title: "¿Cargar el soporte?",
+                    type: "question",
+                    showCancelButton: true,
+                    allowOutsideClick: false
+                  }).catch(swal.noop)
+                    .then((willDelete) => {
+                      if (willDelete) {
+                        $scope.SubirFTP();
+                      }
+                    });
+                  setTimeout(function () { $scope.$apply(); }, 300);
+                });
+              } else {
+                swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (10MB)!', 'info');
+                $scope.Soportes.Soporte_B64 = '';
+                setTimeout(function () { $scope.$apply(); }, 300);
+              }
+            }
+          } else {
+            swal('Advertencia', '¡El archivo seleccionado deber ser formato ZIP!', 'info');
+            $scope.Soportes.Soporte_B64 = '';
+            setTimeout(function () { $scope.$apply(); }, 300);
+          }
+        } else {
+          $scope.Soportes.Soporte_B64 = '';
+          setTimeout(function () { $scope.$apply(); }, 300);
         }
       }
 
-      $scope.Consulta_EPS_IPS = function () {
+      $scope.SubirFTP = function () {
         swal({ title: 'Cargando...', allowOutsideClick: false });
         swal.showLoading();
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/consultagesnotglosa.php",
           data: {
-            function: $scope.Rol_Nit == '0' ? 'Consulta_EPS' : 'Consulta_IPS',
-            Estado: $scope.form.estado,
-            Num: $scope.form.numero,
-            Ubi: $scope.form.ubicacion,
-            F_Inicio: $scope.formatDate($scope.form.fechaInicio),
-            F_Fin: $scope.formatDate($scope.form.fechaFin),
-            Nit: $scope.form.nit
+            function: 'cargarSoporte',
+            base64: $scope.Soportes.Soporte_B64,
+            codigo: `${$scope.Soportes.numero}_${$scope.Soportes.ubicacion}`
           }
-        }).then(function (response) {
-          if (response.data && response.data.toString().substr(0, 3) != '<br') {
-            if (response.data.length != 0) {
-              setTimeout(() => {
-                $scope.Listado.Lista = response.data;
-                $scope.Listado.ListaTemp = response.data;
-                $scope.currentPage = 0;
-                $scope.pageSize = 10;
-                $scope.valmaxpag = 10;
-                $scope.pages = [];
-                $scope.configPages();
-                $scope.$apply();
-              }, 500);
-              swal.close();
-            } else {
-              $scope.Listado.Lista = [];
-              $scope.Listado.ListaTemp = [];
-              swal({
-                title: "¡No se encontraron registros!",
-                type: "info"
-              }).catch(swal.noop);
+        }).then(function ({ data }) {
+          $http({
+            method: 'POST',
+            url: "php/cuentasmedicas/consultagesnotglosa.php",
+            data: {
+              function: 'p_adjunto_glosa',
+              documento: $scope.Soportes.documento,
+              numero: $scope.Soportes.numero,
+              ubicacion: $scope.Soportes.ubicacion,
+              adjunto: data,
+              responsable: $scope.Rol_Cedula
             }
-          } else {
-            $scope.Listado.Lista = [];
-            $scope.Listado.ListaTemp = [];
-            swal({
-              title: "¡Ocurrio un error!",
-              text: response.data,
-              type: "warning"
-            }).catch(swal.noop);
-          }
-        })
+          }).then(function ({ data }) {
+            if (data) {
+              swal({
+                title: "¡Mensaje!",
+                text: 'Soporte Actualizado Exitosamente',
+                type: "success",
+              }).catch(swal.noop);
+              setTimeout(() => {
+                $scope.verNotificaciones();
+              }, 2500);
+            }
+          });
+        });
+      }
+
+      $scope.getBase64 = function (file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
       }
 
 
-      $scope.Ver_Glosas_Detalle = function (row) {
-        $http({
-          method: 'POST',
-          url: "php/cuentasmedicas/notificacionglosaips.php",
-          data: {
-            function: 'Obtener_Listado_Glosas',
-            Num: row.NUMERO.toString(),
-            Ubi: row.UBICACION.toString(),
-            Renglon: row.RENGLON.toString(),
-          }
-        }).then(function (response) {
-          if (response.data) {
-            if (response.data.length == 0 || response.data[0].Codigo != undefined) {
-              $scope.Array_ListadoGlosas = [];
-              swal({
-                title: "¡No se encontraron glosas!",
-                type: "info"
-              }).catch(swal.noop);
-            } else {
-              $scope.Array_ListadoGlosas = response.data;
-              $('#modal_Listado_Glosas').modal('open');
-              swal.close();
-            }
-          }
-        })
+      $scope.generarFormato = function (x) {
+        $window.open('views/cuentasmedicas/formatos/formato_conciliacion_respuesta_glosa.php?documento=' + 'NG' + '&numero=' + x.DOC_NOTIFICACION.split('-')[1]
+          + '&ubicacion=' + x.DOC_NOTIFICACION.split('-')[2] + '&responsable=' + $scope.Rol_Cedula, '_blank', "width=1080,height=1100");
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////
-      $scope.DescargarRespuesta = function (ruta) {
+      $scope.descargaAdjunto = function (ruta) {
         // alert(ruta);
         $http({
           method: 'POST',
-          url: "php/cuentasmedicas/gesnotificacionglosa.php",
+          url: "php/cuentasmedicas/consultagesnotglosa.php",
           data: {
             function: 'descargaAdjunto',
             ruta: ruta
@@ -151,21 +279,18 @@ angular.module('GenesisApp')
         });
       }
 
+
+      $scope.obtenerNombreEstado = function (estado) {
+        const listado = {
+          PE: 'PENDIENTE',
+          RI: 'RESPUESTA X IPS',
+          CO: 'COMPLETA',
+        }
+        return listado[estado]
+      }
       //////////////////////////////////////////////
 
-      $scope.formatDate = function (date) {
-        if (date === undefined) { return }
-        var d = new Date(date),
-          month = '' + (d.getMonth() + 1),
-          day = '' + d.getDate(),
-          year = d.getFullYear();
 
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-
-        return [day, month, year].join('/');
-        // return [year, month, day].join('-');
-      }
 
       $scope.FormatSoloNumero = function (NID) {
         const input = document.getElementById('' + NID + '');
@@ -197,47 +322,46 @@ angular.module('GenesisApp')
           return "0"
         }
       }
-      $scope.closeModal = function () {
-        $('.modal').modal('close');
-      }
       ////////////////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////////////////
-      $scope.Estado_Solicitud_Color = function (Estado) {
-        if (Estado != undefined) {
-          if (Estado.toString().toUpperCase() == 'A') {
-            return { "background-color": "rgb(251, 93, 1) !important;" }
-          }
-          if (Estado.toString().toUpperCase() == 'P') {
-            return { "background-color": "rgb(6, 152, 20)!important" }
-          }
-        }
+      $scope.Atras = function (X) {
+        $scope.Vista = X;
+
+        setTimeout(() => {
+          $scope.$apply();
+        }, 1000);
       }
       // Paginacion
-      $scope.filter = function (val) {
-        $scope.Listado.ListaTemp = $filter('filter')($scope.Listado.Lista, ($scope.filter_save == val) ? '' : val);
-        if ($scope.Listado.ListaTemp.length > 0) {
-          $scope.setPage(1);
-        }
-        $scope.configPages();
-        $scope.filter_save = val;
+      $scope.openModal = function (modal) {
+        $(`#${modal}`).modal('open');
+        setTimeout(() => { document.querySelector(`#${modal}`).style.top = 1 + '%'; }, 600);
       }
       $scope.closeModal = function () {
         $('.modal').modal('close');
       }
+
+      $scope.filter = function (val) {
+        $scope.listadoNotificacionesTemp = $filter('filter')($scope.listadoNotificaciones, val);
+        if ($scope.listadoNotificacionesTemp.length > 0) {
+          $scope.setPage(1);
+        }
+        $scope.filter_save = val;
+      }
+
       $scope.configPages = function () {
         $scope.pages.length = 0;
         var ini = $scope.currentPage - 4;
         var fin = $scope.currentPage + 5;
         if (ini < 1) {
           ini = 1;
-          if (Math.ceil($scope.Listado.ListaTemp.length / $scope.pageSize) > $scope.valmaxpag)
+          if (Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize) > $scope.valmaxpag)
             fin = 10;
           else
-            fin = Math.ceil($scope.Listado.ListaTemp.length / $scope.pageSize);
+            fin = Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize);
         } else {
-          if (ini >= Math.ceil($scope.Listado.ListaTemp.length / $scope.pageSize) - $scope.valmaxpag) {
-            ini = Math.ceil($scope.Listado.ListaTemp.length / $scope.pageSize) - $scope.valmaxpag;
-            fin = Math.ceil($scope.Listado.ListaTemp.length / $scope.pageSize);
+          if (ini >= Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize) - $scope.valmaxpag) {
+            ini = Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize) - $scope.valmaxpag;
+            fin = Math.ceil($scope.listadoNotificacionesTemp.length / $scope.pageSize);
           }
         }
         if (ini < 1) ini = 1;
@@ -252,7 +376,7 @@ angular.module('GenesisApp')
       }
       $scope.setPage = function (index) {
         $scope.currentPage = index - 1;
-        // console.log($scope.Listado.Lista.length / $scope.pageSize - 1)
+        // console.log($scope.Lista_Glosa.length / $scope.pageSize - 1)
       }
       $scope.paso = function (tipo) {
         if (tipo == 'next') {
@@ -264,10 +388,10 @@ angular.module('GenesisApp')
           }
 
           $scope.currentPage = $scope.currentPage + 1;
-          if ($scope.Listado.ListaTemp.length % $scope.pageSize == 0) {
-            var tamanomax = parseInt($scope.Listado.ListaTemp.length / $scope.pageSize);
+          if ($scope.listadoNotificacionesTemp.length % $scope.pageSize == 0) {
+            var tamanomax = parseInt($scope.listadoNotificacionesTemp.length / $scope.pageSize);
           } else {
-            var tamanomax = parseInt($scope.Listado.ListaTemp.length / $scope.pageSize) + 1;
+            var tamanomax = parseInt($scope.listadoNotificacionesTemp.length / $scope.pageSize) + 1;
           }
           if (fin > tamanomax) {
             fin = tamanomax;

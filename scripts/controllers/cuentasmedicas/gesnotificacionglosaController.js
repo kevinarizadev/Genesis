@@ -30,7 +30,7 @@ angular.module('GenesisApp')
           data: { function: 'p_lista_glosas_estado_resp_agru', nit: $scope.Rol_Nit }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data == 0) {
-            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+            swal("Mensaje", 'No existen glosas para mostrar', "warning").catch(swal.noop); return
           }
           if (data.length) {
             $scope.listadoNotificaciones = data;
@@ -71,7 +71,7 @@ angular.module('GenesisApp')
               setTimeout(() => { $scope.$apply(); }, 500);
               if (msg == null) { swal.close(); }
             } else {
-              swal("Error", 'Sin datos', "info").catch(swal.noop); return
+              swal("Mensaje", 'No existen glosas para mostrar', "info").catch(swal.noop); return
             }
           } else {
             swal.close();
@@ -147,14 +147,14 @@ angular.module('GenesisApp')
           }
 
           if ((parseFloat(e.FCDV_VALOR_GI_IPS.toString().replace(',', '.')) +
-            (parseFloat(e.VALOR_ACEPTADO.toString().replace(/\./g, '').replace(/\,/g, '.')))
-            > parseFloat(e.VALOR_GLOSA.toString().replace(',', '.')))
+            parseFloat(e.VALOR_ACEPTADO.toString().replace(/\,/g, '.').replace(/\./g, '')))
+            > parseFloat(e.VALOR_GLOSA.toString().replace(',', '.'))
           ) {
             e.VALOR_MANTENIDO = 0
             e.error = true
           } else {
             $scope.dsbBtnGuardar = false;
-            e.VALOR_MANTENIDO = parseFloat(e.VALOR_GLOSA.toString().replace(',', '.')) - parseFloat(e.FCDV_VALOR_GI_IPS.toString().replace(',', '.')) - parseFloat(e.VALOR_ACEPTADO.toString().replace(',', '.').replace('.', ''))
+            e.VALOR_MANTENIDO = parseFloat(e.VALOR_GLOSA.toString().replace(',', '.')) - parseFloat(e.FCDV_VALOR_GI_IPS.toString().replace(',', '.')) - parseFloat(e.VALOR_ACEPTADO.toString().replace(',', '.').replace(/\./g, ''))
             setTimeout(() => { $scope.$apply(); }, 500);
           }
         });
@@ -213,7 +213,7 @@ angular.module('GenesisApp')
               }
             }).then(function ({ data }) {
               if (data.toString().substr(0, 3) == '<br' || data == 0) {
-                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                swal("Mensaje", 'No existen glosas para mostrar', "warning").catch(swal.noop); return
               }
               if (data.Codigo == 0) {
                 swal("Mensaje", "Glosa Gestionada", "success").catch(swal.noop);
