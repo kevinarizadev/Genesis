@@ -15,6 +15,9 @@ angular.module('GenesisApp')
             $scope.cod_misacas = $scope.estadoopciones;
             $scope.observacion = '';
             $scope.cod_check_option = $scope.check_option;
+            $scope.numeroserial = '';
+            $scope.serialverequipo = $scope.serialequipo;
+
             console.log($scope.cod_check_option)
             // alert($scope.codigo_concepto);
             $http({
@@ -86,7 +89,7 @@ angular.module('GenesisApp')
 
                     if ($scope.DocumentoRes == undefined) {
 
-                        acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, $scope.tipo, $scope.cedula, $scope.observacion, '', 'N', $scope.cod_check_option == false ? 'C' : 'R').then(function (response) {
+                        acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, $scope.tipo, $scope.cedula, $scope.observacion, '', 'N', $scope.cod_check_option == false ? 'C' : 'R', $scope.numeroserial).then(function (response) {
                             $scope.re_comentario = response.data;
                             if ($scope.re_comentario.codigo == 0) {
                                 swal('Error', $scope.re_comentario.mensaje, 'error');
@@ -98,7 +101,7 @@ angular.module('GenesisApp')
                             }
                         })
                     } else if ($scope.DocumentoRes.length != '0') {
-                        acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, $scope.tipo, $scope.cedula, $scope.observacion, $scope.ruta, 'N', $scope.cod_check_option == false ? 'C' : 'R').then(function (response) {
+                        acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, $scope.tipo, $scope.cedula, $scope.observacion, $scope.ruta, 'N', $scope.cod_check_option == false ? 'C' : 'R', $scope.numeroserial).then(function (response) {
                             $scope.re_comentario = response.data;
                             if ($scope.re_comentario.codigo == 0) {
                                 reject;
@@ -120,7 +123,7 @@ angular.module('GenesisApp')
                             swal('Error', 'Su comentario no se publico correctamente. Debe ingresar un comentario de mínimo 10 caracteres', 'error');
                             resolve('0');
                         } else {
-                            acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, $scope.tipo, $scope.cedula, $scope.observacion, '', 'N', $scope.cod_check_option == false ? 'C' : 'R').then(function (response) {
+                            acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, $scope.tipo, $scope.cedula, $scope.observacion, '', 'N', $scope.cod_check_option == false ? 'C' : 'R', $scope.numeroserial).then(function (response) {
                                 $scope.re_comentario = response.data;
                                 if ($scope.re_comentario.codigo == 0) {
                                     swal('Error', $scope.re_comentario.mensaje, 'error');

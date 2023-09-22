@@ -28,7 +28,7 @@ angular.module('GenesisApp')
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/conciliaciondeglosasips.php",
-          data: { function: 'p_lista_glosas_estado_conc_agru', nit: $scope.Rol_Nit, marcaConciliada: 'N' }
+          data: { function: 'p_lista_glosas_estado_conc_agru_consulta', nit: $scope.Rol_Nit, marcaConciliada: 'N' }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) != '<br') {
             if (data.length) {
@@ -43,7 +43,7 @@ angular.module('GenesisApp')
 
               if (msg == null) { $scope.Vista = 0; swal.close(); }
             } else {
-              swal("Mensaje", "No existen registros", "info").catch(swal.noop);
+              swal("Mensaje", "No existen glosas para mostrar", "info").catch(swal.noop);
             }
           } else {
             swal("Mensaje", data, "info").catch(swal.noop);
@@ -62,7 +62,7 @@ angular.module('GenesisApp')
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/conciliaciondeglosasips.php",
-          data: { function: 'p_lista_glosas_estado_conc', numero: x.DOC_NOT.split('-')[1], ubicacion: x.DOC_NOT.split('-')[2], marcaConciliada: 'N' }
+          data: { function: 'p_lista_glosas_estado_conc_consulta', numero: x.DOC_NOT.split('-')[1], ubicacion: x.DOC_NOT.split('-')[2], marcaConciliada: 'N' }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) != '<br') {
             if (data.length) {
@@ -71,7 +71,7 @@ angular.module('GenesisApp')
               swal.close();
 
             } else {
-              swal("Mensaje", "No existen registros", "info").catch(swal.noop);
+              swal("Mensaje", "No existen glosas para mostrar", "info").catch(swal.noop);
             }
           } else {
             swal("Mensaje", data, "info").catch(swal.noop);

@@ -3,7 +3,7 @@ angular.module('GenesisApp')
   .controller('conciliaciondeglosasController', ['$scope', '$http', '$filter', '$window',
     function ($scope, $http, $filter, $window) {
       $scope.Inicio = function () {
-
+        $scope.Ajustar_Pantalla();
         $('.modal').modal();
         $scope.Rol_Nit = sessionStorage.getItem('nit');
         // $scope.Rol_Nit = 900465319;
@@ -34,6 +34,7 @@ angular.module('GenesisApp')
           swal.showLoading();
         }
         $scope.Lista_Glosa = [];
+        $scope.Lista_GlosaTemp = [];
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/conciliaciondeglosas.php",
@@ -45,11 +46,17 @@ angular.module('GenesisApp')
                 e.SELECCIONADO = false;
               })
 
-              $scope.listaGlosaIPS = data;
+              $scope.Lista_Glosa = data;
+              $scope.Lista_GlosaTemp = $scope.Lista_Glosa;
+              $scope.currentPage = 0;
+              $scope.pageSize = 10;
+              $scope.valmaxpag = 10;
+              $scope.pages = [];
+              $scope.configPages();
 
               if (msg == null) { $scope.Vista = 0; swal.close(); }
             } else {
-              swal("Mensaje", "No existen registros", "info").catch(swal.noop);
+              swal("Mensaje", "No existen glosas para mostrar", "info").catch(swal.noop);
             }
           } else {
             swal("Mensaje", data, "info").catch(swal.noop);
@@ -65,6 +72,7 @@ angular.module('GenesisApp')
           porcentajeGL: 50,
           porcentajeGI: 50,
           valorFD: $scope.FormatPesoNumero(x.TOTAL_GLOSA),
+          observacion: '',
         };
         $scope.datosConciliarFacturaGlosas = x;
         $('#modalPorcentajeConciliar').modal('open');
@@ -74,6 +82,9 @@ angular.module('GenesisApp')
       $scope.guardarPorcentajeConciliar = function () {
         if (parseInt($scope.valoresGlosa.porcentajeGL) + parseInt($scope.valoresGlosa.porcentajeGI) != 100) {
           swal("Mensaje", "Debe validar los valores", "info").catch(swal.noop); return;
+        }
+        if (!$scope.valoresGlosa.observacion) {
+          swal("Mensaje", "Debe digitar una observación", "info").catch(swal.noop); return;
         }
         const text = `Desea conciliar las (${$scope.datosConciliarFacturaGlosas.CANTIDAD}) Glosas?`
         swal({
@@ -97,13 +108,14 @@ angular.module('GenesisApp')
                 numero: $scope.datosConciliarFacturaGlosas.DOC_NOT.split('-')[1],
                 ubicacion: $scope.datosConciliarFacturaGlosas.DOC_NOT.split('-')[2],
                 valorFD: $scope.datosConciliarFacturaGlosas.TOTAL_GLOSA,
+                observacion: $scope.valoresGlosa.observacion,
                 porcentajeGL: $scope.valoresGlosa.porcentajeGL,
                 porcentajeGI: $scope.valoresGlosa.porcentajeGI,
                 responsable: $scope.Rol_Cedula
               }
             }).then(function ({ data }) {
               if (data.toString().substr(0, 3) == '<br' || data == 0) {
-                swal("Error", data || 'Sin datos', "warning").catch(swal.noop); return
+                swal("Mensaje", data || 'Sin datos', "warning").catch(swal.noop); return
               }
               if (data.Codigo == 0) {
                 swal("Mensaje", data.Nombre, "success").catch(swal.noop);
@@ -135,7 +147,7 @@ angular.module('GenesisApp')
       //     exists = (e.SELECCIONADO ? exists + 1 : exists)
       //   })
       //   if (exists == 0) {
-      //     swal("Mensaje", "No existen registros", "info").catch(swal.noop); return
+      //     swal("Mensaje", "No existen glosas para mostrar", "info").catch(swal.noop); return
       //   }
       //   $scope.aprobarGlosasMasivo()
       // }
@@ -172,9 +184,10 @@ angular.module('GenesisApp')
           swal({ title: 'Cargando...', allowOutsideClick: false });
           swal.showLoading();
         }
-        $scope.Lista_Glosa = [];
+        $scope.listadoGlosasDetalle = [];
         $scope.ipsSeleccionada = x;
         $scope.filtroPorIps = x.DOC_NOT;
+        $scope.filtroDetalle = ''
         console.log(x);
         $http({
           method: 'POST',
@@ -195,17 +208,13 @@ angular.module('GenesisApp')
               console.log("TOTAL_FACTURA", TOTAL_FACTURA);
               console.log("TOTAL_GLOSA", TOTAL_GLOSA);
               console.log("NTDV_VALOR_MANTENIDA", NTDV_VALOR_MANTENIDA);
-              $scope.Lista_Glosa = data;
-              $scope.Lista_GlosaTemp = $scope.Lista_Glosa;
-              $scope.currentPage = 0;
-              $scope.pageSize = 10;
-              $scope.valmaxpag = 10;
-              $scope.pages = [];
-              $scope.configPages();
+
+              $scope.listadoGlosasDetalle = data;
+
 
               if (msg == null) { $scope.Vista = 1; swal.close(); }
             } else {
-              swal("Mensaje", "No existen registros", "info").catch(swal.noop);
+              swal("Mensaje", "No existen glosas para mostrar", "info").catch(swal.noop);
             }
           } else {
             swal("Mensaje", data, "info").catch(swal.noop);
@@ -234,8 +243,10 @@ angular.module('GenesisApp')
               swal("Mensaje", "¡No se encontraron glosas!", "info").catch(swal.noop);
             } else {
               data.forEach(element => {
-                element.VALOR_GLOSAR_EPS = parseFloat(element.FCDV_GLOSA_GL);
-                element.VALOR_GLOSAR_IPS = parseFloat(element.FCDV_GLOSA_GI);
+                // element.VALOR_GLOSAR_EPS = parseFloat(element.FCDV_GLOSA_GL);
+                // element.VALOR_GLOSAR_IPS = parseFloat(element.FCDV_GLOSA_GI);
+                element.VALOR_GLOSAR_EPS = 0;
+                element.VALOR_GLOSAR_IPS = 0;
                 element.COMENTARIO = '';
               });
               $scope.Array_ListadoGlosas = data;
@@ -251,7 +262,7 @@ angular.module('GenesisApp')
         var errorEncontrado = 0;
         $scope.Array_ListadoGlosas.forEach(e => {
           e.error = false
-          if (parseFloat(e.MANT.toString().replace(',', '.')) !=
+          if (parseFloat(e.MANT.toString().replace(',', '.')) <
             (parseFloat(e.VALOR_GLOSAR_EPS.toString().replace(/\./g, '').replace(/\,/g, '.')) +
               parseFloat(e.VALOR_GLOSAR_IPS.toString().replace(/\./g, '').replace(/\,/g, '.')))) {
             errorEncontrado++
@@ -262,52 +273,68 @@ angular.module('GenesisApp')
         if (errorEncontrado) {
           swal({
             title: "¡Mensaje!",
-            text: 'La suma de ambos valores deben coincidir con el valor total de la Glosa, Por favor revisar',
+            text: 'No debe exceder el valor mantenido',
             type: "info"
           }).catch(swal.noop);
           return
         }
         /////////
-        var data = []
-        $scope.Array_ListadoGlosas.forEach(e => {
-          data.push({
-            renglon: e.FCDN_RENGLON,
-            servicio: e.FCDV_PRODUCTO,
-            valor_fd: e.MANT,
-            valor_gl: ((e.VALOR_GLOSAR_EPS.toString().replace(/\./g, '')).replace(/\,/g, '.')),
-            valor_gi: ((e.VALOR_GLOSAR_IPS.toString().replace(/\./g, '')).replace(/\,/g, '.')),
-            observacion: e.FCDC_OBSERVACION,
-            comentario: e.COMENTARIO
-          })
-        });
+
+        swal({
+          title: 'Confirmar',
+          text:'Desea conciliar la Glosa?',
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+
+            var data = []
+            $scope.Array_ListadoGlosas.forEach(e => {
+              data.push({
+                renglon: e.FCDN_RENGLON,
+                servicio: e.FCDV_PRODUCTO,
+                valor_fd: e.MANT,
+                valor_gl: ((e.VALOR_GLOSAR_EPS.toString().replace(/\./g, '')).replace(/\,/g, '.')),
+                valor_gi: ((e.VALOR_GLOSAR_IPS.toString().replace(/\./g, '')).replace(/\,/g, '.')),
+                observacion: e.FCDC_OBSERVACION,
+                comentario: e.COMENTARIO
+              })
+            });
 
 
-        swal({ title: 'Cargando...', allowOutsideClick: false });
-        swal.showLoading();
-        $http({
-          method: 'POST',
-          url: "php/cuentasmedicas/conciliaciondeglosas.php",
-          data: {
-            function: 'guardarValoresGlosaDetalle',
-            documento: $scope.glosaSeleccionada.DOCUMENTO_FD,
-            numero: $scope.glosaSeleccionada.NUMERO_FD,
-            ubicacion: $scope.glosaSeleccionada.UBICACION_FD,
-            datos: JSON.stringify(data),
-            cantidad: data.length
-          }
-        }).then(function ({ data }) {
-          if (data.toString().substr(0, 3) != '<br') {
-            if (data.Codigo == 0) {
-              // $scope.Atras(0);
-              $scope.listarGlosasIPS('x');
-              $scope.listarGlosasIPSDetalle($scope.ipsSeleccionada, 'x');
-              $scope.closeModal();
-              swal("Mensaje", "Glosa gestionada!", "success").catch(swal.noop);
-            } else {
-              swal("Mensaje", data.Nombre, "info").catch(swal.noop);
-            }
-          } else {
-            swal("Mensaje", data, "info").catch(swal.noop);
+            swal({ title: 'Cargando...', allowOutsideClick: false });
+            swal.showLoading();
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/conciliaciondeglosas.php",
+              data: {
+                function: 'guardarValoresGlosaDetalle',
+                documento: $scope.glosaSeleccionada.DOCUMENTO_FD,
+                numero: $scope.glosaSeleccionada.NUMERO_FD,
+                ubicacion: $scope.glosaSeleccionada.UBICACION_FD,
+                datos: JSON.stringify(data),
+                cantidad: data.length,
+                responsable: $scope.Rol_Cedula
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) != '<br') {
+                if (data.Codigo == 0) {
+                  // $scope.Atras(0);
+                  $scope.listarGlosasIPS('x');
+                  $scope.listarGlosasIPSDetalle($scope.ipsSeleccionada, 'x');
+                  $scope.closeModal();
+                  swal("Mensaje", "Glosa gestionada!", "success").catch(swal.noop);
+                } else {
+                  swal("Mensaje", data.Nombre, "info").catch(swal.noop);
+                }
+              } else {
+                swal("Mensaje", data, "info").catch(swal.noop);
+              }
+            });
           }
         });
       }
