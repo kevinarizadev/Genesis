@@ -129,4 +129,28 @@
         echo $json;
         oci_close($c);
     }
+    function getModuloIpsAdmin(){
+      require_once('../../config/dbcon_prod.php');
+      global $param;
+      $consulta = oci_parse($c,'begin pq_genesis_inicio.p_obtener_rol_ips (:v_pips,:v_pjson_row); end;');
+      oci_bind_by_name($consulta,':v_pips',$param->nit);
+      $clob = oci_new_descriptor($c,OCI_D_LOB);
+      oci_bind_by_name($consulta, ':v_pjson_row', $clob,-1,OCI_B_CLOB);
+      oci_execute($consulta);
+      $json = $clob->read($clob->size());
+      echo $json;
+      oci_close($c);
+  }
+  function getCedulaAdminIps(){
+    require_once('../../config/dbcon_prod.php');
+    global $param;
+    $consulta = oci_parse($c,'begin pq_genesis_inicio.p_obtener_cedula_admin_ips (:v_pips,:v_pjson_row); end;');
+    oci_bind_by_name($consulta,':v_pips',$param->nit);
+    $clob = oci_new_descriptor($c,OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_pjson_row', $clob,-1,OCI_B_CLOB);
+    oci_execute($consulta);
+    $json = $clob->read($clob->size());
+    echo $json;
+    oci_close($c);
+}
 ?>

@@ -691,6 +691,7 @@ angular.module('GenesisApp')
           data: { function: 'v_informe_gestion_areas_tutelas' }
         }).then(function ({ data }) {
           if (data.length) {
+
             var ws = XLSX.utils.json_to_sheet(data);
             /* add to workbook */
             var wb = XLSX.utils.book_new();
@@ -710,6 +711,91 @@ angular.module('GenesisApp')
         setTimeout(function () { $scope.$apply(); }, 500);
       }
 
+
+      //////////////////
+      $scope.descargarInforme = function () {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/juridica/tutelas/gestiontutelasareas.php",
+          data: { function: 'v_informe_gestion_areas_tutelas' }
+        }).then(function ({ data }) {
+          if (data.length) {
+
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Exportado Tutelas General.xlsx");
+            const text = `Registros encontrados ${data.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          } else {
+            swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+
+
+
+      $scope.actualizarRespo = function () {
+        if (!$scope.respActual || !$scope.respNuevo) {
+          swal('¡Mensaje!', 'Diligencie los campos', 'info').catch(swal.noop);
+          return
+        }
+        swal({
+          title: '¿Confirmar cambios?',
+          text: "Solo se cambiará el responsable a las gestiones en estado (EN PROCESO, PROXIMO A VENCER o VENCIDO)",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/juridica/tutelas/gestiontutelasareas.php",
+              data: {
+                function: 'p_actualiza_responsable_gestion',
+                actual: $scope.respActual,
+                nuevo: $scope.respNuevo,
+              }
+            }).then(function ({ data }) {
+              if (data) {
+                if (data.Codigo == 0) {
+                  $scope.respActual = '';
+                  $scope.respNuevo = '';
+                  swal('¡Mensaje!', data.Nombre, 'success').catch(swal.noop);
+                  setTimeout(() => { $scope.$apply(); }, 500);
+                } else {
+                  swal('¡Mensaje!', data.Nombre, 'info').catch(swal.noop);
+                }
+              } else {
+                swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+              }
+            })
+          }
+        })
+      }
+      //////////////////
 
       document.querySelector('#FormFile').addEventListener('change', function (e) {
         $scope.Form.soporte_B64 = "";

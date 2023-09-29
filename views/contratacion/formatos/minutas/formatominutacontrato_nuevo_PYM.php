@@ -1889,8 +1889,7 @@
               el descrito en la portada del presente contrato.</div>
 
             <div class="minuta_clausula">Cláusula 49. Perfeccionamiento del contrato.</div>
-            <div class="minuta_texto">El presente Contrato se perfecciona con la suscripción de este por las partes
-              contratantes.</div>
+            <div class="minuta_texto">El presente Contrato se considerará perfeccionado en el instante en que sea suscrito por las partes contratantes. Con el fin de agilizar y simplificar este procedimiento, se determina que el contrato también alcanzará su pleno perfeccionamiento y validez cuando los representantes legales de las personas jurídicas involucradas introduzcan una firma manuscrita, la cual puede ser una firma escaneada. Se establece de manera expresa que estas firmas electrónicas poseerán la misma fuerza legal y efectos jurídicos que una firma manuscrita tradicional."</div>
 
             <div class="minuta_clausula">Cláusula 50. Efecto</div>
             <div class="minuta_texto">El presente acuerdo de voluntades deja sin efecto cualquier otro acuerdo de

@@ -1,13 +1,18 @@
 'use strict';
 angular.module('GenesisApp')
-  .controller('configuracionaccesoController', ['$scope', '$http', 'consultaHTTP', 'menuopcioneshttp', 'ngDialog', 'notification', '$timeout', '$q', 'upload', 'communication', '$controller', '$rootScope', '$window', '$location', '$anchorScroll',
-    function ($scope, $http, consultaHTTP, menuopcioneshttp, ngDialog, notification, $timeout, $q, upload, communication, $controller, $rootScope, $window, $location, $anchorScroll) {
+  .controller('configuracionaccesoController', ['$scope', '$http',
+    function ($scope, $http) {
+      console.log(111111111);
       $scope.vista = { panel_1: true, panel_2: false, panel_title_2: false, add_modulos: false, playJson: false };
       $scope.toggleSearch = function () {
         $scope.v_search = !$scope.v_search;
         $scope.filtrar = "";
       }
       $scope.typeUser = "";
+      $scope.typeUser = "ips";
+      $scope.usuario_genesis = "9138014,32624689,45579044,52518498,72005925";
+      // $scope.typeUser = "funcionarios";
+      document.querySelector('input[name=groupRadio][value=ips]').checked = true;
       $scope.filter_fun_1 = "";
       $scope.filter_fun_2 = "";
       $scope.form = {
@@ -189,63 +194,101 @@ angular.module('GenesisApp')
       $scope.json_temp = [];
       $scope.modulos = [];
       $scope.editarUser = function (user) {
-        $http({
-          method: 'POST',
-          url: "php/tic/configuracionacceso/configuracionacceso.php",
-          data: {
-            function: 'get_info_user',
-            nit: user.nit,
-            cedula: user.cedula
-          }
-        }).then(function (response) {
-          if (response.data.length > 0) {
-            $http({
-              method: 'POST',
-              url: "php/tic/configuracionacceso/configuracionacceso.php",
-              data: {
-                function: 'get_json',
-                nit: user.nit,
-                cedula: user.cedula
-              }
-            }).then(function (response_2) {
-              if (response.data[0].json != "0") {
-                $http({
-                  method: 'POST',
-                  url: "php/tic/configuracionacceso/configuracionacceso.php",
-                  data: {
-                    function: 'get_json_modulos_admin',
-                    tipo: 'F'
-                  }
-                }).then(function (response_3) {
-                  $scope.vista.panel_2 = true;
-                  $scope.vista.panel_title_2 = true;
-                  $scope.form.nit = user.nit;
-                  $scope.form.cedula = user.cedula;
-                  $scope.form.nombre = user.nombre;
-                  $scope.form.ccargo = response.data[0].cargo;
-                  $scope.form.ncargo = response.data[0].nombrecargo;
-                  $scope.form.crol = response.data[0].rol;
-                  $scope.form.nrol = response.data[0].nombrerol;
+        if ($scope.typeUser == 'funcionarios') {
+          $http({
+            method: 'POST',
+            url: "php/tic/configuracionacceso/configuracionacceso.php",
+            data: {
+              function: 'get_info_user',
+              nit: user.nit,
+              cedula: user.cedula
+            }
+          }).then(function (response) {
+            if (response.data.length > 0) {
+              $http({
+                method: 'POST',
+                url: "php/tic/configuracionacceso/configuracionacceso.php",
+                data: {
+                  function: 'get_json',
+                  nit: user.nit,
+                  cedula: user.cedula
+                }
+              }).then(function (response_2) {
+                if (response.data[0].json != "0") {
+                  $http({
+                    method: 'POST',
+                    url: "php/tic/configuracionacceso/configuracionacceso.php",
+                    data: {
+                      function: 'get_json_modulos_admin',
+                      tipo: 'F'
+                    }
+                  }).then(function (response_3) {
+                    $scope.vista.panel_2 = true;
+                    $scope.vista.panel_title_2 = true;
+                    $scope.form.nit = user.nit;
+                    $scope.form.cedula = user.cedula;
+                    $scope.form.nombre = user.nombre;
+                    $scope.form.ccargo = response.data[0].cargo;
+                    $scope.form.ncargo = response.data[0].nombrecargo;
+                    $scope.form.crol = response.data[0].rol;
+                    $scope.form.nrol = response.data[0].nombrerol;
 
-                  $scope.json_temp = response_3.data;
-                  $scope.modulos = response_2.data;
-                  // $scope.cloneHeadFixed(1);
-                });
-              } else {
-                console.log("Error obteniendo JSON");
-              }
-            });
-          }
-        });
+                    $scope.json_temp = response_3.data;
+                    $scope.modulos = response_2.data;
+                    // $scope.cloneHeadFixed(1);
+                  });
+                } else {
+                  console.log("Error obteniendo JSON");
+                }
+              });
+            }
+          });
+        } else if ($scope.typeUser == 'ips') {
+
+          $http({
+            method: 'POST',
+            url: "php/tic/configuracionacceso/configuracionacceso.php",
+            data: {
+              function: 'get_json',
+              nit: user.nit,
+              cedula: user.cedula
+            }
+          }).then(function ({ data }) {
+            if (data[0].json != "0") {
+              $http({
+                method: 'POST',
+                url: "php/tic/configuracionacceso/configuracionacceso.php",
+                data: {
+                  function: 'get_json_modulos_admin',
+                  tipo: 'I'
+                }
+              }).then(function (response_2) {
+                $scope.vista.panel_2 = true;
+                $scope.vista.panel_title_2 = true;
+                $scope.form.nit = user.nit;
+                $scope.form.cedula = user.cedula;
+                $scope.form.nombre = user.nombre;
+
+                $scope.json_temp = response_2.data;
+                $scope.modulos = data;
+                // $scope.cloneHeadFixed(1);
+              });
+            } else {
+              console.log("Error obteniendo JSON");
+            }
+          });
+        }
+
       }
       $scope.addModulos = function (value) {
         if (!value) {
+          const tipo = $scope.typeUser == 'funcionarios' ? 'F' : 'I'
           $http({
             method: 'POST',
             url: "php/tic/configuracionacceso/configuracionacceso.php",
             data: {
               function: 'get_json_modulos_admin',
-              tipo: 'F'
+              tipo
             }
           }).then(function (response_3) {
             if (response_3.data != undefined && response_3.data != null && response_3.data.length > 0) {
@@ -266,12 +309,13 @@ angular.module('GenesisApp')
       $scope.submodulos_add = [];
       $scope.addSubmodulos = function (modulo, submodulos, ver) {
         if (!ver) {
+          const tipo = $scope.typeUser == 'funcionarios' ? 'F' : 'I'
           $http({
             method: 'POST',
             url: "php/tic/configuracionacceso/configuracionacceso.php",
             data: {
               function: 'get_json_modulos_admin',
-              tipo: 'F'
+              tipo
             }
           }).then(function (response_3) {
             if (response_3.data != undefined && response_3.data != null && response_3.data.length > 0) {
@@ -376,7 +420,7 @@ angular.module('GenesisApp')
             cedula: user.cedula
           }
         }).then(function (response) {
-          if (response.data[0].json != "0" && response.data != undefined && response.data != "" && response.data != null && response.data.length > 0 && validar_json(angular.toJson(response.data))) {
+          if (response.data != undefined && response.data != "" && response.data != null && validar_json(angular.toJson(response.data))) {
             $scope.modulos = JSON.parse(angular.toJson(response.data));
           } else {
             console.log("Error obteniendo json de: " + user.cedula);
@@ -521,7 +565,7 @@ angular.module('GenesisApp')
             }
           }).then(function (response) {
             let json_get_user = response.data;
-            if (json_get_user[0].json != "0" && json_get_user != undefined && json_get_user != "" && json_get_user != null && json_get_user.length > 0 && validar_json(angular.toJson(json_get_user))) {
+            if (json_get_user != undefined && json_get_user != "" && json_get_user != null && json_get_user.length > 0 && validar_json(angular.toJson(json_get_user))) {
               modulos_set.forEach(function (modulo, i) {
                 var i_1 = json_get_user.findIndex(elemt => elemt.titulo == modulo.titulo);
                 if (i_1 != -1) {
@@ -555,7 +599,7 @@ angular.module('GenesisApp')
             }
           }).then(function (response) {
             let json_get_user = response.data;
-            if (json_get_user[0].json != "0" && json_get_user != undefined && json_get_user != "" && json_get_user != null && json_get_user.length > 0 && validar_json(angular.toJson(json_get_user))) {
+            if (json_get_user != undefined && json_get_user != "" && json_get_user != null && json_get_user.length > 0 && validar_json(angular.toJson(json_get_user))) {
               modulos_set.forEach(function (modulo, i) {
                 var i_1 = json_get_user.findIndex(elemt => elemt.titulo == modulo.titulo);
                 if (i_1 != -1) {
@@ -619,7 +663,7 @@ angular.module('GenesisApp')
             }
           }).then(function (response) {
             let json_get_user = response.data;
-            if (json_get_user[0].json != "0" && json_get_user != undefined && json_get_user != "" && json_get_user != null && json_get_user.length > 0 && validar_json(angular.toJson(json_get_user))) {
+            if (json_get_user != undefined && json_get_user != "" && json_get_user != null && json_get_user.length > 0 && validar_json(angular.toJson(json_get_user))) {
               modulos_set.forEach(function (modulo, i) {
                 var i_1 = json_get_user.findIndex(elemt => elemt.titulo == modulo.titulo);
                 if (i_1 != -1) {
@@ -819,6 +863,12 @@ angular.module('GenesisApp')
 
       $scope.id_user = "";
       $scope.filtrarUser = function (usuario) {
+        // $scope.typeUser = 'ips';
+        $scope.list_users_update_json = []
+        if (usuario === undefined && usuario == null && usuario == "") {
+          swal("Error", "El campo no puede ser vacio", "error");
+          return
+        }
         swal({
           html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando.</p>',
           width: 200,
@@ -827,29 +877,31 @@ angular.module('GenesisApp')
           showConfirmButton: false,
           animation: false
         });
-        if (usuario != undefined && usuario != "" && usuario.indexOf(",") != -1) {
-          var array = usuario.split(",");
-          if (array != undefined && array != "" && array.length > 0 && Array.isArray(array)) {
-            $scope.vista.panel_2 = true;
-            $scope.vista.panel_title_2 = false;
-            array.forEach(user => {
-              if (Number(user.trim())) {
-                var i = $scope.list_users_update_json.findIndex(elemt => elemt.cedula == user.trim());
-                if (i == -1) {
-                  $scope.list_users_update_json.push({ cedula: user.trim(), nombre: "null name: " + user.trim(), nit: "890102044", usuario: "null usuario: " + user.trim() });
+        //
+
+
+        if ($scope.typeUser == 'funcionarios') {
+          if (usuario != undefined && usuario != "" && usuario.indexOf(",") != -1) {
+            var array = usuario.split(",");
+            if (array != undefined && array != "" && array.length > 0 && Array.isArray(array)) {
+              $scope.vista.panel_2 = true;
+              $scope.vista.panel_title_2 = false;
+              array.forEach(user => {
+                if (Number(user.trim())) {
+                  var i = $scope.list_users_update_json.findIndex(elemt => elemt.cedula == user.trim());
+                  if (i == -1) {
+                    $scope.list_users_update_json.push({ cedula: user.trim(), nombre: "null name: " + user.trim(), nit: "890102044", usuario: "null usuario: " + user.trim() });
+                  } else {
+                    console.log("Usuario repetido: " + user.trim());
+                  }
                 } else {
-                  console.log("Usuario repetido: " + user.trim());
+                  console.log("No es un numero de cedula valido: " + user.trim());
                 }
-              } else {
-                console.log("No es un numero de cedula valido: " + user.trim());
-              }
-            });
-            swal.close();
+              });
+              swal.close();
+            }
           } else {
-            swal("Error", "Se requiere una lista de cedulas separadas por comas", "error");
-          }
-        } else {
-          if (usuario != undefined && usuario != null && usuario != "") {
+
             $http({
               method: 'POST',
               url: "php/tic/paneladmin/paneladmin.php",
@@ -903,10 +955,77 @@ angular.module('GenesisApp')
                 });
               }
             });
-          } else {
-            swal("Error", "El campo no puede ser vacio", "error");
           }
+
+        } else if ($scope.typeUser == 'ips') {
+          if (usuario != undefined && usuario != "" && usuario.indexOf(",") != -1) {
+            var array = usuario.split(",");
+            if (array != undefined && array != "" && array.length > 0 && Array.isArray(array)) {
+              $scope.vista.panel_2 = true;
+              $scope.vista.panel_title_2 = false;
+              array.forEach(user => {
+                if (Number(user.trim())) {
+                  var i = $scope.list_users_update_json.findIndex(elemt => elemt.nit == user.trim());
+                  if (i == -1) {
+                    // getCedulaAdminIps
+                    $http({
+                      method: 'POST',
+                      url: "php/tic/configuracionacceso/configuracionacceso.php",
+                      data: {
+                        function: 'getCedulaAdminIps',
+                        nit: user.trim()
+                      }
+                    }).then(function ({ data }) {
+                      if (data != '0') {
+                        $scope.list_users_update_json.push({ cedula: data, nombre: "null name: " + user.trim(), nit: user.trim(), usuario: "null usuario: " + user.trim() });
+                      } else {
+                        console.log("Error obteniendo json de: " + user.trim());
+                      }
+                    });
+
+                  } else {
+                    console.log("Usuario repetido: " + user.trim());
+                  }
+                } else {
+                  console.log("No es un numero de cedula valido: " + user.trim());
+                }
+              });
+              swal.close();
+            }
+
+          } else {
+            console.log(1111);
+            $http({
+              method: 'POST',
+              url: "php/tic/configuracionacceso/configuracionacceso.php",
+              data: {
+                function: 'getModuloIpsAdmin',
+                nit: usuario
+              }
+            }).then(function ({ data }) {
+              if (data[0].Codigo == '404') {
+                swal.close();
+                swal('Advertencia', 'La ips no esta registrada', 'warning');
+                $scope.modulos = [];
+                $scope.vista.panel_2 = false;
+                $scope.lis_users = [];
+                return
+              }
+              $scope.typeUser = "ips";
+              document.querySelector('input[name=groupRadio][value=ips]').checked = true;
+
+              $scope.editarUser({ cedula: data[0].CEDULA, nit: data[0].NIT, nombre: data[0].NOMBRE, usuario: usuario });
+              $scope.vista.add_modulos = false;
+              $scope.collapse.level = null;
+              $scope.clear_all_check();
+              // $scope.cloneHeadFixed(0);
+              swal.close();
+            })
+          }
+
         }
+        //
+        //
       }
       $scope.radio_type_user = function (type) {
         if (type == "funcionarios") {

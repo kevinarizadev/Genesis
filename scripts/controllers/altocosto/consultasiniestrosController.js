@@ -950,7 +950,7 @@ angular.module('GenesisApp')
                   }).then(function ({ data }) {
                     if (data.toString().substr(0, 3) != '<br') {
                       if (data.Codigo == 0) {
-                        $scope.HNAC_ObtenerListado();
+                        //$scope.HNAC_ObtenerListado();
                         swal("¡Importante!", data.Nombre, "success").catch(swal.noop);
                         $scope.closeModal();
                       } else {
@@ -965,7 +965,7 @@ angular.module('GenesisApp')
                 }
               })
           } else {
-            swal("¡No se permite esta acción para esta cohorte!", data, "info").catch(swal.noop);
+            swal("¡No se permite esta acción para esta cohorte!", '', "info").catch(swal.noop);
 
           }
 

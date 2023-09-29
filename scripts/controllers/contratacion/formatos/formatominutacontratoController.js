@@ -117,7 +117,8 @@ angular.module('GenesisApp', [])
         switch (minuta) {
           case 1:
             $scope.tipoMinuta = 'MODALIDAD DE RECUPERACION';
-            $scope.tipoServicioTitulo = 'SALUD PARA LA RECUPERACIÓN DE LA SALUD';
+            // $scope.tipoServicioTitulo = 'SALUD PARA LA RECUPERACIÓN DE LA SALUD';
+            $scope.tipoServicioTitulo = 'SALUD';
             break;
           case 2:
             $scope.tipoMinuta = 'MODALIDAD DE PYM';

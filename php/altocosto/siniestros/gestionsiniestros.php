@@ -86,10 +86,10 @@ function Upload()//CARGAR NUEVO ARCHIVO
 function Upload_Nacional()//ACTUALIZAR ARCHIVO
 {
   // CC_1046270267_20201007_213128
-  error_reporting(0);
+  // error_reporting(0);
   global $request;
-  require_once('../../config/sftp_con.php');
-  if ($request->ftp == 1) {
+  // require_once('../../config/sftp_con.php');
+  if ($request->Ftp == 1) {
     require_once('../../config/ftpcon.php');
   } else {
     require_once('../../config/sftp_con.php');
@@ -105,6 +105,10 @@ function Upload_Nacional()//ACTUALIZAR ARCHIVO
   $ruta = $request->ruta;
   // echo $ruta;
   $subio = @ftp_put($con_id, $ruta, $tmpfile, FTP_BINARY);
+  // var_dump($con_id);
+  // echo $ruta;
+  // echo $tmpfile;
+  echo $subio;
   if ($subio) {
     unlink($tmpfile);
     echo $ruta;
@@ -735,4 +739,22 @@ function p_listar_motivo_anulacion()
 		echo 0;
 	}
 	oci_close($c);
+}
+
+function P_LISTAR_REGISTROS_EN_ESTUDIO()
+{
+  require_once('../../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_GESTION_ACGS.P_LISTAR_REGISTROS_EN_ESTUDIO(:v_presponsable,:v_pjson_row_out); end;');
+  oci_bind_by_name($consulta, ':v_presponsable', $request->Cedula);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row_out', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
 }

@@ -83,6 +83,58 @@ angular.module('GenesisApp')
       }
 
 
+      $scope.obtenerDetalleGlosas = function (row) {
+        const xx = $scope.nombre.toString().split('-');
+        const nombre = xx[xx.length - 1]
+        // $scope.cedula
+
+        $scope.modalGestion = {
+          listadoServicios: [],
+
+          numero: row.NUMERO,
+          ubicacion: row.UBICACION,
+          numeroFD: row.NUM_FD,
+          ubicacionFD: row.UBI_FD,
+          renglon: row.NTDN_RENGLON,
+
+          numeroFactura: row.FACC_FACTURA.trim(),
+          valorGlosa: `$ ${$scope.FormatPesoNumero(row.VALOR_GLOSA.replace(/\,/g, '.'))}`,
+
+          auditorIPS: nombre,
+          numeroCredito: row.FACV_VALOR_FN,
+          valorAceptado: 0,
+          observacion: '',
+
+          soporteExt: '',
+          soporteB64: '',
+
+        }
+        swal({ title: 'Cargando...', allowOutsideClick: false });
+        swal.showLoading();
+
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/notificacionglosaips.php",
+          data: { function: 'p_lista_glosas_estado_resp_detalle', renglon: row.NTDN_RENGLON, numero: row.NUMERO, ubicacion: row.UBICACION }
+        }).then(function ({ data }) {
+          if (data != undefined) {
+            data.forEach(e => {
+              e.VALOR_ACEPTADO = 0
+            })
+            $scope.modalGestion.listadoServicios = data;
+            $scope.openModal('modalGestion');
+            swal.close()
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        })
+
+        angular.forEach(document.querySelectorAll('.formGestion input'), function (i) {
+          i.setAttribute("readonly", true);
+        });
+
+      }
+
+
       $scope.generalExcel = function (row) {
         let datos = []
 
@@ -106,7 +158,7 @@ angular.module('GenesisApp')
 
 
             "FECHA RESPUESTA EPS": e.FECHA_RESPUESTA_EPS,
-            "VALOR ACEPTADO EPS": e.NTDV_VALOR_GL_EPS,
+            "VALOR LEVANTADO EPS": e.NTDV_VALOR_GL_EPS,
             "COMENTARIO_EPS": e.COMENTARIO_EPS,
 
             "VALOR MANTENIDO": e.NTDV_VALOR_MANTENIDA1,

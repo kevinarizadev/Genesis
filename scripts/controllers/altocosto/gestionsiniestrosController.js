@@ -37,6 +37,7 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
       { CODIGO: 'EH', NOMBRE: 'ENFERMEDADES HUERFANAS' },
       { CODIGO: 'TP', NOMBRE: 'TRASPLANTES' },
       { CODIGO: 'LU', NOMBRE: 'LUPUS' },
+      { CODIGO: 'OS', NOMBRE: 'OSTEOPOROSIS' },
     ]
     //
     //
@@ -1767,7 +1768,8 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
         var FECHA_DIAG = new Date(data.FECHA_DIAG);
         var FECHA_INICIO_IPSASIG = new Date(data.FECHA_VIGENCIA_IPS);
         // var FECHA_GESTION = new Date(data.FECHA_MODIFICACION_SECCIONAL);
-
+        $scope.Tabs = 1;
+        setTimeout(() => { $scope.$apply(); }, 500);
         $scope.Var_Nacional.Vista = '2';
         $scope.Var_Nacional.Form = {
           Estado: data.ESTADO,
@@ -1817,6 +1819,7 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
           Op_Pluripatologico: (data.PLURIPATOLOGICO == 'S') ? true : false,
           Op_Prioridad: (data.PRIORIDAD == 'Alta') ? 'A' : (data.PRIORIDAD == 'Media') ? 'M' : 'B',
           Op_Observacion: data.OBSERVACION_SECCIONAL,
+          Op_ObservacionEstudio: data.OBSERVACION_ESTUDIO,
           Ruta: data.RUTA.toString().trim(),
           Ftp: data.FTP,
           Op_Observacion_Nac: '',
@@ -1938,7 +1941,7 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
         $scope.HNAC_motivosAnulacion(Accion).then((e) => {
           if (Accion != 'X' || (Accion == 'X' && e != '')) {
             //
-            var title = Accion == 'X' ? '¿Está seguro que desea anular?' :  Accion == 'P' ? '¿Está seguro que desea procesar?' : '¿Está seguro que desea enviarlo a estudio?';
+            var title = Accion == 'X' ? '¿Está seguro que desea anular?' : Accion == 'P' ? '¿Está seguro que desea procesar?' : '¿Está seguro que desea enviarlo a estudio?';
             swal({
               title: title,
               // text: "¿Acepta registrar la gestión realizada?",
@@ -2030,6 +2033,7 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
                             }).catch(swal.noop);
                             $scope.Var_Nacional.Vista = '1';
                             setTimeout(() => {
+                              $scope.Tabs = 4;
                               $scope.HNAC_ObtenerListado();
                               $scope.$apply();
                             }, 5000);
@@ -2496,6 +2500,9 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
       } else {
         $scope.HNAC_ObtenerListado();
       }
+    }
+    if (tab == 4 && !$scope.Hoja4_Lista_Tabla) {
+      $scope.obtenerListadoEstudio();
     }
     setTimeout(() => {
       $scope.$apply();
@@ -3378,6 +3385,87 @@ angular.module('GenesisApp').controller('gestionsiniestrosController', ['$scope'
     });
   }
 
+
+  $scope.obtenerListadoEstudio = function () {
+    $scope.Hoja4_Lista_Tabla = [];
+    $scope.Var_Estudio = {
+      List_Count: {
+        "Aut": 0,
+        "Rips": 0,
+        "Censo": 0,
+        "Otra": 0
+      },
+      Filtrar_Sol: "",
+    }
+    setTimeout(() => { $scope.$apply(); }, 500);
+    swal({ title: 'Cargando...', allowOutsideClick: false });
+    swal.showLoading();
+    $http({
+      method: 'POST',
+      url: "php/altocosto/siniestros/gestionsiniestros.php",
+      data: {
+        function: 'P_LISTAR_REGISTROS_EN_ESTUDIO',
+        Cedula: $scope.Rol_Cedula
+      }
+    }).then(function ({ data }) {
+      if (data && data.toString().substr(0, 3) != '<br') {
+        if (data.Codigo == undefined) {
+          setTimeout(() => { $scope.$apply(); }, 500);
+          swal.close();
+          setTimeout(() => {
+            data.forEach(e => {
+
+              (e.FUENTE == 'A') ? $scope.Var_Estudio.List_Count.Aut += 1 : '';
+              (e.FUENTE == 'R') ? $scope.Var_Estudio.List_Count.Rips += 1 : '';
+              (e.FUENTE == 'C') ? $scope.Var_Estudio.List_Count.Censo += 1 : '';
+              (e.FUENTE != 'A' && e.FUENTE != 'R' && e.FUENTE != 'C') ? $scope.Var_Estudio.List_Count.Otra += 1 : '';
+
+              $scope.Hoja4_Lista_Tabla.push({
+                "SECCIONAL": e.UBICACION,
+                "TIPO_DOC_AFI": e.DOCUMENTO.toString().split("-")[0],
+                "DOC_AFI": e.DOCUMENTO.toString().split("-")[1],
+                "NOMBRE_AFI": e.NOMBRE,
+                "COHORTE": e.COHORTE,
+                "CLASE_CONCEPTO": e.CLASE_CONCEPTO,
+                "IPS_SOL": e.IPS_SOL,
+                "IPS_ASG": e.IPS_ASG,
+                "PRIORIDAD": e.PRIORIDAD,
+                "NUM_RADICADO": e.RADICADO,
+                "PLURIPATOLOGICO": e.PLURIPATOLOGICO,
+                "PLURIPATOLOGICO_NOMB": e.PLURIPATOLOGICO == 'S' ? 'Pluripatologico' : '',
+                "FUENTE": e.FUENTE,
+                "FUENTE_NOM": $scope.Find_Fuente(e.FUENTE),
+                "ESTADO_AFILIADO": e.ESTADO_AFILIADO
+              });
+            });
+
+            $scope.$apply();
+          }, 500);
+        } else {
+          if (data.Codigo == 1) {
+            swal({
+              title: "¡IMPORTANTE!",
+              text: data.Nombre,
+              type: "warning"
+            }).catch(swal.noop);
+          } else {
+            swal({
+              title: "¡IMPORTANTE!",
+              text: data,
+              type: "warning",
+              allowOutsideClick: false
+            }).catch(swal.noop);
+          }
+        }
+      } else {
+        swal({
+          title: "¡IMPORTANTE!",
+          text: data,
+          type: "warning"
+        }).catch(swal.noop);
+      }
+    });
+  }
 
   $scope.Hoja3_initPaginacion = function (info) {
     $scope.Hoja3_Lista_Tabla_Temp = info;

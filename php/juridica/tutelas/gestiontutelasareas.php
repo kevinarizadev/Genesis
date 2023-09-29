@@ -185,3 +185,22 @@ function v_informe_gestion_areas_tutelas()
   oci_free_statement($cursor);
   echo json_encode($datos);
 }
+
+function p_actualiza_responsable_gestion()
+{
+  require_once('../../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'begin pq_genesis_tut.p_actualiza_responsable_gestion(:v_pactual,:v_pnuevo,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pactual', $request->actual);
+  oci_bind_by_name($consulta, ':v_pnuevo', $request->nuevo);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}

@@ -291,7 +291,7 @@ function contadoresINS()
 function Carga_Not_Glosa(){
         global $request;
         require_once('../config/dbcon_prod.php');
-        $consulta = oci_parse($c,'begin Pq_genesis_glosa.p_obtener_notificacion(:v_nit,:v_texto_out); end;');
+        $consulta = oci_parse($c,'begin pq_genesis_glosa.p_obtener_notificacion(:v_nit,:v_texto_out); end;');
         oci_bind_by_name($consulta,':v_nit',$request->nit);
         $clob = oci_new_descriptor($c,OCI_D_LOB);
         oci_bind_by_name($consulta, ':v_texto_out', $clob,-1,OCI_B_CLOB);

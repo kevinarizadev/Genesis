@@ -220,8 +220,11 @@ angular.module('GenesisApp')
           $scope.modalGestion.listadoServicios.forEach(e => {
             e.error = false
 
-            if (e.VALOR_ACEPTADO === undefined || e.VALOR_ACEPTADO === null || e.VALOR_ACEPTADO === '0' || e.VALOR_ACEPTADO === 0) {
+            if (e.VALOR_ACEPTADO === undefined || e.VALOR_ACEPTADO === null) {
               e.error = true
+              resolve(false)
+            }
+            if (e.COMENTARIO === null || e.COMENTARIO === '' || e.COMENTARIO === undefined) {
               resolve(false)
             }
 

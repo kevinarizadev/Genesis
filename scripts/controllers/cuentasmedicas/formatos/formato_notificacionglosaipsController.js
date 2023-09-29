@@ -32,6 +32,9 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
   $scope.FechayHora = dia + '/' + mes + '/' + f.getFullYear() + '  ' + hora + ':' + min + ':' + seg + ' ' + ampm;
   var time = new Date();
 
+  swal({ title: 'Cargando...', allowOutsideClick: false });
+  swal.showLoading();
+
   $http({
     method: 'POST',
     url: "../../../php/cuentasmedicas/notificacionglosaips.php",
@@ -46,7 +49,7 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
     $scope.datos = data.json;
     // $scope.ips = data[0].NOMBRE_IPS;
     $scope.datos2 = data.json2[0];
-
+    swal.close()
     // CANTIDAD_FACTURAS:        "4"
     // VALOR_FACTURAS:        "167067494"
     // VALOR_GLOSAS:        "24881481,66"

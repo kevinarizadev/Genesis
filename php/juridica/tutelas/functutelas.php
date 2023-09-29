@@ -1294,3 +1294,67 @@ function p_ins_pqrs_tutela()
 	}
 	oci_close($c);
 }
+
+function p_lista_tipos_adjuntos()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN pq_genesis_tut.p_lista_tipos_adjuntos(:v_response); end;');
+	
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = null;
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
+	oci_close($c);
+}
+
+function cargarSoporte()
+{
+  // require_once('../config/dbcon.php');
+  require('../../sftp_cloud/UploadFile.php');
+  global $request;
+  // $archivos = json_decode($request->archivos);
+  $archivo = $request->base64;
+  $fecha = date('dmY');
+  $path = 'Juridica/Tutelas/'. $fecha;
+
+  $hoy = date('dmY_His');
+  $name = $request->tutela .  '_' . $hoy . '.pdf';
+	// 123456789_29092023_100326.pdf
+  list(, $archivo) = explode(';', $archivo); // Proceso para traer el Base64
+  list(, $archivo) = explode(',', $archivo); // Proceso para traer el Base64
+  $base64 = base64_decode($archivo); // Proceso para traer el Base64
+  file_put_contents('../../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+
+  $subio = UploadFile($path, $name);
+  echo $subio;
+}
+
+function p_cargar_adjunto_tutela()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'begin pq_genesis_tut.p_cargar_adjunto_tutela(:v_pnumero,:v_pubicacion,:v_ptipo,:v_pfecha,:v_pruta,:v_presponsable,:v_json_row); end;');
+	oci_bind_by_name($consulta, ':v_pnumero', $request->tutela);
+	oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
+	oci_bind_by_name($consulta, ':v_ptipo', $request->tipo);
+	oci_bind_by_name($consulta, ':v_pfecha', $request->fecha);
+	oci_bind_by_name($consulta, ':v_pruta', $request->ruta);
+	oci_bind_by_name($consulta, ':v_presponsable', $request->responsable);
+	$clob = oci_new_descriptor($c, OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+	oci_execute($consulta, OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	} else {
+		echo 0;
+	}
+	oci_close($c);
+}
+

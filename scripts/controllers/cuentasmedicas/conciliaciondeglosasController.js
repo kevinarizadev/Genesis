@@ -5,17 +5,20 @@ angular.module('GenesisApp')
       $scope.Inicio = function () {
         $scope.Ajustar_Pantalla();
         $('.modal').modal();
+        $('.tabs').tabs();
         $scope.Rol_Nit = sessionStorage.getItem('nit');
         // $scope.Rol_Nit = 900465319;
         console.log(sessionStorage.getItem('nit'));
         $scope.Rol_Cedula = sessionStorage.getItem('cedula');
-
+        $scope.tabs = 1;
         $scope.Lista_Glosa = [];
         $scope.Lista_GlosaTemp = [];
 
         $scope.listarGlosasIPS();
+        // $scope.listarGlosasIPSConsulta();
 
         $scope.Vista = 0;
+        $scope.VistaConsulta = 0;
 
         $scope.SysDay = new Date();
         $scope.Responder_NOIPS_Fecha = new Date();
@@ -71,7 +74,7 @@ angular.module('GenesisApp')
         $scope.valoresGlosa = {
           porcentajeGL: 50,
           porcentajeGI: 50,
-          valorFD: $scope.FormatPesoNumero(x.TOTAL_GLOSA),
+          valorFD: $scope.FormatPesoNumero(x.NTDV_VALOR_MANTENIDA),
           observacion: '',
         };
         $scope.datosConciliarFacturaGlosas = x;
@@ -227,6 +230,7 @@ angular.module('GenesisApp')
         swal({ title: 'Cargando...', allowOutsideClick: false });
         swal.showLoading();
         $scope.Array_ListadoGlosas = [];
+        $scope.Array_ListadoGlosasTraza = undefined;
         $scope.glosaSeleccionada = row
         $http({
           method: 'POST',
@@ -282,7 +286,7 @@ angular.module('GenesisApp')
 
         swal({
           title: 'Confirmar',
-          text:'Desea conciliar la Glosa?',
+          text: 'Desea conciliar la Glosa?',
           type: 'question',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -339,6 +343,61 @@ angular.module('GenesisApp')
         });
       }
 
+      // CONSULTA //
+      $scope.listarGlosasIPSConsulta = function (msg) {
+        if (msg == null) {
+          swal({ title: 'Cargando...', allowOutsideClick: false });
+          swal.showLoading();
+        }
+        $scope.filtroConsulta = ''
+        $scope.listadoGlosasConsulta = [];
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/conciliaciondeglosasips.php",
+          data: { function: 'p_lista_glosas_estado_conc_agru_consulta', nit: 0, marcaConciliada: 'N' }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) != '<br') {
+            if (data.length) {
+              $scope.listadoGlosasConsulta = data;
+
+              if (msg == null) { $scope.VistaConsulta = 0; swal.close(); }
+            } else {
+              swal("Mensaje", "No existen glosas para mostrar", "info").catch(swal.noop);
+            }
+          } else {
+            swal("Mensaje", data, "info").catch(swal.noop);
+          }
+        })
+        setTimeout(() => { $scope.$apply(); }, 500);
+
+      }
+      $scope.listarGlosasIPSDetalleConsulta = function (x, msg) {
+        if (msg == null) {
+          swal({ title: 'Cargando...', allowOutsideClick: false });
+          swal.showLoading();
+        }
+        $scope.listadoGlosasDetalleConsulta = [];
+        $scope.filtroDetalleConsulta = ''
+        console.log(x);
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/conciliaciondeglosasips.php",
+          data: { function: 'p_lista_glosas_estado_conc_consulta', numero: x.DOC_NOT.split('-')[1], ubicacion: x.DOC_NOT.split('-')[2], marcaConciliada: 'N' }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) != '<br') {
+            if (data.length) {
+              $scope.listadoGlosasDetalleConsulta = data;
+              if (msg == null) { $scope.VistaConsulta = 1; swal.close(); }
+            } else {
+              swal("Mensaje", "No existen glosas para mostrar", "info").catch(swal.noop);
+            }
+          } else {
+            swal("Mensaje", data, "info").catch(swal.noop);
+          }
+        })
+
+      }
+      // CONSULTA //
 
       $scope.abrirModalCargueFormato = function (x) {
         $('#modalCargueFormato').modal('open');
@@ -548,6 +607,65 @@ angular.module('GenesisApp')
 
       }
 
+      $scope.verObservacion = function (text) {
+        swal({ title: 'Descripción de la Glosa', text, width: '1000px' });
+      }
+
+      $scope.verTraza = function (json) {
+        const json2 = JSON.parse(json)
+        if ($scope.Array_ListadoGlosasTraza) { $scope.Array_ListadoGlosasTraza = undefined; return }
+        $scope.Array_ListadoGlosasTraza = json2
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.generalExcel = function (row) {
+        let datos = []
+
+        row.forEach(e => {
+          datos.push({
+            "RAZON SOCIAL": `${e.NIT} - ${e.RAZON_SOCIAL}`,
+            "FECHA RADICACION": e.FECHA_RADICACION,
+
+            "FACTURA": e.FACTURA,
+            "VALOR FACTURA": e.TOTAL_FACTURA,
+
+            "ESTADO GLOSA": $scope.obtenerEstado(e.NTDC_STATUS),
+
+            "DOCUMENTO GLOSA": `${e.DOCUMENTO_FD}-${e.NUMERO_FD}-${e.UBICACION_FD}`,
+            "FECHA NOTIFICACION GLOSA": e.FECHA_NOTIFICACION,
+            "VALOR GLOSA": e.TOTAL_GLOSA,
+
+            "FECHA RESPUESTA IPS": e.NTDV_VALOR_GI,
+            "VALOR LEVANTADO IPS": e.NTDV_VALOR_GI_IPS,
+            // "COMENTARIO_IPS": e.COMENTARIO_IPS,
+
+
+            "FECHA RESPUESTA EPS": e.FECHA_RESPUESTA_EPS,
+            "VALOR LEVANTADO EPS": e.NTDV_VALOR_GL,
+            // "COMENTARIO_EPS": e.COMENTARIO_EPS,
+
+            "VALOR MANTENIDO": e.NTDV_VALOR_MANTENIDA,
+          })
+        });
+
+        var ws = XLSX.utils.json_to_sheet(datos);
+        /* add to workbook */
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+        /* write workbook and force a download */
+        XLSX.writeFile(wb, "Reporte conciliacion glosas.xlsx");
+        const text = `Registros encontrados ${datos.length}`
+        swal('¡Mensaje!', text, 'success').catch(swal.noop);
+
+        swal.close();
+
+      }
+
+      $scope.setTab = function (tab) {
+        $scope.tabs = tab;
+        if (!$scope.listadoGlosasConsulta) $scope.listarGlosasIPSConsulta();
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
 
       $scope.filter = function (val) {
         $scope.Lista_GlosaTemp = $filter('filter')($scope.Lista_Glosa, ($scope.filter_save == val) ? '' : val);
@@ -641,6 +759,13 @@ angular.module('GenesisApp')
 
       $scope.Atras = function (X) {
         $scope.Vista = X;
+
+        setTimeout(() => {
+          $scope.$apply();
+        }, 1000);
+      }
+      $scope.AtrasConsulta = function (X) {
+        $scope.VistaConsulta = X;
 
         setTimeout(() => {
           $scope.$apply();
