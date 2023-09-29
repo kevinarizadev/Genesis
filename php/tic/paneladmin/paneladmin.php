@@ -65,4 +65,5 @@
         echo $json;
         oci_close($c);
     }
+
 ?>

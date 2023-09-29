@@ -143,7 +143,7 @@
               <th style="text-align:center;">VALOR GLOSA</th>
               <!-- <th style="text-align:center;">FECHA DE CONTESTACION DE GLOSA</th> -->
               <th style="text-align:center;">CANTIDAD</th>
-              <!-- <th style="text-align:center;">ESTADO</th> -->
+              <th style="text-align:center;">ESTADO</th>
               <th style="text-align:center;" colspan="2">ACCION</th>
             </tr>
           </thead>
@@ -159,9 +159,9 @@
               <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
                 <!-- <td style="text-align:center;">{{X.FECHA_CONTESTACION}}</td> -->
               <td style="text-align:center;">{{X.CANTIDAD}}</td>
-              <!-- <td style="text-align:center;">
+              <td style="text-align:center;">
                 <span class="status {{X.NOTC_ESTADO1}}">{{obtenerNombreEstado(X.NOTC_ESTADO1)}}</span>
-              </td> -->
+              </td>
 
               <td style="text-align:center;">
                 <div class="tooltip">
@@ -186,7 +186,9 @@
                     class="icon-file-pdf"></i>
                   <span class="tooltiptext">Descargar Soporte</span>
                 </div>
+
               </td>
+
             </tr>
             <tr ng-show="listadoNotificaciones.length == 0">
               <th colspan="9" class="center">
@@ -239,7 +241,7 @@
               <th style="text-align:center;">VALOR FACTURA</th>
               <th style="text-align:center;">VALOR GLOSA</th>
               <th style="text-align:center;">VALOR ACEPTADO IPS</th>
-              <th style="text-align:center;">VALOR ACEPTADO EPS</th>
+              <th style="text-align:center;">VALOR LEVANTADO EPS</th>
               <th style="text-align:center;">VALOR MANTENIDO</th>
               <!-- <th style="text-align:center;">ESTADO</th> -->
               <th style="text-align:center;">ACCION</th>
@@ -257,7 +259,7 @@
               <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI_IPS.toString().replace(',', '.'))}}
               <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL_EPS.toString().replace(',', '.'))}}
               <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA1.toString().replace(',', '.'))}}
-              <!-- <td style="text-align:center;">
+                <!-- <td style="text-align:center;">
                 <span class="status {{X.NOTC_ESTADO1}}">{{obtenerNombreEstado(X.NOTC_ESTADO1)}}</span>
               </td> -->
               <td style="text-align:center;">
@@ -265,6 +267,10 @@
                   <i style="cursor:pointer;font-size: 2em;" ng-click="descargaAdjunto(X.RUTA)"
                     class="icon-file-pdf"></i>
                   <span class="tooltiptext">Descargar Soporte</span>
+                </div>
+                <div class="tooltip">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="obtenerDetalleGlosas(X)" class="icon-docs-1"></i>
+                  <span class="tooltiptext">Ver</span>
                 </div>
               </td>
             </tr>
@@ -279,7 +285,83 @@
     </div>
   </div>
 
+  <div id="modalGestion" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 95%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <!-- <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #fff;"
+    ng-click="closeModal()"></div> -->
+      <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="col s11">
+            <h5 class="white-text">Gestionar Glosa</h5>
+          </div>
+          <div class="col s1">
+            <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                class="material-icons white-text">close</i></h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-action" style="max-height: 75vh;overflow-y: auto;margin-top: -5px;">
+        <div class="row bg-white white" style="margin-bottom: 0px;">
+          <!--  -->
+          <div class="col s12 m12 l12 m-b" style="padding: 0.5vh;margin: 0vh 2vh 0vh 2vh;"
+            ng-show="modalGestion.listadoServicios.length > 0">
+            <span style="font-weight: 700;">Listado de Servicios ({{modalGestion.listadoServicios.length}})</span>
+            <br>
+            <div style="max-height: 40vh;overflow: auto;">
+              <table id="tabla_detalleglosa" class="striped table-bordered white">
+                <thead>
+                  <tr>
+                    <!-- <th style="text-align:center;width: 5%;">RENGLON</th> -->
+                    <th style="text-align:center;width: 7%;">PRODUCTO</th>
+                    <th style="text-align:center;width: 7%;">VALOR GLOSA</th>
+                    <!-- <th style="text-align:center;width: 5%;">VALOR RETENCION</th> -->
 
+                    <th style="text-align:center;width: 20%;">OBSERVACION IPS</th>
+                    <th style="text-align:center;width: 20%;">OBSERVACION EPS</th>
+                    <th style="text-align:center;width: 20%;">DESCRIPCION GLOSA</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="x in modalGestion.listadoServicios">
+                    <!-- <th style="text-align:center;">{{x.RENGLON}}</th> -->
+                    <th style="text-align:center;">{{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</th>
+                    <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA.toString().replace(',', '.'))}}
+                    </td>
+                    <!-- <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
+                      <!-- <td style="text-align:center;">${{FormatPesoNumero(x.MANT.toString().replace(',', '.'))}} -->
+
+                      <!-- <td style="text-align:center;">
+                      $<input type="text"
+                        class="margin border-none white input-text-new input-w-p input-out-new w-100"
+                        style="width: 75% !important;" id="Valor_Glosar_EPS_{{$index}}" maxlength="16"
+                        autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_EPS_'+$index)"
+                        ng-model="x.VALOR_GLOSAR_EPS">
+                      <br>
+                      <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                    </td> -->
+                    <td style="text-align:center;">
+                      <textarea ng-model="x.FCDC_COMENTARIO_IPS" readonly></textarea>
+                    </td>
+                    <td style="text-align:center;">
+                      <textarea ng-model="x.COMENTARIO_EPS" readonly></textarea>
+                    </td>
+                    <td style="text-align:center;">
+                      <textarea ng-model="x.GLOSA" readonly></textarea>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!--  -->
+
+          <!--  -->
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <style>

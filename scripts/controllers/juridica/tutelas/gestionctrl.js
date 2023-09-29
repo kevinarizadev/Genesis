@@ -497,9 +497,9 @@ angular.module('GenesisApp')
             // document.getElementById('diagnostico').disabled = true;
             // document.getElementById('motivo').disabled = true;
             if ($scope.registro.status > 2) {
-              document.getElementById('btnActualizaTutela').disabled = false;
+              if(document.getElementById('btnActualizaTutela') != null ) document.getElementById('btnActualizaTutela').disabled = false;
             } else {
-              document.getElementById('btnActualizaTutela').disabled = true;
+              if(document.getElementById('btnActualizaTutela') != null ) document.getElementById('btnActualizaTutela').disabled = true;
             }
 
           } else {
@@ -528,7 +528,7 @@ angular.module('GenesisApp')
             // document.getElementById('causa').disabled = false;
             // document.getElementById('diagnostico').disabled = false;
             // document.getElementById('motivo').disabled = false;
-            document.getElementById('btnActualizaTutela').disabled = false;
+            if(document.getElementById('btnActualizaTutela') != null ) document.getElementById('btnActualizaTutela').disabled = false;
           }
         } else {
           // VALIDA MOSTRAR O NO INPUT ADMISION CNVU 14/01/2020

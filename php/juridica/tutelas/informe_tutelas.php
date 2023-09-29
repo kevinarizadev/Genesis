@@ -10,7 +10,7 @@
                                         DOCUMENTOAFILIADO,NOMBREAFILIADO,UBICACION_AFILIADO,ACCIONANTE,NOMBRE_ACCIONANTE, 
                                         NOMBRE_ACCIONADO, JUZGADO,RECEPCION,PLAZO,VENCIMIENTO,RESPUESTA,DIFERENCIA_DIAS, MEDIDA_PROVISIONAL, 
                                         CAUSA,MOTIVO,FALLO,ADJUNTO_FALLO,TRATMIENTO,SEGUIMIENTO_CONTINUO,IMPUGNADO, ESTADO, RESPONSABLE, 
-                                        TIPO_DOCUMENTO_AGENTE_OFICIOSO, DOCUMENTO_AGENTE_OFICIOSO
+                                        TIPO_DOCUMENTO_AGENTE_OFICIOSO, DOCUMENTO_AGENTE_OFICIOSO, FECHA_FALLO
                                 FROM vw_tutela_informe");
 ?>
         <table cellspacing="0" cellpadding="0"  border="1" align="center">
@@ -39,6 +39,7 @@
                 <th>MOTIVO</th>
                 <th>FALLO</th>
                 <th>ADJUNTO FALLO</th>
+                <th>FECHA FALLO</th>
                 <th>TRATAMIENTO</th>
                 <th>SEGUIMIENTO CONTINUO</th>
                 <th>IMPUGNADO</th>
@@ -75,6 +76,7 @@
             echo "<td>"; echo$rows['MOTIVO']; echo "</td>";
             echo "<td>"; echo$rows['FALLO']; echo "</td>";
             echo "<td>"; echo$rows['ADJUNTO_FALLO']; echo "</td>";
+            echo "<td>"; echo$rows['FECHA_FALLO']; echo "</td>";
             echo "<td>"; echo$rows['TRATMIENTO']; echo "</td>";
             echo "<td>"; echo$rows['SEGUIMIENTO_CONTINUO']; echo "</td>";
             echo "<td>"; echo$rows['IMPUGNADO']; echo "</td>";

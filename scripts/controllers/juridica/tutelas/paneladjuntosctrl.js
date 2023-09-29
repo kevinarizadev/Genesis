@@ -15,6 +15,7 @@ angular.module('GenesisApp')
         $scope.B64 = '';
         $scope.cedula = sessionStorage.getItem('cedula');
         $('.tabs').tabs();
+        $('.modal').modal();
         $('#tabadj_1').click();
       });
       $scope.hdedetalle = false;
@@ -22,6 +23,10 @@ angular.module('GenesisApp')
         var elems = document.querySelectorAll('.collapsible');
         var instances = M.Collapsible.init(elems, options);
       });
+
+      $scope.abrirWindows = function () {
+        $('#adjutarModal').modal('show')
+      }
 
       // carga los archivos de la tutela
       // $http({
@@ -131,6 +136,8 @@ angular.module('GenesisApp')
       //       console.log($scope.grupo);
       //    });
       // }
+
+
 
       $scope.obtenerAdjuntos = function (codigo) {
         $scope.consnulidad = codigo;
@@ -354,7 +361,7 @@ angular.module('GenesisApp')
           return
         }
         setTimeout(() => { $scope.$apply(); }, 500);
-        
+
         $http({
           method: 'POST',
           url: "php/juridica/tutelas/functutelas.php",
@@ -427,6 +434,145 @@ angular.module('GenesisApp')
         $scope.verPlantillaTipo = tipoPlantilla;
         setTimeout(() => { $scope.$apply(); }, 500);
 
+      }
+
+      $scope.abrirNuevoFile = function () {
+        console.log(1111111)
+        $("#fechaN").data("kendoDatePicker");
+        $('.modal').modal();
+        $('#modalAgregarFile').modal('open');
+        $scope.filtroPdfNuevo()
+        $scope.selectTutela = ''
+        $scope.fechaNuevoTutela = ''
+        $scope.soporte_B64 = "";
+        document.querySelector('#archivoNuevoTut').value = '';
+        document.querySelector('#archivoNuevoTutText').value = '';
+        if (!$scope.tipoAdjuto) {
+          $http({
+            method: 'POST',
+            url: "php/juridica/tutelas/functutelas.php",
+            data: {
+              function: 'p_lista_tipos_adjuntos',
+            }
+          }).then(function ({ data }) {
+            $scope.tipoAdjuto = data;
+            console.log($scope.tipoAdjuto);
+            setTimeout(() => {
+              $scope.$apply();
+            }, 500);
+          });
+        }
+      }
+
+      $scope.cerrarNuevoFile = function () {
+        $('#modalAgregarFile').modal('close');
+      }
+
+      $scope.filtroPdfNuevo = function(){
+          document.querySelector('#archivoNuevoTut').addEventListener('change', function (e) {
+          $scope.soporte_B64 = "";
+  
+          setTimeout(() => { $scope.$apply(); }, 500);
+          var files = e.target.files;
+          if (files.length != 0) {
+              const x = files[0].name.split('.');
+              if (x[x.length - 1].toUpperCase() == 'PDF') {
+                if (files[0].size < 15485760 && files[0].size > 0) {
+                  $scope.getBase64(files[0]).then(function (result) {
+                    $scope.soporte_B64 = result;
+                    console.log(result)
+                    setTimeout(function () { $scope.$apply(); }, 300);
+                  });
+                } else {
+                  document.querySelector('#archivoNuevoTut').value = '';
+                  swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
+                }
+              } else {
+                document.querySelector('#archivoNuevoTut').value = '';
+                swal('Advertencia', '¡El archivo seleccionado debe ser formato PDF!', 'info');
+              }
+          }
+        });
+      }
+      $scope.getBase64 = function (file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
+      }
+
+      $scope.guardarSoporte = function(){
+        if($scope.soporte_B64 == "" ||  $scope.selectTutela == "" || $scope.fechaNuevoTutela == ""){
+          swal('Advertencia', '¡Por favor completa los campos vacios!', 'info');
+          return
+        }
+
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
+        $scope.cargarSoporte().then((result) => {
+          if(result){
+            $http({
+              method: 'POST',
+              url: "php/juridica/tutelas/functutelas.php",
+              data: { function: "p_cargar_adjunto_tutela", tutela: $scope.registro.codigotutela, ubicacion: $scope.registro.ubicacion,
+               tipo: $scope.selectTutela, fecha: formatDate($scope.fechaNuevoTutela), ruta: result, responsable: $scope.cedula}
+            }).then(function ({ data }) {
+              if (data.Codigo == "0") {
+                  $scope.cerrarNuevoFile();
+                  $scope.obtenerAdjuntos();
+                swal({
+                  title: "Mensaje",
+                  text: data.Nombre,
+                  type: "success",
+                }).catch(swal.noop);
+              } else {
+                swal({
+                  title: "Mensaje",
+                  text: data.Nombre,
+                  type: "warning",
+                }).catch(swal.noop);
+              }
+            })
+
+          }else{
+            // no se cargo el archivo
+            swal('Advertencia', '¡No se cargo el archivo!', 'error');
+          }
+        })
+
+      }
+
+      $scope.cargarSoporte = function () {
+        return new Promise((resolve) => {
+          $http({
+            method: 'POST',
+            url: "php/juridica/tutelas/functutelas.php",
+            data: { function: "cargarSoporte", tutela: $scope.registro.codigotutela, base64: $scope.soporte_B64 }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+      function formatDate(date) {
+        var dd = ('0' + date.getDate()).slice(-2);
+        var mm = ('0' + (date.getMonth() + 1)).slice(-2);
+        var yyyy = date.getFullYear();
+        var hh = date.getHours();
+        var mi = date.getMinutes();
+        return dd + '/' + mm + '/' + yyyy; //+' '+hh+':'+mi+':00';
       }
 
 

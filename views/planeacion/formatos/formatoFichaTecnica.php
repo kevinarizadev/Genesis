@@ -24,7 +24,8 @@
       user-select: none; */
 
     }
-    body{
+
+    body {
       zoom: .7;
     }
 
@@ -104,6 +105,11 @@
 
   <table width="100%" style="border: #FFF;" class="text-bold7">
     <tr>
+      <td colspan="1" style="text-align: center;">
+        <img style="width: 20em;" src="../../../assets/images/logo_cajacopieps.png">
+      </td>
+    </tr>
+    <!-- <tr>
       <td colspan="2" rowspan="3" style="text-align: center;">
         <img style="width: 10em;" src="../../../assets/images/logo_cajacopieps.png">
       <td colspan="5" rowspan="2" class="text-size10" style="text-align: center;padding:0.1% 0%;">FORMATO FICHA TÉCNICA DE INDICADORES</td>
@@ -121,6 +127,9 @@
     </tr>
     <tr>
       <td colspan="8" class="text-center text-bold7 back-azul text-white ptb-1">DEFINICION DEL INDICADOR</td>
+    </tr> -->
+    <tr>
+      <td colspan="1" class="text-center text-bold7 back-azul text-white ptb-1">DEFINICION DEL INDICADOR</td>
     </tr>
   </table>
   <br>
@@ -362,8 +371,8 @@
             <mn>X</mn>
           </math>
         </div>
-      <!-- REGC_TIPO_CALCULO -->
-      <!-- FORMULAS -->
+        <!-- REGC_TIPO_CALCULO -->
+        <!-- FORMULAS -->
       </td>
     </tr>
     <!-- ASCENDENTE -->

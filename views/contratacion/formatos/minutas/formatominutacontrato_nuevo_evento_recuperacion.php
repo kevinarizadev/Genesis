@@ -1,5 +1,4 @@
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html ng-app="GenesisApp">
 
 <head>
@@ -226,8 +225,7 @@
   <script src="../../../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
   <script src="../../../../bower_components/angular/angular.js"></script>
   <script src="../../../../bower_components/jquery/dist/jquery.js"></script>
-  <script
-    src="../../../../scripts/controllers/contratacion/formatos/formatominutacontrato_nuevoformatoController.js"></script>
+  <script src="../../../../scripts/controllers/contratacion/formatos/formatominutacontrato_nuevoformatoController.js"></script>
 </head>
 
 <body ng-controller="formatominutacontrato_nuevoformatoController">
@@ -274,18 +272,15 @@
                 <div style="display: inline-flex;">
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_1">Subsidiado:</label>
-                    <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_2">Contributivo:</label>
-                    <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_3">Contributivo Movilidad:</label>
-                    <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -364,8 +359,7 @@
 
 
             <tr ng-show="DATA.union_temporal != null">
-              <td colspan="1" rowspan="{{DATA.union_temporal.length + 1}}" ng-show="DATA.union_temporal != null"
-                class="text-center">
+              <td colspan="1" rowspan="{{DATA.union_temporal.length + 1}}" ng-show="DATA.union_temporal != null" class="text-center">
                 CONFORMACION UNION TEMPORAL:
               </td>
               <!-- <td colspan="5" class="text-center text-size8">{{DATA.union_temporal.length}}</td> -->
@@ -415,13 +409,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="tipo_1" class="text-bold7">Prestador de Servicios en Salud (PSS)</label>
-                    <input type="checkbox" id="tipo_1" name="tipo_1" ng-checked="DATA.PRESTADOR_SALUD != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="tipo_1" name="tipo_1" ng-checked="DATA.PRESTADOR_SALUD != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="tipo_2" class="text-bold7">Proveedor de Tecnologias en Salud (PTS)</label>
-                    <input type="checkbox" id="tipo_2" name="tipo_2" ng-checked="DATA.PRESTADOR_TECNOLOGIAS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="tipo_2" name="tipo_2" ng-checked="DATA.PRESTADOR_TECNOLOGIAS != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -434,13 +426,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_1">INSTITUCIÓN PRESTADORA DE SERVICIOS (IPS)</label>
-                    <input type="checkbox" id="clase_1" name="clase_1" ng-checked="DATA.IPS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_1" name="clase_1" ng-checked="DATA.IPS != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_2">IPS INDÍGENA (IPSI)</label>
-                    <input type="checkbox" id="clase_2" name="clase_2" ng-checked="DATA.IPSI != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_2" name="clase_2" ng-checked="DATA.IPSI != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -450,13 +440,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_3">TRANSPORTE ESPECIAL DE PACIENTES (PSS)</label>
-                    <input type="checkbox" id="clase_3" name="clase_3" ng-checked="DATA.PSS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_3" name="clase_3" ng-checked="DATA.PSS != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_4">PROFESIÓNAL INDEPENDIENTE (PI)</label>
-                    <input type="checkbox" id="clase_4" name="clase_4" ng-checked="DATA.PI != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_4" name="clase_4" ng-checked="DATA.PI != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -466,13 +454,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_5">GESTOR FARMACÉUTICO (GF)</label>
-                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_6">OPERADOR LOGÍSTICO DE TECNOLOGÍAS EN SALUD (OLTS)</label>
-                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="DATA.OLTS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="DATA.OLTS != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -482,13 +468,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_7">ORGANIZACIÓN NO GUBERNAMENTAL (ONG)</label>
-                    <input type="checkbox" id="clase_7" name="clase_7" ng-checked="DATA.ONG != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_7" name="clase_7" ng-checked="DATA.ONG != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_8">UNIVERSIDAD (UN)</label>
-                    <input type="checkbox" id="clase_8" name="clase_8" ng-checked="DATA.UN != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_8" name="clase_8" ng-checked="DATA.UN != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -498,13 +482,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_9">OBJETO SOCIAL DIFERENTE (OS)</label>
-                    <input type="checkbox" id="clase_9" name="clase_9" ng-checked="DATA.OS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_9" name="clase_9" ng-checked="DATA.OS != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_10">OTROS (OT)</label>
-                    <input type="checkbox" id="clase_10" name="clase_10" ng-checked="DATA.UN != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_10" name="clase_10" ng-checked="DATA.UN != ''" onclick="return false;">
                   </div>
                   <!-- <div style="width: 100%;">
                     <label for="clase_9">OTROS (OT)</label>
@@ -521,18 +503,15 @@
                 <div style="display: inline-flex;">
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_1">Privada:</label>
-                    <input type="checkbox" id="naturaleza_1" name="naturaleza_1"
-                      ng-checked="DATA.NATURALEZA == 'PRIVADA'" onclick="return false;">
+                    <input type="checkbox" id="naturaleza_1" name="naturaleza_1" ng-checked="DATA.NATURALEZA == 'PRIVADA'" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_2">Pública:</label>
-                    <input type="checkbox" id="naturaleza_2" name="naturaleza_2"
-                      ng-checked="DATA.NATURALEZA == 'PUBLICA'" onclick="return false;">
+                    <input type="checkbox" id="naturaleza_2" name="naturaleza_2" ng-checked="DATA.NATURALEZA == 'PUBLICA'" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_3">Mixta:</label>
-                    <input type="checkbox" id="naturaleza_3" name="naturaleza_3" ng-checked="DATA.NATURALEZA == 'MIXTA'"
-                      onclick="return false;">
+                    <input type="checkbox" id="naturaleza_3" name="naturaleza_3" ng-checked="DATA.NATURALEZA == 'MIXTA'" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -551,8 +530,7 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="modalidad_1">PAGO POR CAPITACIÓN</label>
-                    <input type="checkbox" id="modalidad_1" name="modalidad_1" onclick="return false;"
-                      ng-checked="true">
+                    <input type="checkbox" id="modalidad_1" name="modalidad_1" onclick="return false;" ng-checked="true">
                     <!-- <span ng-show="DATA.P_CAPITACION != ''"
                       style="float: left;line-height: 2.2;">{{DATA.TIPO_CAPITA}}</span> -->
                   </div>
@@ -570,8 +548,7 @@
                   <ul style="margin: 0;    list-style-type: none;">
                     <li>
                       <label for="tipo_capita_1">RECUPERACIÓN</label>
-                      <input type="checkbox" id="tipo_capita_1" name="tipo_capita_1" onclick="return false;"
-                        ng-checked="true">
+                      <input type="checkbox" id="tipo_capita_1" name="tipo_capita_1" onclick="return false;" ng-checked="true">
                     </li>
                     <li>
                       <label for="tipo_capita_2">PROMOCIÓN Y MANTENIMIENTO</label>
@@ -1869,8 +1846,7 @@
               el descrito en la portada del presente contrato.</div>
 
             <div class="minuta_clausula">Cláusula 48. Perfeccionamiento del contrato.</div>
-            <div class="minuta_texto">El presente Contrato se perfecciona con la suscripción de este por las partes
-              contratantes.</div>
+            <div class="minuta_texto">El presente Contrato se considerará perfeccionado en el instante en que sea suscrito por las partes contratantes. Con el fin de agilizar y simplificar este procedimiento, se determina que el contrato también alcanzará su pleno perfeccionamiento y validez cuando los representantes legales de las personas jurídicas involucradas introduzcan una firma manuscrita, la cual puede ser una firma escaneada. Se establece de manera expresa que estas firmas electrónicas poseerán la misma fuerza legal y efectos jurídicos que una firma manuscrita tradicional."</div>
 
             <div class="minuta_clausula">Cláusula 46. Efecto</div>
             <div class="minuta_texto">El presente acuerdo de voluntades deja sin efecto cualquier otro acuerdo de

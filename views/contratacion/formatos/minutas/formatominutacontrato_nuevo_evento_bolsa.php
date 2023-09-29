@@ -1,5 +1,4 @@
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html ng-app="GenesisApp">
 
 <head>
@@ -226,8 +225,7 @@
   <script src="../../../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
   <script src="../../../../bower_components/angular/angular.js"></script>
   <script src="../../../../bower_components/jquery/dist/jquery.js"></script>
-  <script
-    src="../../../../scripts/controllers/contratacion/formatos/formatominutacontrato_nuevoformatoController.js"></script>
+  <script src="../../../../scripts/controllers/contratacion/formatos/formatominutacontrato_nuevoformatoController.js"></script>
 </head>
 
 <body ng-controller="formatominutacontrato_nuevoformatoController">
@@ -274,18 +272,15 @@
                 <div style="display: inline-flex;">
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_1">Subsidiado:</label>
-                    <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_2">Contributivo:</label>
-                    <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_3">Contributivo Movilidad:</label>
-                    <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -364,8 +359,7 @@
 
 
             <tr ng-show="DATA.union_temporal != null">
-              <td colspan="1" rowspan="{{DATA.union_temporal.length + 1}}" ng-show="DATA.union_temporal != null"
-                class="text-center">
+              <td colspan="1" rowspan="{{DATA.union_temporal.length + 1}}" ng-show="DATA.union_temporal != null" class="text-center">
                 CONFORMACION UNION TEMPORAL:
               </td>
               <!-- <td colspan="5" class="text-center text-size8">{{DATA.union_temporal.length}}</td> -->
@@ -415,13 +409,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="tipo_1" class="text-bold7">Prestador de Servicios en Salud (PSS)</label>
-                    <input type="checkbox" id="tipo_1" name="tipo_1" ng-checked="DATA.PRESTADOR_SALUD != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="tipo_1" name="tipo_1" ng-checked="DATA.PRESTADOR_SALUD != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="tipo_2" class="text-bold7">Proveedor de Tecnologias en Salud (PTS)</label>
-                    <input type="checkbox" id="tipo_2" name="tipo_2" ng-checked="DATA.PRESTADOR_TECNOLOGIAS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="tipo_2" name="tipo_2" ng-checked="DATA.PRESTADOR_TECNOLOGIAS != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -434,13 +426,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_1">INSTITUCIÓN PRESTADORA DE SERVICIOS (IPS)</label>
-                    <input type="checkbox" id="clase_1" name="clase_1" ng-checked="DATA.IPS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_1" name="clase_1" ng-checked="DATA.IPS != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_2">IPS INDÍGENA (IPSI)</label>
-                    <input type="checkbox" id="clase_2" name="clase_2" ng-checked="DATA.IPSI != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_2" name="clase_2" ng-checked="DATA.IPSI != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -450,13 +440,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_3">TRANSPORTE ESPECIAL DE PACIENTES (PSS)</label>
-                    <input type="checkbox" id="clase_3" name="clase_3" ng-checked="DATA.PSS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_3" name="clase_3" ng-checked="DATA.PSS != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_4">PROFESIÓNAL INDEPENDIENTE (PI)</label>
-                    <input type="checkbox" id="clase_4" name="clase_4" ng-checked="DATA.PI != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_4" name="clase_4" ng-checked="DATA.PI != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -466,13 +454,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_5">GESTOR FARMACÉUTICO (GF)</label>
-                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_6">OPERADOR LOGÍSTICO DE TECNOLOGÍAS EN SALUD (OLTS)</label>
-                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="DATA.OLTS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="DATA.OLTS != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -482,13 +468,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_7">ORGANIZACIÓN NO GUBERNAMENTAL (ONG)</label>
-                    <input type="checkbox" id="clase_7" name="clase_7" ng-checked="DATA.ONG != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_7" name="clase_7" ng-checked="DATA.ONG != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_8">UNIVERSIDAD (UN)</label>
-                    <input type="checkbox" id="clase_8" name="clase_8" ng-checked="DATA.UN != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_8" name="clase_8" ng-checked="DATA.UN != ''" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -498,13 +482,11 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_9">OBJETO SOCIAL DIFERENTE (OS)</label>
-                    <input type="checkbox" id="clase_9" name="clase_9" ng-checked="DATA.OS != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_9" name="clase_9" ng-checked="DATA.OS != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_10">OTROS (OT)</label>
-                    <input type="checkbox" id="clase_10" name="clase_10" ng-checked="DATA.UN != ''"
-                      onclick="return false;">
+                    <input type="checkbox" id="clase_10" name="clase_10" ng-checked="DATA.UN != ''" onclick="return false;">
                   </div>
                   <!-- <div style="width: 100%;">
                     <label for="clase_9">OTROS (OT)</label>
@@ -521,18 +503,15 @@
                 <div style="display: inline-flex;">
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_1">Privada:</label>
-                    <input type="checkbox" id="naturaleza_1" name="naturaleza_1"
-                      ng-checked="DATA.NATURALEZA == 'PRIVADA'" onclick="return false;">
+                    <input type="checkbox" id="naturaleza_1" name="naturaleza_1" ng-checked="DATA.NATURALEZA == 'PRIVADA'" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_2">Pública:</label>
-                    <input type="checkbox" id="naturaleza_2" name="naturaleza_2"
-                      ng-checked="DATA.NATURALEZA == 'PUBLICA'" onclick="return false;">
+                    <input type="checkbox" id="naturaleza_2" name="naturaleza_2" ng-checked="DATA.NATURALEZA == 'PUBLICA'" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_3">Mixta:</label>
-                    <input type="checkbox" id="naturaleza_3" name="naturaleza_3" ng-checked="DATA.NATURALEZA == 'MIXTA'"
-                      onclick="return false;">
+                    <input type="checkbox" id="naturaleza_3" name="naturaleza_3" ng-checked="DATA.NATURALEZA == 'MIXTA'" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -608,8 +587,7 @@
                   </div>
                   <div style="width: 55%;">
                     <label for="modalidad_6">PAGO POR EVENTO</label>
-                    <input type="checkbox" id="modalidad_6" name="modalidad_6" ng-checked="true"
-                      onclick="return false;">
+                    <input type="checkbox" id="modalidad_6" name="modalidad_6" ng-checked="true" onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -963,8 +941,7 @@
             <div class="minuta_texto">El plazo de duración y vigencia del presente acuerdo de voluntades es el que se
               describe en la portada del presente contrato. En el evento que ninguna de las partes comunique a la otra
               su voluntad con una antelación no inferior a 30 días calendario, de darlo por terminado o no renovarlo, se
-              entenderá prorrogado automáticamente por el término inicialmente pactado. <span
-                class="minuta_paragrafo">PARÁGRAFO PRIMERO:</span> La habilitación del servicio prestado debe mantenerse
+              entenderá prorrogado automáticamente por el término inicialmente pactado. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO:</span> La habilitación del servicio prestado debe mantenerse
               durante la suscripción, ejecución y hasta la expiración del presente acuerdo de voluntades y de sus
               prórrogas. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO:</span> En caso de prórrogas o renovaciones
               automáticas de los acuerdos de voluntades, antes del inicio del periodo de prórroga o renovación, se
@@ -1061,18 +1038,15 @@
               en la misma y en los RIPS de la factura. Será obligación especial del PSS, llevar un registro del recaudo
               de dichos copagos y cuotas moderadoras en los tiempos definidos por las normas legales con el fin de
               soportar los procesos de auditoría que haya lugar. El PSS está obligado a registrar en el aplicativo
-              Génesis las cuotas moderadoras y copagos realmente cobrados y adjuntar el soporte correspondiente. <span
-                class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> En el evento y ante la imposibilidad de pago por
+              Génesis las cuotas moderadoras y copagos realmente cobrados y adjuntar el soporte correspondiente. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> En el evento y ante la imposibilidad de pago por
               parte del afiliado, evento en el cual corresponderá a esta reconocer y pagar dicha suma y adelantar el
               cobro al usuario. El PSS reportará a la ERP dicha situación mediante el aplicativo Genesis. El formato de
               no recaudo debe adjuntarse a la factura y sus soportes. Este formato de notificación deberá ir firmado por
               el afiliado y por el funcionario encargado del PSS, con los datos mínimos de identificación y de contacto
               actualizados, como constancia, y en señal del conocimiento previamente informado, sobre la aplicación de
-              las cuotas moderadoras y/o copagos a que está sujeto por los servicios prestados. <span
-                class="minuta_paragrafo">PARÁGRAFO SEGUNDO.</span> El PSS en todos los casos que el afiliado manifieste
+              las cuotas moderadoras y/o copagos a que está sujeto por los servicios prestados. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO.</span> El PSS en todos los casos que el afiliado manifieste
               la imposibilidad de pago, propondrá la suscripción de acuerdo de pago a los afiliados. Sólo podrá
-              considerarse como parte del pago a estas cuando exista un recaudo efectivo de su valor. <span
-                class="minuta_paragrafo">PARÁGRAFO TERCERO.</span> El PSS deberá abstenerse de cobrar a los afiliados
+              considerarse como parte del pago a estas cuando exista un recaudo efectivo de su valor. <span class="minuta_paragrafo">PARÁGRAFO TERCERO.</span> El PSS deberá abstenerse de cobrar a los afiliados
               copagos, cuotas moderadoras y de recuperación, de conformidad con las exclusiones establecidas en el
               Acuerdo 260 de 2004 y el Decreto 1562 de 2022 y demás normas que lo modifiquen, adicionen o sustituyan.
             </div>
@@ -1147,8 +1121,7 @@
               contrato. La ERP, se reserva el derecho de realizar las visitas de monitoreo y la supervisión que estime
               convenientes. De igual forma, con la finalidad de asegurar que la prestación por parte del PSS se realice
               en condiciones óptimas de calidad, La ERP podrá inspeccionar, verificar el servicio e igualmente hacer
-              sugerencias por escrito para que EL PSS corrija las deficiencias en la prestación del servicio. <span
-                class="minuta_paragrafo">PARÁGRAFO PRIMERO. DECLARACIONES DEL SUPERVISOR. </span>Con su visto bueno y en
+              sugerencias por escrito para que EL PSS corrija las deficiencias en la prestación del servicio. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. DECLARACIONES DEL SUPERVISOR. </span>Con su visto bueno y en
               calidad de responsable técnico del contrato, el supervisor declara que: 1. La IPS se encuentra inscrita en
               el Registro Especial de Prestadores de Servicios de Salud -REPS- y dicho registro está vigente. 2. La IPS
               cumple con los requisitos legales que en materia de habilitación para la prestación de servicios de salud
@@ -1193,8 +1166,7 @@
               las condiciones de accesibilidad, oportunidad, seguridad, pertinencia y continuidad establecidas en la
               normatividad aplicable en la materia. Para efectos de evaluar el cumplimiento del presente acuerdo de
               voluntades, el PSS se obliga a reportar a la ERP los indicadores de calidad, de gestión y de resultados
-              descritos en el Anexo 9 y en el marco normativo vigente descrito en el Anexo 1. <span
-                class="minuta_paragrafo">PARÁGRAFO. ACTUALIZACIÓN DE INDICADORES E IMPREVISTOS.</span> En caso de
+              descritos en el Anexo 9 y en el marco normativo vigente descrito en el Anexo 1. <span class="minuta_paragrafo">PARÁGRAFO. ACTUALIZACIÓN DE INDICADORES E IMPREVISTOS.</span> En caso de
               eventos imprevisibles, fuerza mayor o caso fortuito, que afecten la prestación o provisión de servicios y
               tecnologías en salud y el cumplimiento de los indicadores pactados, estos deberán ser ajustados de acuerdo
               con las nuevas condiciones mediante la celebración de un otrosí. Sin perjuicio de lo anterior, cualquier
@@ -1246,8 +1218,7 @@
               formato del INVIMA. 5. Todos los reportes obligatorios del SIVIGILA según las pautas, formatos, manuales
               de vigilancia epidemiológica vigentes del Instituto. 6. La información de las actividades de protección
               específica y detección temprana (PEDT) en la estructura, formato y periodicidad que determinada por el
-              Ministerio de Salud y Protección Social, dentro de los 20 primeros días de cada mes. <span
-                class="minuta_paragrafo">PARÁGRAFO.</span> Para los PSS de gestión del riesgo se trasladarán los
+              Ministerio de Salud y Protección Social, dentro de los 20 primeros días de cada mes. <span class="minuta_paragrafo">PARÁGRAFO.</span> Para los PSS de gestión del riesgo se trasladarán los
               descuentos aplicados a la ERP por la Cuenta de Alto Costo - CAC por no cumplimiento de los indicadores de
               gestión.</div>
 
@@ -1270,14 +1241,12 @@
             <div class="minuta_texto">EL PSS radicará antes a la ERP la Factura Electrónica de Venta (FEV) dentro de los
               plazos y condiciones establecidos en la ley y reglamentos vigentes, utilizando el canal transaccional
               descrito en el Anexo 17 del presente contrato. La FEV deberá contener los RIPS y soportes completos
-              exigidos por el marco normativo vigente descrito en el Anexo 1, so pena de devolución. <span
-                class="minuta_paragrafo">PARÁGRAFO PRIMERO. FACTURACIÓN INDIVIDUAL POR USUARIO.</span> La facturación se
+              exigidos por el marco normativo vigente descrito en el Anexo 1, so pena de devolución. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. FACTURACIÓN INDIVIDUAL POR USUARIO.</span> La facturación se
               debe presentar de manera discriminada por cada usuario e ítem con el valor unitario según las tarifas
               definidas en la nota técnica. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. CIRCULARES SOBRE REPORTES
                 DE INFORMACIÓN.</span> Para todos los efectos hace parte integral de este contrato las circulares
               expedidas por la ERP, mediante las cuales se imparten indicaciones respecto a los soportes requeridos para
-              la presentación de facturas de tecnologías en salud no cubiertas en el Plan de Beneficios en Salud. <span
-                class="minuta_paragrafo">PARÁGRAFO TERCERO. REPORTE DE RIPS.</span> PSS reportará a la ERP como
+              la presentación de facturas de tecnologías en salud no cubiertas en el Plan de Beneficios en Salud. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. REPORTE DE RIPS.</span> PSS reportará a la ERP como
               requisito obligatorio para la radicación de la factura, los Registros Individuales de Prestación de
               Servicios de Salud RIPS utilizando: 1. La clasificación única de procedimientos CUPS, 2. La codificación
               única que determine el Ministerio de La Protección Social para los insumos y dispositivos médicos, a los
@@ -1291,8 +1260,7 @@
             <div class="minuta_clausula">Cláusula 24. Plazos de pago.</div>
             <div class="minuta_texto">Los plazos de pago son los establecidos en la Ley 1122 de 2007, artículo 13,
               literal d; Ley 1438 de 2011, artículo 56 y 57; Ley 1231 de 2008; Ley 2024 de 2020; Decreto 1733 de 2020;
-              Decreto 441 de 2022, y demás normas que modifiquen, adicionen o sustituyan. <span
-                class="minuta_paragrafo">PARÁGRAFO. </span>para los contratos
+              Decreto 441 de 2022, y demás normas que modifiquen, adicionen o sustituyan. <span class="minuta_paragrafo">PARÁGRAFO. </span>para los contratos
               bajo el esquema de bolsa de servicios y tecnologías en salud, el pago se realizará de manera anticipada a
               través de la ADRES según lo descrito en la cláusula 11 parágrafo segundo del presente acuerdo de
               voluntades.</div>
@@ -1351,8 +1319,7 @@
               con las mismas. 24. Cuando se presenten inconsistencias, discrepancias o falsedades en la documentación e
               información aportada por el PSS para la celebración y ejecución del contrato y que conlleve a dudas
               fundadas sobre la legalidad de las operaciones del PSS. 25. Por decisión unilateral de la ERP, con previo
-              aviso de treinta (30) días calendario, sin que haya lugar a indemnización alguna. <span
-                class="minuta_paragrafo">PARÁGRAFO PRIMERO. REQUERIMIENTO PARA TERMINACIÓN DEL CONTRATO.</span> La ERP a
+              aviso de treinta (30) días calendario, sin que haya lugar a indemnización alguna. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. REQUERIMIENTO PARA TERMINACIÓN DEL CONTRATO.</span> La ERP a
               través del supervisor de este contrato, requerirá por escrito al PSS precisándole el incumplimiento de una
               o varias de las obligaciones pactadas, exigiéndole que en un plazo no mayor a cinco (5) días hábiles
               contados a partir del recibo de la comunicación, presente las explicaciones correspondientes o según el
@@ -1486,8 +1453,7 @@
               los datos personales ni la información que sea suministrada a lo largo de la relación con la compañía. En
               caso de que se presente un incidente de seguridad con los datos personales deberá reportarlo de inmediato
               a la ERP. Al momento de la terminación del acuerdo de voluntades, el PSS deberá devolver o destruir la
-              información de las bases de datos personales de acuerdo con las indicaciones de la ERP. <span
-                class="minuta_paragrafo">PARÁGRAFO SEGUNDO. HABEAS DATA.</span> En cumplimiento de lo dispuesto en el
+              información de las bases de datos personales de acuerdo con las indicaciones de la ERP. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. HABEAS DATA.</span> En cumplimiento de lo dispuesto en el
               marco normativo vigente en lo correspondiente a la protección de datos personales, las partes declaran que
               son conocedoras y aceptan que en caso que en desarrollo del objeto de este contrato las partes lleguen a
               realizar tratamiento de datos personales o sensibles en los términos de la normatividad, se obligan a
@@ -1503,8 +1469,7 @@
               comprobable y comprensible. Así entonces, queda expresamente prohibido disponer, usar, difundir y/o
               transmitir de cualquier modo la información y/o datos sensibles o personales a los que tenga acceso en
               desarrollo del presente contrato, ya que dicha información debe ser recolectada, conservada y usada única
-              y exclusivamente para el desarrollo de este y bajo la confidencialidad y seguridad antes anotada. <span
-                class="minuta_paragrafo">PARÁGRAFO TERCERO. MECANISMO DE ENTREGA Y ACTUALIZACIÓN DE INFORMACIÓN.</span>
+              y exclusivamente para el desarrollo de este y bajo la confidencialidad y seguridad antes anotada. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. MECANISMO DE ENTREGA Y ACTUALIZACIÓN DE INFORMACIÓN.</span>
               EL PSS deberá reportar e informar mensualmente a la ERP las novedades en la actualización de los datos de
               identificación, dirección, contacto, etc, de los usuarios que identifique, mediante el mecanismo que las
               partes adopten para la entrega y actualización de información. LAS PARTES pactan que recibirán
@@ -1516,8 +1481,7 @@
               valor asegurado que corresponda al 10% del presente contrato y que ampare el tiempo de ejecución de este,
               quedando obligada a responder con recursos propios por la diferencia que pueda existir entre el valor
               asegurado y el valor de las eventuales indemnizaciones derivadas del daño ocurrido. El PSS hará entrega de
-              la póliza a la ERP dentro de los tres (3) días siguientes a la suscripción del contrato. <span
-                class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> La aprobación de la póliza aportada será remitida por
+              la póliza a la ERP dentro de los tres (3) días siguientes a la suscripción del contrato. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> La aprobación de la póliza aportada será remitida por
               parte de la ERP al PSS en los 5 días hábiles siguientes.<span class="minuta_paragrafo">PARÁGRAFO
                 SEGUNDO.</span> El PSS responderá por todos los daños patrimoniales y extrapatrimoniales que sean
               causados a los usuarios a su cargo en el nivel asistencial, así como también por toda reclamación
@@ -1526,14 +1490,7 @@
               servicios contratados, en todo caso, mantendrá indemne a la ERP, de cualquier reclamación proveniente de
               terceros que tenga como causa las actuaciones del PSS o del personal designado para el cumplimiento del
               Contrato. En el evento, de acciones jurídicas legales contra la ERP, se entenderá que el proceso no se
-              puede desarrollar sin la presencia procesal del PSS.</div>
-
-            <div class="minuta_clausula">Cláusula 36. No relación laboral.</div>
-            <div class="minuta_texto">Este contrato no constituye vínculo de trabajo entre la ERP y el PSS ni el
-              personal que el contrate para el desarrollo del acuerdo de voluntades. En consecuencia, la ERP sólo
-              responderá por los emolumentos pactados en el mismo. Son de su exclusiva responsabilidad los salarios,
-              prestaciones o cualquier otro pago similar que se cause o deba hacerse a las personas que emplee PSS para
-              el cumplimiento de sus obligaciones. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. LLAMAMIENTO EN
+              puede desarrollar sin la presencia procesal del PSS. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. LLAMAMIENTO EN
                 GARANTÍA.</span> Salvo la responsabilidad inherente a cada parte con relación a las obligaciones
               contraídas en el presente contrato. La ERP no asumirá ninguna responsabilidad civil o penal derivada de la
               deficiencia o inadecuada prestación de los servicios objeto del contrato por parte de EL PSS, o del
@@ -1541,6 +1498,13 @@
               responsabilidades o indemnizaciones derivadas de tales eventos, llamará en garantía a EL PSS y, si es
               condenado repetirá contra EL PSS para el reembolso de las sumas que por tal motivo haya tenido que
               cancelar.</div>
+
+            <div class="minuta_clausula">Cláusula 36. No relación laboral.</div>
+            <div class="minuta_texto">Este contrato no constituye vínculo de trabajo entre la ERP y el PSS ni el
+              personal que el contrate para el desarrollo del acuerdo de voluntades. En consecuencia, la ERP sólo
+              responderá por los emolumentos pactados en el mismo. Son de su exclusiva responsabilidad los salarios,
+              prestaciones o cualquier otro pago similar que se cause o deba hacerse a las personas que emplee PSS para
+              el cumplimiento de sus obligaciones. </div>
 
             <div class="minuta_clausula">Cláusula 37. Prohibiciones.</div>
             <div class="minuta_texto">Las modificaciones y las adiciones del presente contrato podrán elaborarse como
@@ -1564,8 +1528,7 @@
             <div class="minuta_texto">Las partes afirman bajo la gravedad del juramento que se entiende prestado con la
               suscripción de este contrato que no se encuentran incursos en Conflictos de tipo financieros, Conflictos
               que revelen favoritismo o nepotismo y Conflicto de Roles o funciones, que puedan contaminar la
-              suscripción, ejecución, terminación y liquidación del presente acuerdo de voluntades. <span
-                class="minuta_paragrafo">PARÁGRAFO PRIMERO. INHABILIDADES E INCOMPATIBILIDADES.</span> Las partes
+              suscripción, ejecución, terminación y liquidación del presente acuerdo de voluntades. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. INHABILIDADES E INCOMPATIBILIDADES.</span> Las partes
               afirman bajo la gravedad del juramento que se entiende prestando con la firma del presente contrato que no
               se hallan incursos en ninguna de las causales de inhabilidades e incompatibilidades descritas en el marco
               legal vigente. La violación a la norma jurídica citada es causal de terminación unilateral del presente
@@ -1575,7 +1538,7 @@
               del presente contrato y lo establecido en el objeto contractual. En caso de que el valor de presente
               contrato supere los topes presupuestales autorizados, deberá presentar los documentos o información
               adicional ante la ERP, que los habilite para obligarse con el valor contratado. la ERP</div>
-            <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span>
+
 
             <div class="minuta_clausula">Cláusula 40. Causales de suspensión</div>
             <div class="minuta_texto">Además de las causales de terminación previstas por la ley, el presente contrato
@@ -1693,8 +1656,7 @@
               el descrito en la portada del presente contrato.</div>
 
             <div class="minuta_clausula">Cláusula 45. Perfeccionamiento del contrato.</div>
-            <div class="minuta_texto">El presente Contrato se perfecciona con la suscripción de este por las partes
-              contratantes.</div>
+            <div class="minuta_texto">El presente Contrato se considerará perfeccionado en el instante en que sea suscrito por las partes contratantes. Con el fin de agilizar y simplificar este procedimiento, se determina que el contrato también alcanzará su pleno perfeccionamiento y validez cuando los representantes legales de las personas jurídicas involucradas introduzcan una firma manuscrita, la cual puede ser una firma escaneada. Se establece de manera expresa que estas firmas electrónicas poseerán la misma fuerza legal y efectos jurídicos que una firma manuscrita tradicional."</div>
 
             <div class="minuta_clausula">Cláusula 46. Efecto</div>
             <div class="minuta_texto">El presente acuerdo de voluntades deja sin efecto cualquier otro acuerdo de
@@ -1779,7 +1741,7 @@
       </tr>
     </tbody>
   </table>
-      <!--  -->
+  <!--  -->
   <!-- ANEXOS EPS NUEVA -->
   <table class="report-container" style="page-break-before:always">
     <thead class="report-header">
@@ -1788,7 +1750,7 @@
           <div class="header-info text-left d-flex">
             <img style="width: 8em;" src="../../../../assets/images/logo_cajacopieps.png" alt="cajacopi">
             <div class="text-bold7">
-            ANEXO N° 18 CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO
+              ANEXO N° 18 CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO
               SUSCRITO ENTRE {{DATA.RAZON_SOCIAL}} Y {{DATA.RAZON_SOCIAL_IPS}}</div>
           </div>
         </th>

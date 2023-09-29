@@ -59,11 +59,23 @@
       <li id="inicio">
         <h5 ng-click="Abrir()">Conciliación de Glosas</h5>
       </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="setTab(1)" href class="active">Gestión
+            </a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="setTab(2);" href>Consulta</a>
+          </li>
+        </ul>
+      </li>
     </ul>
   </div>
   <!-- Glosas Por IPS -->
   <div class="row dashboard-wrapper content-container white"
-    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 0">
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="tabs == 1 && Vista == 0">
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
@@ -90,7 +102,7 @@
                 <th style="text-align:center;">CANTIDAD</th>
                 <th style="text-align:center;">TOTAL FACTURA</th>
                 <th style="text-align:center;">TOTAL GLOSA</th>
-                <th style="text-align:center;">VALOR RETENCION</th>
+                <!-- <th style="text-align:center;">VALOR RETENCION</th> -->
                 <th style="text-align:center;">VALOR GLOSA EPS</th>
                 <th style="text-align:center;">VALOR GLOSA IPS</th>
                 <th style="text-align:center;">TOTAL MANTENIDA</th>
@@ -110,8 +122,7 @@
                 <td style="text-align:center;">{{X.CANTIDAD}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
-                <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}
-                </td>
+                <!-- <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',',
@@ -178,11 +189,12 @@
   </div>
   <!-- Glosas Por Cada IPS -->
   <div class="row dashboard-wrapper content-container white"
-    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 1">
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="tabs == 1 && Vista == 1">
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
-        Listado de Glosas Detalle ({{listadoGlosasDetalle.length}}):
+        Listado de Glosas Detalle ({{listadoGlosasDetalle.length}})
         <input type="text" class="margin border-none input-text-new" style="width: 15vw;" ng-model="filtroDetalle"
           placeholder="Buscar en la tabla">
         <i class="icon-left-2 cursor-pointer" ng-click="Atras(0)">
@@ -202,7 +214,7 @@
                 <!-- <th style="text-align:center;">IPS</th> -->
                 <th style="text-align:center;">VALOR FACTURA</th>
                 <th style="text-align:center;">VALOR GLOSA</th>
-                <th style="text-align:center;">VALOR RETENCION</th>
+                <!-- <th style="text-align:center;">VALOR RETENCION</th> -->
                 <th style="text-align:center;">ACEPTADO IPS NOTIF.</th>
                 <th style="text-align:center;">ACEPTADO EPS NOTIF.</th>
                 <th style="text-align:center;">VALOR MANTENIDA</th>
@@ -220,12 +232,14 @@
                 <td style="text-align:center;">{{X.FACTURA}}</td>
                 <!-- <td style="text-align:center;">{{X.IPS+'-'+X.NIT}}</td> -->
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
-                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
-                <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
+                <!-- <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI_IPS.toString().replace(',', '.'))}}
+                </td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL_EPS.toString().replace(',', '.'))}}
-                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',',
-                  '.'))}}
+                </td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',','.'))}}
+                </td>
                 <td style="text-align:center;">{{X.FECHA}}</td>
                 <!-- <td style="text-align:center;">
                   <span class="status {{obtenerEstado(X.NTDC_STATUS)}}">{{obtenerEstado(X.NTDC_STATUS)}}</span>
@@ -235,7 +249,7 @@
                   <div class="tooltip">
                     <i style="cursor:pointer;font-size: 2em;" ng-click="listarGlosasServicios(X)"
                       class="icon-eye-1"></i>
-                    <span class="tooltiptext">Conciliar/Ver Servicios</span>
+                    <span class="tooltiptext">Ver Servicios</span>
                   </div>
                   <!-- <div class="tooltip">
                     <i style="cursor:pointer;font-size: 2em;" class="icon-comment-alt-1"
@@ -337,7 +351,7 @@
 
           <div class="card-action" style="padding-bottom: 3px;">
             <div class="row">
-              <div style="max-height: 70vh;overflow: auto;">
+              <div style="max-height: 70vh;overflow-y: auto;overflow-x: hidden;">
                 <table id="tabla_detalleglosa" class="striped table-bordered white" style="zoom: 0.9;">
                   <thead>
                     <tr>
@@ -345,14 +359,18 @@
                       <th style="text-align:center;">RENGLON</th>
                       <th style="text-align:center;">PRODUCTO</th>
                       <th style="text-align:center;">VALOR GLOSA</th>
-                      <th style="text-align:center;width: 5%;">VALOR RETENCION</th>
+                      <!-- <th style="text-align:center;width: 5%;">VALOR RETENCION</th> -->
                       <th style="text-align:center;">VALOR MANTENIDA</th>
-                      <th style="text-align:center;">VALOR CONCILIADO EPS</th>
-                      <th style="text-align:center;">VALOR CONCILIADO IPS</th>
-                      <th style="text-align:center;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">VALOR GLOSA EPS</th>
-                      <th style="text-align:center;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">VALOR GLOSA IPS</th>
-                      <th style="text-align:center;width: 30%;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">COMENTARIO</th>
-                      <th style="text-align:center;width: 30%;">DESCRIPCION GLOSA</th>
+                      <th style="text-align:center;">VALOR ACEPTADO IPS</th>
+                      <th style="text-align:center;">VALOR LEVANTADO EPS</th>
+                      <th style="text-align:center;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0 && tabs == 1">VALOR GLOSA
+                        IPS</th>
+                      <th style="text-align:center;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0 && tabs == 1">VALOR GLOSA
+                        EPS</th>
+                      <th style="text-align:center;width: 30%;" ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0 && tabs == 1">
+                        COMENTARIO</th>
+                      <th style="text-align:center;">DESCRIPCION GLOSA</th>
+                      <th style="text-align:center;">TRAZA</th>
 
                     </tr>
                   </thead>
@@ -361,18 +379,26 @@
                       <!-- <td style="text-align:center;">{{x.TIPO_GLOSA + ' - ' + x.DESCRIPCION_GLOSA}}</td> -->
                       <th style="text-align:center;">{{x.FCDN_RENGLON}}</th>
                       <th style="text-align:center;">{{x.FCDV_PRODUCTO + ' - ' + x.CLAC_NOMBRE}}</th>
-                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_PRECIO.toString().replace(',', '.'))}}
+                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_PRECIO.toString().replace(',', '.'))}}</td>
+                      <!-- <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA_RET.toString().replace(',','.'))}}</td> -->
+                      <td style="text-align:center;">${{FormatPesoNumero(x.MANT.toString().replace(',', '.'))}}</td>
+                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_GLOSA_GI.toString().replace(',', '.'))}}</td>
+                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_GLOSA_GL.toString().replace(',', '.'))}}</td>
+
+                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0 && tabs == 1">
+                        <div>
+                          <input type="text"
+                            class="margin border-none white input-text-new input-w-p input-out-new w-100"
+                            style="width: 75% !important;" id="Valor_Glosar_IPS_{{$index}}" maxlength="16"
+                            autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_IPS_'+$index)"
+                            ng-model="x.VALOR_GLOSAR_IPS">
+                          <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                        </div>
                       </td>
-                      <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA_RET.toString().replace(',',
-                        '.'))}}
-                      <td style="text-align:center;">${{FormatPesoNumero(x.MANT.toString().replace(',', '.'))}}
 
-                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_GLOSA_GL.toString().replace(',', '.'))}}
-                      <td style="text-align:center;">${{FormatPesoNumero(x.FCDV_GLOSA_GI.toString().replace(',', '.'))}}
-
-                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
-                        <div >
-                          $<input type="text"
+                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0 && tabs == 1">
+                        <div>
+                          <input type="text"
                             class="margin border-none white input-text-new input-w-p input-out-new w-100"
                             style="width: 75% !important;" id="Valor_Glosar_EPS_{{$index}}" maxlength="16"
                             autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_EPS_'+$index)"
@@ -381,30 +407,59 @@
                           <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
                         </div>
                       </td>
-                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
-                        <div >
-                          $<input type="text"
-                            class="margin border-none white input-text-new input-w-p input-out-new w-100"
-                            style="width: 75% !important;" id="Valor_Glosar_IPS_{{$index}}" maxlength="16"
-                            autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_IPS_'+$index)"
-                            ng-model="x.VALOR_GLOSAR_IPS">
-                          <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
-                        </div>
-                      </td>
-                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
-                        <div >
+
+                      <td ng-show="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0 && tabs == 1">
+                        <div>
                           <textarea id="chat_textarea" placeholder="Escribe una Observación..." ng-model="x.COMENTARIO"
                             maxlength="1000" text-description></textarea>
                           <!-- <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span> -->
                         </div>
                       </td>
-                      <td style="text-align:center;">{{x.FCDC_OBSERVACION}}</td>
+                      <td style="text-align:center;">
+                        <div class="tooltip">
+                          <i style="cursor:pointer;font-size: 2em;" ng-click="verObservacion(x.FCDC_OBSERVACION)"
+                            class="icon-docs-1"></i>
+                          <span class="tooltiptext">Descripción</span>
+                        </div>
+                      </td>
+                      <td style="text-align:center;">
+                        <div class="tooltip">
+                          <i style="cursor:pointer;font-size: 2em;" ng-click="verTraza(x.JSON)" class="icon-doc-1"></i>
+                          <span class="tooltiptext">Ver Traza</span>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
-              <div class="col s12 m12 l12 center m-t" ng-if="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0">
+              <blockquote class="default-color" style="font-size: .9em; margin: 11px 0px;"
+                ng-show="Array_ListadoGlosasTraza">
+                Trazabilidad ({{Array_ListadoGlosasTraza.length}})</blockquote>
+
+              <table id="tabla_detalleglosa" class="striped table-bordered white" style="zoom: 0.9;"
+                ng-show="Array_ListadoGlosasTraza">
+                <thead>
+                  <tr>
+                    <th style="text-align:center;">FECHA</th>
+                    <th style="text-align:center;">VALOR ACEPTADO IPS</th>
+                    <th style="text-align:center;">VALOR LEVANTADO EPS</th>
+                    <th style="text-align:center;">RESPONSABLE</th>
+                    <th style="text-align:center;">COMENTARIO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="x in Array_ListadoGlosasTraza">
+                    <th style="text-align:center;">{{x.fecha}}</th>
+                    <td style="text-align:center;">${{FormatPesoNumero(x.valor_eps.toString().replace(',','.'))}}</td>
+                    <td style="text-align:center;">${{FormatPesoNumero(x.valor_ips.toString().replace(',', '.'))}}</td>
+                    <td>{{x.responsable}}</td>
+                    <td>{{x.comentario}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="col s12 m12 l12 center m-t" ng-if="glosaSeleccionada.NTDV_VALOR_MANTENIDA != 0 && tabs == 1">
                 <button class="btn" ng-click="guardarValoresGlosaDetalle()">Guardar</button>
               </div>
             </div>
@@ -415,6 +470,157 @@
     </div>
   </div>
 
+  <!-- Consulta -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="tabs == 2 && VistaConsulta == 0">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <span>
+          Consultar Listado de Glosas ({{listadoGlosasConsulta.length}})
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar"
+            ng-click="listarGlosasIPSConsulta()"></i>
+        </span>
+
+        <!-- <button class="btn" ng-click="aceptarGlosasMasivo()">Aceptar Glosas Masivo</button> -->
+
+        <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-model="filtroConsulta"
+          placeholder="Buscar en la tabla">
+      </div>
+      <div id="tabla_scroll" class="scroll_x">
+        <div class="responsive" style="max-height: 70vh;overflow-y: auto;overflow-x: hidden;">
+          <table class="striped table-bordered white">
+            <thead>
+              <tr>
+                <th style="text-align:center;">IPS</th>
+                <th style="text-align:center;">FACTURA NG</th>
+                <th style="text-align:center;">CANTIDAD</th>
+                <th style="text-align:center;">TOTAL FACTURA</th>
+                <th style="text-align:center;">TOTAL GLOSA</th>
+                <!-- <th style="text-align:center;">VALOR RETENCION</th> -->
+                <th style="text-align:center;">VALOR LEVANTADO EPS</th>
+                <th style="text-align:center;">VALOR ACEPTADO IPS</th>
+                <th style="text-align:center;">TOTAL MANTENIDA</th>
+                <th style="text-align:center;">ESTADO</th>
+                <th style="text-align:center;" colspan="4">ACCION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="X in listadoGlosasConsulta | filter:filtroConsulta">
+                <td style="text-align:center;">{{X.NIT +'-'+ X.TERC_NOMBRE}}</td>
+                <td style="text-align:center;">{{X.DOC_NOT}}</td>
+                <td style="text-align:center;">{{X.CANTIDAD}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
+                <!-- <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL.toString().replace(',', '.'))}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI.toString().replace(',', '.'))}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',',
+                  '.'))}}
+                </td>
+                <td style="text-align:center;">
+                  <span class="status {{obtenerEstado(X.NOTC_STATUS1)}}">{{obtenerEstado(X.NOTC_STATUS1)}}</span>
+                </td>
+                <td style="text-align:center;">
+                  <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" ng-click="listarGlosasIPSDetalleConsulta(X)"
+                      class="icon-eye-1"></i>
+                    <span class="tooltiptext">Ver Glosas</span>
+                  </div>
+                </td>
+
+              </tr>
+
+              <tr ng-show="listadoGlosasConsulta.length == 0">
+                <th colspan="11" class="center">
+                  No hay Glosas para mostrar
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Consulta -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="tabs == 2 && VistaConsulta == 1">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <!-- <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar"
+          ng-click="listarGlosasIPSDetalleConsulta()"></i> -->
+        <span>
+          Consulta Listado de Glosas Detalle ({{listadoGlosasDetalleConsulta.length}})
+          <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
+            ng-click="generalExcel(listadoGlosasDetalleConsulta)"></i>
+        </span>
+
+        <input type="text" class="margin border-none input-text-new" style="width: 15vw;"
+          ng-model="filtroDetalleConsulta" placeholder="Buscar en la tabla">
+        <i class="icon-left-2 cursor-pointer" ng-click="AtrasConsulta(0)">
+          Atras
+        </i>
+      </div>
+      <div id="tabla_scroll" class="scroll_x">
+        <div class="responsive" style="max-height: 70vh;overflow-y: auto;overflow-x: hidden;">
+          <table class="striped table-bordered white">
+            <thead>
+              <tr>
+                <th style="text-align:center;">#</th>
+                <th style="text-align:center;">NUMERO FD</th>
+                <th style="text-align:center;">FACTURA</th>
+                <th style="text-align:center;">VALOR FACTURA</th>
+                <th style="text-align:center;">VALOR GLOSA</th>
+                <!-- <th style="text-align:center;">VALOR RETENCION</th> -->
+                <th style="text-align:center;">ACEPTADO IPS NOTIF.</th>
+                <th style="text-align:center;">ACEPTADO EPS NOTIF.</th>
+                <th style="text-align:center;">VALOR MANTENIDA</th>
+                <th style="text-align:center;">FECHA</th>
+                <th style="text-align:center;">ACCION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="X in listadoGlosasDetalleConsulta | filter:filtroDetalleConsulta">
+                <td style="text-align:center;">{{$index+1}}</td>
+                <td style="text-align:center;">{{X.DOCUMENTO_FD+'-'+X.NUMERO_FD+'-'+X.UBICACION_FD}}</td>
+                <td style="text-align:center;">{{X.FACTURA}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
+                <!-- <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI_IPS.toString().replace(',', '.'))}}
+                </td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL_EPS.toString().replace(',', '.'))}}
+                </td>
+                <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',','.'))}}
+                </td>
+                <td style="text-align:center;">{{X.FECHA}}</td>
+
+                <td style="text-align:center;">
+
+                  <div class="tooltip">
+                    <i style="cursor:pointer;font-size: 2em;" ng-click="listarGlosasServicios(X)"
+                      class="icon-eye-1"></i>
+                    <span class="tooltiptext">Ver Servicios</span>
+                  </div>
+                </td>
+
+
+              </tr>
+              <tr ng-show="listadoGlosasDetalleConsulta.length == 0">
+                <th colspan="11" class="center">
+                  No hay notificaciones para mostrar
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- modal comentarios-->
   <div id="modalCargueFormato" class="modal" style="width: 40%;overflow: hidden;max-height: 90%;">
@@ -499,54 +705,6 @@
     </div>
   </div>
 
-  <!-- modal comentarios-->
-  <div id="modalcomentarios" class="modal" style="width: 90%;overflow: hidden;max-height: 90%;">
-    <div class="modal-content" style="padding: 0px !important;">
-      <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
-        <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
-          <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #000;"
-            ng-click="closeModal()"></div>
-          <div class="card-content">
-            <h5><span style="font-weight: 700;">Comentarios</span>
-            </h5>
-          </div>
-          <div class="col s12 m12 l12" style="overflow-y: auto;max-height: 80vh;">
-            <ul id="chat_completo">
-              <li class="{{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'me':'you'}}"
-                ng-repeat="com in List_Comentarios">
-                <div class="chat_titulo" ng-if="Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase()">
-                  <span class="tooltiptext_ab" style="margin-right: 1em;" ng-if="com.ADJUNTO != null"
-                    ng-click="DescargarRespuesta(com.ADJUNTO)">Ver Adjunto</span>
-                  <h3>{{com.FECHA +' - '+com.HORA}}</h3>
-                  <h2>ORIGEN: {{com.ORIGEN == 'I' ? 'IPS' : 'EPS'}} - </h2>
-                  <h2>{{com.RESPONSABLE}}</h2>
-                  <span
-                    class="chat_status {{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'blue':'green'}}"></span>
-                </div>
-                <div class="chat_titulo" ng-if="Rol_Cedula.toLowerCase() != com.IDRESPONSABLE.toLowerCase()">
-                  <span
-                    class="chat_status {{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'blue':'green'}}"></span>
-                  <h2>ORIGEN: {{com.ORIGEN == 'I' ? 'IPS' : 'EPS'}} - </h2>
-                  <h2>{{com.RESPONSABLE}}</h2>
-                  <h3>{{com.FECHA +' - '+com.HORA}}</h3>
-                  <span class="tooltiptext_ab" style="margin-left: 1em;" ng-if="com.ADJUNTO != null"
-                    ng-click="DescargarRespuesta(com.ADJUNTO)">Ver Adjunto</span>
-                </div>
-                <div
-                  class="{{(Rol_Cedula.toLowerCase() == com.IDRESPONSABLE.toLowerCase())?'chat_triangle_der':'chat_triangle'}}">
-                </div>
-                <div class="message m-b">
-                  {{com.OBSERVACION}}
-                </div>
-              </li>
-            </ul>
-
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
 
 
   <style>

@@ -2912,7 +2912,7 @@ angular.module('GenesisApp')
 
               //   break;
               case 5:
-                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_bolsa.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
                 break;
               // case 6:
 
@@ -2921,7 +2921,7 @@ angular.module('GenesisApp')
                 $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_medicamento_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
                 break;
               case 8:
-                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_bolsa.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
                 break;
               // case 9:
 

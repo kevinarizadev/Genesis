@@ -1038,7 +1038,7 @@
               ser superior al valor especificado en las circulares de regulación de precios o en la nota técnica de
               presupuestos máximos expedidas por el Ministerio de Salud y Protección Social.</div>
 
-            <div class="minuta_clausula">Cláusula 13. Listado de GPC y Protocolos de Atención.</div>
+            <div class="minuta_clausula">Cláusula 13. Recaudo de pagos compartidos - Copagos, Cuotas Moderadoras y de Recuperación.</div>
             <div class="minuta_texto">Los servicios están sujetos al régimen de pagos compartidos o copagos y cuotas
               moderadoras y para su aplicación se debe tener en cuenta lo establecido en el Decreto 1652 de 2022 y demás
               normas que lo modifiquen, adicionen o sustituyan. EL PSS realizará el recaudo del copago, cuotas
@@ -1502,21 +1502,21 @@
               servicios contratados, en todo caso, mantendrá indemne a la ERP, de cualquier reclamación proveniente de
               terceros que tenga como causa las actuaciones del PSS o del personal designado para el cumplimiento del
               Contrato. En el evento, de acciones jurídicas legales contra la ERP, se entenderá que el proceso no se
-              puede desarrollar sin la presencia procesal del PSS.</div>
-
-            <div class="minuta_clausula">Cláusula 36. No relación laboral.</div>
-            <div class="minuta_texto">Este contrato no constituye vínculo de trabajo entre la ERP y el PSS ni el
-              personal que el contrate para el desarrollo del acuerdo de voluntades. En consecuencia, la ERP sólo
-              responderá por los emolumentos pactados en el mismo. Son de su exclusiva responsabilidad los salarios,
-              prestaciones o cualquier otro pago similar que se cause o deba hacerse a las personas que emplee PSS para
-              el cumplimiento de sus obligaciones. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. LLAMAMIENTO EN
+              puede desarrollar sin la presencia procesal del PSS. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. LLAMAMIENTO EN
                 GARANTÍA.</span> Salvo la responsabilidad inherente a cada parte con relación a las obligaciones
               contraídas en el presente contrato. La ERP no asumirá ninguna responsabilidad civil o penal derivada de la
               deficiencia o inadecuada prestación de los servicios objeto del contrato por parte de EL PSS, o del
               personal a su cargo. En el evento de que la ERP sea requerida judicial o extrajudicialmente para asumir
               responsabilidades o indemnizaciones derivadas de tales eventos, llamará en garantía a EL PSS y, si es
               condenado repetirá contra EL PSS para el reembolso de las sumas que por tal motivo haya tenido que
-              cancelar.</div>
+              cancelar.</div></div>
+
+            <div class="minuta_clausula">Cláusula 36. No relación laboral.</div>
+            <div class="minuta_texto">Este contrato no constituye vínculo de trabajo entre la ERP y el PSS ni el
+              personal que el contrate para el desarrollo del acuerdo de voluntades. En consecuencia, la ERP sólo
+              responderá por los emolumentos pactados en el mismo. Son de su exclusiva responsabilidad los salarios,
+              prestaciones o cualquier otro pago similar que se cause o deba hacerse a las personas que emplee PSS para
+              el cumplimiento de sus obligaciones.
 
             <div class="minuta_clausula">Cláusula 37. Prohibiciones.</div>
             <div class="minuta_texto">Las modificaciones y las adiciones del presente contrato podrán elaborarse como
@@ -1669,8 +1669,7 @@
               el descrito en la portada del presente contrato.</div>
 
             <div class="minuta_clausula">Cláusula 45. Perfeccionamiento del contrato.</div>
-            <div class="minuta_texto">El presente Contrato se perfecciona con la suscripción de este por las partes
-              contratantes.</div>
+            <div class="minuta_texto">El presente Contrato se considerará perfeccionado en el instante en que sea suscrito por las partes contratantes. Con el fin de agilizar y simplificar este procedimiento, se determina que el contrato también alcanzará su pleno perfeccionamiento y validez cuando los representantes legales de las personas jurídicas involucradas introduzcan una firma manuscrita, la cual puede ser una firma escaneada. Se establece de manera expresa que estas firmas electrónicas poseerán la misma fuerza legal y efectos jurídicos que una firma manuscrita tradicional."</div>
 
             <div class="minuta_clausula">Cláusula 46. Efecto</div>
             <div class="minuta_texto">El presente acuerdo de voluntades deja sin efecto cualquier otro acuerdo de
