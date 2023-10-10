@@ -670,3 +670,19 @@ function p_genera_nuevo_indicador()
   }
   oci_close($c);
 }
+
+function p_actualizar_soportes_gestion_indicador()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_actualizar_soportes_gestion_indicador(:v_pruta,:v_json_row); end;');
+  oci_bind_by_name($consulta, ':v_pruta', $request->ruta);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}

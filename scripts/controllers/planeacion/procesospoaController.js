@@ -954,7 +954,7 @@ angular.module('GenesisApp')
       }
 
       $scope.modalFichaTecnica = function (x) {
-        $scope.itemSeleccionado = [x.REGN_PROCESO,x.REGN_COD_ESTR,x.REGN_COD_TACT,x.REGN_COD_INDICADOR].join('_')
+        $scope.itemSeleccionado = [x.REGN_PROCESO, x.REGN_COD_ESTR, x.REGN_COD_TACT, x.REGN_COD_INDICADOR].join('_')
         $scope.modalFichaTecnicaDatos = x
         $scope.modalFichaTecnicaVars = {}
         $scope.modalFichaTecnicaVars.nombre = x.REGN_NOM_INDICADOR
@@ -1065,7 +1065,7 @@ angular.module('GenesisApp')
       }
 
       $scope.modalGraficoIndicador = function (x) {
-        $scope.itemSeleccionado = [x.REGN_PROCESO,x.REGN_COD_ESTR,x.REGN_COD_TACT,x.REGN_COD_INDICADOR].join('_')
+        $scope.itemSeleccionado = [x.REGN_PROCESO, x.REGN_COD_ESTR, x.REGN_COD_TACT, x.REGN_COD_INDICADOR].join('_')
         // $scope.modalDatosCorrespVars.listado
         $scope.modalDatosCambio = x;
         if (x.REGC_SEMAFORIZACION == 'N') {
@@ -1384,7 +1384,7 @@ angular.module('GenesisApp')
 
       $scope.modalDatosCorresp = function (x) {
         // x.seleccionado = true
-        $scope.itemSeleccionado = [x.REGN_PROCESO,x.REGN_COD_ESTR,x.REGN_COD_TACT,x.REGN_COD_INDICADOR].join('_')
+        $scope.itemSeleccionado = [x.REGN_PROCESO, x.REGN_COD_ESTR, x.REGN_COD_TACT, x.REGN_COD_INDICADOR].join('_')
         $scope.modalDatosCambio = x;
         swal({
           html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
@@ -2283,6 +2283,52 @@ angular.module('GenesisApp')
             // swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
           }
         })
+      }
+
+      $scope.eliminarSoportesGestionIndi = function (ruta) {
+
+        swal({
+          title: 'Confirmar',
+          text: '¿Desea eliminar el soporte?',
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando Soporte...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+
+            $http({
+              method: 'POST',
+              url: "php/planeacion/procesospoa.php",
+              data: {
+                function: 'p_actualizar_soportes_gestion_indicador',
+                ruta
+              }
+            }).then(function ({ data }) {
+              if (data.Codigo == '0') {
+                swal('¡Mensaje!', data.Nombre, 'success').catch(swal.noop);
+                $scope.listarSoportesGestionIndi()
+                setTimeout(() => { $scope.$apply(); }, 500);
+                // } else {
+              } else {
+                swal('¡Mensaje!', data, 'info').catch(swal.noop);
+              }
+            })
+
+          }
+        })
+
+
       }
 
       $scope.guardarSoporteGestionIndic = function () {

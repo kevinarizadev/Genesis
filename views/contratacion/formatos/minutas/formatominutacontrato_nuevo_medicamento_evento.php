@@ -470,12 +470,12 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_5">GESTOR FARMACÉUTICO (GF)</label>
-                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''"
+                    <input type="checkbox" id="clase_5" name="clase_5" checked="true"
                       onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_6">OPERADOR LOGÍSTICO DE TECNOLOGÍAS EN SALUD (OLTS)</label>
-                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="DATA.OLTS != ''"
+                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="false"
                       onclick="return false;">
                   </div>
                 </div>
@@ -758,7 +758,8 @@
               Resolución 1841 de 2013, la Ley 1751 del 2015, el Decreto 780 de 2016, la Resolución 429 del 2016, la
               Resolución 2515 del 2018, la Resolución 1885 del 2018 de la Administradora de los Recursos del Sistema de
               Seguridad Social en Salud -ADRES-, Resolución 205 de 2020, la Resolución 535 de 2020 del Ministerio de
-              Salud y Protección Social, la Circular 013 de 2020 de la ADRES y el Decreto 441 de 2022 y por aquellas que
+              Salud y Protección Social, la Circular 013 de 2020 de la ADRES y el Decreto 441 de 2022, la Resolución 1403 de 2007 y
+              y por aquellas que
               las adicionen, modifiquen, aclaren o sustituyan, así como las que posteriormente se expidan y que sean
               aplicables a la naturaleza de las partes, y de los servicios objeto del presente contrato a las cuales las
               partes se acogerán automáticamente, una vez entren en vigencia.
@@ -841,7 +842,7 @@
               revisor Fiscal (o demostrar que no está obligado), pago de la Tasa de Contribución a la Superintendencia
               Nacional de Salud, mantener vigente el Registro Mercantil y demás obligaciones propias. 23. Garantizar la
               afiliación de sus trabajadores a la Seguridad Social y cumplir con los pagos que de ella se deriven, así
-              como de los aportes parafiscales. 24. Diligenciar de manera completa y clara la historia clínica y demás
+              como de los aportes parafiscales. 24. Diligenciar según aplique de manera completa y clara la historia clínica y demás
               registros obligatorios de atención, garantizando medidas de seguridad adoptadas para el tratamiento de uso
               de datos personales, en especial de datos sensibles, con sujeción a lo dispuesto en la Ley Estatutaria
               1581 de 2012 y sus normas reglamentarias. 25. Reportar de manera inmediata a la ERP, so pena de

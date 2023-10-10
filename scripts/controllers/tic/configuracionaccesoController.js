@@ -9,10 +9,11 @@ angular.module('GenesisApp')
         $scope.filtrar = "";
       }
       $scope.typeUser = "";
-      $scope.typeUser = "ips";
-      $scope.usuario_genesis = "9138014,32624689,45579044,52518498,72005925";
+      $scope.typeUser = "funcionarios";
+      // $scope.typeUser = "ips";
+      // $scope.usuario_genesis = "9138014,32624689,45579044,52518498,72005925";
       // $scope.typeUser = "funcionarios";
-      document.querySelector('input[name=groupRadio][value=ips]').checked = true;
+      document.querySelector('input[name=groupRadio][value=funcionarios]').checked = true;
       $scope.filter_fun_1 = "";
       $scope.filter_fun_2 = "";
       $scope.form = {
