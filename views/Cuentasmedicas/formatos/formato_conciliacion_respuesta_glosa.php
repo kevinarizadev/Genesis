@@ -145,7 +145,7 @@
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.NTDV_VALOR_GI_IPS)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.NTDV_VALOR_GL_EPS)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.NTDV_VALOR_RATIFICADO)}}</td>
-      <td colspan="2" class="txtCenter">{{x.OBSERVACION}}</td>
+      <td colspan="2" class="txtCenter">{{x.OBSERVACION1}}</td>
     </tr>
 
     <tr>

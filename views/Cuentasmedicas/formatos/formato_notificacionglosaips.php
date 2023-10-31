@@ -158,12 +158,12 @@
               <tr>
                 <td>{{x.RECIBO}}</td>
                 <td>{{x.NUM_FACTURA}}</td>
-                <td>${{formatPeso2(x.VALOR_FACTURA.toString().replace(',', '.'))}}</td>
-                <td>${{formatPeso2(x.VALOR_GLOSADO.toString().replace(',', '.'))}}</td>
+                <td>${{formatPeso2(x.VALOR_FS.toString().replace(',', '.'))}}</td>
+                <td>${{formatPeso2(x.VALOR_FD.toString().replace(',', '.'))}}</td>
                 <td>{{x.CODIGO_PRODUCTO}}</td>
                 <td>{{x.NOMBRE_PRODUCTO}}</td>
                 <td>{{x.CODIGO_GLOSA}}</td>
-                <td>{{x.TIPO_GLOSA}}</td>
+                <td>{{x.NOMBRE_GLOSA}}</td>
                 <td>${{formatPeso2(x.VALOR_GLOSA.toString().replace(',', '.'))}}</td>
               </tr>
               <tr>

@@ -698,16 +698,16 @@ if (!isset($_SESSION['nombre'])) {
 <!-- Servicios Digitalizacion -->
 <!--<script src="https://asprise.azureedge.net/scannerjs/scanner.js" type="text/javascript"></script> -->
 <script src="js/scanner.js" type="text/javascript"></script>
-<script src="scripts/services/http/digitalizacion/digitalizacionHTTP.js"></script>
+<!-- <script src="scripts/services/http/digitalizacion/digitalizacionHTTP.js"></script> -->
 <!-- Controller Digitalizacion -->
-<script src="scripts/controllers/digitalizacion/DigitalizacionController.js"></script>
-<script src="scripts/controllers/digitalizacion/DigitalizacionControllerAF.js"></script>
+<!-- <script src="scripts/controllers/digitalizacion/DigitalizacionController.js"></script>
+<script src="scripts/controllers/digitalizacion/DigitalizacionControllerAF.js"></script> -->
 
-<script src="scripts/controllers/digitalizacion/DigitalizacionAdminController.js"></script>
+<!-- <script src="scripts/controllers/digitalizacion/DigitalizacionAdminController.js"></script>
 <script src="scripts/controllers/digitalizacion/RevisionDigitalizacionController.js"></script>
 <script src="scripts/controllers/digitalizacion/AnexoDigitalizacionController.js"></script>
 <script src="scripts/controllers/digitalizacion/InfoDigitalizacionController.js"></script>
-<script src="scripts/controllers/digitalizacion/GestionDigitalizacionController.js"></script>
+<script src="scripts/controllers/digitalizacion/GestionDigitalizacionController.js"></script> -->
 
 <!--autorizaciones -->
 <!-- controller autorizaciones -->

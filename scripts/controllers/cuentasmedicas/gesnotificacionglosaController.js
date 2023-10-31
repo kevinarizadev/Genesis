@@ -238,6 +238,15 @@ angular.module('GenesisApp')
 
       }
 
+      $scope.descargarFormatoNotificacion = function (x) {
+
+        window.open('views/Cuentasmedicas/formatos/formato_notificacionglosaips.php?documento=' + x.NTDC_DOCUMENTO +
+          '&numero=' + x.NTDN_NUMERO +
+          '&ubicacion=' + x.NTDN_UBICACION
+          , '_blank', "width=1080,height=1100");
+
+      }
+
       $scope.verObservacion = function (text) {
         swal({ title: 'Observación del Prestador', text });
       }

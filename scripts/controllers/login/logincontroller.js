@@ -103,10 +103,10 @@ angular.module('GenesisApp', ['ngStorage', 'toastr', 'ngDialog', 'chieffancypant
                   window.location.href = 'app.php#/inicio';
                 } else {
                   var allCookies = document.cookie.split(';');
-                  for (var i = 0; i < allCookies.length; i++) {
-                    document.cookie = allCookies[i] + "=;expires="
-                      + new Date(0).toUTCString() + ";path=/;";
-                  }
+                  // for (var i = 0; i < allCookies.length; i++) {
+                  //   document.cookie = allCookies[i] + "=;expires="
+                  //     + new Date(0).toUTCString() + ";path=/;";
+                  // }
                   if (data.toString().substr(0, 3) == '<br') {
                     swal('Notificación', data, 'warning').catch(swal.noop);
                   } else {

@@ -19,19 +19,23 @@ angular.module('GenesisApp')
         $scope.cargarPermisosUsuario();
 
         setTimeout(() => {
-          console.log($scope.permisos)
-          $scope.hojaProcesosLimpiar()
-          $scope.hojaProcesosListar();
-          if ($scope.validarPermisos(['AS'])) {
-            // debugger
-            $scope.hojaProcesosListarlistadoPerspectiva()
-            $scope.hojaProcesosListarObjetivoEstrategico()
-            setTimeout(() => { $scope.$apply(); }, 500);
-          }
-        }, 1500);
-        $scope.hojaIndicadoresLimpiar()
-        $scope.hojaIndicadoresListar();
+          if ($scope.permisos.TERC_TIPO_ADMIN_PLANEACION) {
+            setTimeout(() => {
 
+              console.log($scope.permisos)
+              $scope.hojaProcesosLimpiar()
+              $scope.hojaProcesosListar();
+              if ($scope.validarPermisos(['AS'])) {
+                // debugger
+                $scope.hojaProcesosListarlistadoPerspectiva()
+                $scope.hojaProcesosListarObjetivoEstrategico()
+                setTimeout(() => { $scope.$apply(); }, 500);
+              }
+              $scope.hojaIndicadoresLimpiar()
+              $scope.hojaIndicadoresListar();
+            }, 1500);
+          }
+        }, 1000);
         //
         // $scope.activarCamposDesactivados()
         setTimeout(() => {
@@ -42,6 +46,7 @@ angular.module('GenesisApp')
       }
 
       $scope.cargarPermisosUsuario = function () {
+        $scope.permisos = []
         $http({
           method: 'POST',
           url: "php/planeacion/procesospoa.php",
@@ -51,7 +56,13 @@ angular.module('GenesisApp')
           }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) == '<br' || data == 0) {
-            swal("Error", 'No tiene permisos, por favor contactar al area de Planeación', "warning").catch(swal.noop); return
+            $scope.Tabs = 0
+            swal({
+              title: "Error", text: 'No tiene permisos, por favor contactar al area de Planeación',
+              allowOutsideClick: false,
+              showConfirmButton: false,
+              type: "warning"
+            }).catch(swal.noop); return
           }
           if (data.length) {
             $scope.permisos = data[0]
@@ -520,6 +531,7 @@ angular.module('GenesisApp')
           ],
 
           listadoDependencias: [],
+          listadoTipologias: [],
           listadoTipoVigencia: [
             { codigo: 'A', nombre: 'Automática' },
             { codigo: 'M', nombre: 'Manual' },
@@ -533,6 +545,7 @@ angular.module('GenesisApp')
             { codigo: '6', nombre: 'Tasa' },
             { codigo: '7', nombre: 'Valor Absoluto' },
             { codigo: '8', nombre: 'Veces' },
+            { codigo: '9', nombre: 'Pesos' },
           ],
           listadoFrecuencia: [
             { codigo: 'M', nombre: 'Mensual', meses: 12 },
@@ -589,6 +602,7 @@ angular.module('GenesisApp')
             { codigo: 'DE', nombre: 'Desempeño' },
             { codigo: 'TL', nombre: 'Talento' },
             { codigo: 'CT', nombre: 'Capital de Trabajo' },
+            { codigo: 'PR', nombre: 'Promedio' },
           ],
           listadoAnio: []
 
@@ -602,6 +616,7 @@ angular.module('GenesisApp')
 
 
         $scope.hojaIndicadoresObtenerDependencias();
+        $scope.hojaIndicadoresObtenerTipologias();
       }
 
 
@@ -684,6 +699,8 @@ angular.module('GenesisApp')
 
         $scope.hojaIndicadores.formulario.planDeMejoramiento = '';
         $scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento = '';
+        $scope.hojaIndicadores.formulario.tipologia = '';
+
 
         $scope.hojaIndicadores.formulario.periodicidadReporte = '';
         $scope.hojaIndicadores.formulario.periodicidadAnalisis = '';
@@ -827,6 +844,8 @@ angular.module('GenesisApp')
 
         $scope.hojaIndicadores.formulario.planDeMejoramiento = x.REGC_PLANMEJORAMIENTO;
         $scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento = x.REGV_DESC_PLANMEJORAMIENTO;
+        $scope.hojaIndicadores.formulario.tipologia = x.REGC_TIPOLOGIA.split('-')[0];
+
 
         $scope.hojaIndicadores.formulario.periodicidadReporte = x.REGC_PERIODICIDAD_REPORTE.split('-')[0];
         $scope.hojaIndicadores.formulario.periodicidadAnalisis = x.REGC_PERIODICIDAD_ANALISIS.split('-')[0];
@@ -954,7 +973,7 @@ angular.module('GenesisApp')
       }
 
       $scope.modalFichaTecnica = function (x) {
-        $scope.itemSeleccionado = [x.REGN_PROCESO, x.REGN_COD_ESTR, x.REGN_COD_TACT, x.REGN_COD_INDICADOR].join('_')
+        $scope.itemSeleccionado = x.CODIGO
         $scope.modalFichaTecnicaDatos = x
         $scope.modalFichaTecnicaVars = {}
         $scope.modalFichaTecnicaVars.nombre = x.REGN_NOM_INDICADOR
@@ -1065,7 +1084,7 @@ angular.module('GenesisApp')
       }
 
       $scope.modalGraficoIndicador = function (x) {
-        $scope.itemSeleccionado = [x.REGN_PROCESO, x.REGN_COD_ESTR, x.REGN_COD_TACT, x.REGN_COD_INDICADOR].join('_')
+        $scope.itemSeleccionado = x.CODIGO
         // $scope.modalDatosCorrespVars.listado
         $scope.modalDatosCambio = x;
         if (x.REGC_SEMAFORIZACION == 'N') {
@@ -1188,7 +1207,7 @@ angular.module('GenesisApp')
                   { // Light air
                     from: dato3_Min,
                     to: parseFloat($scope.modalGraficoVars.REGC_DATOMAX),
-                    color: 'rgba(255, 0, 0, 0.2)',
+                    color: 'rgba(0, 128, 0, 0.3)',
                     label: {
                       text: 'Alta',
                       style: {
@@ -1208,7 +1227,7 @@ angular.module('GenesisApp')
                   }, { // Light breeze
                     from: 0,
                     to: dato1_Max,
-                    color: 'rgba(0, 128, 0, 0.3)',
+                    color: 'rgba(255, 0, 0, 0.2)',
                     label: {
                       text: 'Baja',
                       style: {
@@ -1384,7 +1403,7 @@ angular.module('GenesisApp')
 
       $scope.modalDatosCorresp = function (x) {
         // x.seleccionado = true
-        $scope.itemSeleccionado = [x.REGN_PROCESO, x.REGN_COD_ESTR, x.REGN_COD_TACT, x.REGN_COD_INDICADOR].join('_')
+        $scope.itemSeleccionado = x.CODIGO
         $scope.modalDatosCambio = x;
         swal({
           html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
@@ -1452,9 +1471,9 @@ angular.module('GenesisApp')
         $scope.modalDatosCorrespVarsPeriodo.anio = x.GESN_ANNO
         $scope.modalDatosCorrespVarsPeriodo.periodoNombre = x.GESN_PERIODO_NOMBRE
         $scope.modalDatosCorrespVarsPeriodo.periodo = x.GESN_PERIODO
-        $scope.modalDatosCorrespVarsPeriodo.numerador = x.GESN_NUMERADOR.replace(',', '.')
-        $scope.modalDatosCorrespVarsPeriodo.denominador = x.GESN_DENOMINADOR.replace(',', '.')
-        $scope.modalDatosCorrespVarsPeriodo.constante = x.GESN_CONSTANTE.replace(',', '.')
+        $scope.modalDatosCorrespVarsPeriodo.numerador = x.GESN_NUMERADOR != null ? x.GESN_NUMERADOR.toString().replace(',', '.') : ''
+        $scope.modalDatosCorrespVarsPeriodo.denominador = x.GESN_DENOMINADOR != null ? x.GESN_DENOMINADOR.toString().replace(',', '.') : ''
+        $scope.modalDatosCorrespVarsPeriodo.constante = x.GESN_CONSTANTE != null ? x.GESN_CONSTANTE.toString().replace(',', '.') : ''
         $scope.modalDatosCorrespVarsPeriodo.nota = x.GESC_OBSERVACION
         $scope.modalDatosCorrespVarsPeriodo.accion = x.GESN_ACUMULADO == '0' ? 'I' : 'U'
         $scope.modalDatosCorrespVarsPeriodo.resultado = x.GESN_RESULTADO;
@@ -1542,10 +1561,16 @@ angular.module('GenesisApp')
           ).toFixed(2)
         }
         if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'CT') {
-          if ($scope.modalDatosCorrespVarsPeriodo.constante == '') return
+          // if ($scope.modalDatosCorrespVarsPeriodo.constante == '') return
 
           $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
             (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) - parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador))
+          ).toFixed(2)
+        }
+        if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'PR') {
+
+          $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
+            (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) + parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador)) / 2
           ).toFixed(2)
         }
 
@@ -1690,6 +1715,26 @@ angular.module('GenesisApp')
           setTimeout(() => { $scope.$apply(); }, 500);
         })
       }
+      $scope.hojaIndicadoresObtenerTipologias = function () {
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: {
+            function: "p_lista_tipologias",
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br') {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          data.forEach(e => {
+            $scope.hojaIndicadores.listadoTipologias.push(
+              { codigo: e.CODIGO, nombre: e.NOMBRE }
+            )
+          })
+          // $scope.hojaIndicadores.listadoDependencias = data;
+          setTimeout(() => { $scope.$apply(); }, 500);
+        })
+      }
 
       $scope.hojaIndicadoresBuscarResponsables = function (responsable, listado) {
         $http({
@@ -1811,7 +1856,7 @@ angular.module('GenesisApp')
 
           data = [
             {
-              name: 'Alta', y: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1), color: "#FA0501",
+              name: 'Alta', y: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor1), color: "#06FA12",
               datoAnterior: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValorMax), datoSiguiente: dato3_Min
             },
             {
@@ -1819,7 +1864,7 @@ angular.module('GenesisApp')
               datoAnterior: dato2_Max, datoSiguiente: dato2_Min
             },
             {
-              name: 'Baja', y: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor3), color: "#06FA12",
+              name: 'Baja', y: parseFloat($scope.hojaIndicadores.formulario.semaforizacionValor3), color: "#FA0501",
               datoAnterior: dato1_Max, datoSiguiente: 0
             }
           ];
@@ -2010,6 +2055,8 @@ angular.module('GenesisApp')
 
             pplanmejoramiento: $scope.hojaIndicadores.formulario.planDeMejoramiento,
             pdesc_planmejoramiento: $scope.hojaIndicadores.formulario.descripcionPlanDeMejoramiento,
+
+            ptipologia: $scope.hojaIndicadores.formulario.tipologia,
 
             presponsable: $scope.Rol_Cedula,
 
@@ -3247,9 +3294,9 @@ angular.module('GenesisApp')
           return tipos[tipo] || "Ninguno";
         } else {
           const tipos = {
-            ALTA: "etiquetaRoja",
+            ALTA: "etiquetaVerde",
             MEDIA: "etiquetaNaranja",
-            BAJA: "etiquetaVerde",
+            BAJA: "etiquetaRoja",
             EXCESO: "etiquetaGris"
           }
           return tipos[tipo] || "Ninguno";
@@ -3393,6 +3440,10 @@ angular.module('GenesisApp')
           var win = window.open("temp/" + response.data, '_blank');
           win.focus();
         });
+      }
+
+      $scope.replaceVar = function (text) {
+        return text.replace(/\_/g, '.')
       }
 
       $scope.Ajustar_Pantalla = function () {

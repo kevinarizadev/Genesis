@@ -1,7 +1,11 @@
 <?php
+// error_reporting(0);
 session_start();
 $postdata = file_get_contents("php://input");
 $param = json_decode($postdata);
+if(!isset($param->function)){
+  return;
+}
 $function = $param->function;
 $function();
 
@@ -277,7 +281,7 @@ function enviarPass()
 {
   echo '{"Codigo":"0","Mensaje":"¡Mensaje enviado, por favor revise su celular!","userPass": "'.$_SESSION['expedicion'].'" }';
   return;
-  
+
   include('../tic/enviomensajephp.php');
   global $param;
   $movil = $param->movil;

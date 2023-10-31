@@ -5697,7 +5697,7 @@ angular.module('GenesisApp')
                       observacion: '',
                       typefile: '4',
                       impugnacion: '',
-                      ori: true
+                      ori: $scope.detalles_nul.impugnado
                     }
                   }).then(function (response) {
                     if (response.data.codigo == "1") {

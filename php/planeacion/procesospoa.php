@@ -686,3 +686,19 @@ function p_actualizar_soportes_gestion_indicador()
   }
   oci_close($c);
 }
+
+function p_lista_tipologias()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $cursor = oci_new_cursor($c);
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_lista_tipologias(:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}

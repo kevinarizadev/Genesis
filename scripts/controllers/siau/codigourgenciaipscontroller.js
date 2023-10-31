@@ -3,6 +3,14 @@ angular.module('GenesisApp')
   .controller('codigourgenciaipscontroller', ['$scope', 'ngDialog', 'consultaHTTP','notification', 'cfpLoadingBar', '$http', function ($scope, ngDialog, consultaHTTP,notification, cfpLoadingBar, $http) {
     (function () {
       $scope.inactive3 = false;
+
+      $(document).ready(function () {
+        $('#modalpopUp').modal();
+    });
+
+    setTimeout(() => {
+        $('#modalpopUp').modal("open");
+    }, 500);
       var dat = { prov: 'navb' }
       $.getJSON("php/obtenersession.php", dat)
         .done(function (respuesta) {
