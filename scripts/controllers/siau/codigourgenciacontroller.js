@@ -281,6 +281,7 @@ angular.module('GenesisApp')
     }
   }
   $scope.insertarUrgencia =  function(ruta){
+    if($scope.observacion.length > 20){
       if($scope.menor == true){$scope.hijo = 1}else{$scope.hijo = 0};
       $http({
         method:'POST',
@@ -306,6 +307,9 @@ angular.module('GenesisApp')
           $('#modal1').modal('open');
         }
       })
+    }else{
+      notification.getNotification('info', 'La Observacion debe terner minimo 20 caracteres', 'Notificacion');
+    }
   }
   $scope.solicitarcodigo = function(){
     $scope.validarcampos();

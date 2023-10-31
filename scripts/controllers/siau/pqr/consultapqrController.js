@@ -31,10 +31,11 @@ angular.module('GenesisApp')
         { user: '72200692' }, //Jorge reyes,
         { user: '52936596' }, //Claudia Lamprea
         { user: '1048211587' }, //Amilkar Urrego
-        { user: '24138522' } //Johanna.ariza
-
+        { user: '24138522' }, //Johanna.ariza
+        { user: '32777066' }, //Brenda Ruiz
+        
       ]
-
+      
       document.querySelector("#permisosConsolidado").style.display = (usuarios.findIndex((element) => element.user == $scope.documentologueo)) == -1 ? 'none' : ''
     }
     //variables de control
@@ -353,11 +354,13 @@ angular.module('GenesisApp')
             { cargo: 41 },
             { cargo: 52 },
             { cargo: 64 },
+            { cargo: 106 },
             { cargo: 133 },
             { cargo: 156 },
             { cargo: 160 },
             { cargo: 172 },
-            { cargo: 201 }
+            { cargo: 201 },
+            { cargo: 217 },
           ]
           $scope.opcionComentario = (permisosCargos.findIndex(e => e.cargo == $scope.Rol_cargo)) == -1 ? false : true;
 
@@ -801,7 +804,7 @@ angular.module('GenesisApp')
             const fecha_i = fechaIni[2] + '/' + fechaIni[1] + '/' + fechaIni[0], fecha_f = fechaFin[2] + '/' + fechaFin[1] + '/' + fechaFin[0];
             console.log(fecha_i)
             console.log(fecha_f)
-            //
+            // 
             swal({
               html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
               width: 200,
@@ -863,7 +866,7 @@ angular.module('GenesisApp')
 
 
 
-            //
+            // 
           } else {
             swal('¡Mensaje!', 'Fechas incorrectas', 'info').catch(swal.noop);
           }
@@ -891,7 +894,7 @@ angular.module('GenesisApp')
         url: "php/siau/pqr/Rpqr.php",
         data: { function: 'p_lista_productos_pqr', pqr: $scope.numero }
       }).then(function ({ data }) {
-        if (!data[0].CODIGO) {
+        // if (!data[0].CODIGO) {
           $scope.listServiciosModal = data;
           $scope.pqrServiciosModal.status = 0;
           $scope.permisosServiciosPQR();
@@ -900,7 +903,7 @@ angular.module('GenesisApp')
               $('#Sol').click();
             }, 500);
           }
-        }
+        // }
       })
     }
     $scope.limpiarProductosPQR = function () {
@@ -1425,7 +1428,7 @@ angular.module('GenesisApp')
 
               }
 
-
+              
               $scope.calcularEdad($scope.infoafiliadoautedit.FechaNacimiento);
             }
 
@@ -2035,7 +2038,7 @@ angular.module('GenesisApp')
       });
     }
     $scope.Obtener_Tipos_Documentos();
-
+    
     // $scope.JSONToCSVConvertor = function (ReportTitle, ShowLabel) {
 
     //     var json = $scope.listarPQRSTemp;

@@ -140,6 +140,7 @@ angular.module('GenesisApp')
                 // window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
+     
 
         $scope.verDetalleCompromiso = function (compromiso) {
             $scope.actualizar = true;

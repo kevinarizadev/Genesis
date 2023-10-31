@@ -11,6 +11,21 @@ angular.module('GenesisApp')
                 $scope.verCompromiso();
             }
         }
+        $scope.redirigirAPagina = function (pagina) {
+            if (pagina == 1) {
+                // URL de la página a la que deseas redirigir
+                var nuevaPaginaURL = 'https://cajacopieps.sharepoint.com/sites/AltaGerencia/SitePages/ProjectHome.aspx';
+                // Abre la URL en una nueva pestaña del navegador
+                $window.open(nuevaPaginaURL, '_blank');
+            } else {
+                // URL de la página a la que deseas redirigir
+                var nuevaPaginaURL = window.location.href = "https://genesis.cajacopieps.com/app.php#/procesospoa";
+                // Abre la URL en una nueva pestaña del navegador
+                $window.open(nuevaPaginaURL, '_blank');
+
+
+            }
+        }
 
         $scope.agendarComite = function () {
             ngDialog.open({

@@ -458,7 +458,7 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_5">GESTOR FARMACÉUTICO (GF)</label>
-                    <input type="checkbox" id="clase_5" name="clase_5" checked="true" onclick="return false;">
+                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''" onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_6">OPERADOR LOGÍSTICO DE TECNOLOGÍAS EN SALUD (OLTS)</label>

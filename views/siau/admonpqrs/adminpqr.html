@@ -1,353 +1,562 @@
-<div id="adminpqr" class="row margin" style="position: relative;">
-    <div class="w-100">
-        <div class="col s12 m12 l12">
-            <div class="card charts">
-                <div class="card-content">
-                    <div class="row">
-                        <div class="col s12">
-                            <div class="col m12 s12">
-                                <div class="display-flex">
-                                    <h5 class="w-divTitle noselectxtpqr">Administración de responsables y motivos PQR</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="row">
-                            <div class="col s12">
-                                <div class="row">
-                                    <div class="col s3">
-                                        <label class="c-pointer noselectxtpqr" for="mediosrecepcion">MEDIOS DE
-                                            RECEPCION</label>
-                                        <select class="select-chosen-eps select pt-select-pqr" id="mediosrecepcion"
-                                            ng-model="pqrDataSearch.medioRecepcion" ng-change="changeMediosRecepcion(pqrDataSearch.medioRecepcion)">
-                                            <option value="">SELECCIONAR</option>
-                                            <option ng-repeat="m in mediosRecepcion" ng-value="m.CODIGO">{{m.NOMBRE}}</option>
-                                        </select>
-                                    </div>
-                                    <div class="col s3" ng-hide="dataValidate.inactiveOtrosEntes">
-                                        <label class="c-pointer noselectxtpqr" for="entesdecontrol">ENTES DE CONTROL</label>
-                                        <select class="select-chosen-eps select  pt-select-pqr" id="entesdecontrol"
-                                            ng-model="pqrDataSearch.enteDeControl" ng-change="getEnte(pqrDataSearch.enteDeControl)">
-                                            <option value="">SELECCIONAR</option>
-                                            <option ng-repeat="e in otrosEntesDeControl" value="{{e}}">{{e.NOMBRE}}</option>
-                                        </select>
-                                    </div>
-                                    <div class="col s3" ng-hide="!dataValidate.inactiveOtrosEntes">
-                                        <label class="c-pointer noselectxtpqr" for="sede">SEDE</label>
-                                        <select class="select-chosen-eps select  pt-select-pqr" id="sede" ng-model="pqrDataSearch.sede"
-                                            ng-change="getSedeS(pqrDataSearch.sede);">
-                                            <option value="">SELECCIONAR</option>
-                                            <option ng-repeat="s in sede" ng-value="s.Codigo">{{s.Nombre}}</option>
-                                        </select>
-                                    </div>
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
 
-                                    <div class="col s3">
-                                        <label class="c-pointer noselectxtpqr" for="riegovida">RIESGO DE VIDA</label>
-                                        <select class="select-chosen-eps select  pt-select-pqr" id="riegovida" ng-model="pqrDataSearch.rv"
-                                            ng-change="changeRv(pqrData.selectedRv)">
-                                            <option value="">NO APLICA</option>
-                                            <option ng-repeat="r in rv" ng-value="r.Codigo">{{r.Nombre}}</option>
-                                            <option value="A">AMBOS</option>
-                                        </select>
-                                    </div>
-                                    <div class="col s3">
-                                        <label class="c-pointer noselectxtpqr" for="riegovida">REGIMEN</label>
-                                        <select class="select-chosen-eps select  pt-select-pqr" id="riegovida" ng-model="pqrDataSearch.regimen">
-                                            <option value="">SELECCIONAR</option>
-                                            <option ng-repeat="r in regimen" ng-value="r.Codigo">{{r.Nombre}}</option>
-                                            <option value="A">AMBOS</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <center>
-                                        <a class="waves-effect waves-light btn-large white-text red" ng-click="clearForm();">LIMPIAR</a>
-                                        <a class="waves-effect waves-light btn-large white-text" ng-click="getParametro();">BUSCAR</a>
-                                    </center>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" ng-hide="showTableCondicion">
-                            <div class="col s12" style="position: relative;min-height: calc(100vh - 800px);">
-                                <div class="row">
-                                    <table class="table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 80%">
-                                                    CONDICION
-                                                </th>
-                                                <th style="width: 20%">
-                                                    ACCION
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th>
-                                                    {{parametro[0].NOMBRE}}
-                                                </th>
-                                                <th class="text-center">
-                                                    <i class="icon-eye-6 fs-20 c-pointer" title="Mostrar Motivos"
-                                                        ng-click="showMotivos(parametro[0].CODIGO)"></i>
-                                                </th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>               
-                    <div class="card charts" ng-hide="!sw">
-                        <div style="padding: 0">
-                            <div class="col s2">
-                                <h5 class="white-black">{{!check_option?'Motivos':'Personas'}}</h5>
-                            </div>
-                            <div class="col s9" style="display: flex;justify-content: center;">
-                                <div class="col s9" ng-if="seccionales">
-                                    <div class="btn-panel switch" style="margin-top: 14px;">
-                                        <label>
-                                            <span ng-class="{'activo':check_option==false}">MOTIVO POR PERSONA (Uno x
-                                                Uno)</span>
-                                            <input type="checkbox" ng-model="check_option" ng-change="filterMotPerson();">
-                                            <span class="lever check-c"></span>
+    .content-container {
+      padding: 0 20px;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="Inicio()"></i>
+          Administración de responsables y motivos PQR
+        </h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1);" id="Sol" href class="active">Administración<i class="icon-pen"></i></a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(2)" id="Nueva" href>Permisos
+              <i class="icon-users"></i></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
-                                            <span ng-class="{'activo':check_option==true}">PERSONA POR MOTIVOS (Masivo)</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col s1">
-                                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closeFilter();" class="material-icons white-black">close</i></h5>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <div class="row" ng-hide="check_option">
-                                <div class="col s6" ng-hide="showMotivosBoolean">
-                                    <input type="text" ng-model="filter_motivo" placeholder="BUSCAR MOTIVO">
-                                    <div style="position:relative">
-                                        <div style="overflow: auto;max-height: calc(100vh - 219px);">
-                                            <table class="table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 20%">
-                                                            CODIGO
-                                                        </th>
-                                                        <th style="width: 80%">
-                                                            MOTIVO
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr id="M{{r.CODIGO}}" class="hover-item-list" ng-repeat="r in resMotivosResponsables | filter:filter_motivo"
-                                                        ng-click="showResponsable(r.RESPONSABLE,r.CODIGO);">
-                                                        <td class="c-pointer">
-                                                            {{r.CODIGO}}
-                                                        </td>
-                                                        <td class="c-pointer">
-                                                            {{r.NOMBRE}}
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==1">
+    <div class="row">
+      <div class="col s12">
+        <div class="row">
+          <div class="col s3">
+            <label class="c-pointer noselectxtpqr" for="mediosrecepcion">MEDIOS DE
+              RECEPCION</label>
+            <select class="select-chosen-eps select pt-select-pqr" id="mediosrecepcion"
+              ng-model="pqrDataSearch.medioRecepcion" ng-change="changeMediosRecepcion(pqrDataSearch.medioRecepcion)">
+              <option value="">SELECCIONAR</option>
+              <option ng-repeat="m in mediosRecepcion" ng-value="m.CODIGO">{{m.NOMBRE}}</option>
+            </select>
+          </div>
+          <div class="col s3" ng-hide="dataValidate.inactiveOtrosEntes">
+            <label class="c-pointer noselectxtpqr" for="entesdecontrol">ENTES DE CONTROL</label>
+            <select class="select-chosen-eps select  pt-select-pqr" id="entesdecontrol"
+              ng-model="pqrDataSearch.enteDeControl" ng-change="getEnte(pqrDataSearch.enteDeControl)">
+              <option value="">SELECCIONAR</option>
+              <option ng-repeat="e in otrosEntesDeControl" value="{{e}}">{{e.NOMBRE}}</option>
+            </select>
+          </div>
+          <div class="col s3" ng-hide="!dataValidate.inactiveOtrosEntes">
+            <label class="c-pointer noselectxtpqr" for="sede">SEDE</label>
+            <select class="select-chosen-eps select  pt-select-pqr" id="sede" ng-model="pqrDataSearch.sede"
+              ng-change="getSedeS(pqrDataSearch.sede);">
+              <option value="">SELECCIONAR</option>
+              <option ng-repeat="s in sede" ng-value="s.Codigo">{{s.Nombre}}</option>
+            </select>
+          </div>
 
-                                <div class="col s6" ng-hide="seccionales">
-                                    <input type="text" ng-model="filter_seccional" placeholder="BUSCAR PERSONA">
-                                    <div style="position:relative">
-                                        <div style="overflow: auto;max-height: calc(100vh - 219px);">
-                                            <table class="table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>
-                                                            NOMBRE
-                                                        </th>
-                                                        <!-- <th>
-                                                            CARGO
-                                                        </th> -->
-                                                        <th>
-                                                            AREA
-                                                        </th>
-                                                        <th>
-                                                            SECCIONAL
-                                                        </th>
-                                                        <th>
-                                                            ACCION
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-class="{'arr':r.save}" ng-repeat=" r in dresponsableseccional | filter:filter_seccional  track by $index">
-                                                        <td class="c-pointer">
-                                                            {{r.nombre}}
-                                                        </td>
-                                                        <!-- <td class="c-pointer">
-                                                            {{r.cargo}}
-                                                        </td> -->
-                                                        <td class="c-pointer">
-                                                            {{r.area}}
-                                                        </td>
-                                                        <td class="c-pointer">
-                                                            {{r.seccional}}
-                                                        </td>
-                                                        <td class="c-pointer text-center">
-                                                            <i class="icon-cancel-circled fs-20" ng-if="r.save"
-                                                                ng-click="showResponsable(tempResponsable);"></i>
-                                                            <i class="fs-20" ng-class="{'icon-edit-alt': !r.save ,'icon-floppy': r.save }"
-                                                                ng-click="!r.save ? showUsers('responsableSeccionales',$index,r): saveUserSeccional(r)"></i>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col s6" ng-hide="showResponsableBoolean">
-                                    <input type="text" ng-model="filter_motivo" placeholder="BUSCAR PERSONA">
-                                    <table class="table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    NOMBRE
-                                                </th>
-                                                <th>
-                                                    CARGO
-                                                </th>
-                                                <th>
-                                                    AREA
-                                                </th>
-                                                <th>
-                                                    ACCION
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat=" r in dresponsable  track by $index">
-                                                <td class="c-pointer">
-                                                    {{r.nombre}}
-                                                </td>
-                                                <td class="c-pointer">
-                                                    {{r.cargo}}
-                                                </td>
-                                                <td class="c-pointer">
-                                                    {{r.area}}
-                                                </td>
-                                                <td class="c-pointer text-center">
-                                                    <i class="icon-cancel-circled fs-20" ng-if="r.save" ng-click="showResponsable(tempResponsable);"></i>
-                                                    <i class="fs-20" ng-class="{'icon-edit-alt': !r.save ,'icon-floppy': r.save }"
-                                                        ng-click="!r.save ? showUsers('responsableMotivo'): saveUser(r)"></i>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>                           
-                            <div class="row" ng-hide="!check_option">
-                                <div class="col s6" ng-hide="showResponsableMotivosBoolean">
-                                    <input type="text" ng-model="filter_persona" placeholder="BUSCAR PERSONA">
-                                    <div style="position:relative">
-                                        <div class="scroll_x" style="overflow: auto;max-height: calc(100vh - 219px);">
-                                            <table class="table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>
-                                                            NOMBRE
-                                                        </th>
-                                                        <th>
-                                                            CARGO
-                                                        </th>
-                                                        <th>
-                                                            AREA
-                                                        </th>
-                                                        <th>
-                                                            ACCION
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr id="R{{r.documento}}" ng-repeat=" r in responsableMotivos | filter: filter_persona  track by $index">
-                                                        <td>
-                                                            {{r.nombre}}
-                                                        </td>
-                                                        <td>
-                                                            {{r.cargo}}
-                                                        </td>
-                                                        <td>
-                                                            {{r.area}}
-                                                        </td>
-                                                        <td class="c-pointer text-center">
-                                                            <i class="icon-eye-6 fs-20 c-pointer" title="Mostrar Motivos"
-                                                                ng-click='showMotivosReponsable(r.documento,$index);'></i>
-                                                            <i class="icon-cancel-circled fs-20" ng-if="r.save" title="Cancelar Edición"
-                                                                ng-click="showMotivosReponsable(tempResponsableM,-1);"></i>
-                                                            <i class="fs-20" ng-init="r.save=false" ng-if="indexRes==$index"
-                                                                ng-class="{'icon-edit-alt': !r.save ,'icon-floppy': r.save }"
-                                                                title="{{!r.save? 'Editar Responsable':'Guardar Responsable'}}"
-                                                                ng-click="!r.save ? showUsers('responsableMotivos',$index): saveUserMotivos(r)"></i>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col s6" ng-hide="showMotivosResponsableBoolean">
-                                    <input type="text" ng-model="filter_resmotivos" placeholder="BUSCAR MOTIVO">
-                                    <div style="position:relative">
-                                        <div class="scroll_x" style="overflow: auto;max-height: calc(100vh - 219px);">
-                                            <table id="tablaOriginal" class="table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 20%">
-                                                            CODIGO
-                                                        </th>
-                                                        <th style="width: 80%">
-                                                            MOTIVO
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="m in motivosResponsables | filter: filter_resmotivos track by $index">
-                                                        <td class="c-pointer">
-                                                            {{m.CODIGO}}
-                                                        </td>
-                                                        <td class="c-pointer">
-                                                            {{m.NOMBRE}}
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <div class="col s3">
+            <label class="c-pointer noselectxtpqr" for="riegovida">RIESGO DE VIDA</label>
+            <select class="select-chosen-eps select  pt-select-pqr" id="riegovida" ng-model="pqrDataSearch.rv"
+              ng-change="changeRv(pqrData.selectedRv)">
+              <option value="">NO APLICA</option>
+              <option ng-repeat="r in rv" ng-value="r.Codigo">{{r.Nombre}}</option>
+              <option value="A">AMBOS</option>
+            </select>
+          </div>
+          <div class="col s3">
+            <label class="c-pointer noselectxtpqr" for="riegovida">REGIMEN</label>
+            <select class="select-chosen-eps select  pt-select-pqr" id="riegovida" ng-model="pqrDataSearch.regimen">
+              <option value="">SELECCIONAR</option>
+              <option ng-repeat="r in regimen" ng-value="r.Codigo">{{r.Nombre}}</option>
+              <option value="A">AMBOS</option>
+            </select>
+          </div>
         </div>
+        <div class="row">
+          <center>
+            <a class="waves-effect waves-light btn-large white-text red" ng-click="clearForm();">LIMPIAR</a>
+            <a class="waves-effect waves-light btn-large white-text" ng-click="getParametro();">BUSCAR</a>
+          </center>
+        </div>
+      </div>
     </div>
-    <style>
-        .switch label .lever {
-            background-color: #84c7c1;
-        }
+    <div class="row" ng-hide="showTableCondicion">
+      <div class="col s12" style="position: relative;min-height: calc(100vh - 800px);">
+        <div class="row">
+          <table class="table-bordered">
+            <thead>
+              <tr>
+                <th style="width: 80%">
+                  CONDICION
+                </th>
+                <th style="width: 20%">
+                  ACCION
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>
+                  {{parametro[0].NOMBRE}}
+                </th>
+                <th class="text-center">
+                  <i class="icon-eye-6 fs-20 c-pointer" title="Mostrar Motivos"
+                    ng-click="showMotivos(parametro[0].CODIGO)"></i>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-        .switch label>span.activo {
-            color: #26a69a !important;
-        }
+    <div class="card charts" ng-hide="!sw">
+      <div style="padding: 0">
+        <div class="col s2">
+          <h5 class="white-black">{{!check_option?'Motivos':'Personas'}}</h5>
+        </div>
+        <div class="col s9" style="display: flex;justify-content: center;">
+          <div class="col s9" ng-if="seccionales">
+            <div class="btn-panel switch" style="margin-top: 14px;">
+              <label>
+                <span ng-class="{'activo':check_option==false}">MOTIVO POR PERSONA (Uno x
+                  Uno)</span>
+                <input type="checkbox" ng-model="check_option" ng-change="filterMotPerson();">
+                <span class="lever check-c"></span>
 
-        .switch label .lever.check-c:after {
-            background-color: #26a69a;
-        }
+                <span ng-class="{'activo':check_option==true}">PERSONA POR MOTIVOS (Masivo)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col s1">
+          <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closeFilter();"
+              class="material-icons white-black">close</i></h5>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="row" ng-hide="check_option">
+          <div class="col s6" ng-hide="showMotivosBoolean">
+            <input type="text" ng-model="filter_motivo" placeholder="BUSCAR MOTIVO">
+            <div style="position:relative">
+              <div style="overflow: auto;max-height: calc(100vh - 219px);">
+                <table class="table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 20%">
+                        CODIGO
+                      </th>
+                      <th style="width: 80%">
+                        MOTIVO
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr id="M{{r.CODIGO}}" class="hover-item-list"
+                      ng-repeat="r in resMotivosResponsables | filter:filter_motivo"
+                      ng-click="showResponsable(r.RESPONSABLE,r.CODIGO);">
+                      <td class="c-pointer">
+                        {{r.CODIGO}}
+                      </td>
+                      <td class="c-pointer">
+                        {{r.NOMBRE}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
-        #adminpqr .ng-leave-active,
-        #adminpqr .active-add,
-        #adminpqr .ng-hide-add-active,
-        #adminpqr .ng-hide-remove,
-        #adminpqr .ng-hide-add-active {
-            transition: all 0s !important;
-        }
-    </style>
+          <div class="col s6" ng-hide="seccionales">
+            <input type="text" ng-model="filter_seccional" placeholder="BUSCAR PERSONA">
+            <div style="position:relative">
+              <div style="overflow: auto;max-height: calc(100vh - 219px);">
+                <table class="table-bordered">
+                  <thead>
+                    <tr>
+                      <th>
+                        NOMBRE
+                      </th>
+                      <!-- <th>
+                                                        CARGO
+                                                    </th> -->
+                      <th>
+                        AREA
+                      </th>
+                      <th>
+                        SECCIONAL
+                      </th>
+                      <th>
+                        ACCION
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-class="{'arr':r.save}"
+                      ng-repeat=" r in dresponsableseccional | filter:filter_seccional  track by $index">
+                      <td class="c-pointer">
+                        {{r.nombre}}
+                      </td>
+                      <!-- <td class="c-pointer">
+                                                        {{r.cargo}}
+                                                    </td> -->
+                      <td class="c-pointer">
+                        {{r.area}}
+                      </td>
+                      <td class="c-pointer">
+                        {{r.seccional}}
+                      </td>
+                      <td class="c-pointer text-center">
+                        <i class="icon-cancel-circled fs-20" ng-if="r.save"
+                          ng-click="showResponsable(tempResponsable);"></i>
+                        <i class="fs-20" ng-class="{'icon-edit-alt': !r.save ,'icon-floppy': r.save }"
+                          ng-click="!r.save ? showUsers('responsableSeccionales',$index,r): saveUserSeccional(r)"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col s6" ng-hide="showResponsableBoolean">
+            <input type="text" ng-model="filter_motivo" placeholder="BUSCAR PERSONA">
+            <table class="table-bordered">
+              <thead>
+                <tr>
+                  <th>
+                    NOMBRE
+                  </th>
+                  <th>
+                    CARGO
+                  </th>
+                  <th>
+                    AREA
+                  </th>
+                  <th>
+                    ACCION
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" r in dresponsable  track by $index">
+                  <td class="c-pointer">
+                    {{r.nombre}}
+                  </td>
+                  <td class="c-pointer">
+                    {{r.cargo}}
+                  </td>
+                  <td class="c-pointer">
+                    {{r.area}}
+                  </td>
+                  <td class="c-pointer text-center">
+                    <i class="icon-cancel-circled fs-20" ng-if="r.save"
+                      ng-click="showResponsable(tempResponsable);"></i>
+                    <i class="fs-20" ng-class="{'icon-edit-alt': !r.save ,'icon-floppy': r.save }"
+                      ng-click="!r.save ? showUsers('responsableMotivo'): saveUser(r)"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row" ng-hide="!check_option">
+          <div class="col s6" ng-hide="showResponsableMotivosBoolean">
+            <input type="text" ng-model="filter_persona" placeholder="BUSCAR PERSONA">
+            <div style="position:relative">
+              <div class="scroll_x" style="overflow: auto;max-height: calc(100vh - 219px);">
+                <table class="table-bordered">
+                  <thead>
+                    <tr>
+                      <th>
+                        NOMBRE
+                      </th>
+                      <th>
+                        CARGO
+                      </th>
+                      <th>
+                        AREA
+                      </th>
+                      <th>
+                        ACCION
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr id="R{{r.documento}}"
+                      ng-repeat=" r in responsableMotivos | filter: filter_persona  track by $index">
+                      <td>
+                        {{r.nombre}}
+                      </td>
+                      <td>
+                        {{r.cargo}}
+                      </td>
+                      <td>
+                        {{r.area}}
+                      </td>
+                      <td class="c-pointer text-center">
+                        <i class="icon-eye-6 fs-20 c-pointer" title="Mostrar Motivos"
+                          ng-click='showMotivosReponsable(r.documento,$index);'></i>
+                        <i class="icon-cancel-circled fs-20" ng-if="r.save" title="Cancelar Edición"
+                          ng-click="showMotivosReponsable(tempResponsableM,-1);"></i>
+                        <i class="fs-20" ng-init="r.save=false" ng-if="indexRes==$index"
+                          ng-class="{'icon-edit-alt': !r.save ,'icon-floppy': r.save }"
+                          title="{{!r.save? 'Editar Responsable':'Guardar Responsable'}}"
+                          ng-click="!r.save ? showUsers('responsableMotivos',$index): saveUserMotivos(r)"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col s6" ng-hide="showMotivosResponsableBoolean">
+            <input type="text" ng-model="filter_resmotivos" placeholder="BUSCAR MOTIVO">
+            <div style="position:relative">
+              <div class="scroll_x" style="overflow: auto;max-height: calc(100vh - 219px);">
+                <table id="tablaOriginal" class="table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 20%">
+                        CODIGO
+                      </th>
+                      <th style="width: 80%">
+                        MOTIVO
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="m in motivosResponsables | filter: filter_resmotivos track by $index">
+                      <td class="c-pointer">
+                        {{m.CODIGO}}
+                      </td>
+                      <td class="c-pointer">
+                        {{m.NOMBRE}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <!--  -->
+  <!--  -->
+
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==2">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de usuarios con permisos en el módulo
+          ({{List.listadoFuncionarios.length}})</strong>
+
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="agregarUsuario()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoFuncs()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="Hoja1.Filtro">
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>#</th>
+          <th>Cédula</th>
+          <th>Funcionario</th>
+          <th>Cargo</th>
+          <th>Marcar comentarios</th>
+          <th>Marcar marcacion pqr</th>
+          <th>Marcar servicios</th>
+          <th>Exportar botones</th>
+          <th>Exportar consolidado</th>
+
+          <th>Estado</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in List.listadoFuncionarios | filter:Hoja1.Filtro">
+            <td>{{$index + 1}}</td>
+            <td>{{x.CEDULA}}</td>
+            <td>{{x.NOMBRE}}</td>
+            <td>{{x.CARGO}}</td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.RESC_MARCA_COMENTARIO == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'RESC_MARCA_COMENTARIO', x.RESC_MARCA_COMENTARIO == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.RESC_MARCA_COMENTARIO
+                  == 'S' ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.RESC_MARCA_MARCACION == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'RESC_MARCA_MARCACION', x.RESC_MARCA_MARCACION == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.RESC_MARCA_MARCACION
+                  ==
+                  'S'
+                  ? 'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.RESC_MARCA_GEST_SERVI == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'RESC_MARCA_GEST_SERVI', x.RESC_MARCA_GEST_SERVI == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.RESC_MARCA_GEST_SERVI
+                  ==
+                  'S'
+                  ? 'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.RESC_EXPORTAR_BOTONES == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'RESC_EXPORTAR_BOTONES', x.RESC_EXPORTAR_BOTONES == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.RESC_EXPORTAR_BOTONES
+                  ==
+                  'S' ? 'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.RESC_EXPORTAR_CONSOLIDADO == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'RESC_EXPORTAR_CONSOLIDADO', x.RESC_EXPORTAR_CONSOLIDADO == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.RESC_EXPORTAR_CONSOLIDADO
+                  ==
+                  'S' ? 'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+
+
+            <td class="center">
+              <div class="tooltip" ng-if="x.RESC_ESTADO == 'A'">
+                <i class="icon-circle Con_pulse_A"
+                  style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                  ng-click="modificarUsuario(x,'RESC_ESTADO', x.RESC_ESTADO == 'A' ? 'I' : 'A')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Activo</span>
+              </div>
+              <div class="tooltip" ng-if="x.RESC_ESTADO == 'I'">
+                <i class="icon-circle Con_pulse_X"
+                  style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                  ng-click="modificarUsuario(x,'RESC_ESTADO', x.RESC_ESTADO == 'A' ? 'I' : 'A')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+  </div>
+
+
+  <style>
+    .switch label .lever {
+      background-color: #84c7c1;
+    }
+
+    .switch label>span.activo {
+      color: #26a69a !important;
+    }
+
+    .switch label .lever.check-c:after {
+      background-color: #26a69a;
+    }
+
+    #adminpqr .ng-leave-active,
+    #adminpqr .active-add,
+    #adminpqr .ng-hide-add-active,
+    #adminpqr .ng-hide-remove,
+    #adminpqr .ng-hide-add-active {
+      transition: all 0s !important;
+    }
+
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_X {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+  </style>
 </div>

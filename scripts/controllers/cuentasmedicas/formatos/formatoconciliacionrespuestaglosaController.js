@@ -49,7 +49,8 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
     $scope.datosDetalle = data.json;
     $scope.ips = data.json[0].RAZON_SOCIAL;
     $scope.ipsNit = data.json[0].NIT;
-    $scope.lugar = data.json[0].UBICACION;
+    // $scope.lugar = data.json[0].UBICACION;
+    $scope.lugar = 'BARRANQUILLA';
     $scope.responsableIPS = data.json[0].NOMBRE_USU_IPS;
     $scope.responsableEPS = data.json[0].RESPONSABLE_EPS;
 

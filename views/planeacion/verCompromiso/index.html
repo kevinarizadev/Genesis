@@ -1,36 +1,30 @@
-<div class="row margin" id="view-alta-gerencia" style="
-                                                    display: flex;
-                                                    justify-content: center;
-                                                    align-items: center;
-                                                    height: 100vh;
-                                                    width: 100%;
-                                                    ">
+<div class="row margin" id="view-alta-gerencia" style="display: flex;justify-content: center;align-items: center;height: 100vh;width: 100%;">
     <style>
+        #tabladeCompromiso th {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
         .center-button {
             display: flex;
             justify-content: center;
         }
-
         .table_border,
         .table_border th,
         .table_border td {
             border: 1px solid #c2c2c2;
         }
-
         .table_center_align,
         .table_center_align th,
         .table_center_align td {
             text-align: center;
         }
-
         table tbody tr {
             cursor: pointer;
         }
-
         table tbody tr:hover {
             background: rgba(0, 0, 0, 0.12);
         }
-
         #H1_Tabla>thead,
         #H1_Tabla>tbody {
             font-size: 1em;
@@ -40,37 +34,31 @@
             border-radius: .375rem;
             box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
         }
-
         .bajo {
             color: green;
             font-weight: 800;
-           
         }
-
         .medio {
             color: yellow;
             font-weight: 800;
-           
+
         }
 
         .importante {
-           
+
 
             color: orange;
             font-weight: 800;
         }
 
         .urgente {
-           
+
 
             color: red;
             font-weight: 800;
         }
-
-
-        
     </style>
-    <div style="padding: 20px; padding-top: 0;  width: 100vh; top: 5vh; position: absolute;">
+    <div style="padding: 20px; padding-top: 0;  width: 151vh; top: 5vh; position: absolute;">
         <div class="col l12 m12 s12" style="position: relative; z-index: 9;">
             <div class="col l12 m12 s12 prod-title-div no-padding">
                 <blockquote>
@@ -93,7 +81,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row" ng-if="comite != null">
                     <div class="col l12 m12 s12">
                         <div class="input-field col l12 m12 s12">
@@ -103,8 +90,74 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-action" id="card-action"
+                    style="display: inline-block;width: 100%;height: 100%;padding-bottom: 0;" ng-show="compromisos.length">
+                    <div class="col s4 no-padding label-new m-b right"
+                        style="margin-right: 1.5rem !important;">
+                        <input id="compromisos" text-upper
+                            class="margin border-none input-text-new gray-input w-100 m-l" autocomplete="off"
+                            type="text" placeholder="Buscar..." ng-model="busquedaInfo"
+                            ng-change="filter('compromisos',compromisos.filtrar);">
+                        <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                            title="Buscar"></i>
+                    </div>
+                    <div class="col s12">
+                        <div style="max-height:70vh;overflow-y:auto;border: 1px solid;overflow-x: hidden;zoom: 80%;">
+                            <table id="tabladeCompromiso" class=" highlight" style="width:100%;color: black;">
+                                <thead>
+                                    <th class="center default-background  white-text">Prioridad</th>
+                                    <th class="center default-background  white-text">Nombre compromiso</th>
+                                    <th class="center default-background  white-text">Responsables</th>
+                                    <th class="center default-background  white-text">Estado</th>
+                                    <th class="center default-background  white-text">Fecha Inicio</th>
+                                    <th class="center default-background  white-text">Fecha Fin</th>
+                                    <th class="center default-background  white-text">Dias vencidos</th>
+                                    <th class="center default-background  white-text">Subtarea</th>
+                                    <th class="center default-background  white-text">Descargar</th>
+                                </thead>
+                                <tbody id="idpro">
+                                    <tr ng-repeat="compromiso in compromisos |  filter:busquedaInfo"
+                                        ng-click="verDetalleCompromiso(compromiso)" ng-if="compromisos.length">
+                                        <td class="center"> <span ng-class="{
+                                            'bajo' : compromiso.Prioridad === 'Bajo',  
+                                            'medio' : compromiso.Prioridad === 'Medio',  
+                                            'importante' : compromiso.Prioridad === 'Importante',  
+                                            'urgente' : compromiso.Prioridad === 'Urgente'}">
+                                                {{compromiso.Prioridad}}
+                                            </span> </td>
+                                        <td class="center justify">
+                                            <div style="inline-size: 300px;overflow-wrap: break-word;">
+                                                {{compromiso.Descripcion}}
+                                            </div>
+                                        </td>
+                                        <td class="center" ng-bind-html="compromiso.Responsable"></td>
+                                        <td class="center">{{compromiso.Progreso}}</td>
+                                        <td class="center">{{compromiso.FechaInicio}}</td>
+                                        <td class="center">{{compromiso.FechaFin}}</td>
+                                        <td class="center">{{compromiso.DiasVencidos}}</td>
+                                        <td class="center justify">
+                                            <div style="inline-size: 300px;overflow-wrap: break-word;">
+                                                {{compromiso.Subtarea}}
+                                            </div></td>
+                                        <td class="center"><a class="btn-floating btn waves-effect waves-light"
+                                                ng-click="descargarArchivo(compromiso.Id)"><i
+                                                    class="material-icons dp48">cloud_download</i></a>
+                                            <span class="tooltiptext tooltiptablas">Descargar</span>
+                                        </td>
 
-                <div class="row" style="overflow: scroll; width: 100%; height: 25vh;">
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="width: 89%;display: flex;">
+                            <div style="width: 50%;">
+                                <label for="normal">Total de detalles de observaciones realizadas:
+                                    {{compromisos.length}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="row" style="overflow: scroll; width: 100%; height: 25vh;">
                     <div class="table-over-box m-b" style="max-height: calc(100vh - 262px); width: max-content;">
                         <table id="H1_Tabla" class="bordered table_center_align"
                             style="width:100%;font-size:6px !important;">
@@ -137,7 +190,7 @@
                                             {{compromiso.Prioridad}}
                                         </span>
                                     </td>
-                                    <td>{{compromiso.Descripcion}}</td>
+                                    <td style="inline-size: 300px;overflow-wrap: break-word;">{{compromiso.Descripcion}}</td>
                                     <td ng-bind-html="compromiso.Responsable"></td>
                                     <td>{{compromiso.Progreso}}</td>
                                     <td>{{compromiso.FechaInicio}}</td>
@@ -152,7 +205,7 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <!-- <tfoot>
+                            <tfoot>
                                 <tr>
                                     <td colspan="13" class="border-none no-padding" style="user-select: none">
                                         <div class="d-flex justify-content-between align-items-center">
@@ -191,11 +244,10 @@
                                         </div>
                                     </td>
                                 </tr>
-                            </tfoot> -->
-                        </table>
+                            </tfoot> 
+                       </table>
                     </div>
-                </div>
-
+                </div> -->
                 <div ng-if="actualizar">
                     <div class="row">
                         <div class="col l12 m12 s12 prod-title-div no-padding">

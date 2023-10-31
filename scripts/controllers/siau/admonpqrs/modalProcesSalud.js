@@ -78,6 +78,7 @@ angular.module('GenesisApp')
       }
     }
     pqrHttp.getInfoAseguramientoPQR($scope.dataPqr.CODIGO).then(function (response) {
+      console.log("asdasd")
       $scope.dpqr = response.data[0];
 
     })
@@ -760,7 +761,7 @@ angular.module('GenesisApp')
         data: { function: 'p_lista_productos_pqr', pqr: $scope.dataPqr.CODIGO }
       }).then(function ({ data }) {
         $scope.listServiciosModal = data;
-        
+
         $scope.pqrServiciosModal.status = 0;
         if (x) {
           setTimeout(() => {

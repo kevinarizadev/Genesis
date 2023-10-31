@@ -672,8 +672,8 @@ angular.module('GenesisApp')
         });
       }
 
-      $scope.verObservacion = function (obs) {
-        swal("Comentario Regional:", obs, "info").catch(swal.noop);
+      $scope.verObservacion = function (titulo, obs) {
+        swal(titulo, obs, "info").catch(swal.noop);
       }
 
       $scope.descargarInforme = function () {

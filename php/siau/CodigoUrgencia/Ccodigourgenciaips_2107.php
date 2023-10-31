@@ -12,7 +12,7 @@
 		$docsolicitante    = $request->docsolicitante;
 		$nitips    				 = $_SESSION['nit'];
 		$tipodocpaciente   = $request->tipodocpaciente;
-		$documentopaciente = $request->documentopaciente;
+		$documentopaciente = $request->documentopaciente; 
 		$observacion       = $request->observacion;
 		$fechaingreso 		 = $request->fechaingreso;
 		// $fecha = new DateTime($request->fechaingreso);
@@ -118,23 +118,15 @@
 	}
 	function adjunto(){
 		require_once('../../config/dbcon.php');
+		require_once('../../config/ftpcon.php');
+		include('../../upload_file/subir_archivo.php');
 		global $request;
 		// variables de parametros
 		// otras variables
 		$hoy = date('dmY');
-		// $path = '/cargue_ftp/Digitalizacion/Genesis/Siau/CodigoUrgencia/' . $hoy . '/';
-		$path = 'Siau/CodigoUrgencia/' . $hoy;
-		$name = $request->nombre.'.'.$request->ext;
-
-		list(, $request->achivobase) = explode(';', $request->achivobase); // Proceso para traer el Base64
-		list(, $request->achivobase) = explode(',', $request->achivobase); // Proceso para traer el Base64
-		$base64 = base64_decode($request->achivobase); // Proceso para traer el Base64
-		file_put_contents('../../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
-
-		include('../../sftp_cloud/UploadFile.php');
-		$subio = UploadFile($path, $name);
-
-		// $subio = subirFTP($request->achivobase, $path, $name, $request->ext);
+		$path = '/cargue_ftp/Digitalizacion/Genesis/Siau/CodigoUrgencia/' . $hoy . '/';
+		$name = $request->nombre;
+		$subio = subirFTP($request->achivobase, $path, $name, $request->ext);
 		$rutas = $subio;
 		echo $rutas;
 	}

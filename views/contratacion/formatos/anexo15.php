@@ -100,17 +100,17 @@
       </tr>
       <tr>
         <th style=" width: 10%;">
-          NOMBRE DEL SERVICIO
+          PRODUCTOS
         </th>
-        <th style=" width: 10%;">
-          CODIGO CUMS
+        <th>
+          SUBCATEGORIA
+        </th>
+        <th>
+          DESCRIPCION
         </th>
         <!-- <th>
-          SUBCATEGORIA
-        </th> -->
-        <th>
           NOMBRE PRODUCTO
-        </th>
+        </th> -->
         <th>
           VALOR
         </th>
@@ -119,13 +119,13 @@
     <tbody>
       <tr ng-repeat="x in productos">
         <td>
-          {{x.nombre_servicio}}
-        </td>
-        <td>
           {{x.codigo_producto}}
         </td>
-        <!-- <td>
+        <td>
           {{x.cod_subcategoria}}
+        </td>
+        <!-- <td>
+          {{x.nombre_servicio}}
         </td> -->
         <td>
           {{x.cod_subcategoria==""?x.nombre_producto:x.nombre_subcategoria}}
