@@ -156,7 +156,7 @@ angular.module('GenesisApp')
           { cod: 4, cargo: "Especialista Nacional De Autorizaciones" },
           { cod: 5, cargo: "Coordinador Nacional De Autorizaciones" },
           { cod: 6, cargo: "Subdirector Nacional de Salud" },
-          { cod: 7, cargo: "Subgerente General", ver: false },
+          { cod: 7, cargo: "Director De Salud", ver: false },
           { cod: 8, cargo: "Asistente Nacional De Pagaduria" },
         ];
 
@@ -2541,7 +2541,7 @@ angular.module('GenesisApp')
           }
         }
 
-        if (parseFloat(($scope[HOJA].Servicio.Valor_Total.replace(/\./g, '')).replace(/\,/g, '.')) < 254472) {
+        if (parseFloat(($scope[HOJA].Servicio.Valor_Total.replace(/\./g, '')).replace(/\,/g, '.')) < 217000) {
           Campos_Empty = true; Vista_Empty = 2; document.querySelector('#' + [HOJA] + '_Valor_Total_Label').classList.add('red-text');
           document.getElementById([HOJA] + '_Valor_Total_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
         }
@@ -2669,7 +2669,7 @@ angular.module('GenesisApp')
               setTimeout(function () {
                 swal({
                   title: '¡Información!',
-                  text: 'El valor total del anticipo debe ser mayor a $254.472, pagar por caja menor',
+                  text: 'El valor total del anticipo debe ser mayor a $217.000.',
                   type: 'info'
                 }).catch(swal.noop);
               }, 1000);
@@ -3159,8 +3159,8 @@ angular.module('GenesisApp')
                     Cotizacion_DIR_COD: response.data[0].Cotizacion1_DIR == '0' ? '' : response.data[0].Cotizacion1_DIR_COD,
 
                     Contratada: response.data[0].Contratada1_Proc_aut != '' ?
-                      response.data[0].Contratada1_Proc_aut : response.data[0].Contratada1_Aut != '' ?
-                        response.data[0].Contratada1_Aut : response.data[0].Contratada1_Registro != '' ? response.data[0].Contratada1_Registro : ''
+                    response.data[0].Contratada1_Proc_aut : response.data[0].Contratada1_Aut != '' ?
+                     response.data[0].Contratada1_Aut : response.data[0].Contratada1_Registro != '' ? response.data[0].Contratada1_Registro : ''
                   },
                   Cotizacion_2:
                   {
@@ -3181,8 +3181,8 @@ angular.module('GenesisApp')
                     Cotizacion_DIR_COD: response.data[0].Cotizacion2_DIR == '0' ? '' : response.data[0].Cotizacion2_DIR_COD,
 
                     Contratada: response.data[0].Contratada2_Proc_aut != '' ?
-                      response.data[0].Contratada2_Proc_aut : response.data[0].Contratada2_Aut != '' ?
-                        response.data[0].Contratada2_Aut : response.data[0].Contratada2_Registro != '' ? response.data[0].Contratada2_Registro : ''
+                    response.data[0].Contratada2_Proc_aut : response.data[0].Contratada2_Aut != '' ?
+                     response.data[0].Contratada2_Aut : response.data[0].Contratada2_Registro != '' ? response.data[0].Contratada2_Registro : ''
                   },
                   Cotizacion_3:
                   {
@@ -3203,8 +3203,8 @@ angular.module('GenesisApp')
                     Cotizacion_DIR_COD: response.data[0].Cotizacion3_DIR_COD == '0' ? '' : response.data[0].Cotizacion3_DIR_COD,
 
                     Contratada: response.data[0].Contratada3_Proc_aut != '' ?
-                      response.data[0].Contratada3_Proc_aut : response.data[0].Contratada3_Aut != '' ?
-                        response.data[0].Contratada3_Aut : response.data[0].Contratada3_Registro != '' ? response.data[0].Contratada3_Registro : ''
+                    response.data[0].Contratada3_Proc_aut : response.data[0].Contratada3_Aut != '' ?
+                     response.data[0].Contratada3_Aut : response.data[0].Contratada3_Registro != '' ? response.data[0].Contratada3_Registro : ''
                   },
                   Cotizacion_4:
                   {
@@ -3484,23 +3484,21 @@ angular.module('GenesisApp')
                 document.querySelector('#HojaAnt_Valor_Total').setAttribute("readonly", true);
                 ////////////////////Ajuste Mayo////////////////////
                 //$scope.Ajuste_Mayo_D_S = 'Sub';
-                // $scope.Ajuste_Mayo = new Date('2021/05/01');
-                // $scope.Ajuste_Julio = new Date('2021/07/22');
-                // $scope.Ajuste_Septiembre = new Date('2021/09/29');
-                // var FECHA_PROCESADO = new Date(response.data[0].Fecha_Procesado);
-                // $scope.Ajuste_Mayo_D_S = 'Sub';
+                $scope.Ajuste_Mayo = new Date('2021/05/01');
+                $scope.Ajuste_Julio = new Date('2021/07/22');
+                $scope.Ajuste_Septiembre = new Date('2021/09/29');
+                var FECHA_PROCESADO = new Date(response.data[0].Fecha_Procesado);
+                $scope.Ajuste_Mayo_D_S = 'Sub';
 
-                // if (FECHA_PROCESADO < $scope.Ajuste_Mayo && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
-                //   $scope.Ajuste_Mayo_D_S = 'Dir';
-                // }
-                // if (FECHA_PROCESADO >= $scope.Ajuste_Julio && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
-                //   $scope.Ajuste_Mayo_D_S = 'Dir';
-                // }
-                // if (FECHA_PROCESADO >= $scope.Ajuste_Septiembre && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
-                //   $scope.Ajuste_Mayo_D_S = 'Sub';
-                // }
-
-
+                if (FECHA_PROCESADO < $scope.Ajuste_Mayo && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
+                  $scope.Ajuste_Mayo_D_S = 'Dir';
+                }
+                if (FECHA_PROCESADO >= $scope.Ajuste_Julio && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
+                  $scope.Ajuste_Mayo_D_S = 'Dir';
+                }
+                if (FECHA_PROCESADO >= $scope.Ajuste_Septiembre && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
+                  $scope.Ajuste_Mayo_D_S = 'Sub';
+                }
                 // if (FECHA_PROCESADO < $scope.Ajuste_Julio && FECHA_PROCESADO >= $scope.Ajuste_Mayo && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P'))  {
                 //   $scope.Ajuste_Mayo_D_S = 'Sub';
                 // }
@@ -3792,7 +3790,7 @@ angular.module('GenesisApp')
           //   { cod: 4, cargo: "Especialista Nacional De Autorizaciones" },
           //   { cod: 5, cargo: "Coordinador Nacional De Autorizaciones" },
           //   { cod: 6, cargo: "Subdirector Nacional de Salud" },
-          //   { cod: 7, cargo: "Subgerente General", ver: false },
+          //   { cod: 7, cargo: "Director De Salud", ver: false },
           //   { cod: 8, cargo: "Asistente Nacional De Pagaduria" },
           // ];
 
@@ -5581,16 +5579,7 @@ angular.module('GenesisApp')
             var TipoDoc = $scope.stringToBinary($scope.HojaAnt.Afiliado.TipoDoc.toString());
             var NumeroDoc = $scope.stringToBinary($scope.HojaAnt.Afiliado.NumeroDoc.toString());
             if (VAL == 1) {
-              const fecha = ($scope.HojaAnt.Info.Fecha_Solicitud.substr(0, 10)).split('/')
-              const xfecha = new Date(`${fecha[2]}/${fecha[1]}/${fecha[0]}`);
-              const fechaNew = new Date("2023/11/1")
-
-              if (xfecha >= fechaNew) {
-                $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo_v2.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
-              } else {
-                $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
-              }
-
+              $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
             }
             if (VAL == 2) {
               $window.open('views/autorizaciones/anticipos/formatopertinenciamedica.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
@@ -6109,7 +6098,7 @@ angular.module('GenesisApp')
           return "Subdirector Nacional De Servicios De Salud"
         }
         if (n.toString() == '8') {
-          return "Subgerente General"
+          return "Director De Salud"
         }
         if (n.toString() == '9') {
           return "Asistente Nacional De Pagaduría"
