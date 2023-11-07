@@ -300,9 +300,9 @@
         <div class='steps' id="paso4">
           <span>Asistente Nacional</span>
         </div>
-        <!-- <div class='steps' id="paso5">
+        <div class='steps' id="paso5">
           <span>Especialista Nacional</span>
-        </div> -->
+        </div>
         <div class='steps' id="paso6">
           <span>Coordinador Nacional</span>
         </div>
@@ -310,13 +310,13 @@
           <span>Subdirector de Salud</span>
         </div>
         <br>
-        <div class='steps' id="paso8">
-          <span>Subgerente General</span>
+        <div class='steps' id="paso8" style="margin-top: 2px;" ng-show="Ajuste_Mayo_D_S=='Dir'">
+          <span>Director de Salud</span>
         </div>
         <div class='steps' id="paso9">
           <span>Asistente Nacional Pag.</span>
         </div>
-        <div class='steps' id="paso10" style="margin-top: 2px;">
+        <div class='steps' id="paso10">
           <span>Asistente Nacional</span>
         </div>
         <!-- <div class='steps' id="paso8">
@@ -532,23 +532,13 @@
                       <label style="font-weight: 700;">Cantidad: </label>
                       <label>{{x.CANTIDAD}}</label>
                     </div>
-                    <div class="col s3 " >
+                    <div class="col s3 " ng-show="x.AUT != ''">
                       <label style="font-weight: 700;">Número de Aut.: </label>
-                      <label>{{x.AUT != '' ? x.AUT : 'No Disponible'}}</label>
-                      <div class="tooltip" ng-show="x.AUT != ''">
+                      <label>{{x.AUT}}</label>
+                      <div class="tooltip">
                         <i class="icon-eye default-color" style="cursor: pointer;font-size: 18px;"
                           ng-click="Ver_Aut(x.AUT,x.UBICACION)"></i>
                         <span class="tooltiptext" style="font-size: 13px">Ver Detalle de la Autorización</span>
-                      </div>
-                      <div class="tooltip" ng-if="Rol_Cargo == 6 && HojaAnt.Info.Status==4">
-                        <i class="{{x.AUT == '' ? 'icon-plus': 'icon-arrows-cw-3'}} default-color" style="cursor: pointer;font-size: 18px;"
-                          ng-click="cambiarAut(x)"></i>
-                        <span class="tooltiptext" style="font-size: 13px">{{x.AUT == '' ? 'Agregar':'Cambiar'}} Autorización</span>
-                      </div>
-                      <div class="tooltip" ng-if="Rol_Cargo == 6 && x.AUT != '' && HojaAnt.Info.Status==4">
-                        <i class="icon-eraser default-color" style="cursor: pointer;font-size: 18px;"
-                          ng-click="quitarAut(x)"></i>
-                        <span class="tooltiptext" style="font-size: 13px">Quitar Autorización</span>
                       </div>
                     </div>
                     <div class="col s4 " ng-show="x.AUT != ''">
@@ -590,12 +580,7 @@
             <i class="default-color icon-list-add cursor-pointer" style="font-size: 20px;margin: auto;"
               title="Agregar Servicios y Productos" ng-click="Abrir_Modal_Servicio_ProdAnt()"></i>
           </div>
-          <div class="col s12 m12 l12 center m-b">
-            <button id="buton" class="btn" style="border-radius: 20px;" ng-if="HojaAnt.Info.Estado=='D' && HojaAnt.Info.Val_Aut != 0 && Rol_Cargo == 6"
-              ng-click="desvincularAuts()">
-              Desvincular Autorizaciones
-            </button>
-          </div>
+
         </div>
         <!-- <div class="col s2 no-padding label-new m-b">
           <label id="HojaAnt_Valor_Label">Valor del Servicio</label>
@@ -624,22 +609,6 @@
           </ul>
         </div> -->
         <!-- /// -->
-        <form ng-submit="Buscar_Ips_Solicitante('HojaAnt', 'BusquedaAnt')">
-          <div class="col s12 no-padding label-new m-b">
-            <input type="text" id="HojaAnt_Ips_Solicitante" style="text-transform:uppercase"
-              class="margin border-none input-text-new w-100 m-l" maxlength="90" autocomplete="off"
-              list="HojaAnt_Ips_Solicitante_Listado"
-              title="{{(HojaAnt.Servicio.Ips_Solicitante=='')? 'Ingrese una coincidencia o código del Prestador' : 'Enter para buscar el Prestador'}}"
-              ng-model="HojaAnt.Servicio.Ips_Solicitante" ng-keyup="Selec_Ips_Solicitante('HojaAnt', 'BusquedaAnt')">
-            <label id="HojaAnt_Ips_Solicitante_Label">Ips Solicitante {{' - ' +
-              HojaAnt.Servicio.Ips_Solicitante_Cod}}</label>
-              <datalist id="HojaAnt_Ips_Solicitante_Listado" open="open">
-                <option value="{{x.NOMBRE}}"
-                  ng-repeat="x in BusquedaAnt.Ips_Solicitante.Listado">
-              </datalist>
-          </div>
-        </form>
-
         <div class="col s12 no-padding label-new m-b">
           <input type="text" id="HojaAnt_Servicio_Diagnostico1" style="text-transform:uppercase"
             class="margin border-none input-text-new w-100 m-l" maxlength="90" autocomplete="off"
@@ -881,7 +850,7 @@
                   style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -5px;">
                   <!-- Nombre de la IPS -->
                   <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_1_Cotizacion_NIT" autocomplete="off"
                       ng-model="HojaAnt.Cotizacion_1.Cotizacion_NIT"
                       ng-keyup="Complete_Prestador_Cotizaciones(HojaAnt.Cotizacion_1.Cotizacion_NIT, 'HojaAnt', 'Cotizacion_1','BusquedaAnt','Prestador1');
@@ -889,26 +858,11 @@
                       ng-blur="Blur_Cot('HojaAnt','BusquedaAnt','Cotizacion_1','Prestador1')"
                       title="{{(HojaAnt.Cotizacion_1.Cotizacion_NIT=='') ? 'Realize la búsqueda por código o coincidencia' : 'Pulse enter para buscar'}}">
                     <label id="HojaAnt_Cotizacion_1_Cotizacion_NIT_Label">Nombre de la IPS {{' - ' +
-                      HojaAnt.Cotizacion_1.Cotizacion_NIT_COD}} <b ng-show="HojaAnt.Cotizacion_1.Contratada">- Contratada: {{HojaAnt.Cotizacion_1.Contratada == 'S' ? 'SI':'NO'}}</b></label>
+                      HojaAnt.Cotizacion_1.Cotizacion_NIT_COD}}</label>
                     <ul class="list-group m-l Clase_Listar_Prestador"
                       style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
                       <li class="list-group-item" ng-repeat="x in BusquedaAnt.Prestador1.Filtro"
                         ng-click="FillTextbox_Prestador_Cotizaciones(x.CODIGO,x.NOMBRE,'HojaAnt','Cotizacion_1','BusquedaAnt','Prestador1','Cotizacion_2','Cotizacion_3')">
-                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
-                    </ul>
-                  </div>
-                  <!-- Direción de la IPS -->
-                  <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r" style="text-transform:uppercase"
-                      id="HojaAnt_Cotizacion_1_Cotizacion_DIR" autocomplete="off" ng-model="HojaAnt.Cotizacion_1.Cotizacion_DIR"
-                      ng-keyup="Complete_Prestador_Direccion(HojaAnt.Cotizacion_1.Cotizacion_DIR, 'HojaAnt', 'Cotizacion_1','BusquedaAnt','Direccion1');"
-                      ng-blur="Blur_Prestador_Direccion('HojaAnt','BusquedaAnt','Cotizacion_1','Direccion1')">
-                    <label id="HojaAnt_Cotizacion_1_Cotizacion_DIR_Label">Dirección de la IPS {{' - ' +
-                      HojaAnt.Cotizacion_1.Cotizacion_DIR_COD}}</label>
-                    <ul class="list-group m-l Clase_Listar_Prestador"
-                      style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
-                      <li class="list-group-item" ng-repeat="x in BusquedaAnt.Direccion1.Filtro"
-                        ng-click="FillTextbox_Prestador_Direccion(x.CODIGO,x.NOMBRE,'HojaAnt','Cotizacion_1','BusquedaAnt','Direccion1')">
                         {{x.CODIGO}} - {{x.NOMBRE}}</li>
                     </ul>
                   </div>
@@ -924,21 +878,21 @@
                   </div> -->
                   <!-- Nombre del Banco -->
                   <div class="col s6 no-padding label-new">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_1_Banco" autocomplete="off" maxlength="50"
                       ng-model="HojaAnt.Cotizacion_1.Banco">
                     <label id="HojaAnt_Cotizacion_1_Banco_Label">Nombre del Banco</label>
                   </div>
                   <!-- Nombre de la Cuenta del Banco -->
                   <div class="col s6 no-padding label-new m-b">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r"
+                    <input type="text" class="margin border-none input-text-new w-100 m-l"
                       style="text-transform:uppercase" id="HojaAnt_Cotizacion_1_CuentaNom" autocomplete="off"
                       maxlength="50" ng-model="HojaAnt.Cotizacion_1.CuentaNom">
                     <label id="HojaAnt_Cotizacion_1_CuentaNom_Label">Nombre de la Cuenta</label>
                   </div>
                   <!-- N° de la Cuenta -->
                   <div class="col s6 no-padding label-new">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_1_NumeroCuenta" autocomplete="off" maxlength="50"
                       ng-model="HojaAnt.Cotizacion_1.NumeroCuenta"
                       ng-keyup="FormatSoloTextoNumero('HojaAnt_Cotizacion_1_NumeroCuenta');">
@@ -956,7 +910,7 @@
                   </div>
                   <!-- Medio de pago -->
                   <div class="col s3 no-padding label-new m-b">
-                    <select class="select-new gray-input m-l m-r" style="box-shadow: none;" material-select watch
+                    <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
                       ng-model="HojaAnt.Cotizacion_1.MedioPago" ng-disabled="HojaAnticipo_Edi_Mod">
                       <option value="" disabled>SELECCIONAR</option>
                       <option value="Con">Consignación</option>
@@ -1048,7 +1002,7 @@
                   style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: 3px;">
                   <!-- Nombre de la IPS -->
                   <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_2_Cotizacion_NIT" autocomplete="off"
                       ng-model="HojaAnt.Cotizacion_2.Cotizacion_NIT"
                       ng-keyup="Complete_Prestador_Cotizaciones(HojaAnt.Cotizacion_2.Cotizacion_NIT, 'HojaAnt', 'Cotizacion_2','BusquedaAnt','Prestador2');
@@ -1056,26 +1010,11 @@
                       ng-blur="Blur_Cot('HojaAnt','BusquedaAnt','Cotizacion_2','Prestador2')"
                       title="{{(HojaAnt.Cotizacion_2.Cotizacion_NIT=='') ? 'Realize la búsqueda por código o coincidencia' : 'Pulse enter para buscar'}}">
                     <label id="HojaAnt_Cotizacion_2_Cotizacion_NIT_Label">Nombre de la IPS {{' - ' +
-                      HojaAnt.Cotizacion_2.Cotizacion_NIT_COD}} <b ng-show="HojaAnt.Cotizacion_2.Contratada">- Contratada: {{HojaAnt.Cotizacion_2.Contratada == 'S' ? 'SI':'NO'}}</b></label>
+                      HojaAnt.Cotizacion_2.Cotizacion_NIT_COD}}</label>
                     <ul class="list-group m-l Clase_Listar_Prestador"
                       style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
                       <li class="list-group-item" ng-repeat="x in BusquedaAnt.Prestador2.Filtro"
                         ng-click="FillTextbox_Prestador_Cotizaciones(x.CODIGO,x.NOMBRE,'HojaAnt','Cotizacion_2','BusquedaAnt','Prestador2','Cotizacion_1','Cotizacion_3')">
-                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
-                    </ul>
-                  </div>
-                  <!-- Direción de la IPS -->
-                  <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r" style="text-transform:uppercase"
-                      id="HojaAnt_Cotizacion_2_Cotizacion_DIR" autocomplete="off" ng-model="HojaAnt.Cotizacion_2.Cotizacion_DIR"
-                      ng-keyup="Complete_Prestador_Direccion(HojaAnt.Cotizacion_2.Cotizacion_DIR, 'HojaAnt', 'Cotizacion_2','BusquedaAnt','Direccion2');"
-                      ng-blur="Blur_Prestador_Direccion('HojaAnt','BusquedaAnt','Cotizacion_2','Direccion2')">
-                    <label id="HojaAnt_Cotizacion_2_Cotizacion_DIR_Label">Dirección de la IPS {{' - ' +
-                      HojaAnt.Cotizacion_2.Cotizacion_DIR_COD}}</label>
-                    <ul class="list-group m-l Clase_Listar_Prestador"
-                      style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
-                      <li class="list-group-item" ng-repeat="x in BusquedaAnt.Direccion2.Filtro"
-                        ng-click="FillTextbox_Prestador_Direccion(x.CODIGO,x.NOMBRE,'HojaAnt','Cotizacion_2','BusquedaAnt','Direccion2')">
                         {{x.CODIGO}} - {{x.NOMBRE}}</li>
                     </ul>
                   </div>
@@ -1091,21 +1030,21 @@
                   </div> -->
                   <!-- Nombre del Banco -->
                   <div class="col s6 no-padding label-new">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_2_Banco" autocomplete="off" maxlength="50"
                       ng-model="HojaAnt.Cotizacion_2.Banco">
                     <label id="HojaAnt_Cotizacion_2_Banco_Label">Nombre del Banco</label>
                   </div>
                   <!-- Nombre de la Cuenta del Banco -->
                   <div class="col s6 no-padding label-new m-b">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r"
+                    <input type="text" class="margin border-none input-text-new w-100 m-l"
                       style="text-transform:uppercase" id="HojaAnt_Cotizacion_2_CuentaNom" autocomplete="off"
                       maxlength="50" ng-model="HojaAnt.Cotizacion_2.CuentaNom">
                     <label id="HojaAnt_Cotizacion_2_CuentaNom_Label">Nombre de la Cuenta</label>
                   </div>
                   <!-- N° de la Cuenta -->
                   <div class="col s6 no-padding label-new">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_2_NumeroCuenta" autocomplete="off" maxlength="50"
                       ng-model="HojaAnt.Cotizacion_2.NumeroCuenta"
                       ng-keyup="FormatSoloTextoNumero('HojaAnt_Cotizacion_2_NumeroCuenta');">
@@ -1123,7 +1062,7 @@
                   </div>
                   <!-- Medio de pago -->
                   <div class="col s3 no-padding label-new m-b">
-                    <select class="select-new gray-input m-l m-r" style="box-shadow: none;" material-select watch
+                    <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
                       ng-model="HojaAnt.Cotizacion_2.MedioPago" ng-disabled="HojaAnticipo_Edi_Mod">
                       <option value="" disabled>SELECCIONAR</option>
                       <option value="Con">Consignación</option>
@@ -1216,7 +1155,7 @@
                   style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: 3px;">
                   <!-- Nombre de la IPS -->
                   <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_3_Cotizacion_NIT" autocomplete="off"
                       ng-model="HojaAnt.Cotizacion_3.Cotizacion_NIT"
                       ng-keyup="Complete_Prestador_Cotizaciones(HojaAnt.Cotizacion_3.Cotizacion_NIT, 'HojaAnt', 'Cotizacion_3','BusquedaAnt','Prestador3');
@@ -1224,26 +1163,11 @@
                       ng-blur="Blur_Cot('HojaAnt','BusquedaAnt','Cotizacion_3','Prestador3')"
                       title="{{(HojaAnt.Cotizacion_3.Cotizacion_NIT=='') ? 'Realize la búsqueda por código o coincidencia' : 'Pulse enter para buscar'}}">
                     <label id="HojaAnt_Cotizacion_3_Cotizacion_NIT_Label">Nombre de la IPS {{' - ' +
-                      HojaAnt.Cotizacion_3.Cotizacion_NIT_COD}} <b ng-show="HojaAnt.Cotizacion_3.Contratada">- Contratada: {{HojaAnt.Cotizacion_3.Contratada == 'S' ? 'SI':'NO'}}</b></label>
+                      HojaAnt.Cotizacion_3.Cotizacion_NIT_COD}}</label>
                     <ul class="list-group m-l Clase_Listar_Prestador"
                       style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
                       <li class="list-group-item" ng-repeat="x in BusquedaAnt.Prestador3.Filtro"
                         ng-click="FillTextbox_Prestador_Cotizaciones(x.CODIGO,x.NOMBRE,'HojaAnt','Cotizacion_3','BusquedaAnt','Prestador3','Cotizacion_1','Cotizacion_2')">
-                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
-                    </ul>
-                  </div>
-                  <!-- Direción de la IPS -->
-                  <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r" style="text-transform:uppercase"
-                      id="HojaAnt_Cotizacion_3_Cotizacion_DIR" autocomplete="off" ng-model="HojaAnt.Cotizacion_3.Cotizacion_DIR"
-                      ng-keyup="Complete_Prestador_Direccion(HojaAnt.Cotizacion_3.Cotizacion_DIR, 'HojaAnt', 'Cotizacion_3','BusquedaAnt','Direccion3');"
-                      ng-blur="Blur_Prestador_Direccion('HojaAnt','BusquedaAnt','Cotizacion_3','Direccion3')">
-                    <label id="HojaAnt_Cotizacion_3_Cotizacion_DIR_Label">Dirección de la IPS {{' - ' +
-                      HojaAnt.Cotizacion_3.Cotizacion_DIR_COD}}</label>
-                    <ul class="list-group m-l Clase_Listar_Prestador"
-                      style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
-                      <li class="list-group-item" ng-repeat="x in BusquedaAnt.Direccion3.Filtro"
-                        ng-click="FillTextbox_Prestador_Direccion(x.CODIGO,x.NOMBRE,'HojaAnt','Cotizacion_3','BusquedaAnt','Direccion3')">
                         {{x.CODIGO}} - {{x.NOMBRE}}</li>
                     </ul>
                   </div>
@@ -1259,21 +1183,21 @@
                   </div> -->
                   <!-- Nombre del Banco -->
                   <div class="col s6 no-padding label-new">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_3_Banco" autocomplete="off" maxlength="50"
                       ng-model="HojaAnt.Cotizacion_3.Banco">
                     <label id="HojaAnt_Cotizacion_3_Banco_Label">Nombre del Banco</label>
                   </div>
                   <!-- Nombre de la Cuenta del Banco -->
                   <div class="col s6 no-padding label-new m-b">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l m-r"
+                    <input type="text" class="margin border-none input-text-new w-100 m-l"
                       style="text-transform:uppercase" id="HojaAnt_Cotizacion_3_CuentaNom" autocomplete="off"
                       maxlength="50" ng-model="HojaAnt.Cotizacion_3.CuentaNom">
                     <label id="HojaAnt_Cotizacion_3_CuentaNom_Label">Nombre de la Cuenta</label>
                   </div>
                   <!-- N° de la Cuenta -->
                   <div class="col s6 no-padding label-new">
-                    <input type="text" class="margin border-none input-text-new w-100 m-l" style="text-transform:uppercase"
+                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
                       id="HojaAnt_Cotizacion_3_NumeroCuenta" autocomplete="off" maxlength="50"
                       ng-model="HojaAnt.Cotizacion_3.NumeroCuenta"
                       ng-keyup="FormatSoloTextoNumero('HojaAnt_Cotizacion_3_NumeroCuenta');">
@@ -1291,7 +1215,7 @@
                   </div>
                   <!-- Medio de pago -->
                   <div class="col s3 no-padding label-new m-b">
-                    <select class="select-new gray-input m-l m-r" style="box-shadow: none;" material-select watch
+                    <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
                       ng-model="HojaAnt.Cotizacion_3.MedioPago" ng-disabled="HojaAnticipo_Edi_Mod">
                       <option value="" disabled>SELECCIONAR</option>
                       <option value="Con">Consignación</option>
@@ -1377,7 +1301,7 @@
                   style="padding: 0;box-shadow: 0px 0px 5px -1px #7d8386;margin-top: -5px;">
                   <!-- Nombre de la IPS -->
                   <div class="col s12 no-padding label-new m-b" style="margin-bottom: 5.5rem;margin-top: 2.5rem;">
-                    <textarea id="HojaAnt_Cotizacion_4_Justificacion" class="margin border-none textarea2 w-100 m-l m-r"
+                    <textarea id="HojaAnt_Cotizacion_4_Justificacion" class="margin border-none textarea2 w-100 m-l"
                       maxlength="1000" style="height: 100px;text-transform:uppercase;text-align: justify;"
                       autocomplete="off" ng-keyup="FormatTexto('HojaAnt_Cotizacion_4_Justificacion')"
                       ng-model="HojaAnt.Cotizacion_4.Justificacion"
@@ -1806,7 +1730,7 @@
         <!--  -->
         <div class="col s3 no-padding label-new m-b">
           <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
-            ng-model="Hoja1.Servicio.Marca_Referencia" id="Hoja1_Marca_Referencia">
+            ng-model="Hoja1.Servicio.Marca_Referencia" id="Hoja1_Marca_Referencia" ng-disabled="Hoja1icipo_Edi_Mod">
             <option value="" disabled>SELECCIONAR</option>
             <option value="S">SI</option>
             <option value="N">NO</option>
@@ -1934,22 +1858,6 @@
           </ul>
         </div> -->
         <!-- /// -->
-        <form ng-submit="Buscar_Ips_Solicitante('Hoja1', 'Busqueda')">
-          <div class="col s12 no-padding label-new m-b">
-            <input type="text" id="Hoja1_Ips_Solicitante" style="text-transform:uppercase"
-              class="margin border-none input-text-new w-100 m-l" maxlength="90" autocomplete="off"
-              list="Hoja1_Ips_Solicitante_Listado"
-              title="{{(Hoja1.Servicio.Ips_Solicitante=='')? 'Ingrese una coincidencia o código del Prestador' : 'Enter para buscar el Prestador'}}"
-              ng-model="Hoja1.Servicio.Ips_Solicitante" ng-keyup="Selec_Ips_Solicitante('Hoja1', 'Busqueda')">
-            <label id="Hoja1_Ips_Solicitante_Label">Ips Solicitante {{' - ' +
-              Hoja1.Servicio.Ips_Solicitante_Cod}}</label>
-              <datalist id="Hoja1_Ips_Solicitante_Listado" open="open">
-                <option value="{{x.NOMBRE}}"
-                  ng-repeat="x in Busqueda.Ips_Solicitante.Listado">
-              </datalist>
-          </div>
-        </form>
-
         <div class="col s12 no-padding label-new m-b">
           <input type="text" id="Hoja1_Servicio_Diagnostico1" style="text-transform:uppercase"
             class="margin border-none input-text-new w-100 m-l" maxlength="90" autocomplete="off"
@@ -2210,22 +2118,6 @@
                         {{x.CODIGO}} - {{x.NOMBRE}}</li>
                     </ul>
                   </div>
-                  <!-- Direción de la IPS -->
-                  <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
-                      id="Hoja1_Cotizacion_1_Cotizacion_DIR" autocomplete="off"
-                      ng-model="Hoja1.Cotizacion_1.Cotizacion_DIR"
-                      ng-keyup="Complete_Prestador_Direccion(Hoja1.Cotizacion_1.Cotizacion_DIR, 'Hoja1', 'Cotizacion_1','Busqueda','Direccion1');"
-                      ng-blur="Blur_Prestador_Direccion('Hoja1','Busqueda','Cotizacion_1','Direccion1')">
-                    <label id="Hoja1_Cotizacion_1_Cotizacion_DIR_Label">Dirección de la IPS {{' - ' +
-                      Hoja1.Cotizacion_1.Cotizacion_DIR_COD}} (*)</label>
-                    <ul class="list-group m-l Clase_Listar_Prestador"
-                      style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
-                      <li class="list-group-item" ng-repeat="x in Busqueda.Direccion1.Filtro"
-                        ng-click="FillTextbox_Prestador_Direccion(x.CODIGO,x.NOMBRE,'Hoja1','Cotizacion_1','Busqueda','Direccion1')">
-                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
-                    </ul>
-                  </div>
                   <!-- Numero de Contrato -->
                   <!-- <div class="col s3 no-padding label-new m-b" style="margin-top: 2.5rem;">
                     <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
@@ -2380,22 +2272,6 @@
                         {{x.CODIGO}} - {{x.NOMBRE}}</li>
                     </ul>
                   </div>
-                  <!-- Direción de la IPS -->
-                  <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
-                      id="Hoja1_Cotizacion_2_Cotizacion_DIR" autocomplete="off"
-                      ng-model="Hoja1.Cotizacion_2.Cotizacion_DIR"
-                      ng-keyup="Complete_Prestador_Direccion(Hoja1.Cotizacion_2.Cotizacion_DIR, 'Hoja1', 'Cotizacion_2','Busqueda','Direccion2');"
-                      ng-blur="Blur_Prestador_Direccion('Hoja1','Busqueda','Cotizacion_2','Direccion2')">
-                    <label id="Hoja1_Cotizacion_2_Cotizacion_DIR_Label">Dirección de la IPS {{' - ' +
-                      Hoja1.Cotizacion_2.Cotizacion_DIR_COD}} (*)</label>
-                    <ul class="list-group m-l Clase_Listar_Prestador"
-                      style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
-                      <li class="list-group-item" ng-repeat="x in Busqueda.Direccion2.Filtro"
-                        ng-click="FillTextbox_Prestador_Direccion(x.CODIGO,x.NOMBRE,'Hoja1','Cotizacion_2','Busqueda','Direccion2')">
-                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
-                    </ul>
-                  </div>
                   <!-- Numero de Contrato -->
                   <!-- <div class="col s3 no-padding label-new m-b" style="margin-top: 2.5rem;">
                     <select class="select-new gray-input m-l" style="box-shadow: none;" material-select watch
@@ -2547,22 +2423,6 @@
                       style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
                       <li class="list-group-item" ng-repeat="x in Busqueda.Prestador3.Filtro"
                         ng-click="FillTextbox_Prestador_Cotizaciones(x.CODIGO,x.NOMBRE,'Hoja1','Cotizacion_3','Busqueda','Prestador3','Cotizacion_1','Cotizacion_2')">
-                        {{x.CODIGO}} - {{x.NOMBRE}}</li>
-                    </ul>
-                  </div>
-                  <!-- Direción de la IPS -->
-                  <div class="col s12 no-padding label-new m-b" style="margin-top: 2.5rem;">
-                    <input type="text" class="margin border-none input-text-new w-100" style="text-transform:uppercase"
-                      id="Hoja1_Cotizacion_3_Cotizacion_DIR" autocomplete="off"
-                      ng-model="Hoja1.Cotizacion_3.Cotizacion_DIR"
-                      ng-keyup="Complete_Prestador_Direccion(Hoja1.Cotizacion_3.Cotizacion_DIR, 'Hoja1', 'Cotizacion_3','Busqueda','Direccion3');"
-                      ng-blur="Blur_Prestador_Direccion('Hoja1','Busqueda','Cotizacion_3','Direccion3')">
-                    <label id="Hoja1_Cotizacion_3_Cotizacion_DIR_Label">Dirección de la IPS {{' - ' +
-                      Hoja1.Cotizacion_3.Cotizacion_DIR_COD}} (*)</label>
-                    <ul class="list-group m-l Clase_Listar_Prestador"
-                      style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
-                      <li class="list-group-item" ng-repeat="x in Busqueda.Direccion3.Filtro"
-                        ng-click="FillTextbox_Prestador_Direccion(x.CODIGO,x.NOMBRE,'Hoja1','Cotizacion_3','Busqueda','Direccion3')">
                         {{x.CODIGO}} - {{x.NOMBRE}}</li>
                     </ul>
                   </div>
@@ -3667,7 +3527,6 @@
 
   <!-- //////////////////////////////////////////////////////////////////////////////// -->
   <!-- //////////////////////////////////////////////////////////////////////////////// -->
-  <!-- //////////////////////////////////////////////////////////////////////////////// -->
   <div id="modal_Aut" class="modal"
     style="margin: 0 auto;max-height:90%;width: 95%;top:-100px !important;transition-duration: 0.3s;overflow-y: hidden;">
     <div class="col s12 m6 l6 card margin">
@@ -3818,44 +3677,6 @@
     </div>
   </div>
 
-  <div id="modal_vincularAut" class="modal"
-    style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
-    <div class="col s12 m6 l6 card margin">
-      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
-        ng-click="Cerrar_modal_vincularAut()"></div>
-      <div class="card-content default-linear-gradient border-radius-none white-text">
-        <div class="col s11">
-          <h5 class="margin">Vincular Autorización
-          </h5>
-        </div>
-      </div>
-      <!-- CUERPO -->
-      <div class="row card-action" style="margin: 0;">
-        <div class="col s12">
-          <div class="col s6 no-padding label-new m-b">
-            <input type="text" class="margin border-none input-text-new w-100 m-l" autocomplete="off" maxlength="10" id="modalVincularAut_numero" ng-model="modalVincularAut_numero"
-            ng-keyup="FormatSoloNumero('modalVincularAut_numero')">
-            <label>Numero</label>
-          </div>
-          <div class="col s6 no-padding label-new m-b">
-            <input type="text" class="margin border-none input-text-new w-100 m-l" autocomplete="off" maxlength="5" id="modalVincularAut_ubicacion" ng-model="modalVincularAut_ubicacion"
-            ng-keyup="FormatSoloNumero('modalVincularAut_ubicacion')">
-            <label>Ubicación</label>
-          </div>
-          <span><i>Digitar 1 en el número de la Aut para aprobar el anticipo si se encuentra el producto duplicado.</i></span>
-        </div>
-      </div>
-      <!-- ///////////////// -->
-
-      <div class="row margin">
-        <div class="col s12 center-align" style="margin-bottom: 2em">
-          <button class="btn default-linear-gradient" style="border-radius: 20px;"
-            ng-click="guardarVincularAut()">Guardar</button>
-        </div>
-      </div>
-      <!-- ///////// -->
-    </div>
-  </div>
 
   <style>
     @keyframes tooltiptext_migestion {
@@ -4419,8 +4240,7 @@
       left: 0px;
       height: 50%;
       width: 100%;
-      background: #1a2e636e;
-      /* background: #1a2e6347; */
+      background: #1a2e6347;
     }
 
     .steps:before {
@@ -4444,10 +4264,6 @@
       text-overflow: ellipsis;
       width: 100%;
       height: 75%;
-      font-weight: bold;
-      color: white;
-      position: sticky;
-      z-index: 1;
     }
 
     .steps span:before {
@@ -4455,7 +4271,7 @@
     }
 
     .steps.active span {
-      /* font-weight: bold; */
+      font-weight: bold;
       /* animation-name: example; */
       /* animation-duration: 5s; */
       /* animation: 5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s 1 normal both running example; */
@@ -4497,68 +4313,67 @@
 
     .steps.active:before,
     .steps.active:after {
-      background: #1a2e63c9;
-      /* background: #1a2e6391; */
+      background: #1a2e6391;
     }
 
     html body.cyan-scheme .steps.active:before,
     html body.cyan-scheme .steps.active:after {
-      background: #00abc0c9 !important;
+      background: #00abc091 !important;
     }
 
     html body.cyan-scheme .steps:after,
     html body.cyan-scheme .steps:before {
-      background: #00abc06e !important;
+      background: #00abc047 !important;
     }
 
     html body.blue-scheme .steps.active:before,
     html body.blue-scheme .steps.active:after {
-      background: #1565c0c9 !important;
+      background: #1565c091 !important;
     }
 
     html body.blue-scheme .steps:before,
     html body.blue-scheme .steps:after {
-      background: #1565c06e !important;
+      background: #1565c047 !important;
     }
 
     html body.green-scheme .steps.active:before,
     html body.green-scheme .steps.active:after {
-      background: #558A2Fc9 !important;
+      background: #558A2F91 !important;
     }
 
     html body.green-scheme .steps:before,
     html body.green-scheme .steps:after {
-      background: #558A2F6e !important;
+      background: #558A2F47 !important;
     }
 
     html body.purple-scheme .steps.active:before,
     html body.purple-scheme .steps.active:after {
-      background: #6a1b99c9 !important;
+      background: #d0242491 !important;
     }
 
     html body.purple-scheme .steps:before,
     html body.purple-scheme .steps:after {
-      background: #6a1b996e !important;
+      background: #d0242447 !important;
     }
 
     html body.yellow-scheme .steps.active:before,
     html body.yellow-scheme .steps.active:after {
-      background: #FDA626c9 !important;
+      background: #FDA62691 !important;
     }
 
     html body.yellow-scheme .steps:before,
     html body.yellow-scheme .steps:after {
-      background: #FDA6266e !important;
+      background: #FDA62647 !important;
     }
 
     html body.dark-scheme .steps.active:before,
     html body.dark-scheme .steps.active:after {
-      background: #000000c9 !important;
+      background: #00000091 !important;
     }
 
     html body.dark-scheme .steps:before,
     html body.dark-scheme .steps:after {
-      background: #0000006e !important;
+      background: #00000047 !important;
     }
 
 
