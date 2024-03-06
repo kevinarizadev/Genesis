@@ -9,6 +9,7 @@ angular.module('GenesisApp')
         $scope.validarperiodo();
         $scope.limpiarTabs1();
         $scope.limpiarTabs2();
+
         $('.tabs').tabs();
         $scope.Tabs = 1;
         $('.modal').modal();
@@ -22,6 +23,8 @@ angular.module('GenesisApp')
           format: "MM/yyyy",
           dateInput: true
         });
+        $scope.ejecutarcapita = false;
+        $scope.vistacontrolbotonejecutarCapita = false;
       }
       $scope.Set_Tab = function (x) {
         $scope.Tabs = x;
@@ -59,6 +62,61 @@ angular.module('GenesisApp')
       $scope.classebuttonGenerarcapita = "default-linear-gradient";
       $scope.classebuttonApertura = "default-linear-gradient";
       // **********************************************
+      // Funciones para crear el periodo y validar
+      $scope.validarperiodo = function () {
+        $http({
+          method: 'POST',
+          url: "php/contratacion/generaciondecapita.php",
+          data: { function: 'validarperiodo' }
+        }).then(function (response) {
+          //console.log(response);
+          $scope.controlboton_Capita(response);
+          $scope.periodo = response.data[0].periodo;
+          $scope.periodoCapturar = response.data[0].periodo_capturar;
+          if ($scope.periodo == $scope.periodoCapturar) {
+            $scope.ocultarperiodoGenerar = false;
+          }
+          if (response.data[0].estado == 'C') {
+            $scope.ejecutarcapita = false;
+          }
+          $scope.estadoCapita();
+          if ($scope.periodo == "G") {
+            $scope.estadodelperido = response.data[0].mensaje;
+          } else {
+            $scope.estadodelperido = response.data[0].mensaje;
+          }
+        });
+      }
+      $scope.controlboton_Capita = function (info) {
+        console.log(info);
+        $http({
+          method: 'POST',
+          url: "php/contratacion/generaciondecapita.php",
+          data: {
+            function: 'controlbotonCapita',
+            vpperiodo: info.data[0].periodo
+          }
+        }).then(function (response) {
+          console.log(response);
+          // $scope.estadodelperiodopn = response.data[0].periodo;
+          $scope.estadoperiodomensaje = response.data[0].mensaje;
+          $scope.estadodelperiodo = response.data[0].estado;
+          $scope.controlbotonejecutarCapita = response.data[0].estado;
+          if ($scope.controlbotonejecutarCapita == "C") {
+            $scope.vistacontrolbotonejecutarCapita = false;
+            $scope.ejecutarcapita = false;
+            return
+          }
+          if ($scope.estadodelperiodo == "A") {
+            $scope.texto_estado = "Abierto";
+            $scope.vistacontrolbotonejecutarCapita = true;
+            $scope.ejecutarcapita = true;
+          } else {
+            $scope.texto_estado = "No generado";
+            $scope.ejecutarcapita = false;
+          }
+        });
+      }
       //Funcion para visualizar el estado del periodo
       $scope.estadodelperiodo = function () {
         $http({
@@ -69,7 +127,7 @@ angular.module('GenesisApp')
             estadoperiodo: $scope.estadoperiodo
           }
         }).then(function (response) {
-          console.log(response);
+
           $scope.estadodelperiodopn = response.data[0].periodo;
           $scope.estadoperiodomensaje = response.data[0].mensaje;
           $scope.estadodelperiodo = response.data[0].estado;
@@ -77,6 +135,7 @@ angular.module('GenesisApp')
             $scope.texto_estado = "Abierto";
           } else {
             $scope.texto_estado = "No generado";
+            $scope.ejecutarcapita = false;
           }
         });
       }
@@ -94,7 +153,7 @@ angular.module('GenesisApp')
           }
         });
       }
-      // Funcion para aperturar la capita 
+      // Funcion para aperturar la capita
       $scope.aperturaCapita = function () {
         swal({
           title: 'Confirmar el Proceso',
@@ -134,27 +193,6 @@ angular.module('GenesisApp')
         });
 
       }
-      // Funciones para crear el periodo y validar
-      $scope.validarperiodo = function () {
-        $http({
-          method: 'POST',
-          url: "php/contratacion/generaciondecapita.php",
-          data: { function: 'validarperiodo' }
-        }).then(function (response) {
-          $scope.periodo = response.data[0].periodo;
-          $scope.periodoCapturar = response.data[0].periodo_capturar;
-
-          if ($scope.periodo == $scope.periodoCapturar) {
-            $scope.ocultarperiodoGenerar = false;
-          }
-          $scope.estadoCapita();
-          if ($scope.periodo == "G") {
-            $scope.estadodelperido = response.data[0].mensaje;
-          } else {
-            $scope.estadodelperido = response.data[0].mensaje;
-          }
-        });
-      }
       $scope.funcrearPeriodo = function () {
         if ($scope.fechaMesanno == '' || $scope.fechaMesanno == null || $scope.fechaMesanno == undefined) {
           swal('Advertencia', '¡ Debe seleccionar una fecha de inicio y final !', 'warning')
@@ -172,7 +210,7 @@ angular.module('GenesisApp')
             if (result) {
               var fechainicio = "1/" + $scope.fechaMesanno;
               var fechafinal = "28/" + $scope.fechaMesanno;
-              console.log($scope.periodo_cap);
+              // console.log($scope.periodo_cap);
               $http({
                 method: 'POST',
                 url: "php/contratacion/generaciondecapita.php",
@@ -254,6 +292,7 @@ angular.module('GenesisApp')
                 } else {
                   $scope.dato = response.data;
                   $scope.ocultartabla = false;
+                  $scope.ejecutarcapita = true;
                   swal({
                     title: '!Mensaje!',
                     text: response.data.mensaje,
@@ -267,8 +306,65 @@ angular.module('GenesisApp')
           }
           $scope.$apply();
         }).catch(swal.noop);
-
-
+      }
+      // Funcion para crear el capita
+      $scope.ejecutar_Capita = function () {
+        swal({
+          title: 'Confirmar Proceso',
+          text: "Está seguro que desea generar la capita?",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+          if (result) {
+            swal({
+              title: 'Generando Precapita...',
+              allowEscapeKey: false,
+              allowOutsideClick: false
+            });
+            swal.showLoading();
+            $http({
+              method: 'POST',
+              url: "php/contratacion/generaciondecapita.php",
+              data: {
+                function: 'ejecutarCapita',
+                vpperiodo: $scope.periodoCapturar,
+                vpresponsable: $scope.responsable
+              }
+            })
+              .then(function (response) {
+                console.log(response);
+                swal.close();
+                if (response.data[0].codigo == "0") {
+                  // $scope.GenerarExcel();
+                  $scope.controlVista();
+                  swal({
+                    title: '!Mensaje!',
+                    text: response.data[0].mensaje,
+                    // timer: 100,
+                    type: 'success'
+                  }).catch(swal.noop);
+                } else {
+                  // $scope.dato = response.data;
+                  // $scope.ocultartabla = false;
+                  swal({
+                    title: 'Mensaje!',
+                    text: response.data[0].mensaje,
+                    type: 'error'
+                  }).catch(swal.noop);
+                  // $scope.estadoCapita();
+                  // $scope.validarperiodo();
+                }
+              });
+          }
+          $scope.$apply();
+        }).catch(swal.noop);
+      }
+      $scope.controlVista = function () {
+        $scope.ejecutarcapita = false;
       }
       ////////////////////////////////////////////////////////////////////// TABS 2 /////////////////////////////////////////////////////////////
       // Funcion de Selecc Tipo de conceptos
@@ -372,17 +468,22 @@ angular.module('GenesisApp')
             estadocapita: $scope.periodo
           }
         }).then(function (response) {
+          console.log(response);
           $scope.estadocapita1 = response.data[0].mensaje;
           $scope.estadocapita2 = response.data[0].codigo;
           $scope.estadoCapita3 = response.data[0].estado;
+
           if ($scope.estadocapita2 == 1) {
             $scope.estadocapitamensaje = response.data[0].mensaje;
             $scope.classebuttonGenerarcapita = "default-linear-gradient-disabled";
             $scope.generarCapitadisable = true;
+
           } else {
-            $scope.estadocapitamensaje = "Capita no generada aun";
             $scope.classebuttonGenerarcapita = "default-linear-gradient";
             $scope.generarCapitadisable = false;
+            $scope.estadocapitamensaje = "Capita no generada aun";
+            $scope.ejecutarcapita = false;
+            $scope.vistacontrolbotonejecutarCapita = false;
           }
 
         });

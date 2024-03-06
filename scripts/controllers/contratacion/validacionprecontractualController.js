@@ -526,7 +526,9 @@ angular.module('GenesisApp')
                 }
             }
             $scope.guardar = function () {
-
+                // let cadena = "" + $scope.v_pporcentaje.replace('.', ',');
+                // var numeroConComa = "23,45";
+                // var numeroFlotante = parseFloat(numeroConComa.replace(',', '.'));
                 if (
                     ('' != $scope.v_ptercero) &&
                     ('' != $scope.v_pregimen) &&

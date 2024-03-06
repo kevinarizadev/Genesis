@@ -1,0 +1,391 @@
+<div class="row">
+  <style type="text/css">
+    #qrcode {
+      width: 160px;
+      height: 160px;
+      margin-top: 15px;
+    }
+
+    .switch label .lever:after {
+      background-color: #1a2e63;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #1a2e63;
+      left: 24px;
+    }
+
+    .switch label .lever {
+      background-color: #c7c7c7;
+    }
+
+    .switch label input[type=checkbox]:checked+.lever {
+      background-color: #c7c7c7;
+    }
+
+    .activespanswitch {
+      font-weight: 800;
+      color: #1a2e63;
+    }
+
+    .aprobado {
+      background-color: #8BC34A;
+    }
+
+    .rechazado {
+      background-color: #FF5722;
+    }
+
+    .pendiente {
+      background-color: #FFC107;
+    }
+
+    .scrollbar {
+      max-height: calc(100vh - 312px);
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    .force-overflow {
+      min-height: 450px;
+    }
+
+    /* #style-3::-webkit-scrollbar-track {
+      background-color: #F5F5F5;
+    }
+
+    #style-3::-webkit-scrollbar {
+      width: 6px;
+      background-color: #F5F5F5;
+    }
+
+    #style-3::-webkit-scrollbar-thumb {
+      background-color: #c1c1c1;
+    } */
+
+    #monitor {
+
+      margin: auto;
+      position: relative;
+      width: 400px;
+      height: 250px;
+      border: 1px solid rgba(0, 0, 0, .1);
+
+
+    }
+
+    #monitor .scan {
+      width: 100%;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.61);
+      position: absolute;
+      z-index: 9999;
+      -moz-animation: scan 5s infinite;
+      -webkit-animation: scan 5s infinite;
+      animation: scan 1.5s infinite;
+      /* -webkit-animation-direction: alternate-reverse; */
+      box-shadow: 0px 0px 20px 3px #ffffff;
+    }
+
+    @keyframes latido {
+      0% {
+        transform: scale(1)
+      }
+
+      25% {
+        transform: scale(1.1)
+      }
+
+      50% {
+        transform: scale(.9)
+      }
+
+      75% {
+        transform: scale(1)
+      }
+
+      100% {
+        transform: scale(1.1)
+      }
+    }
+
+    #btn_radicar_facturas:hover {
+      animation: none !important;
+    }
+
+    @keyframes pulse {
+      0% {
+        -moz-transform: scale(0.9);
+        -ms-transform: scale(0.9);
+        -webkit-transform: scale(0.9);
+        transform: scale(0.9);
+      }
+
+      70% {
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        box-shadow: 0 0 0 50px rgba(90, 153, 212, 0);
+      }
+
+      100% {
+        -moz-transform: scale(0.9);
+        -ms-transform: scale(0.9);
+        -webkit-transform: scale(0.9);
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgba(90, 153, 212, 0);
+      }
+    }
+
+    @keyframes scan {
+
+      0%,
+      100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+      }
+
+      100% {
+        -webkit-transform: translateY(210px);
+        transform: translateY(240px);
+      }
+    }
+  </style>
+
+  <!-- <div class="row section-header" style="padding-bottom: 0px;">
+      <h4 class="page-title" ng-click="enviarMsm()">Radicar Facturas</h4>
+    </div> -->
+  <div class="col l12 m12 s12">
+    <div class="card charts">
+      <div class="card-content">
+        <div style="display: flex;justify-content: space-between;align-items: center">
+          <div style="display: flex;">
+            <i ng-show="verLector" style="font-size: -webkit-xxx-large; cursor:pointer;"
+              ng-click="resetService()" class="material-icons">keyboard_backspace</i>
+            <h5 style="margin-left: 5px; margin-top: 11px;">{{titulo}}</h5>
+          </div>
+
+          <button id="btn_radicar_facturas" class="btn white-text" type="button" ng-click="radicarFacturas()"
+            style="animation: pulse 1s infinite;">Radicar
+            Facturas</button>
+          <!-- <div class="col s2" style="display: table; height: 0px;">
+              <div style="display: table-cell; vertical-align: middle; text-align: center;">
+                
+                <div class="flex" style="margin-top: 50%;">
+                  <i style="cursor:pointer; font-size: 5rem;" class="material-icons">arrow_left</i>
+                  <i style="cursor:pointer; font-size: 5rem;" class="material-icons">arrow_right</i>
+                </div>
+              </div>
+            </div> -->
+
+        </div>
+      </div>
+      <div class="card-action">
+        <div class="row">
+          <div class="col s12" ng-hide="verLector">
+            <div class="col s8 offset-s2">
+              <center>
+                <div class="card charts">
+                  <div class="card-content">
+                    <div class="btn-panel switch" style="margin-top: 16px;">
+                      <label>
+                        <span ng-class="{'activespanswitch':!check_option}">QR</span>
+                        <input type="checkbox" ng-init="check_option = false"
+                          ng-model="check_option">
+                        <span class="lever"></span>
+                        <span ng-class="{'activespanswitch':check_option}">MANUAL</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="card-action">
+                    <div class="row">
+                      <div class="col s12">
+                        <div id="monitor" ng-hide="check_option">
+                          <div class="scan"></div>
+                          <video id="preview" width="400"></video>
+                        </div>
+                        <div class="col s6 offset-s3" ng-show="check_option">
+                          <form ng-submit="buscarFacturas(rip.nit,rip.recibo,rip.codigo)">
+                            <div class="col s12">
+                              <div class="col s12" style="height: 88px;">
+                                <div class="input-field col m12 s12">
+                                  <i class="material-icons prefix"
+                                    style="margin-top: 10px;">business</i>
+                                  <input id="with_icon1" type="text"
+                                    ng-model="rip.nit" required>
+                                  <label for="with_icon1">Nit</label>
+                                </div>
+                              </div>
+                              <div class="col s12" style="height: 88px;">
+                                <div class="input-field col m12 s12">
+                                  <i class="material-icons prefix"
+                                    style="margin-top: 10px;">dialpad</i>
+                                  <input id="with_icon2" type="text"
+                                    ng-model="rip.recibo" required>
+                                  <label for="with_icon2">Recibo</label>
+                                </div>
+                              </div>
+                              <div class="col s12" style="height: 88px;">
+                                <div class="input-field col m12 s12">
+                                  <i class="material-icons prefix"
+                                    style="margin-top: 10px;">dialpad</i>
+                                  <input id="with_icon3" type="text"
+                                    ng-model="rip.codigo" required>
+                                  <label for="with_icon3">Codigo de Proceso</label>
+                                </div>
+                              </div>
+                              <div class="col s12" style="height: 88px;">
+                                <div class="input-field col m12 s12">
+                                  <button class="btn white-text" type="submit"
+                                    style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i
+                                      style="position: relative;"
+                                      class="material-icons prefix">search</i></button>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </center>
+            </div>
+          </div>
+          <div class="col s12" ng-show="verLector">
+            <div class="col s6">
+              <div class="responsive scrollbar" id="style-3">
+                <table class="table table-bordered table-striped force-overflow">
+                  <thead>
+                    <tr class="foot4 white-text" style="display: table-row;">
+                      <th colspan="6" style="text-align:center;">FACTURAS POR GESTIONAR
+                        ({{list.facturas.length}}) -
+                        {{sumpendiente | currency:"$ ":0}}</th>
+                    </tr>
+                    <tr>
+                      <th style="text-align:center;">
+                        <input type="text" ng-model="filter_factura" class="margin border-none"
+                          style="height: auto;font-size: 13px;" placeholder="FACTURA">
+                      </th>
+                      <th style="text-align:center;">VALOR</th>
+                      <th style="text-align:center;">ESTADO</th>
+                      <th colspan="2" style="text-align:center;">ACCIÓN</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      ng-repeat="fac in list.facturas | filter:{'FACTURA': filter_factura} | startFrom:currentPage*pageSize | limitTo:pageSize">
+                      <th style="text-align:center;">{{fac.FACTURA}}</th>
+                      <td style="text-align:center;">{{fac.VALOR}}</td>
+                      <td style="text-align:center;">
+                        <span ng-class='whatClassIsIt(fac.ESTADO)'>{{fac.ESTADO_TEMP}}</span>
+                      </td>
+                      <td style="text-align:center;">
+                        <div class="tooltip">
+                          <i style="cursor:pointer;" ng-click="modificar_facturas(fac,'S')"
+                            class="material-icons">check</i>
+                          <span class="tooltiptext">Radicar</span>
+                        </div>
+                      </td>
+                      <td style="text-align:center;">
+                        <div class="tooltip">
+                          <i style="cursor:pointer;" ng-click="modificar_facturas(fac,'N')"
+                            class="material-icons">close</i>
+                          <span class="tooltiptext">Devolver</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <!-- <tfoot>
+                    <tr>
+                      <td colspan="5" class="border-none no-padding" style="user-select: none">
+                        
+                      </td>
+                    </tr>
+                  </tfoot> -->
+                </table>
+              </div>
+              <div class="black-text title-panel d-flex justify-content-between align-items-center"
+                style="margin-top: 15px;">
+                <select id="pageSize" ng-model="pageSize"
+                  class="gray-input select-default-new border-none" ng-change="currentPage=0"
+                  style="width: auto;max-width: 100px;">
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </select>
+                <div>
+                  <button class="btn btn-small border-radius-none no-padding"
+                    ng-disabled="currentPage == 0" ng-click="btns_paginacion(currentPage-1)"
+                    style="box-shadow: none;">
+                    <i class="icon-left-small"></i>
+                  </button>
+                  <small
+                    style="min-width: 90px;display: inline-block;text-align: center;padding: 0 1rem;">
+                    Página {{currentPage+1}} de {{numberOfPages()}}
+                  </small>
+                  <button class="btn btn-small border-radius-none no-padding"
+                    ng-disabled="currentPage >= getData().length/pageSize - 1"
+                    ng-click="btns_paginacion(currentPage+1)" style="box-shadow: none;">
+                    <i class="icon-right-small"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col s6">
+              <div class="responsive scrollbar" id="style-4">
+                <table class="table table-bordered table-striped force-overflow">
+                  <thead>
+                    <tr class=" foot4 white-text" style="display: table-row;">
+                      <th colspan="4" class="cursor-pointer" ng-click="sortBy('ESTADO')">
+                        <div class="d-flex justify-content-between w-100">
+                          <span>
+                            RADICADAS
+                            ({{lengthaprobada}}) - {{sumaprobada | currency:"$ ":0}}
+                          </span>
+                          <span>
+                            DEVUELTAS
+                            ({{lengthrechazada}}) - {{sumrechazada | currency:"$ ":0}}
+                          </span>
+                        </div>
+                      </th>
+                      <!-- <th colspan="2" style="text-align:center; cursor:pointer;"
+                        ng-click="sortBy('ESTADO')"></th> -->
+                    </tr>
+                    <tr>
+                      <th style="text-align:center;">
+                        <input type="text" ng-model="filter_factura_2"
+                          class="margin border-none" style="height: auto;font-size: 13px;"
+                          placeholder="FACTURA">
+                      </th>
+                      <th style="text-align:center;">VALOR</th>
+                      <th style="text-align:center;">ESTADO</th>
+                      <th style="text-align:center;">ACCIÓN</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      ng-repeat="fac in list.gestionadas | filter:{'FACTURA': filter_factura_2} | orderBy:propertyName:reverse">
+                      <th style="text-align:center;">{{fac.FACTURA}}</th>
+                      <td style="text-align:center;">{{fac.VALOR}}</td>
+                      <td style="text-align:center;"><span
+                          ng-class='whatClassIsIt(fac.ESTADO)'>{{fac.ESTADO_TEMP}}</span></td>
+                      <td style="text-align:center;">
+                        <div class="tooltip">
+                          <i style="cursor:pointer;" ng-click="modificar_facturas(fac,'V')"
+                            class="material-icons">reply</i>
+                          <span class="tooltiptext">Remover</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

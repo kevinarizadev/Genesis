@@ -9,8 +9,6 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         }
         // console.log("width:" + document.querySelector("#pantalla").offsetWidth);
         // console.log("height:" +document.querySelector("#pantalla").offsetHeight);
-        // Nit: 802009806 - Usuario: 72176922 - Clave: Cajacopi2022.
-
         $scope.Pantalla = {
             Altura: 0,
             Anchura: document.querySelector("#pantalla").offsetWidth
@@ -635,8 +633,10 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
                 data: {
                     function: 'Obt_Diagnostico',
                     Conc: $scope.HojaGest.DIAGNOSTICO.toUpperCase(),
-                    Sexo: $scope.HojaGest.GENERO,
-                    Edad: $scope.HojaGest.EDAD,
+                    //Sexo: $scope.HojaGest.GENERO,
+                    //Edad: $scope.HojaGest.EDAD,
+                    Sexo: $scope.sexoafitabI,
+                    Edad: $scope.edadafitabI,
                 }
             }).then(function (response) {
                 if (response.data[0] != undefined && response.data.length > 1) {
@@ -674,6 +674,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         }
     }
     $scope.Complete_Listado_Diag = function (string) {
+        console.log(string);
         if ($scope.HojaGest.DIAGNOSTICO != undefined && string != undefined && $scope.Busqueda.Diagnostico.Listado != undefined) {
             $('.Clase_Listar_Diags').css({ width: $('#Gestion_Diag')[0].offsetWidth });
             var output = [];
@@ -771,7 +772,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             }
             //
             if (Campos_Empty == false) {
-                if ((parseFloat(($scope.HojaGest.COPAGO.toString().replace(/\./g, '')).replace(/\,/g, '.'))) <= ($scope.HojaGest.VALOR * 0.1)) {
+                if (((parseFloat(($scope.HojaGest.COPAGO.toString().replace(/\./g, '')).replace(/\,/g, '.'))) <= ($scope.HojaGest.VALOR * 0.1) && $scope.HojaGest.REGIMEN == '0')
+                 || ((parseFloat(($scope.HojaGest.COPAGO.toString().replace(/\./g, '')).replace(/\,/g, '.'))) <= ($scope.HojaGest.VALOR * 0.115) && $scope.HojaGest.REGIMEN == '1')) {
                     if ($scope.HojaGest.CONCEPTO == 'PG' || $scope.HojaDet.SUM_TOTAL <= $scope.HojaGest.VALOR) {
                         var xData = [], xCant = 0;
                         $scope.HojaGlosa.Array.forEach(i => {
@@ -1610,7 +1612,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         if (x == 5) { //Autorizaciones
             $scope.Vistas_Informativa = 5;
             $scope.Vistas_Informativa_Titulo = 'Autorizaciones';
-            $scope.Consulta_Auts($scope.HojaGest.DOC_AFILIADO);
+            $scope.Consulta_Auts($scope.HojaGest.TIPO_DOCUMENTO,$scope.HojaGest.DOC_AFILIADO);
         }
         if (x == 6) { //Autorizaciones
             $scope.Vistas_Informativa = 6;
@@ -1623,7 +1625,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             $scope.Consulta_Financiera();
         }
 
-        if (x == 8) { //Busqueda OCR
+        if (x == 8) { //Busqueda OCR            
             $scope.Vistas_Informativa = 8;
             $scope.Vistas_Informativa_Titulo = 'Busqueda OCR  N° Factura: ' + $scope.HojaGest.FACTURA + ' IPS: ' + $scope.HojaGest.IPS;
             $scope.Consulta_Financiera();
@@ -2047,7 +2049,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         }
     }
     /////////////////////////////////////////////////////INFORMACION DEL AFILIADO///////////////////////////////////////////////
-    $scope.Consulta_Auts = function (documento) {
+    $scope.Consulta_Auts = function (tipodocumento,documento) {
         $scope.listarAutorizaciones = [];
         swal({ title: 'Cargando...', allowOutsideClick: false });
         swal.showLoading();
@@ -2055,7 +2057,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             method: 'POST',
             url: "php/autorizaciones/autorizacionprog/funcautorizacion.php",
             data: {
-                function: 'p_consulta_autorizaciones', documento: documento, numero: 0, ubicacion: 0
+                function: 'p_consulta_autorizaciones',tipodocumento:tipodocumento, documento: documento, numero: 0, ubicacion: 0
                 , ips: 0
             }
         }).then(function (response) {

@@ -155,3 +155,52 @@ function p_certificado_respuesta_glosa()
   }
   oci_close($c);
 }
+
+function p_lista_glosas_estado_resp_agru_consulta_avanz()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $empresa = 1;
+  $consulta = oci_parse($c, 'begin PQ_GENESIS_GLOSA.p_lista_glosas_estado_resp_agru_consulta_avanz(:v_pempresa,:v_json_in,:v_json_out,:v_result); end;');
+  oci_bind_by_name($consulta, ':v_pempresa', $empresa);
+  // oci_bind_by_name($consulta, ':v_pnit', $request->nit);
+  oci_bind_by_name($consulta, ':v_json_in', $request->datos);
+  oci_bind_by_name($consulta, ':v_json_out', $json, 4000);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_result', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  if (isset($json) && json_decode($json)->Codigo == 0) {
+    $datos = [];
+    oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+    oci_free_statement($consulta);
+    oci_free_statement($cursor);
+    echo json_encode($datos);
+  } else {
+    echo json_encode($json);
+  }
+}
+function p_lista_notificacion_glosa()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+
+  $consulta = oci_parse($c, 'begin PQ_GENESIS_GLOSA.p_lista_notificacion_glosa(:v_pnumero,:v_pubicacion,:v_json_out,:v_result); end;');
+  oci_bind_by_name($consulta, ':v_pnumero', $request->numero);
+  oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
+  // oci_bind_by_name($consulta, ':v_pnit', $request->nit);
+  oci_bind_by_name($consulta, ':v_json_out', $json, 4000);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_result', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  if (isset($json) && json_decode($json)->Codigo == 0) {
+    $datos = [];
+    oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+    oci_free_statement($consulta);
+    oci_free_statement($cursor);
+    echo json_encode($datos);
+  } else {
+    echo json_encode($json);
+  }
+}

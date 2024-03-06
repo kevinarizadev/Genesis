@@ -2562,7 +2562,68 @@ angular.module('GenesisApp')
                 };
             }
 
-
+            $scope.listarmotivosselect = function () {
+                swal({
+                    title: 'Cargando información...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false
+                });
+                swal.showLoading();
+                $http({
+                    method: 'POST',
+                    url: "php/contratacion/gestioncontratacion.php",
+                    data: {
+                        function: 'listarlosmotivos',
+                    }
+                }).then(function (response) {
+                    swal.close();
+                    $scope.listadodelosmotivos = response.data;
+                    
+                });
+        }
+        $scope.PguardarOtrosimotivo = function (accion) {
+            if ($scope.fecha_edicion_editar != '' || $scope.fecha_edicion_editar != undefined || $scope.fecha_edicion_editar != null) {
+                swal({
+                    title: 'Cargando información...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false
+                });
+                swal.showLoading();
+                    $http({
+                        method: 'POST',
+                        url: "php/contratacion/gestioncontratacion.php",
+                        data: {
+                            function: 'UI_OTROSI_MOTIVO',
+                            v_pnumero: $scope.infoContrato.numero,
+                            v_pdocumento: $scope.infoContrato.documento,
+                            v_pubicacion: $scope.infoContrato.ubicacion_id,
+                            v_pconcepto: $scope.infoContrato.cod_concepto,
+                            v_pcant_afiliado: $scope.cantidad_afiliados_editar != '' ? $scope.cantidad_afiliados_editar : $scope.infoContrato.afiliados,
+                            v_pval_afiliado: $scope.valor_afiliado_editar != '' ? $scope.valor_afiliado_editar : $scope.infoContrato.valor_cap_afiliado_noformat,
+                            v_pfecha_modificacion: $scope.fecha_edicion_editar != '' ? parsedia($scope.fecha_edicion_editar) : '',
+                            v_pfecha_final: $scope.fecha_final_editar_os != '' ? parsedia($scope.fecha_final_editar_os) : $scope.infoContrato.termina,
+                            v_pvalor_contrato: $scope.valor_contrato_editar,
+                            v_pval_contrato_otrosi_ev: $scope.infoContrato.concepto == 'CA' ? '' : $scope.valor_contrato_otrosi_ev,
+                            v_pobservacion_otrosi: $scope.valor_contrato_otrosi_ev != '' ? $scope.valor_contrato_otrosi_ev : '0',
+                            accion: accion,
+                            motivoseleccionado:$scope.motivoenviar,
+                        }
+                    }).then(function (response) {
+                        swal.close();
+                        if (response.data.Codigo == 0) {
+                            swal('Confirmado', response.data.Nombre, 'success');
+                            setTimeout(() => {
+                                $scope.buscar();
+                            }, 1000);
+                        } else {
+                            swal('Error', response.data.Nombre, 'warning');
+                        }
+                    });
+                // }
+            } else {
+                swal('Error', 'La fecha de modificación no puede estar vacia.', 'warning');
+            };
+        }
             
             $scope.ui_formas_pago = function (accion) {
                 // console.log($scope.forma_pago,accion);

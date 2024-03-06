@@ -156,9 +156,42 @@ function DescargarNotificacion()
 }
 
 
-
-
 function p_certificado_notificacion_glosa()
+{
+  require_once('../config/dbcon_prod.php');
+  // require_once('../config/dbcon_produccion.php');
+  global $request;
+  $Empresa = 1;
+  $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_GLOSA.p_certificado_notificacion_glosa(:v_pempresa,:v_pdocumento,:v_pnumero,:v_pubicacion,:v_presultado,:v_pjson_row2); end;');
+  oci_bind_by_name($consulta, ':v_pempresa', $Empresa);
+  oci_bind_by_name($consulta, ':v_pdocumento', $request->documento);
+  oci_bind_by_name($consulta, ':v_pnumero', $request->numero);
+  oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
+  $cursor = oci_new_cursor($c);
+  $clob2 = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ":v_presultado", $cursor, -1, OCI_B_CURSOR);
+
+  oci_bind_by_name($consulta, ':v_pjson_row2', $clob2, -1, OCI_B_CLOB);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  if (isset($clob2)) {
+    $json = [];
+    oci_fetch_all($cursor, $json, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+    oci_free_statement($consulta);
+    oci_free_statement($cursor);
+    // echo json_encode($json);
+
+
+    $json2 = $clob2->read($clob2->size());
+
+    echo '{"json":' . json_encode($json) . ', "json2":' . $json2 . '}';
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}
+
+function p_certificado_notificacion_glosa2()
 {
   require_once('../config/dbcon_prod.php');
   global $request;

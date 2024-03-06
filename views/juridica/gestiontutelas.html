@@ -27,6 +27,8 @@
 						ng-if="Rol_Permisos.DESCARGAR_INFORME == 'S'">file_download</i>
 					<i class="material-icons iconsTitle" ng-click="dwinforme_inc()" title="Informe Incidentes"
 						ng-if="Rol_Permisos.DESCARGAR_INFORME == 'S'">open_in_new</i>
+					<i class="material-icons iconsTitle" ng-click="dwinforme_servicios()" title="Informe Servicios"
+						ng-if="Rol_Permisos.DESCARGAR_INFORME == 'S'">play_for_work</i>
 					<i class="material-icons iconsTitle" ng-click="descargaInformeGeneral()"
 						title="Informe Tutelas General"
 						ng-if="Rol_Permisos.DESCARGAR_INFORME == 'S'">format_list_bulleted</i>
@@ -578,7 +580,7 @@
 												<form></form>
 												<div
 													ng-show="registro.status==1 && Rol_Permisos.GESTIONAR_CAUSA_SALUD == 'S' && registro.chkTecnologiasSalud">
-													<div class="input-field col l3 m12 s12">
+													<div class="input-field col l2 m12 s12">
 														<label class="labelper">Motivo</label>
 														<select class="select-chosen-eps"
 															ng-model="registro.selectCausaMotivo_TS"
@@ -596,7 +598,7 @@
 																ng-change="changeProductoCausa()"
 																text-upper>
 															<datalist id="listadoProductos" open="open">
-																<option value="{{x.CODIGO +'-'+ x.NOMBRE}}"
+																<option value="{{x.CODIGO +'~'+ x.NOMBRE}}"
 																	ng-repeat="x in listadoProductos">
 															</datalist>
 															<label for="productoAdmi">CUMS/CUPS (*)</label>
@@ -608,19 +610,36 @@
 															list="listadoSubclase"
 															text-upper>
 														<datalist id="listadoSubclase" open="open">
-															<option value="{{x.codigo +'-'+ x.nombre}}"
+															<option value="{{x.codigo +'~'+ x.nombre}}"
 																ng-repeat="x in listadoSubclase">
 														</datalist>
 														<label for="subclaseAdmi">Subclase</label>
 													</div>
+                          <!-- <div class="input-field col l1 m12 s12">
+														<label class="labelper">PGP</label>
+														<select class="select-chosen-eps"
+															ng-model="registro.selectPGP" disabled>
+															<option value="N" selected>NO</option>
+															<option value="S">SI</option>
+														</select>
+													</div> -->
+													<!-- <div class="input-field col l1 m12 s12"
+														>
+                            <label for="labelper">PGP</label>
+														<select class="select-chosen-eps"
+															ng-model="registro.selectPGP" disabled>
+															<option value="N">NO</option>
+															<option value="S">SI</option>
+														</select>
+													</div> -->
 													<form ng-submit="obtenerDiagnosticoCausa();">
-														<div class="input-field col l5 m12 s12">
+														<div class="input-field col l4 m12 s12">
 															<input type="text" ng-model="registro.diagnosticoAdmi"
 																list="listadoDiagnosticos"
 																text-upper>
 															<datalist id="listadoDiagnosticos" open="open"
 																name="myBrowser">
-																<option value="{{x.CODIGO +'-'+ x.NOMBRE}}"
+																<option value="{{x.CODIGO +'~'+ x.NOMBRE}}"
 																	ng-repeat="x in listadoDiagnosticos">
 															</datalist>
 															<label for="diagnosticoAdmi">Diagnostico (*)</label>
@@ -732,11 +751,17 @@
 																					</label>
 																					<label>{{x.NOM_MOTIVO}}</label>
 																				</div>
-																				<div class="col s10">
+																				<div class="col s9">
 																					<label
 																						style="font-weight: 700;">CUMS/CUPS:
 																					</label>
 																					<label>{{x.NOM_PRODUCTO}}</label>
+																				</div>
+																				<div class="col s1">
+																					<label
+																						style="font-weight: 700;">PGP:
+																					</label>
+																					<label>{{x.PGP == 'S' ? 'SI':'NO'}}</label>
 																				</div>
 
 																			</div>
@@ -780,8 +805,7 @@
 																				style="margin-bottom: 1vh;">
 																				<div class="col s6">
 																					<label
-																						style="font-weight: 700;">Prestador
-																						Asignado:
+																						style="font-weight: 700;">Entidad Causante de la Tutela:
 																					</label>
 																					<label>{{x.NOM_PRESTADOR_ASIGNADO}}</label>
 																				</div>
@@ -1404,7 +1428,7 @@
 																ng-change="changeProductoCausa_Fallo_Impug('causaForm_Fallo')"
 																text-upper>
 															<datalist id="causaForm_Fallo_listadoProductos" open="open">
-																<option value="{{x.CODIGO +'-'+ x.NOMBRE}}"
+																<option value="{{x.CODIGO +'~'+ x.NOMBRE}}"
 																	ng-repeat="x in listadoProductos">
 															</datalist>
 															<label for="causaForm_Fallo_listadoProductos">CUMS/CUPS
@@ -1417,7 +1441,7 @@
 															list="causaForm_Fallo_listadoSubclase"
 															text-upper>
 														<datalist id="causaForm_Fallo_listadoSubclase" open="open">
-															<option value="{{x.codigo +'-'+ x.nombre}}"
+															<option value="{{x.codigo +'~'+ x.nombre}}"
 																ng-repeat="x in listadoSubclase">
 														</datalist>
 														<label for="causaForm_Fallo_listadoSubclase">Subclase</label>
@@ -1430,7 +1454,7 @@
 																text-upper>
 															<datalist id="causaForm_Fallo_listadoDiagnosticos"
 																open="open" name="myBrowser">
-																<option value="{{x.CODIGO +'-'+ x.NOMBRE}}"
+																<option value="{{x.CODIGO +'~'+ x.NOMBRE}}"
 																	ng-repeat="x in listadoDiagnosticos">
 															</datalist>
 															<label for="causaForm_Fallo_diagnostico">Diagnostico
@@ -2089,7 +2113,7 @@
 																	text-upper>
 																<datalist id="causaForm_FalloImp_listadoProductos"
 																	open="open">
-																	<option value="{{x.CODIGO +'-'+ x.NOMBRE}}"
+																	<option value="{{x.CODIGO +'~'+ x.NOMBRE}}"
 																		ng-repeat="x in listadoProductos">
 																</datalist>
 																<label
@@ -2104,7 +2128,7 @@
 																text-upper>
 															<datalist id="causaForm_FalloImp_listadoSubclase"
 																open="open">
-																<option value="{{x.codigo +'-'+ x.nombre}}"
+																<option value="{{x.codigo +'~'+ x.nombre}}"
 																	ng-repeat="x in listadoSubclase">
 															</datalist>
 															<label
@@ -2119,7 +2143,7 @@
 																	text-upper>
 																<datalist id="causaForm_FalloImp_listadoDiagnosticos"
 																	open="open" name="myBrowser">
-																	<option value="{{x.CODIGO +'-'+ x.NOMBRE}}"
+																	<option value="{{x.CODIGO +'~'+ x.NOMBRE}}"
 																		ng-repeat="x in listadoDiagnosticos">
 																</datalist>
 																<label for="causaForm_FalloImp_diagnostico">Diagnostico

@@ -1,0 +1,759 @@
+<div class="newdesing" style="position:relative">
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Gestión Otro SI</h5>
+      </li>
+    </ul>
+  </div>
+  <div class="row content-container elements mb-0">
+    <div class="row">
+      <!-- CONTENIDO -->
+      <div class="col m9 s12">
+        <div class="card contentcard" style="min-height: 541px;">
+          <div class="col s12" ng-show="paso==1">
+            <div class="col s12 bb">
+              <h5><small>{{titulo_tab}}</small></h5>
+            </div>
+          </div>
+          <!-- BUSQUEDA INICIAL -->
+          <div class="col s12 mt-20" ng-show="paso==1">
+            <div class="col s12" style="height: 394px;" ng-show="inactivecontratos">
+              <div class="center">
+                <small>Favor buscar por campo valido!</small>
+              </div>
+              <div class="center">
+                <img src="assets/images/contratos/gestion_contratos/buscar.svg" style="width: 368px;">
+              </div>
+            </div>
+            <div class="col s12 scroll" style="height: 394px;" ng-hide="inactivecontratos">
+              <div class="responsive">
+                <table class="table table-bordered striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">CONTRATO</th>
+                      <th style="text-align:center;">PRESTADOR</th>
+                      <th style="text-align:center;">REGIMEN</th>
+                      <th style="text-align:center;">CONCEPTO</th>
+                      <th style="text-align:center;">MOTIVO</th>
+                      <th style="text-align:center;">ASUNTO</th>
+                      <th style="text-align:center;">DEPARTAMENTO MUNICIPIO</th>
+                      <th style="text-align:center;">ESTADO</th>
+                      <th style="text-align:center;">ACCION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in json_contratos">
+                      <td style="text-align:center; ">{{x.numero}}</td>
+                      <td style="text-align:center; ">{{x.nit}} {{x.ips}}</td>
+                      <td style="text-align:center; ">{{x.regimen}}</td>
+                      <td style="text-align:center; ">{{x.nombre}}</td>
+                      <td style="text-align:center; ">{{x.nombre_motivo}}</td>
+                      <td style="text-align:center; ">{{x.nombre_asunto}}</td>
+                      <td style="text-align:center; ">{{x.departamento}} {{x.municipio}}</td>
+                      <td style="text-align:center; " class="white-text">
+                        <span ng-class="x.color" style="padding: 5px;">{{x.estado | uppercase}}</span>
+                      </td>
+                      <td ng-if="x.otrosi > '0'" style="text-align:center; ">
+                        <div class="tooltip">
+                          <i class="material-icons pointer" ng-click="gestionar_contrato($index)">visibility</i>
+                          <span class="tooltiptext">Gestionar Contrato</span>
+                        </div>
+                      </td>
+                      <td ng-if="x.otrosi == '0'" style="text-align:center; ">
+                        <div class="tooltip">
+                          <i class="material-icons pointer">visibility_off</i>
+                          <span class="tooltiptext">No tiene Contrato</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- -------------------------------------yordis--------------------------------------------------------- -->
+           <!-- MOSTRAR LAS TAB 2-->
+           <div class="col s12" ng-show="paso==2">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>Elegir Gestión</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = 1">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="col s12 scroll" style="height: 394px;">
+              <div class="responsive">
+                <table class="table table-bordered striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center;">NUMERO</th>
+                      <th style="text-align:center;">CONCEPTO</th>
+                      <th style="text-align:center;">MOTIVO</th>
+                      <th style="text-align:center;">FECHA</th>
+                      <th style="text-align:center;">OBSERVACION RESPONSABLE</th>
+                      <th style="text-align:center;">ACCION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="x in infoContrato">
+                      <td style="text-align:center; ">{{x.numero}}</td>
+                      <td style="text-align:center; ">{{x.concepto}}</td>
+                      <td style="text-align:center; ">{{x.motivo}}</td>
+                      <td style="text-align:center; ">{{x.fecha}}</td>
+                      <td style="text-align:center; ">{{x.observacion}}</td>
+                      <!-- <td style="text-align:center; " class="white-text">
+                        <span ng-class="x.color" style="padding: 5px;">{{x.estado | uppercase}}</span>
+                      </td> -->
+                      <td style="text-align:center; ">
+                        <div class="tooltip">
+                          <i class="material-icons pointer" ng-click="iniciar_bitacora(x.numero)">visibility</i>
+                          <span class="tooltiptext">Gestionar Contrato</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+          <!-- MOSTRAR LAS TAB 3-->
+          <div class="col s12 " ng-show="paso==3">
+            <div class="row">
+              <div class="col s12 bb">
+                <h5><small>BITACORAS</small>
+                  <i class="font16 icon-reply-3 right" ng-click="paso = 2">Atras</i>
+                </h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col l6 m6 s6">
+                <div class="card card-default">
+                  <div class="card-header  white-text default-panel-widget  pad-10" ng-style="estilo">
+                    <strong>Proceso Actual: </strong> {{listTareas.proceso}}
+                  </div>
+                  <div class="card-content">
+                    <p><strong>Responsable: </strong>{{listTareas.responsable}}</p>
+                    <p><strong>Observación: </strong>{{listTareas.observacion}}</p>
+                  </div>
+                </div>
+                <div class="row margin-top">
+                  <div class="col s12">
+                    <div class="col s12 columnas">
+                      <p class="default-background white-text"> <i class="icon-edit-1"></i>Observacion</p>
+                    </div>
+                  </div>
+                  <div class="col s12 center">
+                    <textarea rows="10" style=" width: 95%;height: 5.5em;" ng-model="observacion_bitacora"
+                      class="margin border-none white input-w-p gray-input w-100" cols="5"></textarea>
+                  </div>
+                  <div class="col s12 mt-20 center">
+                    <button class="waves-effect waves-light btn white-text light-blue"
+                      ng-click="guardar_bitacora()">Guardar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col l6 m6 s6">
+                <table class="responsive-table bordered">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Bitácora contractual</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="contractual in json_contractual">
+                      <td class="center-align" style="line-height: 10px;">
+                        <input type="checkbox" class="filled-in" ng-change="cambio_estado_bitacora($index)"
+                          name="contractual" id="chk-{{contractual.Codigo}}" ng-model="contractual.estado"
+                          ng-value="contractual" ng-disabled='contractual.Codigo==listTareas.codigo'>
+                        <label title="Seleccionar" for="chk-{{contractual.Codigo}}"
+                          style="padding-left: 20px;height: 20px;transform: scale(.8);"></label>
+                      </td>
+                      <td>{{contractual.Nombre}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- -------------------------------------yordis--------------------------------------------------------- -->
+        </div>
+      </div>
+      <div class="col  m3 s12" ng-show="paso == 1">
+        <div class="card contentcard" style="min-height: 543px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Busqueda de Contrato</small></h5>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12">
+              <form ng-submit="buscar()">
+                <div class="col s12 label-new no-p-l">
+                  <label for="numero">Número</label>
+                  <input id="numero" type="number" ng-model="busqueda.numero"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="regimen">Regimen</label>
+                  <select id="regimen" ng-model="busqueda.regimen" class="select-new gray-input  select-chosen-eps"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="">SELECCIONAR</option>
+                    <option value="KS">SUBSIDIADO</option>
+                    <option value="KC">CONTRIBUTIVO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="departamento">Estado</label>
+                  <select id="departamento" ng-model="busqueda.estado" class="select-new gray-input"
+                    style="box-shadow: none;display: block; padding: 0;">
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="A">ACTIVO</option>
+                    <option value="X">ANULADO</option>
+                    <option value="T">TERMINADO</option>
+                    <option value="L">LIQUIDADO</option>
+                    <option value="P">PROCESADO</option>
+                  </select>
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador">NIT Prestador</label>
+                  <input id="prestador" ng-model="busqueda.prestador" autocomplete="off"
+                    ng-blur="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                </div>
+                <div class="col s12 label-new no-p-l">
+                  <label for="prestador">Prestador</label>
+                  <input id="prestador" ng-model="busqueda.prestador_nombre" autocomplete="off"
+                    ng-keyup="buscar_listado_select()" type="text"
+                    class="margin border-none white input-w-p gray-input w-100">
+                  <ul class="list-group" id="list-group-prestador"
+                    style="overflow: auto;max-height: 200px;position:absolute;margin: 0;width: inherit;z-index: 99;">
+                    <li id="DM{{x.CODIGO}}" class="list-group-item" ng-class="{'active_list':(x.ESTADO==true)}"
+                      ng-repeat="x in json_prestador" ng-click="seleccion_opcion(x.CODIGO,x.NOMBRE)"> {{x.CODIGO}} -
+                      {{x.NOMBRE}}</li>
+                  </ul>
+                </div>
+                <div class="col s12 mt-20 center">
+                  <button class="waves-effect waves-light btn white-text light-blue" type="submit">Buscar</button>
+                </div>
+                <div class="col s12 mt-20 center">
+                  <button ng-click="borrar_busqueda_contrato()"
+                    class="btn red waves-effect waves-light white-text">Borrar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col  m3 s12" ng-show="paso != 1">
+        <div class="card contentcard" style="min-height: 543px;">
+          <div class="col s12">
+            <div class="col s12 bb">
+              <h5><small>Contrato Selecionado</small></h5>
+            </div>
+          </div>
+          <div class="col s12 mt-10">
+            <div class="col s12">
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-clipboard-2"></i>Contrato
+                </h6>
+                <h6 class="seleccion_contrato">{{contrato_cabeza.numero}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class=" icon-pencil-2"></i> Estado
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.estado}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class=" icon-sliders"></i> Regimen
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.regimen}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-location-1"></i> Lugar
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.departamento}} {{contrato_cabeza.municipio}} </h6>
+              </div>
+              <div class="row">
+                <h6 class="default-background seleccion_contrato_t white-text">
+                  <i class="icon-hospital"></i> Prestador
+                </h6>
+                <h6 class="seleccion_contrato"> {{contrato_cabeza.prestador}} <small>{{contrato_cabeza.nit}}</small>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>
+  </div>
+  <style>
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    i.font16.icon-cancel-2 {
+      color: #ff5722;
+    }
+
+    i.font16.icon-ok-1 {
+      color: #8bc34a;
+    }
+
+    input {
+      height: 2em !important;
+    }
+
+    select {
+      height: 2em !important;
+    }
+
+    .seleccion_contrato_t {
+      padding: 0.5em;
+      margin: 0px;
+    }
+
+    .seleccion_contrato {
+      margin: 0px;
+      padding: 0.5em 1.5em;
+      background: #e0e0e0;
+    }
+
+    .tabactiva {
+      background: #e5e6e6;
+    }
+
+    .tabs .tab a.active {
+      background: #e5e6e6;
+    }
+
+    .elements input:disabled {
+      color: #111 !important;
+    }
+
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .azul {
+      background-color: #00abc0 !important;
+    }
+
+    .verde {
+      background-color: #8BC34A !important;
+    }
+
+    .rojo {
+      background-color: #FF5722 !important;
+    }
+
+    .amarillo {
+      background-color: #FFC107 !important;
+    }
+
+    .negro {
+      background-color: #1b1e2d !important;
+    }
+
+    .gris {
+      background-color: #807d7d !important;
+    }
+
+    .desactivado {
+      background-color: #cacaca !important;
+    }
+
+    .contentcard {
+      height: 540px;
+    }
+
+    .tab-custom {
+      font-size: 11px !important;
+      padding: 0 3px !important;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .date_task {
+      margin-bottom: 3px;
+      font-size: small !important;
+    }
+
+    .vcenter {
+      position: relative;
+      top: 23%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .card-custom {
+      border: 1px solid #eaeaea;
+      box-shadow: 1px 1px 1px #e8e8e8;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      margin-bottom: 9px;
+    }
+
+    .card-header-custom {
+      height: 70px;
+      text-align: center;
+      border-right: 1px solid #d2d2d2;
+      color: white;
+    }
+
+    .card-body-custom {
+      height: 70px;
+    }
+
+    .card-body-title {
+      font-size: initial;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+
+    .card-footer-custom {
+      border-left: 1px solid #eaeaea;
+      height: 70px;
+    }
+
+    .card-divider {
+      color: #FFC107;
+      width: 100%;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .scroll {
+      position: relative;
+      height: 465px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .cuadrado {
+      width: 150px;
+      height: 150px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 20px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    div.columnas {
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .mt-0 {
+      margin-top: 0px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0px;
+    }
+
+    .mr-10 {
+      margin-right: 10px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-5 {
+      margin-top: 5px;
+    }
+
+    .card-1 {
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      box-shadow: 0px 3px 5px #cacaca;
+    }
+
+    .title-1 {
+      border-bottom: 1px solid #d4d4d4;
+      height: 30px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 5px;
+      width: 128px;
+      border-radius: 0px 20px 0px 0px;
+      margin-bottom: 0px;
+    }
+
+    [type="checkbox"]+label:before,
+    [type="checkbox"]:not(.filled-in)+label:after {
+      width: 22px;
+      height: 22px;
+    }
+
+    [type="checkbox"]:checked+label:before {
+      top: -8px;
+      width: 17px;
+      height: 30px;
+    }
+
+    .bb {
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .bt {
+      border-top: 1px solid #d2d2d2;
+    }
+
+    .bl {
+      border-left: 1px solid #d2d2d2;
+    }
+
+    .br {
+      border-right: 1px solid #d2d2d2;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .h-auto {
+      height: 33px;
+    }
+
+    .gray-input {
+      background-color: #e5e6e6 !important;
+    }
+
+    .swal_ips {
+      text-align: left !important;
+    }
+
+    .no-p-l {
+      padding-left: 0px !important;
+    }
+
+    input.input-text-new {
+      height: 2rem !important;
+    }
+
+    select.select-input-new {
+      height: 2rem !important;
+    }
+
+    .label-new>label {
+      top: -23px;
+      left: -1px;
+    }
+
+    .titulo {
+      padding-top: 22px;
+    }
+
+    .tab-grande {
+      background: #e5e6e6;
+      margin: 10px 0em;
+      height: 400px;
+    }
+
+    .hr {
+      z-index: 999;
+      top: 29px;
+      width: 90%;
+    }
+
+    .img-grande {
+      margin-top: 3em;
+    }
+
+    /* paso 3 */
+    .card.tab-mediano {
+      margin: 10px 0em;
+      height: 148px;
+      cursor: pointer;
+    }
+
+    .tab-color {
+      background: #1565c033;
+    }
+
+    .tab-no-color {
+      background: #c5c7c7a6;
+    }
+
+    .card.tab-mediano:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.tab-pequeno {
+      background: #e5e6e6;
+      margin: 0em;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .card.tab-pequeno:hover {
+      box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    div.columnas {
+      /* border-bottom: 1px solid #e5e6e6; */
+      border-top: 1px solid #e5e6e6;
+      position: relative;
+    }
+
+    .columnas p {
+      position: absolute;
+      top: -38px;
+      width: 207px;
+      border: 1px solid #e5e6e6;
+      padding: 1px 10px;
+      border-radius: 0px 19px 0px 0px;
+    }
+
+    .margin-top {
+      margin-top: 3em;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    .contener.row {
+      height: 337px;
+      overflow: auto;
+    }
+
+    .pad-10 {
+      padding: 1em;
+    }
+
+    /* LISTAS */
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .list-group-item:hover {
+      color: #1a2e63;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .list-group-item.hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .modificacion_actualizado {
+      position: absolute;
+      height: 22px;
+      width: 27px;
+      top: 0em;
+      left: 10px;
+      /* background: #0fa9f4; */
+      color: white;
+      /* padding: 10px; */
+      z-index: 99999;
+    }
+
+    i.act.icon-bookmark {
+      color: #0fa9f4;
+      font-size: 38px;
+      position: absolute;
+      top: -22px;
+      right: -12px;
+      z-index: -1;
+    }
+
+    i.lapiz {
+      position: absolute;
+      top: -7px;
+      right: 3px;
+    }
+
+    .newdesing .ng-leave-active,
+    .newdesing .active-add,
+    .newdesing .ng-hide-add-active,
+    .newdesing .ng-hide-remove,
+    .newdesing .ng-hide-add-active {
+      transition: all 0s !important;
+      animation: 0s ease 0s 1 normal none running none !important;
+    }
+
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::before,
+    .timeline-page .timeline .timeline-event:nth-child(odd) .timeline-content .content-box::after {
+      right: -77px;
+      border-top-left-radius: .25rem !important;
+      border-bottom-left-radius: .25rem !important;
+    }
+
+    .content-box {
+      background-color: #f7f7f7;
+      border-bottom-right-radius: .50rem !important;
+      border-bottom-left-radius:
+        .50rem !important;
+      border-bottom: 30px solid #ebecec !important;
+      padding-top: 37px !important;
+      box-shadow:
+        none !important;
+    }
+  </style>
+</div>

@@ -112,24 +112,20 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
         $scope.info.codigo = data.codigo;
         $scope.info.verificacion = data.codigov;
         window.open('views/Cuentasmedicas/formatos/acta.php?datos=' + JSON.stringify($scope.info), '_blank', "width=900,height=1100");
-        // if (data.nit === '901139193') {
-        //   const responseExisteActa = await $http({
-        //     url: '/php/cuentasmedicas/onbase.php',
-        //     method: 'POST',
-        //     data: $scope.info
-        //   })
-        //   if (responseExisteActa.data.data.ACTA_GENERADA === 'S') {
-        //     const responseImportDocument = await $http({
-        //       url: `/php/onbase/acta.php?nit=${$scope.info.nit}&recibo=${$scope.info.recibo}&codigo=${$scope.info.codigo}&verificacion=${$scope.info.verificacion}`
-        //     })
-        //   }
-        // }
+        if (data.nit === '901139193') {
+          const responseExisteActa = await $http({
+            url: '/php/cuentasmedicas/onbase.php',
+            method: 'POST',
+            data: $scope.info
+          })
+          if (responseExisteActa.data.data.ACTA_GENERADA === 'S') {
+            const responseImportDocument = await $http({
+              url: `/php/onbase/acta.php?nit=${$scope.info.nit}&recibo=${$scope.info.recibo}&codigo=${$scope.info.codigo}&verificacion=${$scope.info.verificacion}`
+            })
+          }
+        }
       }
-
-
     }
-
-
 
     function validar_json(str) {
       try {
@@ -185,12 +181,12 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
       //   proceso: data.codigo
       // });
       // console.log(data);
-      var datos = {
-        nit: data.nit,
-        habilitacion: data.habilitacion,
-        recibo: data.recibo,
-        codigo: data.codigo
-      };
+      // var datos = {
+      //   nit: data.nit,
+      //   habilitacion: data.habilitacion,
+      //   recibo: data.recibo,
+      //   codigo: data.codigo
+      // };
       window.open('views/Cuentasmedicas/formatos/informe_validacion.php?datos=' + angular.toJson(datos), '_blank', "width=900,height=1100");
     }
     $scope.verdetalle = function (codigo) {
@@ -216,7 +212,8 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
       $scope.configPages();
     }
     $scope.closeModal = function () {
-      $('.modal').modal('close');
+      $('#modalarchivosdetalle').modal('close');
+      $('#modalhistoricoerrores').modal('close');
     }
     $scope.configPages = function () {
       $scope.pages.length = 0;
@@ -527,7 +524,7 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
         }
       })
     }
-
+    //////////////////////////////////////////////////
     $scope.modalCargueSoporteDig = function () {
       $scope.formSoporteDig = {
         recibo: '654231',
@@ -688,10 +685,8 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
       })
       // asdasd
     }
-
-
-
-
+    //////////////////////////////////////////////////
+    //
   }
 ]).filter('inicio', function () {
   return function (input, start) {

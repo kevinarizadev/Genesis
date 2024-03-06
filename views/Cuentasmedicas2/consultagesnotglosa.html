@@ -1,0 +1,449 @@
+<div id="pantalla" class="white newdesing" style="position:relative">
+  <style>
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    .NOTIFICADA {
+      background-color: #FFC107 !important;
+    }
+
+
+
+    .ACEPTADA,
+    .CO {
+      background-color: #8BC34A !important;
+    }
+
+    .CONTESTADA {
+      background-color: #03a9f4 !important;
+    }
+
+    .error {
+      background-color: #FF5722 !important;
+    }
+
+
+
+    .S {
+      /* padding: 1em; */
+      color: white;
+      background-color: #1a2e63 !important;
+    }
+
+    .N {
+      /* padding: 1em; */
+      color: white;
+      background-color: rgb(161, 169, 162);
+    }
+
+    /* CANTIDAD */
+    .PE {
+      background-color: #5ba2dc !important;
+    }
+
+    .CR {
+      background-color: #0375bc !important;
+    }
+
+    .IM {
+      background-color: #0f55bd !important;
+    }
+
+    .RI {
+      background-color: #14d2a4 !important;
+    }
+
+    .AC {
+      background-color: #18a378 !important;
+    }
+
+    .CO {
+      background-color: #2fb421 !important;
+    }
+
+    /* CANTIDAD */
+
+    .tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    .tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+
+    .table_border,
+    .table_border th,
+    .table_border td {
+      border: 1px solid #c2c2c2;
+    }
+
+    .table_center_align,
+    .table_center_align th,
+    .table_center_align td {
+      text-align: center;
+    }
+
+    .VERDE {
+      background-color: #56b949 !important;
+    }
+
+    .ROJO {
+      background-color: #b42121 !important;
+    }
+
+    #tabla_detalleglosa th {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+
+    .swal-wide {
+      width: 850px !important;
+    }
+  </style>
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Consulta Notificación de Glosas</h5>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- Glosas -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 0">
+
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <div>
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="verNotificaciones()"></i>
+          Listado de Notificaciones ({{listadoNotificaciones.length}})
+        </div>
+
+        <input type="text" class="margin border-none input-text-new" style="width: 20vw;"
+          ng-model="filtroNotificaciones" placeholder="Buscar en la tabla" ng-change="filter(filtroNotificaciones)">
+      </div>
+      <div class="tabla_scroll">
+        <table class="striped table-bordered white">
+          <thead>
+            <tr>
+              <th style="text-align:center;" ng-if="Rol_Nit == 0">IPS</th>
+              <th style="text-align:center;">NUMERO NG</th>
+              <!-- <th style="text-align:center;">FECHA DE RADICACION</th> -->
+              <th style="text-align:center;">FECHA NOTIFICACION DE GLOSA</th>
+              <th style="text-align:center;">VALOR FACTURA</th>
+              <th style="text-align:center;">VALOR GLOSA</th>
+              <!-- <th style="text-align:center;">FECHA DE CONTESTACION DE GLOSA</th> -->
+              <th style="text-align:center;">CANTIDAD</th>
+              <!-- <th style="text-align:center;">ESTADO</th> -->
+              <th style="text-align:center;" colspan="2">ACCION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="X in listadoNotificacionesTemp | inicio: currentPage * pageSize | limitTo: pageSize"
+              ng-hide="listadoNotificacionesTemp.length == 0">
+
+              <th style="text-align:center;" ng-if="Rol_Nit == 0">{{X.IPS}}</th>
+              <td style="text-align:center;">{{X.DOC_NOTIFICACION}}</td>
+              <!-- <td style="text-align:center;">{{X.FECHA_RADICACION}}</td> -->
+              <td style="text-align:center;">{{X.FECHA_NOTIFICACION}}</td>
+              <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
+              <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
+                <!-- <td style="text-align:center;">{{X.FECHA_CONTESTACION}}</td> -->
+              <td style="text-align:center;">{{X.CANTIDAD}}</td>
+              <!-- <td style="text-align:center;">
+                <span class="status {{X.NOTC_ESTADO1}}">{{obtenerNombreEstado(X.NOTC_ESTADO1)}}</span>
+              </td> -->
+
+              <td style="text-align:center;">
+                <div class="tooltip">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="verNotificacionesDetalle(X)"
+                    class="icon-eye-1"></i>
+                  <span class="tooltiptext">Ver Detalle</span>
+                </div>
+              </td>
+              <td style="text-align:center;" ng-if="Rol_Nit == '0'">
+                <div class="tooltip" ng-if="X.NOTC_ESTADO1 =='CO' && !X.SOPORTE">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="generarFormato(X)"
+                    class="icon-doc-text-inv-1"></i>
+                  <span class="tooltiptext">Generar Formato</span>
+                </div>
+                <div class="tooltip" ng-if="X.NOTC_ESTADO1 =='CO' && !X.SOPORTE">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="abrirModalCargueFormato(X)"
+                    class="icon-attach-5"></i>
+                  <span class="tooltiptext">Cargar Formato</span>
+                </div>
+                <div class="tooltip" ng-show="X.SOPORTE">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="descargaAdjunto(X.SOPORTE)"
+                    class="icon-file-pdf"></i>
+                  <span class="tooltiptext">Descargar Soporte</span>
+                </div>
+
+              </td>
+
+            </tr>
+            <tr ng-show="listadoNotificaciones.length == 0">
+              <th colspan="9" class="center">
+                No hay notificaciones para mostrar
+              </th>
+            </tr>
+          </tbody>
+        </table>
+        <ul ng-hide="Lista_GlosaTemp.length == 0" style="text-align: center;" class="pagination"
+          ng-hide="Lista_GlosaTemp.length > 0">
+          <li><button ng-disabled='currentPage == 0' class="btn" ng-click='paso("back")'>&laquo;</button></li>
+          <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1' class="btn"
+              ng-click='setPage(page.no)'>{{page.no}}</button></li>
+          <li><button ng-disabled='currentPage >= Lista_GlosaTemp.length/pageSize - 1' class="btn"
+              ng-click='paso("next")'>&raquo;</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Glosas -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 1">
+    <div class="col l12 m12 s12" style="position:relative">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <div>
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar"
+            ng-click="verNotificacionesDetalle(ngSeleccionada)"></i>
+          Listado de Glosas ({{listadoNotificacionesDetalle.length}})
+          <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
+            ng-click="generalExcel(listadoNotificacionesDetalle)"></i>
+        </div>
+
+        <input type="text" class="margin border-none input-text-new" style="width: 20vw;"
+          ng-model="filtroNotificacionesDetalle" placeholder="Buscar en la tabla">
+        <i class="icon-left-2 cursor-pointer" ng-click="Atras(0)">
+          Atras
+        </i>
+      </div>
+      <div class="tabla_scroll">
+        <table class="striped table-bordered white">
+          <thead>
+            <tr>
+              <th style="text-align:center;">NG</th>
+
+              <th style="text-align:center;">FECHA RADICACION</th>
+              <th style="text-align:center;">FECHA NOTIFICACION</th>
+              <th style="text-align:center;">NUMERO GLOSA</th>
+              <th style="text-align:center;">FACTURA</th>
+              <th style="text-align:center;">VALOR FACTURA</th>
+              <th style="text-align:center;">VALOR GLOSA</th>
+              <th style="text-align:center;">VALOR ACEPTADO IPS</th>
+              <th style="text-align:center;">VALOR LEVANTADO EPS</th>
+              <th style="text-align:center;">VALOR MANTENIDO</th>
+              <!-- <th style="text-align:center;">ESTADO</th> -->
+              <th style="text-align:center;">ACCION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="X in listadoNotificacionesDetalle | filter:filtroNotificacionesDetalle">
+              <td style="text-align:center;">{{X.DOCUMENTO+'-'+X.NUMERO+'-'+X.UBICACION}}</td>
+              <td style="text-align:center;">{{X.FECHA_RADICACION}}</td>
+              <td style="text-align:center;">{{X.FECHA_NOTIFICACION}}</td>
+              <td style="text-align:center;">{{X.DOC_FD+'-'+X.NUM_FD+'-'+X.UBI_FD}}</td>
+              <td style="text-align:center;">{{X.FACC_FACTURA}}</td>
+              <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_FACTURA.toString().replace(',', '.'))}}</td>
+              <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA.toString().replace(',', '.'))}}
+              <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI_IPS.toString().replace(',', '.'))}}
+              <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GL_EPS.toString().replace(',', '.'))}}
+              <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA1.toString().replace(',', '.'))}}
+                <!-- <td style="text-align:center;">
+                <span class="status {{X.NOTC_ESTADO1}}">{{obtenerNombreEstado(X.NOTC_ESTADO1)}}</span>
+              </td> -->
+              <td style="text-align:center;">
+                <div class="tooltip" ng-show="X.RUTA">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="descargaAdjunto(X.RUTA)"
+                    class="icon-file-pdf"></i>
+                  <span class="tooltiptext">Descargar Soporte</span>
+                </div>
+                <div class="tooltip">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="obtenerDetalleGlosas(X)" class="icon-docs-1"></i>
+                  <span class="tooltiptext">Ver</span>
+                </div>
+              </td>
+            </tr>
+            <tr ng-show="listadoNotificacionesDetalle.length == 0">
+              <th colspan="12">
+                <center>No hay notificaciones para mostrar</center>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalGestion" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 95%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <!-- <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #fff;"
+    ng-click="closeModal()"></div> -->
+      <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="col s11">
+            <h5 class="white-text">Gestionar Glosa</h5>
+          </div>
+          <div class="col s1">
+            <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                class="material-icons white-text">close</i></h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-action" style="max-height: 75vh;overflow-y: auto;margin-top: -5px;">
+        <div class="row bg-white white" style="margin-bottom: 0px;">
+          <!--  -->
+          <div class="col s12 m12 l12 m-b" style="padding: 0.5vh;margin: 0vh 2vh 0vh 2vh;"
+            ng-show="modalGestion.listadoServicios.length > 0">
+            <span style="font-weight: 700;">Listado de Servicios ({{modalGestion.listadoServicios.length}})</span>
+            <br>
+            <div style="max-height: 40vh;overflow: auto;">
+              <table id="tabla_detalleglosa" class="striped table-bordered white">
+                <thead>
+                  <tr>
+                    <!-- <th style="text-align:center;width: 5%;">RENGLON</th> -->
+                    <th style="text-align:center;width: 7%;">PRODUCTO</th>
+                    <th style="text-align:center;width: 7%;">VALOR GLOSA</th>
+                    <!-- <th style="text-align:center;width: 5%;">VALOR RETENCION</th> -->
+
+                    <th style="text-align:center;width: 20%;">OBSERVACION IPS</th>
+                    <th style="text-align:center;width: 20%;">OBSERVACION EPS</th>
+                    <th style="text-align:center;width: 20%;">DESCRIPCION GLOSA</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="x in modalGestion.listadoServicios">
+                    <!-- <th style="text-align:center;">{{x.RENGLON}}</th> -->
+                    <th style="text-align:center;">{{x.PRODUCTO + ' - ' + x.DESCRIPCION}}</th>
+                    <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA.toString().replace(',', '.'))}}
+                    </td>
+                    <!-- <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
+                      <!-- <td style="text-align:center;">${{FormatPesoNumero(x.MANT.toString().replace(',', '.'))}} -->
+
+                      <!-- <td style="text-align:center;">
+                      $<input type="text"
+                        class="margin border-none white input-text-new input-w-p input-out-new w-100"
+                        style="width: 75% !important;" id="Valor_Glosar_EPS_{{$index}}" maxlength="16"
+                        autocomplete="off" ng-keyup="FormatPeso('Valor_Glosar_EPS_'+$index)"
+                        ng-model="x.VALOR_GLOSAR_EPS">
+                      <br>
+                      <span class="red-text text-bold-italic" ng-show="x.error">Debe Corregir el Valor</span>
+                    </td> -->
+                    <td style="text-align:center;">
+                      <textarea ng-model="x.FCDC_COMENTARIO_IPS" readonly></textarea>
+                    </td>
+                    <td style="text-align:center;">
+                      <textarea ng-model="x.COMENTARIO_EPS" readonly></textarea>
+                    </td>
+                    <td style="text-align:center;">
+                      <textarea ng-model="x.GLOSA" readonly></textarea>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!--  -->
+
+          <!--  -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <style>
+    textarea {
+      resize: none;
+      height: 100px;
+      text-align: justify;
+    }
+
+    #glosa_textarea {
+      resize: none;
+      border: none;
+      display: block;
+      width: 100%;
+      border-radius: 3px;
+      padding: 10px;
+      font-size: 13px;
+      background-color: white;
+    }
+
+    #fileSoporte {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+      border: 1px solid #8a88865e !important;
+      height: 2.14rem;
+      border-radius: 2px;
+      margin: 0;
+      width: -webkit-fill-available;
+    }
+
+    .file-upload-wrapper:after {
+      text-align: center;
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      line-height: 1;
+      color: #80868b;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 400;
+      height: 8vh;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: 10vh;
+    }
+
+    .dropdown-content li {
+      min-height: 23px;
+    }
+
+    .dropdown-content li>span {
+      line-height: 32px;
+      padding: 0px 16px;
+    }
+  </style>
+</div>

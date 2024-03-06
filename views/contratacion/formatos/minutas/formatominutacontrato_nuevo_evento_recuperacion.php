@@ -274,10 +274,10 @@
                     <label for="regimen_1">Subsidiado:</label>
                     <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''" onclick="return false;">
                   </div>
-                  <div style="margin: 0px 3vw;">
+                  <!-- <div style="margin: 0px 3vw;">
                     <label for="regimen_2">Contributivo:</label>
                     <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''" onclick="return false;">
-                  </div>
+                  </div> -->
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_3">Contributivo Movilidad:</label>
                     <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''" onclick="return false;">
@@ -1169,7 +1169,8 @@
               se requerirá de autorización previa para la prestación y provisión de los servicios y tecnologías de salud
               a los afiliados pertenecientes a la etnia Wayuu habitante de municipios del departamento de La Guajira, en
               las siguientes situaciones: 1 Cuando se trate de eventos y condiciones en salud señalados en el artículo
-              2.5.3.4.7.4 del Decreto 780 de 2016, o la norma que lo modifique o sustituya. 2. Para la atención de
+              2.5.3.4.7.4 del Decreto 780 de 2016  y lo dispuesto en los articulos 4 y 5 de la resolución 2811 de 2022
+               o la norma que lo modifique o sustituya. 2. Para la atención de
               urgencias y los servicios y tecnologías en salud posteriores a la atención en urgencias sin egreso
               hospitalario. 3. Para la atención integral de la desnutrición aguda moderada y severa en niños menores de
               5 años, según lo establecido en la resolución 2350 de 2020, que incluye: identificación de casos de
@@ -1580,7 +1581,7 @@
             <div class="minuta_texto">
               A) COMPENSATORIA: El incumplimiento parcial o total de las obligaciones derivadas de este contrato por el
               PSS, genera el derecho para Ia ERP a exigir el pago de una suma equivalente al 10% del valor estimado del
-              contrato, previa declaración judicial.
+              contrato.
               <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. </span>
               El PSS autoriza a la ERP para que el valor de la CLÁUSULA PENAL a que se refiere esta cláusula sea
               descontado del saldo pendiente de pago a su favor en virtud del presente acuerdo de voluntades o por

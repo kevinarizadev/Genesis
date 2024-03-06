@@ -17,38 +17,42 @@ angular.module('GenesisApp')
       $scope.Listado_Plantilla = [
         {
           "nombre": "Plantilla Presentación Power Point",
-          "url": "docs/listado_planillas/plantillas para presentaciones diapositivas en powerpoint.pptx"
+          "url": "docs/listado_planillasx/plantillas para presentaciones diapositivas en powerpoint.pptx"
         },
         {
           "nombre": "Plantilla comunicado externo tamaño carta",
-          "url": "docs/listado_planillas/plantilla carta membrete externo.docx"
+          "url": "docs/listado_planillasx/plantilla carta membrete externo.docx"
         },
         {
           "nombre": "Plantilla comunicado interno tamaño carta",
-          "url": "docs/listado_planillas/plantilla carta membrete comunicado interno.docx"
+          "url": "docs/listado_planillasx/plantilla carta membrete comunicado interno.docx"
         },
         {
           "nombre": "Plantilla Informe",
-          "url": "docs/listado_planillas/plantilla de informe.docx"
+          "url": "docs/listado_planillasx/plantilla de informe.docx"
         },
         {
           "nombre": "Plantilla comunicado externo tamaño oficio",
-          "url": "docs/listado_planillas/plantilla oficio membrete externo.docx"
+          "url": "docs/listado_planillasx/plantilla oficio membrete externo.docx"
         },
         {
           "nombre": "Plantilla comunicado interno tamaño oficio",
-          "url": "docs/listado_planillas/plantilla oficio membrete comunicado interno.docx"
+          "url": "docs/listado_planillasx/plantilla oficio membrete comunicado interno.docx"
         },
         {
           "nombre": "GC-FR-01 Formato de Acta de Reunión",
-          "url": "docs/listado_planillas/GC-FR-01 Formato de Acta de Reunión.doc"
+          "url": "docs/listado_planillasx/GC-FR-01 Formato de Acta de Reunión.docx"
         }
       ];
 
       $scope.Listado_Organigrama = [
         {
-          "nombre": "Organigrama",
+          "nombre": "Organigrama Nacional",
           "url": "docs/listado_organigramas/Organigrama Nacional y Regional.pdf"
+        },
+        {
+          "nombre": "Organigrama Regional",
+          "url": "docs/listado_organigramas/Organigrama Regional.pdf"
         }
       ];
 
@@ -60,6 +64,14 @@ angular.module('GenesisApp')
         {
           "nombre": "Manual de Estilo",
           "url": "docs/listado_manuales/Manual de Estilo.pdf"
+        },
+        {
+          "nombre": "Cartilla de Pausas Saludables",
+          "url": "docs/listado_manuales/Cartilla Pausas.pdf"
+        },
+        {
+          "nombre": "Manual de Gestion de Calidad",
+          "url": "docs/listado_manuales/Manual Gestion de Calidad.pdf"
         }
       ];
 

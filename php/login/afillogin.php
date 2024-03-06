@@ -11,9 +11,10 @@ if (!preg_match('/^\w{5,25}$/', $user)) {
     echo '{"RES":"0","MSJ":"Usuario y/o contraseña incorrecto"}';
     return;
 }
-
+$tipo_doc = 'RC';
 require_once('../config/dbcon_login.php');
-$consulta = oci_parse($c, 'begin pq_genesis.p_login_afiliado(:v_usuario,:v_password,:v_res); end;');
+$consulta = oci_parse($c, 'begin pq_genesis.p_login_afiliado(:v_tipo_doc,:v_usuario,:v_password,:v_res); end;');
+oci_bind_by_name($consulta, ':v_tipo_doc', $tipo_doc);
 oci_bind_by_name($consulta, ':v_usuario', $user);
 oci_bind_by_name($consulta, ':v_password', $pass);
 $clob = oci_new_descriptor($c, OCI_D_LOB);

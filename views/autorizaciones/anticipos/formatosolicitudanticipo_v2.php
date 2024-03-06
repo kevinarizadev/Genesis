@@ -63,12 +63,12 @@
       </td>
     </tr>
     <tr style="font-weight:600;">
-      <td colspan="2">Version: 02</td>
+      <td colspan="2">Version: 03</td>
     </tr>
     <tr style="font-weight:600;">
       <td colspan="6" style="text-align: center;padding:1% 0%;">
         PROCEDIMIENTO DE ANTICIPOS PARA PRESTADORES DE SERVICIOS DE SALUD</td>
-      <td colspan="2">Fecha: Noviembre 2023</td>
+      <td colspan="2">Fecha: Noviembre 2024</td>
     </tr>
     <tr style="font-weight:600;">
       <td colspan="1" style="background-color:#deeaf6;">
@@ -242,10 +242,10 @@
     </tr>
     <tr style="font-weight:500;text-align:center;">
       <td colspan="4" style="height: 65px;border-right:white;">
-        <div class="Firma" style="background-image:url({{FirmaAnt.X3}});"></div>
+        <div class="Firma" style="background-image:url({{FirmaAnt.X4}});"></div>
       </td>
       <td colspan="5" style="height: 65px;border-left:white;">
-        <div class="Firma" style="background-image:url({{FirmaAnt.X4}}); width: 300px;"></div>
+        <div class="Firma" style="background-image:url({{FirmaAnt.X5}}); width: 300px;"></div>
       </td>
     </tr>
 
@@ -255,7 +255,7 @@
     </tr>
     <tr style="font-weight:600;text-align:center;">
       <td colspan="9" style="height: 65px;">
-        <div class="Firma" style="background-image:url({{FirmaAnt.X5}});"></div>
+        <div class="Firma" style="background-image:url({{FirmaAnt.X6}});"></div>
       </td>
     </tr>
   </table>

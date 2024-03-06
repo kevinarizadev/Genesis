@@ -961,10 +961,12 @@ function p_buscar_productos()
 {
 	global $request;
 	require_once('../../config/dbcon_prod.php');
-	$consulta = oci_parse($c, 'BEGIN pq_genesis_tut.p_buscar_productos(:v_pcoincidencia,:v_pedad,:v_psexo,:v_pjson_row); end;');
+	$consulta = oci_parse($c, 'BEGIN pq_genesis_tut.p_buscar_productos(:v_pcoincidencia,:v_pedad,:v_psexo,:v_pregimen,:v_pubicacion,:v_pjson_row); end;');
 	oci_bind_by_name($consulta, ':v_pcoincidencia', $request->coinc);
 	oci_bind_by_name($consulta, ':v_pedad', $request->edadDias);
 	oci_bind_by_name($consulta, ':v_psexo', $request->sexoCodigo);
+	oci_bind_by_name($consulta, ':v_pregimen', $request->regimenAfiliado);
+	oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
 	oci_execute($consulta, OCI_DEFAULT);
@@ -1035,7 +1037,7 @@ function p_ui_servicios()
 {
 	require_once('../../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'begin pq_genesis_tut.p_ui_servicios(:v_pnumero,:v_pubicacion,:v_petapa,:v_pjson_servicio,:v_pcantidad_serv,:v_paccion,:v_json_row); end;');
+	$consulta = oci_parse($c, 'begin pq_genesis_tut.p_ui_servicios(:v_pnumero,:v_pubicacion,:v_petapa,:v_pjson_servicio,:v_pcantidad_serv,:v_paccion,:v_pregimen,:v_json_row); end;');
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_pnumero', $request->numero);
 	oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
@@ -1043,6 +1045,7 @@ function p_ui_servicios()
 	oci_bind_by_name($consulta, ':v_pjson_servicio', $request->jsonCausas);
 	oci_bind_by_name($consulta, ':v_pcantidad_serv', $request->cantidad);
 	oci_bind_by_name($consulta, ':v_paccion', $request->accion);
+  oci_bind_by_name($consulta, ':v_pregimen', $request->regimenAfiliado);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
 	oci_execute($consulta, OCI_DEFAULT);
 	if (isset($clob)) {
@@ -1300,7 +1303,7 @@ function p_lista_tipos_adjuntos()
 	require_once('../../config/dbcon_prod.php');
 	global $request;
 	$consulta = oci_parse($c, 'BEGIN pq_genesis_tut.p_lista_tipos_adjuntos(:v_response); end;');
-	
+
 	$cursor = oci_new_cursor($c);
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
@@ -1339,10 +1342,11 @@ function p_cargar_adjunto_tutela()
 {
 	require_once('../../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'begin pq_genesis_tut.p_cargar_adjunto_tutela(:v_pnumero,:v_pubicacion,:v_ptipo,:v_pfecha,:v_pruta,:v_presponsable,:v_json_row); end;');
+	$consulta = oci_parse($c, 'begin pq_genesis_tut.p_cargar_adjunto_tutela(:v_pnumero,:v_pubicacion,:v_ptipo,:v_pincidente,:v_pfecha,:v_pruta,:v_presponsable,:v_json_row); end;');
 	oci_bind_by_name($consulta, ':v_pnumero', $request->tutela);
 	oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
 	oci_bind_by_name($consulta, ':v_ptipo', $request->tipo);
+	oci_bind_by_name($consulta, ':v_pincidente', $request->incidente);
 	oci_bind_by_name($consulta, ':v_pfecha', $request->fecha);
 	oci_bind_by_name($consulta, ':v_pruta', $request->ruta);
 	oci_bind_by_name($consulta, ':v_presponsable', $request->responsable);
@@ -1358,3 +1362,18 @@ function p_cargar_adjunto_tutela()
 	oci_close($c);
 }
 
+function P_INFORME_SERVICIOS()
+{
+	require_once('../../config/dbcon_prod.php');
+	// global $request;
+	$consulta = oci_parse($c, 'BEGIN pq_genesis_tut.p_informe_servicios(:v_presponse); end;');
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = [];
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
+}

@@ -38,6 +38,26 @@ function obtenerRiesgoSolicitud()
 	}
 	oci_close($c);
 }
+
+function actualizarfechaprestacionPQR(){
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_ACTUALIZAR_COLUMNA_PQR(:v_codigopqr,:v_columna,:v_dato,:v_json_row); end;');
+	oci_bind_by_name($consulta,':v_codigopqr',$request->codigo);
+	oci_bind_by_name($consulta,':v_columna',$request->columna);
+	oci_bind_by_name($consulta,':v_dato',$request->fecha);
+	$clob = oci_new_descriptor($c,OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
+	oci_execute($consulta,OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	}else{
+		echo 0;
+	}
+	oci_close($c);
+}
+
 function obtenerMediosRecepcion()
 {
 	require_once('../../config/dbcon_prod.php');
@@ -793,7 +813,7 @@ function obtenerMotivosResponsable()
 	}
 	oci_close($c);
 }
-function obtenerResponsablesSeccionales()
+function  obtenerResponsablesSeccionales()
 {
 	require_once('../../config/dbcon_prod.php');
 	global $request;
@@ -810,6 +830,7 @@ function obtenerResponsablesSeccionales()
 	}
 	oci_close($c);
 }
+
 function obtenerPqrExcel()
 {
 	require_once('../../config/dbcon_prod.php');
@@ -1863,8 +1884,9 @@ function p_obtener_macromotivos_especifico_tiporad()
 {
 	require_once('../../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_OBTENER_MACROMOTIVOS_ESPECIFICO_TIPORAD(:v_tiporad,:v_json_row); end;');
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_OBTENER_MACROMOTIVOS_ESPECIFICO_TIPORAD(:v_tiporad,:v_tiposolicitud,:v_json_row); end;');
 	oci_bind_by_name($consulta, ':v_tiporad', $request->tiporad);
+	oci_bind_by_name($consulta, ':v_tiposolicitud', $request->tipodesolicitud);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
 	oci_execute($consulta, OCI_DEFAULT);
@@ -2164,11 +2186,28 @@ function p_lista_reporte_servicios_pqr()
 {
 	require_once('../../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.p_lista_reporte_servicios_pqr(:v_pinicio,:v_pfin,:v_pjson_out); end;');
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.p_lista_reporte_servicios_pqr(:v_pinicio,:v_pfin,:v_presponse); end;');
 	oci_bind_by_name($consulta, ':v_pinicio', $request->fecha_i);
 	oci_bind_by_name($consulta, ':v_pfin', $request->fecha_f);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function p_permisos_func()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.p_permisos_func(:v_cedula,:v_json_row ); end;');
+	oci_bind_by_name($consulta, ':v_cedula', $request->cedula);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
-	oci_bind_by_name($consulta, ':v_pjson_out', $clob, -1, OCI_B_CLOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
 	oci_execute($consulta, OCI_DEFAULT);
 	if (isset($clob)) {
 		$json = $clob->read($clob->size());
@@ -2197,7 +2236,7 @@ function actualizarSoporteCorrep()
 
 	$subio = UploadFile($path, $name);
 	//echo substr($path,36,strlen($path)-1);
-	
+
 	if ($subio[0] != '0') {
 	echo $subio;
 	} else {
@@ -2241,4 +2280,25 @@ function P_DESCARGAR_INFORME_CONSOLIDADO()
   oci_free_statement($consulta);
   oci_free_statement($cursor);
   echo json_encode($datos);
+}
+
+
+
+function P_LISTA_AUTORIZACIONES_PQR()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_LISTA_AUTORIZACIONES_PQR(:v_pinicial,:v_pfinal,:V_RESULT); end;');
+	//oci_bind_by_name($consulta, ':v_pestado', $request->estado);
+	oci_bind_by_name($consulta, ':v_pinicial', $request->fecha_i);
+	oci_bind_by_name($consulta, ':v_pfinal', $request->fecha_f);
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':V_RESULT', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = [];
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
 }

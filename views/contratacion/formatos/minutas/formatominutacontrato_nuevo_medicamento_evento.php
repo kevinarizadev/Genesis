@@ -281,11 +281,11 @@
                     <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''"
                       onclick="return false;">
                   </div>
-                  <div style="margin: 0px 3vw;">
+                  <!-- <div style="margin: 0px 3vw;">
                     <label for="regimen_2">Contributivo:</label>
                     <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''"
                       onclick="return false;">
-                  </div>
+                  </div> -->
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_3">Contributivo Movilidad:</label>
                     <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''"
@@ -758,8 +758,9 @@
               Resolución 1841 de 2013, la Ley 1751 del 2015, el Decreto 780 de 2016, la Resolución 429 del 2016, la
               Resolución 2515 del 2018, la Resolución 1885 del 2018 de la Administradora de los Recursos del Sistema de
               Seguridad Social en Salud -ADRES-, Resolución 205 de 2020, la Resolución 535 de 2020 del Ministerio de
-              Salud y Protección Social, la Circular 013 de 2020 de la ADRES y el Decreto 441 de 2022, la Resolución 1403 de 2007 y
-              y por aquellas que
+              Salud y Protección Social, la Circular 013 de 2020 de la ADRES y el Decreto 441 de 2022, la Resolución 1403 de 2007,
+              acceso a la prestación y provisión de servicios y tecnologías de salud a toda la población perteneciente a la etnia wayuu
+              y lo dispuesto en los articulos 4 y 5 de la resolución 2811 de 2022 por aquellas que
               las adicionen, modifiquen, aclaren o sustituyan, así como las que posteriormente se expidan y que sean
               aplicables a la naturaleza de las partes, y de los servicios objeto del presente contrato a las cuales las
               partes se acogerán automáticamente, una vez entren en vigencia.
@@ -1154,7 +1155,7 @@
               atención integral del usuario y quitándole la carga administrativa de tramitar autorizaciones, las cuales
               se tramitarán entre las partes a través de un canal transaccional electrónico, de manera transparente para
               los usuarios. No habrá lugar a la solicitud de autorización para la atención integral del cáncer infantil
-              o de adultos o de VIH/Sida de conformidad con el marco normativo vigente descrito en el Anexo 1.
+              o de adultos o de VIH/Sida y lo dispuesto en los articulos 4 y 5 de la resolución 2811 de 2022 de conformidad con el marco normativo vigente descrito en el Anexo 1.
             </div>
 
             <div class="minuta_clausula">Cláusula 18. Supervisión del contrato.</div>
@@ -1462,7 +1463,7 @@
             <div class="minuta_texto">
               A) COMPENSATORIA: El incumplimiento parcial o total de las obligaciones derivadas de este contrato por el
               PSS, genera el derecho para Ia ERP a exigir el pago de una suma equivalente al 10% del valor estimado del
-              contrato, previa declaración judicial.
+              contrato.
               <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. </span>
               El PSS/PTS autoriza a la ERP para que el valor de la CLÁUSULA PENAL a que se refiere esta cláusula sea
               descontado del saldo pendiente de pago a su favor en virtud del presente acuerdo de voluntades o por

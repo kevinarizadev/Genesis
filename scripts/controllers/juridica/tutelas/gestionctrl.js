@@ -254,6 +254,7 @@ angular.module('GenesisApp')
         $scope.registro.selectCausaMotivo = '';
 
         $scope.registro.selectCausaMotivo_TS = '';
+        // $scope.registro.selectPGP = 'N';
         $scope.registro.productoAdmi = '';
         $scope.registro.activarSubclaseAdmi = '';
         $scope.registro.subclaseAdmi = '';
@@ -329,6 +330,38 @@ angular.module('GenesisApp')
 
       $scope.dwinforme_inc = function () {
         window.open('php/juridica/tutelas/informe_tutelas_cur.php');
+      }
+
+      $scope.dwinforme_servicios = function () {
+        swal({
+          title: 'Cargando...'
+        });
+        swal.showLoading();
+        $http({
+          method: 'POST',
+          url: "php/juridica/tutelas/functutelas.php",
+          data: {
+            function: "P_INFORME_SERVICIOS",
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.Codigo == 1) {
+            swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+          }
+          if (data.length > 0) {
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Exportado Tutelas Servicios.xlsx");
+            const text = `Registros encontrados ${data.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        })
       }
 
       $scope.busqueda = function () {
@@ -3441,7 +3474,7 @@ angular.module('GenesisApp')
                     fecha_reqpre: $("#FechaReqProRes").val(),
                     typefile: '36',
                     medio: ($scope.registro.medioRecepcionRespuestaInc == true) ? true : false,
-                    ori: $scope.registro.chkRespuestaReqPrevio && $scope.registro.medioRecepcionRespuestaInc ? true : false
+                    ori: $scope.registro.medioRecepcionRespuestaInc ? true : false
                   }
                 }).then(function (response) {
                   $scope.btn.GuardaRegistro = false;
@@ -5648,9 +5681,9 @@ angular.module('GenesisApp')
             validador = true;
           }
         }
-        if (document.getElementById("archivoObservacionImpugnacion_nul").files.length == 0 || $scope.detalles_nul.observacion_impugnado == "") {
+        /*if (document.getElementById("archivoObservacionImpugnacion_nul").files.length == 0 || $scope.detalles_nul.observacion_impugnado == "") {
           validador = true;
-        }
+        }*/
         if (validador == false) {
           swal({
             title: 'Confirmar',
@@ -6868,7 +6901,9 @@ angular.module('GenesisApp')
             coinc: $scope.registro.productoAdmi,
             // regimen: $scope.pqrData.User.regimen,
             edadDias: $scope.registro.edadDiasAfiliado,
-            sexoCodigo: $scope.registro.sexoCodigoAfiliado
+            sexoCodigo: $scope.registro.sexoCodigoAfiliado,
+            regimenAfiliado: $scope.registro.regimen_afiliado,
+            ubicacion: $scope.registro.ubicacion
           }
         }).then(function ({ data }) {
           if (data && data.toString().substr(0, 3) != '<br') {
@@ -6876,8 +6911,10 @@ angular.module('GenesisApp')
               swal.close();
               $scope.listadoProductos = data;
               if (data.length == 1) {
-                $scope.registro.productoAdmi = data[0].CODIGO + '-' + data[0].NOMBRE;
+                $scope.registro.productoAdmi = data[0].CODIGO + '~' + data[0].NOMBRE;
                 $scope.registro.activarSubclaseAdmi = data[0].SUBCLASIFICACION;
+                // $scope.registro.selectPGP = data[0].PGP;
+
                 $scope.obtenerSubclaseCausa();
                 return
               }
@@ -6895,9 +6932,10 @@ angular.module('GenesisApp')
         if ($scope.registro && $scope.listadoProductos) {
           console.log(1);
           $scope.listadoProductos.forEach(e => {
-            if (e.CODIGO + '-' + e.NOMBRE == $scope.registro.productoAdmi) {
+            if (e.CODIGO + '~' + e.NOMBRE == $scope.registro.productoAdmi) {
               console.log(1);
               $scope.registro.activarSubclaseAdmi = e.SUBCLASIFICACION;
+              // $scope.registro.selectPGP = e.PGP;
               if (e.SUBCLASIFICACION == 'S') { $scope.obtenerSubclaseCausa(); }
               setTimeout(() => { $scope.$apply(); }, 500);
             }
@@ -6914,7 +6952,7 @@ angular.module('GenesisApp')
           url: "php/juridica/tutelas/functutelas.php",
           data: {
             function: "p_obtener_subcategorias",
-            coinc: $scope.registro.productoAdmi.toString().split('-')[0],
+            coinc: $scope.registro.productoAdmi.toString().split('~')[0],
           }
         }).then(function ({ data }) {
           swal.close();
@@ -6922,7 +6960,7 @@ angular.module('GenesisApp')
             if (data.length && data[0].codigo != '-1') {
               $scope.listadoSubclase = data;
               if (data.length == 1) {
-                $scope.registro.subclaseAdmi = data[0].codigo + '-' + data[0].nombre;
+                $scope.registro.subclaseAdmi = data[0].codigo + '~' + data[0].nombre;
                 return
               }
             } else {
@@ -6954,7 +6992,7 @@ angular.module('GenesisApp')
             if (data.length && data[0].CODIGO != '-1') {
               $scope.listadoDiagnosticos = data;
               if (data.length == 1) {
-                $scope.registro.diagnosticoAdmi = data[0].CODIGO + '-' + data[0].NOMBRE;
+                $scope.registro.diagnosticoAdmi = data[0].CODIGO + '~' + data[0].NOMBRE;
                 return
               }
             } else {
@@ -7013,10 +7051,10 @@ angular.module('GenesisApp')
         if (!$scope.registro.selectCausaMotivo_TS) {
           swal("Mensaje", '¡Debe seleccionar el motivo!', "warning").catch(swal.noop); return
         }
-        if (!$scope.registro.productoAdmi || ($scope.registro.productoAdmi.toString().split('-')[0]).toString() <= 3) {
+        if (!$scope.registro.productoAdmi || ($scope.registro.productoAdmi.toString().split('~')[0]).toString() <= 3) {
           swal("Mensaje", '¡Debe seleccionar el CUMS/CUPS!', "warning").catch(swal.noop); return
         }
-        if (!$scope.registro.diagnosticoAdmi || ($scope.registro.diagnosticoAdmi.toString().split('-')[0]).toString() <= 3) {
+        if (!$scope.registro.diagnosticoAdmi || ($scope.registro.diagnosticoAdmi.toString().split('~')[0]).toString() <= 3) {
           swal("Mensaje", '¡Debe seleccionar el diagnostico!', "warning").catch(swal.noop); return
         }
         // if (!$scope.registro.mipresAdmi && $scope.registro.activarMipresAdmi == 'S') {
@@ -7042,9 +7080,9 @@ angular.module('GenesisApp')
         var encontrado = false;
         $scope.listCausasTecnologia_Admision.forEach(e => {
           if (e.COD_MOTIVO == $scope.registro.selectCausaMotivo_TS &&
-            e.COD_PRODUCTO == $scope.registro.productoAdmi.toString().split('-')[0] &&
-            e.COD_SUBCLASE == $scope.registro.subclaseAdmi.toString().split('-')[0] &&
-            e.COD_DIAGNOSTICO == $scope.registro.diagnosticoAdmi.toString().split('-')[0] &&
+            e.COD_PRODUCTO == $scope.registro.productoAdmi.toString().split('~')[0] &&
+            e.COD_SUBCLASE == $scope.registro.subclaseAdmi.toString().split('~')[0] &&
+            e.COD_DIAGNOSTICO == $scope.registro.diagnosticoAdmi.toString().split('~')[0] &&
             e.COD_MIPRES == $scope.registro.mipresAdmi &&
             e.MEDICO_TRATANTE == $scope.registro.medicoTratanteAdmi &&
             e.COD_PRESTADOR_SOLICITANTE == $scope.registro.prestadorSolicitanteAdmi.toString().split('-')[0] &&
@@ -7064,14 +7102,16 @@ angular.module('GenesisApp')
             COD_MOTIVO: motivoSeleccionado.MOTIVO,
             NOM_MOTIVO: motivoSeleccionado.NOMBRE,
 
-            COD_PRODUCTO: $scope.registro.productoAdmi.toString().split('-')[0],
-            NOM_PRODUCTO: $scope.registro.productoAdmi.toString().split('-')[1],
+            COD_PRODUCTO: $scope.registro.productoAdmi.toString().split('~')[0],
+            NOM_PRODUCTO: $scope.registro.productoAdmi.toString().split('~')[1],
 
-            COD_SUBCLASE: $scope.registro.subclaseAdmi ? $scope.registro.subclaseAdmi.toString().split('-')[0] : '',
-            NOM_SUBCLASE: $scope.registro.subclaseAdmi ? $scope.registro.subclaseAdmi.toString().split('-')[1] : '',
+            // PGP: $scope.registro.selectPGP,
 
-            COD_DIAGNOSTICO: $scope.registro.diagnosticoAdmi.toString().split('-')[0],
-            NOM_DIAGNOSTICO: $scope.registro.diagnosticoAdmi.toString().split('-')[1],
+            COD_SUBCLASE: $scope.registro.subclaseAdmi ? $scope.registro.subclaseAdmi.toString().split('~')[0] : '',
+            NOM_SUBCLASE: $scope.registro.subclaseAdmi ? $scope.registro.subclaseAdmi.toString().split('~')[1] : '',
+
+            COD_DIAGNOSTICO: $scope.registro.diagnosticoAdmi.toString().split('~')[0],
+            NOM_DIAGNOSTICO: $scope.registro.diagnosticoAdmi.toString().split('~')[1],
 
             COD_MIPRES: $scope.registro.mipresAdmi,
 
@@ -7089,6 +7129,7 @@ angular.module('GenesisApp')
 
           console.table($scope.listCausasTecnologia_Admision)
           $scope.registro.productoAdmi = '';
+          // $scope.registro.selectPGP = '';
           $scope.registro.activarSubclaseAdmi = '';
           $scope.registro.subclaseAdmi = '';
           $scope.registro.diagnosticoAdmi = '';
@@ -7098,6 +7139,10 @@ angular.module('GenesisApp')
           $scope.registro.prestadorAsignadoAdmi = '';
           $scope.registro.cantidadAdmi = '';
           $scope.registro.tiempoAdmi = '';
+
+          setTimeout(() => {
+            $scope.guardarCausas_Adm_TS()
+           }, 1500);
 
           setTimeout(() => { $scope.$apply(); }, 500);
         }
@@ -7120,6 +7165,7 @@ angular.module('GenesisApp')
         $scope.listCausasTecnologia_Admision.forEach(e => {
           array.push({
             CODIGO: e.COD_PRODUCTO,
+            PGP: e.PGP,
             CODIGO_SUBCLASE: e.COD_SUBCLASE,
             DIAGNOSTICO: e.COD_DIAGNOSTICO,
             MEDICO: e.MEDICO_TRATANTE,
@@ -7154,6 +7200,7 @@ angular.module('GenesisApp')
           if (data && data.toString().substr(0, 3) != '<br') {
             if (data.Codigo != '-1') {
               swal("Mensaje", 'Causas guardadas', "success").catch(swal.noop);
+              $scope.listarCausasTutela()
             } else {
               swal("Mensaje", 'Sin datos para mostrar', "warning").catch(swal.noop);
             }
@@ -7226,7 +7273,7 @@ angular.module('GenesisApp')
               swal.close();
               $scope.listadoProductos = data;
               if (data.length == 1) {
-                $scope[form].producto = data[0].CODIGO + '-' + data[0].NOMBRE;
+                $scope[form].producto = data[0].CODIGO + '~' + data[0].NOMBRE;
                 $scope[form].activarSubclase = data[0].SUBCLASIFICACION;
                 $scope.obtenerSubclaseCausa_Fallo_Impug(form);
                 return
@@ -7245,9 +7292,10 @@ angular.module('GenesisApp')
         if ($scope[form] && $scope.listadoProductos) {
           console.log(1);
           $scope.listadoProductos.forEach(e => {
-            if (e.CODIGO + '-' + e.NOMBRE == $scope[form].producto) {
+            if (e.CODIGO + '~' + e.NOMBRE == $scope[form].producto) {
               console.log(1);
               $scope[form].activarSubclase = e.SUBCLASIFICACION;
+              // $scope[form].selectPGP = e.PGP;
               if (e.SUBCLASIFICACION == 'S') { $scope.obtenerSubclaseCausa_Fallo_Impug(); }
               setTimeout(() => { $scope.$apply(); }, 500);
             }
@@ -7261,7 +7309,7 @@ angular.module('GenesisApp')
           url: "php/juridica/tutelas/functutelas.php",
           data: {
             function: "p_obtener_subcategorias",
-            coinc: $scope[form].producto.toString().split('-')[0],
+            coinc: $scope[form].producto.toString().split('~')[0],
           }
         }).then(function ({ data }) {
           swal.close();
@@ -7269,7 +7317,7 @@ angular.module('GenesisApp')
             if (data.length && data[0].codigo != '-1') {
               $scope.listadoSubclase = data;
               if (data.length == 1) {
-                $scope[form].subclase = data[0].codigo + '-' + data[0].nombre;
+                $scope[form].subclase = data[0].codigo + '~' + data[0].nombre;
                 return
               }
             } else {
@@ -7299,7 +7347,7 @@ angular.module('GenesisApp')
             if (data.length && data[0].CODIGO != '-1') {
               $scope.listadoDiagnosticos = data;
               if (data.length == 1) {
-                $scope[form].diagnostico = data[0].CODIGO + '-' + data[0].NOMBRE;
+                $scope[form].diagnostico = data[0].CODIGO + '~' + data[0].NOMBRE;
                 return
               }
             } else {
@@ -7363,10 +7411,10 @@ angular.module('GenesisApp')
 
         if ($scope[form].causa == 'TS') {
 
-          if (!$scope[form].producto || ($scope[form].producto.toString().split('-')[0]).toString() <= 3) {
+          if (!$scope[form].producto || ($scope[form].producto.toString().split('~')[0]).toString() <= 3) {
             swal("Mensaje", '¡Debe seleccionar el CUMS/CUPS!', "warning").catch(swal.noop); return
           }
-          if (!$scope[form].diagnostico || ($scope[form].diagnostico.toString().split('-')[0]).toString() <= 3) {
+          if (!$scope[form].diagnostico || ($scope[form].diagnostico.toString().split('~')[0]).toString() <= 3) {
             swal("Mensaje", '¡Debe seleccionar el diagnostico!', "warning").catch(swal.noop); return
           }
           if (!$scope[form].mipres && $scope[form].activarMipres == 'S') {
@@ -7392,9 +7440,9 @@ angular.module('GenesisApp')
           $scope[form].listCausasTecnologia.forEach(e => {
             if (e.COD_CAUSA == $scope[form].causa &&
               e.COD_MOTIVO == $scope[form].motivo &&
-              e.COD_PRODUCTO == $scope[form].producto.toString().split('-')[0] &&
-              e.COD_SUBCLASE == $scope[form].subclase.toString().split('-')[0] &&
-              e.COD_DIAGNOSTICO == $scope[form].diagnostico.toString().split('-')[0] &&
+              e.COD_PRODUCTO == $scope[form].producto.toString().split('~')[0] &&
+              e.COD_SUBCLASE == $scope[form].subclase.toString().split('~')[0] &&
+              e.COD_DIAGNOSTICO == $scope[form].diagnostico.toString().split('~')[0] &&
               e.COD_MIPRES == $scope[form].mipres &&
               e.MEDICO_TRATANTE == $scope[form].medicoTratante &&
               e.COD_PRESTADOR_SOLICITANTE == $scope[form].prestadorSolicitante.toString().split('-')[0] &&
@@ -7429,14 +7477,14 @@ angular.module('GenesisApp')
               COD_MOTIVO: motivoSeleccionado.MOTIVO.toString(),
               NOM_MOTIVO: motivoSeleccionado.NOMBRE,
 
-              COD_PRODUCTO: $scope[form].producto.toString().split('-')[0],
-              NOM_PRODUCTO: $scope[form].producto.toString().split('-')[1],
+              COD_PRODUCTO: $scope[form].producto.toString().split('~')[0],
+              NOM_PRODUCTO: $scope[form].producto.toString().split('~')[1],
 
-              COD_SUBCLASE: $scope[form].subclase ? $scope[form].subclase.toString().split('-')[0] : '',
-              NOM_SUBCLASE: $scope[form].subclase ? $scope[form].subclase.toString().split('-')[1] : '',
+              COD_SUBCLASE: $scope[form].subclase ? $scope[form].subclase.toString().split('~')[0] : '',
+              NOM_SUBCLASE: $scope[form].subclase ? $scope[form].subclase.toString().split('~')[1] : '',
 
-              COD_DIAGNOSTICO: $scope[form].diagnostico.toString().split('-')[0],
-              NOM_DIAGNOSTICO: $scope[form].diagnostico.toString().split('-')[1],
+              COD_DIAGNOSTICO: $scope[form].diagnostico.toString().split('~')[0],
+              NOM_DIAGNOSTICO: $scope[form].diagnostico.toString().split('~')[1],
 
               COD_MIPRES: $scope[form].mipres,
 
@@ -7531,6 +7579,7 @@ angular.module('GenesisApp')
               etapa: etapa,
               jsonCausas: JSON.stringify(array),
               cantidad: array.length,
+              regimenAfiliado: $scope.registro.regimen_afiliado,
               accion: 'I'
             }
           }).then(function ({ data }) {
@@ -7604,7 +7653,9 @@ angular.module('GenesisApp')
                     NOM_PRESTADOR_ASIGNADO: e.PRESTADOR_ASIGNADO,
 
                     CANTIDAD: e.CANTIDAD,
-                    TIEMPO: e.TIEMPO
+                    TIEMPO: e.TIEMPO,
+
+                    PGP: e.PGP
                   })
                 }
                 if (e.ETAPA == 1 && e.COD_CAUSA != 'TS') {

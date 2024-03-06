@@ -186,9 +186,9 @@ function subir_adjuntos()
 	// $path = '/cargue_ftp/Digitalizacion/Genesis/Cuentasmedicas/Notificacionglosa/'. $seccional.'/';
 	// $subio = subirFTP($archivo_base, $path, $name, $ext);
 	$name =	$request->nombre.'.'.$request->ext;
-  list(, $request->archivo_base) = explode(';', $request->archivo_base); // Proceso para traer el Base64
-  list(, $request->archivo_base) = explode(',', $request->archivo_base); // Proceso para traer el Base64
-  $base64 = base64_decode($request->archivo_base); // Proceso para traer el Base64
+  list(, $request->achivobase) = explode(';', $request->achivobase); // Proceso para traer el Base64
+  list(, $request->achivobase) = explode(',', $request->achivobase); // Proceso para traer el Base64
+  $base64 = base64_decode($request->achivobase); // Proceso para traer el Base64
   file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
   include('../sftp_cloud/UploadFile.php');
   $subio = UploadFile($path, $name);

@@ -384,6 +384,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/financiera/soporteslegalizacion.js"></script>
 <script src="scripts/controllers/financiera/gestiondelegalizacion.js"></script>
 <script src="scripts/controllers/financiera/cuentacosto.js"></script>
+<script src="scripts/controllers/financiera/impresionmasivaController.js"></script>
 
 
 <script src="scripts/controllers/afiliacionLinea/seguimientodegestante.js"></script>
@@ -499,6 +500,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/riesgos/mapaderiesgosController.js"></script>
 <script src="scripts/controllers/riesgos/eventosmaterializadosController.js"></script>
 <script src="scripts/controllers/riesgos/adminriesgosController.js"></script>
+<script src="scripts/controllers/riesgos/indicadoresriesgosController.js"></script>
 
 
 <script src="scripts/controllers/salud/cupscontroller.js"></script>
@@ -1013,7 +1015,7 @@ if (!isset($_SESSION['nombre'])) {
 <!--cdn procesos de rips reponsable aldair.guerrero-->
 <!-- <script type="text/javascript" src="//cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script> -->
 <script type="text/javascript" src="assets/js/qrcode.min.js"></script>
-<script type="text/javascript" src="bower_components/instascan/instascan.min.js"></script>
+<!-- <script type="text/javascript" src="bower_components/instascan/instascan.min.js"></script> -->
 <!-- fin cdns proceso rips -->
 <script src="bower_components/materialize/bin/materialize.js"></script>
 <!--<script src="js/signature-agent.js"></script> -->

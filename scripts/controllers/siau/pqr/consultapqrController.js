@@ -15,28 +15,39 @@ angular.module('GenesisApp')
       // setTimeout(() => { $scope.$apply(); }, 500);
       $scope.Rol_cargo = JSON.parse(sessionStorage.getItem("inicio_perfil")).cod_cargo;
       console.log($scope.Rol_cargo)
-      $scope.validarPermisosConsolidado();
+      $scope.validarPermisos();
+      $scope.documento = '';
     });
 
 
-    $scope.validarPermisosConsolidado = function () {
-      const usuarios = [
-        { user: '1042454684' },//Ka
-        { user: '1052988663' },//edgardo.hernandez
-        { user: '72157887' }, //Alexander Berbesi
-        { user: '8634410' }, //Carlos Romero
-        { user: '1140861113' }, //robin.reales
-        { user: '1140826060' }, //kelly.mendoza
-        { user: '22494077' }, //Johana Montero
-        { user: '72200692' }, //Jorge reyes,
-        { user: '52936596' }, //Claudia Lamprea
-        { user: '1048211587' }, //Amilkar Urrego
-        { user: '24138522' }, //Johanna.ariza
-        { user: '32777066' }, //Brenda Ruiz
-        
-      ]
-      
-      document.querySelector("#permisosConsolidado").style.display = (usuarios.findIndex((element) => element.user == $scope.documentologueo)) == -1 ? 'none' : ''
+    $scope.validarPermisos = function () {
+      // const usuarios = [
+      //   { user: '1042454684' },//Ka
+      //   { user: '1052988663' },//edgardo.hernandez
+      //   { user: '72157887' }, //Alexander Berbesi
+      //   { user: '8634410' }, //Carlos Romero
+      //   { user: '1140861113' }, //robin.reales
+      //   { user: '1140826060' }, //kelly.mendoza
+      //   { user: '22494077' }, //Johana Montero
+      //   { user: '72200692' }, //Jorge reyes,
+      //   { user: '52936596' }, //Claudia Lamprea
+      //   { user: '1048211587' }, //Amilkar Urrego
+      //   { user: '24138522' }, //Johanna.ariza
+      //   { user: '32777066' }, //Brenda Ruiz
+      // ]
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+                  function: 'p_permisos_func',
+                  cedula: $scope.documentologueo
+              }
+      }).then(function(response){
+             $scope.permisosUsuario = response.data;
+             console.log($scope.permisosUsuario);
+      })
+
+
     }
     //variables de control
 
@@ -188,6 +199,8 @@ angular.module('GenesisApp')
     }//Fin
 
 
+
+
     function validate_fecha(fecha) {
 
       var patron = new RegExp("^(19|20)+([0-9]{2})([-])([0-9]{1,2})([-])([0-9]{1,2})$");
@@ -336,33 +349,10 @@ angular.module('GenesisApp')
           })
           $scope.numeroPQR = opcion.CODIGO;
           $scope.estadoPQR = opcion.ESTADO;
-          $scope.opcionComentario = false;
           $scope.cargarComentarioPQR();
           if (opcion.ESTADO == 'PROCESADO') {
             $scope.cargarServiciosPQR(1);
           }
-
-          var permisosCargos = [
-            { cargo: 1 },
-            { cargo: 4 },
-            { cargo: 9 },
-            { cargo: 10 },
-            { cargo: 20 },
-            { cargo: 25 },
-            { cargo: 29 },
-            { cargo: 32 },
-            { cargo: 41 },
-            { cargo: 52 },
-            { cargo: 64 },
-            { cargo: 106 },
-            { cargo: 133 },
-            { cargo: 156 },
-            { cargo: 160 },
-            { cargo: 172 },
-            { cargo: 201 },
-            { cargo: 217 },
-          ]
-          $scope.opcionComentario = (permisosCargos.findIndex(e => e.cargo == $scope.Rol_cargo)) == -1 ? false : true;
 
           $("#trazapqr").modal("open");
           $scope.trazapqrTabs = 1;
@@ -791,6 +781,129 @@ angular.module('GenesisApp')
       });
     }
 
+    $scope.capturarfechaPrestacion = function (pqr) {
+      swal({
+        html: '<div class="row" style="margin: 0"> <h5 style="margin-top: 0"><b>Fecha Prestacion</b>  </h5></div><div class="row" style="margin: 0"> <div class="input-field col s12" style="margin: 0">        <label for="fecha" style="margin-top: -2vh;">Fecha</label>        <input type="date" id="fecha" style="margin: 0">    </div> </div>',
+        confirmButtonText: "Guardar",
+      }).then(function (cod) {
+        let sss = new Date();
+        var fecha = document.querySelector('#fecha').value;
+        if (fecha) {
+          if (new Date(fecha) <= new Date) {
+            var fechaIni = fecha.split('-');
+            var v_fecha = fechaIni[2] + '/' + fechaIni[1] + '/' + fechaIni[0];
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/siau/pqr/Rpqr.php",
+              data: {
+                function: 'actualizarfechaprestacionPQR',
+                codigo: pqr.CODIGO,
+                columna: 'FECHA_PRESTACION',
+                fecha: v_fecha,
+                // responsable: $scope.documentologueo
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) != '<br') {
+                if (data.Codigo == 0) {
+                  swal('¡Mensaje!', data.Nombre, 'success').catch(swal.noop);
+                  $scope.validarMarcacion(pqr.CODIGO);
+                } else {
+                  swal('¡Mensaje!', data.mensaje, 'info').catch(swal.noop);
+                }
+              } else {
+                swal('¡Mensaje!', data, 'error').catch(swal.noop);
+              }
+            })
+
+          } else {
+            swal('¡Mensaje!', 'Fecha incorrecta', 'info').catch(swal.noop);
+          }
+        } else {
+          swal('¡Mensaje!', 'Las fechas no deben estar vacias', 'info').catch(swal.noop);
+        }
+      });
+
+    }
+
+    // EXPORTAR
+    $scope.descargarExportadoPQRAuts = function () {
+      swal({
+        html: '<div class="row" style="margin: 0"> <h5 style="margin-top: 0"><b>PQR con Servicios</b>  </h5></div><div class="row" style="margin: 0">    <div class="input-field col s6" style="margin: 0">        <label for="fechaIni_log" style="margin-top: -2vh;">Fecha Inicio</label>        <input type="date" id="fechaIni_log" style="margin: 0">    </div>    <div class="input-field col s6" style="margin: 0">        <label for="fechaFin_log" style="margin-top: -2vh;">Fecha Fin</label>        <input type="date" id="fechaFin_log" style="margin: 0">    </div></div>',
+        confirmButtonText: "Generar",
+      }).then(function (cod) {
+        const fechaIni_log = document.querySelector('#fechaIni_log').value;
+        const fechaFin_log = document.querySelector('#fechaFin_log').value;
+        if (fechaIni_log && fechaFin_log) {
+          if (new Date(fechaIni_log) <= new Date(fechaFin_log)) {
+            const fechaIni = fechaIni_log.split('-'), fechaFin = fechaFin_log.split('-');
+            const fecha_i = fechaIni[2] + '/' + fechaIni[1] + '/' + fechaIni[0], fecha_f = fechaFin[2] + '/' + fechaFin[1] + '/' + fechaFin[0];
+            console.log(fecha_i)
+            console.log(fecha_f)
+            //
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/siau/pqr/Rpqr.php",
+              data: { function: 'P_LISTA_AUTORIZACIONES_PQR', estado: $scope.jsonautorizacion.estadoavanzado == '' ? 'A' : $scope.jsonautorizacion.estadoavanzado, fecha_i, fecha_f }
+            }).then(function ({ data }) {
+              if (data.length) {
+
+                var array = [];
+                data.forEach(e => {
+                  array.push({
+
+                    NUMERAUT: e.AUTN_NUMERO,
+                    UBICACION: e.AUTN_UBICACION,
+                    TIPODOCUMENTO: e.AUTC_TIPO_DOC_AFILIADO,
+                    DOCUMENTO: e.AUTC_AFILIADO,
+                    PQR: e.AUTN_PQR,
+                    NUMERO_AUT: e.AUTN_AUTORIZACION_MANUAL,
+                    DPTO: e.DEPARTAMENTO,
+                    MUNICIPIO: e.NOMBRE_MUNICIPIO,
+                    FECHA_CONFIRMACION: e.AUTF_CONFIRMADO,
+                    ESTADO: e.AUTC_ESTADO
+
+                  })
+                });
+
+                var ws = XLSX.utils.json_to_sheet(array);
+                /* add to workbook */
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+                /* write workbook and force a download */
+                XLSX.writeFile(wb, "Exportado PQRDS AUT.xlsx");
+                const text = `Registros encontrados ${data.length}`
+                swal('¡Mensaje!', text, 'success').catch(swal.noop);
+              } else {
+                swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+              }
+            })
+
+            //
+          } else {
+            swal('¡Mensaje!', 'Fechas incorrectas', 'info').catch(swal.noop);
+          }
+        } else {
+          swal('¡Mensaje!', 'Las fechas no deben estar vacias', 'info').catch(swal.noop);
+        }
+      });
+    }
+
     $scope.descargarExportadoPQRServicios = function () {
       swal({
         html: '<div class="row" style="margin: 0"> <h5 style="margin-top: 0"><b>PQR con Servicios</b>  </h5></div><div class="row" style="margin: 0">    <div class="input-field col s6" style="margin: 0">        <label for="fechaIni_log" style="margin-top: -2vh;">Fecha Inicio</label>        <input type="date" id="fechaIni_log" style="margin: 0">    </div>    <div class="input-field col s6" style="margin: 0">        <label for="fechaFin_log" style="margin-top: -2vh;">Fecha Fin</label>        <input type="date" id="fechaFin_log" style="margin: 0">    </div></div>',
@@ -804,7 +917,7 @@ angular.module('GenesisApp')
             const fecha_i = fechaIni[2] + '/' + fechaIni[1] + '/' + fechaIni[0], fecha_f = fechaFin[2] + '/' + fechaFin[1] + '/' + fechaFin[0];
             console.log(fecha_i)
             console.log(fecha_f)
-            // 
+            //
             swal({
               html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
               width: 200,
@@ -820,37 +933,37 @@ angular.module('GenesisApp')
             }).then(function ({ data }) {
               if (data.length) {
 
-                var array = [];
-                data.forEach(e => {
-                  array.push({
-                    NUMERPQR: e.numero,
-                    ESTADO: e.estado,
-                    TIPODOCUMENTO: e.tipodocumento,
-                    DOCUMENTO: e.documento,
-                    NOMBRE_AFILIADO: e.nombre_afiliado,
-                    FECHA_RADICACION: e.fecha_radicacion,
-                    FECHA_RESPUESTA: '',
-                    FECHA_ENTREGA: e.fecha_entrega,
-                    MACROMOTIVO: e.macromotivo,
-                    MOTIVOGENERAL: e.motivogeneral,
-                    MOTIVOESPECIFICO: e.motivoespecifico,
-                    RIESGO_VIDA: e.riesgo_vida,
-                    IPS_PRIMARIA: e.ips_primaria,
-                    IPS_MEDICAMENTOS: e.ips_medicamentos,
-                    IPS_COMPLEMENTARIA: e.ips_complementaria,
+                // var array = [];
+                // data.forEach(e => {
+                //   array.push({
+                //     NUMERPQR: e.numero,
+                //     ESTADO: e.estado,
+                //     TIPODOCUMENTO: e.tipodocumento,
+                //     DOCUMENTO: e.documento,
+                //     NOMBRE_AFILIADO: e.nombre_afiliado,
+                //     FECHA_RADICACION: e.fecha_radicacion,
+                //     FECHA_RESPUESTA: '',
+                //     FECHA_ENTREGA: e.fecha_entrega,
+                //     MACROMOTIVO: e.macromotivo,
+                //     MOTIVOGENERAL: e.motivogeneral,
+                //     MOTIVOESPECIFICO: e.motivoespecifico,
+                //     RIESGO_VIDA: e.riesgo_vida,
+                //     IPS_PRIMARIA: e.ips_primaria,
+                //     IPS_MEDICAMENTOS: e.ips_medicamentos,
+                //     IPS_COMPLEMENTARIA: e.ips_complementaria,
 
-                    SERVICIO_PQR: `${e.prod_codigo} ${e.proc_nombre}`,
+                //     SERVICIO_PQR: `${e.prod_codigo} ${e.proc_nombre}`,
 
-                    RESPONSABLE_PQR: e.responsable,
-                    REITERATIVA: e.reiterativa,
-                    CANTIDAD_REITERATIVA: e.cantidad_reiterativa,
+                //     RESPONSABLE_PQR: e.responsable,
+                //     REITERATIVA: e.reiterativa,
+                //     CANTIDAD_REITERATIVA: e.cantidad_reiterativa,
 
-                    AUTORIZACION: `${e.autn_numero}-${e.autn_ubicacion}`,
-                    FECHA_PRESTACION: e.fecha_prestacion
-                  })
-                });
+                //     AUTORIZACION: `${e.autn_numero}-${e.autn_ubicacion}`,
+                //     FECHA_PRESTACION: e.fecha_prestacion
+                //   })
+                // });
 
-                var ws = XLSX.utils.json_to_sheet(array);
+                var ws = XLSX.utils.json_to_sheet(data);
                 /* add to workbook */
                 var wb = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
@@ -866,7 +979,7 @@ angular.module('GenesisApp')
 
 
 
-            // 
+            //
           } else {
             swal('¡Mensaje!', 'Fechas incorrectas', 'info').catch(swal.noop);
           }
@@ -1428,7 +1541,7 @@ angular.module('GenesisApp')
 
               }
 
-              
+
               $scope.calcularEdad($scope.infoafiliadoautedit.FechaNacimiento);
             }
 
@@ -2038,7 +2151,7 @@ angular.module('GenesisApp')
       });
     }
     $scope.Obtener_Tipos_Documentos();
-    
+
     // $scope.JSONToCSVConvertor = function (ReportTitle, ShowLabel) {
 
     //     var json = $scope.listarPQRSTemp;
