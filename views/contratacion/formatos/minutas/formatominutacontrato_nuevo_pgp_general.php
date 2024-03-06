@@ -281,11 +281,11 @@
                     <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''"
                       onclick="return false;">
                   </div>
-                  <div style="margin: 0px 3vw;">
+                  <!-- <div style="margin: 0px 3vw;">
                     <label for="regimen_2">Contributivo:</label>
                     <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''"
                       onclick="return false;">
-                  </div>
+                  </div> -->
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_3">Contributivo Movilidad:</label>
                     <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''"
@@ -1226,7 +1226,13 @@
               liquidación final del mismo, a su terminación, se conciliarán los saldos a favor o en contra de las
               partes. Los saldos a favor de la ERP se cancelarán por parte del PSS/PTS mediante una nota crédito que se
               aplicará en el último pago, y si el saldo es a favor del PSS/PTS, se pagará por parte de la ERP contra una
-              factura adicional que el prestador radicará adjuntando como soporte el acta de liquidación del contrato.
+              factura adicional que el prestador radicará adjuntando como soporte el acta de liquidación del contrato,
+              dejando actas de conciliación parcial trimestral suscritas por las partes autorizadas por cada entidad
+               mediante poder o autorización debidamente otorgado, quedando establecido que, en caso de desacuerdo con
+                la misma, el PSS/PTS deberá expresar dichas observaciones o reparos al momento de la celebración de la
+                 conciliación o dentro de los diez (10) días hábiles siguientes al envío por parte de la ERP.
+                 Transcurridos los términos indicados, el acta de conciliación parcial trimestral se entenderá
+                  indefectiblemente aceptada por parte del PSS/PTS.
               <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. AJUSTES A LA NOTA TÉCNICA. </span>Las partes acuerdan
               ajustar trimestralmente la Nota Técnica (Anexo 5), considerando:
               <strong> 1. Variación en la población mensual. </strong>
@@ -1561,8 +1567,11 @@
               todos los alcances de la terminación del artículo 2.5.3.4.16 del Decreto 780 de 2016, sin detrimento de la
               resolución y/o conciliación de cuentas que eventualmente queden pendientes y que serán resueltas en los
               tiempos dispuestos por la legislación especial sobre la materia.
-              Cláusula 32. Liquidación del contrato.
-              El presente acuerdo de voluntades se liquidará por mutuo acuerdo de las partes, dentro de los cuatro (4)
+            </div>
+
+            <div class="minuta_clausula">Cláusula 32. Liquidación del contrato.</div>
+            <div class="minuta_texto">
+            El presente acuerdo de voluntades se liquidará por mutuo acuerdo de las partes, dentro de los cuatro (4)
               meses siguientes a esta. La ERP y el PSS/PTS suscribirán acta de liquidación en la cual se consignarán los
               ajustes, revisiones y reconocimientos a que haya lugar, los acuerdos, conciliaciones y transacciones a que
               llegaren las partes, para dirimir las divergencias presentadas y poder declararse a paz y salvo por todo
@@ -1641,7 +1650,7 @@
             <div class="minuta_texto">
               A) COMPENSATORIA: El incumplimiento parcial o total de las obligaciones derivadas de este contrato por el
               PSS, genera el derecho para Ia ERP a exigir el pago de una suma equivalente al 10% del valor estimado del
-              contrato, previa declaración judicial.
+              contrato.
               <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. </span>El PSS autoriza a la ERP para que el valor de la
               CLÁUSULA PENAL a que se refiere esta cláusula sea descontado del saldo pendiente de pago a su favor en
               virtud del presente acuerdo de voluntades o por cualquier relación comercial entre las partes. Si no lo

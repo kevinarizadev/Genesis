@@ -118,19 +118,25 @@
       <li id="inicio">
         <h5 ng-click="Abrir()">Gestión de Notificación de Glosa</h5>
       </li>
-      <!-- <li style="display:flex;align-items: center;" ng-show="Vista == 1">
-        <div>
-          <ul style="text-align: center;" class="pagination">
-            <span style="font-size: 1em;" class="status {{EstadoGlosaCod}}">
-              <strong>{{EstadoGlosa+ ' '+Lista_Glosa.length}}</strong></span>
-          </ul>
-        </div>
-      </li> -->
+
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="setTab(1)" href class="active">Gestión
+            </a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="setTab(2);" href>Permisos</a>
+          </li>
+        </ul>
+      </li>
+
     </ul>
   </div>
   <!-- Glosas -->
   <div class="row dashboard-wrapper content-container white"
-    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 0">
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="Tabs == 1 && Vista == 0">
 
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
@@ -204,7 +210,8 @@
   </div>
   <!-- Glosas -->
   <div class="row dashboard-wrapper content-container white"
-    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 1">
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="Tabs == 1 && Vista == 1">
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
@@ -375,9 +382,233 @@
     </div>
   </div>
   <!--  -->
+
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==2">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Activar Glosa
+        </strong>
+      </div>
+    </div>
+
+    <div class="col s12 m-b">
+      <div class="col s3">
+        <label for="fecha">Numero</label>
+        <input id="fecha" ng-model="hojaPermisos.numeroNotificacion" numbers-only
+          class="margin border-none white input-w-p gray-input w-100" required>
+      </div>
+      <div class="col s3">
+        <label for="fecha">Ubicación</label>
+        <input id="fecha" ng-model="hojaPermisos.ubicacionNotificacion" numbers-only
+          class="margin border-none white input-w-p gray-input w-100" required>
+      </div>
+      <div class="col s3">
+        <input class="btn white-text default-background" style="margin-top: 1.7em;" type="submit" value="Buscar"
+          ng-click="reversarNG()">
+      </div>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="foot4 divcardcustom default-linear-gradient m-t">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de usuarios con permisos en el módulo
+          ({{hojaPermisos.listadoFuncionarios.length}})</strong>
+
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="agregarUsuario()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoFunc()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="hojaPermisos.filtroFunc">
+        </div>
+      </div>
+    </div>
+    <!-- ELEGIR -->
+    <div style="max-height: 60vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>#</th>
+          <th>Cédula</th>
+          <th>Funcionario</th>
+          <th>Cargo</th>
+          <th>Estado</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in hojaPermisos.listadoFuncionarios | filter:hojaPermisos.filtroFunc">
+            <td>{{$index + 1}}</td>
+            <td>{{x.TERV_CODIGO}}</td>
+            <td>
+                {{x.TERC_NOMBRE}}
+            </td>
+            <td>{{x.CARC_NOMBRE}}</td>
+            <td class="center">
+              <div class="tooltip" ng-if="x.EADC_ESTADO == 'A'">
+                <i class="icon-circle Con_pulse_A"
+                  style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                  ng-click="editarUsuario(x)"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Activo</span>
+              </div>
+              <div class="tooltip" ng-if="x.EADC_ESTADO == 'I'">
+                <i class="icon-circle Con_pulse_X"
+                  style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                  ng-click="editarUsuario(x)"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+    <div class="foot4 divcardcustom default-linear-gradient m-t">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de Ips con acceso al módulo
+          ({{hojaPermisos.listadoIps.length}})</strong>
+
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="agregarIps()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoIps()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="hojaPermisos.filtroIps">
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEGIR -->
+    <div style="max-height: 60vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>Nit</th>
+          <th>Razón Social</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in hojaPermisos.listadoIps | filter:hojaPermisos.filtroIps">
+            <td>{{x.TERV_CODIGO}}</td>
+            <td>
+              {{x.TERC_NOMBRE}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+  </div>
+  <!--  -->
+    <!-- /////////////////////////////////////////MODAL ADMIN///////////////////////////////////////// -->
+    <div id="modalUsuario" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
+      <div class="col s12 m6 l6 card margin">
+        <div class="card-content default-linear-gradient border-radius-none white-text">
+          <div class="col s11">
+            <h5 class="margin">Permisos del Usuario</h5>
+          </div>
+        </div>
+        <!-- /PRODUCTOS OREQ/ -->
+        <div class="card-action" id="card-action"
+          style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+          <!-- AGREGAR ITEMS -->
+          <div class="col s12 m12 l12">
+            <!-- CAMPOS -->
+            <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" readonly
+                ng-model="modalUsuario.nombre">
+              <label>Funcionario</label>
+            </div>
+            <!-- <div class="col l12 m12 s12 row"> -->
+            <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+              <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+                ng-model="modalUsuario.estado">
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="A">Activo</option>
+                <option value="I">Inactivo</option>
+              </select>
+              <label>Estado</label>
+            </div>
+
+
+
+            <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+              <button style="border-radius: 20px;" class="btn" ng-click="modificarFunc(modalUsuario)">Actualizar
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- ///////// -->
+      </div>
+    </div>
   <!--  -->
   <!--  -->
   <style>
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_X {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
     textarea {
       resize: none;
       height: 100px;

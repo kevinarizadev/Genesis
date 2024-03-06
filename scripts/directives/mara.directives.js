@@ -160,6 +160,38 @@
     };
   }
 
+  angular.module('GenesisApp').directive('impresionmasiva', impresionmasiva);
+
+  impresionmasiva.$inject = ['$rootScope', '$compile'];
+  function impresionmasiva($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/financiera/impresionmasiva.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'impresionmasivaController',
+      controllerAs: ''
+    };
+  }
+
+  angular.module('GenesisApp').directive('indicadoresriesgos', indicadoresriesgos);
+
+  indicadoresriesgos.$inject = ['$rootScope', '$compile'];
+  function indicadoresriesgos($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/riesgos/indicadoresriesgos.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'indicadoresriesgosController',
+      controllerAs: ''
+    };
+  }
+
   angular.module('GenesisApp').directive('gestionpqr', gestionpqr);
 
   gestionpqr.$inject = ['$rootScope', '$compile'];

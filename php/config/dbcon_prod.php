@@ -5,9 +5,15 @@ if (!isset($_SESSION)) {
 if (array_key_exists('usu', $_SESSION)) {
     $usu = $_SESSION['usu'];
     $acc = $_SESSION['acc'];
+
+    // $usu = 'usuweb';
+    // $acc = 'Cajacopi2023.';
+
+
 	//$servidor = "(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.50.17)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.50.18)(PORT = 1521))(LOAD_BALANCE = yes)(FAILOVER=YES) (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = oasis)))";
 	// $c = oci_connect($usu,$acc, 'SVEPSORACLESCANL001.cajacopieps.local/OASIS','AL32UTF8');
-        $c = oci_connect($usu,$acc, '192.168.50.14/OASISQA','AL32UTF8');
+  $c = oci_connect($usu,$acc, '192.168.50.14/OASISQA','AL32UTF8');
+  // $c = oci_connect($usu,$acc, '172.20.0.28/oasisqa.sftpservice2.vcncajacopieps2.oraclevcn.com','AL32UTF8');
 	//$c = oci_connect($usu,$acc, '192.168.50.17/OASIS','AL32UTF8');
 	//$c = oci_connect($usu,$acc, $servidor,'AL32UTF8');
 	if (!$c) {
@@ -18,6 +24,7 @@ if (array_key_exists('usu', $_SESSION)) {
 	   oci_execute($t,OCI_COMMIT_ON_SUCCESS);
 	      $q = oci_parse($c,"alter session set NLS_LANGUAGE='SPANISH'");
 	    oci_execute($q,OCI_COMMIT_ON_SUCCESS);
+
 	   //echo("arg1");
 	}
 } else {

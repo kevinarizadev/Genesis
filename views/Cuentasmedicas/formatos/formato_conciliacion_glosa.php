@@ -105,12 +105,12 @@
       </td>
     </tr>
     <tr>
-      <td colspan="1">Version: 02</td>
+      <td colspan="1">Version: 03</td>
     </tr>
     <tr>
       <td colspan="5" class="fs_10" style="text-align: center;padding:1% 0%;">
         PROCEDIMIENTO DE AUDITORIA DE CUENTAS MÉDICAS</td>
-      <td colspan="1">Fecha: Marzo 2023</td>
+      <td colspan="1">Fecha: Enero 2024</td>
     </tr>
     <tr>
       <td colspan="2" class="txtCenter">FECHA DE CORTE:</td>
@@ -129,26 +129,36 @@
     <tr>
       <td colspan="2" class="txtCenter fondoAzul">FACTURA N°</td>
       <td colspan="1" class="txtCenter fondoAzul">VALOR GLOSA</td>
-      <td colspan="1" class="txtCenter fondoAzul">VALOR GLOSA MANTENIDA</td>
-      <td colspan="1" class="txtCenter fondoAzul">GLOSA ACEPTADA POR IPS</td>
-      <td colspan="1" class="txtCenter fondoAzul">VALOR A PAGAR POR EPS</td>
+      <!-- <td colspan="1" class="txtCenter fondoAzul">VALOR GLOSA MANTENIDA</td> -->
+
+      <td colspan="1" class="txtCenter fondoAzul">GLOSA ACEPTADA POR IPS EN RESPUESTA GLOSA</td>
+      <td colspan="1" class="txtCenter fondoAzul">GLOSA ACEPTADA POR EPS EN RESPUESTA GLOSA</td>
+
+      <td colspan="1" class="txtCenter fondoAzul">GLOSA ACEPTADA POR IPS EN CONCILIACIÓN</td>
+      <td colspan="1" class="txtCenter fondoAzul">VALOR A PAGAR POR EPS EN CONCILIACIÓN</td>
       <td colspan="2" class="txtCenter fondoAzul">OBSERVACIONES</td>
     </tr>
     <tr ng-repeat="x in datosDetalle">
       <td colspan="1" class="txtCenter">{{x.DOC_GL}}</td>
       <td colspan="1" class="txtCenter">{{x.NUM_FACTURA}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_MANTENIDA)}}</td>
+      <!-- <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_MANTENIDA)}}</td> -->
+
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_RESP_IPS)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_RESP_EPS)}}</td>
+
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_IPS)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_EPS)}}</td>
-      <td colspan="2" class="txtCenter">{{x.NTDC_COMENTARIO}}</td>
+      <td colspan="2" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA}}</td>
       <!-- <td colspan="2" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA}}</td> -->
     </tr>
 
     <tr>
       <td colspan="2" class="txtCenter pad7">TOTAL</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorGlosa)}}</td>
-      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorMantenida)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalRespValorIps)}}</td>
+      <td colspan="1" class="txtCenter">$ {{formatPeso2(totalRespValorEps)}}</td>
+      <!-- <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorMantenida)}}</td> -->
       <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorIps)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(totalValorEps)}}</td>
       <td colspan="2" class="txtCenter"></td>

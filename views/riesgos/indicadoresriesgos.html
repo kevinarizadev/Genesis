@@ -1,0 +1,1288 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+
+    .content-container {
+      padding: 0 20px;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="Inicio()"></i>
+          Indicadores de Riesgos
+        </h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1)" id="tab_1" href class="active">Gestión
+              <!-- <i class="icon-users"></i> -->
+            </a>
+          </li>
+          <li class="tab col w-auto" ng-if="validarPermisos(['1'])">
+            <a ng-click="SetTab(2)" id="tab_3" href class="active">Permisos
+              <!-- <i class="icon-users"></i> -->
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs == 1">
+    <div class="col s12 m12 l12" style="justify-content: center;">
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;"
+        ng-show="hojaIndicadores.gestion == 'N'">
+        <!--  -->
+        <span class="btn" ng-click="hojaIndicadores_crearNuevo()" ng-if="validarPermisos(['1'])">Crear Indicador</span>
+        <!--  -->
+        <div class="foot4 divcardcustom default-linear-gradient">
+          <div class="text-al divcardcustom2">
+            <strong class="switch">Listado de Indicadores
+              ({{hojaIndicadores.listadoTabla.length}})</strong>
+            <div class="tooltip">
+              <i class="icon-cw-circle cursor-pointer" ng-click="hojaIndicadores_listarIndicadores()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Actualizar</span>
+            </div>
+            <div class="col s3 no-padding label-new right"
+              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;"
+              ng-show="!hojaIndicadores.filtros.activo">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l black-text"
+                style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="hojaIndicadores.filtro"
+                ng-change="filter('hojaIndicadores',hojaIndicadores.filtro)">
+            </div>
+          </div>
+        </div>
+        <div class="default-color">
+          <table class="tablaListado bordered highlight"
+            style="width:100%;font-size:6px !important;color: black;border:3px solid;">
+            <thead class="default-border default-color">
+              <th>Codigo</th>
+              <th>Riesgo</th>
+              <th>Nombre del Indicador</th>
+              <th>Estado Indicador</th>
+              <th>Acciones</th>
+            </thead>
+            <tbody>
+              <tr style="cursor:pointer;" class="{{x.BINN_CONSECUTIVO == itemSeleccionado ? 'focusElement' :''}}"
+                id="{{x.BINN_CONSECUTIVO}}"
+                ng-repeat="x in hojaIndicadores.listadoTablaTemp | inicio: hojaIndicadores.varsTabla.currentPage * hojaIndicadores.varsTabla.pageSize | limitTo: hojaIndicadores.varsTabla.pageSize">
+                <td class="left-align" ng-click="hojaIndicadores_editarIndicador(x)">
+                  {{x.BINN_CONSECUTIVO}}</b>
+                </td>
+                <td ng-click="hojaIndicadores_editarIndicador(x)">{{x.BINV_COD_RIESGOS_MATERIALIZADO.split('-')[1]}}
+                </td>
+
+                <td ng-click="hojaIndicadores_editarIndicador(x)">{{x.BINV_NOM_INDICADOR}}</td>
+                <td>
+                  <span class="status {{obtenerEstadoGestionIndicador(x.ESTADO_ACTUAL)}}">{{x.ESTADO_ACTUAL}}</span>
+                </td>
+                <td>
+                  <i class="iconFontSize icon-chart-line default-color c-pointer" title="Grafico del Indicador"
+                    ng-click="modalGraficoIndicador(x);"></i>
+                  <i class="iconFontSize icon-calendar-3 default-color c-pointer" title="Datos Periodo Correspondiente"
+                    ng-click="modalDatosCorresp(x);"></i>
+                </td>
+              </tr>
+              <tr ng-show="hojaIndicadores.listadoTablaTemp.length==0">
+                <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron resultados.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row margin">
+            <div class="col s6"><label for="normal">Total de Indicadores filtrados:
+                {{hojaIndicadores.listadoTablaTemp.length}}</label></div>
+            <div class="col s6 right-align"><label for="normal">Total de Indicadores encontrados:
+                {{hojaIndicadores.listadoTabla.length}}</label></div>
+          </div>
+
+          <ul style="text-align: center;padding-top: 20px;" class="pagination">
+            <li><button ng-disabled='hojaIndicadores.varsTabla.currentPage == 0'
+                class="btn-floating default-linear-gradient" ng-click="paso('hojaIndicadores','back')">&laquo;</button>
+            </li>
+            <li ng-repeat='page in hojaIndicadores.varsTabla.pages'><button
+                ng-disabled="hojaIndicadores.varsTabla.currentPage == page.no - 1"
+                class="btn-floating default-linear-gradient"
+                ng-click="setPage('hojaIndicadores',page.no)">{{page.no}}</button></li>
+            <li><button
+                ng-disabled='hojaIndicadores.varsTabla.currentPage >= hojaIndicadores.listadoTablaTemp.length/hojaIndicadores.varsTabla.pageSize - 1'
+                class="btn-floating default-linear-gradient" ng-click="paso('hojaIndicadores','next')">&raquo;</button>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+      <!-- //-// -->
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;"
+        ng-show="hojaIndicadores.gestion == 'S'">
+        <!--  -->
+        <div class="foot4 divcardcustom default-linear-gradient">
+          <div class="text-al divcardcustom2">
+            <strong class="switch">
+              {{!hojaIndicadores.formulario.idIndicadorSeleccionado
+              ?
+              'Crear Nuevo Indicador':'Editar Indicador # '+hojaIndicadores.formulario.idIndicadorSeleccionado}}
+            </strong>
+            <!-- <div class="tooltip" style="float:right;margin: 0px 15px 0px 30px;">
+              <i class="icon-reply-all cursor-pointer" ng-click="hojaIndicadores_atras()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Volver</span>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="row bg-white white margin" style="max-height: 87vh;overflow-y: auto;">
+          <!--  -->
+          <div class="col s12 m12 l12 m-t formIndicador_Desactivar" id="modalCrearIndicadores_Scroll">
+            <div class="col s12 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.proceso"
+                ng-change="hojaIndicadores_obtenerRiesgos(hojaIndicadores.formulario.proceso)" required>
+                <option value="">SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.proceso"
+                  ng-repeat="x in hojaIndicadores.listadoProcesos">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Procesos</label>
+            </div>
+          </div>
+          <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <div class="col s12 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l"
+                ng-model="hojaIndicadores.formulario.riesgoMaterializados" required>
+                <option value="">SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.riesgoMaterializados"
+                  ng-repeat="x in hojaIndicadores.listadoRiesgosMaterializados">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Riesgos</label>
+            </div>
+          </div>
+          <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <div class="col s12 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l"
+                ng-model="hojaIndicadores.formulario.indicadorPlaneacion"
+                ng-change="hojaIndicadores_chgIndicadorPlaneacion()" required>
+                <option value="">SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.indicadorPlaneacion"
+                  ng-repeat="x in hojaIndicadores.listadoIndicadoresPlaneacion">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Indicadores Planeación</label>
+            </div>
+          </div>
+          <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <div class="col s12 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.nombre"
+                ng-disabled="hojaIndicadores.formulario.indicadorPlaneacion" maxlength="180" text-upper required>
+              <label>Nombre del Indicador (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <div class="col s2 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.anio" required>
+                <option value="" disabled>Seleccionar</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.anio"
+                  ng-repeat="x in hojaIndicadores.listadoAnio">
+                  {{x.codigo}}</option>
+              </select>
+              <label>Año (*)</label>
+            </div>
+
+            <div class="col s2 no-padding label-new m-b">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.categoria"
+                required>
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.categoria"
+                  ng-repeat="x in hojaIndicadores.listadoCategoria">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Categoria (*)</label>
+            </div>
+            <div class="col s2 no-padding label-new m-b formIndicador_desactivarCamposIndicadores">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.unidadMedida"
+                required>
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.unidadMedida"
+                  ng-repeat="x in hojaIndicadores.listadoUnidadMedida">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Unidad de Medida (*)</label>
+            </div>
+            <div class="col s2 no-padding label-new m-b formIndicador_desactivarCamposIndicadores">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.frecuencia"
+                required>
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.frecuencia"
+                  ng-repeat="x in hojaIndicadores.listadoFrecuencia">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Frecuencia (*)</label>
+            </div>
+            <div class="col s3 no-padding label-new m-b formIndicador_desactivarCamposIndicadores">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.tipoCalculo"
+                required>
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="{{x.codigo}}" ng-selected="x.codigo == hojaIndicadores.formulario.tipoCalculo"
+                  ng-repeat="x in hojaIndicadores.listadotipoCalculo">
+                  {{x.nombre}}</option>
+              </select>
+              <label>Forma de Cálculo (*)</label>
+            </div>
+
+          </div>
+
+          <!--  -->
+          <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <div class="col s2 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.apetito" ng-change="hojaIndicadores_chg()"
+                numbers-decimal-only maxlength="16" required>
+              <label>Apetito (*)</label>
+            </div>
+            <div class="col s2 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.tolerancia" ng-change="hojaIndicadores_chg()"
+                numbers-decimal-only maxlength="16" required>
+              <label>Tolerancia (*)</label>
+            </div>
+            <div class="col s2 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.capacidad" ng-change="hojaIndicadores_chg()"
+                numbers-decimal-only maxlength="16" required>
+              <label>Capacidad (*)</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <div class="col s12 no-padding label-new m-b formIndicador_desactivarCamposIndicadores">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.descripcionNumerador" maxlength="180" text-upper
+                text-description>
+              <label>Descripción del Numerador</label>
+            </div>
+            <div class="col s12 no-padding label-new m-b formIndicador_desactivarCamposIndicadores">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.descripcionDenominador" maxlength="180"
+                text-upper text-description>
+              <label>Descripción del Denominador</label>
+            </div>
+            <div class="col s12 no-padding label-new m-b formIndicador_desactivarCamposIndicadores">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaIndicadores.formulario.descripcionConstante" maxlength="180" text-upper
+                text-description>
+              <label>Descripción del Constante</label>
+            </div>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <form ng-submit="hojaIndicadores_buscarResponsables(hojaIndicadores.formulario.responsable)">
+              <div class="col s7 no-padding label-new m-b">
+                <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                  autocomplete="off" ng-model="hojaIndicadores.formulario.responsable" list="listadoResponsable"
+                  ng-change="hojaIndicadores_agregarResponsables()" text-upper required>
+                <datalist id="listadoResponsable" open="open">
+                  <option value="{{x.codigo +' - '+ x.nombre}}"
+                    ng-repeat="x in hojaIndicadores.formulario.listadoResponsable">
+                </datalist>
+                <label class="m-l">Responsable (s) del Indicador (*)
+                  <i class="icon-search c-pointer"
+                    ng-click="hojaIndicadores_buscarResponsables(hojaIndicadores.formulario.responsable)"
+                    ng-if="validarPermisos(['1'])"></i>
+                </label>
+              </div>
+            </form>
+          </div>
+          <!--  -->
+          <div class="col s8 m8 l8 m-l" style="max-height: 30vh;overflow-y: auto;"
+            ng-show="hojaIndicadores.formulario.listadoResponsableTabla.length">
+            <table class="bordered default-border">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Responsable</th>
+                  <th>-</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="x in hojaIndicadores.formulario.listadoResponsableTabla">
+                  <td>{{$index + 1}}</td>
+                  <td>{{x.codigo + ' - ' + x.nombre}}</td>
+                  <td>
+                    <i class="iconFontSize icon-trash default-color c-pointer" title="Borrar"
+                      ng-click="hojaIndicadores_quitarResponsables($index)" ng-if="validarPermisos(['1'])"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--  -->
+
+          <!--  -->
+          <div class="col s12 m12 l12 center m-t m-b">
+            <input class="btn white-text red"
+              style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit" value="Cerrar"
+              ng-click="hojaIndicadores_atras();">
+            <input class="btn white-text default-linear-gradient" type="submit"
+              value="{{!hojaIndicadores.formulario.idIndicadorSeleccionado ? 'Guardar':'Actualizar'}} Indicador"
+              ng-click="hojaIndicadores_guardarForm()" ng-if="validarPermisos(['1']) ">
+          </div>
+          <!-- </form> -->
+
+        </div>
+        <!--  -->
+      </div>
+      <!-- //-// -->
+    </div>
+  </div>
+  <!-- TABLA -->
+
+
+  <!--  -->
+  <div id="modalGraficoIndicador" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 90%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;display: flex;" class="default-color">
+            Gráfico del Indicador
+            <i class="icon-right-circle-1 f-20 c-pointer" ng-click="closeModal();modalDatosCorresp(modalDatosCambio)"
+              title="Ver Datos"></i>
+            <!-- <select class="select-default-new input-out-new m-l" style="width: 7%;font-size: 1rem;"
+              ng-model="modalGraficoVars.anio" ng-change="cargarGraficoPeriodoChange()" required>
+              <option value="" disabled>Seleccionar</option>
+              <option value="{{x.codigo}}" ng-selected="x.codigo == modalGraficoVars.anio"
+                ng-repeat="x in hojaIndicadores.listadoAnio">
+                {{x.codigo}}</option>
+            </select> -->
+          </span></h5>
+        <label>
+          <b>{{modalDatosCambio.BINV_NOM_INDICADOR}}</b>
+        </label>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin">
+          <!--  -->
+          <div class="col s12" id="graficoIndicador" style="zoom: 1.2;width: 100 !important;">
+          </div>
+          <!--  -->
+        </div>
+      </div>
+      <!--  -->
+    </div>
+  </div>
+  <!--  -->
+  <div id="modalDatosCorresp" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 80%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;display: flex;" class="default-color">
+            Datos Correspondiente del Periodo
+            <i class="icon-right-circle-1 f-20 c-pointer"
+              ng-click="closeModal();modalGraficoIndicador(modalDatosCambio)" title="Ver Gráfica"></i>
+          </span></h5>
+        <label>
+          <b>{{modalDatosCambio.BINV_NOM_INDICADOR}}</b>
+        </label>
+      </div>
+      <div class="card-action">
+        <div class="row bg-white white margin w-100" style="max-height: 100vh;overflow-y: auto;">
+          <!--  -->
+          <div class="col s12 m12 l12" ng-show="modalDatosCorrespVars.vista == 1">
+            <table class="tableDatosCorresp table-bordered highlight">
+              <thead>
+                <tr>
+                  <th>Año</th>
+                  <th>Periodo</th>
+                  <th>Calculo</th>
+                  <th>Responsable del dato</th>
+                  <th>Estado Gestión</th>
+                  <th style="width:1%"></th>
+                </tr>
+              </thead>
+              <tr ng-repeat="x in modalDatosCorrespVars.listado"
+                class="{{x.BINN_RESPONSABLE == '-' ? 'resaltadoRojo':''}}">
+                <th>{{x.BINN_ANNO}}</th>
+                <th>{{x.BINN_PERIODO_NOMBRE}}</th>
+                <td>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'CA' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mrow>
+                        <mn>{{x.BINN_CONSTANTE}}</mn>
+                      </mrow>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'PO' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                        </msup>
+                        <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      </mfrac>
+                      <mo>*</mo>
+                      <mn>100</mn>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'RA' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                        </msup>
+                        <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      </mfrac>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'TA' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                        </msup>
+                        <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      </mfrac>
+                      <mo>*</mo>
+                      <mn>{{x.BINN_CONSTANTE}}</mn>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'VA' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                          <mo>-</mo>
+                          <mn>{{x.BINN_DENOMINADOR}}</mn>
+                        </msup>
+                        <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      </mfrac>
+                      <mo>*</mo>
+                      <mn>100</mn>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'DI' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mn>100</mn>
+                      <mo>-</mo>
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                        </msup>
+                        <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      </mfrac>
+                      <mo>*</mo>
+                      <mn>100</mn>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'AJ' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mn>{{x.BINN_CONSTANTE}}</mn>
+                      <mo>-</mo>
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_CONSTANTE}}</mn>
+                          <mo>*</mo>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                        </msup>
+                        <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      </mfrac>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'DE' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mn>1</mn>
+                      <mo>-</mo>
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                        </msup>
+                        <mn>{{x.BINN_DENOMINADOR}} * {{x.BINN_CONSTANTE}}</mn>
+                      </mfrac>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'TL' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mo>(</mo>
+                      <mn>{{x.BINN_NUMERADOR}}</mn>
+                      <mo>-</mo>
+                      <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      <mo>)</mo>
+                      <mo>*</mo>
+                      <mn>{{x.BINN_CONSTANTE}}</mn>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'CT' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mn>{{x.BINN_NUMERADOR}}</mn>
+                      <mo>-</mo>
+                      <mn>{{x.BINN_DENOMINADOR}}</mn>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                  <div style="font-size: 1.2rem;"
+                    ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'PR' && x.BINN_RESPONSABLE != '-'">
+                    <math display="inline">
+                      <mfrac>
+                        <msup>
+                          <mn>{{x.BINN_NUMERADOR}}</mn>
+                          <mo>+</mo>
+                          <mn>{{x.BINN_DENOMINADOR}}</mn>
+                        </msup>
+                        <mn>2</mn>
+                      </mfrac>
+                      <mo>=</mo>
+                      <mn>{{x.BINN_RESULTADO.startsWith(',') ? ('0'+x.BINN_RESULTADO) : x.BINN_RESULTADO}}</mn>
+                    </math>
+                  </div>
+                </td>
+                <td>
+                  <span ng-show="x.BINN_RESPONSABLE != '-'">{{x.BINN_RESPONSABLE.split('-')[1]}}</span>
+                </td>
+                <td>
+                  <span class="status {{obtenerEstadoGestionIndicador(x.ESTADO_ACTUAL)}}" ng-show="x.BINN_RESPONSABLE != '-'">{{x.ESTADO_ACTUAL}}</span>
+                </td>
+                <td>
+                  <i class="icon-list-add c-pointer" title="Gestionar Periodo" style="font-size: 1rem;"
+                    ng-click="modalDatosCorrespGestionarPeriodo(x, $index)" ng-if="validarPermisos(['1', '2'])"></i>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <!--  -->
+          <div class="col s12 m12 l12" ng-show="modalDatosCorrespVars.vista == 2">
+            <blockquote class="blockquote_titulo m-b mt-0">
+              Datos para {{modalDatosCorrespVarsPeriodo.periodoNombre}} de {{modalDatosCorrespVarsPeriodo.anio}} -
+              Forma de Cálculo {{modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[1]}}
+            </blockquote>
+
+            <div class="col s6 m6 l6">
+              <div class="row">
+                <div class="col s6 no-padding label-new m-b"
+                  ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] != 'CA'">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                    autocomplete="off" ng-model="modalDatosCorrespVarsPeriodo.numerador"
+                    ng-change="calcularResultadoPeriodo()" maxlength="18" numbers-decimal-only required>
+                  <label>Dato Numerador (*)</label>
+                </div>
+                <div class="col s6 no-padding label-new m-b"
+                  ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] != 'CA'">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                    autocomplete="off" ng-model="modalDatosCorrespVarsPeriodo.denominador"
+                    ng-change="calcularResultadoPeriodo()" maxlength="18" numbers-decimal-only required>
+                  <label>Dato Denominador (*)</label>
+                </div>
+                <div class="col s6 no-padding label-new m-b" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'TA' || modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'CA' ||
+                   modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'AJ' || modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'DE' ||
+                   modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'TL'">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                    autocomplete="off" ng-model="modalDatosCorrespVarsPeriodo.constante"
+                    ng-change="calcularResultadoPeriodo()" maxlength="18" numbers-decimal-only required>
+                  <label>Dato Constante (*)</label>
+                </div>
+
+              </div>
+            </div>
+            <!--  -->
+            <div class="col s6 m6 l6">
+              <div class="row">
+                <div class="col s12 m12 l12">
+                  <ul>
+                    <li>
+                      <div class="default-color m-b" style="padding: .6rem; border: 2px solid;">
+                        <h6 class="fw600 margin">
+                          Numerador
+                        </h6>
+                        <label>{{modalDatosCorrespVars.BINV_DESCRIPCION_NUMERADOR}}</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="default-color m-b" style="padding: .6rem; border: 2px solid;">
+                        <h6 class="fw600 margin">
+                          Denominador
+                        </h6>
+                        <label>{{modalDatosCorrespVars.BINV_DESCRIPCION_DENOMINADOR}}</label>
+                      </div>
+                    </li>
+                    <li ng-show="modalDatosCorrespVars.BINV_DESCRIPCION_CONSTANTE">
+                      <div class="default-color m-b" style="padding: .6rem; border: 2px solid;">
+                        <h6 class="fw600 margin">
+                          Constante
+                        </h6>
+                        <label>{{modalDatosCorrespVars.BINV_DESCRIPCION_CONSTANTE}}</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="default-color" style="padding: .6rem; border: 2px solid;">
+                        <h6 class="fw600 margin default-linear-gradient" style="padding: 2px;">
+                          Formula Aplicada
+                        </h6>
+                        <label class="center-align" style="font-size: 2rem;">
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'CA'">
+                            <math display="inline">
+                              <mrow>
+                                <mn>{{modalDatosCorrespVarsPeriodo.constante}}</mn>
+                              </mrow>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'PO'">
+                            <math display="inline">
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              </mfrac>
+                              <mo>*</mo>
+                              <mn>100</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'RA'">
+                            <math display="inline">
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              </mfrac>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'TA'">
+                            <math display="inline">
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              </mfrac>
+                              <mo>*</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.constante}}</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'VA'">
+                            <math display="inline">
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                  <mo>-</mo>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              </mfrac>
+                              <mo>*</mo>
+                              <mn>100</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'DI'">
+                            <math display="inline">
+                              <mn>100</mn>
+                              <mo>-</mo>
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              </mfrac>
+                              <mo>*</mo>
+                              <mn>100</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'AJ'">
+                            <math display="inline">
+                              <mn>{{modalDatosCorrespVarsPeriodo.constante}}</mn>
+                              <mo>-</mo>
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.constante}}</mn>
+                                  <mo>*</mo>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              </mfrac>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'DE'">
+                            <math display="inline">
+                              <mn>{{1}}</mn>
+                              <mo>-</mo>
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                </msup>
+                                <mn>{{modalDatosCorrespVarsPeriodo.denominador}} *
+                                  {{modalDatosCorrespVarsPeriodo.constante}}</mn>
+                              </mfrac>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'TL'">
+                            <math display="inline">
+                              <mo>(</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                              <mo>-</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              <mo>)</mo>
+                              <mo>*</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.constante}}</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'CT'">
+                            <math display="inline">
+                              <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                              <mo>-</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+                          <div class="m-t" ng-show="modalDatosCorrespVars.BINC_TIPO_CALCULO.split('-')[0] == 'PR'">
+                            <math display="inline">
+                              <mfrac>
+                                <msup>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.numerador}}</mn>
+                                  <mo>+</mo>
+                                  <mn>{{modalDatosCorrespVarsPeriodo.denominador}}</mn>
+                                </msup>
+                                <mn>2</mn>
+                              </mfrac>
+
+                              <mo>=</mo>
+                              <mn>{{modalDatosCorrespVarsPeriodo.resultado}}</mn>
+                            </math>
+                          </div>
+
+                        </label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!--  -->
+
+
+            <div class="col s12 m12 l12 center m-t m-b">
+              <input class="btn white-text red"
+                style="background:linear-gradient(to bottom left,#e04242,#8b0000,#e04242);" type="submit" value="Cerrar"
+                ng-click="hojaIndicadoresAtrasModalPeriodo();">
+              <input class="btn white-text default-linear-gradient" type="submit"
+                value="{{modalDatosCorrespVarsPeriodo.accion == 'I' ? 'Guardar':'Actualizar'}} Datos"
+                ng-click="modalDatosCorrespGuardarPeriodo()">
+            </div>
+          </div>
+          <!--  -->
+        </div>
+        <!--  -->
+
+        <!--  -->
+      </div>
+      <!--  -->
+      <!--  -->
+    </div>
+  </div>
+  <!-- ///// -->
+  <!-- //////////////////////////////////TAB 2////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs == 2">
+    <div class="col s12 m12 l12" style="justify-content: center;">
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+        <!--  -->
+        <div class="foot4 divcardcustom default-linear-gradient">
+          <div class="text-al divcardcustom2">
+            <strong class="switch" style="font-weight:600">Listado de usuarios con permisos en el módulo
+              ({{hojaPermisos.listadoTabla.length}})</strong>
+
+            <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+              <i class="icon-user-plus cursor-pointer" ng-click="openModal('modalAgregarFunc')"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+            </div>
+            <div class="tooltip">
+              <i class="icon-cw-circle cursor-pointer" ng-click="hojaPermisos_obtenerFuncs()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+            </div>
+            <div class="col s3 no-padding label-new right"
+              style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+              <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+                autocomplete="off" placeholder="Buscar..." ng-model="hojaPermisos.filtro">
+            </div>
+          </div>
+        </div>
+
+        <!-- ELEGIR -->
+        <div style="max-height: 90vh;overflow-y: auto;">
+          <table class="bordered table_center_align highlight border-color default-border"
+            style="width:100%;font-size:6px !important;border-width: medium;">
+            <thead class="default-border default-color">
+              <th>#</th>
+              <th>Cédula</th>
+              <th>Funcionario</th>
+              <th>Cargo</th>
+              <th>Tipo Usuario</th>
+              <th>Estado</th>
+            </thead>
+            <tbody>
+              <tr ng-repeat="x in hojaPermisos.listadoTabla | filter:hojaPermisos.filtro">
+                <td>{{$index + 1}}</td>
+                <td>{{x.TERV_CODIGO}}</td>
+                <td>
+                  <span class="{{ x.TERC_ESTADO_EMPLEADO == 'R' ? 'orange status white-text': ''}}"
+                    title="{{ x.TERC_ESTADO_EMPLEADO == 'R' ? 'Usuario Retirado': ''}}">
+                    {{x.TERC_NOMBRE}}</span>
+                </td>
+                <td>{{x.CARC_NOMBRE}}</td>
+                <td>
+                  <span class="status default-background c-pointer"
+                    ng-click="hojaPermisos_editarUsuario(x)">{{x.BADC_TIPO_USUARIO.split('-')[1]}}</span>
+                </td>
+
+                <td class="center">
+                  <div class="tooltip" ng-if="x.BADC_ESTADO == 'A'">
+                    <i class="icon-circle Con_pulse_A"
+                      style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                      ng-click="hojaPermisos_editarUsuario(x)"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Activo</span>
+                  </div>
+                  <div class="tooltip" ng-if="x.BADC_ESTADO == 'I'">
+                    <i class="icon-circle Con_pulse_X"
+                      style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                      ng-click="hojaPermisos_editarUsuario(x)"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <!-- //-// -->
+      </div>
+    </div>
+  </div>
+  <!-- TABLA -->
+  <!-- MODAL -->
+  <div id="modalAgregarFunc" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 30%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 40px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;display: flex;" class="default-color">
+            Agregar Funcionario
+          </span></h5>
+      </div>
+
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12 m12 l12">
+          <!-- CAMPOS -->
+          <!-- <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" readonly
+              ng-model="hojaPermisos.form.nombre">
+            <label>Funcionario</label>
+          </div> -->
+
+          <form ng-submit="hojaPermisos_buscarFuncionario(hojaPermisos.funcionario)">
+            <div class="col s7 no-padding label-new m-b">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                autocomplete="off" ng-model="hojaPermisos.funcionario" list="listadoFuncs" text-upper required>
+              <datalist id="listadoFuncs" open="open">
+                <option value="{{x.TERV_CODIGO +' - '+ x.TERC_NOMBRE}}" ng-repeat="x in hojaPermisos.listadoFuncs">
+              </datalist>
+              <label class="m-l">Funcionario
+                <i class="icon-search c-pointer" ng-click="hojaPermisos_buscarFuncionario(hojaPermisos.funcionario)"
+                  ng-if="validarPermisos(['1'])"></i>
+              </label>
+            </div>
+          </form>
+
+          <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+            <button style="border-radius: 20px;" class="btn" ng-click="hojaPermisos_agregarUsuario()">Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+  <!-- MODAL -->
+  <div id="modalPermisos" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 30%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="ngdialog-close" style="float: right; font-size: 40px; padding-right: 20px;" ng-click="closeModal()">
+      </div>
+      <div class="card-content default-color border-radius-none white-text" style="background-color:#f1f3f4;">
+        <h5><span style="font-weight: 700;display: flex;" class="default-color">
+            Permisos del Usuario
+          </span></h5>
+      </div>
+
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12 m12 l12">
+          <!-- CAMPOS -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" readonly
+              ng-model="hojaPermisos.form.nombre">
+            <label>Funcionario</label>
+          </div>
+          <!-- <div class="col l12 m12 s12 row"> -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+              ng-model="hojaPermisos.form.estado">
+              <option value="" disabled>SELECCIONAR</option>
+              <option value="A">Activo</option>
+              <option value="I">Inactivo</option>
+            </select>
+            <label>Estado</label>
+          </div>
+
+          <div class="col s6 no-padding label-new m-b select_maxheigth" style="margin-bottom:3rem;">
+            <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+              ng-model="hojaPermisos.form.tipoUsuario">
+              <option value="1">Administrador</option>
+              <option value="2">Usuario</option>
+            </select>
+            <label>Tipo Usuario</label>
+          </div>
+          <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+            <button style="border-radius: 20px;" class="btn"
+              ng-click="hojaPermisos_modificarUsuario(hojaPermisos.form)">Actualizar
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
+  <!-- MODAL -->
+
+  <!--  -->
+  <!-- ///// -->
+  <!-- ///// -->
+  <!-- ///// -->
+
+
+  <style>
+    .cortar-texto {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .resaltadoRojo {
+      background-color: #ff00001f;
+    }
+
+    .cuadroAzul {
+      background-color: #0004ff41 !important;
+      border-radius: 30%;
+      color: #0004ff;
+    }
+
+    .cuadroVerde {
+      background-color: #03c51334 !important;
+      border-radius: 30%;
+      color: #02740c;
+    }
+
+    .cuadroRojo {
+      background-color: #d8000041 !important;
+      border-radius: 30%;
+      color: #d80000;
+    }
+
+
+    .fw600 {
+      font-weight: 600;
+    }
+
+    table th,
+    table td {
+      text-align: center;
+    }
+
+    #tableFichaTecnica th,
+    #tableFichaTecnica td {
+      text-align: left;
+    }
+
+    .tableDatosCorresp th,
+    .tableDatosCorresp td {
+      text-align: left;
+    }
+
+    .iconFontSize {
+      font-size: 1.3rem;
+    }
+
+    .etiquetaRoja {
+      background-color: red;
+    }
+
+    .etiquetaVerde {
+      background-color: green;
+    }
+
+    .etiquetaNaranja {
+      background-color: #F3CD05;
+    }
+
+    .etiquetaGris {
+      background-color: #6bbbf7;
+    }
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_X {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+    .btnAgregar {
+      padding: 0 0.5rem;
+      height: 2rem;
+      line-height: 2rem;
+    }
+
+    .blockquote_titulo {
+      height: 2vw;
+      line-height: 2;
+      padding-right: 1.5rem;
+    }
+
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
+    textarea {
+      resize: none;
+      height: 100px;
+      text-align: justify;
+    }
+
+    #procesosFile {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    #fileGestionIndic {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    #fileGestionIndicCompromiso {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+      border: 1px solid #8a88865e !important;
+      height: 2.14rem;
+      border-radius: 2px;
+      margin: 0;
+      width: -webkit-fill-available;
+    }
+
+    .file-upload-wrapper:after {
+      text-align: center;
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px 15px;
+      display: block;
+      width: calc(100% - 40px);
+      pointer-events: none;
+      z-index: 20;
+      line-height: 1;
+      color: #80868b;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 400;
+      height: 8vh;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: 10vh;
+    }
+
+    select:disabled {
+      color: black;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    .text-upper {
+      text-transform: uppercase !important;
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+
+    .label-new>label {
+      display: table;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    #toast-container .success {
+      background: linear-gradient(to bottom left, #0fda00, #007217, #0fda00);
+    }
+
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

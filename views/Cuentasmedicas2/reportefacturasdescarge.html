@@ -1,0 +1,841 @@
+<div class="white newdesing position-relative" id="pantalla">
+    <style>
+        .newdesing .content-container {
+            min-height: 0;
+        }
+    </style>
+    <div class="row section-header margin">
+        <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+            <li id="inicio">
+                <h5 class="cursor-pointer"
+                    style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0"
+                    onclick="location.reload();">
+                    Descargue de Reporte de Facturas
+                </h5>
+            </li>
+            <li>
+                <ul class="tabs transparent" style="overflow:hidden;">
+                    <li class="tab col w-auto">
+                        <a ng-click="SetTab(1);" href class="active">Factura EREF</a>
+                    </li>
+                    <li class="tab col w-auto">
+                        <a ng-click="SetTab(2);" href>Factura EFCE</a>
+                    </li>
+                    <li class="tab col w-auto">
+                        <a ng-click="SetTab(3);" href>Factura ERGP</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div ng-show="Vista.Activa == 1">
+        <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+            <div class="card-content clearfix card"
+                style="width: 80%;margin: auto;border-radius: 15px;margin-top: calc(27vh - 100px);"
+                ng-show="Vista_1.Form.Vista == 1">
+                <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">Consultar Reportes
+                </p>
+                <div class="row">
+                    <div class="col s12 m12 s12">
+                        <div class="col s4 no-padding label-new m-b">
+                            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select
+                                ng-model="Vista_1.Form.Doc">
+                                <option value="" disabled>Seleccionar</option>
+                                <option value="FS">FS - Factura Salud</option>
+                                <option value="FD">FD - Factura Glosa</option>
+                            </select>
+                            <label>Documento</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="date" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_1.Form.F_Inicio" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                            <label>Desde</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="date" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_1.Form.F_Fin" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                            <label>Hasta</label>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s3 no-padding label-new m-b">
+                            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select
+                                ng-model="Vista_1.Form.Estado">
+                                <option value="" disabled>Seleccionar</option>
+                                <option value="A">Activo</option>
+                                <option value="P">Procesado</option>
+                                <option value="X">Anulado</option>
+                            </select>
+                            <label>Estado</label>
+                        </div>
+
+                        <div class="col s9 no-padding label-new m-b">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l"
+                                id="Vista_1_Form_NombreUsu"
+                                title="{{(Vista_1.Form.NombreUsu=='')? 'Ingrese un nombre o apellido' : 'Enter para buscar el funcionario'}}"
+                                style="text-transform: uppercase;" autocomplete="off" ng-model="Vista_1.Form.NombreUsu"
+                                ng-keyup="Complete_Listado_Funcionario('Vista_1','NumeroDoc','NombreUsu',Vista_1.Form.NombreUsu,'Vista_1');KeyFind_Funcionario($event,'Vista_1','NumeroDoc','NombreUsu','Vista_1');">
+                            <label>Nombre del Funcionario
+                                {{(Vista_1.Form.NumeroDoc.length == 0) ? '' : (' - (' + Vista_1.Form.NumeroDoc +
+                                ')')}}</label>
+                            <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                                title="Buscar"
+                                ng-click="Buscar_Funcionario('Vista_1','NumeroDoc','NombreUsu','Vista_1')"></i>
+                            <ul class="list-group m-l" id="list-group-func-Vista_1_NombreUsu"
+                                style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
+                                <li class="list-group-item" ng-repeat="x in Busqueda.Vista_1.Filtro"
+                                    ng-click="FillTextbox_Listado_Funcionario('Vista_1','NumeroDoc','NombreUsu',X.DOCUMENTO,X.NOMBRE,'Vista_1')">
+                                    {{X.NOMBRE}}</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="col s12 m12 s12 center">
+                        <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+                            ng-click="Btn_Consultar('Vista_1')">CONSULTAR</button>
+                    </div>
+                </div>
+            </div>
+            <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+            <div class="card-content clearfix card"
+                style="width: 100%;margin: auto;border-radius: 15px;margin-top: calc(11vh - 100px);"
+                ng-show="Vista_1.Form.Vista == 2">
+
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="tooltip" style="float:right;margin: 7px 15px 0px 30px;">
+                        <i class="icon-reply-all cursor-pointer white-text" ng-click="Volver_Vistas('Vista_1')"></i>
+                        <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Volver</span>
+                    </div>
+                    <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">
+                        Reportes desde {{Vista_1.Tabla.F_Inicio}} hasta {{Vista_1.Tabla.F_Fin}}</p>
+                    <p class="default-background default-color center-align white-text"
+                        style="margin: -3px 3px 0px 3px;font-size: 1rem;font-weight: 600;">
+                        Cantidad: {{Vista2_Resumen.Cantidad}} - Copago: ${{FormatPesoNumero(Vista2_Resumen.Copago)}} -
+                        Total: ${{FormatPesoNumero(Vista_1.Tabla.Resumen.Total)}}</p>
+
+                    <div class="col s12">
+                        <div class="col s1 no-padding label-new m-b left">
+                            <select class="select-new gray-input" style="box-shadow: none;" material-select watch
+                                ng-model="Vista_1.Tabla.Mostrar_Sol" ng-change="initPaginacion2('Vista_1')">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                            <div style="line-height: 2;">
+                                <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                                    title="Actualizar Tabla" ng-click="Btn_Consultar('Vista_1')"></i>
+                            </div>
+                        </div>
+                        <div class="col s7 label-new center-align" style="width: 60%;">
+                            <div class="center" style="margin:auto;display:flex;">
+                                <div>
+                                    <i class="icon-doc-text-inv-1 default-color cursor-pointer"
+                                        ng-click="Generar_Acta('Vista_1')"></i>
+                                    <span class="cursor-pointer" ng-click="Generar_Acta('Vista_1')">Generar Excel</span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l" type="text"
+                                placeholder="Buscar" ng-model="Vista_1.Tabla.Filtrar_Sol"
+                                ng-change="filter('Vista_1');">
+                        </div>
+                    </div>
+
+                    <div style="width:100%;overflow: auto;">
+                        <table id="H1_Tabla" class="bordered table_center_align"
+                            style="width:100%;font-size:6px !important;">
+                            <thead class="default-background" style="color:white;">
+                                <tr>
+                                    <th>DOCUMENTO</th>
+                                    <th>CONCEPTO</th>
+                                    <th>NUMERO</th>
+                                    <th>UBICACION</th>
+                                    <th>TERCERO</th>
+                                    <th>TOTAL</th>
+                                    <th>ESTADO</th>
+                                    <th>PREFIJO</th>
+                                    <th>FACTURA2</th>
+                                    <th>FACTURA</th>
+                                    <th>ALTO_COSTO</th>
+                                    <th>CONFIRMACION</th>
+                                    <th>RECIBO</th>
+                                    <th>FECHA</th>
+                                    <th>COPAGO</th>
+                                    <th>RESPONSABLE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="X in Vista_1.Tabla.Listado_Temp | inicio: Vista_1.Tabla.currentPage * Vista_1.Tabla.pageSize | limitTo: Vista_1.Tabla.pageSize"
+                                    style="color: black;">
+                                    <td>{{X.DOCUMENTO}}</td>
+                                    <td>{{X.CONCEPTO}}</td>
+                                    <td>{{X.NUMERO}}</td>
+                                    <td>{{X.UBICACION}}</td>
+                                    <td>{{X.TERCERO}}</td>
+                                    <td>${{FormatPesoNumero(X.TOTAL.toString().replace(',', '.'))}}</td>
+                                    <td>{{X.ESTADO}}</td>
+                                    <td>{{X.PREFIJO}}</td>
+                                    <td>{{X.FACTURA2}}</td>
+                                    <td>{{X.FACTURA}}</td>
+                                    <td>{{X.ALTOCOSTO}}</td>
+                                    <td>{{X.CONFIRMACION}}</td>
+                                    <td>{{X.RECIBO}}</td>
+                                    <td>{{X.RECIBO_FECHA}}</td>
+                                    <td>{{X.COPAGO}}</td>
+                                    <td>{{X.IDRESPONSABLE+' - '+X.RESPONSABLE}}</td>
+                                </tr>
+                                <tr ng-show="Vista_1.Tabla.Listado_Temp.length==0">
+                                    <td class="center-align" colspan="16" style="font-weight: bolder;">No se encontraron
+                                        resultados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="width: 100%;display: flex;">
+                            <div style="width: 50%;">
+                                <label for="normal">Total de documentos filtrados:
+                                    {{Vista_1.Tabla.Listado_Temp.length}}</label>
+                            </div>
+                            <div style="width: 50%;text-align: right;">
+                                <label for="normal">Total de documentos encontrados:
+                                    {{Vista_1.Tabla.Listado.length}}</label>
+                            </div>
+                        </div>
+                        <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                            <li><button ng-disabled='Vista_1.Tabla.currentPage == 0'
+                                    class="btn-floating default-background"
+                                    ng-click="paso('back','Vista_1')">&laquo;</button></li>
+                            <li ng-repeat='page in Vista_1.Tabla.pages'><button
+                                    ng-disabled='Vista_1.Tabla.currentPage == page.no - 1'
+                                    class="btn-floating default-background"
+                                    ng-click="setPage(page.no, 'Vista_1')">{{page.no}}</button>
+                            </li>
+                            <li><button
+                                    ng-disabled='Vista_1.Tabla.currentPage >= Vista_1.Tabla.Listado_Temp.length/Vista_1.Tabla.pageSize - 1'
+                                    class="btn-floating default-background"
+                                    ng-click="paso('next','Vista_1')">&raquo;</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div ng-show="Vista.Activa == 2">
+        <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+            <div class="card-content clearfix card"
+                style="width: 80%;margin: auto;border-radius: 15px;margin-top: calc(20vh - 100px);"
+                ng-show="Vista_2.Form.Vista == 1">
+                <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">Consultar Reportes
+                </p>
+                <div class="row">
+                    <div class="col s12 m12 s12">
+                        <div class="col s4 no-padding label-new m-b">
+                            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select
+                                ng-model="Vista_2.Form.Doc" ng-change="Obtener_Concepto()">
+                                <option value="" disabled>Seleccionar</option>
+                                <option value="FS">FS - Factura Salud</option>
+                                <option value="FD">FD - Factura Glosa</option>
+                            </select>
+                            <label>Documento</label>
+                        </div>
+
+                        <div class="col s8 no-padding">
+                            <div class="col s12 no-padding label-new m-b">
+                                <input class="margin border-none input-text-new gray-input w-100 m-l"
+                                    id="Vista_2_Form_Conc" style="text-transform: uppercase;" autocomplete="off"
+                                    ng-model="Vista_2.Form.NombreConc"
+                                    ng-keyup="Complete_Listado_Concepto(Vista_2.Form.Conc);">
+                                <label>Concepto</label>
+                                <ul class="list-group m-l" id="list-group-func-Vista_2_Conc"
+                                    style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
+                                    <li class="list-group-item" ng-repeat="x in Busqueda.Vista_2_Con.Filtro"
+                                        ng-click="FillTextbox_Listado_Concepto(x.CONCEPTO,x.NOMBRE)">{{x.CONCEPTO + ' -
+                                        ' +x.NOMBRE}}</li>
+                                </ul>
+                            </div>
+
+                            <!-- <select class="select-new gray-input m-l" style="box-shadow: none;" material-select
+                                ng-model="Vista_2.Form.Conc">
+                                <option value="" disabled>Seleccionar</option>
+                                <option value="{{x.CONCEPTO}}" ng-selected="x.CONCEPTO == Vista_2.Form.Conc"
+                                    ng-repeat="x in Array_Doc">{{x.NOMBRE}}</option>
+                            </select>
+                            <label>Concepto</label> -->
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s4 no-padding label-new m-b">
+                            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select
+                                ng-model="Vista_2.Form.Estado">
+                                <option value="" disabled>Seleccionar</option>
+                                <option value="A">Activo</option>
+                                <option value="P">Procesado</option>
+                                <option value="X">Anulado</option>
+                            </select>
+                            <label>Estado</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="date" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_2.Form.F_Inicio" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                            <label>Desde</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="date" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_2.Form.F_Fin" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                            <label>Hasta</label>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s12 no-padding label-new m-b">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l"
+                                id="Vista_2_Form_NombreRad"
+                                title="{{(Vista_2.Form.NombreRad=='')? 'Ingrese un nombre o apellido' : 'Enter para buscar el funcionario'}}"
+                                style="text-transform: uppercase;" autocomplete="off" ng-model="Vista_2.Form.NombreRad"
+                                ng-keyup="Complete_Listado_Funcionario('Vista_2','NumeroDocRad','NombreRad',Vista_2.Form.NombreRad,'Vista_2_Rad');KeyFind_Funcionario($event,'Vista_2','NumeroDocRad','NombreRad','Vista_2_Rad');">
+                            <label>Nombre del Radicador
+                                {{(Vista_2.Form.NumeroDocRad.length == 0) ? '' : (' - (' + Vista_2.Form.NumeroDocRad +
+                                ')')}}</label>
+                            <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                                title="Buscar"
+                                ng-click="Buscar_Funcionario('Vista_2','NumeroDocRad','NombreRad','Vista_2_Rad')"></i>
+                            <ul class="list-group m-l" id="list-group-func-NombreRad"
+                                style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
+                                <li class="list-group-item" ng-repeat="x in Busqueda.Vista_2_Rad.Filtro"
+                                    ng-click="FillTextbox_Listado_Funcionario('Vista_2','NumeroDocRad','NombreRad',x.DOCUMENTO,x.NOMBRE,'Vista_2_Rad')">
+                                    {{x.NOMBRE}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s12 no-padding label-new m-b">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l"
+                                id="Vista_2_Form_NombreAud"
+                                title="{{(Vista_2.Form.NombreAud=='')? 'Ingrese un nombre o apellido' : 'Enter para buscar el funcionario'}}"
+                                style="text-transform: uppercase;" autocomplete="off" ng-model="Vista_2.Form.NombreAud"
+                                ng-keyup="Complete_Listado_Funcionario('Vista_2','NumeroDocAud','NombreAud',Vista_2.Form.NombreAud,'Vista_2_Aud');KeyFind_Funcionario($event,'Vista_2','NumeroDocAud','NombreAud','Vista_2_Aud');">
+                            <label>Nombre del Auditor
+                                {{(Vista_2.Form.NumeroDocAud.length == 0) ? '' : (' - (' + Vista_2.Form.NumeroDocAud +
+                                ')')}}</label>
+                            <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                                title="Buscar"
+                                ng-click="Buscar_Funcionario('Vista_2','NumeroDocAud','NombreAud','Vista_2_Aud')"></i>
+                            <ul class="list-group m-l" id="list-group-func-NombreAud"
+                                style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
+                                <li class="list-group-item" ng-repeat="x in Busqueda.Vista_2_Aud.Filtro"
+                                    ng-click="FillTextbox_Listado_Funcionario('Vista_2','NumeroDocAud','NombreAud',x.DOCUMENTO,x.NOMBRE,'Vista_2_Aud')">
+                                    {{x.NOMBRE}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s12 no-padding label-new m-b">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l"
+                                id="Vista_2_Form_NombreIps"
+                                title="{{(Vista_2.Form.NombreIps=='')? 'Ingrese un nit o coincidencia' : 'Enter para buscar la Ips'}}"
+                                style="text-transform: uppercase;" autocomplete="off" ng-model="Vista_2.Form.NombreIps"
+                                ng-keyup="Complete_Listado_Ips('Vista_2','NombreIps',Vista_2.Form.NombreIps,'Vista_2_Ips');KeyFind_Ips($event,'Vista_2','NumeroDocIps','NombreIps','Vista_2_Ips');">
+                            <label>Nit
+                                {{(Vista_2.Form.NumeroDocIps.length == 0) ? '' : (' - (' + Vista_2.Form.NumeroDocIps +
+                                ')')}}</label>
+                            <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                                title="Buscar"
+                                ng-click="Buscar_Ips('Vista_2','NumeroDocIps','NombreIps','Vista_2_Ips')"></i>
+                            <ul class="list-group m-l" id="list-group-func-NombreIps"
+                                style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
+                                <li class="list-group-item" ng-repeat="x in Busqueda.Vista_2_Ips.Filtro"
+                                    ng-click="FillTextbox_Listado_Ips('Vista_2','NumeroDocIps','NombreIps',x.CODIGO,x.RAZON,'Vista_2_Ips')">
+                                    {{x.RAZON}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12 center" style="padding: 2vh 0vh;">
+                        <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+                            ng-click="Btn_Consultar('Vista_2')">CONSULTAR</button>
+                    </div>
+                </div>
+            </div>
+            <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+            <div class="card-content clearfix card"
+                style="width: 100%;margin: auto;border-radius: 15px;margin-top: calc(11vh - 100px);"
+                ng-show="Vista_2.Form.Vista == 2">
+
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="tooltip" style="float:right;margin: 7px 15px 0px 30px;">
+                        <i class="icon-reply-all cursor-pointer white-text" ng-click="Volver_Vistas('Vista_2')"></i>
+                        <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Volver</span>
+                    </div>
+                    <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">
+                        Reportes desde {{Vista_2.Tabla.F_Inicio}} hasta {{Vista_2.Tabla.F_Fin}}</p>
+                    <p class="default-background default-color center-align white-text"
+                        style="margin: -3px 3px 0px 3px;font-size: 1rem;font-weight: 600;">
+                        Cantidad: {{Vista2_Resumen.Cantidad}} - Copago: ${{FormatPesoNumero(Vista2_Resumen.Copago)}} -
+                        Total: ${{FormatPesoNumero(Vista_2.Tabla.Resumen.Total)}}</p>
+
+                    <div class="col s12">
+                        <div class="col s1 no-padding label-new m-b left">
+                            <select class="select-new gray-input" style="box-shadow: none;" material-select watch
+                                ng-model="Vista_2.Tabla.Mostrar_Sol" ng-change="initPaginacion2('Vista_2')">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                            <div style="line-height: 2;">
+                                <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                                    title="Actualizar Tabla" ng-click="Btn_Consultar('Vista_2')"></i>
+                            </div>
+                        </div>
+                        <div class="col s7 label-new center-align" style="width: 60%;">
+                            <div class="center" style="margin:auto;display:flex;">
+                                <div>
+                                    <i class="icon-doc-text-inv-1 default-color cursor-pointer"
+                                        ng-click="Generar_Acta('Vista_2')"></i>
+                                    <span class="cursor-pointer" ng-click="Generar_Acta('Vista_2')">Generar Excel</span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l" type="text"
+                                placeholder="Buscar" ng-model="Vista_2.Tabla.Filtrar_Sol"
+                                ng-change="filter('Vista_2');">
+                        </div>
+                    </div>
+
+                    <div style="width:100%;overflow: auto;">
+                        <table id="H1_Tabla" class="bordered table_center_align"
+                            style="width:100%;font-size:6px !important;">
+                            <thead class="default-background" style="color:white;">
+                                <tr>
+                                    <th>DOCUMENTO</th>
+                                    <th>CONCEPTO</th>
+                                    <th>NUMERO</th>
+                                    <th>UBICACION</th>
+                                    <th>TERCERO</th>
+                                    <th>TOTAL</th>
+                                    <th>ESTADO</th>
+                                    <th>PREFIJO</th>
+                                    <th>FACTURA2</th>
+                                    <th>FACTURA</th>
+                                    <th>ALTO_COSTO</th>
+                                    <th>CONFIRMACION</th>
+                                    <th>RECIBO</th>
+                                    <th>FECHA</th>
+                                    <th>COPAGO</th>
+                                    <th>RESPONSABLE</th>
+                                    <th>ESTADO</th>
+                                    <th>PREFIJO</th>
+                                    <th>FACTURA2</th>
+                                    <th>FACTURA</th>
+                                    <th>ALTO_COSTO</th>
+                                    <th>CONFIRMACION</th>
+                                    <th>RECIBO</th>
+                                    <th>FECHA</th>
+                                    <th>COPAGO</th>
+                                    <th>RESPONSABLE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="X in Vista_2.Tabla.Listado_Temp | inicio: Vista_2.Tabla.currentPage * Vista_2.Tabla.pageSize | limitTo: Vista_2.Tabla.pageSize"
+                                    style="color: black;">
+                                    <td>{{X.DOCUMENTO}}</td>
+                                    <td>{{X.CONCEPTO}}</td>
+                                    <td>{{X.NUMERO}}</td>
+                                    <td>{{X.UBICACION}}</td>
+                                    <td>{{X.TERCERO}}</td>
+                                    <td>${{FormatPesoNumero(X.TOTAL.toString().replace(',', '.'))}}</td>
+                                    <td>{{X.ESTADO}}</td>
+                                    <td>{{X.PREFIJO}}</td>
+                                    <td>{{X.FACTURA2}}</td>
+                                    <td>{{X.FACTURA}}</td>
+                                    <td>{{X.ALTOCOSTO}}</td>
+                                    <td>{{X.CONFIRMACION}}</td>
+                                    <td>{{X.RECIBO}}</td>
+                                    <td>{{X.RECIBO_FECHA}}</td>
+                                    <td>{{X.COPAGO}}</td>
+                                    <td>{{X.IDRESPONSABLE+' - '+X.RESPONSABLE}}</td>
+                                </tr>
+                                <tr ng-show="Vista_2.Tabla.Listado_Temp.length==0">
+                                    <td class="center-align" colspan="16" style="font-weight: bolder;">No se encontraron
+                                        resultados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="width: 100%;display: flex;">
+                            <div style="width: 50%;">
+                                <label for="normal">Total de documentos filtrados:
+                                    {{Vista_2.Tabla.Listado_Temp.length}}</label>
+                            </div>
+                            <div style="width: 50%;text-align: right;">
+                                <label for="normal">Total de documentos encontrados:
+                                    {{Vista_2.Tabla.Listado.length}}</label>
+                            </div>
+                        </div>
+                        <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                            <li><button ng-disabled='Vista_2.Tabla.currentPage == 0'
+                                    class="btn-floating default-background"
+                                    ng-click="paso('back','Vista_2')">&laquo;</button></li>
+                            <li ng-repeat='page in Vista_2.Tabla.pages'><button
+                                    ng-disabled='Vista_2.Tabla.currentPage == page.no - 1'
+                                    class="btn-floating default-background"
+                                    ng-click="setPage(page.no, 'Vista_2')">{{page.no}}</button>
+                            </li>
+                            <li><button
+                                    ng-disabled='Vista_2.Tabla.currentPage >= Vista_2.Tabla.Listado_Temp.length/Vista_2.Tabla.pageSize - 1'
+                                    class="btn-floating default-background"
+                                    ng-click="paso('next','Vista_2')">&raquo;</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div ng-show="Vista.Activa == 3">
+        <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+            <div class="card-content clearfix card"
+                style="width: 80%;margin: auto;border-radius: 15px;margin-top: calc(20vh - 100px);"
+                ng-show="Vista_3.Form.Vista == 1">
+                <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">Consultar Reportes
+                </p>
+                <div class="row">
+
+
+
+                    <div class="col s12 m12 s12">
+                        <div class="col s12 no-padding label-new m-b">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l"
+                                id="Vista_3_Form_NombreIps"
+                                title="{{(Vista_3.Form.NombreIps=='')? 'Ingrese un nit o coincidencia' : 'Enter para buscar la Ips'}}"
+                                style="text-transform: uppercase;" autocomplete="off" ng-model="Vista_3.Form.NombreIps"
+                                ng-keyup="Complete_Listado_Ips('Vista_3','NombreIps',Vista_3.Form.NombreIps,'Vista_3_Ips');KeyFind_Ips($event,'Vista_3','NumeroDocIps','NombreIps','Vista_3_Ips');">
+                            <label>Nit
+                                {{(Vista_3.Form.NumeroDocIps.length == 0) ? '' : (' - (' + Vista_3.Form.NumeroDocIps +
+                                ')')}}</label>
+                            <i class="icon-search cursor-pointer default-color" style="margin-left: -1.45em;"
+                                title="Buscar"
+                                ng-click="Buscar_Ips('Vista_3','NumeroDocIps','NombreIps','Vista_3_Ips')"></i>
+                            <ul class="list-group m-l" id="list-group-func-NombreIps"
+                                style="overflow: auto;max-height: 174px;position:absolute;margin: 0;width: inherit;margin-top:2.1em;z-index: 3">
+                                <li class="list-group-item" ng-repeat="x in Busqueda.Vista_3_Ips.Filtro"
+                                    ng-click="FillTextbox_Listado_Ips('Vista_3','NumeroDocIps','NombreIps',x.CODIGO,x.RAZON,'Vista_3_Ips')">
+                                    {{x.RAZON}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s4 no-padding label-new m-b">
+                            <select class="select-new gray-input m-l" style="box-shadow: none;" material-select
+                                ng-model="Vista_3.Form.Estado">
+                                <option value="" disabled>Seleccionar</option>
+                                <option value="A">Activo</option>
+                                <option value="P">Procesado</option>
+                                <option value="X">Anulado</option>
+                            </select>
+                            <label>Estado</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="date" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_3.Form.F_Inicio" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                            <label>Desde</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="date" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_3.Form.F_Fin" max="{{SysDay | date:'yyyy-MM-dd'}}">
+                            <label>Hasta</label>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12">
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="text" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_3.Form.factura">
+                            <label>Factura</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="number" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_3.Form.vmin" min="0">
+                            <label>Valor Minimo</label>
+                        </div>
+
+                        <div class="col s4 no-padding label-new m-b">
+                            <input type="number" class="margin border-none input-date-new w-100 m-l"
+                                ng-model="Vista_3.Form.vmax" min="0">
+                            <label>Valor Maximo</label>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 s12 center" style="padding: 2vh 0vh;">
+                        <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
+                            ng-click="Btn_Consultar('Vista_3')">CONSULTAR</button>
+                    </div>
+                </div>
+            </div>
+            <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+            <div class="card-content clearfix card"
+                style="width: 100%;margin: auto;border-radius: 15px;margin-top: calc(11vh - 100px);"
+                ng-show="Vista_3.Form.Vista == 2">
+
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="tooltip" style="float:right;margin: 7px 15px 0px 30px;">
+                        <i class="icon-reply-all cursor-pointer white-text" ng-click="Volver_Vistas('Vista_3')"></i>
+                        <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Volver</span>
+                    </div>
+                    <p class="default-background default-color center-align white-text" style="margin: 0;border-top-left-radius: 15px;
+                border-top-right-radius: 15px;border: 3px solid;font-size: 1.4rem;font-weight: 600;">
+                        Reportes desde {{Vista_3.Tabla.F_Inicio}} hasta {{Vista_3.Tabla.F_Fin}}</p>
+                    <p class="default-background default-color center-align white-text"
+                        style="margin: -3px 3px 0px 3px;font-size: 1rem;font-weight: 600;">
+                        Cantidad: {{Vista2_Resumen.Cantidad}} - Copago: ${{FormatPesoNumero(Vista2_Resumen.Copago)}} -
+                        Total: ${{FormatPesoNumero(Vista_3.Tabla.Resumen.Total)}}</p>
+
+                    <div class="col s12">
+                        <div class="col s1 no-padding label-new m-b left">
+                            <select class="select-new gray-input" style="box-shadow: none;" material-select watch
+                                ng-model="Vista_3.Tabla.Mostrar_Sol" ng-change="initPaginacion2('Vista_3')">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <label style="font-size: .8rem;top: -1.5rem;">Mostrar</label>
+                            <div style="line-height: 2;">
+                                <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                                    title="Actualizar Tabla" ng-click="Btn_Consultar('Vista_3')"></i>
+                            </div>
+                        </div>
+                        <div class="col s7 label-new center-align" style="width: 60%;">
+                            <div class="center" style="margin:auto;display:flex;">
+                                <div>
+                                    <i class="icon-doc-text-inv-1 default-color cursor-pointer"
+                                        ng-click="Generar_Acta('Vista_3')"></i>
+                                    <span class="cursor-pointer" ng-click="Generar_Acta('Vista_3')">Generar Excel</span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;">
+                            <input class="margin border-none input-text-new gray-input w-100 m-l" type="text"
+                                placeholder="Buscar" ng-model="Vista_3.Tabla.Filtrar_Sol"
+                                ng-change="filter('Vista_3');">
+                        </div>
+                    </div>
+
+                    <div style="width:100%;overflow: auto;">
+                        <table id="H1_Tabla" class="bordered table_center_align"
+                            style="width:100%;font-size:6px !important;">
+                            <thead class="default-background" style="color:white;">
+                                <tr>
+                                    <th>ANOO</th>
+                                    <th>CODIGO_GLOSA</th>
+                                    <th>DOCUMENTO_FD</th>
+                                    <th>DOCUMENTO_FS</th>
+                                    <th>ESTADO_FD</th>
+                                    <th>FACTURA</th>
+                                    <th>FECHA_FS</th>
+                                    <th>FECHA_GLOSA</th>
+                                    <th>GLOSA</th>
+                                    <th>NIT</th>
+                                    <th>NOMBRE</th>
+                                    <th>NUMERO_FD</th>
+                                    <th>NUMERO_FS</th>
+                                    <th style="width: 30em  !important;">OBSERVACION</th>
+                                    <th>PERIODO</th>
+                                    <th>RAZON</th>
+                                    <th>RECIBO</th>
+                                    <th>SERVICIO</th>
+                                    <th>TOTAL_FD</th>
+                                    <th>TOTAL_FS</th>
+                                    <th>TOTAL_SERVICIO</th>
+                                    <th>UBICACION_FD</th>
+                                    <th>UBICACION_FS</th>
+                                    <th>VALOR_GLOSA</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="X in Vista_3.Tabla.Listado_Temp | inicio: Vista_3.Tabla.currentPage * Vista_3.Tabla.pageSize | limitTo: Vista_3.Tabla.pageSize"
+                                    style="color: black;">
+                                    <td>{{X.ANOO}}</td>
+                                    <td>{{X.CODIGO_GLOSA}}</td>
+                                    <td>{{X.DOCUMENTO_FD}}</td>
+                                    <td>{{X.DOCUMENTO_FS}}</td>
+                                    <td>{{X.ESTADO_FD}}</td>
+                                    <td>{{X.FACTURA}}</td>
+                                    <td>{{X.FECHA_FS}}</td>
+                                    <td>{{X.FECHA_GLOSA}}</td>
+                                    <td>{{X.GLOSA}}</td>
+                                    <td>{{X.NIT}}</td>
+                                    <td>{{X.NOMBRE}}</td>
+                                    <td>{{X.NUMERO_FD}}</td>
+                                    <td>{{X.NUMERO_FS}}</td>
+                                    <td>
+                                        <div class="tooltip">
+                                        <i class="icon-info-circled-3 default-color cursor-pointer"
+                                            style="font-size: 15px;" ng-click="Ver_Obs(X)"></i>
+                                        <span class="tooltiptext"
+                                            style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Ver
+                                            Observacion</span>
+                                    </div></td>
+                                    <td>{{X.PERIODO}}</td>
+                                    <td>{{X.RAZON}}</td>
+                                    <td>{{X.RECIBO}}</td>
+                                    <td>{{X.SERVICIO}}</td>
+                                    <td>{{X.TOTAL_FD}}</td>
+                                    <td>{{X.TOTAL_FS}}</td>
+                                    <td>{{X.TOTAL_SERVICIO}}</td>
+                                    <td>{{X.UBICACION_FD}}</td>
+                                    <td>{{X.UBICACION_FS}}</td>
+                                    <td>{{X.VALOR_GLOSA}}</td>
+                                </tr>
+                                <tr ng-show="Vista_3.Tabla.Listado_Temp.length==0">
+                                    <td class="center-align" colspan="16" style="font-weight: bolder;">No se encontraron
+                                        resultados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="width: 100%;display: flex;">
+                            <div style="width: 50%;">
+                                <label for="normal">Total de documentos filtrados:
+                                    {{Vista_3.Tabla.Listado_Temp.length}}</label>
+                            </div>
+                            <div style="width: 50%;text-align: right;">
+                                <label for="normal">Total de documentos encontrados:
+                                    {{Vista_3.Tabla.Listado.length}}</label>
+                            </div>
+                        </div>
+                        <ul style="text-align: center;padding-top: 0px;" class="pagination">
+                            <li><button ng-disabled='Vista_3.Tabla.currentPage == 0'
+                                    class="btn-floating default-background"
+                                    ng-click="paso('back','Vista_3')">&laquo;</button></li>
+                            <li ng-repeat='page in Vista_3.Tabla.pages'><button
+                                    ng-disabled='Vista_3.Tabla.currentPage == page.no - 1'
+                                    class="btn-floating default-background"
+                                    ng-click="setPage(page.no, 'Vista_3')">{{page.no}}</button>
+                            </li>
+                            <li><button
+                                    ng-disabled='Vista_3.Tabla.currentPage >= Vista_3.Tabla.Listado_Temp.length/Vista_3.Tabla.pageSize - 1'
+                                    class="btn-floating default-background"
+                                    ng-click="paso('next','Vista_3')">&raquo;</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <style>
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-item:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .list-group-item:hover {
+            color: #1a2e63;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .list-group {
+            font-size: 14px;
+        }
+
+        .table_border_c2 td {
+            border-color: #c2c2c2;
+        }
+
+        .table_center_align h6,
+        .table_center_align span {
+            font-size: 1em !important;
+        }
+
+        .switch label .lever.check-c:after {
+            background-color: #ffffff;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            background-color: #ffffff;
+        }
+
+        .table_overflow th {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
+
+        .table_border,
+        .table_border th,
+        .table_border td {
+            border: 1px solid #c2c2c2;
+        }
+
+        .table_center_align,
+        .table_center_align th,
+        .table_center_align td {
+            text-align: center;
+        }
+
+
+        #toast-container .toast {
+            border-radius: 25px !important;
+            font-weight: 600;
+            text-align: center !important;
+            word-break: keep-all;
+            padding: 10px 25px;
+            width: auto;
+        }
+
+        input.input-text-new {
+            background-color: #f1f3f4 !important;
+        }
+
+        .gray-input {
+            background-color: #f1f3f4 !important;
+        }
+
+        .dropdown-content li {
+            min-height: 23px;
+        }
+
+        .dropdown-content li>span {
+            line-height: 32px;
+            padding: 0px 16px;
+        }
+    </style>
+</div>

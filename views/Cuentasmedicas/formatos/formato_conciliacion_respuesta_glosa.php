@@ -103,18 +103,18 @@
     <tr>
       <td colspan="1" rowspan="3" style="text-align: center;">
         <img style="width: 10em;" src="../../../assets/images/logo_cajacopieps.png">
-      <td colspan="6" rowspan="2" class="fs_10" style="text-align: center;padding:0.1% 0%;">FORMATO ACTA DE CONCILIACIÓN DE RESPUESTA DE GLOSAS</td>
+      <td colspan="6" rowspan="2" class="fs_10" style="text-align: center;padding:0.1% 0%;">FORMATO ACTA DE RESPUESTA DE GLOSAS</td>
       <td colspan="1">
         Código: CM-FR-04
       </td>
     </tr>
     <tr>
-      <td colspan="1">Version: 01</td>
+      <td colspan="1">Version: 02</td>
     </tr>
     <tr>
       <td colspan="6" class="fs_10" style="text-align: center;padding:1% 0%;">
         PROCEDIMIENTO DE AUDITORIA DE CUENTAS MÉDICAS</td>
-      <td colspan="1">Fecha: Febrero 2023</td>
+      <td colspan="1">Fecha: Enero 2024</td>
     </tr>
     <tr>
       <td colspan="1" class="txtCenter">FECHA:</td>

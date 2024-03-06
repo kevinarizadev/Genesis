@@ -24,7 +24,7 @@ angular.module('GenesisApp', ['ngStorage', 'toastr', 'ngDialog', 'chieffancypant
         sessionStorage.clear();
         $scope.content = 'funcionario';
 
-        $scope.passFunc = 'Cajacopi2022.';
+        $scope.passFunc = 'Cajacopi2024.';
 
         $scope.userAfil = '1044227813';
         $scope.passAfil = '111901';
@@ -42,7 +42,7 @@ angular.module('GenesisApp', ['ngStorage', 'toastr', 'ngDialog', 'chieffancypant
 
         $scope.nitIps = "901139193"; // MIRED
         $scope.userIps = "1069481333";
-        $scope.passIps = "Cajacopi2022.";
+        $scope.passIps = "Cajacopi2024.";
 
         // $scope.nitEmpr = '5796371';
         // $scope.passEmpr = 'T5A8B6';

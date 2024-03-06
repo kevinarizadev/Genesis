@@ -4,6 +4,8 @@ angular.module('GenesisApp')
     function ($scope, $http, $filter) {
       $scope.Inicio = function () {
         $('.modal').modal();
+        $('.tabs').tabs();
+
         $scope.Ajustar_Pantalla();
 
         $scope.Rol_Nit = '0';
@@ -11,8 +13,14 @@ angular.module('GenesisApp')
         // $scope.Rol_Nit = 900465319;
         $scope.SysDay = new Date();
         $scope.Vista = 0;
+        $scope.Tabs = 1;
 
         $scope.verNotificaciones();
+        $scope.hojaPermisosLimpiar();
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+        console.log(1)
+
       };
 
 
@@ -149,6 +157,8 @@ angular.module('GenesisApp')
             return
           }
 
+          e.FCDV_VALOR_GI_IPS = e.FCDV_VALOR_GI_IPS ?? 0;
+
           if ((parseFloat(e.FCDV_VALOR_GI_IPS.toString().replace(',', '.')) +
             parseFloat(e.VALOR_ACEPTADO.toString().replace(/\,/g, '.').replace(/\./g, '')))
             > parseFloat(e.VALOR_GLOSA.toString().replace(',', '.'))
@@ -265,6 +275,280 @@ angular.module('GenesisApp')
         });
       }
 
+      $scope.hojaPermisosLimpiar = function () {
+        $scope.hojaPermisos = {
+          numeroNotificacion: '',
+          ubicacionNotificacion: '',
+
+          listadoFuncionarios: [],
+          filtroFunc: '',
+
+          listadoIps: [],
+          filtroIps: '',
+        };
+        $scope.List = {};
+
+        setTimeout(() => {
+          $scope.$apply();
+        }, 300);
+      }
+
+      $scope.reversarNG = function (x) {
+        if ($scope.hojaPermisos.numeroNotificacion == '') { return false }
+        if ($scope.hojaPermisos.ubicacionNotificacion == '') { return false }
+
+        swal({
+          title: '¿Desea revesar la NG?',
+          text: x.nombre,
+          showCancelButton: true,
+          confirmButtonText: "Confirmar",
+          cancelButtonText: "Cancelar",
+          allowOutsideClick: false
+        }).then(function (result) {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/gesnotificacionglosa.php",
+              data: {
+                function: 'p_reversa_ng',
+                numero: $scope.hojaPermisos.numeroNotificacion,
+                ubicacion: $scope.hojaPermisos.ubicacionNotificacion,
+                responsable: $scope.Rol_Cedula
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                $scope.hojaPermisos.numeroNotificacion = '';
+                $scope.hojaPermisos.ubicacionNotificacion = '';
+                swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            });
+          }
+        }).catch(swal.noop);
+      }
+
+      $scope.obtenerListadoFunc = function () {
+        $scope.hojaPermisos.listadoFuncionarios = [];
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/gesnotificacionglosa.php",
+          data: {
+            function: 'P_CONSULTA_PERMISOS_USUARIO'
+          }
+        }).then(function ({ data }) {
+          // if (data.toString().substr(0, 3) == '<br' || data == 0) {
+          //   swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          // }
+          $scope.hojaPermisos.listadoFuncionarios = data;
+          console.log(data);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
+
+      $scope.obtenerListadoIps = function () {
+        $scope.hojaPermisos.listadoIps = [];
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/gesnotificacionglosa.php",
+          data: {
+            function: 'P_CONSULTA_PERMISOS_IPS'
+          }
+        }).then(function ({ data }) {
+          // if (data.toString().substr(0, 3) == '<br' || data == 0) {
+          //   swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          // }
+          $scope.hojaPermisos.listadoIps = data;
+          console.log(data);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
+
+      $scope.agregarUsuario = function () {
+        swal({
+          title: 'Agregar Nuevo Usuario',
+          text: 'Ingrese la cédula del funcionario',
+          input: 'text',
+          inputPlaceholder: 'Ingrese la cédula...',
+          showCancelButton: false,
+          confirmButtonText: "Aceptar",
+          allowOutsideClick: false
+        }).then(function (result) {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/gesnotificacionglosa.php",
+              data: {
+                function: 'P_INSERTAR_USUARIO',
+                cedula: result,
+                responsable: $scope.Rol_Cedula
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                $scope.obtenerListadoFunc();
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            });
+          }
+        }).catch(swal.noop);
+      }
+
+      $scope.editarUsuario = function (data) {
+        $scope.modalUsuario = {}
+        $scope.modalUsuario.cedula = data.TERV_CODIGO;
+        $scope.modalUsuario.nombre = data.TERC_NOMBRE;
+        $scope.modalUsuario.estado = data.EADC_ESTADO;
+        // $scope.modalUsuario.fechaRegistro = data.FECHA_REGISTRO;
+        $scope.openModal('modalUsuario')
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+
+      $scope.modificarFunc = function (x) {
+        swal({
+          title: '¿Desea actualizar el estado del funcionario?',
+          text: x.nombre,
+          showCancelButton: true,
+          confirmButtonText: "Confirmar",
+          cancelButtonText: "Cancelar",
+          allowOutsideClick: false
+        }).then(function (result) {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/gesnotificacionglosa.php",
+              data: {
+                function: 'p_actualiza_usuario',
+                cedula: x.cedula,
+                estado: x.estado,
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                $scope.closeModal();
+                $scope.obtenerListadoFunc();
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            });
+          }
+        }).catch(swal.noop);
+      }
+
+      $scope.agregarIps = function () {
+        swal({
+          title: 'Agregar Nuevo Prestador',
+          text: 'Ingrese el nit',
+          input: 'text',
+          inputPlaceholder: 'Ingrese la nit...',
+          showCancelButton: false,
+          confirmButtonText: "Aceptar",
+          allowOutsideClick: false
+        }).then(function (result) {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/gesnotificacionglosa.php",
+              data: {
+                function: 'P_ACTUALIZA_PRESTADOR',
+                nit: result,
+                estado: 'S',
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                $scope.obtenerListadoIps();
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            });
+          }
+        }).catch(swal.noop);
+      }
+      $scope.modificarIps = function (x) {
+        const estado = x.TERC_GLOSA_GENESIS ? 'N' : 'S'
+        swal({
+          title: '¿Desea actualizar el estado del prestador?',
+          text: x.nombre,
+          showCancelButton: true,
+          confirmButtonText: "Confirmar",
+          cancelButtonText: "Cancelar",
+          allowOutsideClick: false
+        }).then(function (result) {
+          if (result) {
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/gesnotificacionglosa.php",
+              data: {
+                function: 'p_actualiza_prestador',
+                nit: x.TERV_CODIGO,
+                estado: estado,
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+              }
+              if (data.Codigo == 0) {
+                swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                $scope.closeModal();
+                $scope.obtenerListadosIps();
+              }
+              if (data.Codigo == 1) {
+                swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+              }
+            });
+          }
+        }).catch(swal.noop);
+      }
+
       $scope.openModal = function (modal) {
         $(`#${modal}`).modal('open');
         setTimeout(() => { document.querySelector(`#${modal}`).style.top = 1 + '%'; }, 600);
@@ -278,6 +562,14 @@ angular.module('GenesisApp')
         setTimeout(() => {
           $scope.$apply();
         }, 1000);
+      }
+      $scope.setTab = function (x) {
+        $scope.Tabs = x;
+        if (x == 2 && !$scope.hojaPermisos.listadoFuncionarios.length) {
+          $scope.obtenerListadoFunc();
+          $scope.obtenerListadoIps();
+        }
+        setTimeout(() => { $scope.$apply(); }, 500);
       }
       $scope.filter = function (val) {
         $scope.listadoNotificacionesTemp = $filter('filter')($scope.listadoNotificaciones, val);

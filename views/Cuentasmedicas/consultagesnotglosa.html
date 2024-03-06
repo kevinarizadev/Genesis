@@ -1,110 +1,5 @@
 <div id="pantalla" class="white newdesing" style="position:relative">
-  <style>
-    #consolidadoerror>* {
-      margin: auto;
-    }
 
-    .NOTIFICADA {
-      background-color: #FFC107 !important;
-    }
-
-
-
-    .ACEPTADA,
-    .CO {
-      background-color: #8BC34A !important;
-    }
-
-    .CONTESTADA {
-      background-color: #03a9f4 !important;
-    }
-
-    .error {
-      background-color: #FF5722 !important;
-    }
-
-
-
-    .S {
-      /* padding: 1em; */
-      color: white;
-      background-color: #1a2e63 !important;
-    }
-
-    .N {
-      /* padding: 1em; */
-      color: white;
-      background-color: rgb(161, 169, 162);
-    }
-
-    /* CANTIDAD */
-    .PE {
-      background-color: #5ba2dc !important;
-    }
-
-    .CR {
-      background-color: #0375bc !important;
-    }
-
-    .IM {
-      background-color: #0f55bd !important;
-    }
-
-    .RI {
-      background-color: #14d2a4 !important;
-    }
-
-    .AC {
-      background-color: #18a378 !important;
-    }
-
-    .CO {
-      background-color: #2fb421 !important;
-    }
-
-    /* CANTIDAD */
-
-    .tabla_scroll th {
-      padding: 3px 10px;
-    }
-
-    .tabla_scroll li>button.btn {
-      font-size: small;
-      height: auto;
-      line-height: inherit;
-      padding: 0 1rem;
-    }
-
-    .table_border,
-    .table_border th,
-    .table_border td {
-      border: 1px solid #c2c2c2;
-    }
-
-    .table_center_align,
-    .table_center_align th,
-    .table_center_align td {
-      text-align: center;
-    }
-
-    .VERDE {
-      background-color: #56b949 !important;
-    }
-
-    .ROJO {
-      background-color: #b42121 !important;
-    }
-
-    #tabla_detalleglosa th {
-      position: sticky;
-      top: 0;
-      z-index: 9;
-    }
-
-    .swal-wide {
-      width: 850px !important;
-    }
-  </style>
   <!-- Encabezado -->
   <div class="row section-header">
     <ul class="left mailbox-custom-search list-inline"
@@ -113,12 +8,25 @@
         <h5>Consulta Notificación de Glosas</h5>
       </li>
 
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="setTab(1)" href class="active">Consulta
+            </a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="setTab(2);" href>Exportar</a>
+          </li>
+        </ul>
+      </li>
+
     </ul>
   </div>
 
   <!-- Glosas -->
   <div class="row dashboard-wrapper content-container white"
-    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 0">
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="tabs == 1 && Vista == 0">
 
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
@@ -143,7 +51,7 @@
               <th style="text-align:center;">VALOR GLOSA</th>
               <!-- <th style="text-align:center;">FECHA DE CONTESTACION DE GLOSA</th> -->
               <th style="text-align:center;">CANTIDAD</th>
-              <!-- <th style="text-align:center;">ESTADO</th> -->
+              <th style="text-align:center;">ESTADO</th>
               <th style="text-align:center;" colspan="2">ACCION</th>
             </tr>
           </thead>
@@ -159,9 +67,10 @@
               <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
                 <!-- <td style="text-align:center;">{{X.FECHA_CONTESTACION}}</td> -->
               <td style="text-align:center;">{{X.CANTIDAD}}</td>
-              <!-- <td style="text-align:center;">
-                <span class="status {{X.NOTC_ESTADO1}}">{{obtenerNombreEstado(X.NOTC_ESTADO1)}}</span>
-              </td> -->
+              <td style="text-align:center;">
+                <span
+                  class="status {{(X.NOTC_ESTADO1.toString().trim()).replace('0','PE')}}">{{obtenerNombreEstado(X.NOTC_ESTADO1.toString().trim())}}</span>
+              </td>
 
               <td style="text-align:center;">
                 <div class="tooltip">
@@ -185,6 +94,11 @@
                   <i style="cursor:pointer;font-size: 2em;" ng-click="descargaAdjunto(X.SOPORTE)"
                     class="icon-file-pdf"></i>
                   <span class="tooltiptext">Descargar Soporte</span>
+                </div>
+                <div class="tooltip">
+                  <i style="cursor:pointer;font-size: 2em;" ng-click="descargarFormatoNotificacion(X)"
+                    class="icon-doc-text-inv-1"></i>
+                  <span class="tooltiptext">Generar formato notificacion</span>
                 </div>
 
               </td>
@@ -210,7 +124,8 @@
   </div>
   <!-- Glosas -->
   <div class="row dashboard-wrapper content-container white"
-    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="Vista == 1">
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
+    ng-show="tabs == 1 && Vista == 1">
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
@@ -218,8 +133,10 @@
           <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar"
             ng-click="verNotificacionesDetalle(ngSeleccionada)"></i>
           Listado de Glosas ({{listadoNotificacionesDetalle.length}})
-          <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
-            ng-click="generalExcel(listadoNotificacionesDetalle)"></i>
+          <!-- <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
+            ng-click="generalExcel(listadoNotificacionesDetalle)"></i> -->
+          <i class="icon-file-excel default-color cursor-pointer" title="Generar Exportado"
+            ng-click="generaExportado(listadoNotificacionesDetalle[0])"></i>
         </div>
 
         <input type="text" class="margin border-none input-text-new" style="width: 20vw;"
@@ -330,9 +247,9 @@
                     <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA.toString().replace(',', '.'))}}
                     </td>
                     <!-- <td style="text-align:center;">${{FormatPesoNumero(x.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
-                      <!-- <td style="text-align:center;">${{FormatPesoNumero(x.MANT.toString().replace(',', '.'))}} -->
+                    <!-- <td style="text-align:center;">${{FormatPesoNumero(x.MANT.toString().replace(',', '.'))}} -->
 
-                      <!-- <td style="text-align:center;">
+                    <!-- <td style="text-align:center;">
                       $<input type="text"
                         class="margin border-none white input-text-new input-w-p input-out-new w-100"
                         style="width: 75% !important;" id="Valor_Glosar_EPS_{{$index}}" maxlength="16"
@@ -363,87 +280,236 @@
     </div>
   </div>
 
+  <!--  -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;" ng-show="tabs == 2">
+
+    <div class="col l12 m12 s12" style="position:relative">
+      <!-- <div class="row">
+        <blockquote class="default-color"><b>Consolidado</b></blockquote>
+        <div class="col s12">
+          <form ng-submit="descargaConsolidado()">
+            <div class="col s3">
+              <label for="fecha">Fecha de Inicio</label>
+              <input id="fecha" type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formExp.fechaInicio"
+                class="margin border-none white input-w-p gray-input w-100" required>
+            </div>
+            <div class="col s3">
+              <label for="fecha">Fecha de Fin</label>
+              <input id="fecha" type="date" min="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formExp.fechaFin"
+                class="margin border-none white input-w-p gray-input w-100" required>
+            </div>
+            <div class="col s3">
+              <input class="btn white-text default-background" style="margin-top: 1.7em;" type="submit"
+                value="Consultar">
+            </div>
+          </form>
+        </div>
+      </div> -->
+      <!--  -->
+      <!-- <div class="row" style="margin-top: 8vh;"> -->
+      <div class="row">
+        <blockquote class="default-color"><b>Avanzado</b></blockquote>
+        <div class="col s12">
+          <label>Fecha de Notificación de Glosa</label>
+        </div>
+        <div class="col s12 m-b">
+          <div class="col s3">
+            <label for="fecha">Fecha de Inicio</label>
+            <input id="fecha" type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formAvan.fechaNotInicio"
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+          <div class="col s3">
+            <label for="fecha">Fecha de Fin</label>
+            <input id="fecha" type="date" min="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formAvan.fechaNotFin"
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+        </div>
+        <div class="col s12">
+          <label>Fecha de Respuesta IPS</label>
+        </div>
+        <div class="col s12 m-b">
+          <div class="col s3">
+            <label for="fecha">Fecha de Inicio</label>
+            <input id="fecha" type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formAvan.fechaResIpsInicio"
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+          <div class="col s3">
+            <label for="fecha">Fecha de Fin</label>
+            <input id="fecha" type="date" min="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formAvan.fechaResIpsFin"
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+        </div>
+        <div class="col s12">
+          <label>Fecha de Respuesta EPS</label>
+        </div>
+        <div class="col s12 m-b">
+          <div class="col s3">
+            <label for="fecha">Fecha de Inicio</label>
+            <input id="fecha" type="date" max="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formAvan.fechaResEpsInicio"
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+          <div class="col s3">
+            <label for="fecha">Fecha de Fin</label>
+            <input id="fecha" type="date" min="{{SysDay | date:'yyyy-MM-dd'}}" ng-model="formAvan.fechaResEpsFin"
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+        </div>
+        <div class="col s12">
+          <label>Documento Notificación</label>
+        </div>
+        <div class="col s12 m-b">
+          <div class="col s3">
+            <label for="fecha">Numero</label>
+            <input id="fecha" ng-model="formAvan.numeroNotificacion" maxlength="8" numbers-only
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+          <div class="col s3">
+            <label for="fecha">Ubicación</label>
+            <input id="fecha" ng-model="formAvan.ubicacionNotificacion" maxlength="5" numbers-only
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+        </div>
+        <div class="col s12" ng-show="Rol_Nit == '0'">
+          <div class="col s3">
+            <label for="fecha">Prestador (Nit)</label>
+            <input id="fecha" ng-model="formAvan.nit" numbers-only
+              class="margin border-none white input-w-p gray-input w-100" required>
+          </div>
+        </div>
+
+
+        <div class="col s3">
+          <!-- <button class="waves-effect waves-light btn white-text" style="margin-top: 1.7em;" type="submit"
+              ng-click="descargaConsolidado()">Buscar</button> -->
+          <input class="btn white-text red" style="margin-top: 1.7em;" type="submit" value="Limpiar"
+            ng-click="hojaExportadoLimpiar()">
+          <input class="btn white-text default-background" style="margin-top: 1.7em;" type="submit" value="Consultar"
+            ng-click="descargaAvanzado()">
+        </div>
+      </div>
+      <!--  -->
+    </div>
+  </div>
+  <!--  -->
+
 
   <style>
+    blockquote {
+      font-weight: 700;
+      background-color: #f1f3f4;
+    }
+
     textarea {
       resize: none;
       height: 100px;
       text-align: justify;
     }
 
-    #glosa_textarea {
-      resize: none;
-      border: none;
-      display: block;
-      width: 100%;
-      border-radius: 3px;
-      padding: 10px;
-      font-size: 13px;
-      background-color: white;
+    #consolidadoerror>* {
+      margin: auto;
     }
 
-    #fileSoporte {
-      height: 2rem;
-      cursor: pointer;
+    .NOTIFICADA {
+      background-color: #FFC107 !important;
     }
 
-    .file-upload-wrapper {
-      position: relative;
-      z-index: 1;
-      cursor: pointer;
-      border: 1px solid #8a88865e !important;
-      height: 2.14rem;
-      border-radius: 2px;
-      margin: 0;
-      width: -webkit-fill-available;
+
+
+    .ACEPTADA,
+    .CO {
+      background-color: #8BC34A !important;
     }
 
-    .file-upload-wrapper:after {
+    .CONTESTADA {
+      background-color: #03a9f4 !important;
+    }
+
+    .error {
+      background-color: #FF5722 !important;
+    }
+
+
+
+    .S {
+      /* padding: 1em; */
+      color: white;
+      background-color: #1a2e63 !important;
+    }
+
+    .N {
+      /* padding: 1em; */
+      color: white;
+      background-color: rgb(161, 169, 162);
+    }
+
+    /* CANTIDAD */
+
+    .PE {
+      background-color: #5ba2dc !important;
+    }
+
+    .CR {
+      background-color: #0375bc !important;
+    }
+
+    .IM {
+      background-color: #0f55bd !important;
+    }
+
+    .RI {
+      background-color: #14d2a4 !important;
+    }
+
+    .AC {
+      background-color: #18a378 !important;
+    }
+
+    .CO {
+      background-color: #2fb421 !important;
+    }
+
+    /* CANTIDAD */
+
+    .tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    .tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+
+    .table_border,
+    .table_border th,
+    .table_border td {
+      border: 1px solid #c2c2c2;
+    }
+
+    .table_center_align,
+    .table_center_align th,
+    .table_center_align td {
       text-align: center;
-      content: attr(data-text);
-      position: absolute;
+    }
+
+    .VERDE {
+      background-color: #56b949 !important;
+    }
+
+    .ROJO {
+      background-color: #b42121 !important;
+    }
+
+    #tabla_detalleglosa th {
+      position: sticky;
       top: 0;
-      left: 0;
-      padding: 10px 15px;
-      display: block;
-      width: calc(100% - 40px);
-      pointer-events: none;
-      z-index: 20;
-      line-height: 1;
-      color: #80868b;
-      border-radius: 5px 10px 10px 5px;
-      font-weight: 400;
-      height: 8vh;
+      z-index: 9;
     }
 
-    .file-upload-wrapper:hover:before {
-      background: #3d8c63;
-    }
-
-    .file-upload-wrapper input {
-      opacity: 0;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 99;
-      height: 43px;
-      margin: 0;
-      padding: 0;
-      display: block;
-      cursor: pointer;
-      width: 100%;
-      height: 10vh;
-    }
-
-    .dropdown-content li {
-      min-height: 23px;
-    }
-
-    .dropdown-content li>span {
-      line-height: 32px;
-      padding: 0px 16px;
+    .swal-wide {
+      width: 850px !important;
     }
   </style>
 </div>

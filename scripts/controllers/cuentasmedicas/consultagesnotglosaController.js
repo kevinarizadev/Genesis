@@ -5,14 +5,18 @@ angular.module('GenesisApp')
       $scope.Inicio = function () {
         console.clear();
         $('.modal').modal();
-        // $('.tabs').tabs();
+        $('.tabs').tabs();
         $scope.Ajustar_Pantalla();
         $scope.Rol_Nit = sessionStorage.getItem('nit');
         // $scope.Rol_Nit = 900465319;
         $scope.Rol_Cedula = sessionStorage.getItem('cedula');
         $scope.Vista = 0;
+        $scope.tabs = 1;
+
+        $scope.SysDay = new Date();
 
         $scope.verNotificaciones();
+        $scope.hojaExportadoLimpiar();
         //////////////////////
 
         setTimeout(() => { $scope.$apply(); }, 500);
@@ -140,7 +144,8 @@ angular.module('GenesisApp')
 
         row.forEach(e => {
           datos.push({
-            "RAZON SOCIAL": e.IPS,
+            "NIT": e.IPS.split('-')[0],
+            "RAZON SOCIAL": e.IPS.split('-')[1],
             "FECHA RADICACION": e.FECHA_RADICACION,
 
             "FACTURA": e.FACC_FACTURA,
@@ -149,6 +154,7 @@ angular.module('GenesisApp')
             "ESTADO GLOSA": $scope.obtenerNombreEstado(e.NOTC_ESTADO1),
 
             "DOCUMENTO GLOSA": `${e.DOC_FD}-${e.NUM_FD}-${e.UBI_FD}`,
+            "DOCUMENTO FACTURA FS": `${e.DOC_FS}-${e.NUM_FS}-${e.UBI_FS}`,
             "FECHA NOTIFICACION GLOSA": e.FECHA_NOTIFICACION,
             "VALOR GLOSA": e.VALOR_GLOSA,
 
@@ -171,10 +177,60 @@ angular.module('GenesisApp')
         XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
         /* write workbook and force a download */
         XLSX.writeFile(wb, "Reporte notificacion glosas.xlsx");
-        const text = `Registros encontrados ${data.length}`
+        const text = `Registros encontrados ${datos.length}`
         swal('¡Mensaje!', text, 'success').catch(swal.noop);
 
         swal.close();
+
+      }
+
+      $scope.generaExportado = function (row) {
+
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/consultagesnotglosa.php",
+          data: { function: 'p_lista_notificacion_glosa', nit: $scope.Rol_Nit, numero: row.NUMERO, ubicacion: row.UBICACION }
+        }).then(function ({ data }) {
+          if (data != undefined) {
+            if (data.length) {
+
+              let datos = []
+
+              data.forEach(e => {
+                datos.push({
+
+                  "FS": e.DOC_FS,
+
+                  "SECCIONAL": e.SECCIONAL,
+                  "MES": e.MES,
+                  "OPORTUNIDAD": e.OPORTUNIDAD,
+                  "DESCRIPCION": e.DESCRIPCION,
+                  "FECHA REALIZACION GLOSA": e.FECHA_REALIZACION_GLOSA,
+                  "AUDITOR": e.AUDITOR,
+                  "MEDIO": e.MEDIO,
+
+                  "FECHA VENCIMIENTO": e.FECHA_VENCIMIENTO,
+                })
+              });
+
+
+              var ws = XLSX.utils.json_to_sheet(datos);
+              /* add to workbook */
+              var wb = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+              /* write workbook and force a download */
+              XLSX.writeFile(wb, "Reporte notificacion glosas.xlsx");
+              const text = `Registros encontrados ${datos.length}`
+              swal('¡Mensaje!', text, 'success').catch(swal.noop);
+
+              swal.close();
+            } else {
+              swal("Mensaje", 'No existen glosas para mostrar', "info").catch(swal.noop); return
+            }
+          } else {
+            swal.close();
+          }
+        })
 
       }
 
@@ -316,6 +372,142 @@ angular.module('GenesisApp')
           + '&ubicacion=' + x.DOC_NOTIFICACION.split('-')[2] + '&responsable=' + $scope.Rol_Cedula, '_blank', "width=1080,height=1100");
       }
 
+      $scope.descargarFormatoNotificacion = function (x) {
+
+        window.open('views/Cuentasmedicas/formatos/formato_notificacionglosaips.php?documento=' + x.NTDC_DOCUMENTO +
+          '&numero=' + x.NTDN_NUMERO +
+          '&ubicacion=' + x.NTDN_UBICACION
+          , '_blank', "width=1080,height=1100");
+
+      }
+
+      $scope.hojaExportadoLimpiar = function () {
+        $scope.formExp = {
+          fechaInicio: null,
+          fechaFin: null,
+        }
+
+        $scope.formAvan = {
+          fechaNotInicio: undefined,
+          fechaNotFin: undefined,
+          fechaResIpsInicio: undefined,
+          fechaResIpsFin: undefined,
+          fechaResEpsInicio: undefined,
+          fechaResEpsFin: undefined,
+          nit: $scope.Rol_Nit == '0' ? '' : $scope.Rol_Nit,
+          numeroNotificacion: '',
+          ubicacionNotificacion: ''
+        }
+      }
+
+      $scope.descargaConsolidado = function () {
+        swal({ title: 'Cargando...', allowOutsideClick: false });
+        swal.showLoading();
+
+        const datos = {
+          fechaInicio: $scope.formExp.fechaInicio,
+          fechaFin: $scope.formExp.fechaFin,
+        }
+
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/consultagesnotglosa.php",
+          data: {
+            function: 'p_lista_glosas_estado_resp_agru_consulta',
+            datos: JSON.stringify(datos)
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Mensaje", 'No existen glosas para mostrar', "warning").catch(swal.noop); return
+          }
+          if (data.length) {
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Consolidado.xlsx");
+            const text = `Registros encontrados ${data.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+            setTimeout(() => { $scope.$apply(); }, 500);
+            setTimeout(() => { $scope.$apply(); }, 500);
+          } else {
+            swal.close();
+          }
+        })
+      }
+
+      $scope.validardescargaAvanzado = function () {
+        return new Promise((resolve) => {
+          if ($scope.formAvan.fechaNotInicio && $scope.formAvan.fechaNotFin == null) resolve(false);
+          if ($scope.formAvan.fechaNotFin && $scope.formAvan.fechaNotInicio == null) resolve(false);
+          if ($scope.formAvan.fechaResIpsInicio && $scope.formAvan.fechaResIpsFin == null) resolve(false);
+          if ($scope.formAvan.fechaResIpsFin && $scope.formAvan.fechaResIpsInicio == null) resolve(false);
+          if ($scope.formAvan.fechaResEpsInicio && $scope.formAvan.fechaResEpsFin == null) resolve(false);
+          if ($scope.formAvan.fechaResEpsFin && $scope.formAvan.fechaResEpsInicio == null) resolve(false);
+
+          if (
+            !$scope.formAvan.fechaNotInicio && !$scope.formAvan.fechaNotFin &&
+            !$scope.formAvan.fechaResIpsInicio && !$scope.formAvan.fechaResIpsFin &&
+            !$scope.formAvan.fechaResEpsInicio && !$scope.formAvan.fechaResEpsFin &&
+            !$scope.formAvan.numeroNotificacion && !$scope.formAvan.ubicacionNotificacion &&
+            !$scope.formAvan.nit
+          ) { resolve(false); }
+          resolve(true)
+        });
+      }
+
+      $scope.descargaAvanzado = function () {
+
+        $scope.validardescargaAvanzado().then(res => {
+          if (!res) { swal("¡Importante!", "Diligencia algún campo", "warning").catch(swal.noop); return }
+
+          swal({ title: 'Cargando...', allowOutsideClick: false });
+          swal.showLoading();
+
+          const datos = {
+            f_inicio_notificacion_glosa: $scope.formatDate($scope.formAvan.fechaNotInicio),
+            f_final_notificacion_glosa: $scope.formatDate($scope.formAvan.fechaNotFin),
+            f_inicio_respuesta_glosa_ips: $scope.formatDate($scope.formAvan.fechaResIpsInicio),
+            f_final_respuesta_glosa_ips: $scope.formatDate($scope.formAvan.fechaResIpsFin),
+            f_inicio_respuesta_glosa_eps: $scope.formatDate($scope.formAvan.fechaResEpsInicio),
+            f_final_respuesta_glosa_eps: $scope.formatDate($scope.formAvan.fechaResEpsFin),
+            doc_numero_ng: $scope.formAvan.numeroNotificacion,
+            doc_ubicacion_ng: $scope.formAvan.ubicacionNotificacion,
+            nit: $scope.formAvan.nit,
+          }
+
+
+          $http({
+            method: 'POST',
+            url: "php/cuentasmedicas/consultagesnotglosa.php",
+            data: {
+              function: 'p_lista_glosas_estado_resp_agru_consulta_avanz',
+              nit: 0,
+              datos: JSON.stringify(datos)
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) == '<br' || data == 0) {
+              swal("Mensaje", 'No existen glosas para mostrar', "warning").catch(swal.noop); return
+            }
+            if (data.length) {
+              var ws = XLSX.utils.json_to_sheet(data);
+              /* add to workbook */
+              var wb = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+              /* write workbook and force a download */
+              XLSX.writeFile(wb, "Exportado Avanzado.xlsx");
+              const text = `Registros encontrados ${data.length}`
+              swal('¡Mensaje!', text, 'success').catch(swal.noop);
+              setTimeout(() => { $scope.$apply(); }, 500);
+              setTimeout(() => { $scope.$apply(); }, 500);
+            } else {
+              swal.close();
+            }
+          })
+        })
+      }
+
       ////////////////////////////////////////////////////////////////////////////////////////////
       $scope.descargaAdjunto = function (ruta) {
         // alert(ruta);
@@ -333,6 +525,7 @@ angular.module('GenesisApp')
 
 
       $scope.obtenerNombreEstado = function (estado) {
+        if (estado == '0') estado = 'PE'
         const listado = {
           PE: 'PENDIENTE',
           RI: 'RESPUESTA X IPS',
@@ -373,6 +566,19 @@ angular.module('GenesisApp')
         } else {
           return "0"
         }
+      }
+      $scope.formatDate = function (date) {
+        if (date === undefined) { return }
+        var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [day, month, year].join('/');
+        // return [year, month, day].join('-');
       }
       ////////////////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////////////////
@@ -479,6 +685,24 @@ angular.module('GenesisApp')
         }
       }
 
+      $scope.setTab = function (tab) {
+        $scope.tabs = tab
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.formatDate = function (date) {
+        if (date === undefined) { return '' }
+        var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [day, month, year].join('/');
+        // return [year, month, day].join('-');
+      }
 
       $scope.Ajustar_Pantalla = function () {
         if ($(window).width() < 1100) {

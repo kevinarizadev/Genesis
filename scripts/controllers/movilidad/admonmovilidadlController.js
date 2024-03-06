@@ -43,6 +43,7 @@ angular.module('GenesisApp')
                     // { cedula: '37899633' }, // 37899633 - FIGUEREDO CALDERON LUZ ELENA
                     { cedula: '1045724924' }, // 1045724924 - FONTALVO GOMEZ LIZ YOLAYNE
                     { cedula: '1140834704' }, // 1140834704 - JAINER CARO FRANCO
+                    { cedula: '1140834704' }, // 1140834704 -
 
                     { cedula: '1042454684' }, // K A - 1042454684
                 ];
@@ -56,7 +57,7 @@ angular.module('GenesisApp')
 
                 $scope.ocultar_icono = false;
                 $scope.tipo_modulo = 'D';
-                setTimeout(() => { 
+                setTimeout(() => {
                     $scope.validar_Permisos();
                  }, 1000);
                 setTimeout(() => { $scope.$apply(); }, 500);

@@ -440,4 +440,76 @@ function P_UI_SERVICIOS(){
 	}
 	oci_close($c);
 }
+
+function listarlosmotivos(){
+	require_once('../config/dbcon_prod.php');
+	global $param;
+	$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTRATACION.p_lista_motivos(:v_json_row); end;');
+	$clob = oci_new_descriptor($c,OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
+	oci_execute($consulta,OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	}else{
+		echo 0;
+	}
+	oci_close($c);
+}
+
+function UI_OTROSI_MOTIVO(){
+	require_once('../config/dbcon_prod.php');
+	global $param;
+	$v_pnumero = $param->v_pnumero;
+	$v_pdocumento = $param->v_pdocumento;
+	$v_pubicacion = $param->v_pubicacion;
+	$v_pconcepto = $param->v_pconcepto;
+	$v_pcant_afiliado = $param->v_pcant_afiliado;
+	$v_pval_afiliado = $param->v_pval_afiliado;
+	$v_pfecha_modificacion = $param->v_pfecha_modificacion;
+	$v_pfecha_final = $param->v_pfecha_final;
+	$v_pobservacion_otrosi = $param->v_pobservacion_otrosi;
+	$v_pcontrato_valor = $param->v_pvalor_contrato;
+	$accion = $param->accion;
+	$v_pval_contrato_otrosi_ev = $param->v_pval_contrato_otrosi_ev;
+	$motivoseleccionado = $param->motivoseleccionado;
+	$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTRATACION.P_UI_OTROSI_GENERALES(:V_PNUMERO,
+																	    :V_PDOCUMENTO,
+																		:V_PUBICACION,
+																		:V_PCONCEPTO,
+																		:V_PMOTIVO,
+																		:V_PCANT_AFILIADO,
+																		:V_PVAL_AFILIADO,
+																		:V_PFECHA_MODIFICACION,
+																		:V_PFECHA_FINAL,
+																		:V_PCONTRATO_VALOR,
+																		:V_PVAL_CONTRATO_OTROSI_EV,
+																		:V_POBSERVACION_OTROSI,
+																		:V_PACCION,
+																		:V_JSON_ROW); end;');
+	oci_bind_by_name($consulta, ':V_PNUMERO', $v_pnumero);
+	oci_bind_by_name($consulta, ':V_PDOCUMENTO', $v_pdocumento);
+	oci_bind_by_name($consulta, ':V_PUBICACION', $v_pubicacion);
+	oci_bind_by_name($consulta, ':V_PCONCEPTO', $v_pconcepto);
+	oci_bind_by_name($consulta, ':V_PMOTIVO', $motivoseleccionado);
+	oci_bind_by_name($consulta, ':V_PCANT_AFILIADO', $v_pcant_afiliado);
+	oci_bind_by_name($consulta, ':V_PVAL_AFILIADO', $v_pval_afiliado);
+	oci_bind_by_name($consulta, ':V_PFECHA_MODIFICACION', $v_pfecha_modificacion);
+	oci_bind_by_name($consulta, ':V_PFECHA_FINAL', $v_pfecha_final);
+	oci_bind_by_name($consulta, ':V_PCONTRATO_VALOR', $v_pcontrato_valor);
+	oci_bind_by_name($consulta, ':V_PVAL_CONTRATO_OTROSI_EV', $v_pval_contrato_otrosi_ev);
+	oci_bind_by_name($consulta, ':V_POBSERVACION_OTROSI', $v_pobservacion_otrosi);
+	oci_bind_by_name($consulta, ':V_PACCION', $accion);
+	$clob = oci_new_descriptor($c,OCI_D_LOB);
+	oci_bind_by_name($consulta, ':V_JSON_ROW', $clob,-1,OCI_B_CLOB);
+	oci_execute($consulta,OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	}else{
+		echo 0;
+	}
+	oci_close($c);
+}
+
 ?>

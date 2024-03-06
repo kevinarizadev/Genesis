@@ -1,7 +1,7 @@
 'use strict';
 angular.module('GenesisApp')
-  .controller('anticiposController', ['$scope', '$http', '$location', '$timeout', '$filter', '$window', '$q', '$interval',
-    function ($scope, $http, $location, $timeout, $filter, $window, $q, $interval) {
+  .controller('anticiposController', ['$scope', '$http', '$timeout', '$filter', '$window', '$q', '$interval',
+    function ($scope, $http, $timeout, $filter, $window, $q, $interval) {
       $scope.Quitar_NuevoSol = true;
       console.clear();// No envia mensaje - Si "firma", Firma en base de datos
       $(document).ready(function () {
@@ -22,6 +22,8 @@ angular.module('GenesisApp')
         console.log($(window).width());
         $('input.currency').currencyInput();
         $('.tabs').tabs();
+        $('.modal').modal();
+
         $scope.Tabs = 1;
         $scope.HojaAnticipo = false;
 
@@ -145,6 +147,20 @@ angular.module('GenesisApp')
         $scope.Listar_Motivos_Anulacion();
 
         $scope.HojaAnt_Advertencias = [];
+
+        $scope.listadoEtapas = [
+          { cod: 0, cargo: "Asistente Regional De Autorizaciones" },
+          { cod: 1, cargo: "Auditor Médico Regional" },
+          { cod: 2, cargo: "Gerente Regional" },
+          { cod: 3, cargo: "Asistente Nacional De Autorizaciones" },
+          { cod: 4, cargo: "Especialista Nacional De Autorizaciones" },
+          { cod: 5, cargo: "Coordinador Nacional De Autorizaciones" },
+          { cod: 6, cargo: "Subdirector Nacional de Salud" },
+          { cod: 7, cargo: "Subgerente General", ver: false },
+          { cod: 8, cargo: "Asistente Nacional De Pagaduria" },
+        ];
+
+
       });
       // READY
       (function ($) {
@@ -309,9 +325,9 @@ angular.module('GenesisApp')
           Afiliado:
           {
             TipoDoc: '',
-            // TipoDoc: 'CC',
+            //TipoDoc: 'CC',
             NumeroDoc: '',
-            // NumeroDoc: '1043022772',
+            // NumeroDoc: '91102711',
             NombreUsu: '',
             MunicipioUsu: '',
             // MunicipioUsuCod: '',
@@ -346,6 +362,7 @@ angular.module('GenesisApp')
             Subclase: '',
             Subclase_Cod: '',
             Array: [],
+            Ips_Solicitante: '',
             Diagnostico1: '',
             Diagnostico1_Cod: '',
             Diagnostico2: '',
@@ -395,6 +412,9 @@ angular.module('GenesisApp')
             Cotizacion_B64: '',
             RUT_CertBancaria_URL: '',
             RUT_CertBancaria_B64: '',
+
+            Cotizacion_DIR: '',
+            Cotizacion_DIR_COD: '',
           },
           Cotizacion_2:
           {
@@ -409,6 +429,9 @@ angular.module('GenesisApp')
             Cotizacion_B64: '',
             RUT_CertBancaria_URL: '',
             RUT_CertBancaria_B64: '',
+
+            Cotizacion_DIR: '',
+            Cotizacion_DIR_COD: '',
           },
           Cotizacion_3:
           {
@@ -423,6 +446,9 @@ angular.module('GenesisApp')
             Cotizacion_B64: '',
             RUT_CertBancaria_URL: '',
             RUT_CertBancaria_B64: '',
+
+            Cotizacion_DIR: '',
+            Cotizacion_DIR_COD: '',
           },
           Cotizacion_4:
           {
@@ -450,6 +476,9 @@ angular.module('GenesisApp')
           },
           Cumplimiento: {
             Listado: null
+          },
+          Ips_Solicitante: {
+            Listado: null,
           },
           Servicio: {
             Filtro: null,
@@ -505,6 +534,21 @@ angular.module('GenesisApp')
             Filtro: null,
             Listado: null,
             SAVE: null
+          },
+          Direccion1: {
+            Filtro: null,
+            Listado: null,
+            SAVE: null
+          },
+          Direccion2: {
+            Filtro: null,
+            Listado: null,
+            SAVE: null
+          },
+          Direccion3: {
+            Filtro: null,
+            Listado: null,
+            SAVE: null
           }
 
         };
@@ -546,6 +590,9 @@ angular.module('GenesisApp')
           Cumplimiento: {
             Listado: null
           },
+          Ips_Solicitante: {
+            Listado: null,
+          },
           Servicio: {
             Filtro: null,
             Listado: null,
@@ -582,6 +629,21 @@ angular.module('GenesisApp')
             SAVE: null
           },
           Prestador3: {
+            Filtro: null,
+            Listado: null,
+            SAVE: null
+          },
+          Direccion1: {
+            Filtro: null,
+            Listado: null,
+            SAVE: null
+          },
+          Direccion2: {
+            Filtro: null,
+            Listado: null,
+            SAVE: null
+          },
+          Direccion3: {
             Filtro: null,
             Listado: null,
             SAVE: null
@@ -648,6 +710,7 @@ angular.module('GenesisApp')
             Prod: '',
             Prod_Cod: '',
             Array: [],
+            Ips_Solicitante: '',
             Diagnostico1: '',
             Diagnostico1_Cod: '',
             Diagnostico2: '',
@@ -754,6 +817,9 @@ angular.module('GenesisApp')
           },
           Cumplimiento: {
             Listado: null
+          },
+          Ips_Solicitante: {
+            Listado: null,
           },
           Servicio: {
             Filtro: null,
@@ -1293,7 +1359,7 @@ angular.module('GenesisApp')
         setTimeout(() => {
           document.getElementById(HOJA + '_Servicio_Prod').focus();
           $scope[HOJA].Servicio.Array.forEach(e => {
-            console.log(e);
+            // console.log(e);
             if (e.SERVICIO == $scope[HOJA].Servicio.Servicio_Cod) {
               $scope[HOJA].Afiliado.TipoAut = e.TIPOAUT;
               $scope[HOJA].Afiliado.UbicacionAut = e.UBICACIONAUT;
@@ -1799,6 +1865,13 @@ angular.module('GenesisApp')
                 $scope[BUSQUEDA][PREST].Filtro = null;
                 $scope[BUSQUEDA][PREST].Listado = null;
                 $scope[BUSQUEDA][PREST].SAVE = '';
+
+                const DIR = `Direccion${(COT.substr(COT.toString().length - 1, COT.toString().length))}`;
+                $scope[HOJA][COT].Cotizacion_DIR_COD = '';
+                $scope[HOJA][COT].Cotizacion_DIR = '';
+                $scope[BUSQUEDA][DIR].Filtro = null;
+                $scope[BUSQUEDA][DIR].Listado = null;
+                $scope[BUSQUEDA][DIR].SAVE = '';
                 // $scope[BUSQUEDA][Contrato].Listado = [];
                 // $scope[HOJA][COT].Contrato = '';
               } else {
@@ -1810,6 +1883,8 @@ angular.module('GenesisApp')
                   $scope[BUSQUEDA][PREST].SAVE = response.data[0].NOMBRE;
                   Materialize.toast('Prestador ' + response.data[0].NOMBRE + ' Seleccionado!', 1000);
                   // $scope.Buscar_Contratos_Ips(HOJA, COT, BUSQUEDA);
+                  const DIR = `Direccion${(COT.substr(COT.toString().length - 1, COT.toString().length))}`;
+                  $scope.Buscar_Prestador_Direccion($scope[HOJA][COT].Cotizacion_NIT_COD, HOJA, COT, BUSQUEDA, DIR);
                 } else {
                   swal({
                     title: "¡Este prestador ya fue seleccionado!",
@@ -1857,6 +1932,8 @@ angular.module('GenesisApp')
           $scope[BUSQUEDA][PREST].SAVE = nombre;
           $scope[BUSQUEDA][PREST].Filtro = null;
           // $scope.Buscar_Contratos_Ips(HOJA, COT, BUSQUEDA);
+          const DIR = `Direccion${(COT.substr(COT.toString().length - 1, COT.toString().length))}`;
+          $scope.Buscar_Prestador_Direccion($scope[HOJA][COT].Cotizacion_NIT_COD, HOJA, COT, BUSQUEDA, DIR);
         } else {
           swal({
             title: "¡Este prestador ya fue seleccionado!",
@@ -1880,6 +1957,100 @@ angular.module('GenesisApp')
         }, 300);
       }
       // Prestador
+      // Direccion
+      // $scope.KeyFind_Prestador_Direccion = function (keyEvent, string, HOJA, COT, BUSQUEDA, DIR) {
+      //   if (keyEvent.which === 13)
+      //     $scope.Buscar_Prestador_Direccion(string, HOJA, COT, BUSQUEDA, DIR);
+      // }
+      $scope.Buscar_Prestador_Direccion = function (string, HOJA, COT, BUSQUEDA, DIR) {
+        // var Contrato = 'Contratos' + COT.charAt(COT.length - 1);
+        if (string.length > 2) {
+          $http({
+            method: 'POST',
+            url: "php/autorizaciones/anticipos/anticipos.php",
+            data: {
+              function: 'Obt_Direccion',
+              Coinc: string.toUpperCase()
+            }
+          }).then(function (response) {
+            if (response.data[0] != undefined && response.data.length > 1) {
+              $scope[BUSQUEDA][DIR].Filtro = response.data;
+              $scope[BUSQUEDA][DIR].Listado = response.data;
+              $('.Clase_Listar_Direccion').css({ width: $('#' + HOJA + '_Cotizacion_' + (DIR.substr(DIR.toString().length - 1, DIR.toString().length)) + '_Cotizacion_DIR')[0].offsetWidth });
+            }
+            if (response.data.length == 1) {
+              if (response.data[0].ERROR != undefined) {
+                swal({
+                  title: "¡Ocurrio un error!",
+                  text: response.data[0].ERROR,
+                  type: "info",
+                }).catch(swal.noop);
+                $scope[HOJA][COT].Cotizacion_DIR_COD = '';
+                $scope[HOJA][COT].Cotizacion_DIR = '';
+                $scope[BUSQUEDA][DIR].Filtro = null;
+                $scope[BUSQUEDA][DIR].Listado = null;
+                $scope[BUSQUEDA][DIR].SAVE = '';
+                // $scope[BUSQUEDA][Contrato].Listado = [];
+                // $scope[HOJA][COT].Contrato = '';
+              } else {
+                $scope[HOJA][COT].Cotizacion_DIR_COD = response.data[0].CODIGO.toString();
+                $scope[HOJA][COT].Cotizacion_DIR = response.data[0].NOMBRE;
+                $scope[BUSQUEDA][DIR].Filtro = null;
+                $scope[BUSQUEDA][DIR].Listado = null;
+                $scope[BUSQUEDA][DIR].SAVE = response.data[0].NOMBRE;
+                Materialize.toast('Direccion ' + response.data[0].NOMBRE + ' Seleccionado!', 1000);
+              }
+            }
+            if (response.data == '') {
+              swal({
+                title: "¡Direccion No Encontrada!",
+                type: "info",
+                timer: 1000
+              }).catch(swal.noop);
+              $scope[HOJA][COT].Cotizacion_DIR_COD = '';
+              $scope[HOJA][COT].Cotizacion_DIR = '';
+              $scope[BUSQUEDA][DIR].Filtro = null;
+              $scope[BUSQUEDA][DIR].Listado = null;
+              $scope[BUSQUEDA][DIR].SAVE = null;
+            }
+          })
+        } else {
+          Materialize.toast('¡Digite al menos 3 caracteres!', 1000);
+        }
+      }
+      $scope.Complete_Prestador_Direccion = function (string, HOJA, COT, BUSQUEDA, DIR) {
+        if ($scope[HOJA][COT].Cotizacion_NIT != undefined && string != undefined && $scope[BUSQUEDA][DIR].Listado != undefined) {
+          $('.Clase_Listar_Direccion').css({ width: $('#' + HOJA + '_Cotizacion_' + (DIR.substr(DIR.toString().length - 1, DIR.toString().length)) + '_Cotizacion_NIT')[0].offsetWidth });
+          var output = [];
+          angular.forEach($scope[BUSQUEDA][DIR].Listado, function (x) {
+            if (x.NOMBRE.toUpperCase().indexOf(string.toUpperCase()) >= 0 || x.CODIGO.toString().indexOf(string) >= 0) {
+              output.push({ "CODIGO": x.CODIGO, "NOMBRE": x.NOMBRE.toUpperCase() });
+            }
+          });
+          $scope[BUSQUEDA][DIR].Filtro = output;
+        }
+      }
+      $scope.FillTextbox_Prestador_Direccion = function (codigo, nombre, HOJA, COT, BUSQUEDA, DIR) {
+        $scope[HOJA][COT].Cotizacion_DIR_COD = codigo.toString();
+        $scope[HOJA][COT].Cotizacion_DIR = nombre;
+        $scope[BUSQUEDA][DIR].SAVE = nombre;
+        $scope[BUSQUEDA][DIR].Filtro = null;
+      }
+      $scope.Blur_Prestador_Direccion = function (HOJA, BUSQUEDA, COT, FILTER) {
+        $timeout(function () {
+          if (FILTER != undefined && $scope[HOJA] != undefined && $scope[BUSQUEDA] != undefined) {
+            if ($scope[HOJA][COT].Cotizacion_DIR != null && $scope[HOJA][COT].Cotizacion_DIR != undefined) {
+              if ($scope[HOJA][COT].Cotizacion_DIR != $scope[BUSQUEDA][FILTER].SAVE && $scope[BUSQUEDA][FILTER].SAVE != null) {
+                $scope[HOJA][COT].Cotizacion_DIR = $scope[BUSQUEDA][FILTER].SAVE;
+                $scope[BUSQUEDA][FILTER].Filtro = null;
+              }
+              $scope[BUSQUEDA][FILTER].Filtro = null;
+            }
+          }
+          // }
+        }, 300);
+      }
+      // Direccion
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////
       // REGISTRO///////////////////////////////////////////////////////////////////////////////////////
@@ -1909,6 +2080,42 @@ angular.module('GenesisApp')
         document.querySelector('#' + NIDT1).value = '';
         document.querySelector('#' + NIDT2).value = '';
       }
+      // Prestador Solicitante
+      $scope.Buscar_Ips_Solicitante = function (HOJA, BUSQUEDA) {
+        // $scope[HOJA][COT]
+        // $scope[BUSQUEDA][FILTER]
+        if ($scope[HOJA].Servicio.Ips_Solicitante.length > 2) {
+          $http({
+            method: 'POST',
+            url: "php/autorizaciones/anticipos/anticipos.php",
+            data: {
+              function: 'Obt_Prest',
+              Coinc: $scope[HOJA].Servicio.Ips_Solicitante.toUpperCase()
+            }
+          }).then(function ({ data }) {
+            if (data[0] != undefined && data.toString().substr(0, 3) != '<br') {
+              // console.log()
+              $scope[HOJA].Servicio.Ips_Solicitante = ' ';
+              $scope[BUSQUEDA].Ips_Solicitante.Listado = data;
+            } else {
+              swal("Mensaje", response.data.mensaje, "warning").catch(swal.noop);
+            }
+          });
+        }
+      }
+
+      $scope.Selec_Ips_Solicitante = function (HOJA, BUSQUEDA) {
+        // $scope[HOJA].Servicio.Ips_Solicitante_Cod =
+        if ($scope[BUSQUEDA].Ips_Solicitante.Listado != null && $scope[BUSQUEDA].Ips_Solicitante.Listado.length) {
+          const ipsSeleccionada = $scope[BUSQUEDA].Ips_Solicitante.Listado[$scope[BUSQUEDA].Ips_Solicitante.Listado.findIndex((element) => element.NOMBRE.trim() == $scope[HOJA].Servicio.Ips_Solicitante.trim())];
+          if (!ipsSeleccionada) return
+
+          $scope[HOJA].Servicio.Ips_Solicitante_Cod = ipsSeleccionada.CODIGO;
+          $scope[HOJA].Servicio.Ips_Solicitante = ipsSeleccionada.NOMBRE;
+          setTimeout(() => { $scope.$apply(); }, 500);
+        }
+      }
+
 
 
       $scope.H1Limpiar_Soportes = function (HOJA) {
@@ -2006,6 +2213,10 @@ angular.module('GenesisApp')
         //   Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Prod_Label').classList.add('red-text');
         //   document.getElementById([HOJA] + '_Prod_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
         // }
+        if ($scope[HOJA].Servicio.Ips_Solicitante == undefined || $scope[HOJA].Servicio.Ips_Solicitante == null || $scope[HOJA].Servicio.Ips_Solicitante == '' || $scope[HOJA].Servicio.Ips_Solicitante == '0') {
+          Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Ips_Solicitante_Label').classList.add('red-text');
+          document.getElementById([HOJA] + '_Ips_Solicitante_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }
         if ($scope[HOJA].Servicio.Diagnostico1_Cod == undefined || $scope[HOJA].Servicio.Diagnostico1_Cod == null || $scope[HOJA].Servicio.Diagnostico1_Cod == '') {
           Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Diagnostico1_Label').classList.add('red-text');
           document.getElementById([HOJA] + '_Diagnostico1_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
@@ -2048,6 +2259,10 @@ angular.module('GenesisApp')
           Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_1_Cotizacion_NIT_Label').classList.add('red-text');
           document.getElementById([HOJA] + '_Cotizacion_1_Cotizacion_NIT_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
         }
+        if ($scope[HOJA].Cotizacion_1.Cotizacion_DIR_COD == '') {
+          Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_1_Cotizacion_DIR_Label').classList.add('red-text');
+          document.getElementById([HOJA] + '_Cotizacion_1_Cotizacion_DIR_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }
         // if ($scope[HOJA].Cotizacion_1.Contrato == '') {
         //   Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_1_Contrato_Label').classList.add('red-text');
         // }
@@ -2087,6 +2302,10 @@ angular.module('GenesisApp')
             Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_2_Cotizacion_NIT_Label').classList.add('red-text');
             document.getElementById([HOJA] + '_Cotizacion_2_Cotizacion_NIT_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
           }
+          if ($scope[HOJA].Cotizacion_2.Cotizacion_DIR_COD == '') {
+            Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_2_Cotizacion_DIR_Label').classList.add('red-text');
+            document.getElementById([HOJA] + '_Cotizacion_2_Cotizacion_DIR_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
+          }
           // if ($scope[HOJA].Cotizacion_2.Contrato == '') {
           //   Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_2_Contrato_Label').classList.add('red-text');
           // }
@@ -2125,6 +2344,10 @@ angular.module('GenesisApp')
             if ($scope[HOJA].Cotizacion_2.Cotizacion_NIT_COD == '') {
               Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_2_Cotizacion_NIT_Label').classList.add('red-text');
               document.getElementById([HOJA] + '_Cotizacion_2_Cotizacion_NIT_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
+            if ($scope[HOJA].Cotizacion_2.Cotizacion_DIR_COD == '') {
+              Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_2_Cotizacion_DIR_Label').classList.add('red-text');
+              document.getElementById([HOJA] + '_Cotizacion_2_Cotizacion_DIR_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
             }
             // if ($scope[HOJA].Cotizacion_2.Contrato == '') {
             //   Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_2_Contrato_Label').classList.add('red-text');
@@ -2196,6 +2419,10 @@ angular.module('GenesisApp')
             Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_3_Cotizacion_NIT_Label').classList.add('red-text');
             document.getElementById([HOJA] + '_Cotizacion_3_Cotizacion_NIT_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
           }
+          if ($scope[HOJA].Cotizacion_3.Cotizacion_DIR_COD == '') {
+            Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_3_Cotizacion_DIR_Label').classList.add('red-text');
+            document.getElementById([HOJA] + '_Cotizacion_3_Cotizacion_DIR_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
+          }
           // if ($scope[HOJA].Cotizacion_3.Contrato == '') {
           //   Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_3_Contrato_Label').classList.add('red-text');
           // }
@@ -2234,6 +2461,10 @@ angular.module('GenesisApp')
             if ($scope[HOJA].Cotizacion_3.Cotizacion_NIT_COD == '') {
               Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_3_Cotizacion_NIT_Label').classList.add('red-text');
               document.getElementById([HOJA] + '_Cotizacion_3_Cotizacion_NIT_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
+            if ($scope[HOJA].Cotizacion_3.Cotizacion_DIR_COD == '') {
+              Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_3_Cotizacion_DIR_Label').classList.add('red-text');
+              document.getElementById([HOJA] + '_Cotizacion_3_Cotizacion_DIR_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
             }
             // if ($scope[HOJA].Cotizacion_3.Contrato == '') {
             //   Campos_Empty = true; document.querySelector('#' + [HOJA] + '_Cotizacion_3_Contrato_Label').classList.add('red-text');
@@ -2310,7 +2541,7 @@ angular.module('GenesisApp')
           }
         }
 
-        if (parseFloat(($scope[HOJA].Servicio.Valor_Total.replace(/\./g, '')).replace(/\,/g, '.')) < 200000) {
+        if (parseFloat(($scope[HOJA].Servicio.Valor_Total.replace(/\./g, '')).replace(/\,/g, '.')) < 282390) {
           Campos_Empty = true; Vista_Empty = 2; document.querySelector('#' + [HOJA] + '_Valor_Total_Label').classList.add('red-text');
           document.getElementById([HOJA] + '_Valor_Total_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
         }
@@ -2354,6 +2585,7 @@ angular.module('GenesisApp')
                     Afi_NumeroDoc: $scope.Hoja1.Afiliado.NumeroDoc,
                     Afi_Sexo: $scope.Hoja1.Afiliado.Sexo.substr(0, 1),
                     Afi_Edad: $scope.Hoja1.Afiliado.EdadDias,
+                    Ser_Ips_Solicitante_Cod: $scope.Hoja1.Servicio.Ips_Solicitante_Cod,
                     Ser_Diagnostico1_Cod: $scope.Hoja1.Servicio.Diagnostico1_Cod,
                     Ser_Diagnostico2_Cod: $scope.Hoja1.Servicio.Diagnostico2_Cod,
                     Fecha_Orden: FechaRadicacion
@@ -2437,7 +2669,7 @@ angular.module('GenesisApp')
               setTimeout(function () {
                 swal({
                   title: '¡Información!',
-                  text: 'El valor total del anticipo debe ser mayor a $200.000.',
+                  text: 'El valor total del anticipo debe ser mayor a $254.472, pagar por caja menor',
                   type: 'info'
                 }).catch(swal.noop);
               }, 1000);
@@ -2509,6 +2741,7 @@ angular.module('GenesisApp')
           Ser_Tipo: $scope.Hoja1.Servicio.Tipo,
           Ser_Marca_Referencia: $scope.Hoja1.Servicio.Marca_Referencia,
           Ser_FechaRadicacion: FechaRadicacion,
+          Ser_Ips_Solicitante_Cod: $scope.Hoja1.Servicio.Ips_Solicitante_Cod,
           Ser_Diagnostico1_Cod: $scope.Hoja1.Servicio.Diagnostico1_Cod,
           Ser_Diagnostico2_Cod: $scope.Hoja1.Servicio.Diagnostico2_Cod,
           Ser_Descripcion: $scope.Hoja1.Servicio.Descripcion.toUpperCase(),
@@ -2527,6 +2760,7 @@ angular.module('GenesisApp')
           Sop_Cotizacion1_TIPOCUENTA: $scope.Hoja1.Cotizacion_1.TipoCuenta,
           Sop_Cotizacion1_MEDIOPAGO: $scope.Hoja1.Cotizacion_1.MedioPago,
           Sop_Cotizacion1_RUT_URL: $scope.Hoja1.Soportes.Cotizacion1_RUT_RUTA,
+          Sop_Cotizacion1_DIR: $scope.Hoja1.Cotizacion_1.Cotizacion_DIR_COD,
 
           Sop_Cotizacion2_URL: $scope.Hoja1.Soportes.Cotizacion2_RUTA,
           Sop_Cotizacion2_NIT_COD: ($scope.Hoja1.Cotizacion_2.Cotizacion_B64 == '') ? '' : $scope.Hoja1.Cotizacion_2.Cotizacion_NIT_COD,
@@ -2536,6 +2770,7 @@ angular.module('GenesisApp')
           Sop_Cotizacion2_TIPOCUENTA: $scope.Hoja1.Cotizacion_2.TipoCuenta,
           Sop_Cotizacion2_MEDIOPAGO: $scope.Hoja1.Cotizacion_2.MedioPago,
           Sop_Cotizacion2_RUT_URL: $scope.Hoja1.Soportes.Cotizacion2_RUT_RUTA,
+          Sop_Cotizacion2_DIR: $scope.Hoja1.Cotizacion_2.Cotizacion_DIR_COD,
 
           Sop_Cotizacion3_URL: $scope.Hoja1.Soportes.Cotizacion3_RUTA,
           Sop_Cotizacion3_NIT_COD: ($scope.Hoja1.Cotizacion_3.Cotizacion_B64 == '') ? '' : $scope.Hoja1.Cotizacion_3.Cotizacion_NIT_COD,
@@ -2545,6 +2780,7 @@ angular.module('GenesisApp')
           Sop_Cotizacion3_TIPOCUENTA: $scope.Hoja1.Cotizacion_3.TipoCuenta,
           Sop_Cotizacion3_MEDIOPAGO: $scope.Hoja1.Cotizacion_3.MedioPago,
           Sop_Cotizacion3_RUT_URL: $scope.Hoja1.Soportes.Cotizacion3_RUT_RUTA,
+          Sop_Cotizacion3_DIR: $scope.Hoja1.Cotizacion_3.Cotizacion_DIR_COD,
 
           Sop_Cotizacion4_Justificacion: $scope.Hoja1.Cotizacion_4.Justificacion.toUpperCase(),
           Sop_Cotizacion4_URL: $scope.Hoja1.Soportes.Cotizacion4_RUTA,
@@ -2725,7 +2961,7 @@ angular.module('GenesisApp')
                 var Val_Aut = 0;
 
                 response.data[0].Serv_Prod.forEach(e => {
-                  Valor_Total = parseFloat(Valor_Total) + (parseFloat(e.VALOR) * e.CANTIDAD);
+                  Valor_Total = parseFloat(Valor_Total) + (parseFloat(e.VALOR.toString().replace(/\,/g, '.')) * e.CANTIDAD);
                   Val_Aut = e.AUT == '' ? Val_Aut : Val_Aut + 1;
                 });
 
@@ -2863,6 +3099,9 @@ angular.module('GenesisApp')
                     Subclase: '',
                     Subclase_Cod: '',
                     Array: response.data[0].Serv_Prod,
+                    Ips_Solicitante: response.data[0].Ips_Solicitante,
+                    Ips_Solicitante_Cod: response.data[0].Ips_Solicitante_Cod,
+
                     Diagnostico1: response.data[0].Diagnostico1,
                     Diagnostico1_Cod: response.data[0].Diagnostico1_Cod,
                     Diagnostico2: response.data[0].Diagnostico2,
@@ -2915,6 +3154,13 @@ angular.module('GenesisApp')
                     Cotizacion_B64: '',
                     RUT_CertBancaria_URL: null,
                     RUT_CertBancaria_B64: '',
+
+                    Cotizacion_DIR: response.data[0].Cotizacion1_DIR == '0' ? '' : response.data[0].Cotizacion1_DIR,
+                    Cotizacion_DIR_COD: response.data[0].Cotizacion1_DIR == '0' ? '' : response.data[0].Cotizacion1_DIR_COD,
+
+                    Contratada: response.data[0].Contratada1_Proc_aut != '' ?
+                      response.data[0].Contratada1_Proc_aut : response.data[0].Contratada1_Aut != '' ?
+                        response.data[0].Contratada1_Aut : response.data[0].Contratada1_Registro != '' ? response.data[0].Contratada1_Registro : ''
                   },
                   Cotizacion_2:
                   {
@@ -2930,6 +3176,13 @@ angular.module('GenesisApp')
                     Cotizacion_B64: '',
                     RUT_CertBancaria_URL: null,
                     RUT_CertBancaria_B64: '',
+
+                    Cotizacion_DIR: response.data[0].Cotizacion2_DIR == '0' ? '' : response.data[0].Cotizacion2_DIR,
+                    Cotizacion_DIR_COD: response.data[0].Cotizacion2_DIR == '0' ? '' : response.data[0].Cotizacion2_DIR_COD,
+
+                    Contratada: response.data[0].Contratada2_Proc_aut != '' ?
+                      response.data[0].Contratada2_Proc_aut : response.data[0].Contratada2_Aut != '' ?
+                        response.data[0].Contratada2_Aut : response.data[0].Contratada2_Registro != '' ? response.data[0].Contratada2_Registro : ''
                   },
                   Cotizacion_3:
                   {
@@ -2941,10 +3194,17 @@ angular.module('GenesisApp')
                     MedioPago: response.data[0].Cotizacion3_MEDIOPAGO == null ? '' : response.data[0].Cotizacion3_MEDIOPAGO,
                     Cotizacion_URL: null,
                     Cotizacion_NIT: response.data[0].Cotizacion3_NIT == null ? '' : response.data[0].Cotizacion3_NIT,
-                    Cotizacion_NIT_COD: response.data[0].Cotizacion3_COD == null ? '' : response.data[0].Cotizacion3_COD,
+                    Cotizacion_NIT_COD: response.data[0].Cotizacion3_NIT == null ? '' : response.data[0].Cotizacion3_COD,
                     Cotizacion_B64: '',
                     RUT_CertBancaria_URL: null,
                     RUT_CertBancaria_B64: '',
+
+                    Cotizacion_DIR: response.data[0].Cotizacion3_DIR == '0' ? '' : response.data[0].Cotizacion3_DIR,
+                    Cotizacion_DIR_COD: response.data[0].Cotizacion3_DIR_COD == '0' ? '' : response.data[0].Cotizacion3_DIR_COD,
+
+                    Contratada: response.data[0].Contratada3_Proc_aut != '' ?
+                      response.data[0].Contratada3_Proc_aut : response.data[0].Contratada3_Aut != '' ?
+                        response.data[0].Contratada3_Aut : response.data[0].Contratada3_Registro != '' ? response.data[0].Contratada3_Registro : ''
                   },
                   Cotizacion_4:
                   {
@@ -2968,6 +3228,9 @@ angular.module('GenesisApp')
                   },
                   Cumplimiento: {
                     Listado: null
+                  },
+                  Ips_Solicitante: {
+                    Listado: null,
                   },
                   Servicio: {
                     Filtro: null,
@@ -3005,6 +3268,21 @@ angular.module('GenesisApp')
                     SAVE: null
                   },
                   Prestador3: {
+                    Filtro: null,
+                    Listado: null,
+                    SAVE: null
+                  },
+                  Direccion1: {
+                    Filtro: null,
+                    Listado: null,
+                    SAVE: null
+                  },
+                  Direccion2: {
+                    Filtro: null,
+                    Listado: null,
+                    SAVE: null
+                  },
+                  Direccion3: {
                     Filtro: null,
                     Listado: null,
                     SAVE: null
@@ -3099,6 +3377,20 @@ angular.module('GenesisApp')
                 $scope.BusquedaAnt.Prestador1.SAVE = response.data[0].Cotizacion1_NIT;
                 $scope.BusquedaAnt.Prestador2.SAVE = response.data[0].Cotizacion2_NIT;
                 $scope.BusquedaAnt.Prestador3.SAVE = response.data[0].Cotizacion3_NIT;
+                $scope.BusquedaAnt.Direccion1.SAVE = response.data[0].Cotizacion1_DIR == '0' ? '' : response.data[0].Cotizacion1_DIR;
+                $scope.BusquedaAnt.Direccion2.SAVE = response.data[0].Cotizacion2_DIR == '0' ? '' : response.data[0].Cotizacion2_DIR;
+                $scope.BusquedaAnt.Direccion3.SAVE = response.data[0].Cotizacion3_DIR == '0' ? '' : response.data[0].Cotizacion3_DIR;
+                //
+                //$scope.Buscar_Prestador_Direccion = function (string, HOJA, COT, BUSQUEDA, DIR) {
+                // if (response.data[0].Cotizacion1_COD && (response.data[0].Estado == 'D' || response.data[0].Status == 1)) { $scope.Buscar_Prestador_Direccion(response.data[0].Cotizacion1_COD, 'HojaAnt', 'Cotizacion_1', 'BusquedaAnt', 'Direccion1') }
+                // if (response.data[0].Cotizacion2_COD && (response.data[0].Estado == 'D' || response.data[0].Status == 1)) { $scope.Buscar_Prestador_Direccion(response.data[0].Cotizacion2_COD, 'HojaAnt', 'Cotizacion_2', 'BusquedaAnt', 'Direccion2') }
+                // if (response.data[0].Cotizacion3_COD && (response.data[0].Estado == 'D' || response.data[0].Status == 1)) { $scope.Buscar_Prestador_Direccion(response.data[0].Cotizacion3_COD, 'HojaAnt', 'Cotizacion_3', 'BusquedaAnt', 'Direccion3') }
+                setTimeout(() => {
+                  $scope.BusquedaAnt.Direccion1.Filtro = null;
+                  $scope.BusquedaAnt.Direccion2.Filtro = null;
+                  $scope.BusquedaAnt.Direccion3.Filtro = null;
+                  setTimeout(() => { $scope.$apply(); }, 500);
+                }, 1000);
                 //
                 if (response.data[0].Cumplimiento != '' && response.data[0].Cumplimiento != 'Nin' && response.data[0].Cumplimiento != null) {
                   $http({
@@ -3192,21 +3484,23 @@ angular.module('GenesisApp')
                 document.querySelector('#HojaAnt_Valor_Total').setAttribute("readonly", true);
                 ////////////////////Ajuste Mayo////////////////////
                 //$scope.Ajuste_Mayo_D_S = 'Sub';
-                $scope.Ajuste_Mayo = new Date('2021/05/01');
-                $scope.Ajuste_Julio = new Date('2021/07/22');
-                $scope.Ajuste_Septiembre = new Date('2021/09/29');
-                var FECHA_PROCESADO = new Date(response.data[0].Fecha_Procesado);
-                $scope.Ajuste_Mayo_D_S = 'Sub';
+                // $scope.Ajuste_Mayo = new Date('2021/05/01');
+                // $scope.Ajuste_Julio = new Date('2021/07/22');
+                // $scope.Ajuste_Septiembre = new Date('2021/09/29');
+                // var FECHA_PROCESADO = new Date(response.data[0].Fecha_Procesado);
+                // $scope.Ajuste_Mayo_D_S = 'Sub';
 
-                if (FECHA_PROCESADO < $scope.Ajuste_Mayo && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
-                  $scope.Ajuste_Mayo_D_S = 'Dir';
-                }
-                if (FECHA_PROCESADO >= $scope.Ajuste_Julio && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
-                  $scope.Ajuste_Mayo_D_S = 'Dir';
-                }
-                if (FECHA_PROCESADO >= $scope.Ajuste_Septiembre && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
-                  $scope.Ajuste_Mayo_D_S = 'Sub';
-                }
+                // if (FECHA_PROCESADO < $scope.Ajuste_Mayo && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
+                //   $scope.Ajuste_Mayo_D_S = 'Dir';
+                // }
+                // if (FECHA_PROCESADO >= $scope.Ajuste_Julio && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
+                //   $scope.Ajuste_Mayo_D_S = 'Dir';
+                // }
+                // if (FECHA_PROCESADO >= $scope.Ajuste_Septiembre && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P')) {
+                //   $scope.Ajuste_Mayo_D_S = 'Sub';
+                // }
+
+
                 // if (FECHA_PROCESADO < $scope.Ajuste_Julio && FECHA_PROCESADO >= $scope.Ajuste_Mayo && (response.data[0].Estado == 'A' || response.data[0].Estado == 'P'))  {
                 //   $scope.Ajuste_Mayo_D_S = 'Sub';
                 // }
@@ -3443,7 +3737,152 @@ angular.module('GenesisApp')
           }
 
         }).catch(swal.noop);
+      }
 
+      $scope.antes_H1Actualizar_Anticipo_Cargo4 = function (estado) {
+        return new Promise((resolve) => {
+          if (estado == 'AN') { resolve('X'); resolve(false); return; }
+          var xArray = []
+          for (let i = 0; i < $scope.HojaAnt.Info.Status - 1; i++) {
+            // $scope.listadoEtapas
+            if ($scope.listadoEtapas[i].ver != false) {
+              xArray.push({
+                cod: $scope.listadoEtapas[i].cod,
+                cargo: $scope.listadoEtapas[i].cargo
+              });
+            }
+          }
+
+          var options = {};
+          $.map(xArray,
+            function (o) {
+              options[o.cod] = o.cargo;
+            });
+          // console.log(options);
+
+          swal({
+            title: 'Seleccione la etapa que desea devolverlo',
+            input: 'select',
+            inputOptions: options,
+            inputPlaceholder: 'Seleccionar',
+            showCancelButton: true,
+            allowOutsideClick: false,
+            width: 'auto',
+            inputValidator: function (value) {
+              return new Promise(function (resolve, reject) {
+                if (value !== '') {
+                  resolve();
+                } else {
+                  swal.close();
+                }
+              })
+            }
+          }).then(function (result_cod) {
+            if (result_cod) {
+              resolve(result_cod);
+            } else {
+              resolve(false);
+            }
+          });
+          // $scope.listadoEtapas = [
+          //   { cod: 0, cargo: "Asistente Seccional De Autorizaciones" },
+          //   { cod: 1, cargo: "Auditor Médico Seccional" },
+          //   { cod: 2, cargo: "Coordinador Seccional" },
+          //   { cod: 3, cargo: "Asistente Nacional De Autorizaciones" },
+          //   { cod: 4, cargo: "Especialista Nacional De Autorizaciones" },
+          //   { cod: 5, cargo: "Coordinador Nacional De Autorizaciones" },
+          //   { cod: 6, cargo: "Subdirector Nacional de Salud" },
+          //   { cod: 7, cargo: "Subgerente General", ver: false },
+          //   { cod: 8, cargo: "Asistente Nacional De Pagaduria" },
+          // ];
+
+          // resolve(false);
+        });
+      }
+
+      $scope.H1Actualizar_Anticipo_Cargo4 = function (estado) {
+        $scope.antes_H1Actualizar_Anticipo_Cargo4(estado).then((result_status) => {
+          // console.log(result_status);
+          if (result_status) {
+
+            swal({
+              title: 'Observacion de ' + ((estado == 'AN') ? 'Anulación' : 'Devolución'),
+              input: 'textarea',
+              inputPlaceholder: 'Escribe un comentario...',
+              showCancelButton: true,
+              allowOutsideClick: false,
+              inputValue: $scope.Motivo_Anulacion_Devolucion
+            }).then(function (result) {
+              result = result.replace(/[|!¡¿?°"#%{}*&''`´¨<>]/g, '');
+              result = result.replace(/(\r\n|\n|\r)/g, ' ');
+              result = result.replace(/[\t\n]+/g, ' ');
+              result = result.toString().toUpperCase();
+              if (result !== '' && result.length >= 20 && result.length < 500) {
+
+                var xdata = {
+                  Afi_TipoDoc: $scope.HojaAnt.Afiliado.TipoDoc,
+                  Afi_NumeroDoc: $scope.HojaAnt.Afiliado.NumeroDoc,
+                  Ant_Ubicacion: $scope.HojaAnt.Info.Ubicacion_Cod,
+                  Ant_Status: (estado == 'AN') ? '1' : result_status,
+                  Ant_Accion: estado,
+                  Ant_Motivo: result.toString().replace(/\n|\r/g, " "),
+                  Func_Rol_Cedula: $scope.Rol_Cedula,
+                  Func_Rol_Cargo: $scope.Rol_Cargo,
+                };
+                swal({
+                  title: "¿Está seguro que desea " + ((estado == 'AN') ? 'Anular' : 'Devolver') + " este anticipo?",
+                  type: "question",
+                  showCancelButton: true,
+                  allowOutsideClick: false
+                }).catch(swal.noop)
+                  .then((willDelete) => {
+                    if (willDelete) {
+                      //
+                      swal({ title: 'Cargando...', allowOutsideClick: false });
+                      swal.showLoading();
+                      $http({
+                        method: 'POST',
+                        url: "php/autorizaciones/anticipos/anticipos.php",
+                        data: {
+                          function: 'H1Actualizar_Anticipo_Cargo4',
+                          Numero: $scope.HojaAnt.Info.Consecutivo.toString(),
+                          xdata: JSON.stringify(xdata)
+                        }
+                      }).then(function (response) {
+                        if (response.data.codigo != undefined) {
+                          if (response.data.codigo == 1) {
+                            swal({
+                              title: "Mensaje",
+                              text: response.data.mensaje,
+                              type: "warning",
+                            }).catch(swal.noop);
+                          } else {
+                            swal({
+                              title: response.data.mensaje,
+                              type: "success",
+                            }).catch(swal.noop);
+                            $timeout(function () {
+                              $scope.Motivo_Anulacion_Devolucion = '';
+                              $scope.HojaAnticipo = false;
+                            }, 1000);
+                            $timeout(function () {
+                              $scope.Listar_Solicitudes();
+                            }, 1500);
+                          }
+                        }
+                      });
+                    } else {
+                    }
+                  });
+                $scope.Motivo_Anulacion_Devolucion = result;
+              } else {
+                Materialize.toast('El comentario debe contener al menos 20 caracteres y menos de 500!', 1000);
+                $scope.Motivo_Anulacion_Devolucion = result;
+              }
+            }).catch(swal.noop);
+
+          }
+        })
 
       }
 
@@ -3659,6 +4098,7 @@ angular.module('GenesisApp')
                       Afi_Sexo: $scope.HojaAnt.Afiliado.Sexo.substr(0, 1),
                       Afi_Edad: $scope.HojaAnt.Afiliado.EdadDias,
                       Ser_Prod_Cod: $scope.HojaAnt.Servicio.Prod_Cod,
+                      Ser_Ips_Solicitante_Cod: $scope.HojaAnt.Servicio.Ips_Solicitante_Cod,
                       Ser_Diagnostico1_Cod: $scope.HojaAnt.Servicio.Diagnostico1_Cod,
                       Ser_Diagnostico2_Cod: $scope.HojaAnt.Servicio.Diagnostico2_Cod,
                       Fecha_Orden: FechaRadicacion
@@ -3814,6 +4254,7 @@ angular.module('GenesisApp')
           Ser_Tipo: $scope.HojaAnt.Servicio.Tipo,
           Ser_Marca_Referencia: $scope.HojaAnt.Servicio.Marca_Referencia,
           Ser_FechaRadicacion: FechaRadicacion,
+          Ser_Ips_Solicitante_Cod: $scope.HojaAnt.Servicio.Ips_Solicitante_Cod,
           Ser_Diagnostico1_Cod: $scope.HojaAnt.Servicio.Diagnostico1_Cod,
           Ser_Diagnostico2_Cod: $scope.HojaAnt.Servicio.Diagnostico2_Cod,
           Ser_Descripcion: $scope.HojaAnt.Servicio.Descripcion.toUpperCase(),
@@ -3832,6 +4273,7 @@ angular.module('GenesisApp')
           Sop_Cotizacion1_TIPOCUENTA: $scope.HojaAnt.Cotizacion_1.TipoCuenta,
           Sop_Cotizacion1_MEDIOPAGO: $scope.HojaAnt.Cotizacion_1.MedioPago,
           Sop_Cotizacion1_RUT_URL: $scope.HojaAnt.Soportes.Cotizacion1_RUT_RUTA,
+          Sop_Cotizacion1_DIR: $scope.HojaAnt.Cotizacion_1.Cotizacion_DIR_COD,
 
           Sop_Cotizacion2_URL: $scope.HojaAnt.Soportes.Cotizacion2_RUTA,
           Sop_Cotizacion2_NIT_COD: $scope.HojaAnt.Cotizacion_2.Cotizacion_NIT_COD,
@@ -3841,6 +4283,7 @@ angular.module('GenesisApp')
           Sop_Cotizacion2_TIPOCUENTA: $scope.HojaAnt.Cotizacion_2.TipoCuenta,
           Sop_Cotizacion2_MEDIOPAGO: $scope.HojaAnt.Cotizacion_2.MedioPago,
           Sop_Cotizacion2_RUT_URL: $scope.HojaAnt.Soportes.Cotizacion2_RUT_RUTA,
+          Sop_Cotizacion2_DIR: $scope.HojaAnt.Cotizacion_2.Cotizacion_DIR_COD,
 
           Sop_Cotizacion3_URL: $scope.HojaAnt.Soportes.Cotizacion3_RUTA,
           Sop_Cotizacion3_NIT_COD: $scope.HojaAnt.Cotizacion_3.Cotizacion_NIT_COD,
@@ -3850,6 +4293,7 @@ angular.module('GenesisApp')
           Sop_Cotizacion3_TIPOCUENTA: $scope.HojaAnt.Cotizacion_3.TipoCuenta,
           Sop_Cotizacion3_MEDIOPAGO: $scope.HojaAnt.Cotizacion_3.MedioPago,
           Sop_Cotizacion3_RUT_URL: $scope.HojaAnt.Soportes.Cotizacion3_RUT_RUTA,
+          Sop_Cotizacion3_DIR: $scope.HojaAnt.Cotizacion_3.Cotizacion_DIR_COD,
 
           Sop_Cotizacion4_Justificacion: $scope.HojaAnt.Cotizacion_4.Justificacion.toUpperCase(),
           Sop_Cotizacion4_URL: $scope.HojaAnt.Soportes.Cotizacion4_RUTA,
@@ -4246,6 +4690,7 @@ angular.module('GenesisApp')
           Func_Rol_Cargo: ($scope.HojaAnt.Info.Status == 3) ? '999' : $scope.Rol_Cargo,
           v_Cot_Recomendada: $scope.Cot_Recomendada,
           v_Cot_Elegida: $scope.Cot_Elegida,
+          v_Cot_Elegida_Direccion: $scope.Cot_Elegida_Direccion
         }
         var Msg_Pert = 'Informacion de la Pertinencia Médica';
         var Msg_Cert = 'Informacion de la Certificación';
@@ -4453,6 +4898,11 @@ angular.module('GenesisApp')
             }
             if ($scope.HojaAnt.Info.Status == 7) {
               $scope.Cot_Elegida = result;
+
+              if (result == $scope.HojaAnt.Cotizacion_1.Cotizacion_NIT_COD) { $scope.Cot_Elegida_Direccion = $scope.HojaAnt.Cotizacion_1.Cotizacion_DIR_COD }
+              if (result == $scope.HojaAnt.Cotizacion_2.Cotizacion_NIT_COD) { $scope.Cot_Elegida_Direccion = $scope.HojaAnt.Cotizacion_2.Cotizacion_DIR_COD }
+              if (result == $scope.HojaAnt.Cotizacion_3.Cotizacion_NIT_COD) { $scope.Cot_Elegida_Direccion = $scope.HojaAnt.Cotizacion_3.Cotizacion_DIR_COD }
+
             }
 
             var Val_Tel = [
@@ -4708,6 +5158,187 @@ angular.module('GenesisApp')
           }
         })
       }
+
+
+      $scope.desvincularAuts = function () {
+
+        if ($scope.HojaAnt.Servicio.Array.some((element) => element.ESTADO_AUT == 'PROCESADA')) {
+          swal("¡Importante!", "No es posible desvincular, existen autorizaciones procesadas.", "info").catch(swal.noop);
+        }
+        var array = []
+        $scope.HojaAnt.Servicio.Array.forEach(element => {
+          array.push({
+            PRODUCTO: element.PRODUCTO, UBICACION: element.UBICACION, AUT: '', SUBCLASE: element.SUBCLASE
+          })
+        });
+        //
+        swal({
+          title: "¿Está seguro que desea desvincular las autorizaciones?",
+          type: "question",
+          showCancelButton: true,
+          allowOutsideClick: false
+        }).catch(swal.noop)
+          .then((willDelete) => {
+            if (willDelete) {
+
+              swal({ title: 'Cargando...', allowOutsideClick: false });
+              swal.showLoading();
+
+              $http({
+                method: 'POST',
+                url: "php/autorizaciones/anticipos/anticipos.php",
+                data: {
+                  function: 'p_editar_producto_aut_anticipo',
+                  numero: $scope.HojaAnt.Info.Consecutivo,
+                  json: JSON.stringify(array),
+                  cantidad: array.length,
+                }
+              }).then(function ({ data }) {
+                if (data && data.toString().substr(0, 3) != '<br') {
+                  if (data.codigo == 0) {
+                    swal("¡Importante!", data.mensaje, "success").catch(swal.noop);
+
+                    setTimeout(() => {
+                      $scope.Ver_Anticipo_DeNuevo = {
+                        CONSECUTIVO: $scope.HojaAnt.Info.Consecutivo,
+                        TIPO_DOC_AFI: $scope.HojaAnt.Afiliado.TipoDoc,
+                        DOC_AFI: $scope.HojaAnt.Afiliado.NumeroDoc
+                      };
+                      $scope.Cargar_Anticipo($scope.Ver_Anticipo_DeNuevo);
+                    }, 3000);
+                  } else {
+                    swal("¡Importante!", data.mensaje, "info").catch(swal.noop);
+                  }
+                }
+              });
+
+            }
+          })
+        //
+      }
+
+      $scope.cambiarAut = function (x) {
+        $scope.modalVincularAut_producto = x.PRODUCTO;
+        $scope.modalVincularAut_subclase = x.SUBCLASE;
+        $scope.modalVincularAut_numero = x.AUT;
+        $scope.modalVincularAut_ubicacion = x.UBICACION;
+        $('#modal_vincularAut').modal('open');
+        setTimeout(() => { document.querySelector('#modalVincularAut_numero').focus() }, 1000);
+
+      }
+
+      $scope.guardarVincularAut = function () {
+        if ($scope.modalVincularAut_numero == '' && $scope.modalVincularAut_ubicacion == '') {
+          swal("¡Importante!", "Debe digitar numero y ubicacion de la Autorización", "info").catch(swal.noop);
+        }
+        var array = []
+        array.push({
+          PRODUCTO: $scope.modalVincularAut_producto, UBICACION: $scope.modalVincularAut_ubicacion, AUT: $scope.modalVincularAut_numero,
+          SUBCLASE: $scope.modalVincularAut_subclase
+        })
+
+        swal({
+          title: "¿Está seguro que desea guardar la autorizacion?",
+          type: "question",
+          showCancelButton: true,
+          allowOutsideClick: false
+        }).catch(swal.noop)
+          .then((willDelete) => {
+            if (willDelete) {
+
+              swal({ title: 'Cargando...', allowOutsideClick: false });
+              swal.showLoading();
+
+              $http({
+                method: 'POST',
+                url: "php/autorizaciones/anticipos/anticipos.php",
+                data: {
+                  function: 'p_editar_producto_aut_anticipo',
+                  numero: $scope.HojaAnt.Info.Consecutivo,
+                  json: JSON.stringify(array),
+                  cantidad: array.length,
+                }
+              }).then(function ({ data }) {
+                if (data && data.toString().substr(0, 3) != '<br') {
+                  if (data.codigo == 0) {
+                    swal("¡Importante!", data.mensaje, "success").catch(swal.noop);
+                    $('.modal').modal('close');
+
+                    setTimeout(() => {
+                      $scope.Ver_Anticipo_DeNuevo = {
+                        CONSECUTIVO: $scope.HojaAnt.Info.Consecutivo,
+                        TIPO_DOC_AFI: $scope.HojaAnt.Afiliado.TipoDoc,
+                        DOC_AFI: $scope.HojaAnt.Afiliado.NumeroDoc
+                      };
+                      $scope.Cargar_Anticipo($scope.Ver_Anticipo_DeNuevo);
+                    }, 3000);
+                  } else {
+                    swal("¡Importante!", data.mensaje, "info").catch(swal.noop);
+                  }
+                }
+              });
+
+            }
+          })
+
+      }
+
+      $scope.Cerrar_modal_vincularAut = function () {
+        $('#modal_vincularAut').modal('close');
+      }
+
+      $scope.quitarAut = function (x) {
+        if (x.ESTADO_AUT == 'PROCESADA') {
+          swal("¡Importante!", "No es posible desvincular autorizacion procesada.", "info").catch(swal.noop);
+        }
+        var array = []
+        array.push({
+          PRODUCTO: x.PRODUCTO, UBICACION: x.UBICACION, AUT: '', SUBCLASE: x.SUBCLASE
+        })
+
+        swal({
+          title: "¿Está seguro que desea desvincular la autorizacion?",
+          type: "question",
+          showCancelButton: true,
+          allowOutsideClick: false
+        }).catch(swal.noop)
+          .then((willDelete) => {
+            if (willDelete) {
+
+              swal({ title: 'Cargando...', allowOutsideClick: false });
+              swal.showLoading();
+
+              $http({
+                method: 'POST',
+                url: "php/autorizaciones/anticipos/anticipos.php",
+                data: {
+                  function: 'p_editar_producto_aut_anticipo',
+                  numero: $scope.HojaAnt.Info.Consecutivo,
+                  json: JSON.stringify(array),
+                  cantidad: array.length,
+                }
+              }).then(function ({ data }) {
+                if (data && data.toString().substr(0, 3) != '<br') {
+                  if (data.codigo == 0) {
+                    swal("¡Importante!", data.mensaje, "success").catch(swal.noop);
+
+                    setTimeout(() => {
+                      $scope.Ver_Anticipo_DeNuevo = {
+                        CONSECUTIVO: $scope.HojaAnt.Info.Consecutivo,
+                        TIPO_DOC_AFI: $scope.HojaAnt.Afiliado.TipoDoc,
+                        DOC_AFI: $scope.HojaAnt.Afiliado.NumeroDoc
+                      };
+                      $scope.Cargar_Anticipo($scope.Ver_Anticipo_DeNuevo);
+                    }, 3000);
+                  } else {
+                    swal("¡Importante!", data.mensaje, "info").catch(swal.noop);
+                  }
+                }
+              });
+
+            }
+          })
+      }
       ///////////////////////////////////////////////////////////////////////////
       // FIRMA///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////////////
@@ -4950,7 +5581,16 @@ angular.module('GenesisApp')
             var TipoDoc = $scope.stringToBinary($scope.HojaAnt.Afiliado.TipoDoc.toString());
             var NumeroDoc = $scope.stringToBinary($scope.HojaAnt.Afiliado.NumeroDoc.toString());
             if (VAL == 1) {
-              $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
+              const fecha = ($scope.HojaAnt.Info.Fecha_Solicitud.substr(0, 10)).split('/')
+              const xfecha = new Date(`${fecha[2]}/${fecha[1]}/${fecha[0]}`);
+              const fechaNew = new Date("2023/11/1")
+
+              if (xfecha >= fechaNew) {
+                $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo_v2.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
+              } else {
+                $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
+              }
+
             }
             if (VAL == 2) {
               $window.open('views/autorizaciones/anticipos/formatopertinenciamedica.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
@@ -5469,7 +6109,7 @@ angular.module('GenesisApp')
           return "Subdirector Nacional De Servicios De Salud"
         }
         if (n.toString() == '8') {
-          return "Director De Salud"
+          return "Subgerente General"
         }
         if (n.toString() == '9') {
           return "Asistente Nacional De Pagaduría"
@@ -5713,6 +6353,12 @@ angular.module('GenesisApp')
             }
             if (x == 'M') {
               $window.open('views/autorizaciones/anticipos/formatoregistromensual.php?&fecha_i=' + Fecha_Inicio + '&fecha_f=' + Fecha_Fin + '&estado=' + $scope.Rep_Registros.Estado + '&seccional=' + $scope.Rep_Registros.Seccional);
+            }
+            if (x == 'IA') {
+              $window.open('views/autorizaciones/anticipos/formatoanticiposanulados.php?&fecha_i=' + Fecha_Inicio + '&fecha_f=' + Fecha_Fin + '&seccional=' + $scope.Rep_Registros.Seccional);
+            }
+            if (x == 'ID') {
+              $window.open('views/autorizaciones/anticipos/formatoanticiposdevueltos.php?&fecha_i=' + Fecha_Inicio + '&fecha_f=' + Fecha_Fin + '&seccional=' + $scope.Rep_Registros.Seccional);
             }
           } else {
             Materialize.toast('¡La fecha de inicio debe ser menor a la fecha final!', 1000);
@@ -6201,7 +6847,7 @@ angular.module('GenesisApp')
             xdata: JSON.stringify(xdata),
           }
         }).then(function (response) {
-          console.log(response.data);
+          // console.log(response.data);
         });
       }
 

@@ -50,6 +50,21 @@
             background-position-y: 0;
             filter: grayscale(100%);
         }
+
+        .fs_12 {
+          font-size: 12px !important;
+        }
+        .fondoAzul {
+          background-color: #1a2e63;
+          color: white !important;
+        }
+        #table4,
+        #table4 tr th,
+        #table4 tr td {
+          border: .5px solid black;
+          font-size: 12px;
+          border-spacing: 0 0 !important;
+        }
     </style>
     <script src="../../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
     <script src="../../../bower_components/angular/angular.js"></script>
@@ -73,12 +88,12 @@
             </td>
         </tr>
         <tr style="font-weight:600;">
-            <td colspan="1">Versión: 01</td>
+            <td colspan="1">Versión: 02</td>
         </tr>
         <tr style="font-weight:600;">
             <td colspan="1" style="text-align: center;padding:1% 0%;">
                 PROCEDIMIENTO DE ANTICIPOS PARA PRESTACION DE SERVICIOS DE SALUD</td>
-            <td colspan="1">Fecha: Febrero 2023</td>
+            <td colspan="1">Fecha: Enero 2024</td>
         </tr>
 
         <tr class="paddingleft">
@@ -139,6 +154,28 @@
         <br>
         <span>CAJACOPI EPS</span> -->
     </div>
+
+    <div class="fs_12" style="margin: 1 0vw;margin-top: 9vw;">
+      <p><b>CONTROL DE CAMBIOS</b></p>
+    </div>
+    <!--  -->
+    <table id="table4" width="100%">
+      <tr>
+        <th class="fondoAzul">VERSIÓN</th>
+        <th class="fondoAzul">FECHA</th>
+        <th class="fondoAzul">DESCRIPCIÓN</th>
+      </tr>
+      <tr>
+        <td>01</td>
+        <td>Febrero 2023.</td>
+        <td>Emisión del Formato.</td>
+      </tr>
+      <tr>
+        <td>02</td>
+        <td>Enero 2024.</td>
+        <td>Se agregó cuadro de Control de Cambio.</td>
+      </tr>
+    </table>
 
 </body>
 

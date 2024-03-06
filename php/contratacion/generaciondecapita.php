@@ -5,6 +5,43 @@ $postdata = file_get_contents("php://input");
 $request = json_decode($postdata);
 $function = $request->function;
 $function();
+function controlbotonCapita()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+
+    $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_GC.p_control_boton (:v_pperiodo,:v_json_row); end;');
+    oci_bind_by_name($consulta, ':v_pperiodo', $request->vpperiodo);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $json = $clob->read($clob->size());
+        echo $json;
+    } else {
+        echo 0;
+    }
+    oci_close($c);
+}
+function ejecutarCapita()
+{
+    require_once('../config/dbcon_prod.php');
+    global $request;
+
+    $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_GC.p_ejecutar_capita(:v_pperiodo,:v_presponsable,:v_json_row); end;');
+    oci_bind_by_name($consulta, ':v_pperiodo', $request->vpperiodo);
+    oci_bind_by_name($consulta, ':v_presponsable', $request->vpresponsable);
+    $clob = oci_new_descriptor($c, OCI_D_LOB);
+    oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+    oci_execute($consulta, OCI_DEFAULT);
+    if (isset($clob)) {
+        $json = $clob->read($clob->size());
+        echo $json;
+    } else {
+        echo 0;
+    }
+    oci_close($c);
+}
 function cargaannos()
 {
 	require_once('../config/dbcon_prod.php');
@@ -51,11 +88,6 @@ function crearperiodo()
 {
     require_once('../config/dbcon_prod.php');
     global $request;
-    // $datos = json_decode($request->datos);
-    // $periodo_cap = $datos->periodo_cap;
-    // $fechainicio = $datos->fechainicio;
-    // $fechafinal = $datos->fechafinal;
-    // $responsable = $datos->responsable;
     $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_GC.P_CREA_PERIODO(:v_per_capitacion,
                                                                                     :v_fec_inicio,
                                                                                     :v_fec_final ,

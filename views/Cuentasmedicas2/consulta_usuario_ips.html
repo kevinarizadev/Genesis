@@ -1,0 +1,228 @@
+<div id="consultausuarioips" class="white newdesing position-relative">
+  <style>
+    .newdesing input[type="date"]::-webkit-inner-spin-button,
+    .newdesing input[type="date"]::-webkit-calendar-picker-indicator,
+    .newdesing input[type="month"]::-webkit-inner-spin-button,
+    .newdesing input[type="month"]::-webkit-calendar-picker-indicator {
+      /* display: none; */
+      -webkit-appearance: none;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .overflow-auto {
+      overflow: auto;
+      height: calc(100vh - 212px);
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5
+          style="font-family: 'Product Sans',Arial,sans-serif;font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          Consulta Usuario IPS</h5>
+      </li>
+      <li>
+        <form class="form-input-icon-new input-out-new" method="post" ng-submit="buscar_usuario_ips(NIT_IPS)"
+          autocomplete="off">
+          <input ng-model="NIT_IPS"  type="number" class="margin border-none"
+            placeholder="NIT IPS">
+          <i ng-click="buscar_usuario_ips(NIT_IPS)" class="icon-search"></i>
+        </form>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container white" style="padding-bottom: 20px;margin-bottom: 0;">
+    <div ng-show="consulta_usuario_ips.usuarios_ips.length>0" class="col s12 m12 l12 position-relative">
+      <div class="align-items-center black-text d-flex justify-content-between title-panel m-b">
+        <span>Resultado de la búsqueda ({{consulta_usuario_ips.usuarios_ips.length}}):</span>
+        <input id="filtro" ng-model="fil.q" type="text" class="margin border-none white input-text-new input-out-new" autocomplete="off" placeholder="Buscar en la tabla">
+        <!-- <i ng-click="medicamentos.vista=2" class="icon-left-open-2 cursor-pointer default-color">Atras</i> -->
+      </div>
+      <div class="position-relative overflow-auto">
+        <table class="striped table-bordered white">
+          <thead>
+            <tr class="default-background white-text">
+              <th colspan="6">
+                NOMBRE IPS: {{consulta_usuario_ips.nombre}}
+              </th>
+              <th colspan="2" class="center-align">
+                NIT: {{consulta_usuario_ips.nit}}
+              </th>
+              <th class="center-align" style="cursor: pointer;" ng-click="Modal_nuevoAdmin()">
+                <i class="icon-plus"> Nuevo</i>
+              </th>
+            </tr>
+            <tr class="default-background white-text">
+              <th class="center-align">
+                #{{(consulta_usuario_ips.usuarios_ips.length==0)?'':consulta_usuario_ips.usuarios_ips.length}}
+              </th>
+              <!--<th class="center-align">
+								NIT
+							</th>
+							<th>
+								NOMBRE IPS
+							</th> -->
+              <th>
+                NOMBRE USUARIO
+              </th>
+              <th class="center-align">
+                USUARIO
+              </th>
+              <th class="center-align">
+                CLAVE
+              </th>
+              <th class="center-align">
+                CONTACTO
+              </th>
+              <th class="center-align">
+                CORREO
+              </th>
+              <th class="center-align">
+                TIPO USUARIO
+              </th>
+              <th class="center-align">
+                ESTADO
+              </th>
+              <th class="center-align">
+                CODIGO VERIFICACION
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="consulta_usuario_ips.usuarios_ips.length == 0">
+              <td colspan="8" class="center-align">
+                No hay datos para mostrar
+              </td>
+            </tr>
+            <tr ng-repeat="usuario in consulta_usuario_ips.usuarios_ips | filter:fil.q | orderBy:'NOMBRE_USUARIO'">
+              <td class="center-align">{{$index+1}}</td>
+              <!-- <td class="center-align">{{usuario.NIT}}</td>
+							<td>{{usuario.NOMBRE_IPS}}</td> -->
+              <td>
+                {{usuario.NOMBRE_USUARIO}}
+              </td>
+              <td class="center-align">
+                {{usuario.USUARIO}}
+              </td>
+              <td class="center-align">
+                {{usuario.CLAVE}}
+              </td>
+              <td class="center-align">
+                {{usuario.CONTACTO}}
+              </td>
+              <th class="center-align">
+                {{usuario.CORREO}}
+              </th>
+              <td class="center-align">
+                {{usuario.TIPO_USUARIO}}
+                <i class="icon-pencil" ng-if="usuario.TIPO_USUARIO != 'ADMINISTRADOR' && usuario.ESTADO == 'A'"
+                  ng-click="actualizarAdmin(usuario)"></i>
+              </td>
+              <td class="center-align black-text"
+                ng-class="{'yellow':usuario.ESTADO=='X','green':usuario.ESTADO=='A','red':usuario.ESTADO=='I'}">
+                <b>{{usuario.ESTADO}}</b>
+              </td>
+              <td class="center-align">
+                {{usuario.CODIGO_VERIFICACION}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div ng-if="consulta_usuario_ips.usuarios_ips.length==0" class="align-items col s12 m12 l12 position-relative">
+      <img src="assets/images/elip/buscar.svg"  style="width:48%" alt="Buscar">
+    </div>
+  </div>
+
+  <div id="Modal_Nuevo_Admin" class="modal" style="margin: 0 auto;max-height: 100%;width: 50%;top:0%;">
+    <div class="col s12 m6 l6 card margin">
+
+      <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+        ng-click="closeModal()">
+      </div>
+      <div class="card-content default-background white-text">
+        <div class="col s11">
+          <div class="col s5" style="display: inline-flex;">
+            <span class="margin" style="font-size: 1.64rem;">Dirección</span>
+          </div>
+        </div>
+      </div>
+      <div class="row dashboard-wrapper content-container white">
+        <div class="col s12 m12 l12" style="position: relative;min-height: calc(100vh - 169px);">
+          <div class="row margin">
+            <div class="col s6 no-padding label-new m-b">
+              <select ng-model="form.tipoDocumento" id="form_tipoDocumento" class="select-new input-out-new"
+                style="box-shadow: none;" material-select watch convert-to-number>
+                <option value="" disabled="true"></option>
+                <option ng-repeat="td in tipo_documento" value="{{td.Codigo}}">{{td.Nombre}}</option>
+              </select>
+              <label for="form_tipoDocumento">Tipo de Documento</label>
+            </div>
+            <div class="col s6 no-padding label-new m-b">
+              <input ng-model="form.numeroId" id="form_numeroId" type="number"
+                class="margin border-none white input-text-new input-w-p m-l input-out-new w-100">
+              <label for="form_numeroId">Número de identificación *</label>
+            </div>
+            <div class="col s12 no-padding label-new m-b">
+              <input ng-model="form.nombreUser" id="form_nombreUser" type="text" autocomplete="off"
+                class="margin border-none white input-text-new input-w-p input-out-new w-100">
+              <label for="form_nombreUser">Nombre Completo del Usuario *</label>
+            </div>
+            <div class="col s4 no-padding label-new m-b h-auto">
+              <input value="{{form.numeroId}}" ng-disabled="true" type="text"
+                class="margin border-none white input-text-new input-w-p gray-input w-100">
+              <label>Usuario:</label>
+            </div>
+            <div class="col s4 no-padding label-new m-b">
+              <input ng-model="form.contrasenna_0" id="form_contrasenna_0" type="password" autocomplete="off"
+                class="margin border-none white input-text-new input-w-p m-l input-out-new w-100">
+              <label for="form_contrasenna_0">Contraseña *</label>
+            </div>
+            <div class="col s4 no-padding label-new m-b">
+              <input ng-model="form.contrasenna_1" id="form_contrasenna_1" type="password" autocomplete="off"
+                class="margin border-none white input-text-new input-w-p m-l input-out-new w-100">
+              <label for="form_contrasenna_1">Verificar Contraseña *</label>
+            </div>
+            <div class="col s6 no-padding label-new m-b">
+              <input ng-model="form.celular" id="form_celular" type="number"
+                class="margin border-none white input-text-new input-w-p input-out-new w-100">
+              <label for="form_celular">Celular *</label>
+            </div>
+            <div class="col s6 no-padding label-new m-b">
+              <input ng-model="form.telefono" id="form_telefono" type="number"
+                class="margin border-none white input-text-new input-w-p m-l input-out-new w-100">
+              <label for="form_telefono">Telefono *</label>
+            </div>
+            <div class="col s6 no-padding label-new m-b">
+              <input ng-model="form.correo" id="form_correo" type="text"
+                class="margin border-none white input-text-new input-w-p input-out-new w-100">
+              <label for="form_correo">Correo *</label>
+            </div>
+            <div class="col s6 no-padding label-new m-b">
+              <input ng-model="form.cargo" id="form_cargo" type="text"
+                class="margin border-none white input-text-new input-w-p m-l input-out-new w-100">
+              <label for="form_cargo">Cargo *</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12 no-padding label-new m-b h-auto">
+              <label>Nota:</label>
+              <p class="margin m-l">Este usuario administrador podra crear usuarios IPS y gestionar los accesos de
+                dichos
+                usuarios.</p>
+            </div>
+          </div>
+          <input ng-click="registrarUserAdmin()" class="btn white-text default-background right"
+            type="submit" value="Registrar Usuario" style="transition: all 0s;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

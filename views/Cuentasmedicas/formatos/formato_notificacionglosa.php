@@ -167,10 +167,10 @@
                                 <td>${{formatPeso2(x.VALOR_GLOSA.toString().replace(',', '.'))}}</td>
                             </tr>
                             <tr>
-                                <td colspan="9" style="font-weight:600;padding-top:3px;">Observaciones</td>
+                                <td colspan="9" style="font-weight:600;padding-top:3px;word-break: break-all;">Observaciones</td>
                             </tr>
                             <tr>
-                                <td colspan="9" style="text-align: justify;text-transform:uppercase;border-bottom: 2px solid black;">{{x.OBSERVACION}}
+                                <td colspan="9" style="text-align: justify;text-transform:uppercase;border-bottom: 2px solid black;    word-break: break-all;">{{x.OBSERVACION}}
                                 </td>
                             </tr>
                         </tbody>

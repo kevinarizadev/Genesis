@@ -2541,7 +2541,7 @@ angular.module('GenesisApp')
           }
         }
 
-        if (parseFloat(($scope[HOJA].Servicio.Valor_Total.replace(/\./g, '')).replace(/\,/g, '.')) < 254472) {
+        if (parseFloat(($scope[HOJA].Servicio.Valor_Total.replace(/\./g, '')).replace(/\,/g, '.')) < 282390) {
           Campos_Empty = true; Vista_Empty = 2; document.querySelector('#' + [HOJA] + '_Valor_Total_Label').classList.add('red-text');
           document.getElementById([HOJA] + '_Valor_Total_Label').scrollIntoView({ block: 'start', behavior: 'smooth' });
         }
@@ -3126,6 +3126,7 @@ angular.module('GenesisApp')
                     CopiaMipres_B64: '',
                     CopiaPagaduria_URL: null,
                     CopiaPagaduria_B64: '',
+                    FechaPagoPagaduria: null,
 
                     CopiaHistoria_RUTA: response.data[0].CopiaHistoria_RUTA,
                     CopiaCedula_RUTA: response.data[0].CopiaCedula_RUTA,
@@ -4964,7 +4965,10 @@ angular.module('GenesisApp')
 
       $scope.H1Aprobar_Anticipo_Pagaduria = function () {
         document.querySelector('#HojaAnt_CopiaPagaduria_Label').classList.remove('red-text');
+        document.querySelector('#HojaAnt_FechaPagoPagaduria_Label').classList.remove('red-text');
+        // $scope.HojaAnt.Soportes.FechaPagoPagaduria
         if ($scope.HojaAnt.Info.Status == 9) {
+          if (!$scope.HojaAnt.Soportes.FechaPagoPagaduria) { document.querySelector('#HojaAnt_FechaPagoPagaduria_Label').classList.add('red-text'); return false }
           if ($scope.HojaAnt.Soportes.CopiaPagaduria_B64 != '') {
             swal({
               title: "¿Está seguro que desea aprobar este anticipo?",
@@ -4974,6 +4978,9 @@ angular.module('GenesisApp')
             }).catch(swal.noop)
               .then((willDelete) => {
                 if (willDelete) {
+                  //
+                  swal({ title: 'Cargando...', allowOutsideClick: false });
+                  swal.showLoading();
                   //
                   var Subir_Soportes = [
                     $scope.Cargar_Soporte_FTPAnt('Soportes', 'CopiaPagaduria_B64', 'Soporte_Pagaduria', 'CopiaPagaduria_RUTA', ''),
@@ -5101,6 +5108,7 @@ angular.module('GenesisApp')
           Func_Rol_Ubi_COD: $scope.Rol_Ubicacion,
           Func_Rol_Cargo: $scope.Rol_Cargo,
           Sop_Pagaduria_URL: ($scope.HojaAnt.Info.Status == 10) ? '' : $scope.HojaAnt.Soportes.CopiaPagaduria_RUTA,
+          Sop_Fecha_Pago: $scope.formatDate($scope.HojaAnt.Soportes.FechaPagoPagaduria),
           Servicio: Ser,
           Enf_Huerfana: Enf
         }
@@ -6260,6 +6268,20 @@ angular.module('GenesisApp')
         valor = valor.replace(/[|°"#$%&''´¨´¨¨¨<>]/g, '');
         input.value = valor;
       }
+      $scope.formatDate = function (date) {
+        if (date === undefined) { return }
+        var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [day, month, year].join('/');
+        // return [year, month, day].join('-');
+      }
+
       $scope.console = function (x) {
         console.log(x);
         console.log(x.length);

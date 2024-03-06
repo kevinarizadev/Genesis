@@ -165,6 +165,7 @@ angular.module('GenesisApp', [])
               $scope.Ajuste_Julio = new Date('2021/07/22');
               $scope.Ajuste_Septiembre = new Date('2021/09/29');
               $scope.Ajuste_Febrero_2023 = new Date('2023/02/09');
+              $scope.Ajuste_Nov_2023 = new Date('2023/11/01');
               $scope.numeroVersion = '01';
               $scope.fechaVersion = 'Mayo 2019';
               document.title = "Formato de Solicitud de Anticipo - Anticipo N°" + $scope.binaryToString($location.search().numero.toString());
@@ -185,6 +186,12 @@ angular.module('GenesisApp', [])
                 $scope.Ajuste_Mayo_D_S = 'Sub';
                 $scope.numeroVersion = '01';
                 $scope.fechaVersion = 'Febrero 2023';
+                $scope.nombreSubdirector = 'APROBACIÓN DEL SUBGERENTE NACIONAL DE SALUD';
+              }
+              if ($scope.Ant_FECHA_PROCESADO >= $scope.Ajuste_Nov_2023) {
+                $scope.Ajuste_Mayo_D_S = 'Dir';
+                // $scope.numeroVersion = '01';
+                // $scope.fechaVersion = 'Febrero 2023';
                 $scope.nombreSubdirector = 'APROBACIÓN DEL SUBGERENTE NACIONAL DE SALUD';
               }
 

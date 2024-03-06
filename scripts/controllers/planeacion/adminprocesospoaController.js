@@ -98,10 +98,8 @@ angular.module('GenesisApp')
               method: 'POST',
               url: "php/planeacion/adminprocesospoa.php",
               data: {
-                function: 'p_actualiza_funcs',
+                function: 'p_insertar_usuario',
                 codigo: result,
-                tipo: 'IN',
-                estado: 'A',
                 responsable: $scope.Rol_Cedula
               }
             }).then(function ({ data }) {
@@ -124,8 +122,10 @@ angular.module('GenesisApp')
         $scope.modalUsuario = {}
         $scope.modalUsuario.cedula = data.TERV_CODIGO;
         $scope.modalUsuario.nombre = data.TERC_NOMBRE;
-        $scope.modalUsuario.estado = data.TERC_ESTADO_ADMIN_PLANEACION;
-        $scope.modalUsuario.tipoUsuario = data.TERC_TIPO_ADMIN_PLANEACION;
+        $scope.modalUsuario.estado = data.BADC_ESTADO;
+        $scope.modalUsuario.tipoUsuario = data.BADC_TIPO_USUARIO;
+        $scope.modalUsuario.actualizarFicha = data.BADC_ACTUALIZAR_FICHA;
+        $scope.modalUsuario.marcaAuditor = data.BADC_MARCA_AUDITOR;
         // $scope.modalUsuario.fechaRegistro = data.FECHA_REGISTRO;
         $scope.openModal('modalUsuario')
         setTimeout(() => { $scope.$apply(); }, 500);
@@ -156,6 +156,8 @@ angular.module('GenesisApp')
                 codigo: x.cedula,
                 tipo: x.tipoUsuario,
                 estado: x.estado,
+                actualizar_ficha: x.actualizarFicha,
+                marca_auditor: x.marcaAuditor,
                 responsable: $scope.Rol_Cedula
               }
             }).then(function ({ data }) {

@@ -118,12 +118,7 @@ angular.module('GenesisApp')
       // $scope.anexo3 = function () {
       //   $window.open('views/contratacion/formatos/anexo3.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
       // }
-      $scope.anexo15 = function () {
-        $window.open('views/contratacion/formatos/anexo15.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
-      }
-      $scope.anexo14 = function () {
-        $window.open('views/contratacion/formatos/anexo14.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
-      }
+
       $scope.descarga = function (tipo, JSONData, ReportTitle, ShowLabel) {
         switch (tipo) {
           // excel
@@ -2887,8 +2882,8 @@ angular.module('GenesisApp')
           $window.open('views/contratacion/formatos/formatominutacontrato.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
       }*/
       $scope.Genera_Minuta = function (v_pnumero, v_pubicacion, v_pdocumento, fecha_inicio, tipominuta = '5') {
-        // var v_fecha_inicio = new Date(fecha_inicio.split('/')[2] + '/' + fecha_inicio.split('/')[1] + '/' + fecha_inicio.split('/')[0]);
-        // var fechaNuevaMinuta = new Date('2023/07/01');
+        var v_fecha_inicio = new Date(fecha_inicio.split('/')[2] + '/' + fecha_inicio.split('/')[1] + '/' + fecha_inicio.split('/')[0]);
+        var fechaNuevaMinutaPGP = new Date('2023/12/01');
         // console.log(v_fecha_inicio, fechaNuevaMinuta)
         swal({
           showCancelButton: true,
@@ -2924,7 +2919,11 @@ angular.module('GenesisApp')
                 $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_evento_bolsa.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
                 break;
               case 9:
-                $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_pgp_general.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                if (v_fecha_inicio >= fechaNuevaMinutaPGP) {
+                  $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_pgp_general_nueva.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                } else {
+                  $window.open('views/contratacion/formatos/minutas/formatominutacontrato_nuevo_pgp_general.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
+                }
                 break;
 
               default:
@@ -2947,8 +2946,32 @@ angular.module('GenesisApp')
         $window.open('views/contratacion/formatos/anexo2.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
+      $scope.generaAnexo3 = function () {
+        $window.open('views/contratacion/formatos/anexo_soportes/anexo3.pdf');
+      }
+      $scope.generaAnexo4 = function (regional) {
+        if (regional == 'NACIONAL') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_NACIONAL.pdf');
+        }
+        if (regional == 'ATLANTICO') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_ATLANTICO.pdf');
+        }
+        if (regional == 'BOLIVAR') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_BOLIVAR.pdf');
+        }
+        if (regional == 'CESAR') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_CESAR.pdf');
+        }
+        if (regional == 'BOYACA') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_BOYACA.pdf');
+        }
+      }
       $scope.generaAnexo8 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo8.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
+          '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
+      }
+      $scope.generaAnexo11 = function (infoContrato, tipominuta = '5') {
+        $window.open('views/contratacion/formatos/anexo11.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
       $scope.generaAnexo12 = function (infoContrato, tipominuta = '5') {
@@ -2959,6 +2982,18 @@ angular.module('GenesisApp')
         $window.open('views/contratacion/formatos/anexo13.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
+      $scope.anexo15 = function (infoContrato, tipominuta = '5') {
+        if (tipominuta == '2') {  //2 PYM
+          $window.open('views/contratacion/formatos/anexo15_PYM.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
+            '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
+        } else {
+          $window.open('views/contratacion/formatos/anexo15.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
+        }
+      }
+      $scope.anexo14 = function () {
+        $window.open('views/contratacion/formatos/anexo14.php?regimen=' + $scope.infoContrato.documento + '&ubicacion=' + $scope.infoContrato.ubicacion_id + '&numero=' + $scope.infoContrato.numero);
+      }
+
       $scope.generaAnexo17 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo17.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);

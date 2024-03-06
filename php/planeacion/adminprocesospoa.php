@@ -23,14 +23,34 @@ function p_consulta_usuario()
 }
 
 
+function p_insertar_usuario()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_insertar_usuario(:v_pcedula,:v_presponsable,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pcedula', $request->codigo);
+  oci_bind_by_name($consulta, ':v_presponsable', $request->responsable);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}
 function p_actualiza_funcs()
 {
   global $request;
   require_once('../config/dbcon_prod.php');
-  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_actualiza_usuario(:v_pcodigo,:v_pestado,:v_ptipo,:v_json_row); end;');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_actualiza_usuario(:v_pcodigo,:v_pestado,:v_ptipo,:v_pactualizar_ficha,:v_pmarca_auditor,:v_json_row); end;');
   oci_bind_by_name($consulta, ':v_pcodigo', $request->codigo);
   oci_bind_by_name($consulta, ':v_pestado', $request->estado);
   oci_bind_by_name($consulta, ':v_ptipo', $request->tipo);
+  oci_bind_by_name($consulta, ':v_pactualizar_ficha', $request->actualizar_ficha);
+  oci_bind_by_name($consulta, ':v_pmarca_auditor', $request->marca_auditor);
   $clob = oci_new_descriptor($c, OCI_D_LOB);
   oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
   oci_execute($consulta, OCI_DEFAULT);

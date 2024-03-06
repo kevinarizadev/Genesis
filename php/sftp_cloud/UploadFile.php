@@ -46,7 +46,27 @@ $file /*Nombre del archivo y su extension Ejemp: ( archivo.zip )*/)//
     }
 
     if((!$subio) || (filesize("ssh2.sftp://$sftp$host_path") == 0 )){ return '0 - Archivo no subido correctamente';} // Validamos que se subio el archivo y que el peso sea diferente de 0
+      $ruta =  $host_path; // ruta completa del archivo en la nube
+      $pesolocal = filesize($root.'temp/'.$file); // tamaño del archivo en el servidor local de genesis
+      $pesonube = filesize("ssh2.sftp://$sftp$host_path"); // tamaño del archivo en el servidor ftp de la nube
+      Guardarrutapeso($ruta,$pesolocal,$pesonube);
 
     ssh2_exec($con_id, 'exit'); // Cerramos la conexion
     return (substr($host_path, 14, strlen($host_path)-1)); // Recortamos la ruta para que solo muestre desde /cargue_ftp/...
+}
+
+function Guardarrutapeso($ruta,$pesolocal,$pesonube){
+  require($_SERVER['DOCUMENT_ROOT'].'/genesis/php/config/dbcon_prod.php');
+  //require_once($_SERVER['DOCUMENT_ROOT'].'/php/config/dbcon_prod.php'); //<---- Usar en servidor
+
+  $cedula = isset($_SESSION['cedula']) ? $_SESSION['cedula'] : $_SESSION['nit'];
+  $consulta = oci_parse($c,'BEGIN pq_genesis.p_guarda_cargue_soportes_ftp(:v_pruta,:v_ptamano_local,:v_ptamano_ftp,:v_pcedula,:v_json_row); end;');
+  oci_bind_by_name($consulta,':v_pruta',$ruta);
+  oci_bind_by_name($consulta,':v_ptamano_local',$pesolocal);
+  oci_bind_by_name($consulta,':v_ptamano_ftp',$pesonube);
+  oci_bind_by_name($consulta,':v_pcedula',$cedula);
+  $clob = oci_new_descriptor($c,OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
+  oci_execute($consulta,OCI_DEFAULT);
+  oci_close($c);
 }

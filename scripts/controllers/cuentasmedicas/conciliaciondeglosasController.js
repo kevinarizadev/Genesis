@@ -23,7 +23,6 @@ angular.module('GenesisApp')
         $scope.SysDay = new Date();
         $scope.Responder_NOIPS_Fecha = new Date();
 
-        // $scope.seleccionadosTodos = false;
         // PENDIENTE
         // EN CONCILIACION
         // CONCILIADA
@@ -36,6 +35,9 @@ angular.module('GenesisApp')
           swal({ title: 'Cargando...', allowOutsideClick: false });
           swal.showLoading();
         }
+        $scope.glosaSeleccionadas = []
+        $scope.statusGrupo = 0;
+        $scope.filtroEstado = '';
         $scope.Lista_Glosa = [];
         $scope.Lista_GlosaTemp = [];
         $http({
@@ -48,8 +50,13 @@ angular.module('GenesisApp')
               data.forEach(e => {
                 e.SELECCIONADO = false;
               })
+              data.forEach(e => {
+                e.NOTC_STATUS1 = e.NOTC_STATUS1.trim()
+                e.ESTADO_TEXTO = $scope.obtenerEstado(e.NOTC_STATUS1.trim())
+              })
 
               $scope.Lista_Glosa = data;
+              // $scope.Lista_Glosa = datos;
               $scope.Lista_GlosaTemp = $scope.Lista_Glosa;
               $scope.currentPage = 0;
               $scope.pageSize = 10;
@@ -102,6 +109,8 @@ angular.module('GenesisApp')
         }).then((result) => {
           if (result) {
 
+            swal({ title: 'Cargando...', allowOutsideClick: false });
+            swal.showLoading();
             $http({
               method: 'POST',
               url: "php/cuentasmedicas/conciliaciondeglosas.php",
@@ -158,29 +167,155 @@ angular.module('GenesisApp')
       //   alert(1)
       // }
 
-      // $scope.listaGlosaIPS = [
-      //   {
-      //     "FACV_TERCERO": "900465319",
-      //     "TERC_NOMBRE": "OINSAMED SAS",
-      //     "TOTAL_FACTURA": "89542776",
-      //     "TOTAL_GLOSA": "29028117",
-      //     "VALOR_MANTENIDA": "0",
-      //   },
-      //   {
-      //     "FACV_TERCERO": "900465319",
-      //     "TERC_NOMBRE": "OINSAMED SAS",
-      //     "TOTAL_FACTURA": "89542776",
-      //     "TOTAL_GLOSA": "29028117",
-      //     "VALOR_MANTENIDA": "0",
-      //   },
-      //   {
-      //     "FACV_TERCERO": "900465319",
-      //     "TERC_NOMBRE": "OINSAMED SAS",
-      //     "TOTAL_FACTURA": "89542776",
-      //     "TOTAL_GLOSA": "29028117",
-      //     "VALOR_MANTENIDA": "0",
-      //   }
-      // ];
+
+
+      $scope.validarMarcado = function (x) {
+
+        if (x.NTDV_VALOR_MANTENIDA != 0) {
+          swal("Mensaje", "El total mantenido debe estar en 0", "error").catch(swal.noop);
+          return
+        }
+        if ($scope.glosaSeleccionadas.length && !$scope.glosaSeleccionadas.some(e => e.NIT === x.NIT)) {
+          swal("Mensaje", "La Glosa no pertenece al mismo grupo del prestador seleccionado", "error").catch(swal.noop);
+          return
+        }
+        if ($scope.glosaSeleccionadas.length && !$scope.glosaSeleccionadas.some(e => e.DOC_ACT === x.DOC_ACT)) {
+          swal("Mensaje", "La Glosa ya tiene grupo relacionado", "error").catch(swal.noop);
+          return
+        }
+        $scope.statusGrupo = 0;
+        const index = $scope.glosaSeleccionadas.findIndex(e => e.DOC_NOT === x.DOC_NOT);
+        // $scope.glosaSeleccionadas.push(x)
+        if (!x.SELECCIONADO) {
+          if (index === -1) $scope.glosaSeleccionadas.push(x);
+        } else {
+          if (index !== -1) $scope.glosaSeleccionadas.splice(index, 1);
+        }
+        x.SELECCIONADO = !x.SELECCIONADO;
+        if ($scope.glosaSeleccionadas.length == 0) { $scope.filter(''); return }
+
+        if (x.DOC_ACT != '--') {
+          $scope.filter(x.DOC_ACT)
+          $scope.statusGrupo = 2;
+          // $scope.Lista_Glosa.forEach(e => {
+          //   if (e.DOC_ACT === x.DOC_ACT) e.SELECCIONADO = true
+          // })
+        } else {
+          $scope.statusGrupo = 1
+        }
+
+        //   const seleccionados = x.NOTC_STATUS1 === '0' ? $scope.seleccionadosPendientes : $scope.seleccionadosConciliacion;
+        //   const index = seleccionados.findIndex(e => e.DOC_NOT === x.DOC_NOT);
+
+        //   if (!x.SELECCIONADO) {
+        //     if (index === -1) seleccionados.push(x);
+        //   } else {
+        //     if (index !== -1) seleccionados.splice(index, 1);
+        //   }
+
+        // x.SELECCIONADO = !x.SELECCIONADO;
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+
+      $scope.AgruparGrupo = function () {
+        swal({
+          title: 'Confirmar',
+          text: 'Desea crear el grupo las Glosas seleccionadas?',
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+
+            var data = []
+            $scope.glosaSeleccionadas.forEach((e, index) => {
+              data.push({
+                num_ng: e.DOC_NOT.split('-')[1],
+                ubi_ng: e.DOC_NOT.split('-')[2],
+                renglon: (index + 1).toString()
+              })
+            });
+
+            swal({ title: 'Cargando...', allowOutsideClick: false });
+            swal.showLoading();
+
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/conciliaciondeglosas.php",
+              data: {
+                function: 'p_agru_acta_conc',
+                nit: $scope.glosaSeleccionadas[0].NIT,
+                datos: JSON.stringify(data),
+                cantidad: data.length,
+                responsable: $scope.Rol_Cedula
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) != '<br') {
+                if (data.Codigo == 0) {
+                  // $scope.Atras(0);
+                  $scope.listarGlosasIPS('x');
+
+                  $scope.closeModal();
+                  swal("Mensaje", "Glosa gestionada!", "success").catch(swal.noop);
+                } else {
+                  swal("Mensaje", data.Nombre, "info").catch(swal.noop);
+                }
+              } else {
+                swal("Mensaje", data, "info").catch(swal.noop);
+              }
+            });
+          }
+        });
+      }
+
+      $scope.generarActaGrupo = function (x) {
+        // $scope.glosaSeleccionadas[0]
+        $window.open('views/cuentasmedicas/formatos/formato_conciliacion_glosa.php?documento=' + 'AG' + '&numero=' + x.DOC_ACT.split('-')[1]
+          + '&ubicacion=' + x.DOC_ACT.split('-')[2] + '&responsable=' + $scope.Rol_Cedula, '_blank', "width=1080,height=1100");
+
+      }
+
+      $scope.cargarSoporteGrupo = function () {
+
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/conciliaciondeglosas.php",
+          data: {
+            function: 'p_adjunto_glosa_agru',
+            documento: 'AG',
+            numero: $scope.glosaSeleccionadas[0].DOC_ACT.split('-')[1],
+            ubicacion: $scope.glosaSeleccionadas[0].DOC_ACT.split('-')[2],
+            responsable: $scope.Rol_Cedula,
+            adjunto: $scope.Comentario_Adjunto.Url
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) != '<br') {
+            if (data.Codigo == 0) {
+              // $scope.Comentario_Observacion = '';
+              $scope.Comentario_Model_Adjunto = '';
+              $scope.Comentario_Adjunto.Base = '';
+              $scope.Comentario_Adjunto.Url = '';
+
+              swal("¡Mensaje!", "Acta cargado correctamente", "success").catch(swal.noop);
+              setTimeout(function () { $scope.$apply(); }, 300);
+              $scope.closeModal()
+
+              setTimeout(() => {
+                $scope.listarGlosasIPS('x');
+              }, 3000);
+            } else {
+              swal("Mensaje", data.Nombre, "info").catch(swal.noop);
+            }
+          } else {
+            swal("Mensaje", data, "info").catch(swal.noop);
+          }
+        });
+      }
 
       $scope.listarGlosasIPSDetalle = function (x, msg) {
         if (msg == null) {
@@ -476,7 +611,11 @@ angular.module('GenesisApp')
                     }
                   }
                   if (Archivos_Error == false) {
-                    $scope.Inserta_CargueFormato();
+                    if (!$scope.glosaSeleccionadas.length) {
+                      $scope.Inserta_CargueFormato();
+                    } else {
+                      $scope.cargarSoporteGrupo();
+                    }
                   }
                 });
               }
@@ -501,7 +640,7 @@ angular.module('GenesisApp')
                 function: 'cargarSoporte',
                 base: $scope.Comentario_Adjunto.Base,
                 ext: $scope.Comentario_Adjunto.Ext,
-                name: $scope.datosCargueFormato.NIT
+                name: !$scope.glosaSeleccionadas.length ? $scope.datosCargueFormato.NIT : $scope.glosaSeleccionadas[0].NIT
               }
             }).then(function (response) {
               $scope.Comentario_Adjunto.Url = response.data;
@@ -570,7 +709,6 @@ angular.module('GenesisApp')
 
       $scope.generarFormato = function (x) {
         // $window.open('views/cuentasmedicas/formatos/formato_conciliacion_glosa.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
-
         $window.open('views/cuentasmedicas/formatos/formato_conciliacion_glosa.php?documento=' + 'NG' + '&numero=' + x.DOC_NOT.split('-')[1]
           + '&ubicacion=' + x.DOC_NOT.split('-')[2] + '&responsable=' + $scope.Rol_Cedula, '_blank', "width=1080,height=1100");
       }
@@ -635,12 +773,14 @@ angular.module('GenesisApp')
             "FECHA NOTIFICACION GLOSA": e.FECHA_NOTIFICACION,
             "VALOR GLOSA": e.TOTAL_GLOSA,
 
-            "FECHA RESPUESTA IPS": e.NTDV_VALOR_GI,
-            "VALOR LEVANTADO IPS": e.NTDV_VALOR_GI_IPS,
+            "FECHA RESPUESTA IPS": e.FECHA_RESPUESTA_IPS,
+            "VALOR ACEPTADO IPS NOTIF": e.NTDV_VALOR_GI_IPS,
+            "VALOR LEVANTADO EPS NOTIF": e.NTDV_VALOR_GL_EPS,
             // "COMENTARIO_IPS": e.COMENTARIO_IPS,
 
 
             "FECHA RESPUESTA EPS": e.FECHA_RESPUESTA_EPS,
+            "VALOR ACEPTADO IPS": e.NTDV_VALOR_GI,
             "VALOR LEVANTADO EPS": e.NTDV_VALOR_GL,
             // "COMENTARIO_EPS": e.COMENTARIO_EPS,
 
@@ -668,7 +808,12 @@ angular.module('GenesisApp')
       }
 
       $scope.filter = function (val) {
-        $scope.Lista_GlosaTemp = $filter('filter')($scope.Lista_Glosa, ($scope.filter_save == val) ? '' : val);
+        // $scope.Lista_Glosa.forEach(e => {
+        //   if (e.NOTC_STATUS1 == $scope.filtroEstado || $scope.filtroEstado == "") glosas.push(e)
+        // });
+        $scope.Lista_GlosaTemp = $filter('filter')($scope.Lista_Glosa, $scope.filtroEstado);
+        $scope.Lista_GlosaTemp = $filter('filter')($scope.Lista_GlosaTemp, val);
+        // $scope.Lista_GlosaTemp = $filter('filter')($scope.Lista_Glosa, ($scope.filter_save == val) ? '' : val);
         if ($scope.Lista_GlosaTemp.length > 0) {
           $scope.setPage(1);
         }
@@ -832,7 +977,6 @@ angular.module('GenesisApp')
           }
         }
       }
-
 
       $scope.obtenerEstado = function (x) {
         if (x == 0) {
