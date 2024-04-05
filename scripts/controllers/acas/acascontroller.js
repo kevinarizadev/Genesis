@@ -30,6 +30,7 @@ angular.module('GenesisApp')
             var dat = { prov: 'navb' }
             $.getJSON("php/obtenersession.php", dat)
                 .done(function (respuesta) {
+                    $scope.acceso_modulo();
                     $scope.sesdata = respuesta;
                     $scope.cedula = $scope.sesdata.cedula;
                     $scope.ubicacion = $scope.sesdata.codmunicipio;
@@ -632,6 +633,37 @@ angular.module('GenesisApp')
                     $scope.Filter_Productos = $scope.Lista_MD_Productos;
                 }
             }
-
+            $scope.acceso_modulo = function () { 
+                $http({
+                    method: 'POST',
+                    url: "php/tic/calificame.php",
+                    data: { function: 'traerdatosmesadeayuda',
+                    documento: sessionStorage.getItem('cedula'),
+                  }
+                  }).then(function (response) {
+                  if (
+                    response.data &&
+                    response.data.toString().substr(0, 3) != "<br"
+                  ) {
+                    if (response.data.length > 0) {
+                        window.location.href = 'app.php#/calitic';
+                        swal({
+                            title: "¡Aviso Importante!",
+                            text: "Señor usuario, usted tiene mesas de ayudas pendientes por calificar, para generar una nueva solicitud usted deberá calificar las anteriores.",
+                            type: "warning",
+                          })
+                      } else {
+                        console.log("no tiene mesas por calificar")
+                      }
+                  } else {
+                    swal({
+                      title: "¡Ocurrio un error!",
+                      text: response.data,
+                      type: "warning",
+                    }).catch(swal.noop);
+                  }
+                 
+                })
+              }
         }
     ]);

@@ -14,8 +14,8 @@ angular.module('GenesisApp')
         $scope.Lista_Glosa = [];
         $scope.Lista_GlosaTemp = [];
 
-        $scope.listarGlosasIPS();
-        // $scope.listarGlosasIPSConsulta();
+        // $scope.listarGlosasIPS();
+        $scope.consultarPermisos()
 
         $scope.Vista = 0;
         $scope.VistaConsulta = 0;
@@ -29,6 +29,27 @@ angular.module('GenesisApp')
 
       };
 
+      $scope.consultarPermisos = function () {
+        $scope.permisos = null
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/conciliaciondeglosas.php",
+          data: {
+            function: 'P_CONSULTA_PERMISOS_USUARIO',
+            cedula: $scope.Rol_Cedula
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Sin permisos", 'Debe solicitar acceso al area de Cuentas Medicas Nacional', "warning").catch(swal.noop); return
+          }
+          if (data.length > 0) {
+            $scope.permisos = data[0];
+            $scope.listarGlosasIPS();
+          }
+          console.log(data);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
 
       $scope.listarGlosasIPS = function (msg) {
         if (msg == null) {
@@ -38,6 +59,7 @@ angular.module('GenesisApp')
         $scope.glosaSeleccionadas = []
         $scope.statusGrupo = 0;
         $scope.filtroEstado = '';
+        $scope.filtro = '';
         $scope.Lista_Glosa = [];
         $scope.Lista_GlosaTemp = [];
         $http({
@@ -49,8 +71,6 @@ angular.module('GenesisApp')
             if (data.length) {
               data.forEach(e => {
                 e.SELECCIONADO = false;
-              })
-              data.forEach(e => {
                 e.NOTC_STATUS1 = e.NOTC_STATUS1.trim()
                 e.ESTADO_TEXTO = $scope.obtenerEstado(e.NOTC_STATUS1.trim())
               })
@@ -83,6 +103,7 @@ angular.module('GenesisApp')
           porcentajeGI: 50,
           valorFD: $scope.FormatPesoNumero(x.NTDV_VALOR_MANTENIDA),
           observacion: '',
+          mantenido: x.NTDV_VALOR_MANTENIDA
         };
         $scope.datosConciliarFacturaGlosas = x;
         $('#modalPorcentajeConciliar').modal('open');
@@ -123,6 +144,7 @@ angular.module('GenesisApp')
                 observacion: $scope.valoresGlosa.observacion,
                 porcentajeGL: $scope.valoresGlosa.porcentajeGL,
                 porcentajeGI: $scope.valoresGlosa.porcentajeGI,
+                mantenido: $scope.valoresGlosa.mantenido,
                 responsable: $scope.Rol_Cedula
               }
             }).then(function ({ data }) {
@@ -489,10 +511,13 @@ angular.module('GenesisApp')
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/conciliaciondeglosasips.php",
-          data: { function: 'p_lista_glosas_estado_conc_agru_consulta', nit: 0, marcaConciliada: 'N' }
+          data: { function: 'p_lista_glosas_estado_conc_agru_consulta', nit: 0, tipo: 'E' }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) != '<br') {
             if (data.length) {
+              data.forEach(e => {
+                e.ESTADO_TEXTO = $scope.obtenerEstado(e.NOTC_STATUS1.trim())
+              })
               $scope.listadoGlosasConsulta = data;
 
               if (msg == null) { $scope.VistaConsulta = 0; swal.close(); }
@@ -801,6 +826,77 @@ angular.module('GenesisApp')
 
       }
 
+      $scope.exportarExcelConc = function () {
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/conciliaciondeglosas.php",
+          data: { function: 'p_lista_glosas_estado_conc_agru_1' }
+        }).then(function ({ data }) {
+          if (data[0] != undefined) {
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Reporte conciliacion glosas.xlsx");
+            const text = `Registros encontrados ${datos.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+
+            swal.close();
+          } else {
+            swal({
+              title: "¡Mensaje!",
+              text: 'No existen glosas para mostrar',
+              type: "info"
+            }).catch(swal.noop);
+          }
+        })
+
+
+      }
+
+      $scope.modalBuscarFacturaNg = function () {
+        $scope.modalFacturaNg = {}
+        $scope.modalFacturaNg.nit = '';
+        $scope.modalFacturaNg.factura = '';
+
+        $scope.openModal('modalFacturaNg')
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+      $scope.buscarFacturaNg = function () {
+        if (!$scope.modalFacturaNg.nit) return false
+        if (!$scope.modalFacturaNg.factura) return false
+
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/gesnotificacionglosa.php",
+          data: {
+            function: 'P_CONSULTA_FACTURA',
+            nit: $scope.modalFacturaNg.nit,
+            factura: $scope.modalFacturaNg.factura,
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            $scope.filter('')
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.toString().substr(0, 3) == 'NG-') {
+            $scope.filter(data)
+            $scope.filtro = data;
+            $scope.closeModal();
+            swal.close();
+          }
+        });
+      }
+      $scope.openModal = function (modal) {
+        $(`#${modal}`).modal('open');
+      }
       $scope.setTab = function (tab) {
         $scope.tabs = tab;
         if (!$scope.listadoGlosasConsulta) $scope.listarGlosasIPSConsulta();

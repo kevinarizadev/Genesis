@@ -1340,6 +1340,20 @@
                   </a>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  Política farmacéutica nacional y programa de seguridad al paciente liderado por el instituto Nacional de vigilancia de medicamentos y alimentos (INVIMA)
+                </td>
+                <td>
+                  Ministerio de salud nacional
+                </td>
+                <td>
+                  <a href="https://www.minsalud.gov.co/Paginas/Guias-Clinica.aspx"
+                    target="_blank"
+                    rel="noopener noreferrer">https://www.minsalud.gov.co/Paginas/Guias-Clinica.aspx
+                  </a>
+                </td>
+              </tr>
 
             </table>
 

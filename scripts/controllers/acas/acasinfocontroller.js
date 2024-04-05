@@ -153,7 +153,7 @@ angular.module('GenesisApp')
                         showConfirmButton: false,
                         animation: false
                     });
-                    acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, 'C', $scope.cedula, $scope.observacion, '', 'S', 'R').then(function (response) {
+                    acasHttp.insertarcomentario('RE', $scope.numeroacas, $scope.ubicacionacas, 'C', $scope.cedula, $scope.observacion, '', 'S', 'R', $scope.numeroserial).then(function (response) {
                         $scope.re_comentario = response.data;
                         if ($scope.re_comentario.codigo == 0) {
                             swal('Error', $scope.re_comentario.mensaje, 'error');

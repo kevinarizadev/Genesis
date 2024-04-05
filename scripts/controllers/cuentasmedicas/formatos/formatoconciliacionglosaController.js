@@ -36,6 +36,7 @@ angular.module('GenesisApp', [])
             swal.close()
             $scope.datosCabeza = data.cabeza[0];
             $scope.datosDetalle = data.detalle;
+            $scope.fecha = formatDate(new Date());
 
             $scope.totalValorGlosa = 0;
             $scope.totalValorMantenida = 0;
@@ -70,6 +71,14 @@ angular.module('GenesisApp', [])
             }, 10);
           }
         });
+      }
+      function formatDate(date) {
+        var dd = ('0' + date.getDate()).slice(-2);
+        var mm = ('0' + (date.getMonth() + 1)).slice(-2);
+        var yyyy = date.getFullYear();
+        var hh = date.getHours();
+        var mi = date.getMinutes();
+        return dd + '/' + mm + '/' + yyyy; //+' '+hh+':'+mi+':00';
       }
       $scope.formatPeso2 = function (num) {
         if (num != undefined) {

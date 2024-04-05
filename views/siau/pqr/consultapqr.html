@@ -27,7 +27,7 @@
                   <label style="height: 25px!important" ng-class="{'default-color': filterOptions=='AVANZADO'}"
                     for="avanzado">AVANZADO</label>
                 </span>
-                <span id="permisosConsolidado"> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="CONSOLIDADO"
+                <span id="permisosConsolidado" ng-show="permisosUsuario.RESC_EXPORTAR_CONSOLIDADO == 'S'"> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="CONSOLIDADO"
                   id="consolidado" />
                   <label style="height: 25px!important" ng-class="{'default-color': filterOptions=='CONSOLIDADO'}"
                     for="consolidado">CONSOLIDADO</label>
@@ -46,7 +46,7 @@
 
                           <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == tipodocumento"
                             ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
-                            
+
                           <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
                           <option value="TI">TARJETA DE IDENTIDAD</option>
                           <option value="RC">REGISTRO CIVIL</option>
@@ -253,22 +253,23 @@
                           class="material-icons prefix">search</i></button>
                     </div>
                   </div> -->
-                  <div class="col s3 left" ng-show="filterOptions=='AVANZADO'">
-                    <button class="btn white-text" type="button"
-                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"
-                      ng-click="descargarExportadoMarcacion()">Exportado Marcacion PQR</button>
-                  </div>
-                  <div class="col s3 left"
-                    ng-show="filterOptions=='AVANZADO' && (Rol_cargo == '20' || Rol_cargo == '22'|| Rol_cargo == '26' || Rol_cargo == '156' || Rol_cargo == '160' || Rol_cargo == '133' || Rol_cargo == '164' || Rol_cargo == '201')">
-                    <button class="btn white-text" type="button"
-                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"
-                      ng-click="descargarExportadoLogifarma()">Exportado Logifarma</button>
-                  </div>
-                  <div class="col s3 left"
-                    ng-show="filterOptions=='AVANZADO' && (Rol_cargo == '20' || Rol_cargo == '22' || Rol_cargo == '26' || Rol_cargo == '156' || Rol_cargo == '160' || Rol_cargo == '133' || Rol_cargo == '164' || Rol_cargo == '201')">
-                    <button class="btn white-text" type="button"
-                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"
-                      ng-click="descargarExportadoPQRServicios()">Exportado PQR Servicios</button>
+                  <div ng-show="filterOptions=='AVANZADO' && permisosUsuario.RESC_EXPORTAR_BOTONES == 'S'">
+                    <div class="col" >
+                      <button class="btn white-text" type="button" style="padding-right: 5px; padding-left: 5px;font-size: .7em;"
+                        ng-click="descargarExportadoMarcacion()">Exp. Marcacion PQR</button>
+                    </div>
+                    <div class="col">
+                      <button class="btn white-text" type="button" style="padding-right: 5px; padding-left: 5px;font-size: .7em;"
+                        ng-click="descargarExportadoLogifarma()">Exp. Logifarma</button>
+                    </div>
+                    <div class="col">
+                      <button class="btn white-text" type="button" style="padding-right: 5px; padding-left: 5px;font-size: .7em;"
+                        ng-click="descargarExportadoPQRServicios()">Exp. PQR Servicios</button>
+                    </div>
+                    <div class="col">
+                      <button class="btn white-text" type="button" style="padding-right: 5px; padding-left: 5px;font-size: .7em;"
+                        ng-click="descargarExportadoPQRAuts()">Exp. Autorizaciones</button>
+                    </div>
                   </div>
 
                   <div class="col s3 right">
@@ -405,43 +406,15 @@
                       <span> <b> MOTIVO:</b> {{pqr.CODIGO_ESPECIFICO}} - {{pqr.MOTIVO_ESPECIFICO}}</span>
                     </div>
                     <div class="row" style="text-align: justify;">
+                      <span> <b>TIPO DE MOTIVO ESPECIFICO:</b> {{pqr.TIPOMOTIVO}}</span>
+                    </div>
+                    <div class="row" style="text-align: justify;">
+                      <span> <b>SUBTIPO DE MOTIVO ESPECIFICO:</b> {{pqr.SUBTIPOMOTIVO}}</span>
+                    </div>
+                    <div class="row" style="text-align: justify;">
                       <span> <b>OBSERVACIÓN:</b> {{pqr.OBSERVACION}}</span>
                     </div>
-                    <div class="row" style="display: flex;justify-content: center;
-                    align-items: center;">
-                      <div
-                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
-                        ng-click="descargafile(pqr.RUTA, pqr.FTP)">
-                        <i style="font-size: 30px;" class="material-icons prefix default-color">print</i> <span
-                          style="margin-left: 5px">SOPORTE</span>
-                      </div>
 
-                      <div
-                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
-                        ng-click="quitarMarcacion(pqr)"
-                        ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_SN == 'S'"
-                        title="Ver observación y desmarcar">
-                        <i style="font-size: 30px;" class="material-icons prefix default-color">check_box</i> <span
-                          style="margin-left: 5px">DESMARCAR</span>
-                      </div>
-                      <div
-                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
-                        ng-click="realizarMarcacion(pqr)"
-                        ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_SN == 'N'"
-                        title="Marcar por gestión pendiente">
-                        <i style="font-size: 30px;"
-                          class="material-icons prefix default-color">check_box_outline_blank</i> <span
-                          style="margin-left: 5px">MARCAR</span>
-                      </div>
-                      <div
-                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
-                        ng-click="descargarExportadoMarcacion_Pqr(pqr)"
-                        ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_observacion != 'N'"
-                        title="Historico de Marcación">
-                        <i style="font-size: 30px;" class="material-icons prefix default-color">library_books</i> <span
-                          style="margin-left: 5px">HISTORICO MARCACIÓN</span>
-                      </div>
-                    </div>
 
                     <div ng-if="documentologueo =='1140861113'" class="row" style="display: flex;
                     justify-content: center;
@@ -572,10 +545,10 @@
                       <div class="col s4"
                         style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
                         <div class="text-center">
-                          <b>RIESGO DE VIDA</b>
+                          <b>TIPO DE RIESGO</b>
                         </div>
                         <div class="text-center">
-                          <span> {{pqr.SELECTEDRV =='S'?'SI':'NO'}}</span>
+                          <span> {{pqr.RIESGO}}</span>
                         </div>
                         <br>
                       </div>
@@ -618,6 +591,42 @@
                       </div>
                     </div>
                   </div>
+                  <!--  -->
+                  <div class="col s12 default-color text-bold" style="font-size: .8em;">
+                    <div class="col s2 c-pointer"  ng-click="descargafile(pqr.RUTA, pqr.FTP)">
+                        <i class="icon-print-6">SOPORTE</i>
+                    </div>
+
+                    <div class="col s2 c-pointer"
+                      ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_SN == 'S'"
+                      ng-click="realizarMarcacion(pqr)">
+                      <i class="icon-check"
+                        title="Ver observación y desmarcar">DESMARCAR</i>
+                    </div>
+                    <div class="col s2 c-pointer"
+                      ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_SN == 'N'"
+                      title="Marcar por gestión pendiente"
+                      ng-click="realizarMarcacion(pqr)">
+                      <i class="icon-check-empty-1">MARCAR</i>
+                    </div>
+                    <div class="col s2 c-pointer"
+                      ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_observacion != 'N'"
+                      ng-click="descargarExportadoMarcacion_Pqr(pqr)" title="Historico de Marcación">
+                      <i class="icon-doc-text-inv-1">HIST. MARCACIÓN</i>
+                    </div>
+                    <!-- <div class="col s2 c-pointer" ng-click="crearSeguimiento(pqr)">
+                      <i class="icon-list">SEGUIMIENTO</i>
+                    </div> -->
+                      <!-- <div
+                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
+                        ng-click="capturarfechaPrestacion(pqr)">
+                        <i style="font-size: 30px;" class="material-icons prefix default-color">today</i> <span
+                          style="margin-left: 5px">FECHA DE PRESTACION</span>
+                      </div> -->
+
+
+                  </div>
+                  <!--  -->
                 </div>
               </div>
             </div>
@@ -1043,6 +1052,14 @@
                               <td colspan="6">{{dpqr.MACROMOTIVO}}</td>
                             </tr>
                             <tr>
+                              <th class="noselectxtpqr">Subtipo Motivo</th>
+                              <td colspan="6">{{dpqr.TIPOMOTIVO}}</td>
+                            </tr>
+                            <tr>
+                              <th class="noselectxtpqr">Tipo Motivo</th>
+                              <td colspan="6">{{dpqr.SUBTIPOMOTIVO}}</td>
+                            </tr>
+                            <tr>
                               <th class="noselectxtpqr">Soporte</th>
                               <td class="text-center noselectxtpqr">
                                 <a id="bt-ges" class="c-pointer mr-0" ng-click="descargafile(dpqr.RUTA,dpqr.FTP);">
@@ -1166,12 +1183,12 @@
                         </div>
                         <div class="col l11 md11 m11">
                           <div class="desc_com"
-                            style="padding: 1em; background-color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? '#367abd' : ''}};color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? 'white' : ''}}">
+                            style="padding: 1em; background-color: '{{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? '#367abd' : ''}}'';color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? 'white' : ''}}">
                             <i ng-if="com.ADJUNTO!=''" ng-click="bajarArchivo(com.ADJUNTO)"
-                              style="float: right;cursor: pointer !important;"
+                              style="float: right; cursor: pointer !important;"
                               class="material-icons dp48">attach_file</i>
-                            <p class="margin" style="font-size: 12px;">
-                              <strong>{{com.DESCRIPCION}}</strong>
+
+                              <strong>{{com.DESCRIPCION}}</strong>                       <p class="margin" style="font-size: 12px;">
                             </p>
                             <small>{{com.NOMBRE}}</small>
                           </div>
@@ -1188,7 +1205,7 @@
                       </div>
                     </div>
 
-                    <div ng-show="(estadoPQR == 'ACTIVO' || estadoPQR == 'PROCESADO') && opcionComentario"
+                    <div ng-show="(estadoPQR == 'ACTIVO' || estadoPQR == 'PROCESADO') && permisosUsuario.RESC_MARCA_COMENTARIO == 'S'"
                       class="row margin" style="display: flex;">
                       <div class="col l11 md11 m11">
                         <div class="input-field col m12 s12 margin no-padding">
@@ -1215,7 +1232,7 @@
                         </div>
                       </div>
                       <div class="col l1 md1 m1 margin no-padding border-none"
-                        ng-if="(estadoPQR == 'ACTIVO' || estadoPQR == 'PROCESADO') && opcionComentario">
+                        ng-if="(estadoPQR == 'ACTIVO' || estadoPQR == 'PROCESADO') && permisosUsuario.RESC_MARCA_COMENTARIO == 'S'">
                         <i ng-click="crearComentarioPQR()" class="icon-paper-plane white-text " style="background-color: #f2cea5;display: flex;justify-content: center;align-items: center;width: 3.4em;height: 3.4em;
                           border-radius: 50%;cursor: pointer;margin: auto;background-color: #f2cea5;"></i>
                       </div>
@@ -1259,7 +1276,7 @@
                               <td class="text-center">
                                 <!-- <i class="icon-edit cursor-pointer" ng-if="dpqr.ESTADO == 'Activo' && x.ADJUNTO == null"
                                   ng-click="editarProductosPQR(x)" title="Editar"></i> -->
-                                <i class="icon-edit cursor-pointer" ng-if="dpqr.ESTADO == 'Procesado' && x.ADJUNTO == null && pqrServiciosModal.permisos == 'S'" ng-click="editarProductosPQR(x)"
+                                 <i class="icon-edit cursor-pointer" ng-if="dpqr.ESTADO == 'Procesado' && x.ADJUNTO == null && pqrServiciosModal.permisos == 'S'" ng-click="editarProductosPQR(x)"
                                   title="Editar"></i>
                                 <i class="icon-download cursor-pointer" ng-if="x.ADJUNTO != null"
                                   ng-click="bajarArchivo(x.ADJUNTO)" title="Ver Soporte"></i>
@@ -1371,7 +1388,94 @@
         </div>
       </div>
     </div>
+
+    <div id="modalCrearSeguimiento" class="modal" style="overflow: hidden;width: 70%;max-height: max-content;">
+      <div class="modal-content" style="padding: 0px !important;">
+        <div class="foot4 divcardcustom default-linear-gradient" style="border-radius: 0px;">
+          <div class="text-al divcardcustom2">
+            <strong class="switch" style="font-weight:600">{{marcacionPQR_SN == 'N' ? 'Crear':'Cerrar'}} Seguimiento</strong>
+            <i style="cursor:pointer;" ng-click="closeModal()"
+              class="material-icons white-text right">close</i>
+          </div>
+        </div>
+        <div class="row" style="overflow-y: auto;">
+          <!-- <div class="col s6">
+            <label><strong>Seguimiento</strong></label>
+            <select class="select-chosen-eps select  pt-select-pqr black-text" id="dias"
+              ng-model="modalCrearSeguimiento.seguimiento" disabled>
+              <option value="" disabled>SELECCIONAR</option>
+              <option value="S">Si</option>
+              <option value="N">No</option>
+            </select>
+          </div> -->
+          <div class="col s6">
+            <label><strong>Servicio programado</strong></label>
+            <select class="select-chosen-eps select  pt-select-pqr black-text" id="dias"
+              ng-model="modalCrearSeguimiento.servicio" ng-disabled="marcacionPQR_SN == 'S'" ng-change="ngChgServicioProgramado()">
+              <option value="" disabed>SELECCIONAR</option>
+              <option value="S">Si</option>
+              <option value="N">No</option>
+            </select>
+          </div>
+          <div class="col s6">
+            <label><strong>Fecha Seguimiento</strong></label>
+            <div class="form-group">
+              <input type="date" class="validate ng-pristine ng-valid ng-valid-max ng-touched"
+                ng-model="modalCrearSeguimiento.fechaSeg" ng-disabled="marcacionPQR_SN == 'S' || modalCrearSeguimiento.servicio == 'N'">
+            </div>
+          </div>
+          <!-- <div class="col s6">
+            <label><strong>Prestador</strong></label>
+            <div class="form-group">
+              <input type="date" class="validate ng-pristine ng-valid ng-valid-max ng-touched"
+                ng-model="modalCrearSeguimiento.fechaSeg">
+            </div>
+          </div> -->
+          <form ng-submit="obtenerPrestador();">
+            <div class="col s6">
+              <label><strong>Prestador</strong><i class="icon-search c-pointer"
+                ng-click="obtenerPrestador();" ng-if="marcacionPQR_SN == 'N'"></i></label>
+              <input type="text" id="buscarProducto" class="text-upper" autocomplete="off"
+                placeholder="Buscar Producto" ng-model="modalCrearSeguimiento.prestador"
+                name="myBrowser" list="listadoPrestador" ng-disabled="marcacionPQR_SN == 'S'">
+              <datalist id="listadoPrestador" open="open">
+                <option value="{{x.CODIGO +'-'+x.NOMBRE}}" ng-repeat="x in modalCrearSeguimiento.listadoPrestador">
+              </datalist>
+            </div>
+          </form>
+          <div class="col s12">
+            <label><strong>Observación</strong></label>
+              <textarea id="textareaSeg" style="background-color: #f1f3f4;" placeholder="Escribe una Observación..."
+              maxlength="4000" text-description ng-model="modalCrearSeguimiento.observacion" ng-disabled="marcacionPQR_SN == 'S'"></textarea>
+          </div>
+          <div class="col s12" ng-show="marcacionPQR_SN == 'S'">
+            <label><strong>Observación de cierre</strong></label>
+              <textarea id="textareaSeg2" style="background-color: #f1f3f4;" placeholder="Escribe una Observación de Cierre..."
+              maxlength="4000" text-description ng-model="modalCrearSeguimiento.observacionCierre"></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="center">
+            <button class="waves-effect waves-light btn-large white-text" type="button"
+              ng-click="guardarSeguimiento()">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <style>
+
+    #textareaSeg {
+      resize: none;
+      height: 100px;
+      text-align: justify;
+    }
+    #textareaSeg2 {
+      resize: none;
+      height: 100px;
+      text-align: justify;
+    }
       .tab a:hover {
         background-color: #ddd !important;
         color: white !important;

@@ -2064,25 +2064,6 @@ function obtenerMarcacionPQR()
 	oci_close($c);
 }
 
-function crearMarcacionPQR()
-{
-	require_once('../../config/dbcon_prod.php');
-	global $request;
-	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_REGISTRAR_MARCA_PQR(:v_pqr,:v_observacion,:v_responsable,:v_json_row); end;');
-	oci_bind_by_name($consulta, ':v_pqr', $request->pqr);
-	oci_bind_by_name($consulta, ':v_observacion', $request->observacion);
-	oci_bind_by_name($consulta, ':v_responsable', $request->responsable);
-	$clob = oci_new_descriptor($c, OCI_D_LOB);
-	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
-	oci_execute($consulta, OCI_DEFAULT);
-	if (isset($clob)) {
-		$json = $clob->read($clob->size());
-		echo $json;
-	} else {
-		echo 0;
-	}
-	oci_close($c);
-}
 
 
 function p_consulta_aut()
@@ -2283,7 +2264,6 @@ function P_DESCARGAR_INFORME_CONSOLIDADO()
 }
 
 
-
 function P_LISTA_AUTORIZACIONES_PQR()
 {
 	require_once('../../config/dbcon_prod.php');
@@ -2301,4 +2281,61 @@ function P_LISTA_AUTORIZACIONES_PQR()
 	oci_free_statement($consulta);
 	oci_free_statement($cursor);
 	echo json_encode($datos);
+}
+
+function P_OBTENER_MARCACION_REGISTRO_PQRS()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_OBTENER_MARCACION_REGISTRO_PQRS(:V_PQR,:V_RESULT); end;');
+	oci_bind_by_name($consulta, ':V_PQR', $request->numeropqr);
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':V_RESULT', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = [];
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
+}
+
+function P_OBTENER_MARCACION_REGISTROS()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_OBTENER_MARCACION_REGISTROS(:V_RESULT); end;');
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':V_RESULT', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = [];
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
+}
+
+
+function P_REGISTRAR_MARCA_PQR()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_REGISTRAR_MARCA_PQR(:v_pqr,:v_servicio,:v_fecha_seg,:v_prestador,:v_observacion,:v_responsable,:v_json_row); end;');
+	oci_bind_by_name($consulta, ':v_pqr', $request->pqr);
+	oci_bind_by_name($consulta, ':v_servicio', $request->servicio);
+	oci_bind_by_name($consulta, ':v_fecha_seg', $request->fechaSeg);
+	oci_bind_by_name($consulta, ':v_prestador', $request->prestador);
+	oci_bind_by_name($consulta, ':v_observacion', $request->observacion);
+	oci_bind_by_name($consulta, ':v_responsable', $request->responsable);
+	$clob = oci_new_descriptor($c, OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+	oci_execute($consulta, OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	} else {
+		echo 0;
+	}
+	oci_close($c);
 }

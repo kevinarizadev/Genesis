@@ -1388,3 +1388,30 @@ function P_OBTENER_ANEXO_3()
 	}
 	oci_close($c);
 }
+
+function cambiarsupervisor()
+{
+	require_once('../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN OASIS.PQ_GENESIS_CONTRATACION.P_U_SUPERVISOR(:v_pdocumento,
+																						:v_pcontrato,
+																						:v_pubicacion,
+																						:v_psupervisor,
+																						:v_json_row); 
+																						end;');
+
+	oci_bind_by_name($consulta, ':v_pdocumento', $request->tipodocumentocontrato);
+	oci_bind_by_name($consulta, ':v_pcontrato', $request->numerocontrato);
+	oci_bind_by_name($consulta, ':v_pubicacion', $request->v_pubicacion);
+	oci_bind_by_name($consulta, ':v_psupervisor', $request->numerodocumento);
+	$clob = oci_new_descriptor($c, OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+	oci_execute($consulta, OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	} else {
+		echo 0;
+	}
+	oci_close($c);
+}

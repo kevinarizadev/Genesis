@@ -84,13 +84,14 @@
   <!-- Glosas Por IPS -->
   <div class="row dashboard-wrapper content-container white"
     style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
-    ng-show="tabs == 1 && Vista == 0">
+    ng-show="permisos && tabs == 1 && Vista == 0">
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
         <span>
-          Listado de Glosas ({{Lista_Glosa.length}})
           <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="listarGlosasIPS()"></i>
+          Listado de Glosas ({{Lista_Glosa.length}})
+          <i class="icon-search-2 default-color cursor-pointer" title="Encontrar Factura" ng-click="modalBuscarFacturaNg()"></i>
         </span>
 
 
@@ -101,9 +102,12 @@
           <option value="ENCONCILIACION">EN CONCILIACION</option>
         </select>
 
-        <button class="btn" style=" height: 26px;line-height: 26px;" ng-show="statusGrupo == 1" ng-click="AgruparGrupo()">Agrupar</button>
-        <button class="btn" style=" height: 26px;line-height: 26px;" ng-show="statusGrupo == 2" ng-click="generarActaGrupo(glosaSeleccionadas[0])">Generar Acta</button>
-        <button class="btn" style=" height: 26px;line-height: 26px;" ng-show="statusGrupo == 2" ng-click="abrirModalCargueFormato()">Cargar Soporte</button>
+        <button class="btn" style=" height: 26px;line-height: 26px;" ng-show="statusGrupo == 1"
+          ng-click="AgruparGrupo()">Agrupar</button>
+        <button class="btn" style=" height: 26px;line-height: 26px;" ng-show="statusGrupo == 2"
+          ng-click="generarActaGrupo(glosaSeleccionadas[0])">Generar Acta</button>
+        <button class="btn" style=" height: 26px;line-height: 26px;" ng-show="statusGrupo == 2"
+          ng-click="abrirModalCargueFormato()">Cargar Soporte</button>
 
         <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-change="filter(filtro)"
           ng-model="filtro" placeholder="Buscar en la tabla">
@@ -169,25 +173,27 @@
                   </div>
                   <!-- </td>
                 <td style="text-align:center;" > -->
-                  <div class="tooltip" ng-show="X.NOTC_STATUS1 == 1 && X.NTDV_VALOR_MANTENIDA == 0">
+                  <div class="tooltip"
+                    ng-show="X.NOTC_STATUS1 == 1 && X.NTDV_VALOR_MANTENIDA == 0 && X.DOC_ACT == '--'">
                     <i style="cursor:pointer;font-size: 2em;" ng-click="generarFormato(X)"
                       class="icon-doc-text-inv-1"></i>
                     <span class="tooltiptext">Generar Formato</span>
                   </div>
                   <!-- </td>
                 <td style="text-align:center;" > -->
-                  <div class="tooltip" ng-show="X.NOTC_STATUS1 == 1 && X.NTDV_VALOR_MANTENIDA == 0">
+                  <div class="tooltip"
+                    ng-show="X.NOTC_STATUS1 == 1 && X.NTDV_VALOR_MANTENIDA == 0 && X.DOC_ACT == '--'">
                     <i style="cursor:pointer;font-size: 2em;" ng-click="abrirModalCargueFormato(X)"
                       class="icon-attach-5"></i>
                     <span class="tooltiptext">Cargar Formato</span>
                   </div>
                   <!-- </td>
                 <td style="text-align:center;" > -->
-                  <div class="tooltip" ng-show="X.SOPORTE">
+                  <!-- <div class="tooltip" ng-show="X.SOPORTE">
                     <i style="cursor:pointer;font-size: 2em;" ng-click="DescargarRespuesta(X.SOPORTE)"
                       class="icon-file-pdf"></i>
                     <span class="tooltiptext">Descargar Soporte</span>
-                  </div>
+                  </div> -->
                   <div class="tooltip" ng-show="X.NOTC_STATUS1 == 0">
                     <i style="cursor:pointer;font-size: 2em;" ng-click="modalPorcentajeConciliar(X)"
                       class="icon-docs"></i>
@@ -224,7 +230,11 @@
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
         style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
-        Listado de Glosas Detalle ({{listadoGlosasDetalle.length}})
+        <span>
+          Listado de Glosas Detalle ({{listadoGlosasDetalle.length}})
+          <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
+              ng-click="generalExcel(listadoGlosasDetalle)"></i>
+        </span>
         <input type="text" class="margin border-none input-text-new" style="width: 15vw;" ng-model="filtroDetalle"
           placeholder="Buscar en la tabla">
         <i class="icon-left-2 cursor-pointer" ng-click="Atras(0)">
@@ -517,6 +527,8 @@
           Consultar Listado de Glosas ({{listadoGlosasConsulta.length}})
           <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar"
             ng-click="listarGlosasIPSConsulta()"></i>
+          <i class="icon-file-excel default-color cursor-pointer" title="Exportar Glosas Conciliadas"
+            ng-click="exportarExcelConc()"></i>
         </span>
 
         <!-- <button class="btn" ng-click="aceptarGlosasMasivo()">Aceptar Glosas Masivo</button> -->
@@ -538,6 +550,7 @@
                 <th style="text-align:center;">VALOR LEVANTADO EPS</th>
                 <th style="text-align:center;">VALOR ACEPTADO IPS</th>
                 <th style="text-align:center;">TOTAL MANTENIDA</th>
+                <th style="text-align:center;">GRUPO</th>
                 <th style="text-align:center;">ESTADO</th>
                 <th style="text-align:center;" colspan="4">ACCION</th>
               </tr>
@@ -555,6 +568,7 @@
                 <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_MANTENIDA.toString().replace(',',
                   '.'))}}
                 </td>
+                <td style="text-align:center;">{{X.DOC_ACT}}</td>
                 <td style="text-align:center;">
                   <span class="status {{obtenerEstado(X.NOTC_STATUS1)}}">{{obtenerEstado(X.NOTC_STATUS1)}}</span>
                 </td>
@@ -565,8 +579,8 @@
                     <span class="tooltiptext">Ver Glosas</span>
                   </div>
                   <!-- {{X.SOPORTE}} -->
-                  <div class="tooltip" ng-show="X.SOPORTE != null">
-                    <i style="cursor:pointer;font-size: 2em;" ng-click="DescargarRespuesta(X.SOPORTE)"
+                  <div class="tooltip" ng-show="X.SOPORTE != null || X.SOPORTE_ACTA != null">
+                    <i style="cursor:pointer;font-size: 2em;" ng-click="DescargarRespuesta(X.SOPORTE || X.SOPORTE_ACTA)"
                       class="icon-file-pdf"></i>
                     <span class="tooltiptext">Descargar Soporte</span>
                   </div>
@@ -575,7 +589,7 @@
               </tr>
 
               <tr ng-show="listadoGlosasConsulta.length == 0">
-                <th colspan="11" class="center">
+                <th colspan="12" class="center">
                   No hay Glosas para mostrar
                 </th>
               </tr>
@@ -596,8 +610,8 @@
           ng-click="listarGlosasIPSDetalleConsulta()"></i> -->
         <span>
           Consulta Listado de Glosas Detalle ({{listadoGlosasDetalleConsulta.length}})
-          <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
-            ng-click="generalExcel(listadoGlosasDetalleConsulta)"></i>
+          <!-- <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
+            ng-click="generalExcel(listadoGlosasDetalleConsulta)"></i> -->
         </span>
 
         <input type="text" class="margin border-none input-text-new" style="width: 15vw;"
@@ -744,6 +758,41 @@
         <button class="btn" style="border-radius: 5px;background-color: #4CAF50;"
           ng-click="guardarPorcentajeConciliar()">Guardar</button>
       </div>
+    </div>
+  </div>
+
+  <!-- /////////////////////////////////////////MODAL ADMIN///////////////////////////////////////// -->
+  <div id="modalFacturaNg" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="card-content default-linear-gradient border-radius-none white-text">
+        <div class="col s11">
+          <h5 class="margin">Buscar Factura</h5>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12 m12 l12">
+          <!-- CAMPOS -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+              ng-model="modalFacturaNg.nit">
+            <label>Nit</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+              ng-model="modalFacturaNg.factura">
+            <label>Factura</label>
+          </div>
+
+          <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+            <button style="border-radius: 20px;" class="btn" ng-click="buscarFacturaNg()">Consultar
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
     </div>
   </div>
 

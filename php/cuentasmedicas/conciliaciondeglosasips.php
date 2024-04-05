@@ -21,9 +21,10 @@ function p_lista_glosas_estado_conc_agru_consulta()
   $empresa = '1';
 
   $cursor = oci_new_cursor($c);
-  $consulta = oci_parse($c, 'begin pq_genesis_glosa.p_lista_glosas_estado_conc_agru_consulta(:v_pempresa,:v_ptercero,:v_json_out,:v_result); end;');
+  $consulta = oci_parse($c, 'begin pq_genesis_glosa.p_lista_glosas_estado_conc_agru_consulta(:v_pempresa,:v_ptercero,:v_ptipo_cliente,:v_json_out,:v_result); end;');
   oci_bind_by_name($consulta, ':v_pempresa', $empresa);
   oci_bind_by_name($consulta, ':v_ptercero', $request->nit);
+  oci_bind_by_name($consulta, ':v_ptipo_cliente', $request->tipo);
   oci_bind_by_name($consulta, ':v_json_out', $json, 4000);
   oci_bind_by_name($consulta, ':v_result', $cursor, -1, OCI_B_CURSOR);
   oci_execute($consulta);

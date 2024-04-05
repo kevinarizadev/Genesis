@@ -11,7 +11,7 @@
 	$ruta_respuesta=$_GET['ruta'];
 	$estado_res=$_GET['estado_res'];
 	$cierre=$_GET['cierre'];
-	$numeroserial=$_GET['numeroserial'];
+	$numeroserial=isset($_GET['numeroserial']) ? $_GET['numeroserial'] : '';
 	// Preparamos la consulta para ser ejecutada y enlazamos los parametros
 	$consulta = oci_parse($c,'begin PQ_GENESIS_ACAS.P_INSERT_GESTION(:v_pdocumento,:v_pnumero,:v_pubicacion,:v_ptipo,
 																    :v_ptercero,:v_pobservacion,:v_ruta_respuesta,:v_estado_res,:v_cierre,:v_casc_serial_equipo,:v_prespuesta); end;');

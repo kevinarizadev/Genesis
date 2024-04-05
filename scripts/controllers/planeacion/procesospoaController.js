@@ -832,7 +832,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.metaVigencia = x.REGN_META_VIGENCIA.replace(',', '.');
         $scope.hojaIndicadores.formulario.tipoVigencia = x.REGC_TIPO_VIGENCIA.split('-')[0];
         $scope.hojaIndicadores.formulario.tipoVigenciaDsb = true;
-        if ($scope.validarPermisos(['AS'])) {
+        if ($scope.validarPermisos(['AS','AM'])) {
           $scope.hojaIndicadores.formulario.nombreDsb = false
           $scope.hojaIndicadores.formulario.tipoVigenciaDsb = false
         }

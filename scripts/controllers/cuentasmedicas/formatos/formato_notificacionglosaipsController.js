@@ -39,7 +39,7 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
     method: 'POST',
     url: "../../../php/cuentasmedicas/notificacionglosaips.php",
     data: {
-      function: 'p_certificado_notificacion_glosa',
+      function: 'p_certificado_notificacion_glosa2',
 
       documento: $location.search().documento,
       numero: $location.search().numero,

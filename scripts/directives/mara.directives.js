@@ -1022,6 +1022,7 @@
   // Intranet
   angular.module('GenesisApp').directive('procesos', procesos);
   angular.module('GenesisApp').directive('administradorsgc', administradorsgc);
+
   angular.module('GenesisApp').directive('adminprocesos', adminprocesos);
   angular.module('GenesisApp').directive('procesosa', procesosa);
   angular.module('GenesisApp').directive('programaauditorias', programaauditorias);
@@ -4485,6 +4486,23 @@
       controllerAs: ''
     };
   }
+
+  angular.module('GenesisApp').directive('admindocumentosinst', admindocumentosinst);
+
+  admindocumentosinst.$inject = ['$rootScope', '$compile'];
+  function admindocumentosinst($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/intranet/admindocumentosinst.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'admindocumentosinstController',
+      controllerAs: ''
+    };
+  }
+
 
   //Reservas Tecnicas
   reservastec.$inject = ['$rootScope', '$compile'];

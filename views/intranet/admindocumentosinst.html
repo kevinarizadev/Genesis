@@ -1,0 +1,218 @@
+<div id="pantalla" class="white newdesing collapsible-new">
+  <style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      /* display: none; */
+      -webkit-appearance: none;
+    }
+
+    ::-webkit-input-placeholder {
+      color: #80868b;
+    }
+
+    g+.highcharts-button,
+    svg>.highcharts-tooltip+text {
+      display: none;
+    }
+
+    .s6>.tipo_d {
+      margin-left: .5rem !important;
+    }
+
+    .collapsible-body-new tr.active>td:nth-child(1) {
+      color: #26a69a;
+      font-weight: bold;
+    }
+
+    .collapsible-body-new tr.active>td>i.icon-down-open-1 {
+      transform: rotate(180deg);
+      display: flex;
+      color: #26a69a;
+    }
+
+    /* .collapsible-body-new tr.active {
+            background-color: #f1f3f4;
+            border-top: 1px solid #1a2e63;
+        } */
+    /* .collapsible-body-new tr.active+tr {
+            border-bottom: 1px solid #1a2e63;
+        } */
+    .select-default-new {
+      outline: none !important;
+      height: 31px;
+      display: block;
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid #dadce0;
+      box-shadow: none !important;
+    }
+
+    [type="radio"]+label:after,
+    [type="radio"]+label:before {
+      opacity: 0 !important;
+    }
+
+    [type="radio"]+label {
+      border-bottom: 2px solid transparent;
+    }
+
+    [type="radio"]:checked+label {
+      border: 2px solid #1a2e63;
+    }
+
+    .etiquetaRoja {
+      background-color: red;
+    }
+
+    .etiquetaVerde {
+      background-color: green;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5>Documentos Institucionales</h5>
+      </li>
+    </ul>
+  </div>
+  <div class="row dashboard-wrapper content-container">
+    <!-- ------------------------------------------------------------------------------------------------------------- TAB.PLANTILLAS -->
+    <div class="col s12 no-padding">
+      <div class="col s12 m6 l6">
+        <div class="col s12 m6 l12 no-padding label-new m-b">
+          <input ng-model="form.nombre" id="form_nombre" type="text"
+            class="margin border-none white input-text-new input-w-p input-out-new w-100" autocomplete="off">
+          <label for="form_nombre">Nombre:</label>
+        </div>
+        <div class="col s12 m6 l6 no-padding label-new m-b">
+          <select ng-model="form.tipo" id="form_tipo" class="select-default-new input-out-new" style="box-shadow: none;"
+            watch>
+            <option value="">Seleccionar</option>
+            <option value="{{x.codigo}}" ng-repeat="x in list.listadoTipos" ng-selected="x.codigo == form.tipo">
+              {{x.nombre}}</option>
+          </select>
+          <label for="form_tipo">Tipo</label>
+        </div>
+        <div class="col s12 m6 l6 no-padding label-new m-b">
+          <select ng-model="form.estado" id="form_estado" class="select-default-new input-out-new m-l"
+            style="box-shadow: none;" watch>
+            <option value="">Seleccionar</option>
+            <option value="{{x.codigo}}" ng-repeat="x in list.listadoEstados" ng-selected="x.codigo == form.estado">
+              {{x.nombre}}</option>
+          </select>
+          <label for="form_estado">Estado</label>
+        </div>
+        <div class="col s12 m12 l12 no-padding label-new m-b">
+          <div data-file="{{form.soporteB64 ? form.soporteNombre : 'Seleccionar Documento (PDF - WORD - PPOINT - EXCEL)'}}"
+            class="input-out-new input-file-new">
+            <i class="icon-folder-open-1"></i>
+            <input id="form_soporte" data-index="1" type="file" class="margin border-none">
+          </div>
+          <label for="plantilla">Archivo:</label>
+        </div>
+        <input ng-click="guardarDocumento()" class="border-radius-none btn default-background w-100 white-text"
+          type="submit" value="{{form.accion == 'I' ? 'Guardar':'Actualizar'}} Documento" style="transition: all 0s;">
+        <input ng-click="formLimpiar()" ng-show="form.accion == 'U'" class="border-radius-none btn red w-100 white-text"
+          type="submit" value="Limpiar" style="transition: all 0s;">
+        <input ng-click="verHistorico()" ng-show="form.accion == 'U'"
+          class="border-radius-none btn green w-100 white-text" type="submit" value="Historico"
+          style="transition: all 0s;">
+      </div>
+      <div class="col s12 m6 l6">
+        <div style="overflow: auto;height: calc(90vh - 210px);">
+          <table class="striped table-bordered white position-relative">
+            <thead>
+              <tr class="default-background white-text">
+                <th class="center-align"><i class="icon-arrows-ccw cursor-pointer"
+                    ng-click="obtenerListado();formLimpiar()" title="Actualizar" style="font-size: 16px;"></i></th>
+                <th>
+                  <input type="text" ng-model="list.filtro" class="margin border-none"
+                    style="height: auto;font-size: 13px;" placeholder="Filtrar">
+                </th>
+                <th class="center-align">Tipo</th>
+                <th class="center-align">Estado</th>
+                <th colspan="2" class="center-align">Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="list.listado.length==0">
+                <td colspan="6">No hay contenido.</td>
+              </tr>
+              <tr ng-repeat="plantilla in list.listado | filter:{BDOC_NOMBRE:list.filtro}"
+                class="{{plantilla.BDOC_CODIGO == form.codigo ? 'focusElement' :''}}">
+                <td class="center-align" title="{{plantilla.BDOC_CODIGO}}">{{($index+1)}}</td>
+                <td>{{plantilla.BDOC_NOMBRE}}</td>
+                <td class="center-align">{{plantilla.BDOC_TIPO.split('-')[1]}}</td>
+                <td class="center-align">
+                  <span
+                    class="status {{plantilla.BDOC_ESTADO.split('-')[0] == 'A' ? 'etiquetaVerde' : 'etiquetaRoja'}}">{{plantilla.BDOC_ESTADO.split('-')[1]}}</span>
+                </td>
+                <td class="center-align">
+                  <i ng-click="descargaAdjunto(plantilla.BDOC_RUTA)" title="Descargar"
+                    class="{{icono(plantilla.BDOC_RUTA)}} cursor-pointer" style="font-size: 16px;"></i>
+                </td>
+                <td class="center-align">
+                  <i ng-click="editarDocumento(plantilla)" title="Editar Documento" class="icon-edit cursor-pointer"
+                    style="font-size: 15px;"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col s12 m12 l12" ng-show="form.historico">
+        <div style="overflow: auto;height: calc(70vh - 210px);">
+          <table class="striped table-bordered white position-relative">
+            <thead>
+              <tr class="default-background white-text">
+                <th class="center-align">#</th>
+                <th>
+                  Nombre
+                </th>
+                <th class="center-align">Tipo</th>
+                <th class="center-align">Estado</th>
+                <th class="center-align">Responsable</th>
+                <th class="center-align">Fecha</th>
+                <th class="center-align">-</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="form.historico.length==0">
+                <td colspan="6">No hay contenido.</td>
+              </tr>
+              <tr ng-repeat="plantilla in form.historico track by $index">
+                <td class="center-align" title="{{plantilla.BDOC_CODIGO}}">{{($index+1)}}</td>
+                <td>{{plantilla.BDOC_NOMBRE}}</td>
+                <td class="center-align">{{plantilla.BDOC_TIPO.split('-')[1]}}</td>
+                <td class="center-align">
+                  <span
+                    class="status {{plantilla.BDOC_ESTADO.split('-')[0] == 'A' ? 'etiquetaVerde' : 'etiquetaRoja'}}">{{plantilla.BDOC_ESTADO.split('-')[1]}}</span>
+                </td>
+                <td class="center-align">
+                  {{plantilla.BDOC_RESPONSABLE}}
+                </td>
+                <td class="center-align">
+                  {{plantilla.BDOF_FECHA_ACTUALIZACION}}
+                </td>
+                <td class="center-align">
+                  <i ng-click="descargaAdjunto(plantilla.BDOC_RUTA)" title="Descargar"
+                    class="{{icono(plantilla.BDOC_RUTA)}} cursor-pointer" style="font-size: 16px;"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>

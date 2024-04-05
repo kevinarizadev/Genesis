@@ -314,6 +314,7 @@ angular.module('GenesisApp')
         //VARIABLES INICIALES
         $scope.busqueda = {
           numero: null,
+          // numero: "8103",
           estado: "",
           regimen: "",
           prestador: "",
@@ -925,6 +926,7 @@ angular.module('GenesisApp')
       //VARIABLES INICIALES
       $scope.busqueda = {
         numero: null,
+        // numero: "8103",
         estado: "",
         regimen: "",
         prestador: "",
@@ -1595,12 +1597,15 @@ angular.module('GenesisApp')
           allowOutsideClick: false
         });
         swal.showLoading();
+
+        const v_pdocumento = ($scope.infoContrato.cod_concepto == 'CA' || $scope.infoContrato.cod_concepto == 'PG') ? $scope.infoContrato.documento : ''
         $http({
           method: 'POST',
           url: "php/contratacion/funccontratacion.php",
           data: {
             function: 'P_OBTENER_TIPO_ADJUNTO',
-            v_pdocumento: $scope.infoContrato.documento
+            v_pdocumento
+            // v_pdocumento: $scope.infoContrato.documento
           }
         }).then(function (response) {
           if (response.data.length > 0) {
@@ -1628,8 +1633,19 @@ angular.module('GenesisApp')
           }
         })
       }
+      $scope.ngTipoAdjuntos = function () {
+        // if ($scope.tipo_adjunto) {
+        //   $scope.listAdjunos.forEach(e => {
+        //     if ($scope.tipo_adjunto == e.cod_tipo_adjunto) {
+        //       $scope.tipo_adjunto = '';
+        //       swal('Información', 'Este archivo ya fue cargado', 'info');
+        //     }
+        //   });
+        // }
+      }
 
       $scope.p_inserta_adjunto_contrato = function () {
+        if (!$scope.tipo_adjunto) { swal('Información', 'Diligencie los campos', 'info'); return }
         //console.log($scope.fecha_vencimiento_adjunto);
         //console.log(parsedia($scope.fecha_vencimiento_adjunto));
         var f_vencimiento = new Date();
@@ -1664,7 +1680,7 @@ angular.module('GenesisApp')
             $scope.thisfile.val("");
             $scope.obtenerAdjuntos();
             $scope.thisfile.parent(".file-upload-wrapper").attr("data-text", 'Subir Archivo');
-            $scope.tipo_adjunto = "";
+            $scope.tipo_adjunto = null;
             $scope.fecha_vencimiento_adjunto = null;
 
           } else {
@@ -2964,6 +2980,18 @@ angular.module('GenesisApp')
         }
         if (regional == 'BOYACA') {
           $window.open('views/contratacion/formatos/anexo_soportes/anexo4_BOYACA.pdf');
+        }
+        if (regional == 'LA GUAJIRA') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_GUAJIRA.pdf');
+        }
+        if (regional == 'SUCRE') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_SUCRE.pdf');
+        }
+        if (regional == 'META') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_META.pdf');
+        }
+        if (regional == 'CORDOBA') {
+          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_CORDOBA.pdf');
         }
       }
       $scope.generaAnexo8 = function (infoContrato, tipominuta = '5') {

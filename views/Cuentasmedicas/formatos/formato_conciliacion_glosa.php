@@ -120,7 +120,7 @@
     </tr>
     <tr>
       <td colspan="2" class="txtCenter pad7">FECHA:</td>
-      <td colspan="1" class="txtCenter">{{datosCabeza.fecha}}</td>
+      <td colspan="1" class="txtCenter">{{fecha}}</td>
       <td colspan="1" class="txtCenter">LUGAR:</td>
       <td colspan="2" class="txtCenter">{{datosCabeza.lugar}}</td>
       <td colspan="2" class="txtCenter">{{datosCabeza.nombre_pss_nit}}</td>
@@ -149,7 +149,7 @@
 
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_IPS)}}</td>
       <td colspan="1" class="txtCenter">$ {{formatPeso2(x.VAL_GLOSA_ACEP_EPS)}}</td>
-      <td colspan="2" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA}}</td>
+      <td colspan="2" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA ? x.NTDC_OBSERVACION_ACEPTA : x.NTDC_COMENTARIO}}</td>
       <!-- <td colspan="2" class="txtCenter">{{x.NTDC_OBSERVACION_ACEPTA}}</td> -->
     </tr>
 

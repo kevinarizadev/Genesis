@@ -8,9 +8,11 @@ angular.module('GenesisApp')
       $("#modalmotivos").modal();
       $("#trazapqr").modal();
       $("#modalcambiofecha").modal();
+      $(".modal").modal();
       $scope.documentologueo = sessionStorage.getItem("cedula");
       // $scope.filterOptions = 'PQR';
       // $scope.numero = '252773';
+      // $scope.numero = '363915';
       // $scope.numero = '211516';//SUPER
       // setTimeout(() => { $scope.$apply(); }, 500);
       $scope.Rol_cargo = JSON.parse(sessionStorage.getItem("inicio_perfil")).cod_cargo;
@@ -21,30 +23,16 @@ angular.module('GenesisApp')
 
 
     $scope.validarPermisos = function () {
-      // const usuarios = [
-      //   { user: '1042454684' },//Ka
-      //   { user: '1052988663' },//edgardo.hernandez
-      //   { user: '72157887' }, //Alexander Berbesi
-      //   { user: '8634410' }, //Carlos Romero
-      //   { user: '1140861113' }, //robin.reales
-      //   { user: '1140826060' }, //kelly.mendoza
-      //   { user: '22494077' }, //Johana Montero
-      //   { user: '72200692' }, //Jorge reyes,
-      //   { user: '52936596' }, //Claudia Lamprea
-      //   { user: '1048211587' }, //Amilkar Urrego
-      //   { user: '24138522' }, //Johanna.ariza
-      //   { user: '32777066' }, //Brenda Ruiz
-      // ]
       $http({
         method: 'POST',
         url: "php/siau/pqr/Rpqr.php",
         data: {
-                  function: 'p_permisos_func',
-                  cedula: $scope.documentologueo
-              }
-      }).then(function(response){
-             $scope.permisosUsuario = response.data;
-             console.log($scope.permisosUsuario);
+          function: 'p_permisos_func',
+          cedula: $scope.documentologueo
+        }
+      }).then(function (response) {
+        $scope.permisosUsuario = response.data;
+        console.log($scope.permisosUsuario);
       })
 
 
@@ -619,7 +607,6 @@ angular.module('GenesisApp')
     $scope.validarMarcacion = function (pqr) {
       $scope.marcacionPQR_SN = 'N';
       $scope.marcacionPQR_observacion = 'N';
-      $scope.marcacionPQR_responsable = 'N';
       $http({
         method: 'POST',
         url: "php/siau/pqr/Rpqr.php",
@@ -632,7 +619,7 @@ angular.module('GenesisApp')
         if (data.marca) {
           $scope.marcacionPQR_SN = data.marca;
           $scope.marcacionPQR_observacion = data.observacion;
-          $scope.marcacionPQR_responsable = data.responsable_nom;
+          $scope.datosMarca = data;
           setTimeout(() => { $scope.$apply(); }, 500);
         } else {
           // swal({
@@ -644,119 +631,210 @@ angular.module('GenesisApp')
       });
     }
 
-    $scope.quitarMarcacion = function (pqr) {
-      swal({
-        title: 'Observación',
-        input: 'textarea',
-        inputValue: $scope.marcacionPQR_observacion,
-        showCancelButton: true,
-        cancelButtonText: 'Cerrar',
-        // showConfirmButton: false,
-        confirmButtonText: "Desmarcar",
-        customClass: 'swal-wide'
-      }).then(function (result) {
-        console.log(result)
-        if (result.length > 0) {
-          //
-
-          swal({
-            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
-            width: 200,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            animation: false
-          });
-          $http({
-            method: 'POST',
-            url: "php/siau/pqr/Rpqr.php",
-            data: {
-              function: 'crearMarcacionPQR',
-              pqr: pqr.CODIGO,
-              observacion: '',
-              responsable: $scope.documentologueo
-            }
-          }).then(function ({ data }) {
-            if (data.toString().substr(0, 3) != '<br') {
-              if (data.codigo == 0) {
-                swal('¡Mensaje!', data.mensaje, 'success').catch(swal.noop);
-                $scope.validarMarcacion(pqr.CODIGO);
-              } else {
-                swal('¡Mensaje!', data.mensaje, 'info').catch(swal.noop);
-              }
-            } else {
-              swal('¡Mensaje!', data, 'error').catch(swal.noop);
-            }
-          })
-          //
-        }
-        $(".confirm").attr('disabled', 'disabled');
-      }).catch(swal.noop);
-      document.querySelector('.swal2-textarea').setAttribute("readonly", true);
-      document.querySelector('.swal2-textarea').style.height = '400px';
-    }
-
     $scope.realizarMarcacion = function (pqr) {
-      swal({
-        title: 'Observación Gestion Pendiente',
-        input: 'textarea',
-        inputPlaceholder: 'Escribe un comentario...',
-        showCancelButton: true,
-        allowOutsideClick: false,
-        inputValue: '',
-        width: 'auto',
-      }).then(function (result) {
-        if (result.length >= 10) {
-          //
-          swal({
-            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
-            width: 200,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            animation: false
-          });
-          $http({
-            method: 'POST',
-            url: "php/siau/pqr/Rpqr.php",
-            data: {
-              function: 'crearMarcacionPQR',
-              pqr: pqr.CODIGO,
-              observacion: result,
-              responsable: $scope.documentologueo
-            }
-          }).then(function ({ data }) {
-            if (data.toString().substr(0, 3) != '<br') {
-              if (data.codigo == 0) {
-                swal('¡Mensaje!', data.mensaje, 'success').catch(swal.noop);
-                $scope.validarMarcacion(pqr.CODIGO);
-              } else {
-                swal('¡Mensaje!', data.mensaje, 'info').catch(swal.noop);
-              }
-            } else {
-              swal('¡Mensaje!', data, 'error').catch(swal.noop);
-            }
-          })
-          //
-        } else {
-          swal({
-            title: "Mensaje",
-            text: "¡La observación debe contener minimo 10 caracteres!",
-            type: "warning",
-          }).catch(swal.noop);
+      if ($scope.marcacionPQR_SN == 'S') {
+        $scope.modalCrearSeguimiento = {
+          pqr: pqr.CODIGO,
+          riesgo: pqr.RIESGO,
+          seguimiento: '',
+          servicio: $scope.datosMarca.servicio,
+          fechaSeg: new Date($scope.datosMarca.fecha_seg),
+          observacion: $scope.datosMarca.observacion,
+          prestador: $scope.datosMarca.prestador,
+          listadoPrestador: [],
+          observacionCierre: '',
         }
-      }).catch(swal.noop);
+      } else {
+        $scope.modalCrearSeguimiento = {
+          pqr: pqr.CODIGO,
+          riesgo: pqr.RIESGO,
+          seguimiento: '',
+          servicio: '',
+          fechaSeg: null,
+          observacion: '',
+          // prestador: '900073223-LOGIFARMA S.A.S.',
+          prestador: '',
+          listadoPrestador: [],
+          observacionCierre: '',
+        }
+      }
+      $("#modalCrearSeguimiento").modal("open");
+    }
+
+    $scope.ngChgServicioProgramado = function () {
+      let SysDay = new Date();
+      if ($scope.modalCrearSeguimiento.servicio == 'N') {
+        if ($scope.modalCrearSeguimiento.riesgo == 'RIESGO VITAL') {
+          $scope.modalCrearSeguimiento.fechaSeg = new Date(SysDay.setHours(24))
+        }
+        if ($scope.modalCrearSeguimiento.riesgo == 'RIESGO PRIORIZADO') {
+          $scope.modalCrearSeguimiento.fechaSeg = new Date(SysDay.setHours(48))
+        }
+        if ($scope.modalCrearSeguimiento.riesgo == 'RIESGO SIMPLE') {
+          $scope.modalCrearSeguimiento.fechaSeg = new Date(SysDay.setHours(72))
+        }
+      }
+      setTimeout(() => { $scope.$apply(); }, 500);
+    }
+
+    $scope.guardarSeguimiento = function () {
+      if ((!$scope.modalCrearSeguimiento.servicio || !$scope.modalCrearSeguimiento.fechaSeg || $scope.modalCrearSeguimiento.prestador.indexOf('-') == -1
+        || !$scope.modalCrearSeguimiento.observacion) && $scope.marcacionPQR_SN == 'N') {
+        swal("Mensaje", 'Complete los campos', "info").catch(swal.noop); return
+      }
+      if (!$scope.modalCrearSeguimiento.observacionCierre && $scope.marcacionPQR_SN == 'S') {
+        swal("Mensaje", 'Digite la observacion de cierre', "info").catch(swal.noop); return
+      }
+
+      let data = '';
+      if ($scope.marcacionPQR_SN == 'N') {
+        data = {
+          function: 'P_REGISTRAR_MARCA_PQR',
+          pqr: $scope.modalCrearSeguimiento.pqr,
+          servicio: $scope.modalCrearSeguimiento.servicio,
+          fechaSeg: formatDate($scope.modalCrearSeguimiento.fechaSeg),
+          observacion: $scope.modalCrearSeguimiento.observacion,
+          prestador: $scope.modalCrearSeguimiento.prestador.split('-')[0],
+          responsable: $scope.documentologueo
+        }
+      } else {
+        data = {
+          function: 'P_REGISTRAR_MARCA_PQR',
+          pqr: $scope.modalCrearSeguimiento.pqr,
+          observacion: $scope.modalCrearSeguimiento.observacionCierre,
+          responsable: $scope.documentologueo
+        }
+      }
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+        width: 200,
+        showConfirmButton: false,
+        animation: false
+      });
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data
+      }).then(function ({ data }) {
+        if (data.toString().substr(0, 3) == '<br' || data == 0) {
+          swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+        }
+        if (data.codigo == 0) {
+          swal("Mensaje", data.mensaje, "success").catch(swal.noop);
+          $scope.validarMarcacion($scope.modalCrearSeguimiento.pqr);
+          $scope.closeModal()
+        }
+        if (data.codigo == 1) {
+          swal("Mensaje", data.mensaje, "warning").catch(swal.noop);
+        }
+      });
+    }
+
+    $scope.obtenerPrestador = function () {
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+        width: 200,
+        showConfirmButton: false,
+        animation: false
+      });
+      $http({
+        method: 'POST',
+        url: "php/juridica/tutelas/functutelas.php",
+        data: {
+          function: "p_obtener_ips",
+          coinc: $scope.modalCrearSeguimiento.prestador
+        }
+      }).then(function ({ data }) {
+        swal.close();
+        if (data && data.toString().substr(0, 3) != '<br') {
+          if (data.length && data[0].CODIGO != '-1') {
+            $scope.modalCrearSeguimiento.listadoPrestador = data;
+            if (data.length == 1) {
+              $scope.modalCrearSeguimiento.prestador = data[0].CODIGO + '-' + data[0].NOMBRE;
+              return
+            }
+          } else {
+            $scope.modalCrearSeguimiento.listadoPrestador = [];
+            swal("Mensaje", 'Sin datos para mostrar', "warning").catch(swal.noop);
+          }
+        } else {
+          swal("Mensaje", data, "warning").catch(swal.noop);
+        }
+      })
+      setTimeout(() => { $scope.$apply(); }, 500);
     }
 
 
-    $scope.descargarExportadoMarcacion = () => {
-      window.open('views/siau/pqr/formatos/formato_marcacionsuper.php');
+    // $scope.descargarExportadoMarcacion = () => {
+    //   window.open('views/siau/pqr/formatos/formato_marcacionsuper.php');
+    // }
+
+
+    $scope.descargarExportadoMarcacion = function () {
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+        width: 200,
+        showConfirmButton: false,
+        animation: false
+      });
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+          function: "p_obtener_marcacion_registros",
+        }
+      }).then(function ({ data }) {
+        if (data.toString().substr(0, 3) == '<br' || data == 0) {
+          swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+        }
+        if (data.length > 0) {
+
+          var ws = XLSX.utils.json_to_sheet(data);
+          /* add to workbook */
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+          /* write workbook and force a download */
+          XLSX.writeFile(wb, "Reporte Marcacion PQR.xlsx");
+          const text = `Registros encontrados ${data.length}`
+          swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        }
+      })
+    }
+    $scope.closeModal = function () {
+      $('.modal').modal('close');
     }
 
     // $scope.descargarExportadoMarcacion();
 
     $scope.descargarExportadoMarcacion_Pqr = (pqr) => {
-      window.open('views/siau/pqr/formatos/formato_marcacionsuper_pqr.php?pqr=' + pqr.CODIGO, '_blank', "width=1080,height=1100");
+      // window.open('views/siau/pqr/formatos/formato_marcacionsuper_pqr.php?pqr=' + pqr.CODIGO, '_blank', "width=1080,height=1100");
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+          function: "p_obtener_marcacion_registro_pqrs",
+          numeropqr: pqr.CODIGO
+        }
+      }).then(function ({ data }) {
+        if (data.toString().substr(0, 3) == '<br' || data == 0) {
+          swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+        }
+        if (data.length > 0) {
+          let datos = data
+          var ws = XLSX.utils.json_to_sheet(datos);
+          /* add to workbook */
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+          /* write workbook and force a download */
+          XLSX.writeFile(wb, "Reporte Marcacion PQR.xlsx");
+          const text = `Registros encontrados ${datos.length}`
+          swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        }
+      })
+
+
     }
 
 
@@ -1008,14 +1086,14 @@ angular.module('GenesisApp')
         data: { function: 'p_lista_productos_pqr', pqr: $scope.numero }
       }).then(function ({ data }) {
         // if (!data[0].CODIGO) {
-          $scope.listServiciosModal = data;
-          $scope.pqrServiciosModal.status = 0;
-          $scope.permisosServiciosPQR();
-          if (x) {
-            setTimeout(() => {
-              $('#Sol').click();
-            }, 500);
-          }
+        $scope.listServiciosModal = data;
+        $scope.pqrServiciosModal.status = 0;
+        $scope.permisosServiciosPQR();
+        if (x) {
+          setTimeout(() => {
+            $('#Sol').click();
+          }, 500);
+        }
         // }
       })
     }
@@ -2128,6 +2206,10 @@ angular.module('GenesisApp')
       }
 
     }
+
+
+
+
 
 
     $scope.Obtener_Tipos_Documentos = function () {

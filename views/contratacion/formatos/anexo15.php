@@ -9,7 +9,8 @@
   <style type="text/css">
     @page {
       size: auto;
-      margin: 1em 2em 2em 2em;
+      /* margin: 1em 5em 5em 2em; */
+      margin: 1em;
       /* margin-left: 0.5em; */
     }
 
@@ -17,6 +18,11 @@
       #btnprint {
         display: none !important;
       }
+      @page {
+      size: auto;
+      /* margin: 1em 5em 5em 2em; */
+      /* margin-left: 0.5em; */
+    }
     }
 
     * {
