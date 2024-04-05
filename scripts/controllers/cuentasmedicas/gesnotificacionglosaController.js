@@ -15,13 +15,36 @@ angular.module('GenesisApp')
         $scope.Vista = 0;
         $scope.Tabs = 1;
 
-        $scope.verNotificaciones();
+        // $scope.verNotificaciones();
         $scope.hojaPermisosLimpiar();
+        $scope.consultarPermisos()
 
         setTimeout(() => { $scope.$apply(); }, 500);
         console.log(1)
 
       };
+
+      $scope.consultarPermisos = function () {
+        $scope.permisos = null
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/gesnotificacionglosa.php",
+          data: {
+            function: 'P_CONSULTA_PERMISOS_USUARIO',
+            cedula: $scope.Rol_Cedula
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Sin permisos", 'Debe solicitar acceso al area de Cuentas Medicas Nacional', "warning").catch(swal.noop); return
+          }
+          if (data.length > 0) {
+            $scope.permisos = data[0];
+            $scope.verNotificaciones();
+          }
+          console.log(data);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
 
 
       $scope.verNotificaciones = function (msg) {
@@ -424,8 +447,6 @@ angular.module('GenesisApp')
         $scope.openModal('modalUsuario')
         setTimeout(() => { $scope.$apply(); }, 500);
       }
-
-
       $scope.modificarFunc = function (x) {
         swal({
           title: '¿Desea actualizar el estado del funcionario?',
@@ -547,6 +568,46 @@ angular.module('GenesisApp')
             });
           }
         }).catch(swal.noop);
+      }
+
+      $scope.modalBuscarFacturaNg = function () {
+        $scope.modalFacturaNg = {}
+        $scope.modalFacturaNg.nit = '';
+        $scope.modalFacturaNg.factura = '';
+
+        $scope.openModal('modalFacturaNg')
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+      $scope.buscarFacturaNg = function () {
+        if (!$scope.modalFacturaNg.nit) return false
+        if (!$scope.modalFacturaNg.factura) return false
+
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/gesnotificacionglosa.php",
+          data: {
+            function: 'P_CONSULTA_FACTURA',
+            nit: $scope.modalFacturaNg.nit,
+            factura: $scope.modalFacturaNg.factura,
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            $scope.filter('')
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.toString().substr(0, 3) == 'NG-') {
+            $scope.filter(data)
+            $scope.filtro = data;
+            $scope.closeModal();
+            swal.close();
+          }
+        });
       }
 
       $scope.openModal = function (modal) {

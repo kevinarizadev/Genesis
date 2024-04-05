@@ -2,8 +2,8 @@
 
 function Connect_FTP()
 {
-     $ftp_server = "172.20.0.2";//IP privada oracle tunel - sophos
-    //$ftp_server = "152.70.137.27";//IP privada oracle tunel - sophos <---- Usar en servidor
+    //  $ftp_server = "172.20.0.2";//IP privada oracle tunel - sophos
+    $ftp_server = "152.70.137.27";//IP privada oracle tunel - sophos <---- Usar en servidor
     $ftp_port = "22";
     $ftp_user = "opc"; // <--- SCP
 

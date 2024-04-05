@@ -207,7 +207,8 @@ angular.module('GenesisApp')
               ESTATUS_SOL: response2.data[i].ESTATUS_SOL,
               RESPONSABLE: $scope.Cargo_Responsables(response2.data[i].ESTATUS_SOL),
               RESPONSABLE_ACTUAL: $scope.Cargo_Responsables(parseInt(response2.data[i].ESTATUS_SOL) + 1, response2.data[i].ESTADO_SOL),
-              ESTADO: $scope.Estado_Solicitud_Tooltip(response2.data[i].ESTADO_SOL)
+              ESTADO: $scope.Estado_Solicitud_Tooltip(response2.data[i].ESTADO_SOL),
+              MARCA_TUTELA: response2.data[i].MARCA_TUTELA,
             })
           }
           // }

@@ -20,7 +20,7 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
   var dia = (f.getDate() <= 9) ? '0' + f.getDate() : f.getDate();
   var mes = ((f.getMonth() + 1) <= 9) ? '0' + (f.getMonth() + 1) : (f.getMonth() + 1);
   $scope.FechayHora = dia + '/' + mes + '/' + f.getFullYear() + '  ' + hora + ':' + min + ':' + seg + ' ' + ampm;
-  $scope.fecha = [dia, mes,f.getFullYear()].join('/');
+  $scope.fecha = [dia, mes, f.getFullYear()].join('/');
 
   $scope.totalFactura = 0;
   $scope.totalGlosa = 0;
@@ -44,7 +44,7 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
       numero: $location.search().numero,
       ubicacion: $location.search().ubicacion
     }
-  }).then(function ({data}) {
+  }).then(function ({ data }) {
     swal.close()
     $scope.datosDetalle = data.json;
     $scope.ips = data.json[0].RAZON_SOCIAL;
@@ -55,6 +55,12 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
     $scope.responsableEPS = data.json[0].RESPONSABLE_EPS;
 
     data.json.forEach(e => {
+      e.VALOR_FS = e.VALOR_FS || "0";
+      e.VALOR_GLOSA = e.VALOR_GLOSA || "0";
+      e.NTDV_VALOR_GI_IPS = e.NTDV_VALOR_GI_IPS || "0";
+      e.NTDV_VALOR_GL_EPS = e.NTDV_VALOR_GL_EPS || "0";
+      e.NTDV_VALOR_RATIFICADO = e.NTDV_VALOR_RATIFICADO || "0";
+
       $scope.totalFactura = parseFloat(e.VALOR_FS) + $scope.totalFactura;
       $scope.totalGlosa = parseFloat(e.VALOR_GLOSA) + $scope.totalGlosa;
       $scope.Total_Glosa_IPS = parseFloat(e.NTDV_VALOR_GI_IPS) + $scope.Total_Glosa_IPS;
@@ -62,8 +68,16 @@ angular.module('GenesisApp', []).config(function ($locationProvider) {
       $scope.Total_Glosa_MANT = parseFloat(e.NTDV_VALOR_RATIFICADO) + $scope.Total_Glosa_MANT;
 
     });
+
+    $scope.Total_Glosa_IPS = $scope.Total_Glosa_IPS || "0"
+    $scope.Total_Glosa_EPS = $scope.Total_Glosa_EPS || "0"
+    $scope.Total_Glosa_MANT = $scope.Total_Glosa_MANT || "0"
+
+
+
   })
 
+  console.log(1);
 
   $scope.formatPeso2 = function (num) {
     if (num != undefined && num != null && num != "") {

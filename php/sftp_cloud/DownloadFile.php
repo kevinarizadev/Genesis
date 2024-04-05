@@ -20,8 +20,11 @@ function Connect_FTP()
 	return $con_id;
 }
 
+// function DownloadFile()
 function DownloadFile($ruta /* Ruta del soporte */)
 {
+  // $ruta = '/cargue_ftp/Digitalizacion/Genesis/Autorizaciones/Pro/PRO-37301-44001.pdf';
+  // $ruta = '/cargue_ftp/Digitalizacion/Genesis/PQR/31122023/S370865_1.pdf';
 	$root = $_SERVER['DOCUMENT_ROOT'].'/genesis/';
 	// $root = $_SERVER['DOCUMENT_ROOT'].'/'; // <---- Usar en servidor
 	$con_id = Connect_FTP();
@@ -29,7 +32,7 @@ function DownloadFile($ruta /* Ruta del soporte */)
 	$local_file = $root.'temp/'.$name_file;//Concatenamos la Ruta de la carpeta a donde se descargara con el nombre del archivo
 	$sftp = ssh2_sftp($con_id); // Creamos la conexion sftp
 	$ruta = '/data/sftpuser'.$ruta; // Concatenamos la ruta raiz del servidor sftp con la ruta del archivo
-	if(!file_exists("ssh2.sftp://$sftp$ruta")){ return '0 - Archivo no encontrado'; } //Validamos si el archivo existe en el servidor Oracle
+	if(!file_exists("ssh2.sftp://$sftp$ruta")){ return '0 - Archivo no encontrado2'; } //Validamos si el archivo existe en el servidor Oracle
 	ssh2_scp_recv($con_id, $ruta, $local_file);// Traemos el archivo del servidor y lo enviamos a la carpeta temp de Genesis
 	$con_id = null; unset($con_id); //Cerrar Conex
 	return ($name_file); // Imprimimos el nombre del archivo para que se genere la descarga del mismo

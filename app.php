@@ -340,6 +340,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/planeacion/normatividadController.js"></script>
 <script src="scripts/controllers/planeacion/adminprocesospoaController.js"></script>
 <script src="scripts/controllers/planeacion/procesospoaController.js"></script>
+<script src="scripts/controllers/intranet/admindocumentosinstController.js"></script>
 <!--Intranet -->
 <script src="scripts/controllers/intranet/adminprocesosController.js"></script>
 <script src="scripts/controllers/intranet/procesosController.js"></script>

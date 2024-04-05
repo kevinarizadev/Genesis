@@ -181,12 +181,12 @@ angular.module('GenesisApp').controller('miscarguesripsController', ['$scope', '
       //   proceso: data.codigo
       // });
       // console.log(data);
-      // var datos = {
-      //   nit: data.nit,
-      //   habilitacion: data.habilitacion,
-      //   recibo: data.recibo,
-      //   codigo: data.codigo
-      // };
+      var datos = {
+        nit: data.nit,
+        habilitacion: data.habilitacion,
+        recibo: data.recibo,
+        codigo: data.codigo
+      };
       window.open('views/Cuentasmedicas/formatos/informe_validacion.php?datos=' + angular.toJson(datos), '_blank', "width=900,height=1100");
     }
     $scope.verdetalle = function (codigo) {

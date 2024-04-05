@@ -1,12 +1,19 @@
 'use strict';
 angular.module('GenesisApp')
-  .controller('listadoinstructivosctrl', ['$scope', '$sce',
-    function ($scope, $sce) {
+  .controller('listadoinstructivosctrl', ['$scope', '$sce', '$http',
+    function ($scope, $sce, $http) {
       $scope.url = $sce.trustAsResourceUrl('');
-      $scope.viewPDF = function (link) {
-        console.log(link)
-        // $scope.url = $sce.trustAsResourceUrl(link);
-        window.open($sce.trustAsResourceUrl(link))
+      $scope.viewPDF = function (ruta) {
+        $http({
+          method: 'POST',
+          url: "php/intranet/admindocumentosinst.php",
+          data: {
+            function: 'descargaAdjunto',
+            ruta
+          }
+        }).then(function (response) {
+          window.open("temp/" + response.data);
+        });
       }
       $scope.accordion = {
         current: null,
@@ -14,66 +21,117 @@ angular.module('GenesisApp')
         current3: null
       };
 
-      $scope.Listado_Plantilla = [
-        {
-          "nombre": "Plantilla Presentación Power Point",
-          "url": "docs/listado_planillasx/plantillas para presentaciones diapositivas en powerpoint.pptx"
-        },
-        {
-          "nombre": "Plantilla comunicado externo tamaño carta",
-          "url": "docs/listado_planillasx/plantilla carta membrete externo.docx"
-        },
-        {
-          "nombre": "Plantilla comunicado interno tamaño carta",
-          "url": "docs/listado_planillasx/plantilla carta membrete comunicado interno.docx"
-        },
-        {
-          "nombre": "Plantilla Informe",
-          "url": "docs/listado_planillasx/plantilla de informe.docx"
-        },
-        {
-          "nombre": "Plantilla comunicado externo tamaño oficio",
-          "url": "docs/listado_planillasx/plantilla oficio membrete externo.docx"
-        },
-        {
-          "nombre": "Plantilla comunicado interno tamaño oficio",
-          "url": "docs/listado_planillasx/plantilla oficio membrete comunicado interno.docx"
-        },
-        {
-          "nombre": "GC-FR-01 Formato de Acta de Reunión",
-          "url": "docs/listado_planillasx/GC-FR-01 Formato de Acta de Reunión.docx"
-        }
-      ];
+      $scope.obtenerListado = function (x) {
+        // Recibe x para no mostrar swalLoading
+        $scope.Listado_Plantilla = []
+        $scope.Listado_Organigrama = []
+        $scope.Listado_Manual = []
+        if (!x)
+          swal({
+            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+            width: 200,
+            showConfirmButton: false,
+            animation: false
+          });
+        $http({
+          method: 'POST',
+          url: "php/intranet/admindocumentosinst.php",
+          data: {
+            function: 'p_lista_documentos_inst',
+            estado: 'A'
+          }
+        }).then(function ({ data }) {
+          if (!x) swal.close();
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Mensaje", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          data.forEach(e => {
+            if (e.BDOC_TIPO.split('-')[0] == 'P') {
+              $scope.Listado_Plantilla.push({
+                'nombre': e.BDOC_NOMBRE,
+                'url': e.BDOC_RUTA
+              })
+            }
+            if (e.BDOC_TIPO.split('-')[0] == 'M') {
+              $scope.Listado_Manual.push({
+                'nombre': e.BDOC_NOMBRE,
+                'url': e.BDOC_RUTA
+              })
+            }
+            if (e.BDOC_TIPO.split('-')[0] == 'O') {
+              $scope.Listado_Organigrama.push({
+                'nombre': e.BDOC_NOMBRE,
+                'url': e.BDOC_RUTA
+              })
+            }
+          });
 
-      $scope.Listado_Organigrama = [
-        {
-          "nombre": "Organigrama Nacional",
-          "url": "docs/listado_organigramas/Organigrama Nacional y Regional.pdf"
-        },
-        {
-          "nombre": "Organigrama Regional",
-          "url": "docs/listado_organigramas/Organigrama Regional.pdf"
-        }
-      ];
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
 
-      $scope.Listado_Manual = [
-        {
-          "nombre": "Manual de Marca",
-          "url": "docs/listado_manuales/Manual de Marca.pdf"
-        },
-        {
-          "nombre": "Manual de Estilo",
-          "url": "docs/listado_manuales/Manual de Estilo.pdf"
-        },
-        {
-          "nombre": "Cartilla de Pausas Saludables",
-          "url": "docs/listado_manuales/Cartilla Pausas.pdf"
-        },
-        {
-          "nombre": "Manual de Gestion de Calidad",
-          "url": "docs/listado_manuales/Manual Gestion de Calidad.pdf"
-        }
-      ];
+      $scope.obtenerListado()
+
+      // $scope.Listado_Plantilla = [
+      //   {
+      //     "nombre": "Plantilla Presentación Power Point",
+      //     "url": "docs/listado_planillas/plantillas para presentaciones diapositivas en powerpoint.pptx"
+      //   },
+      //   {
+      //     "nombre": "Plantilla comunicado externo tamaño carta",
+      //     "url": "docs/listado_planillas/plantilla carta membrete externo.docx"
+      //   },
+      //   {
+      //     "nombre": "Plantilla comunicado interno tamaño carta",
+      //     "url": "docs/listado_planillas/plantilla carta membrete comunicado interno.docx"
+      //   },
+      //   {
+      //     "nombre": "Plantilla Informe",
+      //     "url": "docs/listado_planillas/plantilla de informe.docx"
+      //   },
+      //   {
+      //     "nombre": "Plantilla comunicado externo tamaño oficio",
+      //     "url": "docs/listado_planillas/plantilla oficio membrete externo.docx"
+      //   },
+      //   {
+      //     "nombre": "Plantilla comunicado interno tamaño oficio",
+      //     "url": "docs/listado_planillas/plantilla oficio membrete comunicado interno.docx"
+      //   },
+      //   {
+      //     "nombre": "GC-FR-01 Formato de Acta de Reunión",
+      //     "url": "docs/listado_planillas/GC-FR-01 Formato de Acta de Reunión.docx"
+      //   }
+      // ];
+
+      // $scope.Listado_Organigrama = [
+      //   {
+      //     "nombre": "Organigrama Nacional",
+      //     "url": "docs/listado_organigramas/Organigrama Nacional y Regional.pdf"
+      //   },
+      //   {
+      //     "nombre": "Organigrama Regional",
+      //     "url": "docs/listado_organigramas/Organigrama Regional.pdf"
+      //   }
+      // ];
+
+      // $scope.Listado_Manual = [
+      //   {
+      //     "nombre": "Manual de Marca",
+      //     "url": "docs/listado_manuales/Manual de Marca.pdf"
+      //   },
+      //   {
+      //     "nombre": "Manual de Estilo",
+      //     "url": "docs/listado_manuales/Manual de Estilo.pdf"
+      //   },
+      //   {
+      //     "nombre": "Cartilla de Pausas Saludables",
+      //     "url": "docs/listado_manuales/Cartilla Pausas.pdf"
+      //   },
+      //   {
+      //     "nombre": "Manual de Gestion de Calidad",
+      //     "url": "docs/listado_manuales/Manual Gestion de Calidad.pdf"
+      //   }
+      // ];
 
       $scope.listado = [
         {

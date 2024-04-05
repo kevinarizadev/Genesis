@@ -22,13 +22,13 @@ angular.module('GenesisApp')
           swal.showLoading();
         }
 
-        $scope.listaGlosa = [{}];
-        swal.close()
+        $scope.listaGlosa = [];
+        // swal.close()
 
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/conciliaciondeglosasips.php",
-          data: { function: 'p_lista_glosas_estado_conc_agru_consulta', nit: $scope.Rol_Nit, marcaConciliada: 'N' }
+          data: { function: 'p_lista_glosas_estado_conc_agru_consulta', nit: $scope.Rol_Nit, tipo: 'I' }
         }).then(function ({ data }) {
           if (data.toString().substr(0, 3) != '<br') {
             if (data.length) {

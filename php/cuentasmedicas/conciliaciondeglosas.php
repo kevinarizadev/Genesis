@@ -62,13 +62,14 @@ function p_genera_conc_porc()
   global $request;
   $empresa = '1';
   $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_GLOSA.p_genera_conc_porc(:v_pempresa,:v_pdocumento,:v_pnumero,:v_pubicacion,:v_pobservacion,:v_pvalor_fd,
-  :v_pporc_gl,:v_pporc_gi,:v_presponsable,:v_pjson_row); end;');
+  :v_pvalor_mantenido,:v_pporc_gl,:v_pporc_gi,:v_presponsable,:v_pjson_row); end;');
   oci_bind_by_name($consulta, ':v_pempresa', $empresa);
   oci_bind_by_name($consulta, ':v_pdocumento', $request->documento);
   oci_bind_by_name($consulta, ':v_pnumero', $request->numero);
   oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
   oci_bind_by_name($consulta, ':v_pobservacion', $request->observacion);
   oci_bind_by_name($consulta, ':v_pvalor_fd', $request->valorFD);
+  oci_bind_by_name($consulta, ':v_pvalor_mantenido', $request->mantenido);
   oci_bind_by_name($consulta, ':v_pporc_gl', $request->porcentajeGL);
   oci_bind_by_name($consulta, ':v_pporc_gi', $request->porcentajeGI);
   oci_bind_by_name($consulta, ':v_presponsable', $request->responsable);
@@ -301,4 +302,48 @@ function p_adjunto_glosa_agru()
     echo 0;
   }
   oci_close($c);
+}
+
+function p_lista_glosas_estado_conc_agru_1()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $empresa = '1';
+  $tercero = '0';
+  $consulta = oci_parse($c, 'begin PQ_GENESIS_GLOSA.p_lista_glosas_estado_conc_agru_1(:v_pempresa,:v_ptercero,:v_json_out,:v_result); end;');
+  oci_bind_by_name($consulta, ':v_pempresa', $empresa);
+  oci_bind_by_name($consulta, ':v_ptercero', $tercero);
+  oci_bind_by_name($consulta, ':v_json_out', $json, 4000);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ":v_result", $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  if (isset($json) && json_decode($json)->Codigo == 0) {
+    $datos = [];
+    oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+
+    oci_free_statement($consulta);
+    oci_free_statement($cursor);
+
+    echo json_encode($datos);
+  } else {
+    echo json_encode($json);
+  }
+}
+
+function P_CONSULTA_PERMISOS_USUARIO()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'begin PQ_GENESIS_GLOSA.P_CONSULTA_PERMISOS_USUARIO(:v_pcedula,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pcedula', $request->cedula);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
 }

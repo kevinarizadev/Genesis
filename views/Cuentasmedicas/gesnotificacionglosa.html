@@ -125,7 +125,7 @@
             <a ng-click="setTab(1)" href class="active">Gestión
             </a>
           </li>
-          <li class="tab col w-auto">
+          <li class="tab col w-auto" ng-if="permisos.EADC_ADMIN == 'S'">
             <a ng-click="setTab(2);" href>Permisos</a>
           </li>
         </ul>
@@ -136,7 +136,7 @@
   <!-- Glosas -->
   <div class="row dashboard-wrapper content-container white"
     style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;"
-    ng-show="Tabs == 1 && Vista == 0">
+    ng-show="permisos && Tabs == 1 && Vista == 0">
 
     <div class="col l12 m12 s12" style="position:relative">
       <div class="black-text title-panel"
@@ -144,6 +144,7 @@
         <div>
           <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="verNotificaciones()"></i>
           Listado de Notificaciones Pendientes ({{listadoNotificaciones.length}})
+          <i class="icon-search-2 default-color cursor-pointer" title="Encontrar Factura" ng-click="modalBuscarFacturaNg()"></i>
         </div>
 
         <input type="text" class="margin border-none input-text-new" style="width: 20vw;"
@@ -514,50 +515,85 @@
     <!-- //-// -->
   </div>
   <!--  -->
-    <!-- /////////////////////////////////////////MODAL ADMIN///////////////////////////////////////// -->
-    <div id="modalUsuario" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
-      <div class="col s12 m6 l6 card margin">
-        <div class="card-content default-linear-gradient border-radius-none white-text">
-          <div class="col s11">
-            <h5 class="margin">Permisos del Usuario</h5>
-          </div>
+  <!-- /////////////////////////////////////////MODAL ADMIN///////////////////////////////////////// -->
+  <div id="modalUsuario" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="card-content default-linear-gradient border-radius-none white-text">
+        <div class="col s11">
+          <h5 class="margin">Permisos del Usuario</h5>
         </div>
-        <!-- /PRODUCTOS OREQ/ -->
-        <div class="card-action" id="card-action"
-          style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
-          <!-- AGREGAR ITEMS -->
-          <div class="col s12 m12 l12">
-            <!-- CAMPOS -->
-            <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
-              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" readonly
-                ng-model="modalUsuario.nombre">
-              <label>Funcionario</label>
-            </div>
-            <!-- <div class="col l12 m12 s12 row"> -->
-            <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
-              <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
-                ng-model="modalUsuario.estado">
-                <option value="" disabled>SELECCIONAR</option>
-                <option value="A">Activo</option>
-                <option value="I">Inactivo</option>
-              </select>
-              <label>Estado</label>
-            </div>
-
-
-
-            <div class="col l12" style="text-align:center;margin-bottom: 20px;">
-              <button style="border-radius: 20px;" class="btn" ng-click="modificarFunc(modalUsuario)">Actualizar
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- ///////// -->
       </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12 m12 l12">
+          <!-- CAMPOS -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" readonly
+              ng-model="modalUsuario.nombre">
+            <label>Funcionario</label>
+          </div>
+          <!-- <div class="col l12 m12 s12 row"> -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+              ng-model="modalUsuario.estado">
+              <option value="" disabled>SELECCIONAR</option>
+              <option value="A">Activo</option>
+              <option value="I">Inactivo</option>
+            </select>
+            <label>Estado</label>
+          </div>
+
+
+
+          <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+            <button style="border-radius: 20px;" class="btn" ng-click="modificarFunc(modalUsuario)">Actualizar
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
     </div>
+  </div>
+  <!-- /////////////////////////////////////////MODAL ADMIN///////////////////////////////////////// -->
+  <div id="modalFacturaNg" class="modal" style="margin: 0 auto;max-height:90%;width: 30%;top:0px !important;">
+    <div class="col s12 m6 l6 card margin">
+      <div class="card-content default-linear-gradient border-radius-none white-text">
+        <div class="col s11">
+          <h5 class="margin">Buscar Factura</h5>
+        </div>
+      </div>
+      <!-- /PRODUCTOS OREQ/ -->
+      <div class="card-action" id="card-action"
+        style="display: inline-block;width: 100%;padding-bottom: 0;overflow-y: hidden;">
+        <!-- AGREGAR ITEMS -->
+        <div class="col s12 m12 l12">
+          <!-- CAMPOS -->
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+              ng-model="modalFacturaNg.nit">
+            <label>Nit</label>
+          </div>
+          <div class="col s6 no-padding label-new m-b" style="margin-bottom:3rem;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+              ng-model="modalFacturaNg.factura">
+            <label>Factura</label>
+          </div>
+
+          <div class="col l12" style="text-align:center;margin-bottom: 20px;">
+            <button style="border-radius: 20px;" class="btn" ng-click="buscarFacturaNg()">Consultar
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ///////// -->
+    </div>
+  </div>
   <!--  -->
   <!--  -->
   <style>
+
 
     .Con_pulse_A {
       border-radius: 50%;

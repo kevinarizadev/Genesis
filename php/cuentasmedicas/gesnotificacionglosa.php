@@ -182,6 +182,7 @@ function P_CONSULTA_PERMISOS_USUARIO()
   global $request;
   $consulta = oci_parse($c, 'begin PQ_GENESIS_GLOSA.P_CONSULTA_PERMISOS_USUARIO(:v_pcedula,:v_presponse); end;');
   oci_bind_by_name($consulta, ':v_pcedula', $request->cedula);
+  // oci_bind_by_name($consulta, ':v_pcedula', $cedula);
   $cursor = oci_new_cursor($c);
   oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
   oci_execute($consulta);
@@ -228,3 +229,25 @@ function P_CONSULTA_PERMISOS_IPS()
   oci_free_statement($cursor);
   echo json_encode($datos);
 }
+
+function P_CONSULTA_FACTURA()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'begin PQ_GENESIS_GLOSA.P_CONSULTA_FACTURA(:v_pnit,:v_pfactura,:v_pdoc_documento,:v_pdoc_numero,:v_pdoc_ubicacion); end;');
+  oci_bind_by_name($consulta, ':v_pnit', $request->nit);
+  oci_bind_by_name($consulta, ':v_pfactura', $request->factura);
+
+  oci_bind_by_name($consulta, ':v_pdoc_documento', $v_pdoc_documento, 20);
+  oci_bind_by_name($consulta, ':v_pdoc_numero', $v_pdoc_numero, 20);
+  oci_bind_by_name($consulta, ':v_pdoc_ubicacion', $v_pdoc_ubicacion, 20);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($v_pdoc_documento)) {
+    $json = trim($v_pdoc_documento).'-'.$v_pdoc_numero.'-'.$v_pdoc_ubicacion;
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}
+
