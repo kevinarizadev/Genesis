@@ -658,11 +658,17 @@ angular.module('GenesisApp')
           observacionCierre: '',
         }
       }
+      $scope.fechaSeg_dsb = false;
       $("#modalCrearSeguimiento").modal("open");
     }
 
     $scope.ngChgServicioProgramado = function () {
+      $scope.fechaSeg_dsb = false;
       let SysDay = new Date();
+      if($scope.marcacionPQR_SN == 'S' || ($scope.modalCrearSeguimiento.servicio == 'N' && $scope.modalCrearSeguimiento.riesgo)){
+        $scope.fechaSeg_dsb = true;
+      }
+      
       if ($scope.modalCrearSeguimiento.servicio == 'N') {
         if ($scope.modalCrearSeguimiento.riesgo == 'RIESGO VITAL') {
           $scope.modalCrearSeguimiento.fechaSeg = new Date(SysDay.setHours(24))
@@ -1578,9 +1584,9 @@ angular.module('GenesisApp')
               if ($scope.tempfilterOptions == 'PQR') {
 
                 $scope.Validar_TUACGS(result.pqr[0].CODIGO);
-                if (result.pqr[0].COD_SUPERSALUD) {
+                // if (result.pqr[0].COD_SUPERSALUD) {
                   $scope.validarMarcacion(result.pqr[0].CODIGO);
-                }
+                // }
               }
 
             }

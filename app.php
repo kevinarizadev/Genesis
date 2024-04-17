@@ -286,6 +286,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/cuentasmedicas/radicacionripscapitaController.js?v=7"></script>
 <script src="scripts/controllers/cuentasmedicas/administracionripsController.js"></script>
 <script src="scripts/controllers/cuentasmedicas/miscarguesripsController.js"></script>
+<script src="scripts/controllers/cuentasmedicas/radicaciondigitalController.js"></script>
 <script src="scripts/controllers/cuentasmedicas/radicarfacturasController.js"></script>
 <script src="scripts/controllers/cuentasmedicas/gestionradicadoscontroller.js"></script>
 <script src="scripts/controllers/cuentasmedicas/consulta_usuario_ips_controller.js"></script>

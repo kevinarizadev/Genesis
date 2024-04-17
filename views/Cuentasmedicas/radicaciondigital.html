@@ -1,0 +1,408 @@
+<div id="pantalla" class="white newdesing" style="position:relative">
+  <style>
+    #consolidadoerror>* {
+      margin: auto;
+    }
+
+    #tabla_scroll th {
+      padding: 3px 10px;
+    }
+
+    #tabla_scroll li>button.btn {
+      font-size: small;
+      height: auto;
+      line-height: inherit;
+      padding: 0 1rem;
+    }
+
+    .notif {
+      font-size: .9em;
+      margin-left: -8px;
+      color: red;
+      padding: 2px;
+      position: absolute;
+      margin: -1.3em 0em 0em -3em;
+      font-weight: 700;
+      font-family: system-ui;
+      font-style: italic;
+      animation: heartbeat 1.5s ease-in-out infinite both;
+    }
+
+    @keyframes heartbeat {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    #ajustariconos {
+      display: flex;
+    }
+
+    #ajustariconos div {
+      margin: auto;
+    }
+  </style>
+  <!-- Encabezado -->
+  <div class="row section-header">
+    <ul class="left mailbox-custom-search list-inline"
+      style="width: 100%;display: flex;justify-content: space-between;align-items: center;">
+      <li id="inicio">
+        <h5>Radicación Digital de Facturas Radicadas</h5>
+      </li>
+      <!-- <li style="display:flex;align-items: center;">
+        Actualizar <i ng-click="cargarRips()" class="fontello-icon icon-cw-1"
+          style="cursor: pointer;margin-right: 1em;font-size: 20px;"></i>
+      </li> -->
+      <div>
+        <ul style="text-align: center;" class="pagination">
+          <span ng-click="filter('E')" class="c-pointer status orange">EN ESPERA
+            <b>{{contadores.espera}}</b></span>
+          <span ng-click="filter('A')" class="c-pointer status light-blue">ANALIZANDO
+            <b>{{contadores.analizando}}</b></span>
+          <span ng-click="filter('V')" class="c-pointer status green">VALIDADO
+            <b>{{contadores.validado}}</b></span>
+          <span ng-click="filter('X')" class="c-pointer status red">ERROR
+            <b>{{contadores.error}}</b></span>
+        </ul>
+      </div>
+
+      <!--  -->
+    </ul>
+  </div>
+  <!-- Contenido -->
+  <div class="row dashboard-wrapper content-container white"
+    style="padding-bottom: 20px;margin-bottom: 0;padding-left: 20px;padding-right: 20px;">
+    <div class="col l12 m12 s12" style="position:relative" ng-show="Vista == 0">
+
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <div>
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="cargarRips()"></i>
+          Listado de Radicaciones ({{listaRIPS.length}})
+        </div>
+
+        <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-model="filtro"
+          placeholder="Buscar en la tabla" ng-change="filter(filtro)">
+      </div>
+
+
+      <!-- <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="verNotificaciones()"></i>
+        Listado de Radicaciones
+        <input type="text" class="margin border-none input-text-new" ng-keyup="filter(filtro)" ng-model="filtro"
+          placeholder="Buscar en la tabla">
+      </div> -->
+      <div id="tabla_scroll">
+        <div class="responsive">
+          <table class="table striped table-bordered white">
+            <thead>
+              <tr>
+                <th>ID PROCESO</th>
+                <th>RECIBO</th>
+                <th>FECHA REGISTRO</th>
+                <th>CANTIDAD FACTURAS</th>
+                <th>ESTADO FACTURAS</th>
+                <th>ACCIÓN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="rip in listaRIPSTemp | inicio: currentPage * pageSize | limitTo: pageSize"
+                ng-hide="listaRIPSTemp.length == 0">
+                <td>{{rip.CODIGO_PROCESO}}</td>
+                <td>{{rip.CODIGO_RECIBO}}</td>
+                <td>{{rip.FECHA_PROCESO_FORMAT}}</td>
+                <td>{{rip.FACTURAS}}</td>
+                <td>
+                  <span
+                    class="status {{getColorEstado(rip.OCR_ESTADO_FACTURAS)}}">{{rip.OCR_ESTADO_FACTURAS_NOMB}}</span>
+                </td>
+                <td>
+                  <i class="icon-eye-1" style="cursor:pointer;font-size: 2em;" title="Detalle"
+                    ng-click="verFacturas(rip)"></i>
+                </td>
+              </tr>
+              <tr ng-show="listaRIPSTemp.length == 0">
+                <th colspan="6">
+                  <center>No hay cargues para mostrar</center>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ul ng-hide="listaRIPSTemp.length == 0" style="text-align: center;" class="pagination"
+          ng-hide="listaRIPSTemp.length > 0">
+          <li><button ng-disabled='currentPage == 0' class="btn"
+              ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          </li>
+          <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1' class="btn"
+              ng-click='setPage(page.no)'>{{page.no}}</button></li>
+          <li><button ng-disabled='currentPage >= listaRIPSTemp.length/pageSize - 1' class="btn"
+              ng-click='currentPage = currentPage + 1'>&raquo;</button></li>
+        </ul>
+      </div>
+    </div>
+    <!-- VISTA FACTURAS -->
+    <!-- VISTA FACTURAS -->
+    <div class="col l12 m12 s12" style="position:relative" ng-show="Vista == 1">
+      <div class="black-text title-panel"
+        style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+        <div>
+          <!-- <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="cargarFacturas()"></i> -->
+          Cargue de Facturas Digital ({{listaFacturas.length}})
+        </div>
+        <i class="icon-left-2 cursor-pointer" ng-click="Atras(0)">
+          Atras
+        </i>
+      </div>
+
+
+      <div class="row bg-white white" style="margin-bottom: 0px;">
+        <!--  -->
+        <div class="col s12 m12 l12">
+          <div class="col s3 no-padding label-new m-b">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" autocomplete="off"
+              ng-model="datosRips.codigoRecibo" readonly>
+            <label>Numero del Recibo</label>
+          </div>
+          <div class="col s3 no-padding label-new m-b">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" type="date"
+              autocomplete="off" ng-model="datosRips.fechaProceso" readonly>
+            <label>Fecha de Registro</label>
+          </div>
+          <div class="col s3 no-padding label-new m-b">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" autocomplete="off"
+              ng-model="datosRips.facturas" readonly>
+            <label>Cantidad de Facturas</label>
+          </div>
+          <div class="col s3 no-padding label-new m-b">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" autocomplete="off"
+              ng-model="datosRips.totalFacturas" readonly>
+            <label>Valor Total</label>
+          </div>
+        </div>
+        <!--  -->
+        <div class="col s12 m12 l12" ng-show="datosRips.estadoFacturas == 'E'">
+          <div class="col s6 no-padding m-b">
+            <div class="file-upload-wrapper file-field input-field m-l"
+              data-text="Anexe aquí todas las facturas digitalizadas del RIPS (.zip)">
+              <input type="file" id="fileFacturasDig" name="fileFacturasDig" title="" ng-model="datosRips.archivo">
+              <i class="icon-check-1 green-text right" style="font-size: 1.3vw;" ng-show="datosRips.soporteB64"></i>
+            </div>
+          </div>
+          <div class="col s6 no-padding m-b" ng-show="datosRips.soporteB64">
+            <button class="btn btn-primary btnAgregar m-l w-99" type="button" ng-click="cargarFacturasTotal()">
+              Cargar Facturas <i class="icon-docs-1"></i>
+            </button>
+          </div>
+
+        </div>
+        <!-- CABEZA -->
+        <div class="col s12 m12 l12 m-t">
+          <blockquote class="blockquote_titulo m-b">
+            Facturas del RIPS a Cargar
+          </blockquote>
+          <div class="black-text title-panel"
+            style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 15px;">
+            <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-model="filtroFacturas"
+              placeholder="Buscar en la tabla">
+
+            <div>
+              <ul class="margin">
+                <span ng-click="filter('E')" class="c-pointer status orange">EN ESPERA
+                  <b>{{contadoresFacturas.espera}}</b></span>
+                <span ng-click="filter('A')" class="c-pointer status light-blue">ANALIZANDO
+                  <b>{{contadoresFacturas.analizando}}</b></span>
+                <span ng-click="filter('V')" class="c-pointer status green">VALIDADO
+                  <b>{{contadoresFacturas.validado}}</b></span>
+                <span ng-click="filter('X')" class="c-pointer status red">ERROR
+                  <b>{{contadoresFacturas.error}}</b></span>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- DETALLE -->
+        <div class="col s12 m12 l12" style="max-height: 70vh;overflow: auto;"
+          ng-show="datosRips.estadoFacturas == 'E' || datosRips.estadoFacturas == 'A'">
+          <table class="table highlight">
+            <thead>
+              <tr>
+                <th><b>#</b></th>
+                <th>N° Factura</th>
+                <th>Valor</th>
+                <th>Afiliado</th>
+                <th>Autorizacion</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="x in listaFacturas | filter:filtroFacturas">
+                <th>{{$index + 1}}</th>
+                <td>{{x.CODIGO_FACTURA}}</td>
+                <td>$ {{FormatPesoNumero(x.VALOR_FACTURA)}}</td>
+                <td>{{x.AFILIADO_TIPO_DOC.concat(x.AFILIADO_NUMERO)}}</td>
+                <td>{{x.AFILIADO_AUTORIZACION}}</td>
+                <td>
+                  <span class="status {{getColorEstado(x.OCR_ESTADO_FACTURA)}}">{{x.OCR_ESTADO_FACTURA_NOMB}}</span>
+                <td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--  -->
+        <div class="col s12 m12 l12 m-t">
+          <blockquote class="blockquote_titulo m-b">
+            Facturas del RIPS
+          </blockquote>
+          <input type="text" class="margin border-none input-text-new" style="width: 20vw;" ng-model="filtroFacturas"
+            placeholder="Buscar en la tabla">
+        </div>
+        <div class="col s12 m12 l12" style="max-height: 70vh;overflow: auto;">
+          <table class="table highlight">
+            <thead>
+              <tr>
+                <th><b>#</b></th>
+                <th>Factura/Archivo</th>
+                <th>Valor</th>
+                <th>Error</th>
+                <th>Cargue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="x in listaFacturas | filter:filtroFacturas">
+                <th>{{$index + 1}}</th>
+                <td>{{x.nombreArchivo}}</td>
+                <td>{{x.error}}</td>
+                <td>
+
+                  <div class="file-upload-wrapper file-field input-field m-l" data-text="Cargar Archivo">
+                    <input type="file" id="fileFacturasDig_{{$index}}" class="fileFacturasDigUnica"
+                      name="fileFacturasDig_{{$index}}" title="Cargar factura">
+                    <i class="icon-check-1 green-text right" style="font-size: 1.3vw;" ng-show="x.soporteB64"></i>
+                  </div>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col s12 m12 l12 center">
+          <input class="btn white-text default-background" type="submit" value="Guardar facturas"
+            ng-click="modalDatosCorrespGuardarPeriodo()">
+        </div>
+        <!--  -->
+      </div>
+
+    </div>
+    <!--  -->
+  </div>
+
+
+
+
+  <!--  -->
+  <div id="modalCargueSoporteDig" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 70%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <!-- <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #fff;"
+      ng-click="closeModal()"></div> -->
+      <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="col s11">
+            <h5 class="white-text">Cargue de Facturas</h5>
+          </div>
+          <div class="col s1">
+            <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                class="material-icons white-text">close</i></h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-action" style="max-height: 75vh;overflow-y: auto;margin-top: -5px;">
+
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <style>
+    .table,
+    .table tr,
+    .table th,
+    .table td {
+      text-align: center !important;
+    }
+
+    .w-99 {
+      width: 99%;
+    }
+
+    .btnAgregar {
+      padding: 0 0.5rem;
+      height: 2rem;
+      line-height: 2rem;
+    }
+
+    #fileFacturasDig {
+      height: 2rem;
+      cursor: pointer;
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+      border: 1px solid #8a88865e !important;
+      height: 2.14rem;
+      border-radius: 2px;
+      margin: 0;
+      width: -webkit-fill-available;
+    }
+
+    .file-upload-wrapper:after {
+      text-align: center !important;
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px 15px;
+      display: block;
+      width: 100%;
+      pointer-events: none;
+      z-index: 20;
+      line-height: 1;
+      color: #80868b;
+      border-radius: 5px 10px 10px 5px;
+      font-weight: 400;
+      height: 8vh;
+    }
+
+    .file-upload-wrapper:hover:before {
+      background: #3d8c63;
+    }
+
+    .file-upload-wrapper input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99;
+      height: 43px;
+      margin: 0;
+      padding: 0;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: 10vh;
+    }
+  </style>
+</div>

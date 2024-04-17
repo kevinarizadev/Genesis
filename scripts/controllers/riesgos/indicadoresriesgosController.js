@@ -202,6 +202,7 @@ angular.module('GenesisApp')
         $scope.hojaPermisos.form.cedula = data.TERV_CODIGO;
         $scope.hojaPermisos.form.nombre = data.TERC_NOMBRE;
         $scope.hojaPermisos.form.estado = data.BADC_ESTADO;
+        $scope.hojaPermisos.form.todosRegistros = data.BADC_TODOS_REGISTROS;
         $scope.hojaPermisos.form.tipoUsuario = data.BADC_TIPO_USUARIO.split('-')[0];
         $scope.openModal('modalPermisos')
         setTimeout(() => { $scope.$apply(); }, 500);
@@ -231,6 +232,7 @@ angular.module('GenesisApp')
                 codigo: x.cedula,
                 tipo: x.tipoUsuario,
                 estado: x.estado,
+                todosRegistros: x.todosRegistros,
                 responsable: $scope.Rol_Cedula
               }
             }).then(function ({ data }) {
@@ -448,6 +450,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.unidadMedida = '';
         $scope.hojaIndicadores.formulario.tipoCalculo = '';
 
+        $scope.hojaIndicadores.formulario.tipoOrden = '';
         $scope.hojaIndicadores.formulario.apetito = '0';
         $scope.hojaIndicadores.formulario.capacidad = '0';
         $scope.hojaIndicadores.formulario.tolerancia = '0';
@@ -548,6 +551,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.unidadMedida = x.BINV_UNIDAD_MEDIDA;
         $scope.hojaIndicadores.formulario.tipoCalculo = x.BINC_TIPO_CALCULO;
 
+        $scope.hojaIndicadores.formulario.tipoOrden = x.BINV_TIPO_ORDEN.split('-')[0];
         $scope.hojaIndicadores.formulario.apetito = x.BINV_APETITO;
         $scope.hojaIndicadores.formulario.capacidad = x.BINV_CAPACIDAD;
         $scope.hojaIndicadores.formulario.tolerancia = x.BINV_TOLERANCIA;
@@ -562,7 +566,6 @@ angular.module('GenesisApp')
         // $scope.hojaIndicadores.formulario.responsable = x.xxxxxxxxxxxxxx;
         $scope.hojaIndicadores.formulario.listadoResponsable = [];
         $scope.hojaIndicadores.formulario.listadoResponsableTabla = [];
-
 
 
         $scope.hojaIndicadores_obtenerDatosResponsables(x);
@@ -697,6 +700,7 @@ angular.module('GenesisApp')
           if (!$scope.hojaIndicadores.formulario.frecuencia) resolve(false);
           if (!$scope.hojaIndicadores.formulario.tipoCalculo) resolve(false);
 
+          if (!$scope.hojaIndicadores.formulario.tipoOrden) resolve(false);
           if (!$scope.hojaIndicadores.formulario.apetito) resolve(false);
           if (!$scope.hojaIndicadores.formulario.capacidad) resolve(false);
           if (!$scope.hojaIndicadores.formulario.tolerancia) resolve(false);
@@ -704,10 +708,18 @@ angular.module('GenesisApp')
           if (!$scope.hojaIndicadores.formulario.frecuencia) resolve(false);
           if (!$scope.hojaIndicadores.formulario.categoria) resolve(false);
 
-          if (parseFloat($scope.hojaIndicadores.formulario.apetito) > parseFloat($scope.hojaIndicadores.formulario.tolerancia)
-            || parseFloat($scope.hojaIndicadores.formulario.apetito) > parseFloat($scope.hojaIndicadores.formulario.capacidad)
-            || parseFloat($scope.hojaIndicadores.formulario.tolerancia) > parseFloat($scope.hojaIndicadores.formulario.capacidad)) {
-            resolve(false);
+          if ($scope.hojaIndicadores.formulario.tipoOrden == 'A') {
+            if (parseFloat($scope.hojaIndicadores.formulario.apetito) > parseFloat($scope.hojaIndicadores.formulario.tolerancia)
+              || parseFloat($scope.hojaIndicadores.formulario.apetito) > parseFloat($scope.hojaIndicadores.formulario.capacidad)
+              || parseFloat($scope.hojaIndicadores.formulario.tolerancia) > parseFloat($scope.hojaIndicadores.formulario.capacidad)) {
+              resolve(false);
+            }
+          } else {
+            if (parseFloat($scope.hojaIndicadores.formulario.apetito) < parseFloat($scope.hojaIndicadores.formulario.tolerancia)
+              || parseFloat($scope.hojaIndicadores.formulario.apetito) < parseFloat($scope.hojaIndicadores.formulario.capacidad)
+              || parseFloat($scope.hojaIndicadores.formulario.tolerancia) < parseFloat($scope.hojaIndicadores.formulario.capacidad)) {
+              resolve(false);
+            }
           }
 
           // if (!$scope.hojaIndicadores.formulario.descripcionNumerador) resolve(false);
@@ -741,6 +753,8 @@ angular.module('GenesisApp')
             punidad_medida: $scope.hojaIndicadores.formulario.unidadMedida,
             pfrecuencia: $scope.hojaIndicadores.formulario.frecuencia,
             ptipo_calculo: $scope.hojaIndicadores.formulario.tipoCalculo,
+
+            ptipo_orden: $scope.hojaIndicadores.formulario.tipoOrden,
 
             papetito: $scope.hojaIndicadores.formulario.apetito.replace(',', '.'),
             pcapacidad: $scope.hojaIndicadores.formulario.capacidad.replace(',', '.'),
@@ -936,7 +950,7 @@ angular.module('GenesisApp')
 
             $scope.modalGraficoVars.listado = data;
             setTimeout(() => {
-              var dataMeses, dataSerie, dataPlotBands
+              var dataMeses, dataSerie, dataPlotBands, xSerie
 
               // $scope.modalGraficoVars.BINV_APETITO
               // $scope.modalGraficoVars.BINV_CAPACIDAD
@@ -947,54 +961,6 @@ angular.module('GenesisApp')
               // dato2_Max = dato2_Min + parseFloat($scope.modalGraficoVars.REGC_DATO2);
               // dato3_Min = dato2_Max;
 
-              dataPlotBands = [
-                {
-                  color: 'rgba(255, 0, 0, 0.3)', // Color value
-                  from: $scope.modalGraficoVars.BINV_CAPACIDAD,
-                  to: 10000000,
-                  label: {
-                    // text: 'Exceso'
-                  }
-                },
-                { // Light air
-                  from: 0,
-                  to: $scope.modalGraficoVars.BINV_APETITO,
-                  // from: 0,
-                  // to: dato1_Max,
-                  color: 'rgba(0, 128, 0, 0.7)',
-                  label: {
-                    // text: 'Baja',
-                    style: {
-                      color: '#000000'
-                    }
-                  }
-
-                }, { // Light breeze
-                  from: $scope.modalGraficoVars.BINV_APETITO,
-                  to: $scope.modalGraficoVars.BINV_TOLERANCIA,
-                  // from: dato2_Min,
-                  // to: dato2_Max,
-                  color: 'rgba(255, 255, 0, 0.7)',
-                  label: {
-                    // text: 'Media',
-                    style: {
-                      color: '#000000'
-                    }
-                  }
-                }, { // Light breeze
-                  from: $scope.modalGraficoVars.BINV_TOLERANCIA,
-                  to: $scope.modalGraficoVars.BINV_CAPACIDAD,
-                  // from: dato3_Min,
-                  // to: parseFloat($scope.modalGraficoVars.REGC_DATOMAX),
-                  color: 'rgba(255, 0, 0, 0.7)',
-                  label: {
-                    // text: 'Toterancia',
-                    style: {
-                      color: '#000000'
-                    }
-                  }
-                }
-              ]
 
               // M:Mensual; B:Bimestral; T:Trimestral; S:Semestral; A:Anual;
               if (x.BINV_FRECUENCIA.split('-')[0] == 'M') {// Mensual
@@ -1053,6 +1019,167 @@ angular.module('GenesisApp')
                 ];
               }
 
+              if ($scope.modalGraficoVars.BINV_TIPO_ORDEN.split('-')[0] == 'A') {
+                xSerie = [
+                  {
+                    name: 'Periodo',
+                    color: '#1631FA',
+                    lineWidth: 3,
+                    data: dataSerie
+                  },
+                  {
+                    name: 'Apetito',
+                    color: 'rgba(0, 128, 0)',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_APETITO.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_APETITO.toString().replace(',', '.'))]],
+                  },
+                  {
+                    name: 'Tolerancia',
+                    color: 'rgba(255, 255, 0)',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_TOLERANCIA.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_TOLERANCIA.toString().replace(',', '.'))]],
+                  },
+                  {
+                    name: 'Capacidad',
+                    color: 'rgba(255, 0, 0)',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))]],
+                  }
+                ]
+
+                dataPlotBands = [
+                  {
+                    color: 'rgba(255, 0, 0, 0.7)', // Color value
+                    from: $scope.modalGraficoVars.BINV_CAPACIDAD,
+                    to: 10000000,
+                    label: {
+                      // text: 'Exceso'
+                    }
+                  },
+                  { // Light air
+                    from: 0,
+                    to: $scope.modalGraficoVars.BINV_APETITO,
+                    // from: 0,
+                    // to: dato1_Max,
+                    color: 'rgba(0, 128, 0, 0.7)',
+                    label: {
+                      // text: 'Baja',
+                      style: {
+                        color: '#000000'
+                      }
+                    }
+
+                  }, { // Light breeze
+                    from: $scope.modalGraficoVars.BINV_APETITO,
+                    to: $scope.modalGraficoVars.BINV_TOLERANCIA,
+                    // from: dato2_Min,
+                    // to: dato2_Max,
+                    color: 'rgba(255, 255, 0, 0.7)',
+                    label: {
+                      // text: 'Media',
+                      style: {
+                        color: '#000000'
+                      }
+                    }
+                  }, { // Light breeze
+                    from: $scope.modalGraficoVars.BINV_TOLERANCIA,
+                    to: $scope.modalGraficoVars.BINV_CAPACIDAD,
+                    // from: dato3_Min,
+                    // to: parseFloat($scope.modalGraficoVars.REGC_DATOMAX),
+                    color: 'rgba(255, 0, 0, 0.3)',
+                    label: {
+                      // text: 'Toterancia',
+                      style: {
+                        color: '#000000'
+                      }
+                    }
+                  }
+                ]
+              } else {
+                xSerie = [
+                  {
+                    name: 'Periodo',
+                    color: '#1631FA',
+                    lineWidth: 3,
+                    data: dataSerie
+                  },
+                  {
+                    name: 'Apetito',
+                    color: 'rgba(0, 128, 0)',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_APETITO.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_APETITO.toString().replace(',', '.'))]],
+                  },
+                  {
+                    name: 'Tolerancia',
+                    color: 'rgba(255, 255, 0)',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_TOLERANCIA.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_TOLERANCIA.toString().replace(',', '.'))]],
+                  },
+                  {
+                    name: 'Capacidad',
+                    color: 'rgba(255, 0, 0)',
+                    dashStyle: 'ShortDash',
+                    lineWidth: 3,
+                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))]],
+                  }
+                ]
+
+                dataPlotBands = [
+                  {
+                    color: 'rgba(0, 128, 0, 0.7)', // Color value
+                    from: $scope.modalGraficoVars.BINV_APETITO,
+                    to: 10000000,
+                    label: {
+                      // text: 'Exceso'
+                    }
+                  },
+                  { // Light air
+                    from: 0,
+                    to: $scope.modalGraficoVars.BINV_CAPACIDAD,
+                    // from: 0,
+                    // to: dato1_Max,
+                    color: 'rgba(255, 0, 0, 0.7)',
+                    label: {
+                      // text: 'Baja',
+                      style: {
+                        color: '#000000'
+                      }
+                    }
+
+                  }, { // Light breeze
+                    from: $scope.modalGraficoVars.BINV_CAPACIDAD,
+                    to: $scope.modalGraficoVars.BINV_TOLERANCIA,
+                    // from: dato2_Min,
+                    // to: dato2_Max,
+                    color: 'rgba(255, 0, 0, 0.3)',
+                    label: {
+                      // text: 'Media',
+                      style: {
+                        color: '#000000'
+                      }
+                    }
+                  }, { // Light breeze
+                    from: $scope.modalGraficoVars.BINV_TOLERANCIA,
+                    to: $scope.modalGraficoVars.BINV_APETITO,
+                    // from: dato3_Min,
+                    // to: parseFloat($scope.modalGraficoVars.REGC_DATOMAX),
+                    color: 'rgba(255, 255, 0, 0.7)',
+                    label: {
+                      // text: 'Toterancia',
+                      style: {
+                        color: '#000000'
+                      }
+                    }
+                  }
+                ]
+              }
+
+
               //GENERAR GRAFICO
               $scope.graficoIndicador = Highcharts.chart('graficoIndicador', {
                 chart: {
@@ -1085,36 +1212,7 @@ angular.module('GenesisApp')
                     },
                   }
                 },
-                series: [
-                  {
-                    name: 'Periodo',
-                    color: '#1631FA',
-                    lineWidth: 3,
-                    data: dataSerie
-                  },
-                  {
-                    name: 'Apetito',
-                    color: 'rgba(0, 128, 0)',
-                    dashStyle: 'ShortDash',
-                    lineWidth: 3,
-                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_APETITO.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_APETITO.toString().replace(',', '.'))]],
-                  },
-                  {
-                    name: 'Tolerancia',
-                    color: 'rgba(255, 255, 0)',
-                    dashStyle: 'ShortDash',
-                    lineWidth: 3,
-                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_TOLERANCIA.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_TOLERANCIA.toString().replace(',', '.'))]],
-                  },
-                  {
-                    name: 'Capacidad',
-                    color: 'rgba(255, 0, 0)',
-                    dashStyle: 'ShortDash',
-                    lineWidth: 3,
-                    data: [[0, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))]],
-                  }
-                  //
-                ],
+                series: xSerie,
                 // exporting: { enabled: false },
                 credits: { enabled: false },
               });

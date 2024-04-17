@@ -108,7 +108,7 @@
             </b></td>
          <td style="border-top: 1px solid #000000;border-bottom: 1px solid #000000;  border-left: 1px solid #000000; border-right: 1px solid #000000;text-align: center;"
             colspan=2 align="left" valign=middle><b>
-               <font face="Arial" size=2 color="#000000">C&oacute;digo: GD-FR-01</font>
+               <font face="Arial" size=2 color="#000000"></font>
             </b></td>
       </tr>
       <tr>
@@ -118,13 +118,13 @@
             </b></td>
          <td style="border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;text-align: center;"
             colspan=2 align="left" valign=middle><b>
-               <font face="Arial" size=2 color="#000000">Versi&oacute;n: 05</font>
+               <font face="Arial" size=2 color="#000000"></font>
             </b></td>
       </tr>
       <tr>
          <td style=" border-left: 1px solid #000000; border-right: 1px solid #000000;text-align: center;" colspan=2
             align="left" valign=middle><b>
-               <font face="Arial" size=2 color="#000000">Fecha: junio 2022</font>
+               <font face="Arial" size=2 color="#000000"></font>
             </b></td>
       </tr>
 

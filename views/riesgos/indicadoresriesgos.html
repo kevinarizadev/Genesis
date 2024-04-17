@@ -77,7 +77,7 @@
                 <td class="left-align" ng-click="hojaIndicadores_editarIndicador(x)">
                   <!-- {{x.BINN_CONSECUTIVO}} -->
                   {{x.BINV_COD_RIESGOS_MATERIALIZADO.split('-')[0]}}
-                </b>
+                  </b>
                 </td>
                 <td ng-click="hojaIndicadores_editarIndicador(x)">{{x.BINV_COD_RIESGOS_MATERIALIZADO.split('-')[1]}}
                 </td>
@@ -245,17 +245,32 @@
 
           <!--  -->
           <div class="col s12 m12 l12 formIndicador_Desactivar">
+            <div class="col s3 no-padding label-new m-b formIndicador_desactivarCamposIndicadores">
+              <select class="select-default-new input-out-new m-l" ng-model="hojaIndicadores.formulario.tipoOrden"
+                required>
+                <option value="" disabled>SELECCIONAR</option>
+                <option value="A">Ascendente</option>
+                <option value="D">Descendente</option>
+              </select>
+              <label>Tipo de Orden (*)</label>
+            </div>
             <div class="col s2 no-padding label-new m-b">
               <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
                 autocomplete="off" ng-model="hojaIndicadores.formulario.apetito" ng-change="hojaIndicadores_chg()"
                 numbers-decimal-only maxlength="16" required>
               <label>Apetito (*)</label>
             </div>
+            <div class="col label-new m-b signos" title="{{hojaIndicadores.formulario.tipoOrden == 'D' ? 'Mayor igual que' : 'Menor igual que'}}">
+              {{hojaIndicadores.formulario.tipoOrden == 'D' ? '≥' : '≤' }}
+            </div>
             <div class="col s2 no-padding label-new m-b">
               <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
                 autocomplete="off" ng-model="hojaIndicadores.formulario.tolerancia" ng-change="hojaIndicadores_chg()"
                 numbers-decimal-only maxlength="16" required>
               <label>Tolerancia (*)</label>
+            </div>
+            <div class="col label-new m-b signos" title="{{hojaIndicadores.formulario.tipoOrden == 'D' ? 'Mayor igual que' : 'Menor igual que'}}">
+              {{hojaIndicadores.formulario.tipoOrden == 'D' ? '≥' : '≤' }}
             </div>
             <div class="col s2 no-padding label-new m-b">
               <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
@@ -580,7 +595,8 @@
                   <span ng-show="x.BINN_RESPONSABLE != '-'">{{x.BINN_RESPONSABLE.split('-')[1]}}</span>
                 </td>
                 <td>
-                  <span class="status {{obtenerEstadoGestionIndicador(x.ESTADO_ACTUAL)}}" ng-show="x.BINN_RESPONSABLE != '-'">{{x.ESTADO_ACTUAL}}</span>
+                  <span class="status {{obtenerEstadoGestionIndicador(x.ESTADO_ACTUAL)}}"
+                    ng-show="x.BINN_RESPONSABLE != '-'">{{x.ESTADO_ACTUAL}}</span>
                 </td>
                 <td>
                   <i class="icon-list-add c-pointer" title="Gestionar Periodo" style="font-size: 1rem;"
@@ -877,6 +893,7 @@
               <th>Funcionario</th>
               <th>Cargo</th>
               <th>Tipo Usuario</th>
+              <th>Ver todos los registros</th>
               <th>Estado</th>
             </thead>
             <tbody>
@@ -895,6 +912,23 @@
                 </td>
 
                 <td class="center">
+                  <div class="tooltip" ng-if="x.BADC_TODOS_REGISTROS == 'S'">
+                    <i class="icon-circle Con_pulse_A"
+                      style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
+                      ng-click="hojaPermisos_editarUsuario(x)"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">SI</span>
+                  </div>
+                  <div class="tooltip" ng-if="x.BADC_TODOS_REGISTROS == 'N'">
+                    <i class="icon-circle Con_pulse_X"
+                      style="color: transparent;font-size: 9px;background-color:rgb(245, 75,75) !important"
+                      ng-click="hojaPermisos_editarUsuario(x)"></i>
+                    <span class="tooltiptext"
+                      style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">NO</span>
+                  </div>
+                </td>
+
+                <td class="center">
                   <div class="tooltip" ng-if="x.BADC_ESTADO == 'A'">
                     <i class="icon-circle Con_pulse_A"
                       style="color: transparent;font-size: 9px;background-color:rgb(3, 197, 20) !important;"
@@ -910,6 +944,7 @@
                       style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">Inactivo</span>
                   </div>
                 </td>
+
               </tr>
             </tbody>
           </table>
@@ -1010,6 +1045,14 @@
             </select>
             <label>Tipo Usuario</label>
           </div>
+          <div class="col s6 no-padding label-new m-b select_maxheigth" style="margin-bottom:3rem;">
+            <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+              ng-model="hojaPermisos.form.todosRegistros">
+              <option value="S">SI</option>
+              <option value="N">NO</option>
+            </select>
+            <label>Ver todos los indicadores</label>
+          </div>
           <div class="col l12" style="text-align:center;margin-bottom: 20px;">
             <button style="border-radius: 20px;" class="btn"
               ng-click="hojaPermisos_modificarUsuario(hojaPermisos.form)">Actualizar
@@ -1029,6 +1072,12 @@
 
 
   <style>
+    .signos {
+      font-size: 2vw;
+      margin-top: 1.5rem;
+      font-weight: 900;
+    }
+
     .cortar-texto {
       white-space: nowrap;
       text-overflow: ellipsis;

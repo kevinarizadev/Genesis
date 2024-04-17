@@ -27,56 +27,18 @@ angular.module('GenesisApp')
             console.log($scope.pqrDataSuper.adjunto);
             console.log($scope.pqrDataSuper.ext);
             if ($scope.pqrDataSuper.reporta == 'S') {
-
-                if ($scope.dataPqrExcel.OBLIG_AUT == 'S' && $scope.listServicios.length == 0) {
-                    swal('No completado', '¡Debe cargar el servicio!', 'error').catch(swal.noop);
-                    return
-                }
-                if ($scope.validateFile() == true) {
-
+                
+                // if ($scope.dataPqrExcel.OBLIG_AUT == 'S' && $scope.listServicios.length == 0) {
+                //     swal('No completado', '¡Debe cargar el servicio!', 'error').catch(swal.noop);
+                //     return
+                // }
+                if($scope.validateFile() == true) {
+                
                 } else {
-                    if ($scope.dataPqrExcel.RIESGO == 'S') {
-                        if (($scope.pqrDataSuper.selectedCriteriObjetivo == null || $scope.pqrDataSuper.selectedCriteriObjetivo == '') &&
-                            ($scope.pqrDataSuper.selectedCriterioSubjetivo == null || $scope.pqrDataSuper.selectedCriterioSubjetivo == '') &&
-                            ($scope.pqrDataSuper.selectedCriteriComplementario == null || $scope.pqrDataSuper.selectedCriteriComplementario == '') &&
-                            ($scope.pqrDataSuper.selectedServicios == null || $scope.pqrDataSuper.selectedServicios == '') &&
-                            ($scope.pqrDataSuper.selectedMedicamentos == null || $scope.pqrDataSuper.selectedMedicamentos == '')) {
-                            console.log("No es valido");
-                            $scope.validar = true;
-                            swal('No completado', 'Revise que alguna opción de riesgo de vida este selecionada!', 'error'
-                            ).then(function () { }).catch(swal.noop);
-                        } else {
-                            $scope.validateFile();
-                            if ($scope.pqrDataSuper.selectedCriteriComplementario == '3') {
-                                if ($scope.pqrDataSuper.selectedSujetosProteccionEspecial == 0 ||
-                                    $scope.pqrDataSuper.selectedSujetosProteccionEspecial == null
-                                    || $scope.pqrDataSuper.selectedSujetosProteccionEspecial == '') {
-                                    console.log("No es valido");
-                                    swal('No completado', 'La opción sujetos de especial protección no puede estar vacia!', 'error'
-                                    ).then(function () { }).catch(swal.noop);
-                                    $scope.validar = true;
-                                } else {
-                                    $scope.validar = false;
-
-                                }
-
-                            }
-
-                        }
-                    } else {
-                        $scope.validateFile();
-                    }
-                }
-
-                if ($scope.validar == false) {
-                    console.log("ENVIA LA PETICION");
                     $scope.saveSuperSalud();
-                } else {
-                    console.log("NO ENVIES LA PETICION");
-                }
-            } else {
-                $scope.saveSuperSalud();
+                
             }
+        }
         }
 
         $scope.validateFile = function () {
@@ -189,6 +151,7 @@ angular.module('GenesisApp')
 
                 }, 100);
             }).catch(swal.noop);
+
 
         }
 

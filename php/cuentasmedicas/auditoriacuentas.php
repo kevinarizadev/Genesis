@@ -117,7 +117,8 @@ function List_TipoGlosas()
 {
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_FACTURACION.P_LISTA_TIPO_GLOSA(:v_json_row); end;');
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_FACTURACION.P_LISTA_TIPO_GLOSA(:v_pfecha_pss,:v_json_row); end;');
+	oci_bind_by_name($consulta, ':v_pfecha_pss', $request->fechaPSS);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
 	oci_execute($consulta, OCI_DEFAULT);
@@ -229,7 +230,7 @@ function Factura_Gestion()
 	oci_bind_by_name($consulta, ':v_pcopago', $request->Copago);
 	oci_bind_by_name($consulta, ':v_pcuota_mod', $request->vpcuotamod);
 	// oci_bind_by_name($consulta, ':v_pvalor_recobro', $request->Valor_Recobro);
-	// oci_bind_by_name($consulta, ':v_pmotivo_recobro', $request->Motivo_Recobro); 
+	// oci_bind_by_name($consulta, ':v_pmotivo_recobro', $request->Motivo_Recobro);
 	oci_bind_by_name($consulta, ':v_pjson_glosa', $json_parametros, -1, OCI_B_CLOB);
 	oci_bind_by_name($consulta, ':v_pcant_glosa', $request->Cant_Glosa);
 	oci_bind_by_name($consulta, ':v_pobservacion_glosa', $request->Observacion_Glosa);
@@ -300,9 +301,10 @@ function Vista2_List_Glosa_Factura()
 {
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_FACTURACION.P_LISTA_GLOSA_FACTURA(:v_numero,:v_ubicacion,:v_json_row); end;');
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_FACTURACION.P_LISTA_GLOSA_FACTURA(:v_numero,:v_ubicacion,:v_pfecha,:v_json_row); end;');
 	oci_bind_by_name($consulta, ':v_numero', $request->Num);
 	oci_bind_by_name($consulta, ':v_ubicacion', $request->Ubi);
+	oci_bind_by_name($consulta, ':v_pfecha', $request->fechaPSS);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
 	oci_execute($consulta, OCI_DEFAULT);
@@ -471,7 +473,7 @@ function Consulta_Censos(){
 	// oci_bind_by_name($consulta,':v_documento',$documento);
 
 	oci_bind_by_name($consulta, ':v_response', $cursor, -1, OCI_B_CURSOR);
-	
+
 	oci_execute($consulta);
 	oci_execute($cursor, OCI_DEFAULT);
 	$datos = null;

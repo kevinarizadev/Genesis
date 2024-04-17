@@ -2571,6 +2571,22 @@
       //controllerAs:'pcctrl'
     };
   }
+
+  angular.module('GenesisApp').directive('radicaciondigital', radicaciondigital);
+  radicaciondigital.$inject = ['$rootScope', '$compile'];
+  function radicaciondigital($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/cuentasmedicas/radicaciondigital.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'radicaciondigitalController'//,
+      //controllerAs:'pcctrl'
+    };
+  }
+
   angular.module('GenesisApp').directive('consultausuarioips', consultausuarioips);
   consultausuarioips.$inject = ['$rootScope', '$compile'];
   function consultausuarioips($rootScope, $compile) {

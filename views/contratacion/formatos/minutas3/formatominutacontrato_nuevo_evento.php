@@ -1597,70 +1597,88 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>1. Marco normativo</td>
+                  <td>Anexo 1. Marco normativo</td>
                   <td class="text-center">SI</td>
-                  <td>11. Mecanismos de ajuste de riesgo</td>
+                  <td>Anexo 11. Mecanismos de ajuste de riesgo</td>
                   <td class="text-center">NO</td>
                 </tr>
                 <tr>
-                  <td>2. Glosario de términos</td>
+                  <td>Anexo 2. Glosario de términos</td>
                   <td class="text-center">SI</td>
-                  <td>12. Relación de GPC y protocolos de atención</td>
-                  <td class="text-center">SI</td>
+                  <td>Anexo 12. Relación de GPC y protocolos de atención</td>
+                  <td class="text-center">
+                  {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                 </tr>
                 <tr>
-                  <td>3. Modelo de atención de Cajacopi EPS</td>
+                  <td>Anexo 3. Modelo de atención de Cajacopi EPS</td>
                   <td class="text-center">SI</td>
-                  <td>13. Link de Redes Integrales de Atención en Salud</td>
-                  <td class="text-center">SI</td>
+                  <td>Anexo 13. Link de Redes Integrales de Atención en Salud</td>
+                  <td class="text-center">
+                  {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                 </tr>
                 <tr>
-                  <td>4. Caracterización de la población afiliada</td>
+                  <td>Anexo 4. Caracterización de la población afiliada</td>
                   <td class="text-center">SI</td>
-                  <td>14. Listado de precios de medicamentos</td>
-                  <td class="text-center">SI</td>
+                  <td>Anexo 14. Listado de precios de medicamentos</td>
+                  <td class="text-center">{{DATA.SERVICIO_714}}</td>
                 </tr>
                 <tr>
-                  <td>5. Nota Técnica</td>
+                  <td>Anexo 5. Nota Técnica</td>
                   <td class="text-center">NO</td>
-                  <td>15. Listado de precios de insumos, dispositivos y otras tecnologías</td>
+                  <td>Anexo 15. Listado de precios de insumos, dispositivos y otras tecnologías</td>
                   <td class="text-center">SI</td>
                 </tr>
                 <tr>
-                  <td>6. Modelo de prestación de servicios</td>
+                  <td>Anexo 6. Modelo de prestación de servicios</td>
                   <td class="text-center">SI</td>
-                  <td>16. Red integral de prestadores de servicios de salud</td>
-                  <td class="text-center">SI</td>
-                </tr>
-                <tr>
-                  <td>7. Relación de sedes de atención y servicios</td>
-                  <td class="text-center">SI</td>
-                  <td>17. Canales transaccionales y de contacto</td>
+                  <td>Anexo 16. Red integral de prestadores de servicios de salud</td>
                   <td class="text-center">SI</td>
                 </tr>
                 <tr>
-                  <td>8. Capacidad instalada disponible</td>
-                  <td class="text-center">SI</td>
-                  <td>18. Acuerdo de confidencialidad</td>
+                  <td>Anexo 7. Relación de sedes de atención y servicios</td>
+                  <td class="text-center">
+                    {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
+                  <td>Anexo 17. Canales transaccionales y de contacto</td>
                   <td class="text-center">SI</td>
                 </tr>
                 <tr>
-                  <td>9. Indicadores de operación del acuerdo de voluntades</td>
+                  <td>Anexo 8. Capacidad instalada disponible</td>
+                  <td class="text-center">
+                  {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
+                  <td>Anexo 18. Acuerdo de confidencialidad</td>
                   <td class="text-center">SI</td>
-                  <td>19. Estimación poblacional para el contrato</td>
+                </tr>
+                <tr>
+                  <td>Anexo 9. Indicadores de operación del acuerdo de voluntades</td>
+                  <td class="text-center">
+                  {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
+                  <td>Anexo 19. Estimación poblacional para el contrato</td>
                   <td class="text-center">NO</td>
                 </tr>
                 <tr>
-                  <td>10. Formato de supervisión de los contratos</td>
-                  <td class="text-center">SI</td>
-                  <td>20. Población objeto del contrato</td>
+                  <td>Anexo 10. Formato de supervisión de los contratos</td>
+                  <td class="text-center">
+                  {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
+                  <td>Anexo 20. Población objeto del contrato</td>
                   <td class="text-center">SI</td>
                 </tr>
                 <tr>
                   <td></td>
                   <td></td>
-                  <td>21. Anexo Técnico</td>
+                  <td>Anexo 21. Anexo Técnico</td>
                   <td class="text-center">NO</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>Anexo 22. Incentivos no económicos</td>
+                  <td class="text-center">SI</td>
                 </tr>
 
               </tbody>
