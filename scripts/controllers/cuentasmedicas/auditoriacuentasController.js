@@ -24,8 +24,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         $scope.Vista1 = {
             Nit_Prestador: '',
             Num_Sol: '',
-            // Nit_Prestador: '802009806',
-            // Num_Sol: '3609',
+            Nit_Prestador: '900532504',
+            Num_Sol: '120116',
             // Nit_Prestador: '900632220',
             // Num_Sol: '64811',
             // Nit_Prestador: '900373544',
@@ -104,7 +104,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         $scope.tipodeDocumentos();
         $scope.Listar_Ambitos();
         $scope.List_TipoFacturas();
-        $scope.Listar_TipoGlosas();
+        // $scope.Listar_TipoGlosas();
         $scope.Limpiar_Var_Busqueda();
 
         // $scope.List_MotivoRecobros();
@@ -581,6 +581,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             //////////Animacion
             $scope.Abrir_Modal_Gestion_Factura();
 
+            $scope.Listar_TipoGlosas();
+
             document.querySelector('#Hoja_Modal').classList.add('Ani_Down');
             $timeout(function () {
                 document.querySelector('#Hoja_Modal').classList.remove('Ani_Down');
@@ -951,7 +953,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             data: {
                 function: 'Vista2_List_Glosa_Factura',
                 Num: $scope.HojaGest.NUMERO_REG.toString(),
-                Ubi: $scope.HojaGest.UBICACION.toString()
+                Ubi: $scope.HojaGest.UBICACION.toString(),
+                fechaPSS: $scope.formatDate($scope.HojaGest.FECHA_PRESTACION)
             }
         }).then(function (response) {
             if (response.data && response.data.length > 0) {
@@ -1316,7 +1319,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             method: 'POST',
             url: "php/cuentasmedicas/auditoriacuentas.php",
             data: {
-                function: 'List_TipoGlosas'
+                function: 'List_TipoGlosas',
+                fechaPSS: $scope.formatDate($scope.HojaGest.FECHA_PRESTACION)
             }
         }).then(function (response) {
             if (response.data) {
@@ -1625,7 +1629,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             $scope.Consulta_Financiera();
         }
 
-        if (x == 8) { //Busqueda OCR            
+        if (x == 8) { //Busqueda OCR
             $scope.Vistas_Informativa = 8;
             $scope.Vistas_Informativa_Titulo = 'Busqueda OCR  N° Factura: ' + $scope.HojaGest.FACTURA + ' IPS: ' + $scope.HojaGest.IPS;
             $scope.Consulta_Financiera();
@@ -2409,6 +2413,19 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
 
         return ahora_dia + '/' + ahora_mes + '/' + ahora_ano;
     }
+    $scope.formatDate = function (date) {
+      if (date === undefined) { return }
+      var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
+
+      return [day, month, year].join('/');
+      // return [year, month, day].join('-');
+    }
     /////////////////////////////////////////PAGINACION/////////////////////////////////////////////////
     $scope.chg_filtrar = function () {
         $scope.filter($scope.Vista2.Filtrar_Sol);
@@ -2622,7 +2639,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
             data: {
                 function: 'Vista2_List_Glosa_Factura',
                 Num: x.NUMERO.toString(),
-                Ubi: x.UBICACION.toString()
+                Ubi: x.UBICACION.toString(),
+                fechaPSS: $scope.formatDate(x.FECHA_PRESTACION)
             }
         }).then(function (response) {
             if (response.data) {

@@ -405,6 +405,7 @@ function listaAdjuntosCargados()
 function listaAdjuntosCargadosNew()
 {
 	require_once('../../config/dbcon_prod.php');
+	// require_once('../../config/dbcon_produccion.php');
 	global $request;
 	$consulta = oci_parse($c, 'begin pq_genesis_tut.P_OBTENER_SOPORTES_TUTELA (:v_pnumero,
 																				:v_json_row); end;');

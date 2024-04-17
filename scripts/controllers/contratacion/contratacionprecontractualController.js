@@ -503,13 +503,14 @@ angular.module('GenesisApp')
         var ext = archivo[1];
         if ($(this)["0"].files.length > 0) { // se valida que exista el archivo
           if ($(this)["0"].files["0"].size <= 15000000) { // se valida el tamaño del archivo
-            if (ext.toUpperCase() == 'PDF') { //se valida el tipo del archivo
+            if (ext.toUpperCase() == 'PDF' || ext.toUpperCase() == 'XLSX') { //se valida el tipo del archivo
               //$scope.validarEstructura($(this)["0"].files["0"], 7, $(this), nombre);
-              $(this).parent(".file-upload-wrapper").attr("data-text", nombre + '.PDF');
+              $(this).parent(".file-upload-wrapper").attr("data-text", nombre + ext.toUpperCase());
+              $scope.archivoExt = ext;
               $scope.fileToBase64($(this)["0"].files, nombre);
               $scope.thisfile = $(this);
             } else {
-              swal('Tipo de archivo incorrecto', 'Extension del archivo incorrecta debe ser .PDF', 'warning')
+              swal('Tipo de archivo incorrecto', 'Extension del archivo incorrecta debe ser .PDF o excel', 'warning')
               $(this).val("");
               $(this).parent(".file-upload-wrapper").attr("data-text", 'Subir Archivo');
               if ($(this)["0"].id == 'CT') {
@@ -1672,7 +1673,8 @@ angular.module('GenesisApp')
               RUTA: '',
               FECHA_VENCIMIENTO: parsedia(f_vencimiento) //parsedia($scope.fecha_vencimiento_adjunto)
             }]),
-            archivo: $scope.archivo
+            archivo: $scope.archivo,
+            ext: $scope.archivoExt
           }
         }).then(function (response) {
           swal.close();

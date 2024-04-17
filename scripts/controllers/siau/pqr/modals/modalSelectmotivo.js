@@ -3,7 +3,7 @@ angular.module('GenesisApp')
     .controller('modalselectmotivo', ['$scope', 'pqrHttp', '$filter', function ($scope, pqrHttp) {
         $scope.stylesrowsearch = null;
 
-        pqrHttp.get_macromotivos_especifico_tiporad($scope.pqrData.selectedtipoRadicacion).then(function (response) {
+        pqrHttp.get_macromotivos_especifico_tiporad($scope.pqrData.selectedtipoRadicacion, $scope.pqrData.selectedtipoSolicitud).then(function (response) {
             $scope.motivosEspecificos = response;
             // $scope.motivosEspecificosCopy = response;
         })
@@ -11,11 +11,15 @@ angular.module('GenesisApp')
         $scope.selectMotivo = function (codigo, nombre, oblig_aut,macromotivo,motivogeneral) {//Funcion para seleccionar el motivo
             $scope.codTemp = codigo;
             $scope.nomTemp = nombre;
+            console.log($scope.macroNum, "prueba");
             $('#M' + codigo).addClass('arr');
             $('#M' + codigo).siblings().removeClass('arr');
             $scope.motivoEspecifico = { codigo: codigo, nombre: nombre, macromotivo: macromotivo, motivogeneral: motivogeneral, oblig_aut };
-            $scope.selecteditem = true;
+            $scope.selecteditem = true;           
         }//Fin
+        
+      
+
         $scope.removeSeleccion = function () {//Funcion para remover el motivo
             $('#M' + $scope.codTemp).removeClass('arr');
             $scope.motivoEspecifico = { codigo: null, nombre: null };
@@ -32,6 +36,8 @@ angular.module('GenesisApp')
                 $scope.selecteditem = false;
             }
         });
+
+        
 
         // $scope.searchMotivo = function () {
         //     $scope.tempMotivosEspecificos = $scope.motivosEspecificosCopy.filter((item) => {

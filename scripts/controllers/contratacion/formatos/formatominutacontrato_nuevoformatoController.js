@@ -113,15 +113,22 @@ angular.module('GenesisApp', [])
         $scope.DATA.VALOR_UPC = $scope.DATA.VALOR_UPC == null ? '' : $scope.DATA.VALOR_UPC;
         $scope.DATA.union_temporal = $scope.DATA.union_temporal == null ? '' : $scope.DATA.union_temporal;
 
+        $scope.DATA.SERVICIO_714 = $scope.DATA.SERVICIO_714 == null ? '' : $scope.DATA.SERVICIO_714;
+        $scope.DATA.SERVICIO_714 = $scope.DATA.SERVICIO_714 == 0 ? 'NO' : 'SI'
+        $scope.DATA.NOMBRE_CONCEPTO = $scope.DATA.NOMBRE_CONCEPTO == null ? '' : $scope.DATA.NOMBRE_CONCEPTO;
+        $scope.DATA.NOMBRE_ASUNTO = $scope.DATA.NOMBRE_ASUNTO == null ? '' : $scope.DATA.NOMBRE_ASUNTO;
+
         var x = $scope.DATA.INICIA.split('/');
         var inicia = new Date(x[2] + '/' + x[1] + '/' + x[0]);
-        var fechaNuevaEmpresa = new Date('2022/12/01');
+        // var fechaNuevaEmpresa = new Date('2022/12/01');
         // $scope.mostrar_div_firmas = true;
-        console.log(inicia)
-        console.log(fechaNuevaEmpresa)
-        // if (inicia >= fechaNuevaEmpresa) {
-        //   $scope.mostrar_div_firmas = false;
-        // }
+        // console.log(inicia)
+        // console.log(fechaNuevaEmpresa)
+        $scope.mostrar_anexo22 = false;
+        var fechaNuevoAbril = new Date('2024/04/01');
+        if (inicia >= fechaNuevoAbril) {
+          $scope.mostrar_anexo22 = true;
+        }
         setTimeout(() => { $scope.$apply(); }, 500);
         setTimeout(() => { window.print() }, 2000);
       }

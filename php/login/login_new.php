@@ -19,6 +19,11 @@ function obtener_ip()
   }
 }
 
+// $sessionId = session_id();
+
+// // Imprimir el ID de sesión
+// echo "El ID de sesión es: $sessionId";
+
 function autenticacion()
 {
   global $param;

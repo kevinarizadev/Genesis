@@ -66,7 +66,7 @@
                   <select class="select-chosen-eps select  pt-select-pqr" id="tiposolicitud"
                     ng-model="selectedtipoSolicitud" ng-change="changeSolicitud(selectedtipoSolicitud)">
                     <option value="">SELECCIONAR</option>
-                    <option ng-repeat="s in tipoSolicitud" value="{{s}}">{{s.Nombre}}</option>
+                    <option ng-repeat="s in TiposdeSolicitud" value="{{s}}">{{s.Nombre}}</option>
                   </select>
                 </div>
               </div>
@@ -177,7 +177,7 @@
               <div id="riesgo" ng-if="pqrData.selectedtipoSolicitud == 'R' && pqrData.selectedtipoRadicacion == 'A'">
                 <div class="col s12">
                   <blockquote ng-hide="data.inactiveTitleRv" id="datosRiegovida" class="display-flex noselectxtpqr">
-                    <strong ng-if="data.inactiveRv" class="c-none">TIPO DE VIDA</strong>
+                    <strong ng-if="data.inactiveRv" class="c-none">TIPO DE RIESGO</strong>
                     <div class="w-divTitle c-pointer" ng-click="collapseRiegoVida();">
                       <strong ng-if="!data.inactiveRv"
                         ng-attr-title="{{data.collapseRv? 'Puedes mostrar las opciones del riesgo de vida':'Puedes ocultar las opciones del riesgo de vida'}}">CRITERIOS
@@ -340,6 +340,7 @@
                         {{m.NOMBRE}}</option>
                     </select>
                   </div>
+                 
                   <div class="col s3" ng-show="pqrData.selectedtipoRadicacion == 'A'">
                     <label class="c-pointer noselectxtpqr" for="motivospatologias">Motivo Patología</label>
                     <select class="select-chosen-eps select pt-select-pqr" style="color: #000;" id="motivospatologias"
@@ -349,7 +350,24 @@
                         ng-selected="pqrData.motivoPatologia == m.CODIGO">
                         {{m.NOMBRE}}</option>
                     </select>
-                  </div>
+                  </div><br/>
+
+                   <!--  27/10/2023 AGREGANDO NUEVO CAMPO -->                         
+                    <div class="row" ng-show="pqrData.macromotivo == 1">
+                      <div class="col s3">
+                            <form ng-submit="buscarIps(prestadorinvolucrado);">
+                            <label for="prestador">Prestador Involucrado <i class="icon-search c-pointer"
+                              ng-click="buscarIps(prestadorinvolucrado);"></i></label>
+                            <input type="text" id="prestador" class="text-upper" autocomplete="off"
+                              placeholder="Buscar Prestador" ng-model="prestadorinvolucrado"
+                              name="myBrowser" list="listIps">
+                            <datalist id="listIps" open="open">
+                              <option value="{{x.Codigo}}-{{x.Nombre}}" ng-repeat="x in listIps">
+                            </datalist>
+                          </form>
+                          </div>
+                    </div>                                                   
+                                      <!-- FIN  -->
                   <!-- SERVICIOS -->
                   <div
                     ng-show="(pqrData.selectedtipoSolicitud == 'D' || pqrData.selectedtipoSolicitud == 'Q'|| pqrData.selectedtipoSolicitud == 'R') && pqrServicios.obligAut == 'S' && pqrData.selectedtipoRadicacion == 'A'">
@@ -882,6 +900,7 @@
                     <th class="text-center">NUMERO SOLICITUD</th>
                     <th class="text-center">FECHA RADICACION</th>
                     <th class="text-center">FECHA VENCIMIENTO</th>
+                    <th class="text-center">TIPO DE RIESGO</th>
                     <th class="text-center">DIAS HABILES RESTANTES</th>
                     <th class="text-center">TIPO DE SOLICITUD</th>
                     <th class="text-center">AREA DELEGADA</th>
@@ -902,7 +921,8 @@
                     >
                     <td class="text-center">{{p.CODIGO2}}</td>
                     <td class="text-center">{{p.FECHARAD}}</td>
-                    <td class="text-center">{{p.FECHAENT}}</td>
+                    <td class="text-center">{{p.FECHAENT_COMPLETA}}</td>
+                    <td class="text-center">{{p.RIESGO}}</td>
                     <th class="text-center">
                       <span class="status" ng-style="{ 'background':p.DIAS < 0 ? 'orange' : 'green' }"
                         style="color:#fff">
@@ -1856,6 +1876,14 @@
                         <tr ng-if="dpqr.MACROMOTIVO">
                           <th class="noselectxtpqr">Motivo</th>
                           <td colspan="6">{{dpqr.MACROMOTIVO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.MACROMOTIVO">
+                          <th class="noselectxtpqr">Tipo de Motivo Especifico</th>
+                          <td colspan="6">{{dpqr.TIPOMOTIVO}}</td>
+                        </tr>
+                        <tr ng-if="dpqr.MACROMOTIVO">
+                          <th class="noselectxtpqr">Subtipo de Motivo Especifico</th>
+                          <td colspan="6">{{dpqr.SUBTIPOMOTIVO}}</td>
                         </tr>
                         <tr ng-if="dpqr.SOLICITUD=='CORRESPONDENCIA' && dpqr.AREACORRESPONDENCIA">
                           <th class="text-center">AREA CORRESPONDENCIA</th>
@@ -3115,7 +3143,7 @@
     </div>
   </div>
   <!-- //////////////////////////////////////////////////////////////////////modal admin correspondencia////////////////////////////////// -->
-  <div id="modalradicacion" class="modal" style="overflow: hidden;width: 70%;">
+  <!-- <div id="modalradicacion" class="modal" style="overflow: hidden;width: 70%;">
     <div class="modal-content" style="padding: 0px !important;">
       <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
         <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
@@ -3144,8 +3172,8 @@
             </div>
             <div class="card-action" id="card-action"
               style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
-              <!-- ELEGIR -->
-              <div class="col s12">
+              ELEGIR -->
+              <!-- <div class="col s12">
                 <div style="max-height: 55vh;overflow:auto;border: 2px solid;" class="default-color">
                   <table id="tabla_modal_ENTREGA" class=" highlight" style="width:100%;color: black;">
                     <thead class="default-linear-gradient">
@@ -3188,15 +3216,15 @@
                     </tbody>
                   </table>
                 </div>
-              </div>
+              </div> -->
               <!-- //-// -->
-            </div>
+            <!-- </div>
           </div>
 
         </div>
       </div>
-    </div>
-  </div>
+    </div> -->
+  <!-- </div> -->
   <style>
     @media only screen and (max-width: 991px) and (min-width: 350px) {
       #pqr .icon-help {

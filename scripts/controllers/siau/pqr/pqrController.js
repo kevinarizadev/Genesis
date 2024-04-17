@@ -19,6 +19,8 @@ angular.module('GenesisApp')
       $scope.pqrDatariesgodevidaver = false;
       $scope.filterVencidas = 'N';
       $scope.filterSuperSalud = 'T';
+      $scope.validarPermisos();
+      
 
       // setTimeout(() => {
       //   $("#tiposolicitud").prop("selectedIndex", 3); const json = '{"Codigo":"D","Nombre":"DERECHO DE PETICION","Tipo":"P"}'; $scope.changeSolicitud(json);
@@ -58,7 +60,7 @@ angular.module('GenesisApp')
       inactivecorrespondenciaseccional: true
     }
     $scope.pqrData = {
-      selectedtipoSolicitud: null, selectedRv: 'N',selectedRdS:"", selectedCriteriObjetivo: null, selectedCriterioSubjetivo: null,
+      selectedtipoSolicitud: null, selectedRv: 'N', selectedRdS: "", selectedCriteriObjetivo: null, selectedCriterioSubjetivo: null,
       selectedCriteriComplementario: null, selectedSujetosProteccionEspecial: null, selectedServicios: null, selectedMedicamentos: null,
       selectedmediosRecepcion: null, selectedOtrosEntesDeControl: null, sede: null, enteCodigo: null, selectedEntidad: null, textCodNurc: null, textCodPqrSuperSalud: null, selectedtipoRadicacion: null,
       User: {
@@ -70,7 +72,7 @@ angular.module('GenesisApp')
         }
       }, Ips: { nit: null, ips: null, codmunicipio: null, municipio: null, direccion: null, ubicacion: null, email: null, telefono: null },
       Empleador: { tipodocumento: null, documento: null, nombre: null, codmunicipio: null, municipio: null, direccion: null, ubicacion: null, email: null, telefono: null },
-      selectedMotivoEspecifico: null, pqrFile: null, ext: null, observaciones: null, selectedDias: null,selectedHoras:null, selectedRespuesta: null, fecha_recibido: null,
+      selectedMotivoEspecifico: null, pqrFile: null, ext: null, observaciones: null, selectedDias: null, selectedHoras: null, selectedRespuesta: null, fecha_recibido: null,
       selectedTramite: 'S', selectedCorrespondencia: null, seccional: null, numfolio: null,
       tipo_tercero: null, tipo_documento_rad: null, documento_rad: null,
       Tercero: { documento: null, nombre: null, telefono: null, email: null, municipio: null, barrio: null, direccion: null, senor: null },
@@ -152,9 +154,84 @@ angular.module('GenesisApp')
       $scope.privilegios = response;
     })
 
-    pqrHttp.getSolicitud().then(function (response) {
-      $scope.tipoSolicitud = response;
-    })
+
+    // pqrHttp.getSolicitud().then(function (response) {
+    //   console.log(response)
+    //   $scope.tipoSolicitud = response;
+    // })
+
+    $scope.validarPermisos = function () {
+      // const usuarios = [
+      //   { user: '1042454684' },//Ka
+      //   { user: '1052988663' },//edgardo.hernandez
+      //   { user: '72157887' }, //Alexander Berbesi
+      //   { user: '8634410' }, //Carlos Romero
+      //   { user: '1140861113' }, //robin.reales
+      //   { user: '1140826060' }, //kelly.mendoza
+      //   { user: '22494077' }, //Johana Montero
+      //   { user: '72200692' }, //Jorge reyes,
+      //   { user: '52936596' }, //Claudia Lamprea
+      //   { user: '1048211587' }, //Amilkar Urrego
+      //   { user: '24138522' }, //Johanna.ariza
+      //   { user: '32777066' }, //Brenda Ruiz    
+      // ]
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+                  function: 'p_permisos_func',
+                  cedula: $scope.cedulausuario
+              }
+      }).then(function(response){
+             $scope.permisosUsuario = response.data;
+             console.log($scope.permisosUsuario);            
+      })
+      
+     
+    }
+
+
+    // OBJETO DE TIPO DE SOLICITUD
+    $scope.TiposdeSolicitud = [
+      {
+        Codigo: 'C',
+        Nombre: 'CONSULTA Y/O SOLICITUD DE INFORMACION',
+        Tipo: 'P'
+      },
+      {
+        Codigo: 'D',
+        Nombre: 'DERECHO DE PETICION',
+        Tipo: 'P'
+      },
+      {
+        Codigo: 'E',
+        Nombre: 'CORRESPONDENCIA',
+        Tipo: 'C'
+      },
+      {
+        Codigo: 'P',
+        Nombre: 'PETICION',
+        Tipo: 'P'
+      },
+      {
+        Codigo: 'F',
+        Nombre: 'FELICITACIONES',
+        Tipo: 'P'
+      },
+      {
+        Codigo: 'Q',
+        Nombre: 'QUEJA',
+        Tipo: 'P'
+      },
+      {
+        Codigo: 'R',
+        Nombre: 'RECLAMO',
+        Tipo: 'P'
+      }
+      
+    ]
+
+
     pqrHttp.getRiesgoSolicitud().then(function (response) {
       $scope.rv = response;
 
@@ -429,7 +506,7 @@ angular.module('GenesisApp')
         cancelButtonText: 'Cancelar'
       }).then(function () {
         $timeout(function () {
-          $scope.pqrData.selectedtipoSolicitud = null; $scope.data.inactiveSolicitud = true; $scope.resetDataForm();
+          $scope.pqrData.selectedtipoSolicitud = null; $scope.data.inactiveSolicitud = true; $scope.resetDataForm(); $scope.pqrData.macromotivo = null;
         }, 100);
       }).catch(swal.noop);
     }//Fin
@@ -437,19 +514,23 @@ angular.module('GenesisApp')
       if ($scope.data.requiredFile == false) {
         // if($scope.pqrData.selectedRdS){
         if ($scope.pqrData.selectedtipoSolicitud != 'E' && $scope.pqrData.selectedtipoRadicacion == 'A') {
-         // $scope.pqrData.motivosEspecificos
+          // $scope.pqrData.motivosEspecificos
           // $scope.pqrData.submotivosEspecificos
-          if ($scope.pqrData.motivoAltoCosto && $scope.pqrData.motivoPatologia && $scope.pqrData.motivosEspecificos && $scope.pqrData.submotivosEspecificos) {
-            $scope.insert();
-          } else {
+          if (!$scope.pqrData.motivoAltoCosto || !$scope.pqrData.motivoPatologia || !$scope.pqrData.motivosEspecificos || !$scope.pqrData.submotivosEspecificos) {
             swal('No completado', '¡Debe seleccionar tipo motivo especifico, sub tipo motivo especifico motivo Altocosto , motivo Patologia!', 'error').catch(swal.noop);
+            return
           }
+          // if ($scope.macro_motivo == 1 && !$scope.prestadorinvolucrado.includes('-')) {
+          //   swal('No completado', '¡Debe seleccionar prestador involucrado!', 'error').catch(swal.noop);
+          //   return
+          // }
+          $scope.insert();
         } else {
           $scope.insert();
         }
-      // }else{
-      //   swal('No completado', 'seleccione por favor Riesgo de Solicitud!', 'info').catch(swal.noop);
-      // }
+        // }else{
+        //   swal('No completado', 'seleccione por favor Riesgo de Solicitud!', 'info').catch(swal.noop);
+        // }
       } else {
         swal('No completado', 'Verifica la extensión o peso del archivo!', 'error').catch(swal.noop);
       }
@@ -593,7 +674,8 @@ angular.module('GenesisApp')
         'motivo_altocosto': $scope.pqrData.motivoAltoCosto,
         'motivo_patologia': $scope.pqrData.motivoPatologia,
         'riesgo_solicitud': $scope.pqrData.selectedRdS,
-        'horas': $scope.pqrData.selectedHoras
+        'horas': $scope.pqrData.selectedHoras,
+        'prestadorInvolucrado' : $scope.prestadorinvolucrado.split("-")[0]
       });
       // console.log(JSON.stringify($scope.json));
       swal({ title: 'Cargando datos del PQR' }).catch(swal.noop);
@@ -687,18 +769,18 @@ angular.module('GenesisApp')
           $scope.data.collapsePqrComplement = true;
           $scope.seletedcorrepondencia = 'P';
         }
-        if($scope.tempsol.Codigo == 'R'){
+        if ($scope.tempsol.Codigo == 'R') {
           $scope.pqrDatariesgodevidaver = true;
-        }else{
+        } else {
           $scope.pqrDatariesgodevidaver = false;
         }
 
       } else {
         $scope.data.inactiveSolicitud = true; $scope.resetDataForm(); $scope.resetIps(); $scope.resetEmpleador();
       }
-       // var now = new Date();
-          // var formattedDateTime = now.toISOString().slice(0, 16);
-          // $scope.pqrData.fecha_recibido = now;
+      // var now = new Date();
+      // var formattedDateTime = now.toISOString().slice(0, 16);
+      // $scope.pqrData.fecha_recibido = now;
     }//Fin
     $scope.resetDataForm = function () {//Funcion para reset data form
       $scope.pqrData.selectedRv = 'N'; $scope.pqrData.selectedmediosRecepcion = null; $scope.pqrData.selectedtipoRadicacion = '';
@@ -742,8 +824,8 @@ angular.module('GenesisApp')
       }
       $scope.validateDias();
       console.log($scope.pqrData.selectedRdS);
-        
-    }//Fin
+
+    } //Fin
     $scope.collapseRiegoVida = function () {//Funcion para collapse riesgo vida
       $scope.data.collapseRv = !$scope.data.collapseRv;
     }//Fin
@@ -1001,8 +1083,12 @@ angular.module('GenesisApp')
         Acudiente: {
           selectedDocumento: { "Codigo": "" }, documento: null, nombre: null, codmunicipio: null, municipio: null, direccion: null, telefono: null, email: null
         }
+      
       }
+      $scope.prestadorinvolucrado = '';
     }//Fin
+
+
     $scope.changeAcudiente = function (params) {//Funcion para validar si el afiliado tiene un acudiente o no
       if (params == 'S') {
         $scope.data.inactiveAcudiente = false; $scope.acudienteBoolean = true;
@@ -1162,9 +1248,6 @@ angular.module('GenesisApp')
               }, 100);
 
             }
-
-
-
             $http({
               method: 'POST',
               url: "php/siau/pqr/Rpqr.php",
@@ -1451,7 +1534,7 @@ angular.module('GenesisApp')
     /*$scope.validateDias = function () {//Valida los dias habiles para respuesta del pqr
         pqrHttp.getvalidapqr_responsable(sessionStorage.getItem('cedula')).then(function (response) {
             console.log(response);
-
+    
             if (response.Nombre=='S') {
                 pqrHttp.getDiasEntes().then(function (response) {
                     $scope.dias = response;
@@ -1462,7 +1545,7 @@ angular.module('GenesisApp')
                 })
             }
         })
-
+    
         if ($scope.pqrData.selectedmediosRecepcion == '13') {
             if ($scope.pqrData.enteCodigo == '10') {
                 $timeout(function () {
@@ -1491,7 +1574,7 @@ angular.module('GenesisApp')
                 $scope.pqrData.selectedDias = "10";
                 $scope.disabledDias = true;
             }
-
+    
             if ($scope.pqrData.selectedtipoSolicitud == 'E') {
                 $scope.pqrData.selectedDias = "5";
             }
@@ -1499,9 +1582,9 @@ angular.module('GenesisApp')
         if (['D', 'C', 'F', 'Q'].includes($scope.pqrData.selectedtipoSolicitud)) {
             $scope.pqrData.selectedDias = "10";
         }
-
-
-
+    
+    
+    
     }//Fin*/
 
     $scope.validateDias = function () {//Valida los dias habiles para respuesta del pqr
@@ -1563,6 +1646,12 @@ angular.module('GenesisApp')
       if (['D', 'C', 'F', 'Q'].includes($scope.pqrData.selectedtipoSolicitud)) {
         $scope.pqrData.selectedDias = "10";
       }
+      if (['P'].includes($scope.pqrData.selectedtipoSolicitud)) {
+        $scope.pqrData.selectedDias = "10";
+        $scope.disabledDias = true;
+
+      }
+
 
 
 
@@ -1594,7 +1683,7 @@ angular.module('GenesisApp')
                 //
                 $scope.pqrServicios.obligAut = data.value.oblig_aut;
                 console.log(data.value)
-                $scope.Optener_Motivos_Especificos($scope.macro_motivo,$scope.motivo_general,$scope.motivo.codigo);
+                $scope.Optener_Motivos_Especificos($scope.macro_motivo, $scope.motivo_general, $scope.motivo.codigo);
               }
             });
           }
@@ -2191,6 +2280,7 @@ angular.module('GenesisApp')
     $scope.getPQRSExcel = function (estado) {
       if (estado == 'destruir') { swal({ title: 'Cargando Informacion' }); swal.showLoading(); }
       pqrHttp.postObtenerPqrExcel().then(function (response) {
+
         if (response.data.length > 0) {
           if (estado == 'destruir' && $scope.listSolicitudes != undefined) {
             $scope.listSolicitudes.destroy();
@@ -2219,6 +2309,7 @@ angular.module('GenesisApp')
         }
       });
     }
+
 
 
     $scope.ProcessExcel = function (data) {
@@ -2277,17 +2368,50 @@ angular.module('GenesisApp')
           'COD_MOTESP': element.COD_MOTESP ? element.COD_MOTESP : element.cod_motesp,
           'OBSERVACION': element.OBSERVACION ? $scope.FormatTexto_2(element.OBSERVACION) : $scope.FormatTexto_2(element.observacion),
           'MOTIVO_ESPECIFICO': element.MOTIVO_ESPECIFICO ? $scope.FormatTexto_2(element.MOTIVO_ESPECIFICO) : $scope.FormatTexto_2(element.motivo_especifico),
+          'COD_TIPO_MOTESP': element.COD_TIPO_MOTESP ? element.COD_TIPO_MOTESP : element.cod_tipo_motesp,
+          'TIPO_DE_MOTIVO_ESPECIFICO': element.TIPO_DE_MOTIVO_ESPECIFICO ? element.TIPO_DE_MOTIVO_ESPECIFICO : element.tipo_de_motivo_especifico,
+          'COD_SUBTIPO_MOTESP': element.COD_SUBTIPO_MOTESP ? element.COD_SUBTIPO_MOTESP : element.cod_subtipo_motesp,
+          'SUBTIPO_MOTESP': element.SUBTIPO_DE_MOTIVO_ESPECIFICO ? element.SUBTIPO_DE_MOTIVO_ESPECIFICO : element.subtipo_de_motivo_especifico,
+          'PRIORIZADO': element.PRIORIZADO ? element.PRIORIZADO : element.priorizado,
+          'RIESGO_VITAL': element.RIESGO_VITAL ? element.RIESGO_VITAL : element.riesgo_vital,
+          'CLASIFICACION_DE_RIESGO': element.CLASIFICACION_DE_RIESGO ? element.CLASIFICACION_DE_RIESGO : element.clasificacion_de_riesgo,
+          'JUSTIFICACION_RIESGO_VITAL': element.JUSTIFICACION_RIESGO_VITAL ? element.JUSTIFICACION_RIESGO_VITAL : element.justificacion_riesgo_vital,
+          'FECHA_CIERRE_SNS': element.FECHA_CIERRE_SNS ? element.FECHA_CIERRE_SNS : element.fecha_cierre_sns,
+          'FECHA_VENCIMIENTO_HORAS': element.FECHA_VENCIMIENTO_HORAS ? element.FECHA_VENCIMIENTO_HORAS : element.fecha_vencimiento_horas,
+          'HORAS_CIERRE': element.HORAS_CIERRE ? element.HORAS_CIERRE : element.horas_cierre,
+          'ORDEN_MEDICA': element.ORDEN_MEDICA ? element.ORDEN_MEDICA : element.orden_medica,
+          'RECLAMO_ASEGURADOR': element.RECLAMO_ASEGURADOR ? element.RECLAMO_ASEGURADOR : element.reclamo_asegurador,
+          // 'fecha_vencimiento_horas' : element.fecha_vencimiento_horas,
+          'NIT_PRESTADOR' : element.nit_prestador,
+          'FECHA_CREACION' : element.fecha_creacion,
           'FECHA_RADICACION': null,
           'AFEC_REGAFILIACION': '',
           // element.AFEC_REGAFILIACION == 'Contributivo' ? 'C' : 'S'
           'RIESGO_VIDA': element.RIESGO_VIDA ? (element.RIESGO_VIDA == 'NO' ? 'N' : 'S') : (element.riesgo_vida == 'NO' ? 'N' : 'S')
 
         })
+        console.log($scope.jsonExport);
 
 
       });
 
     };
+
+    $scope.buscarIps = function (params) {
+      if(params.length > 3){
+        swal({ title: 'Cargando Informacion' }); swal.showLoading();
+        pqrHttp.get_Ips(params).then(function (response) {
+          // console.log(response);
+          $scope.listIps = response;
+          swal.close();
+        });
+      }else{
+        swal('MENSAJE', 'Campo no valido', 'error').catch(swal.noop);
+
+      }
+    }
+
+
 
     $scope.FormatTexto_2 = function (value) {
       var valor = value;
@@ -2355,6 +2479,8 @@ angular.module('GenesisApp')
           if (pqr) {
             pqrHttp.getInfoAseguramientoPQR(pqr.CODIGO).then(function (response) {
               $scope.dpqr = response.data[0];
+            console.log($scope.dpqr);
+
             })
           }
           pqrHttp.p_mostrar_traza(pqr.CODIGO).then(function (response) {
@@ -3921,21 +4047,21 @@ angular.module('GenesisApp')
       })
     }
     // -- --------------------------------yordis 16/06/2023------------------------------------------------------ --
-    $scope.Optener_Motivos_Especificos = function (macro_motivo,motivo_general,motivo_especifico) {
+    $scope.Optener_Motivos_Especificos = function (macro_motivo, motivo_general, motivo_especifico) {
       $scope.pqrData.macromotivo = macro_motivo;
       $scope.pqrData.motivogeneral = motivo_general;
-      pqrHttp.get_Tipos_Motivos_Especificos(macro_motivo,motivo_general,motivo_especifico).then(function (response) {
+      pqrHttp.get_Tipos_Motivos_Especificos(macro_motivo, motivo_general, motivo_especifico).then(function (response) {
         console.log(response);
         $scope.Lista_Motivos_Especificos = response;
       })
     }
     $scope.Optener_Sub_Motivos_Especificos = function (tipo_motivo_especifico) {
       $scope.pqrData.submotivosEspecificos = "";
-      pqrHttp.get_Sub_Motivos_Especificos($scope.macro_motivo,$scope.motivo_general,$scope.motivo.codigo,tipo_motivo_especifico).then(function (response) {
+      pqrHttp.get_Sub_Motivos_Especificos($scope.macro_motivo, $scope.motivo_general, $scope.motivo.codigo, tipo_motivo_especifico).then(function (response) {
         $scope.Lista_Sub_Motivos_Especificos = response;
-        if($scope.Lista_Sub_Motivos_Especificos.length > 1){
+        if ($scope.Lista_Sub_Motivos_Especificos.length > 1) {
           $scope.pqrData.submotivosEspecificos = "1";
-        }else{
+        } else {
           $scope.pqrData.submotivosEspecificos = "0";
         }
       })
@@ -4039,6 +4165,7 @@ angular.module('GenesisApp')
           if (data.length && data[0].CODIGO != '-1') {
             swal.close();
             $scope.pqrServicios.listProductos = data;
+            console.log($scope.pqrServicios.listProductos);
             if (data.length == 1) {
               $scope.pqrServicios.buscarProducto = data[0].NOMBRE;
               $scope.changeBuscarProductoServicio();
@@ -4122,7 +4249,7 @@ angular.module('GenesisApp')
           }
         });
       }
-    }
+    } 
 
     $scope.agregarProductoServicio = function () {
       if ($scope.pqrServicios.codProducto == '') {
@@ -4382,7 +4509,8 @@ angular.module('GenesisApp')
         1046816549: Symbol(), //alvaro.villa
         1123637114: Symbol(), //hillary powell
         1002142857: Symbol(),  //katya.alvarado
-        1234889818: Symbol()  //yerlys.avendano
+        1234889818: Symbol(),  //yerlys.avendano
+        1047337473: Symbol()   //digna.perez
       };
       return usuarios[cedula]
     }

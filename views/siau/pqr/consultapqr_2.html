@@ -1,0 +1,1666 @@
+<div id="consultapqr">
+  <div class="row">
+    <div class="col s12 m12 l12 magazine margin widgets-tabs">
+      <div class="card-panel widgets-tabs col l12" style="margin-top: 0px; padding-bottom: 15px;padding-top: 15px;">
+        <div class="col s12 l12">
+          <div class="row" ng-show="verPQRS==true">
+            <div class="col s4">
+              <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+              <h5>Consultar PQRDS</h5>
+            </div>
+            <div class="col s8" style="text-align: right; margin-top: 15px;">
+              <div class="col s12 input-padding">
+                Tipos de busqueda :
+                <span>
+                  <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="AFILIADO"
+                    id="afiliado" />
+                  <label for="afiliado" ng-class="{'default-color': filterOptions=='AFILIADO' }"
+                    style="height: 0!important">AFILIADO </label>
+                </span>
+                <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="PQR"
+                    id="pqr" />
+                  <label style="height: 0!important" ng-class="{'default-color': filterOptions=='PQR' }"
+                    for="pqr">PQRDS</label>
+                </span>
+                <span> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="AVANZADO"
+                    id="avanzado" />
+                  <label style="height: 25px!important" ng-class="{'default-color': filterOptions=='AVANZADO'}"
+                    for="avanzado">AVANZADO</label>
+                </span>
+                <span id="permisosConsolidado" ng-show="permisosUsuario.RESC_EXPORTAR_CONSOLIDADO == 'S'"> <input class="with-gap" type="radio" ng-model="filterOptions" name="occurrences" value="CONSOLIDADO"
+                  id="consolidado" />
+                  <label style="height: 25px!important" ng-class="{'default-color': filterOptions=='CONSOLIDADO'}"
+                    for="consolidado">CONSOLIDADO</label>
+                </span>
+              </div>
+            </div>
+            <div class="col s12">
+              <form ng-submit="buscarPQR()">
+                <div class="col s11">
+                  <div class="row" ng-show="filterOptions=='AFILIADO'">
+                    <div class="col s4 offset-s3">
+                      <div class="input-field col m12 s12">
+                        <label style=" margin-top: -20px;">Tipo Documento:</label>
+                        <select class="select-chosen-eps" ng-model="tipodocumento">
+                          <option value="">SELECCIONAR</option>
+
+                          <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == tipodocumento"
+                            ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
+                            
+                          <!-- <option value="CC">CEDULA DE CIUDADANÍA</option>
+                          <option value="TI">TARJETA DE IDENTIDAD</option>
+                          <option value="RC">REGISTRO CIVIL</option>
+                          <option value="CE">CEDULA DE EXTRANJERÍA</option>
+                          <option value="PA">PASAPORTE</option>
+                          <option value="PE">PERMISO ESPECIAL DE PERMANENCIA</option>
+                          <option value="AS">ADULTO SIN IDENTIFICACIÓN</option>
+                          <option value="MS">MENOR SIN IDENTIFICACIÓN</option>
+                          <option value="CD">CARNET DIPLOMÁTICO</option>
+                          <option value="SC">SALVO CONDUCTO</option>
+                          <option value="CN">NACIDO VIVO </option> -->
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col s4">
+                      <div class="input-field col m12 s12">
+                        <i class="material-icons prefix" style="margin-top: 10px;">wc</i>
+                        <input id="with_icon1" type="text" ng-model="documento">
+                        <label for="with_icon1">Documento</label>
+                      </div>
+                    </div>
+                    <div class="col s8" style="margin-left: 27%;">
+                      Ingrese el documento del afiliado. Si no obtiene resultados puede intentar
+                      buscar por sus
+                      <a style="cursor: pointer;" ng-click="busquedaDetalles()"
+                        title="Búsqueda por detalles del afiliado">DATOS
+                        BASICOS</a>
+                    </div>
+                  </div>
+                  <div class="col s8 offset-s3" ng-show="filterOptions=='PQR'">
+                    <div class="input-field col m12 s12">
+                      <i class="material-icons prefix" style="margin-top: 10px;">dialpad</i>
+                      <input id="numaut" type="text" ng-model="numero">
+                      <label for="numaut">Numero</label>
+                    </div>
+                  </div>
+                  <div class="col s12" style="padding: 20px;" ng-show="filterOptions=='AVANZADO'">
+                    <ul class="StepProgress">
+                      <li class="StepProgress-item s">
+                        <strong class="noselectxtpqr">Sección 1</strong>
+                        <div class="row" id="seccion1">
+                          <div class="col s4">
+                            <div class="col s12">
+                              <label class="c-pointer noselectxtpqr" for="tiposolicitud">Tipo de Solicitud <span
+                                  style="color:red;">*</span></label>
+                              <select class="select-chosen-eps select  pt-select-pqr" id="tiposolicitud"
+                                ng-model="selectedtipoSolicitud" ng-change="changeSolicitud(selectedtipoSolicitud)">
+                                <option value="">SELECCIONAR</option>
+                                <option ng-repeat="s in tipoSolicitud" value="{{s}}">{{s.Nombre}}</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col s4">
+                            <div class="col s12">
+                              <label class="c-pointer noselectxtpqr" for="medirecepcion">Medio de Recepción</label>
+                              <select class="select-chosen-eps select  pt-select-pqr" id="medirecepcion"
+                                ng-model="jsonautorizacion.medio_recepcionavanzado">
+                                <option value="">SELECCIONAR</option>
+                                <option ng-repeat="s in mediosRecepcion" value="{{s.CODIGO}}">{{s.NOMBRE}}</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col  s4">
+                            <label class="c-pointer noselectxtpqr" for="especificos">Motivos</label>
+                            <input class="c-pointer" id="especificos" placeholder="CLICK PARA VER LOS MOTIVOS"
+                              type="text" ng-value="motivo.seleccion" ng-click="openmodals('motivos')"
+                              ng-attr-title="{{motivo.seleccion?motivo.seleccion:'CLICK PARA VER LOS MOTIVOS'}}"
+                              readonly="" value="CLICK PARA VER LOS MOTIVOS">
+                            <a href="javascript:void(0)" ng-hide="!motivo.seleccion" title="Remover Motivo"
+                              ng-click="removerMotivo()" style="display: flex;
+                                align-items: center;
+                                justify-content: center;"><i class="icon-trash default-color"></i></a>
+                          </div>
+                          <div class="col s4">
+                            <div class="row" style="margin: 0">
+                              <label for="with_icon" style="margin-top: -20px;">Radicador</label>
+                            </div>
+                            <input id="nitips" type="text" ng-model="jsonautorizacion.radicadoravanzado"
+                              placeholder="Documento">
+                          </div>
+                          <div class="col  s4">
+                            <div class="row" style="margin: 0">
+                              <label for="with_icon" style="margin-top: -20px;">Responsable</label>
+                            </div>
+                            <input id="with_icon1" type="text" ng-model="jsonautorizacion.responsableavanzado"
+                              placeholder="Documento">
+                          </div>
+                        </div>
+                      </li>
+                      <li class="StepProgress-item s">
+                        <strong class="noselectxtpqr">Sección 2</strong>
+
+                        <div id="seccion2">
+                          <div class="row">
+                            <div class="col s6">
+                              <div class="row" style="margin: 0">
+                                <label style=" margin-top: -20px;">Estado</label>
+                              </div>
+                              <div class="col  s12">
+                                <select class="select-chosen-eps" ng-model="jsonautorizacion.estadoavanzado">
+                                  <option value="">SELECCIONAR</option>
+                                  <option value="A">ACTIVAS</option>
+                                  <option value="X">ANULADAS</option>
+                                  <option value="P">PROCESADAS</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col s6">
+                              <div class="row" style="margin-bottom: 10px">
+                                <label for="with_icon" style="margin-top: -20px;">Fecha Recibido</label>
+                              </div>
+                              <div class="row" style="margin: 0">
+                                <div class="input-field col s6" style="margin: 0">
+                                  <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio</label>
+                                  <input id="with_icon" type="date"
+                                    ng-model="jsonautorizacion.tempfecha_recibidoiniavanzado" max="{{maxDate}}">
+                                </div>
+                                <div class="input-field col s6" style="margin: 0">
+                                  <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin</label>
+                                  <input id="with_icon" type="date"
+                                    ng-model="jsonautorizacion.tempfecha_recibidofinavanzado" max="{{maxDate}}">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+
+                            <div class="col s6">
+                              <div class="row" style="margin-bottom: 10px">
+                                <label for="with_icon" style="margin-top: -20px;">Fecha Radicación <span
+                                    style="color:red;">*</span></label>
+                              </div>
+                              <div class="row" style="margin: 0">
+                                <div class="input-field col s6" style="margin: 0">
+                                  <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio</label>
+                                  <input id="with_icon" type="date"
+                                    ng-model="jsonautorizacion.tempfecha_radicacioniniavanzado" max="{{maxDate}}">
+                                </div>
+                                <div class="input-field col s6" style="margin: 0">
+                                  <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin</label>
+                                  <input id="with_icon" type="date"
+                                    ng-model="jsonautorizacion.tempfecha_radicacionfinavanzado" max="{{maxDate}}">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col s6">
+                              <div class="row" style="margin-bottom: 10px">
+                                <label for="with_icon" style="margin-top: -20px;">Fecha Entrega</label>
+                              </div>
+                              <div class="row" style="margin: 0">
+                                <div class="input-field col s6" style="margin: 0">
+                                  <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio</label>
+                                  <input id="with_icon" type="date"
+                                    ng-model="jsonautorizacion.tempfecha_entregainiavanzado" max="{{maxDate}}">
+                                </div>
+                                <div class="input-field col s6" style="margin: 0">
+                                  <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin</label>
+                                  <input id="with_icon" type="date"
+                                    ng-model="jsonautorizacion.tempfecha_entregafinavanzado" max="{{maxDate}}">
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col s12" style="padding: 20px;" ng-show="filterOptions=='CONSOLIDADO'">
+                    <div class="row">
+                      <div class="col s3" style="margin-top: 0.7em;">
+                        <label for="with_icon" style="margin-top: -20px;">Estado</label>
+                        <select class="select-chosen-eps" ng-model="estadoConsolidado">
+                          <option value="">SELECCIONAR</option>
+                          <option value="ACTIVA">ACTIVAS</option>
+                          <option value="PROCESADA">PROCESADAS</option>
+                          <option value="TODAS">TODAS</option>
+                        </select>
+                      </div>
+                      <div class="col s6">
+                        <div class="row" style="margin-bottom: 10px">
+                          <label for="with_icon" style="margin-top: -20px;">Fecha Radicación <span
+                              style="color:red;">*</span></label>
+                        </div>
+                        <div class="row" style="margin: 0">
+                          <div class="input-field col s6" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;font-size: 10px">Inicio</label>
+                            <input id="with_icon" type="date"
+                              ng-model="fechaInicioConsolidado" max="{{maxDate}}">
+                          </div>
+                          <div class="input-field col s6" style="margin: 0">
+                            <label for="with_icon" style="margin-top: -20px;font-size: 10px">Fin</label>
+                            <input id="with_icon" type="date"
+                              ng-model="fechaFinConsolidado" max="{{maxDate}}">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="col s1 right">
+                    <div class="input-field col m12 s12">
+                      <button class="btn white-text" type="submit"
+                        style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"><i style="position: relative;"
+                          class="material-icons prefix">search</i></button>
+                    </div>
+                  </div> -->
+                  <div class="col s3 left" ng-show="filterOptions=='AVANZADO' && permisosUsuario.RESC_EXPORTAR_BOTONES == 'S' ">
+                    <button class="btn white-text" type="button"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"
+                      ng-click="descargarExportadoMarcacion()">Exportado Marcacion PQR</button>
+                  </div>
+                  <div class="col s3 left"
+                    ng-show="filterOptions=='AVANZADO' && permisosUsuario.RESC_EXPORTAR_BOTONES == 'S'">
+                    <button class="btn white-text" type="button"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"
+                      ng-click="descargarExportadoLogifarma()">Exportado Logifarma</button>
+                  </div>
+                  <div class="col s3 left"
+                    ng-show="filterOptions=='AVANZADO' && permisosUsuario.RESC_EXPORTAR_BOTONES == 'S'">
+                    <button class="btn white-text" type="button"
+                      style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"
+                      ng-click="descargarExportadoPQRServicios()">Exportado PQR Servicios</button>
+                  </div>
+                  <div class="col s3 left"
+                      ng-show="filterOptions=='AVANZADO' && permisosUsuario.RESC_EXPORTAR_BOTONES == 'S'">
+                      <button class="btn white-text" type="button"
+                        style="padding-right: 5px; padding-left: 5px; margin-top: 10px;"
+                        ng-click="descargarExportadoPQRAuts()">Exportado AUT</button>
+                    </div>
+
+                  <div class="col s3 right">
+                    <div class="input-field col m12 s12">
+                      <button class="btn white-text" type="submit"
+                        style="padding-right: 5px; padding-left: 5px; margin-top: 10px; float: right;"><i
+                          style="position: relative;" class="material-icons prefix">search</i></button>
+                      <a class="btn white-text red" ng-if="filterOptions=='AVANZADO'" ng-click="limpiarAvanzado();"
+                        style="padding-right: 5px; padding-left: 5px;
+                       margin-top: 10px; float: right;margin-right: 10px;"><i style="position: relative;"
+                          class="material-icons prefix">clear</i></a>
+                    </div>
+                  </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div ng-show="verPQRS==false && (filterOptions=='AFILIADO')">
+          <div class="col s12" style="margin-bottom: 15px">
+            <div class="col s5">
+              <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+              <h5>Información del Afiliado</h5>
+            </div>
+            <div class="col s12">
+              <table class="responsive-table table-bordered" style="height:100px;">
+                <thead>
+                  <tr>
+                    <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                    <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                    <th data-field="FECHA de Nacimiento" class="center-align">FECHA NACIMIENTO</th>
+                    <th data-field="UBICACION" class="center-align">UBICACION</th>
+                    <th data-field="GENERO" class="center-align">GENERO</th>
+                    <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                    <th data-field="EDAD" class="center-align">EDAD</th>
+                    <th data-field="IPS ANTERIOR" class="center-align"
+                      ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                    <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>
+                    <!-- <th data-field="NOVEDADES" class="center-align"><i class="icon-dot-3"></i></th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} - {{infoafiliadoautedit.Documento}}
+                    </td>
+                    <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                    <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                    <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                    <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                      <span class="status purple"
+                        style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                    </td>
+                    <td class="center-align"><span class="status green">{{infoafiliadoautedit.Estado}}</span></td>
+
+                    <td ng-show="infoafiliadoautedit.SINIESTRO == 'true'" class="center-align"><span
+                        class="status orange">ALTO
+                        COSTO</span></td>
+                    <td ng-show="infoafiliadoautedit.TUTELA == 'true'" class="center-align"><span
+                        class="status red">TUTELA</span></td>
+                    <td ng-show="infoafiliadoautedit.PORTABILIDAD=='S'">
+                      <span class="status light-blue">PORTABILIDAD</span>
+                    </td>
+                    <td ng-show="infoafiliadoautedit.ERROR_50=='true'" class="center-align">
+                      <span class="status black" style="color:#fff">ERROR_50</span>
+                    </td>
+                    <td ng-if="infoafiliadoautedit.AFIC_T045=='S'" class="center-align">
+                      <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                    </td>
+                    <!-- <td> <i class="icon-info-circled" ng-click="openmodals('modalnovedades')"
+                        title="Información adicional y Novedades"
+                        style="cursor: pointer;font-size: 2em;justify-content: center;display: flex; align-items: center;"></i>
+                    </td> -->
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;" ng-hide="verPQRS">
+          <div class="charts" style="margin-bottom: 0px;width: 99%;">
+            <div class="row">
+              <div class="col s12 right">
+                <div class="input-field col s4 right">
+                  <input id="buscarpro" type="text" ng-model="filtaut" ng-change="filter(filtaut)" required>
+                  <label for="buscarpro">Buscar:</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col s12" style="margin-bottom: 1em;">
+              <div style="float: left;"> Un resultado de <strong> {{listarPQRSTemp.length}} PQRDS, por el filtro
+                  Anterior</strong>
+              </div>
+              <div style="float: right;">
+                <button type="button" class="btn white-text"
+                  ng-click="JSONToCSVConvertor('LISTADO DE PQRDS', true);">Descargar <i class=" icon-file-excel"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-content foot4"
+              style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+              <div class="col s11">
+                <h5 class="white-text">{{nameaut}}</h5>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="limpiar()"
+                    class="material-icons white-text">close</i></h5>
+              </div>
+            </div>
+            <div class="card-action"
+              style="padding-bottom: 3px;border-top: 0;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); margin: 10px"
+              ng-repeat="pqr in listarPQRSTemp | inicio: currentPage * pageSize | limitTo: pageSize">
+              <div class="row" style="margin-bottom: 0" ng-hide="showcenso == $index">
+                <div class="col s12" style="padding: 0">
+                  <div class="row">
+                    <div class="col s12 default-background">
+                      <span class="white-text"> <b> {{pqr.CODIGO2}}
+                        </b></span>
+                      <span class="white-text right"><b> MEDIO RECEPCIÓN - {{pqr.NOMMEDIO}}</b></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s7">
+                    <div class="row" ng-show="filterOptions!='AFILIADO'">
+                      <span> <b> RADICACIÓN:</b> {{pqr.TIPO_RADICACION}} - {{pqr.RADICACION}}
+                        {{pqr.NOMBRE_ENTIDAD}}</span>
+                    </div>
+                    <div class="row" style="text-align: justify;">
+                      <span> <b> MOTIVO:</b> {{pqr.CODIGO_ESPECIFICO}} - {{pqr.MOTIVO_ESPECIFICO}}</span>
+                    </div>
+                    <div class="row" style="text-align: justify;">
+                      <span> <b>TIPO DE MOTIVO ESPECIFICO:</b> {{pqr.TIPOMOTIVO}}</span>
+                    </div>
+                    <div class="row" style="text-align: justify;">
+                      <span> <b>SUBTIPO DE MOTIVO ESPECIFICO:</b> {{pqr.SUBTIPOMOTIVO}}</span>
+                    </div>
+                    <div class="row" style="text-align: justify;">
+                      <span> <b>OBSERVACIÓN:</b> {{pqr.OBSERVACION}}</span>
+                    </div>
+                    <br/><br/>
+                    <div class="row" style="display: flex;justify-content: center;
+                    align-items: center;">
+                    
+                      <div
+                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
+                        ng-click="descargafile(pqr.RUTA, pqr.FTP)">
+                        <i style="font-size: 30px;" class="material-icons prefix default-color">print</i> <span
+                          style="margin-left: 5px">SOPORTE</span>
+                      </div>
+
+                      <!-- <div
+                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
+                        ng-click="capturarfechaPrestacion(pqr)">
+                        <i style="font-size: 30px;" class="material-icons prefix default-color">today</i> <span
+                          style="margin-left: 5px">FECHA DE PRESTACION</span>
+                      </div> -->
+
+                      <div
+                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
+                        ng-click="quitarMarcacion(pqr)"
+                        ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_SN == 'S'"
+                        title="Ver observación y desmarcar">
+                        <i style="font-size: 30px;" class="material-icons prefix default-color">check_box</i> <span
+                          style="margin-left: 5px">DESMARCAR</span>
+                      </div>
+                      <div
+                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
+                        ng-click="realizarMarcacion(pqr)"
+                        ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_SN == 'N'"
+                        title="Marcar por gestión pendiente">
+                        <i style="font-size: 30px;"
+                          class="material-icons prefix default-color">check_box_outline_blank</i> <span
+                          style="margin-left: 5px">MARCAR</span>
+                      </div>
+                      <div
+                        style="display: flex;justify-content: center;align-items: center; cursor: pointer;margin: auto;"
+                        ng-click="descargarExportadoMarcacion_Pqr(pqr)"
+                        ng-if="pqr.ESTADO == 'PROCESADO' && pqr.COD_SUPERSALUD && tempfilterOptions == 'PQR' && marcacionPQR_observacion != 'N'"
+                        title="Historico de Marcación">
+                        <i style="font-size: 30px;" class="material-icons prefix default-color">library_books</i> <span
+                          style="margin-left: 5px">HISTORICO MARCACIÓN</span>
+                      </div>
+                    </div>
+
+                    <div ng-if="documentologueo =='1140861113'" class="row" style="display: flex;
+                    justify-content: center;
+                    align-items: center;">
+                      <div style="display: flex;
+                    justify-content: center;
+                    align-items: center; cursor: pointer;" ng-click="modalactualizarfecha(pqr.CODIGO2)">
+
+                        <i style="font-size: 30px;" class="material-icons prefix default-color">today</i> <span
+                          style="margin-left: 5px">ACTUALIZAR FECHA DE RESPUESTA</span>
+                      </div>
+
+                    </div>
+                    <div class="row" style="display: flex;justify-content: center;align-items: center;"
+                      ng-show="listarPQRS.length == 1 && 1==0">
+                      <div style="display: flex;justify-content: center;align-items: center; cursor: pointer;">
+
+                        <div class="col s12 input-padding" style="margin-top: 20px;display: grid;text-align: center;"
+                          ng-show="shw_Tutela">
+                          <i class="icon-check-empty" ng-show="mdl_Tutela == null"
+                            title="Pendiente por revisar el area de Gestion de Juridica"
+                            ng-click="Guarda_Accion_TUACGS(pqr.CODIGO,'TU')"></i>
+                          <i class="icon-check" ng-show="mdl_Tutela == 'S'"
+                            title="Revisado por el area de Juridica"></i>
+                          <i class="icon-cancel-squared" ng-show="mdl_Tutela == 'N'"
+                            title="Revisado por el area de Juridica"></i>
+                          <label style="font-weight: 700;">TUTELA</label>
+                        </div>
+                        <div class="col s12 input-padding" style="margin-top: 20px;display: grid;text-align: center;"
+                          ng-show="shw_Altocosto">
+                          <i class="icon-check-empty" ng-show="mdl_Altocosto == null"
+                            title="Pendiente por revisar el area de Altocosto"
+                            ng-click="Guarda_Accion_TUACGS(pqr.CODIGO,'AC')"></i>
+                          <i class="icon-check" ng-show="mdl_Altocosto == 'S'"
+                            title="Revisado por el area de Altocosto"></i>
+                          <i class="icon-cancel-squared" ng-show="mdl_Altocosto == 'N'"
+                            title="Revisado por el area de Altocosto"></i>
+                          <label style="font-weight: 700;">ALTOCOSTO</label>
+                        </div>
+                        <div class="col s12 input-padding" style="margin-top: 20px;display: grid;text-align: center;"
+                          ng-show="shw_Gestionriesgo">
+                          <i class="icon-check-empty" ng-show="mdl_Gestionriesgo == null"
+                            title="Pendiente por revisar el area de Gestion de Riesgo"
+                            ng-click="Guarda_Accion_TUACGS(pqr.CODIGO,'GS')"></i>
+                          <i class="icon-check" ng-show="mdl_Gestionriesgo == 'S'"
+                            title="Revisado por el area de Gestion de Riesgo"></i>
+                          <i class="icon-cancel-squared" ng-show="mdl_Gestionriesgo == 'N'"
+                            title="Revisado por el area de Gestion de Riesgo"></i>
+                          <label style="font-weight: 700;width: 9vw;">GESTION DE RIESGO</label>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="row" ng-if="pqr.ESTADO=='ANULADO'" style="text-align: center;">
+                      <span><b ng-if="pqr.MOTIVO_ANULACION"> Motivo Anulación:</b>
+                        {{pqr.MOTIVO_ANULACION ? pqr.MOTIVO_ANULACION:'SIN MOTIVO DE ANULACIÓN'}} {{pqr.MOTIVO_ANULACION
+                        ? '-':''}} {{pqr.NOMBRE_MOTIVO_ANULACION}} {{pqr.PQR_ASOCIADA}}</span>
+                    </div>
+                  </div>
+                  <div class="col s5">
+                    <div class="row margin">
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b> FECHA RECIBIDO</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{pqr.FECHAREC}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>FECHA RADICACIÓN</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{pqr.FECHARAD}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>FECHA MAX RESPUESTA</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{pqr.FECHAENT}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row margin">
+                      <div class="col s4"
+                        style="font-size: 12px;border-bottom: 1px solid #ddd;border-right: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>FECHA RESPUESTA</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{pqr.FECHARESPUESTA}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b> DIAS HABILES</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{pqr.DIAS_HABILES}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b> RESULTADO PQRDS</b>
+                        </div>
+                        <div class="text-center">
+                          <span class="status" style="background-color: {{pqr.OPORTUNIDAD_CLASE}}">
+                            <b> {{pqr.ESTADO_RESPUESTA =='' ? '-': pqr.ESTADO_RESPUESTA}}</b></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row margin">
+                      <div class="col s4"
+                        style="font-size: 12px;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>SOLICITUD</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{pqr.SOLICITUD}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4"
+                        style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>TIPO DE RIESGO</b>
+                        </div>
+                        <div class="text-center">
+                          <span> {{pqr.RIESGO}}</span>
+                        </div>
+                        <br>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>CODIGO SUPERSALUD</b>
+                        </div>
+                        <div class="text-center">
+                          <span>{{pqr.COD_SUPERSALUD ? pqr.COD_SUPERSALUD:'-'}}</span>
+                        </div>
+                        <br>
+                      </div>
+                    </div>
+                    <div class="row margin">
+                      <div class="col s4" style="font-size: 12px;padding-bottom: 10px;border-right: 1px solid #ddd;">
+                        <div class="text-center">
+                          <b>CODIGO NURC</b>
+                        </div>
+                        <div class="text-center">
+                          <span>{{pqr.COD_NURC ? pqr.COD_NURC:'-'}}</span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;border-right: 1px solid #ddd;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>ESTADO</b>
+                        </div>
+                        <div class="text-center">
+                          <span class="status" style="background-color: {{pqr.ESTADO_CLASE}}">
+                            <b>{{pqr.ESTADO =='' ? '-': pqr.ESTADO}}</b></span>
+                        </div>
+                      </div>
+                      <div class="col s4" style="font-size: 12px;padding-bottom: 10px;">
+                        <div class="text-center">
+                          <b>ACCIÓN</b>
+                        </div>
+                        <div class="text-center">
+                          <i style="cursor:pointer;" ng-click="openmodals('trazapqr',pqr);"
+                            class="material-icons">assignment_turned_in</i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div ng-if="listarPQRSTemp.length==0" class="text-center" style="border: 1px solid #ddd">
+            <h5 class="default-color"> No hay coincidencias encontradas</h5>
+          </div>
+          <ul ng-hide="inactivepro" style="text-align: center;" class="pagination">
+            <li><button ng-disabled='currentPage == 0' class="btn-floating default-background"
+                ng-click="paso('back')">&laquo;</button></li>
+            <li ng-repeat='page in pages'><button ng-disabled='currentPage == page.no - 1'
+                class="btn-floating default-background" ng-click='setPage(page.no)'>{{page.no}}</button></li>
+            <li><button ng-disabled='currentPage >= listarPQRSTemp.length/pageSize - 1'
+                class="btn-floating default-background" ng-click="paso('next')">&raquo;</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col s12" ng-show="verPQRSEdit==true && verPQRS==true" style="margin-bottom: 15px">
+        <div class="col s5">
+          <i class="material-icons left" style="margin-top: 14px;">more_vert</i>
+          <h5>Información del Afiliado</h5>
+        </div>
+        <div class="col s12">
+          <table class="responsive-table table-bordered" style="height:100px;">
+            <thead>
+              <tr>
+                <th data-field="NOMBRE" class="center-align">NOMBRE</th>
+                <th data-field="Nombre" class="center-align">IDENTIFICACIÓN</th>
+                <th data-field="NACIMIENTO de Nacimiento" class="center-align">FECHA NACIMIENTO</th>
+                <th data-field="UBICACION" class="center-align">UBICACION</th>
+                <th data-field="GENERO" class="center-align">GENERO</th>
+                <th data-field="REGIMEN" class="center-align">REGIMEN</th>
+                <th data-field="EDAD" class="center-align">EDAD</th>
+                <th data-field="IPS ANTERIOR" class="center-align"
+                  ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">EPS ANTERIOR</th>
+                <th colspan="{{afirownumIV}}" data-field="AFILIADO" class="center-align">AFILIADO</th>
+                <th data-field="NOVEDADES" class="center-align"><i class="icon-dot-3"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="center-align">{{infoafiliadoautedit.NombreCompleto}}</td>
+                <td class="center-align">{{infoafiliadoautedit.TipoDocumento}} - {{infoafiliadoautedit.Documento}}
+                </td>
+                <td class="center-align">{{infoafiliadoautedit.FechaNacimiento}}</td>
+                <td class="center-align">{{infoafiliadoautedit.Municipio}}</td>
+                <td class="center-align">{{infoafiliadoautedit.Sexo}}</td>
+                <td class="center-align">{{infoafiliadoautedit.Regimen}}</td>
+                <td class="center-align">{{edadautedit}} {{cantidadanosautedit}}</td>
+                <td class="center-align" ng-if="infoafiliadoautedit.SUPERSALUD!='CajacopiEPS'">
+                  <span class="status purple"
+                    style="text-transform: uppercase;">{{infoafiliadoautedit.SUPERSALUD}}</span>
+                </td>
+                <td class="center-align"><span class="status green">{{infoafiliadoautedit.Estado}}</span></td>
+
+                <td ng-show="infoafiliadoautedit.SINIESTRO == 'true'" class="center-align"><span
+                    class="status orange">ALTO
+                    COSTO</span></td>
+                <td ng-show="infoafiliadoautedit.TUTELA == 'true'" class="center-align"><span
+                    class="status red">TUTELA</span></td>
+                <td ng-show="infoafiliadoautedit.PORTABILIDAD=='S'">
+                  <span class="status light-blue">PORTABILIDAD</span>
+                </td>
+                <td ng-show="infoafiliadoautedit.ERROR_50=='true'" class="center-align">
+                  <span class="status black" style="color:#fff">ERROR_50</span>
+                </td>
+                <td ng-if="infoafiliadoautedit.AFIC_T045=='S'" class="center-align">
+                  <span class="status" style="color:#fff;background-color: #3f51b5;">SENTENCIA T045</span>
+                </td>
+                <td> <i class="icon-info-circled" ng-click="openmodals('modalnovedades')"
+                    title="Información adicional y Novedades"
+                    style="cursor: pointer;font-size: 2em;justify-content: center;display: flex; align-items: center;"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+    </div>
+    <div id="modalmotivos" class="modal">
+      <div class="modal-content" style="padding: 0px !important;">
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+          <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+            <div class="card-content foot4" style="padding: 0">
+              <div class="col s11">
+                <h5 class="white-text">Motivos Especificos</h5>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('motivos')"
+                    class="material-icons white-text">close</i>
+                </h5>
+              </div>
+            </div>
+            <div class="card-action" style="padding-bottom: 3px;border-top: 0">
+              <div class="row">
+                <div class="col s12 right">
+                  <div class="input-field col s4 right">
+                    <input id="buscarpro" type="text" ng-model="filtrarmotivos">
+                    <label for="buscarpro">Buscar Motivos:</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;">CODIGO</th>
+                        <th style="text-align:center;">NOMBRE</th>
+                        <th style="text-align:center;">ACCIÓN</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="item in motivosEspecificos | filter: filtrarmotivos as results">
+                        <td style="text-align:center;">{{item.CODIGO}}</td>
+                        <td style="text-align:center;">{{item.NOMBRE}}</td>
+                        <td style="text-align:center;">
+                          <center>
+                            <i ng-click="seleccionarMotivo(item)" style="cursor:pointer;"
+                              class="material-icons prefix">check</i>
+                          </center>
+                        </td>
+                      </tr>
+                      <tr ng-if="results.length==0">
+                        <th colspan="3" class="text-center">
+                          No se encontraron Resultados
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="trazapqr" class="modal modal-trazapqr" style="width: 95%!important; max-height: 100%;top: 5%!important;">
+      <div class="modal-content" style="padding: 0px !important;">
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+          <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+            <div class="card-content foot4" style="padding: 0;text-align: center;">
+              <div class="col s11">
+                <div ng-if="procesopqr.length>0">
+                  <h5 ng-click="changevaluePQR();" class="white-text c-pointer" style="float: left;">
+                    {{ showDataPQR==true ? 'CLIC PARA VER LOS DATOS DE RADICACION PQR' :
+                    'CLIC PARA VER LOS DATOS DE LA GESTION PQR'}}
+                  </h5>
+                </div>
+                <!-- <div ng-if="procesopqr.length==0">
+                    PQRDS - {{dpqr.CODIGO}}
+                </div> -->
+                <h5 class="white-text" style="float: right;">TRAZABILIDAD {{dpqr.SOLICITUD}} - {{dpqr.CODIGO}}</h5>
+              </div>
+              <div class="col s1">
+                <h5 style="text-align: end;"><i style="cursor:pointer;" ng-click="closemodals('trazapqr')"
+                    class="material-icons white-text">close</i>
+                </h5>
+              </div>
+            </div>
+            <div class="card-action" style="border-top: 0">
+              <div class="row">
+                <div class="col s6">
+                  <div ng-if="showDataPQR==true">
+                    <div class="row margin">
+                      <div class="card-content" style="padding: 10px;text-align: center">
+                        <span class="w-divTitle margin default-color"> GESTION PQRDS {{dpqr.CODIGO}} </span>
+                      </div>
+                    </div>
+                    <div class="card-content margin row">
+                      <div class="scrollTableDefault" style="overflow:auto;height: calc(100vh - 265px);">
+                        <div class="margin-bottom-10 row" ng-repeat="item in procesopqr">
+                          <div class="col s12 m1 no-padding collection border-none margin no-padding c-pointer">
+                            <img src="https://genesis.cajacopieps.com//assets/images/users/default-user.png" alt="User"
+                              class="circle responsive-img valign margin hide-on-small-only">
+                          </div>
+                          <div class="col s12 m11">
+                            <div class="c-pointer" style="padding: 1em;background-color: #F1F3F4;">
+                              <p class="grey-text text-darken-4 margin hide-on-small-only">
+                                <strong>
+                                  <h6>{{item.nombre}}
+                                    <small>{{item.fecha}}</small>
+                                    <br>
+                                    <small ng-if="item.fase">FASE: {{item.fase}}</small>
+                                  </h6>
+                                </strong>
+                              </p>
+                              <p ng-if="item.motivo" class="grey-text text-darken-4 margin"><strong>MOTIVO
+                                  PQR:</strong>
+                                {{item.motivo}}</p>
+                              <p ng-if="item.causal" class="grey-text text-darken-4 margin ng-binding">
+                                <strong>CAUSAL:</strong>
+                                {{item.causal}}
+                              </p>
+                              <p ng-if="item.causal" class="grey-text text-darken-4 margin ng-binding">
+                                <strong>TIPO
+                                  CAUSAL:</strong>
+                                {{item.tipocausal}}
+                              </p>
+                              <p ng-if="item.subtipocausal" class="grey-text text-darken-4 margin ng-binding">
+                                <strong>SUB
+                                  TIPO CAUSAL:</strong>
+                                {{item.subtipocausal}}
+                              </p>
+                              <p ng-if="item.acciontraslado" class="grey-text text-darken-4 margin ng-binding">
+                                <strong>ACCION
+                                  TRASLADO:</strong>
+                                {{item.acciontraslado}}
+                              </p>
+                              <p class="grey-text text-darken-4 margin">
+                                <strong ng-if="item.origen=='A'">RESPUESTA PQR:</strong>
+                                {{item.comentario}}
+                              </p>
+                              <p ng-if="item.aprobaciontraslado" class="grey-text text-darken-4 margin ng-binding"
+                                style="text-align: justify;">
+                                <strong>APROBACION TRASLADO:</strong>
+                                {{item.aprobaciontraslado}}
+                              </p>
+                              <p ng-if="item.ips" class="grey-text text-darken-4 margin ng-binding"
+                                style="text-align: justify;">
+                                <strong>IPS RELACIONADA</strong>
+                              </p>
+                              <p ng-if="item.ips" class="grey-text text-darken-4 margin ng-binding"
+                                style="text-align: justify;">
+                                <strong>NIT IPS :</strong>
+                                {{item.ips}}
+                              </p>
+                              <p ng-if="item.ips" class="grey-text text-darken-4 margin ng-binding"
+                                style="text-align: justify;">
+                                <strong>NOMBRE IPS :</strong>
+                                {{item.nom_ips}}
+                              </p>
+
+                              <p ng-if="item.medicamentos.length>0 && item.fase=='SOPORTE'"
+                                class="grey-text text-darken-4 margin ng-binding" style="text-align: justify;">
+                                <strong>LISTADO DE MEDICAMENTOS RELACIONADOS</strong>
+                              </p>
+                              <table ng-if="item.medicamentos.length>0 && item.fase=='SOPORTE'"
+                                class="striped table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th>
+                                      COD
+                                    </th>
+                                    <th>
+                                      NOMBRE
+                                    </th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <tr ng-repeat="i in item.medicamentos">
+                                    <td>{{i.cod_medicamento}}</td>
+                                    <td>{{i.nombre_medicamento}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <p ng-if="item.altocosto" class="grey-text text-darken-4 margin "
+                                style="text-align: justify;">
+                                <strong>ALTO COSTO:</strong>
+                                {{item.altocosto}}
+                              </p>
+
+                              <p ng-if="item.motivo_altocosto" class="grey-text text-darken-4 margin"
+                                style="text-align: justify;">
+                                <strong>MOTIVO DE ALTO COSTO:</strong>
+                                {{item.motivo_altocosto}}
+                              </p>
+                              <p ng-if="item.motivo_respuesta" class="grey-text text-darken-4 margin "
+                                style="text-align: justify;">
+                                <strong>MOTIVO DE RESPUESTA:</strong>
+                                {{item.motivo_respuesta}}
+                              </p>
+                              <div ng-if="item.show_descargar=='true'" style="margin-top: 10px;width: 150px">
+                                <a class="dwnIcon c-pointer" ng-click="descargafile(item.ruta,item.ftp);"><i
+                                    class="material-icons waves-effect border-none">attach_file</i>Descargar</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div ng-if="procesopqr.length==0">
+                          <i id="bt-ges" class="icon-wechat fs-50"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-if="showDataPQR==false">
+                    <div class="row mb-15">
+                      <div class="row">
+                        <div class="card-content" style="padding: 10px;text-align: center">
+                          <span class="w-divTitle margin default-color"> DATOS {{dpqr.SOLICITUD}} </span>
+                        </div>
+                      </div>
+                      <div class="row" style="height: 30em; overflow-y:auto">
+                        <table class="table-bordered">
+                          <tbody>
+                            <tr>
+                              <th class="noselectxtpqr">Codigo</th>
+                              <td>{{dpqr.CODIGO}}</td>
+                              <th class="noselectxtpqr">Estado</th>
+                              <td colspan="2" style="text-transform: uppercase;text-align: center"> <span
+                                  class="status white-text {{dpqr.ESTADO=='Activo'?'orange':'green'}}">{{dpqr.ESTADO}}</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th class="noselectxtpqr">Tipo Solicitud</th>
+                              <td>{{dpqr.SOLICITUD}}</td>
+                              <th class="noselectxtpqr">Medio Recepcion</th>
+                              <td colspan="6">{{dpqr.NOMMEDIO}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.NOMENTECONTROL">
+                              <th class="noselectxtpqr">Ente de control</th>
+                              <td colspan="6">{{dpqr.NOMENTECONTROL}}</td>
+                            </tr>
+                            <tr>
+                              <th ng-if="dpqr.CODPQR" class="noselectxtpqr">Codigo PQR SUPERSALUD</th>
+                              <td ng-if="dpqr.CODPQR" colspan="3">{{dpqr.CODPQR}}</td>
+                              <th ng-if="dpqr.NURC" class="noselectxtpqr">Codigo Nurc</th>
+                              <td ng-if="dpqr.NURC" colspan="3">{{dpqr.NURC}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.NOMENTIDAD">
+                              <th class="noselectxtpqr">Nombre entidad</th>
+                              <td colspan="3">{{dpqr.NOMENTIDAD}}</td>
+                            </tr>
+                            <tr>
+                              <th class="noselectxtpqr">Observaciones</th>
+                              <td colspan="6">
+                                <div class="scrollable">{{dpqr.OBSERVACION}}</div>
+                              </td>
+                            </tr>
+                            <tr ng-if="dpqr.NITIPS">
+                              <th class="text-center noselectxtpqr" colspan="6">IPS</th>
+                            </tr>
+                            <tr ng-if="dpqr.NITIPS">
+                              <th>NIT IPS</th>
+                              <td>{{dpqr.NITIPS}}</td>
+                              <th>IPS</th>
+                              <td>{{dpqr.IPS}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.NITIPS">
+                              <th>TELEFONO</th>
+                              <td>{{dpqr.TELEFONOIPS}}</td>
+                              <th>CORREO</th>
+                              <td>{{dpqr.EMAILIPS}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.NITIPS">
+                              <th>Dirección</th>
+                              <td colspan="3">{{dpqr.DIRECCIONIPS}}</td>
+                            </tr>
+
+                            <tr ng-if="dpqr.DOC_EMPLEADOR">
+                              <th class="text-center noselectxtpqr" colspan="6">EMPLEADOR</th>
+                            </tr>
+                            <tr ng-if="dpqr.DOC_EMPLEADOR">
+                              <th class="noselectxtpqr">Tipo Documento</th>
+                              <td>{{dpqr.TIPODOC_EMPLEADOR}}</td>
+                              <th class="noselectxtpqr">Documento</th>
+                              <td colspan="6">{{dpqr.DOC_EMPLEADOR}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.DOC_EMPLEADOR">
+                              <th class="noselectxtpqr">Nombre</th>
+                              <td colspan="6">{{dpqr.NOM_EMPLEADOR}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.EMP_DIR">
+                              <th class="noselectxtpqr">Dirección</th>
+                              <td colspan="6">{{dpqr.EMP_DIR}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.EMP_TEL">
+                              <th class="noselectxtpqr">Telefono</th>
+                              <td colspan="6">{{dpqr.EMP_TEL}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.EMP_EMAIL">
+                              <th class="noselectxtpqr">Correo</th>
+                              <td colspan="6">{{dpqr.EMP_EMAIL}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.DOCUMENTO">
+                              <th class="text-center noselectxtpqr" colspan="6">AFILIADO</th>
+                            </tr>
+                            <tr ng-if="dpqr.DOCUMENTO">
+                              <th class="noselectxtpqr">Tipo Documento</th>
+                              <td>{{dpqr.TIPODOCU}}</td>
+                              <th class="noselectxtpqr">Documento</th>
+                              <td colspan="6">{{dpqr.DOCUMENTO}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.DOCUMENTO">
+                              <th class="noselectxtpqr">Nombre</th>
+                              <td colspan="6">{{dpqr.AFILIADO}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.DIRECCION">
+                              <th class="noselectxtpqr">Dirección</th>
+                              <td colspan="6">{{dpqr.DIRECCION}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.TELEFONO">
+                              <th class="noselectxtpqr">Telefono</th>
+                              <td colspan="6">{{dpqr.TELEFONO}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.CORREO">
+                              <th class="noselectxtpqr">Correo</th>
+                              <td colspan="6">{{dpqr.CORREO}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.TIPODOCUAC">
+                              <th class="text-center noselectxtpqr" colspan="6">ACUDIENTE</th>
+                            </tr>
+                            <tr ng-if="dpqr.TIPODOCUAC">
+                              <th class="noselectxtpqr">Tipo Documento</th>
+                              <td>{{dpqr.TIPODOCUAC}}</td>
+                              <th class="noselectxtpqr">Documento</th>
+                              <td>{{dpqr.DOCUMENTOAC}}</td>
+                            </tr>
+                            <tr ng-if="dpqr.TIPODOCUAC">
+                              <th class="noselectxtpqr">Nombre</th>
+                              <td colspan="6">{{dpqr.AFILIADOAC}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-center noselectxtpqr" colspan="6">OTROS DATOS</th>
+                            </tr>
+                            <tr>
+                              <th class="noselectxtpqr">Motivo</th>
+                              <td colspan="6">{{dpqr.MACROMOTIVO}}</td>
+                            </tr>
+                            <tr>
+                              <th class="noselectxtpqr">Subtipo Motivo</th>
+                              <td colspan="6">{{dpqr.TIPOMOTIVO}}</td>
+                            </tr>
+                            <tr>
+                              <th class="noselectxtpqr">Tipo Motivo</th>
+                              <td colspan="6">{{dpqr.SUBTIPOMOTIVO}}</td>
+                            </tr>
+                            <tr>
+                              <th class="noselectxtpqr">Soporte</th>
+                              <td class="text-center noselectxtpqr">
+                                <a id="bt-ges" class="c-pointer mr-0" ng-click="descargafile(dpqr.RUTA,dpqr.FTP);">
+                                  <i class="icon-download fs-20"></i>
+                                </a>
+                              </td>
+                              <th class="noselectxtpqr">Fecha Respuesta</th>
+                              <td colspan="6">{{dpqr.FECHAENT}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col s6">
+                  <div class="row margin">
+                    <ul class="tabs transparent" style="overflow:hidden;">
+                      <li class="tab col w-auto">
+                        <a ng-click="trazapqrSetTab(1)" id="Sol" href class="active">MOVIMIENTOS
+                          <i class="icon-loop-alt-1"></i></a>
+                      </li>
+                      <li class="tab col w-auto">
+                        <a ng-click="trazapqrSetTab(2);" id="Nueva" href>COMENTARIOS<i class="icon-users"></i></a>
+                      </li>
+                      <li class="tab col w-auto" ng-show="listServiciosModal.length > 0">
+                        <a ng-click="trazapqrSetTab(3);" id="Nuevax" href>SERVICIOS<i class="icon-stethoscope"></i></a>
+                      </li>
+                    </ul>
+                    <!-- <div class="card-content" style="padding: 10px;text-align: center">
+                      <span class="w-divTitle margin default-color"> MOVIMIENTOS </span>
+                    </div> -->
+                  </div>
+                  <div ng-show="trazapqrTabs==1">
+                    <div class="col s12">
+                      <form name="findnovedad" id="findnovedad">
+                        <div class="input-field col s5" style="float: right">
+                          <input id="with_icon" type="text" class="validate" ng-model="searchmov">
+                          <label for="with_icon" class="">Buscar:</label>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="timeline-page col s12 card" style="box-shadow:none;padding-top: 0;padding-bottom: 0;">
+                      <div class="timeline card-content white">
+                        <div class="scrollTableDefault" style="max-height: 50vh;overflow-y: auto;padding: 10px">
+                          <div class="timeline-event">
+                            <div class="timeline-content">
+                              <div class="content-box">
+                                <h6><small>RADICACION
+                                    {{trazapqr.dataradicador.fecha_rad | date:'dd/MM/yyyy h:mma' }}</small>
+                                </h6>
+                                <p>
+                                  <b>Radicador:</b> {{trazapqr.dataradicador.documento}} -
+                                  {{trazapqr.dataradicador.radicador}}
+                                </p>
+                              </div>
+                            </div>
+                            <div class="timeline-badge timeline-badge1 white-text">
+                              <i class="icon-flag"></i>
+                            </div>
+                          </div>
+                          <div class="timeline-event">
+                            <div class="timeline-content">
+                              <div class="content-box">
+                                <h6><small>RESPONSABLE ACTUAL
+                                    {{trazapqr.dataresponsable.fecha_rad | date:'dd/MM/yyyy h:mma' }}</small></h6>
+                                <p>
+                                  <b>Responsable:</b>
+                                  {{trazapqr.dataresponsable.documento}} -
+                                  {{trazapqr.dataresponsable.responsable}}
+                                </p>
+                                <p> <b>Area:</b> {{trazapqr.dataresponsable.area}} </p>
+                              </div>
+                            </div>
+                            <div class="timeline-badge timeline-badge1 white-text">
+                              <i class="icon-user"></i>
+                            </div>
+                          </div>
+                          <div class="timeline-event" ng-repeat="t in trazapqr.traza | filter: searchmov">
+                            <div class="timeline-content">
+                              <div class="content-box">
+                                <h6><small>MOVIMIENTO
+                                    {{t.fecha_mov | date:'dd/MM/yyyy h:mma '}}</small>
+                                </h6>
+                                <p>
+                                  <b> Reponsable Acción:</b> {{t.resp_accion}} -
+                                  <b>Area:</b>
+                                  {{t.resp_area_acc}}
+                                </p>
+                                <p>
+                                  <b> Reponsable Anterior:</b> {{t.resp_ante}} -
+                                  <b>Area:</b>
+                                  {{t.resp_area_ant}}
+                                </p>
+                                <p><b> Reponsable Nuevo:</b> {{t.resp_nuevo}} - <b>Area:</b>
+                                  {{t.resp_area_nuev}}</p>
+
+                                <p><b> Comentario:</b> {{t.comentario}}</p>
+                              </div>
+                            </div>
+                            <div class="timeline-badge timeline-badge1 white-text">
+                              <i class="icon-calendar"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-show="trazapqrTabs==2">
+                    <div id="chat_comment" class="row m-t" style="overflow:auto;height: calc(100vh - 340px);">
+                      <div class="row" ng-show="!comentariosPQR.length"
+                        style="display: flex;justify-content: center;align-items: center;height: 80%;">
+                        <i class="icon-comment-2" style="font-size: 40px;"></i>
+                      </div>
+                      <div class="row" ng-repeat="com in comentariosPQR"
+                        ng-class="{'chat_right whi':nombre.toLowerCase() == com.NOMBRE.toLowerCase()}">
+                        <div class="col l1 md1 m1 margin no-padding border-none">
+                          <img src="assets/images/users/default-user.png" alt="jim"
+                            class="circle responsive-img valign margin hide-on-small-only">
+                        </div>
+                        <div class="col l11 md11 m11">
+                          <div class="desc_com"
+                            style="padding: 1em; background-color: '{{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? '#367abd' : ''}}'';color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? 'white' : ''}}">
+                            <i ng-if="com.ADJUNTO!=''" ng-click="bajarArchivo(com.ADJUNTO)"
+                              style="float: right; cursor: pointer !important;"
+                              class="material-icons dp48">attach_file</i>
+     
+                              <strong>{{com.DESCRIPCION}}</strong>                       <p class="margin" style="font-size: 12px;">
+                            </p>
+                            <small>{{com.NOMBRE}}</small>
+                          </div>
+                          <div
+                            style="width: 100%;height: 0;border-bottom: 1px solid #ffca867a;margin: 1em 0;position: relative;display: flex;justify-content: space-between;align-items: center;">
+                            <span style="font-size: 10px;background-color: #ffffff;padding: 0 10px;">
+                              {{com.FECHA}}
+                            </span>
+                            <span style="font-size: 10px;background-color: #ffffff;padding: 0 10px;">
+                              {{com.HORA}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div ng-show="(estadoPQR == 'ACTIVO' || estadoPQR == 'PROCESADO') && permisosUsuario.RESC_MARCA_COMENTARIO == 'S'"
+                      class="row margin" style="display: flex;">
+                      <div class="col l11 md11 m11">
+                        <div class="input-field col m12 s12 margin no-padding">
+                          <div class="file-field input-field"
+                            style="display: flex;margin: 0;color: white;background-color: #3c91e5;">
+                            <div>
+                              <i class="material-icons dp48" style="margin-top: 10px;">attach_file</i>
+                              <input type="file" id="adjuntocab" required>
+                            </div>
+                            <div class="file-path-wrapper" style="width: 100%;">
+                              <input class="file-path validate valid" type="text" id="nombreadjunto"
+                                placeholder="Seleccionar un adjunto (7MB)" ng-model="DocumentoAbjunto"
+                                style="margin: 0;border: none;">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col l12 md12 m12 no-padding">
+                          <textarea class="border-none border-radius-none default-background-light white-text"
+                            placeholder="Comentar..." id="comentarioPQR" ng-model="comentarioPQR" rows="4" cols="50"
+                            maxlength="1999"
+                            style="margin: 0px 0px 10px;border-radius: 3px;
+                            padding: 1em;max-width: 100%;width: 100%;height: 70px;outline: none;background-color: #367abd;text-transform: uppercase;"
+                            ng-keyup="formatTexto('comentarioPQR')"></textarea>
+                        </div>
+                      </div>
+                      <div class="col l1 md1 m1 margin no-padding border-none"
+                        ng-if="(estadoPQR == 'ACTIVO' || estadoPQR == 'PROCESADO') && permisosUsuario.RESC_MARCA_COMENTARIO == 'S'">
+                        <i ng-click="crearComentarioPQR()" class="icon-paper-plane white-text " style="background-color: #f2cea5;display: flex;justify-content: center;align-items: center;width: 3.4em;height: 3.4em;
+                          border-radius: 50%;cursor: pointer;margin: auto;background-color: #f2cea5;"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <!--  -->
+                  <div class="row" style="border: 1px solid black;padding: 1em;" ng-show="trazapqrTabs == 3">
+                    <div class="col s12 m-t m-b" ng-show="pqrServiciosModal.status == 0">
+                      <span class="default-color"><b>Servicios agregados ({{listServiciosModal.length}})</b></span>
+                      <div class="overflow-table_3 text-center" ng-show="listServiciosModal.length">
+                        <table class="striped table-bordered" style="position: relative;zoom: 0.8;">
+                          <thead class="noselectxtpqr">
+                            <tr>
+                              <th class="text-center">#</th>
+                              <th class="text-center">PRODUCTO</th>
+                              <th class="text-center">AUTORIZACION</th>
+                              <th class="text-center">PGP</th>
+                              <th class="text-center">REQUIERE AUT</th>
+                              <th class="text-center">FECHA PREST.</th>
+                              <th class="text-center">-</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="x in listServiciosModal">
+                              <td class="text-center">{{$index+1}}</td>
+                              <td class="text-center">{{x.PROD_CODIGO +' - '+ x.PROC_NOMBRE}}
+                                <br>
+                                <span>
+                                  <i><b>SUBCLASE:</b> {{ !x.SUBCLASIFICACION ? ('NO APLICA') : (x.COD_SUBCLASIFICACION
+                                    +' - '+
+                                    x.SUBCLASIFICACION)}}</i>
+                                </span>
+                              </td>
+                              <!-- <td class="text-center">{{234567 +' - '+ 15001}}</td> -->
+                              <td class="text-center">{{x.AUTN_NUMERO ? (x.AUTN_NUMERO +' - '+ x.AUTN_UBICACION) :
+                                (x.REQ_AUTORIZACION_RAD == 'S' && x.SERV_PGP == 'N') ? 'NO GENERADA': 'NO APLICA' }}
+                              </td>
+                              <td class="text-center">{{getTextSiNo(x.SERV_PGP)}}</td>
+                              <td class="text-center">{{getTextSiNo(x.REQ_AUTORIZACION_GEST)}}</td>
+                              <td class="text-center">{{x.FECHA_PRESTACION}}</td>
+                              <td class="text-center">
+                                <!-- <i class="icon-edit cursor-pointer" ng-if="dpqr.ESTADO == 'Activo' && x.ADJUNTO == null"
+                                  ng-click="editarProductosPQR(x)" title="Editar"></i> -->
+                                 <i class="icon-edit cursor-pointer" ng-if="dpqr.ESTADO == 'Procesado' && x.ADJUNTO == null && pqrServiciosModal.permisos == 'S'" ng-click="editarProductosPQR(x)"
+                                  title="Editar"></i> 
+                                <i class="icon-download cursor-pointer" ng-if="x.ADJUNTO != null"
+                                  ng-click="bajarArchivo(x.ADJUNTO)" title="Ver Soporte"></i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <!-- <img ng-if="listpqrds.length == 0" src="images/undraw_No_data_re_kwbl.png" style="width:35vh;float:none;">
+                  <p ng-if="listpqrds.length == 0"><b>No se encontraron registros para mostrar </b></p> -->
+                      </div>
+                    </div>
+                    <!--  -->
+                    <div class="col s12 m-t m-b" ng-show="pqrServiciosModal.status == 1">
+
+                      <span class="default-color"><b>Producto: {{pqrServiciosModal.productoNombre}}</b></span>
+                      <span class="default-color"><b>Subclase: {{pqrServiciosModal.subclaseNombre}}</b></span>
+                      <div class="row margin">
+                        <div class="col s12">
+
+                          <div class="col s6">
+                            <div class="col s12">
+                              <label>Fecha Prestación</label>
+                              <input type="date" class="validate ng-pristine ng-valid ng-valid-max ng-touched" max="{{SysDay | date:'yyyy-MM-dd'}}"
+                                ng-model="pqrServiciosModal.fechaPrestacion">
+                            </div>
+                          </div>
+                          <div class="col s6">
+                            <div class="col s12" style="margin-top: 6px;padding: 0;">
+                              <div class="file-field input-field">
+                                <div class="btn right">
+                                  <span class="white-text"><i class="icon-floppy-1"></i></span>
+                                  <input type="file" id="pqrServiciosModal_archivoFile" ng-model="pqrServiciosModal.archivoFile">
+                                </div>
+                                <div class="file-path-wrapper">
+                                  <input class="file-path validate" type="text" placeholder="Soporte Prestacion (pdf)"
+                                    style="font-size:13px" ng-model="pqrServiciosModal.archivoText" ng-change="changeArchivoServicioModal()">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="col s12 text-center">
+                          <a class="waves-effect waves-light btn red" ng-click="cancelarServicioModal();">CANCELAR</a>
+                          <a class="waves-effect waves-light btn" ng-click="guardarServicioModal();">GUARDAR</a>
+                        </div>
+                      </div>
+
+
+
+                    </div>
+                    <!--  -->
+                  </div>
+                  <!--  -->
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- //////////////////////////////////////////////////////////////////////modal admin reporte gestion genesis////////////////////////////////// -->
+    <div id="modalcambiofecha" class="modal" style="overflow: hidden;width: 50%;">
+      <div class="modal-content" style="padding: 0px !important;">
+        <div class="col s12" style="padding-left: 0px; padding-right: 0px;">
+          <div class="card charts" style="margin-top: 0px; margin-bottom: 0px;">
+            <div class="col s12 m12 l12 card margin" style="padding-right: 0px; padding-left: 0px;">
+              <div class="foot4 divcardcustom default-linear-gradient" style="border-radius: 0px;">
+                <div class="text-al divcardcustom2">
+                  <strong class="switch" style="font-weight:600">Actualizar Fecha de Respuesta</strong>
+                  <i style="cursor:pointer;padding-left: 67%;" ng-click="cerrarmodalcambiofecha()"
+                    class="material-icons white-text">close</i>
+
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="form-group">
+                  <div class="col s6">
+                    <label><strong>Seleccionar la fecha</strong></label>
+                    <div class="form-group">
+                      <input type="date" class="validate ng-pristine ng-valid ng-valid-max ng-touched"
+                        ng-model="fechaactualizardiashabiles">
+                    </div>
+                  </div>
+                  <div class="col s6">
+                    <label><strong>Dias Habiles</strong></label>
+                    <input type="number" min="1" max="200" maxlength="3" ng-model="diashabilesactualizar" id="dias">
+                    <!-- <select class="select-chosen-eps select  pt-select-pqr black-text" id="dias"
+                          ng-model="diashabilesactualizar">
+                          <option value="">SELECCIONAR</option>
+                          <option ng-repeat="d in seleccionardias" value="{{d.Codigo}}">
+                              {{d.Nombre}}</option>
+                      </select> -->
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="center">
+                  <button class="waves-effect waves-light btn-large white-text" type="button"
+                    ng-click="actualizarfecharegistro()">Actualizar</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      .tab a:hover {
+        background-color: #ddd !important;
+        color: white !important;
+      }
+
+      /* Style the active class (and buttons on mouse-over) */
+      .activebtn-step,
+      .activebtn-step:hover {
+        background-color: #2196f3 !important;
+        color: white !important;
+      }
+
+      .step-item {
+        height: 100px;
+        width: 100px;
+        border-radius: 100px;
+        padding: 0px;
+      }
+
+      .donebtn-step,
+      .donebtn-step:hover {
+        background-color: #2196f3 !important;
+        color: white !important;
+      }
+
+      .steper {
+        width: 60%;
+        display: inline-flex;
+        text-align: center;
+        padding-bottom: 10px;
+        margin-left: 20%;
+      }
+
+      .step-divider {
+        width: 100%;
+        position: relative;
+        top: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        margin-top: 20px;
+      }
+
+      .btn-step-content {
+        position: relative;
+        display: none;
+        height: calc(100% - 132px);
+        width: inherit;
+        overflow: visible;
+        margin-left: 41px;
+        margin-right: 24px;
+      }
+
+      .step-option {
+        background: #eee;
+        height: 70px;
+        position: absolute;
+        bottom: -45px;
+        width: 100%;
+        margin-bottom: 6px;
+        left: 0px;
+        z-index: 2;
+      }
+
+      .back-step,
+      .back-step:hover {
+        margin-top: 7px;
+        position: absolute;
+        right: 80px;
+        background: #ff4350 !important;
+      }
+
+      .flex {
+        display: flex !important;
+      }
+
+      .btn-step {
+        background-color: rgba(0, 0, 0, .3);
+        color: white;
+      }
+
+      .hover-item:hover {
+        background-color: rgba(221, 221, 221, 0.45);
+      }
+
+      .hover-item:active {
+        background-color: rgba(221, 221, 221, 0.45);
+      }
+
+      .tabmenu>li:target>a {
+        background-color: rgba(221, 221, 221, 0.45);
+      }
+
+      .requerido {
+        color: red !important;
+      }
+
+      .tabactiva {
+        background-color: rgba(206, 206, 206, 0.71);
+      }
+
+      .colorblack {
+        color: black;
+      }
+
+      .itemsspam {
+        color: white !important;
+        border-radius: 12px !important;
+        box-shadow: 2px 2px 3px 0px #ccc !important;
+        position: relative !important;
+        top: 5px !important;
+        left: 11px !important;
+        cursor: pointer;
+      }
+
+      .hovpanel:hover {
+        background: #32364c2b;
+        color: #ffa51b;
+        cursor: pointer;
+      }
+
+      .mayus {
+        text-transform: uppercase;
+      }
+
+      #header-fixed {
+        position: fixed;
+        top: 0px;
+        display: none;
+      }
+
+      .cuadrado {
+        width: 25vh;
+        max-width: 240px;
+        height: 25vh;
+        max-height: 240px;
+        position: relative;
+        background: white;
+        box-shadow: 0 0 8px 1px #c7c7c7;
+      }
+
+      .coloritem {
+        color: black !important;
+      }
+
+      .autprocesada {
+        background-color: #4CAF50 !important;
+      }
+
+      .autactiva {
+        background-color: #ff9800 !important;
+      }
+
+      .switch label {
+        font-weight: 600;
+      }
+
+      .switch label .lever.check-c {
+        background-color: #818181 !important;
+      }
+
+      .switch label .lever.check-c:after {
+        background-color: #26a69a;
+      }
+
+      .switch label>span.activo {
+        color: #26a69a !important;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      div#modaldetalle {
+        top: 1% !important;
+      }
+
+      div#modalnovedades {
+        top: 1% !important;
+      }
+
+      div#trazapqr {
+        top: 1% !important;
+      }
+
+      .outer {
+        width: 1px;
+        height: 100%;
+        margin: auto;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .inner {
+        /* position: absolute; */
+        width: 100%;
+        height: 50vh;
+        background: grey;
+        top: 30%;
+        box-shadow: 0px 0px 30px 20px grey;
+      }
+
+      .style-table-default {
+        height: 350px;
+        overflow: auto;
+      }
+
+      /* Style Scroll */
+      .scrollTableDefault::-webkit-scrollbar {
+        /* width */
+        width: 5px;
+      }
+
+      .scrollTableDefault::-webkit-scrollbar-track {
+        /* Track */
+        background: #f1f1f1;
+      }
+
+      .scrollTableDefault::-webkit-scrollbar-thumb {
+        /* Handle */
+        background: #888;
+      }
+
+      .scrollTableDefault::-webkit-scrollbar-thumb:hover {
+        /* Handle on hover */
+        background: #555;
+      }
+
+      .swal2-container {
+        z-index: 10000 !important;
+      }
+
+      .clase-gray {
+        color: #736a6a !important;
+      }
+
+      .textFactura {
+        color: blue;
+        font-size: 10px;
+        font-weight: bold;
+      }
+
+      .text_Tutela {
+        color: red;
+        font-weight: bold;
+      }
+
+      .tabs .tab a {
+        color: #1a2e63 !important;
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        transition: color .28s ease;
+      }
+
+      .tabs .tab a:hover {
+        background-color: transparent !important;
+        color: #80868b !important;
+      }
+    </style>
+  </div>
+</div>

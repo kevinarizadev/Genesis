@@ -9,7 +9,7 @@
 	function P_LISTA_IPS_CONTRATO()
 {
     require_once('../config/dbcon_prod.php');
-	
+
 	global $request;
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_OBTENER_SEDE_PRESTACION(:v_pdocumento,
 																						:v_pcontrato,
@@ -32,7 +32,7 @@
 function P_LISTA_IPS_NOCONTRATADA()
 {
     require_once('../config/dbcon_prod.php');
-	
+
 	global $request;
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_LISTA_SEDE_PRESTACION_CONTRATO(:v_pdocumento,
 																						:v_pcontrato,
@@ -82,7 +82,7 @@ function P_GUARDAR_IPS_EN_CONTRATADA()
 	oci_close($c);
 }
 
-	
+
 	function P_OBTENER_IPS_CONTRATADO(){
 		require_once('../config/dbcon_prod.php');
 		global $request;
@@ -108,7 +108,7 @@ function P_GUARDAR_IPS_EN_CONTRATADA()
 	$v_cntn_numero=$request->v_pnumero;
 	$v_cntn_ubicacion=$request->v_pubicacion;
 	$v_cntc_documento=$request->v_pdocumento;
-	
+
 
 
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_INSERTA_SERVICIO_CONTRATO(:v_cntn_empresa,
@@ -743,7 +743,7 @@ function p_inserta_contrato()
 	    }
 	    oci_close($c);
 	}
-	
+
     function obtenerModificacionesContrato(){
 	    require_once('../config/dbcon_prod.php');
 	    global $request;
@@ -853,7 +853,7 @@ function p_inserta_contrato()
 		oci_close($c);
 	}
 
-	
+
 	function SP_OBTENER_ESTANDAR_CONTRATO(){
 	    require_once('../config/dbcon_prod.php');
 	    global $request;
@@ -961,7 +961,7 @@ function p_inserta_contrato()
 	    }
 	    oci_close($c);
 	}
-	
+
 	function P_CONFIRMA_CNC_SAL_GEN(){
 	require_once('../config/dbcon_prod.php');
 	global $request;
@@ -975,7 +975,7 @@ function p_inserta_contrato()
 																						:v_pnumero,
 																						:v_pubicacion,
 																						:v_poperacion,
-																						:v_json_row); 
+																						:v_json_row);
 																						end;');
 	oci_bind_by_name($consulta, ':v_pempresa', $empresa);
 	oci_bind_by_name($consulta, ':v_pdocumento', $documento);
@@ -1019,8 +1019,8 @@ function subir_adjuntos()
 
 function P_ACTUALIZA_SERVICIOS()
 {
-	
-                        
+
+
 	require_once('../config/dbcon_prod.php');
 	global $request;
 	$v_pempresa =intval($request->v_pempresa);
@@ -1041,7 +1041,7 @@ function P_ACTUALIZA_SERVICIOS()
 																					:v_ptarifa,
 																					:v_psuma,
 																					:v_pporcentaje,
-																					:v_json_row); 
+																					:v_json_row);
 																						end;');
 	oci_bind_by_name($consulta, ':v_pempresa', $v_pempresa);
 	oci_bind_by_name($consulta, ':v_pdocumento', $v_pdocumento);
@@ -1091,7 +1091,7 @@ function P_ACTUALIZA_PRODUCTOS()
 																					:v_psuma,
 																					:v_pporcentaje,
 																					:v_pvalor,
-																					:v_json_row); 
+																					:v_json_row);
 																						end;');
 	oci_bind_by_name($consulta, ':v_pempresa', $v_pempresa);
 	oci_bind_by_name($consulta, ':v_pdocumento', $v_pdocumento);
@@ -1121,7 +1121,7 @@ function P_OBTENER_SUBCATEGORIAS()
 	global $request;
 	$v_pcodigo  = $request->v_pcodigo;
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_OBTENER_SUBCATEGORIAS(:v_pcodigo ,
-																						:v_json_row); 
+																						:v_json_row);
 																						end;');
 	oci_bind_by_name($consulta, ':v_pcodigo', $v_pcodigo);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
@@ -1139,7 +1139,7 @@ function P_LISTA_ROL_ONCOLOGICO()
 {
 	require_once('../config/dbcon_prod.php');
 	global $request;
-	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_LISTA_ROL_ONCOLOGICO(:v_json_row); 
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_LISTA_ROL_ONCOLOGICO(:v_json_row);
 																						end;');
 
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
@@ -1194,7 +1194,7 @@ function P_UI_INSERTA_DATOS_NOTIFICACION()
 																						:v_pproceso,
 																						:v_pemail,
 																						:v_presponsable,
-																						:v_pjson_out); 
+																						:v_pjson_out);
 																						end;');
 	oci_bind_by_name($consulta, ':v_pnit', $v_pnit);
 	oci_bind_by_name($consulta, ':v_pproceso', $v_pproceso);
@@ -1218,7 +1218,7 @@ function P_LISTA_NOTIFICACIONES()
 	global $request;
 	$v_pnit  = '900465319';
 	$consulta = oci_parse($c, 'BEGIN pq_suficiencia.P_LISTA_NOTIFICACIONES(	:v_pnit,
-																			:v_pjson_out); 
+																			:v_pjson_out);
 																			end;');
 	oci_bind_by_name($consulta, ':v_pnit', $v_pnit);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
@@ -1265,7 +1265,7 @@ function p_obtener_adjunto_contrato(){
 																						:v_pdocumento,
 																						:v_pnumero,
 																						:v_pubicacion,
-																						:v_json_row); 
+																						:v_json_row);
 																						end;');
 	oci_bind_by_name($consulta, ':v_pempresa', $empresa);
 	oci_bind_by_name($consulta, ':v_pdocumento', $documento);
@@ -1287,9 +1287,9 @@ function P_OBTENER_TIPO_ADJUNTO(){
 	global $request;
 	$documento = $request->v_pdocumento;
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_OBTENER_TIPO_ADJUNTO(:v_pdocumento,
-																					:v_json_row); 
+																					:v_json_row);
 																						end;');
-	
+
 	oci_bind_by_name($consulta, ':v_pdocumento', $documento);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
@@ -1309,14 +1309,14 @@ function P_INSERTA_ADJUNTO_CONTRATO()
 	include('../movilidad/subir_archivo.php');
 	global $request;
 	// variables de parametros
-	
+
 	$path = '/cargue_ftp/Digitalizacion/Genesis/Autorizaciones/contratos/contratos_fisicos/' ;
 
 	$archivo_base =	$request->archivo;
-	$ext =	'pdf';
+	$ext =	$request->ext;
 	$ahora = DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''));
     $nombre =  $ahora->format("YmdHisu");
-	
+
 	$subio = subirFTP($archivo_base, $path, $nombre, $ext);
 
 	if ($subio != '0 - Error') {
@@ -1370,7 +1370,7 @@ function P_OBTENER_ANEXO_3()
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTRATACION.P_OBTENER_ANEXO_3(			:v_pnumero,
 																						:v_pubicacion,
 																						:v_pdocumento,
-																						:v_json_row); 
+																						:v_json_row);
 																						end;');
 
 	oci_bind_by_name($consulta, ':v_pnumero', $numero);
@@ -1397,7 +1397,7 @@ function cambiarsupervisor()
 																						:v_pcontrato,
 																						:v_pubicacion,
 																						:v_psupervisor,
-																						:v_json_row); 
+																						:v_json_row);
 																						end;');
 
 	oci_bind_by_name($consulta, ':v_pdocumento', $request->tipodocumentocontrato);

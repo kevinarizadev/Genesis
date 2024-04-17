@@ -84,10 +84,11 @@ function p_actualiza_funcs()
 {
   global $request;
   require_once('../config/dbcon_prod.php');
-  $consulta = oci_parse($c, 'BEGIN pq_genesis_riesgos.p_actualiza_usuario(:v_pcodigo,:v_pestado,:v_ptipo,:v_json_row); end;');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_riesgos.p_actualiza_usuario(:v_pcodigo,:v_pestado,:v_ptipo,:v_ptodos_registros,:v_json_row); end;');
   oci_bind_by_name($consulta, ':v_pcodigo', $request->codigo);
   oci_bind_by_name($consulta, ':v_pestado', $request->estado);
   oci_bind_by_name($consulta, ':v_ptipo', $request->tipo);
+  oci_bind_by_name($consulta, ':v_ptodos_registros', $request->todosRegistros);
   $clob = oci_new_descriptor($c, OCI_D_LOB);
   oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
   oci_execute($consulta, OCI_DEFAULT);
@@ -105,7 +106,7 @@ function p_consulta_permisos_usuario()
   global $request;
   require_once('../config/dbcon_prod.php');
   $cursor = oci_new_cursor($c);
-  $consulta = oci_parse($c, 'BEGIN pq_genesis_riesgos.p_consulta_permisos_usuario(:v_pcedula,:v_presponse); end;');
+  $consulta = oci_parse($c, 'begin pq_genesis_riesgos.p_consulta_permisos_usuario(:v_pcedula,:v_presponse); end;');
   oci_bind_by_name($consulta, ':v_pcedula', $request->cedula);
   oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
   oci_execute($consulta);
