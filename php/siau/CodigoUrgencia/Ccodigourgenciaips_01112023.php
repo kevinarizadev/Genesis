@@ -12,21 +12,17 @@
 		$docsolicitante    = $request->docsolicitante;
 		$nitips    				 = $_SESSION['nit'];
 		$tipodocpaciente   = $request->tipodocpaciente;
-		$documentopaciente = $request->documentopaciente; 
+		$documentopaciente = $request->documentopaciente;
 		$observacion       = $request->observacion;
 		$fechaingreso 		 = $request->fechaingreso;
 		// $fecha = new DateTime($request->fechaingreso);
-		// $fechaingreso = date_format($fecha, 'm/d/Y H:i');
+		//  $fechaingreso = date_format($fecha, 'm/d/Y H:i');
 		$rol							 = $request->rol;
 		$hijo							 = $request->hijo;
 		$ruta = $request->ruta;
-
 		$aprobacion = "A";
 		$observacionnegacion = "";
-		$motivorechazo = "";
-		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.P_INSERTA_COD_URGENCIA(:v_pcoddiag1,:v_pcoddiag2,:v_pubicacion,
-		:v_pdocsolicitante,:v_pnitips,:v_ptipodocpaciente,:v_pdocpaciente,:v_pobservacion,
-		:v_pfechaingreso,:v_prol,:v_phijo,:v_pruta,:v_paccion,:v_pnegacion,:v_pmotivo_rechazo,:v_pinformacion); end;');
+		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.P_INSERTA_COD_URGENCIA(:v_pcoddiag1,:v_pcoddiag2,:v_pubicacion,:v_pdocsolicitante,:v_pnitips,:v_ptipodocpaciente,:v_pdocpaciente,:v_pobservacion,:v_pfechaingreso,:v_prol,:v_phijo,:v_pruta,:v_paccion,:v_pnegacion,:v_pinformacion); end;');
 		oci_bind_by_name($consulta,':v_pcoddiag1',$coddiag1);
 		oci_bind_by_name($consulta,':v_pcoddiag2',$coddiag2);
 		oci_bind_by_name($consulta,':v_pubicacion',$ubicacion);
@@ -38,10 +34,9 @@
 		oci_bind_by_name($consulta,':v_pfechaingreso',$fechaingreso);
 		oci_bind_by_name($consulta,':v_prol',$rol);
 		oci_bind_by_name($consulta,':v_phijo',$hijo);
-		oci_bind_by_name($consulta, ':v_pruta', $ruta);
+		oci_bind_by_name($consulta,':v_pruta', $ruta);
 		oci_bind_by_name($consulta,':v_paccion',$aprobacion);
 		oci_bind_by_name($consulta,':v_pnegacion',$observacionnegacion);
-		oci_bind_by_name($consulta,':v_pmotivo_rechazo',$motivorechazo);
 		$clob = oci_new_descriptor($c,OCI_D_LOB);
 		oci_bind_by_name($consulta, ':v_pinformacion', $clob,-1,OCI_B_CLOB);
 
@@ -121,21 +116,6 @@
 		}
 		oci_close($c);
 	}
-	// function adjunto(){
-	// 	require_once('../../config/dbcon.php');
-	// 	require_once('../../config/ftpcon.php');
-	// 	include('../../upload_file/subir_archivo.php');
-	// 	global $request;
-	// 	// variables de parametros
-	// 	// otras variables
-	// 	$hoy = date('dmY');
-	// 	$path = '/cargue_ftp/Digitalizacion/Genesis/Siau/CodigoUrgencia/' . $hoy . '/';
-	// 	$name = $request->nombre;
-	// 	$subio = subirFTP($request->achivobase, $path, $name, $request->ext);
-	// 	$rutas = $subio;
-	// 	echo $rutas;
-	// }
-
 	function adjunto(){
 		require_once('../../config/dbcon.php');
 		global $request;
@@ -158,6 +138,7 @@
 		$rutas = $subio;
 		echo $rutas;
 	}
+
 
 	function verificaraccesoips(){
 		require_once('../../config/dbcon_prod.php');

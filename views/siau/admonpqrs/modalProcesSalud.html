@@ -18,354 +18,456 @@
     <div class="card-action" style="padding-top:0">
       <div class="row">
         <div class="col s6">
-          <ul class="StepProgress">
-            <li class="StepProgress-item s"
-              ng-class="{'current': configTimeLime.step1, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
-              <strong class="noselectxtpqr">Gestionar</strong>
-              <div class="w-100" ng-show="configTabs.tab=='G'">
-                <div class="s12 row">
-                  <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqGestionar }"
-                    data-tip="Para avanzar no puede estar vacio el comentario">
-                    <textarea id="textareaG" ng-paste="pasteG($event)" class="materialize-textarea output-salud"
-                      ng-model="dataProcesSalud.gesComment"></textarea>
-                    <label for="textareaG" class="c-pointer">Comentarios de la Solicitud</label>
+          <!--  -->
+          <!--  -->
+          <div class="col s12 m-t m-b" ng-show="listaMotivosReclasificacion.length">
+            <span class="default-color"><b>Motivos agregados ({{listaMotivosReclasificacion.length}})</b></span>
+            <div ng-show="listaMotivosReclasificacion.length" style="overflow-y: auto;max-height: 20vh;">
+              <table class="striped table-bordered" style="position: relative;zoom: 0.8;">
+                <thead class="noselectxtpqr">
+                  <tr>
+                    <th class="text-center" style="width: 30%;">MOTIVO</th>
+                    <th class="text-center" style="width: 30%;">PRODUCTO</th>
+                    <th class="text-center">AUT</th>
+                    <th class="text-center">TIPO CONTRATO</th>
+                    <th class="text-center">PROCEDENTE</th>
+                    <th class="text-center">PRESTADOR</th>
+                    <th class="text-center" ng-show="configTabs.tab=='G'">-</th>
+
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="x in listaMotivosReclasificacion">
+                    <td class="text-center">{{x.MOTIVO_RECLASIFICACION}}</td>
+                    <td class="text-center">{{x.PRODUCTO}}</td>
+                    <td class="text-center">{{x.AUTORIZACION == 'S' ? 'SI':'NO'}}</td>
+                    <td class="text-center">{{x.TIPO_CONTRATO}}</td>
+                    <td class="text-center">{{x.PROCEDENTE == 'S' ? 'SI':'NO'}}</td>
+                    <td class="text-center">{{x.PRESTADOR}}</td>
+                    <td class="text-center" ng-show="configTabs.tab=='G'">
+                      <i class="icon-trash c-pointer" style="font-size: 1.5em;" title="Eliminar"
+                        ng-click="quitarMotivosReclasificacion($index);"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <div class="col s12" ng-show="configTabs.tab=='G'">
+            <span class="default-color"><b>Motivos Reales PQR</b></span>
+            <div class="row margin">
+              <div class="col s12">
+                <div class="col s12 m-b">
+                  <label class="c-pointer noselectxtpqr">Motivo</label>
+                  <select class="select-chosen-eps select pt-select-pqr" ng-model="formSubclasificacionPQR.motivo">
+                    <option value="">SELECCIONAR</option>
+                    <option value="{{x.CODIGO}}" ng-repeat="x in listSubclasificacionPQR">{{x.NOMBRE}}</option>
+                  </select>
+                </div>
+                <form ng-submit="obtenerProductoServicio();">
+                  <div class="col s12">
+                    <label for="buscarProducto">Producto <i class="icon-search c-pointer"
+                        ng-click="obtenerProductoServicio();"></i></label>
+                    <input type="text" id="buscarProducto" class="text-upper" autocomplete="off"
+                      placeholder="Buscar Producto" ng-model="formSubclasificacionPQR.producto" name="myBrowser"
+                      list="pqrSubProductos">
+                    <datalist id="pqrSubProductos" open="open">
+                      <option value="{{x.CODIGO+'~'+x.NOMBRE}}" ng-repeat="x in listSubProductosPQR">
+                    </datalist>
+                  </div>
+                </form>
+                <div class="col s6">
+                  <label class="c-pointer noselectxtpqr">Autorizacion</label>
+                  <select class="select-chosen-eps select pt-select-pqr" ng-model="formSubclasificacionPQR.aut">
+                    <option value="">SELECCIONAR</option>
+                    <option value="N">NO</option>
+                    <option value="S">SI</option>
+                  </select>
+                </div>
+                <div class="col s6">
+                  <label class="c-pointer noselectxtpqr">Procedente</label>
+                  <select class="select-chosen-eps select pt-select-pqr" ng-model="formSubclasificacionPQR.procedente">
+                    <option value="">SELECCIONAR</option>
+                    <option value="N">NO</option>
+                    <option value="S">SI</option>
+                  </select>
+                </div>
+
+                <form ng-submit="obtenerPrestador();">
+                  <div class="col s12">
+                    <label for="buscarPrestador">Prestador <i class="icon-search c-pointer"
+                        ng-click="obtenerPrestador();"></i></label>
+                    <input type="text" id="buscarPrestador" class="text-upper" autocomplete="off"
+                      placeholder="Buscar Prestador" ng-model="formSubclasificacionPQR.prestador" name="myBrowser"
+                      list="listSubPrestadorPQR">
+                    <datalist id="listSubPrestadorPQR" open="open">
+                      <option value="{{x.CODIGO}}~{{x.NOMBRE}}" ng-repeat="x in listSubPrestadorPQR">
+                    </datalist>
+                  </div>
+                </form>
+
+              </div>
+              <div class="col s12 text-center">
+                <a class="waves-effect waves-light btn" ng-click="guardarMotivosReclasificacion();">GUARDAR</a>
+              </div>
+            </div>
+          </div>
+          <!--  -->
+          <!--  -->
+          <div class="col s12 margin" ng-show="!(configTabs.tab == 'G' && !listaMotivosReclasificacion.length)">
+            <ul class="StepProgress">
+              <li class="StepProgress-item s"
+                ng-class="{'current': configTimeLime.step1, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
+                <strong class="noselectxtpqr">Gestionar</strong>
+                <div class="w-100" ng-show="configTabs.tab=='G'">
+                  <div class="s12 row">
+                    <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqGestionar }"
+                      data-tip="Para avanzar no puede estar vacio el comentario">
+                      <textarea id="textareaG" ng-paste="pasteG($event)" class="materialize-textarea output-salud"
+                        ng-model="dataProcesSalud.gesComment"></textarea>
+                      <label for="textareaG" class="c-pointer">Comentarios de la Solicitud</label>
+                    </div>
+                    <div class="right-align">
+                      <a class="waves-effect waves-light btn white-text success"
+                        ng-click="updateConfigTabs('Adjuntar','S');sendG=true">Siguiente</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="StepProgress-item"
+                ng-class="{'current': configTimeLime.step2, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
+                <strong class="noselectxtpqr">Adjuntar</strong>
+                <div class="w-100" ng-show="configTabs.tab=='A'">
+                  <div class="col s12 no-padding">
+                    <div class="row">
+                      <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqAjComment }"
+                        data-tip="Para avanzar no puede estar vacio el comentario">
+                        <textarea id="textareaD" ng-paste="pasteA($event)" class="materialize-textarea output-salud"
+                          ng-model="dataProcesSalud.adjComment"></textarea>
+                        <label for="textareaD">Comentarios del Proceso Adjuntar</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="input-field col m10 s12 w-100 mt-0">
+                        <div class="file-field input-field mt-0">
+                          <div class="btn">
+                            <i class="icon-upload"></i>
+                            <input type="file" id="pqrStepAdjuntarfile" select-files-salud ng-model="fileArray">
+                          </div>
+                          <div class="file-path-wrapper">
+                            <input id="ppqrStepAdjuntarfile" class="file-path" type="text"
+                              placeholder="Adjuntar Archivo">
+                            <span ng-if="formateaar"
+                              ng-class="{'red-text': dataProcesSalud.adjuntarFile==null, 'green-text': dataProcesSalud.adjuntarFile!=null }">{{formateaar}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="right-align">
                     <a class="waves-effect waves-light btn white-text success"
-                      ng-click="updateConfigTabs('Adjuntar','S');sendG=true">Siguiente</a>
+                      ng-click="updateConfigTabs('Gestionar','A');sendG=false;">Anterior</a>
+                    <a ng-show="dataPqr.ASIGNADO=='P'" class="waves-effect waves-light btn white-text success"
+                      ng-click="updateConfigTabs('Respuesta','S');sendA=true;">Siguiente</a>
+                    <a ng-if="dataPqr.ASIGNADO=='S'" class="waves-effect waves-light btn white-text success"
+                      ng-click="updateConfigTabs('Second','S');">Finalizar</a>
                   </div>
                 </div>
-              </div>
-            </li>
-            <li class="StepProgress-item"
-              ng-class="{'current': configTimeLime.step2, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
-              <strong class="noselectxtpqr">Adjuntar</strong>
-              <div class="w-100" ng-show="configTabs.tab=='A'">
-                <div class="col s12 no-padding">
-                  <div class="row">
-                    <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqAjComment }"
-                      data-tip="Para avanzar no puede estar vacio el comentario">
-                      <textarea id="textareaD" ng-paste="pasteA($event)" class="materialize-textarea output-salud"
-                        ng-model="dataProcesSalud.adjComment"></textarea>
-                      <label for="textareaD">Comentarios del Proceso Adjuntar</label>
+              </li>
+              <li ng-show="dataPqr.CODRESP==responsable || privilegios[0].Codigo==7" class="StepProgress-item"
+                ng-class="{'current': configTimeLime.step3,'s':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
+                <strong class="noselectxtpqr">Respuesta Final</strong>
+                <div class="w-100" ng-init="sendA=false" ng-show="configTabs.tab=='R'">
+                  <div class="col s12 no-padding">
+                    <div class="row">
+                      <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqRjComment }"
+                        data-tip="Para avanzar no puede estar vacio el comentario">
+                        <textarea id="textareaR" ng-paste="pasteR($event)"
+                          class="materialize-textarea output-salud mb-0"
+                          ng-model="dataProcesSalud.respuestaFinal"></textarea>
+                        <label for="textareaR">Comentarios del Proceso Respuesta Final</label>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="input-field col m10 s12 w-100 mt-0">
-                      <div class="file-field input-field mt-0">
-                        <div class="btn">
-                          <i class="icon-upload"></i>
-                          <input type="file" id="pqrStepAdjuntarfile" select-files-salud ng-model="fileArray">
-                        </div>
-                        <div class="file-path-wrapper">
-                          <input id="ppqrStepAdjuntarfile" class="file-path" type="text" placeholder="Adjuntar Archivo">
-                          <span ng-if="formateaar"
-                            ng-class="{'red-text': dataProcesSalud.adjuntarFile==null, 'green-text': dataProcesSalud.adjuntarFile!=null }">{{formateaar}}</span>
+                    <div ng-show="responsable=='52936596'" class="row">
+                      <div class="right-align" ng-show="stateNegacion[0].ESTADO=='S'">
+                        <a class="waves-effect waves-light btn white-text success"
+                          ng-click="updateConfigTabs('Soporte','S');sendR=true;"
+                          ng-disabled="dataProcesSalud.negacion=='S'">Aprobar</a>
+                        <a class="waves-effect waves-light btn white-text success" ng-click="approve();"
+                          ng-disabled="dataProcesSalud.negacion=='S'">Negar</a>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="input-field col m10 s12 w-100 mt-0">
+                        <div class="file-field input-field mt-0 mr-0">
+                          <div class="btn">
+                            <i class="icon-file-pdf"></i>
+                            <input type="file" id="pqrStepRespuestafile" select-files-salud ng-model="fileArray">
+                          </div>
+                          <div class="file-path-wrapper">
+                            <input id="ppqrStepRespuestafile" class="file-path" type="text"
+                              placeholder="Adjuntar Archivo">
+                            <span ng-if="formatearRespuesta"
+                              ng-class="{'red-text': dataProcesSalud.respuestaFile==null, 'green-text': dataProcesSalud.respuestaFile!=null }">{{formatearRespuesta}}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="right-align">
-                  <a class="waves-effect waves-light btn white-text success"
-                    ng-click="updateConfigTabs('Gestionar','A');sendG=false;">Anterior</a>
-                  <a ng-show="dataPqr.ASIGNADO=='P'" class="waves-effect waves-light btn white-text success"
-                    ng-click="updateConfigTabs('Respuesta','S');sendA=true;">Siguiente</a>
-                  <a ng-if="dataPqr.ASIGNADO=='S'" class="waves-effect waves-light btn white-text success"
-                    ng-click="updateConfigTabs('Second','S');">Finalizar</a>
-                </div>
-              </div>
-            </li>
-            <li ng-show="dataPqr.CODRESP==responsable || privilegios[0].Codigo==7" class="StepProgress-item"
-              ng-class="{'current': configTimeLime.step3,'s':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
-              <strong class="noselectxtpqr">Respuesta Final</strong>
-              <div class="w-100" ng-init="sendA=false" ng-show="configTabs.tab=='R'">
-                <div class="col s12 no-padding">
-                  <div class="row">
-                    <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqRjComment }"
-                      data-tip="Para avanzar no puede estar vacio el comentario">
-                      <textarea id="textareaR" ng-paste="pasteR($event)" class="materialize-textarea output-salud mb-0"
-                        ng-model="dataProcesSalud.respuestaFinal"></textarea>
-                      <label for="textareaR">Comentarios del Proceso Respuesta Final</label>
-                    </div>
-                  </div>
-                  <div ng-show="responsable=='52936596'" class="row">
-                    <div class="right-align" ng-show="stateNegacion[0].ESTADO=='S'">
-                      <a class="waves-effect waves-light btn white-text success"
-                        ng-click="updateConfigTabs('Soporte','S');sendR=true;"
-                        ng-disabled="dataProcesSalud.negacion=='S'">Aprobar</a>
-                      <a class="waves-effect waves-light btn white-text success" ng-click="approve();"
-                        ng-disabled="dataProcesSalud.negacion=='S'">Negar</a>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="input-field col m10 s12 w-100 mt-0">
-                      <div class="file-field input-field mt-0 mr-0">
-                        <div class="btn">
-                          <i class="icon-file-pdf"></i>
-                          <input type="file" id="pqrStepRespuestafile" select-files-salud ng-model="fileArray">
+                    <div ng-if="dataProcesSalud.negacion=='S'">
+                      <div class="row" style="margin-bottom:10px">
+                        <div class="col s12 display-flex">
+                          <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
+                            <label class="c-pointer noselectxtpqr" for="motivoNegacion">Motivos</label>
+                          </div>
+                          <div class="input-field col m10 s12" style="margin-top: 0;">
+                            <select class="select-chosen-eps select pt-select-pqr" id="motivoNegacion"
+                              ng-model="dataProcesSalud.motivoNegacion">
+                              <option value="">SELECCIONAR</option>
+                              <option ng-repeat="m in motivosNegacion" ng-value="m.CODIGO">
+                                {{m.NOMBRE}}</option>
+                            </select>
+                          </div>
                         </div>
-                        <div class="file-path-wrapper">
-                          <input id="ppqrStepRespuestafile" class="file-path" type="text"
-                            placeholder="Adjuntar Archivo">
-                          <span ng-if="formatearRespuesta"
-                            ng-class="{'red-text': dataProcesSalud.respuestaFile==null, 'green-text': dataProcesSalud.respuestaFile!=null }">{{formatearRespuesta}}</span>
+                      </div>
+                      <div class="row">
+                        <div class="col s12 display-flex">
+                          <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
+                            <label class="c-pointer noselectxtpqr" for="resNegacion">Responsables</label>
+                          </div>
+                          <div class="input-field col m10 s12" style="margin-top: 0;">
+                            <select class="select-chosen-eps select pt-select-pqr" id="resNegacion"
+                              ng-model="dataProcesSalud.resNegacion">
+                              <option value="">SELECCIONAR</option>
+                              <option ng-repeat="r in responsableNegacion" ng-value="r.CODIGO">{{r.NOMBRE}}</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div ng-if="dataProcesSalud.negacion=='S'">
-                    <div class="row" style="margin-bottom:10px">
+                    <div id="motivosrespuesta" class="row" style="margin-bottom:10px">
                       <div class="col s12 display-flex">
                         <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
-                          <label class="c-pointer noselectxtpqr" for="motivoNegacion">Motivos</label>
+                          <label class="c-pointer noselectxtpqr" for="motivosrespuesta">Motivo Respuesta</label>
                         </div>
                         <div class="input-field col m10 s12" style="margin-top: 0;">
-                          <select class="select-chosen-eps select pt-select-pqr" id="motivoNegacion"
-                            ng-model="dataProcesSalud.motivoNegacion">
+                          <select class="select-chosen-eps select pt-select-pqr" id="motivosrespuesta"
+                            ng-model="dataProcesSalud.motivosRespuesta">
                             <option value="">SELECCIONAR</option>
-                            <option ng-repeat="m in motivosNegacion" ng-value="m.CODIGO">
+                            <option ng-repeat="m in motivosRespuesta" ng-value="m.CODIGO">
                               {{m.NOMBRE}}</option>
                           </select>
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div class="right-align">
+                    <a class="waves-effect waves-light btn white-text success"
+                      ng-click="updateConfigTabs('Adjuntar','A');sendG=false;">Anterior</a>
+                    <a class="waves-effect waves-light btn white-text success"
+                      ng-click="updateConfigTabs('Soporte','S');sendR=true;">Siguiente</a>
+                  </div>
+                </div>
+              </li>
+              <li ng-show="dataPqr.CODRESP==responsable || privilegios[0].Codigo==7" class="StepProgress-item"
+                ng-class="{'current': configTimeLime.step4, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
+                <strong class="noselectxtpqr">Soporte de Envio</strong>
+                <div class="w-100" ng-show="configTabs.tab=='S'">
+                  <div class="col s12">
+                    <div class="row" style="margin-bottom: 10px;">
+                      <div class="input-field col m10 s12 w-100" style="z-index: 99999">
+                        <div class="file-field input-field margin">
+                          <div class="btn">
+                            <i class="icon-file-pdf"></i>
+                            <input type="file" id="pqrStepSoportefile" select-files-salud ng-model="fileArray">
+                          </div>
+                          <div class="file-path-wrapper">
+                            <input id="ppqrStepSoportefile" class="file-path" type="text" placeholder="Adjuntar Archivo"
+                              style="margin-bottom: 0">
+                            <span ng-if="formatearSoporte"
+                              ng-class="{'red-text': dataProcesSalud.soporteFile==null, 'green-text': dataProcesSalud.soporteFile!=null }">{{formatearSoporte}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-action" style="padding-bottom: 3px;border-top: 0;padding-top: 0">
                     <div class="row">
+                      <div class="row" ng-if="inactiveipssearch==false">
+                        <div class="col s11">
+                          <form ng-submit="buscarIps(searchips);" autocomplete="off">
+                            <div class="input-field col m12 s12">
+                              <a href="javascript:void(0)" ng-click="buscarIps(searchips);">
+                                <i class="material-icons styleIconSearch noselectxtpqr">search</i>
+                              </a>
+                              <label for="nitIps" class="c-pointer noselectxtpqr">Nit</label>
+                              <input id="nitIps" type="text" style="height: 2rem!important;" ng-model="searchips">
+                            </div>
+                          </form>
+                        </div>
+                        <div class="col s1">
+                          <i style="cursor:pointer;margin-top: 40px" ng-hide="inactivebarraips"
+                            ng-click="clearListIps();" class="material-icons">close</i>
+                        </div>
+                      </div>
+                      <div class="col s12" ng-if="inactivebarraips==false" style="max-height: 25vh;overflow-y: auto;">
+                        <table class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+                              <th style="text-align:center;">NIT</th>
+                              <th style="text-align:center;">NOMBRE</th>
+                              <th style="text-align:center;">ACCION</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="ips in listIps | filter:searchips as resultips">
+                              <td style="text-align:center;">{{ips.Codigo}}</td>
+                              <td>{{ips.Nombre}}</td>
+                              <td>
+                                <center>
+                                  <i ng-click="seleccionarips(ips,'A')" style="cursor:pointer;font-size: 20px"
+                                    class="material-icons prefix">check</i>
+                                </center>
+                              </td>
+                            </tr>
+                            <tr ng-if="resultips.length==0">
+                              <th class="center-align" colspan="5">No hay Resultados</th>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col s12" ng-show="selectips">
+                        <table class="table table-bordered table-striped" style="position: relative;">
+                          <thead>
+                            <tr>
+                              <th style="text-align:center;">NIT</th>
+                              <th style="text-align:center;">NOMBRE</th>
+                              <th style="text-align:center;">ACCION</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td style="text-align:center;">{{selectips.Codigo}}</td>
+                              <td>{{selectips.Nombre}}</td>
+                              <td style="text-align:center;"> <i style="cursor:pointer;" ng-hide="selectips==''"
+                                  ng-click="inactiveipssearch=false;inactivebarraips=false;selectips='';searchips=''"
+                                  class="material-icons">close</i></td>
+                            </tr>
+                            <tr ng-if="resultips.length==0">
+                              <th class="center-align" colspan="5">No hay Resultados</th>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="row" ng-show="selectips!='' && ipsmedicamento.EstadoMedicamentos=='S'">
+                        <div class="col s11">
+                          <form autocomplete="off">
+                            <div class="input-field col m12 s12">
+                              <a href="javascript:void(0)">
+                                <i class="material-icons styleIconSearch noselectxtpqr">search</i>
+                              </a>
+                              <label for="nitIps" class="c-pointer noselectxtpqr">Medicamentos</label>
+                              <input id="nitIps" type="text" ng-model="searchpro" ng-change="findProducto(searchpro)"
+                                style="height: 2rem!important;">
+                            </div>
+                          </form>
+                        </div>
+                        <div class="col s1">
+                          <i style="cursor:pointer;margin-top: 40px" ng-hide="selectips==''"
+                            ng-click="inactiveipssearch=false;selectips='';searchips='';inactivepro=true;searchpro='';dataProcesSalud.medicamentos=[];"
+                            class="material-icons">close</i>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <table ng-if="dataProcesSalud.medicamentos.length>0" class="table table-bordered table-striped"
+                          style="position: relative;">
+                          <thead>
+                            <tr>
+                              <th style="text-align:center;" colspan="3">LISTADO DE MEDICAMENTOS SELECCIONADOS</th>
+                            </tr>
+                            <tr>
+                              <th style="text-align:center;">CODIGO</th>
+                              <th style="text-align:center;">NOMBRE</th>
+                              <th style="text-align:center;">ACCION</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="m in dataProcesSalud.medicamentos">
+                              <td style="text-align:center;">{{m.Codigo}}</td>
+                              <td>{{m.Nombre}}</td>
+                              <td style="text-align:center;">
+                                <div class="col s12 input-padding">
+                                  <i style="cursor:pointer;" ng-click="removeMedicamento($index);"
+                                    class="material-icons">close</i>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col s12" ng-hide="inactivepro" style="max-height:25vh;overflow-y: auto;">
+                        <table class="table table-bordered table-striped" style="position: relative;">
+                          <thead>
+                            <tr>
+                              <th style="text-align:center;">CODIGO</th>
+                              <th style="text-align:center;">NOMBRE</th>
+                              <th style="text-align:center;">ACCION</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="m in listMedicamentos">
+                              <td style="text-align:center;">{{m.Codigo}}</td>
+                              <td>{{m.Nombre}}</td>
+                              <td style="text-align:center;">
+                                <div class="col s12 input-padding">
+                                  <input type="checkbox" id="checkbox{{$index}}"
+                                    ng-click="checkMedicamento($index,m.Check);" ng-model="m.Check" />
+                                  <label for="checkbox{{$index}}"></label>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div id="motivosaltocosto" class="row" style="margin-bottom:10px">
                       <div class="col s12 display-flex">
                         <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
-                          <label class="c-pointer noselectxtpqr" for="resNegacion">Responsables</label>
+                          <label class="c-pointer noselectxtpqr" for="motivosaltocosto">Motivo Alto Costo</label>
                         </div>
                         <div class="input-field col m10 s12" style="margin-top: 0;">
-                          <select class="select-chosen-eps select pt-select-pqr" id="resNegacion"
-                            ng-model="dataProcesSalud.resNegacion">
+                          <select class="select-chosen-eps select pt-select-pqr" id="motivosaltocosto"
+                            ng-model="dataProcesSalud.motivoAltoCosto"
+                            ng-change="changeAltoCosto(dataProcesSalud.motivoAltoCosto);">
                             <option value="">SELECCIONAR</option>
-                            <option ng-repeat="r in responsableNegacion" ng-value="r.CODIGO">{{r.NOMBRE}}</option>
+                            <option ng-repeat="m in motivosAltoCosto" ng-value="m.CODIGO">
+                              {{m.NOMBRE}}</option>
                           </select>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div id="motivosrespuesta" class="row" style="margin-bottom:10px">
-                    <div class="col s12 display-flex">
-                      <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
-                        <label class="c-pointer noselectxtpqr" for="motivosrespuesta">Motivo Respuesta</label>
-                      </div>
-                      <div class="input-field col m10 s12" style="margin-top: 0;">
-                        <select class="select-chosen-eps select pt-select-pqr" id="motivosrespuesta"
-                          ng-model="dataProcesSalud.motivosRespuesta">
-                          <option value="">SELECCIONAR</option>
-                          <option ng-repeat="m in motivosRespuesta" ng-value="m.CODIGO">
-                            {{m.NOMBRE}}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="right-align">
-                  <a class="waves-effect waves-light btn white-text success"
-                    ng-click="updateConfigTabs('Adjuntar','A');sendG=false;">Anterior</a>
-                  <a class="waves-effect waves-light btn white-text success"
-                    ng-click="updateConfigTabs('Soporte','S');sendR=true;">Siguiente</a>
-                </div>
-              </div>
-            </li>
-            <li ng-show="dataPqr.CODRESP==responsable || privilegios[0].Codigo==7" class="StepProgress-item"
-              ng-class="{'current': configTimeLime.step4, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
-              <strong class="noselectxtpqr">Soporte de Envio</strong>
-              <div class="w-100" ng-show="configTabs.tab=='S'">
-                <div class="col s12">
-                  <div class="row" style="margin-bottom: 10px;">
-                    <div class="input-field col m10 s12 w-100" style="z-index: 99999">
-                      <div class="file-field input-field margin">
-                        <div class="btn">
-                          <i class="icon-file-pdf"></i>
-                          <input type="file" id="pqrStepSoportefile" select-files-salud ng-model="fileArray">
+
+                    <div id="motivospatologias" class="row" style="margin-bottom:10px">
+                      <div class="col s12 display-flex">
+                        <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
+                          <label class="c-pointer noselectxtpqr" for="motivospatologias">Motivo patología</label>
                         </div>
-                        <div class="file-path-wrapper">
-                          <input id="ppqrStepSoportefile" class="file-path" type="text" placeholder="Adjuntar Archivo"
-                            style="margin-bottom: 0">
-                          <span ng-if="formatearSoporte"
-                            ng-class="{'red-text': dataProcesSalud.soporteFile==null, 'green-text': dataProcesSalud.soporteFile!=null }">{{formatearSoporte}}</span>
+                        <div class="input-field col m10 s12" style="margin-top: 0;">
+                          <select class="select-chosen-eps select pt-select-pqr" style="color: #000;"
+                            id="motivospatologias" ng-model="dataProcesSalud.motivoPatologia"
+                            ng-disabled="disabledmotpatologia">
+                            <option value="">SELECCIONAR</option>
+                            <option ng-repeat="m in motivosPatologias" value="{{m.CODIGO}}"
+                              ng-selected="dataProcesSalud.motivoPatologia == m.CODIGO">
+                              {{m.NOMBRE}}</option>
+                          </select>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="card-action" style="padding-bottom: 3px;border-top: 0;padding-top: 0">
-                  <div class="row">
-                    <div class="row" ng-if="inactiveipssearch==false">
-                      <div class="col s11">
-                        <form ng-submit="buscarIps(searchips);" autocomplete="off">
-                          <div class="input-field col m12 s12">
-                            <a href="javascript:void(0)" ng-click="buscarIps(searchips);">
-                              <i class="material-icons styleIconSearch noselectxtpqr">search</i>
-                            </a>
-                            <label for="nitIps" class="c-pointer noselectxtpqr">Nit</label>
-                            <input id="nitIps" type="text" style="height: 2rem!important;" ng-model="searchips">
-                          </div>
-                        </form>
-                      </div>
-                      <div class="col s1">
-                        <i style="cursor:pointer;margin-top: 40px" ng-hide="inactivebarraips" ng-click="clearListIps();"
-                          class="material-icons">close</i>
-                      </div>
-                    </div>
-                    <div class="col s12" ng-if="inactivebarraips==false" style="max-height: 25vh;overflow-y: auto;">
-                      <table class="table table-bordered table-striped">
-                        <thead>
-                          <tr>
-                            <th style="text-align:center;">NIT</th>
-                            <th style="text-align:center;">NOMBRE</th>
-                            <th style="text-align:center;">ACCION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr ng-repeat="ips in listIps | filter:searchips as resultips">
-                            <td style="text-align:center;">{{ips.Codigo}}</td>
-                            <td>{{ips.Nombre}}</td>
-                            <td>
-                              <center>
-                                <i ng-click="seleccionarips(ips,'A')" style="cursor:pointer;font-size: 20px"
-                                  class="material-icons prefix">check</i>
-                              </center>
-                            </td>
-                          </tr>
-                          <tr ng-if="resultips.length==0">
-                            <th class="center-align" colspan="5">No hay Resultados</th>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="col s12" ng-show="selectips">
-                      <table class="table table-bordered table-striped" style="position: relative;">
-                        <thead>
-                          <tr>
-                            <th style="text-align:center;">NIT</th>
-                            <th style="text-align:center;">NOMBRE</th>
-                            <th style="text-align:center;">ACCION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td style="text-align:center;">{{selectips.Codigo}}</td>
-                            <td>{{selectips.Nombre}}</td>
-                            <td style="text-align:center;"> <i style="cursor:pointer;" ng-hide="selectips==''"
-                                ng-click="inactiveipssearch=false;inactivebarraips=false;selectips='';searchips=''"
-                                class="material-icons">close</i></td>
-                          </tr>
-                          <tr ng-if="resultips.length==0">
-                            <th class="center-align" colspan="5">No hay Resultados</th>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="row" ng-show="selectips!='' && ipsmedicamento.EstadoMedicamentos=='S'">
-                      <div class="col s11">
-                        <form autocomplete="off">
-                          <div class="input-field col m12 s12">
-                            <a href="javascript:void(0)">
-                              <i class="material-icons styleIconSearch noselectxtpqr">search</i>
-                            </a>
-                            <label for="nitIps" class="c-pointer noselectxtpqr">Medicamentos</label>
-                            <input id="nitIps" type="text" ng-model="searchpro" ng-change="findProducto(searchpro)"
-                              style="height: 2rem!important;">
-                          </div>
-                        </form>
-                      </div>
-                      <div class="col s1">
-                        <i style="cursor:pointer;margin-top: 40px" ng-hide="selectips==''"
-                          ng-click="inactiveipssearch=false;selectips='';searchips='';inactivepro=true;searchpro='';dataProcesSalud.medicamentos=[];"
-                          class="material-icons">close</i>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <table ng-if="dataProcesSalud.medicamentos.length>0" class="table table-bordered table-striped"
-                        style="position: relative;">
-                        <thead>
-                          <tr>
-                            <th style="text-align:center;" colspan="3">LISTADO DE MEDICAMENTOS SELECCIONADOS</th>
-                          </tr>
-                          <tr>
-                            <th style="text-align:center;">CODIGO</th>
-                            <th style="text-align:center;">NOMBRE</th>
-                            <th style="text-align:center;">ACCION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr ng-repeat="m in dataProcesSalud.medicamentos">
-                            <td style="text-align:center;">{{m.Codigo}}</td>
-                            <td>{{m.Nombre}}</td>
-                            <td style="text-align:center;">
-                              <div class="col s12 input-padding">
-                                <i style="cursor:pointer;" ng-click="removeMedicamento($index);"
-                                  class="material-icons">close</i>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="col s12" ng-hide="inactivepro" style="max-height:25vh;overflow-y: auto;">
-                      <table class="table table-bordered table-striped" style="position: relative;">
-                        <thead>
-                          <tr>
-                            <th style="text-align:center;">CODIGO</th>
-                            <th style="text-align:center;">NOMBRE</th>
-                            <th style="text-align:center;">ACCION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr ng-repeat="m in listMedicamentos">
-                            <td style="text-align:center;">{{m.Codigo}}</td>
-                            <td>{{m.Nombre}}</td>
-                            <td style="text-align:center;">
-                              <div class="col s12 input-padding">
-                                <input type="checkbox" id="checkbox{{$index}}"
-                                  ng-click="checkMedicamento($index,m.Check);" ng-model="m.Check" />
-                                <label for="checkbox{{$index}}"></label>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div id="motivosaltocosto" class="row" style="margin-bottom:10px">
-                    <div class="col s12 display-flex">
-                      <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
-                        <label class="c-pointer noselectxtpqr" for="motivosaltocosto">Motivo Alto Costo</label>
-                      </div>
-                      <div class="input-field col m10 s12" style="margin-top: 0;">
-                        <select class="select-chosen-eps select pt-select-pqr" id="motivosaltocosto"
-                          ng-model="dataProcesSalud.motivoAltoCosto"
-                          ng-change="changeAltoCosto(dataProcesSalud.motivoAltoCosto);">
-                          <option value="">SELECCIONAR</option>
-                          <option ng-repeat="m in motivosAltoCosto" ng-value="m.CODIGO">
-                            {{m.NOMBRE}}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div id="motivospatologias" class="row" style="margin-bottom:10px">
-                    <div class="col s12 display-flex">
-                      <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
-                        <label class="c-pointer noselectxtpqr" for="motivospatologias">Motivo patología</label>
-                      </div>
-                      <div class="input-field col m10 s12" style="margin-top: 0;">
-                        <select class="select-chosen-eps select pt-select-pqr" style="color: #000;"
-                          id="motivospatologias" ng-model="dataProcesSalud.motivoPatologia"
-                          ng-disabled="disabledmotpatologia">
-                          <option value="">SELECCIONAR</option>
-                          <option ng-repeat="m in motivosPatologias" value="{{m.CODIGO}}"
-                            ng-selected="dataProcesSalud.motivoPatologia == m.CODIGO">
-                            {{m.NOMBRE}}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- <div id="motivospatologias" class="row" style="margin-bottom:10px">
+                    <!-- <div id="motivospatologias" class="row" style="margin-bottom:10px">
                     <div class="col s12 display-flex">
                       <div class="input-field col m3 hide-on-med-and-down" style="margin-top: 0;">
                         <label class="c-pointer noselectxtpqr" for="motivospatologias">Vincular Auts.</label>
@@ -380,37 +482,37 @@
                     </div>
 
                   </div> -->
-                </div>
-                <div class="right-align">
-                  <a class="waves-effect waves-light btn white-text success"
-                    ng-click="updateConfigTabs('Respuesta','A');sendR=false;sendA=false;">Anterior</a>
-                  <a class="waves-effect waves-light btn white-text success"
-                    ng-click="updateConfigTabs('Finish','S')">Finalizar</a>
-                </div>
-              </div>
-            </li>
-
-            <li class="StepProgress-item s"
-              ng-class="{'current': configTimeLime.step1, 's': !perfilFunc && mostrarComentarioNuevoIps}" ng-if="!perfilFunc">
-              <strong class="noselectxtpqr">Comentario</strong>
-              <div class="w-100" ng-show="configTabs.tab!='A' && !perfilFunc && mostrarComentarioNuevoIps">
-                <div class="s12 row">
-                  <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqGestionar }"
-                    data-tip="Para avanzar no puede estar vacio el comentario">
-                    <textarea id="textareaG2"  class="materialize-textarea output-salud"
-                      ng-model="opcionIps.comentarioNuevoIps"></textarea>
-                    <label for="textareaG2" class="c-pointer">Comentarios de la Solicitud</label>
                   </div>
                   <div class="right-align">
                     <a class="waves-effect waves-light btn white-text success"
-                      ng-click="guardarGestionNuevaIps()">Guardar</a>
+                      ng-click="updateConfigTabs('Respuesta','A');sendR=false;sendA=false;">Anterior</a>
+                    <a class="waves-effect waves-light btn white-text success"
+                      ng-click="updateConfigTabs('Finish','S')">Finalizar</a>
                   </div>
                 </div>
-              </div>
-            </li>
+              </li>
 
-
-          </ul>
+              <li class="StepProgress-item s"
+                ng-class="{'current': configTimeLime.step1, 's': !perfilFunc && mostrarComentarioNuevoIps}"
+                ng-if="!perfilFunc">
+                <strong class="noselectxtpqr">Comentario</strong>
+                <div class="w-100" ng-show="configTabs.tab!='A' && !perfilFunc && mostrarComentarioNuevoIps">
+                  <div class="s12 row">
+                    <div class="input-field col m10 s12 w-100 pr-0" ng-class="{'active': rqGestionar }"
+                      data-tip="Para avanzar no puede estar vacio el comentario">
+                      <textarea id="textareaG2" class="materialize-textarea output-salud"
+                        ng-model="opcionIps.comentarioNuevoIps"></textarea>
+                      <label for="textareaG2" class="c-pointer">Comentarios de la Solicitud</label>
+                    </div>
+                    <div class="right-align">
+                      <a class="waves-effect waves-light btn white-text success"
+                        ng-click="guardarGestionNuevaIps()">Guardar</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
         <div class="col s6" ng-if="showDataPQR==true">
           <div class="card-content margin row">
@@ -678,6 +780,15 @@
                     <td colspan="6">{{dpqr.MACROMOTIVO}}</td>
                   </tr>
                   <tr>
+                    <th class="noselectxtpqr">Tipo de Motivo Especifico</th>
+                    <td colspan="6">{{dpqr.TIPOMOTIVO}}</td>
+                  </tr>
+                  <tr>
+                    <th class="noselectxtpqr">Subtipo de Motivo Especifico</th>
+                    <td colspan="6">{{dpqr.SUBTIPOMOTIVO}}</td>
+                  </tr>
+
+                  <tr>
                     <th class="noselectxtpqr">Soporte</th>
                     <td class="text-center noselectxtpqr">
                       <a id="bt-ges" class="c-pointer mr-0" ng-click="descargafile(dpqr.RUTA,dpqr.FTP);">
@@ -702,8 +813,8 @@
                     class="circle responsive-img valign margin hide-on-small-only">
                 </div>
                 <div class="col l11 md11 m11">
-                  <div class="desc_com" style="padding: 1em; background-color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? '#367abd' : ''}};
-                color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? 'white' : ''}}">
+                  <div class="desc_com"
+                    style="padding: 1em; background-color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? '#367abd' : ''}}; color: {{nombre.toLowerCase() == com.NOMBRE.toLowerCase() ? 'white' : ''}}">
                     <i ng-if="com.ADJUNTO!=''" ng-click="bajarArchivo(com.ADJUNTO)"
                       style="float: right;cursor: pointer !important;" class="material-icons dp48">attach_file</i>
                     <p class="margin" style="font-size: 12px;">
@@ -753,9 +864,11 @@
                         <td class="text-center">{{x.AUTN_NUMERO ? (x.AUTN_NUMERO +' - '+ x.AUTN_UBICACION) :
                           (x.REQ_AUTORIZACION_RAD == 'S' && x.SERV_PGP == 'N') ? 'NO GENERADA': 'NO APLICA' }}</td>
                         <td class="text-center">{{getTextSiNo(x.SERV_PGP)}}</td>
-                        <td class="text-center">{{x.REQ_AUTORIZACION_GEST != null ? getTextSiNo(x.REQ_AUTORIZACION_GEST) : getTextSiNo(x.REQ_AUTORIZACION_RAD)}}</td>
+                        <td class="text-center">{{x.REQ_AUTORIZACION_GEST != null ? getTextSiNo(x.REQ_AUTORIZACION_GEST)
+                          : getTextSiNo(x.REQ_AUTORIZACION_RAD)}}</td>
                         <td class="text-center">
-                          <i class="icon-edit cursor-pointer" ng-click="editarProductosPQR(x)" title="Editar" ng-if="perfilFunc"></i>
+                          <i class="icon-edit cursor-pointer" ng-click="editarProductosPQR(x)" title="Editar"
+                            ng-if="permisosUsuario.RESC_MARCA_GEST_SERVI == 'S'"></i>
                         </td>
                       </tr>
                     </tbody>
@@ -767,7 +880,8 @@
               <!--  -->
               <div class="col s12 m-t m-b" ng-show="pqrServiciosModal.status == 1">
                 <span class="default-color"><b>Producto: </b>{{pqrServiciosModal.productoNombre}}</span>
-                <span class="default-color" ng-if="pqrServiciosModal.subclaseNombre!=null"><b>Subclase: </b>{{pqrServiciosModal.subclaseNombre}}</span>
+                <span class="default-color" ng-if="pqrServiciosModal.subclaseNombre!=null"><b>Subclase:
+                  </b>{{pqrServiciosModal.subclaseNombre}}</span>
                 <div class="row margin">
                   <div class="col s12">
 
@@ -791,13 +905,13 @@
                     <div class="col s6 m-t">
                       <label for="pqrServiciosModal_numeroAut">Numero Aut.</label>
                       <input id="pqrServiciosModal_numeroAut" type="text" maxlength="7" autocomplete="off" numbers-only
-                        ng-model="pqrServiciosModal.numeroAut" ng-disabled="pqrServiciosModal.requiereAut == 'N' || 
+                        ng-model="pqrServiciosModal.numeroAut" ng-disabled="pqrServiciosModal.requiereAut == 'N' ||
                       pqrServiciosModal.marcaPGP == 'S'">
                     </div>
                     <div class="col s6 m-t">
                       <label for="pqrServiciosModal_numeroUbi">Ubicacion Aut.</label>
                       <input id="pqrServiciosModal_numeroUbi" type="text" maxlength="7" autocomplete="off" numbers-only
-                        ng-model="pqrServiciosModal.numeroUbi" ng-disabled="pqrServiciosModal.requiereAut == 'N' || 
+                        ng-model="pqrServiciosModal.numeroUbi" ng-disabled="pqrServiciosModal.requiereAut == 'N' ||
                       pqrServiciosModal.marcaPGP == 'S'">
                     </div>
 

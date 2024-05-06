@@ -9,7 +9,6 @@ angular.module('GenesisApp')
          $scope.sesdata = respuesta;
          $scope.cedula = $scope.sesdata.cedula;
          $scope.rol = $scope.sesdata.rolcod;
-         $scope.verbuscador = false;
          if($scope.sesdata.nit != undefined){
            $scope.nitips = $scope.sesdata.nit;
            $scope.nomips = $scope.sesdata.nomips;
@@ -163,7 +162,6 @@ angular.module('GenesisApp')
     $scope.filtroDiag1 = "";
     $scope.solicitante = "";
     $scope.aprobacion = "";
-    $scope.motivorechazo = "";
     $scope.observacionnegacion = "";
 
     $scope.fechaingreso = "";
@@ -186,24 +184,10 @@ angular.module('GenesisApp')
   $scope.validaradjunto = function(){
     if ( $scope.archivobase == '' || $scope.archivobase == null || $scope.archivobase == undefined ) {
       $scope.adjanexo2 = false;
-      $("#adjunto")[0].value = "";
-      $scope.archivobase = "";
-      $scope.extensionarchivo = "";
     }else{
       $scope.adjanexo2 = true;
     }
   }
-
-  $scope.VerMotivosRechazo = function() {
-    $http({
-      method:'POST',
-      url:"php/siau/CodigoUrgencia/Ccodigourgencia.php",
-      data: {function:'MotivosRechazos'}
-    }).then(function(response){
-        $scope.motivosrechazos = response.data;
-    })
-  }
-
   $scope.validarips = function() {
     $http({
       method:'POST',
@@ -212,24 +196,21 @@ angular.module('GenesisApp')
     }).then(function(response){
       if(response.data.existe != "0"){
         $scope.nomips = response.data.Nombre;
-        $scope.verbuscador = true;
       }else{
         $scope.nomips = response.data.Nombre;
         $scope.nitips = '';
-        $scope.verbuscador = false;
       }
     })
   }
   // functiones de procesos
   $scope.buscarAfiliado = function(){
-    $scope.VerMotivosRechazo();
     $scope.limpiar('2');
     $scope.Data = [];
     if($scope.tipoDoc != "0" && $scope.documento != "" && $scope.tipoDoc != null && $scope.documento != undefined && $scope.tipoDoc != undefined && $scope.documento != null){
         $http({
           method:'POST',
           url:"php/siau/CodigoUrgencia/Rcodigourgencia.php",
-          data: {function:'obtenerafiliados',nit:$scope.nitips,tipodocumento:$scope.tipoDoc,documento:$scope.documento}
+          data: {function:'obtenerafiliados',tipodocumento:$scope.tipoDoc,documento:$scope.documento}
         }).then(function(response){
           if(response.data != "0"){
             $scope.Data = response.data;
@@ -280,27 +261,7 @@ angular.module('GenesisApp')
       notification.getNotification('warning', 'Debe ingresar mas de 2 caracteres', 'Notificacion');
     }
   }
-  // $scope.obtenerBase = function () {
-  //   if ($("#adjunto")[0].files[0].size > 7340032) {
-  //     //swal('Advertencia','El archivo excede el peso limite (7 MB)','warning')
-  //     notification.getNotification('warning', 'El archivo excede el peso limite (7 MB)', 'Notificación');
-  //     $("#adjunto")[0].value = "";
-  //     $scope.archivobase = "";
-  //     $scope.extensionarchivo = "";
-  //   } else {
-  //     if ($("#adjunto")[0].files && $("#adjunto")[0].files[0]) {
-  //       var FR = new FileReader();
-  //       FR.addEventListener("load", function (e) {
-  //         $scope.archivobase = e.target.result;
-  //         var name = $("#adjunto")[0].files[0].name;
-  //         $scope.extensionarchivo = name.split('.').pop();
-  //       });
-  //       FR.readAsDataURL($("#adjunto")[0].files[0]);
-  //     }
-  //   }
-  // }
   $scope.obtenerBase = function () {
-    if($("#adjunto")[0].value !=""){
     if ($("#adjunto")[0].files[0].size > 7340032) {
       //swal('Advertencia','El archivo excede el peso limite (7 MB)','warning')
       notification.getNotification('warning', 'El archivo excede el peso limite (7 MB)', 'Notificación');
@@ -318,13 +279,6 @@ angular.module('GenesisApp')
         FR.readAsDataURL($("#adjunto")[0].files[0]);
       }
     }
-  }else{
-    notification.getNotification('warning', 'Debe Adjuntar un archivo', 'Notificación');
-    $("#adjunto")[0].value = "";
-    $scope.archivobase = "";
-    $scope.extensionarchivo = "";
-    $scope.adjanexo2 = false;
-  }
   }
   $scope.insertarUrgencia =  function(ruta){
     if($scope.observacion.length > 20){
@@ -335,8 +289,7 @@ angular.module('GenesisApp')
         data: {function:'insertarurgencia',coddiag1:$scope.diagnostico1,coddiag2:$scope.diagnostico2,
                ubicacion:$scope.ubicacion,docsolicitante:$scope.cedula,nitips:$scope.nitips,
                tipodocpaciente:$scope.tipoDoc,documentopaciente:$scope.documento,observacion:$scope.observacion.toUpperCase(),
-               fechaingreso:$scope.fechaingreso,rol:$scope.rol,hijo:$scope.hijo, ruta:ruta,aprobacion:$scope.aprobacion,observacionnegacion:$scope.observacionnegacion,
-              motivorechazo:$scope.motivorechazo}
+               fechaingreso:$scope.fechaingreso,rol:$scope.rol,hijo:$scope.hijo, ruta:ruta,aprobacion:$scope.aprobacion,observacionnegacion:$scope.observacionnegacion}
       }).then(function(response){
         if(response.data != "0"){
           $scope.info = response.data

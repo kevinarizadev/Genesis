@@ -14,6 +14,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       $scope.SysDay = new Date();
       $scope.Vista = 0;
       // $scope.Tabs = 1;
+      $scope.apiURL = 'http://172.52.11.25:5000/api';
 
       $scope.cargarRips();
       // swal({
@@ -91,14 +92,24 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         fechaProceso: fecha_proceso,
         rutaRips: x.RUTA_RIPS,
 
-        soporteNombre: '',
         soporteB64: '',
-        soporteExt: '',
         archivo: '',
 
 
       };
 
+
+      if ($scope.datosRips.estadoFacturas == 'X' || $scope.datosRips.estadoFacturas == 'A') {
+        $scope.verFacturasEstadoApi()
+      }
+
+      setTimeout(() => {
+        $scope.verFacturasListar()
+      }, 1000);
+
+    }
+
+    $scope.verFacturasListar = function () {
       $scope.listaFacturas = [];
       $scope.filtroFacturas = '';
       $scope.Vista = 1; // quitar
@@ -110,14 +121,23 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         error: 0,
         validado: 0,
       }
+      $scope.contFacturasUnicaCargadas = 0;
 
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+        width: 200,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        animation: false
+      });
       $http({
         method: 'POST',
         url: "php/cuentasmedicas/radicaciondigital.php",
         data: {
           function: 'P_OBTENER_FACTURAS',
           nit: $scope.Rol_Nit,
-          recibo: x.CODIGO_RECIBO
+          recibo: $scope.datosRips.codigoRecibo
         }
       }).then(function ({ data }) {
         if (data.toString().substr(0, 3) == '<br' || data == 0) {
@@ -137,37 +157,89 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
             };
             const estado = e.OCR_ESTADO_FACTURA;
             $scope.contadoresFacturas[estadoMap[estado]]++;
-
-
           });
 
+          setTimeout(() => {
+            if ($scope.contadoresFacturas.error > 0) {
+
+              $scope.contFacturasUnicaCargadas = 0;
+              $scope.cargarFileFacturasUnica()
+            }
+          }, 1500);
+
           $scope.datosRips.totalFacturas = $scope.FormatPesoNumero($scope.datosRips.totalFacturas)
+          swal.close()
         }
       })
+    }
+
+    $scope.verFacturasEstadoApi = function () {
+      $http({
+        method: "POST",
+        url: `${$scope.apiURL}/get_medical_accounts`,
+        data: {
+          "rips_id": $scope.datosRips.codigoRecibo,
+          "partner_id": $scope.Rol_Nit
+        }
+      }).then(function ({ data }) {
+        if (data.status == 'success') {
+          // swal("Mensaje", "No existen documentos", "warning").catch(swal.noop);
+          // return;
+          data.result.forEach(element => {
+            element.nit = $scope.Rol_Nit;
+            element.rips_id = $scope.datosRips.codigoRecibo;
+            delete element.create_date;
+            delete element.name;
+          });
+
+          $http({
+            method: "POST",
+            url: `api/ocr/p_actualiza_id_estado_rips_ocr.php`,
+            data: data.result
+          }).then(function ({ data }) {
+            if (data.estado != $scope.datosRips.estadoFacturas) {
+
+            }
+          })
+
+          console.log(data.result)
+
+        }
+        // $scope.listadoFacturasPDF = data.result;
+        swal.close();
+      });
+
+
     }
 
 
 
     $scope.cargarFacturasTotal = function () {
 
-      // codigo_proceso
-      // codigo_recibo
-      var facturas = [
-        { codigo_factura: 'LGF741734', tipo_afiliado: 'CC', documento_afiliado: '1083002785', codigo_autorizacion: '4700100808420', valor_total: '7305' },
-        { codigo_factura: 'LGF751185', tipo_afiliado: 'CC', documento_afiliado: '19078818', codigo_autorizacion: '4700100811549', valor_total: '437057' },
-      ]
+      var facturas = []
 
-      var formData = new FormData();
+      $scope.listaFacturas.forEach(e => {
+        facturas.push({
+          codigo_factura: e.CODIGO_FACTURA, tipo_afiliado: e.AFILIADO_TIPO_DOC, documento_afiliado: e.AFILIADO_NUMERO, codigo_autorizacion: e.AFILIADO_AUTORIZACION, valor_total: e.VALOR_FACTURA
+        })
+      });
 
-      // Agrega los campos del formulario al objeto FormData
-      formData.append('partner_id', $scope.Rol_Nit);
-      formData.append('rips', $scope.datosRips.codigoRecibo);
-
-
-      formData.append("file", $scope.datosRips.archivo);
-      formData.append("rips_data", facturas);
-
-      console.log(formData);
+      // [
+      //   {
+      //     "CODIGO_RECIBO": "150533",
+      //     "CODIGO_PROCESO": "1132947",
+      //     "CODIGO_FACTURA": "LGFM1190011",
+      //     "VALOR_FACTURA": "63828",
+      //     "OCR_ID_FACTURA": "123",
+      //     "OCR_ESTADO_FACTURA": "V",
+      //     "OCR_ESTADO_FACTURA_NOMB": "VALIDADO",
+      //     "AFILIADO_TIPO_DOC": "TI",
+      //     "AFILIADO_NUMERO": "1081818326",
+      //     "AFILIADO_AUTORIZACION": "4700100911154",
+      //     "OCR_ERROR": null,
+      //     "OCR_FECHA_REGISTRO": "23/04/2024"
+      //   }
+      // ]
 
       swal({
         html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
@@ -177,29 +249,170 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         showConfirmButton: false,
         animation: false
       });
-      $http({
-        method: 'POST',
-        url: "http://172.52.11.25:5000/api/upload_rips_files_zip",
-        formData
-      }).then(function (response) {
 
+
+      var form = new FormData();
+      form.append("file", document.querySelector('#fileFacturasZip').files[0]);
+      form.append("rips", $scope.datosRips.codigoRecibo);
+      form.append("partner_id", $scope.Rol_Nit);
+      form.append("rips_data", JSON.stringify(facturas));
+
+      var settings = {
+        "url": `${$scope.apiURL}/upload_rips_files_zip`,
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+          "X-API-Key": "{{token}}"
+        },
+        "processData": false,
+        "mimeType": "multipart/form-data",
+        "contentType": false,
+        "data": form
+      };
+
+      $.ajax(settings).done(function (response) {
         console.log(response);
-        if (data.toString().substr(0, 3) != '<br') {
+        if (JSON.parse(response).status == "success") {
+
+          //Guardar estado en BD
+          $http({
+            method: 'POST',
+            url: "php/cuentasmedicas/radicaciondigital.php",
+            data: {
+              function: "P_ACTUALIZA_ESTADO_VAL",
+              nit: $scope.Rol_Nit,
+              recibo: $scope.datosRips.codigoRecibo,
+              facturas: JSON.stringify(facturas),
+              cantidad: facturas.length
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) == '<br' || data == 0) {
+              swal("Error", "Cargar archivo nuevamente", "warning").catch(swal.noop); return
+            }
+            if (data.codigo == 0) {
+              swal("Mensaje", data.mensaje, "success").catch(swal.noop);
+              $scope.cargarRips()
+              $scope.Atras()
+            }
+            if (data.codigo == 1) {
+              swal("Mensaje", "Cargar archivo nuevamente", "warning").catch(swal.noop);
+            }
+
+          })
+
         } else {
+          swal("Mensaje", "Cargar archivo nuevamente", "warning").catch(swal.noop);
         }
-      })
+
+      });
+
+
+    }
+
+    $scope.verFacturaPDF = function (x) {
+      $scope.imgFactura = null;
+      $scope.palabrasPDF = '';
+
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando factura...</p>',
+        width: 200,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        animation: false
+      });
+
+      console.log(x)
+
+      var CanvasH = (window.innerHeight - 27);
+      $scope.heightCanvas = CanvasH;
+
+      $scope.datosFactura = x;
+
+      $http({
+        method: "POST",
+        url: `${$scope.apiURL}/get_documents`,
+        data: {
+          "medical_account_id": x.OCR_ID_FACTURA,
+          "rip_id": $scope.datosRips.codigoRecibo,
+          "partner_id": $scope.Rol_Nit
+        }
+      }).then(function ({ data }) {
+        if (data.status != 'success') {
+          swal("Mensaje", "No existen documentos", "warning").catch(swal.noop);
+          return;
+        }
+        $scope.listadoFacturasPDF = data.result;
+        $scope.openModal('modalFacturas');
+        swal.close();
+      });
 
 
 
     }
 
+    $scope.verFacturaIMG = function (x) {
+      $scope.imgFactura = null;
+      // http://172.52.11.25:5000/api/get_document?document_id=6627da34e0ef8cff1ed66446
+      const id = x.id ? x.id : x.document_id
+
+      $scope.imgFactura = `${$scope.apiURL}/get_document?document_id=${id}`;
+
+      // $scope.imgFactura = `https://templates.invoicehome.com/modelo-factura-es-puro-750px.png`;
+
+    }
+
+    $scope.buscarPalabrasPDF = function () {
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando factura...</p>',
+        width: 200,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        animation: false
+      });
+      // $scope.palabrasPDF
+      // $scope.busquedaXPalabras = true;
+      const palabrasPDF = $scope.palabrasPDF.split(",");
+
+      $http({
+        method: "POST",
+        url: `${$scope.apiURL}/search_document`,
+        data: {
+          "medical_account_id": $scope.datosFactura.OCR_ID_FACTURA,
+          "rip_id": $scope.datosRips.codigoRecibo,
+          "partner_id": $scope.Rol_Nit,
+          "words": palabrasPDF
+        }
+      }).then(function ({ data }) {
+        if (data.status != 'success') {
+          swal("Mensaje", "No existen documentos con estas palabras", "warning").catch(swal.noop);
+          return;
+        }
+
+        // $scope.busquedaXPalabras = true;
+
+        $scope.listadoFacturasPDFPalabras = data.result;
 
 
+        console.log(data)
+        // $scope.listadoFacturasPDF = data.result;
+        // $scope.openModal('modalFacturas');
+        swal.close();
+      }).catch(function (error) {
+        swal("Mensaje", "No existen documentos con estas palabras", "warning").catch(swal.noop);
+      });
+    }
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
 
 
     //////////////////////////////////////////////////
 
-    document.querySelector('#fileFacturasDig').addEventListener('change', function (e) {
+
+
+    document.querySelector('#fileFacturasZip').addEventListener('change', function (e) {
       $scope.datosRips.soporteB64 = "";
       setTimeout(() => { $scope.$apply(); }, 500);
       var files = e.target.files;
@@ -207,23 +420,211 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         for (let i = 0; i < files.length; i++) {
           const x = files[i].name.split('.');
           if (x[x.length - 1].toUpperCase() == 'ZIP') {
-            if (files[i].size < 15485760 && files[i].size > 0) {
-              $scope.getBase64(files[i]).then(function (result) {
-                $scope.datosRips.soporteExt = x[x.length - 1].toLowerCase();
-                $scope.datosRips.soporteB64 = result;
-                setTimeout(function () { $scope.$apply(); }, 300);
-              });
+            if (files[i].size < 55485760 && files[i].size > 0) {
+              $scope.datosRips.soporteB64 = files[i].name;
+              // $scope.getBase64(files[i]).then(function (result) {
+              //   $scope.datosRips.soporteExt = x[x.length - 1].toLowerCase();
+              //   $scope.datosRips.soporteB64 = result;
+              //   $scope.datosRips.archivo = files[i];
+              //   setTimeout(function () { $scope.$apply(); }, 300);
+              // });
             } else {
-              document.querySelector('#fileFacturasDig').value = '';
-              swal('Advertencia', '¡Uno de los archivos seleccionados excede el peso máximo posible (15MB)!', 'info');
+              document.querySelector('#fileFacturasZip').value = '';
+              swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (55MB)!', 'info');
             }
           } else {
-            document.querySelector('#fileFacturasDig').value = '';
+            document.querySelector('#fileFacturasZip').value = '';
             swal('Advertencia', '¡El archivo seleccionado debe ser .ZIP!', 'info');
           }
         }
       }
     });
+
+    $scope.cargarFileFacturasUnica = function () {
+      $scope.contFacturasUnicaCargadas = 0;
+      document.querySelectorAll('.fileFacturasUnica').forEach((filef, index) => filef.addEventListener('change', function (e) {
+        $scope.listaFacturas[index].soporteB64 = '';
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+        var files = e.target.files;
+        if (files.length != 0) {
+          for (let i = 0; i < files.length; i++) {
+            const x = files[i].name.split('.');
+            if (x[x.length - 1].toUpperCase() == 'PDF') {
+              if (files[i].size < 10485760 && files[i].size > 0) {
+                $scope.listaFacturas[index].soporteB64 = files[i].name;
+                $scope.contFacturasUnicaCargadas++
+                setTimeout(() => { $scope.$apply(); }, 500);
+              } else {
+                e.target.value = '';
+                swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (10MB)!', 'info');
+              }
+            } else {
+              e.target.value = '';
+              swal('Advertencia', '¡El archivo seleccionado debe ser .PDF!', 'info');
+            }
+          }
+        } else {
+          $scope.contFacturasUnicaCargadas--
+        }
+
+      })
+      )
+
+    }
+
+
+    $scope.cargarFacturasUnicas = function () {
+      // var encontrados = 0;
+
+      if (!$scope.contFacturasUnicaCargadas) {
+        swal("Mensaje", "Cargue los documentos", "warning").catch(swal.noop);
+        return;
+      }
+
+      const text = `Se cargaran (${$scope.contFacturasUnicaCargadas})`
+      swal({
+        title: "¿Está seguro que desea guardar las facturas?",
+        text,
+        type: "question",
+        showCancelButton: true,
+        allowOutsideClick: false
+      }).catch(swal.noop)
+        .then((willDelete) => {
+          if (willDelete) {
+
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+
+            $scope.respuestaFacturas = []
+            var promesas = [];
+            $scope.listaFacturas.forEach((e, index) => {
+              if (e.soporteB64) {
+
+                const medical_account = e.OCR_ID_FACTURA == null ? '' : e.OCR_ID_FACTURA
+                var form = new FormData();
+                form.append("file", document.querySelectorAll('.fileFacturasUnica')[index].files[0]);
+                form.append("rips", $scope.datosRips.codigoRecibo);
+                form.append("partner_id", $scope.Rol_Nit);
+                form.append("medical_account", medical_account);
+
+                var settings = {
+                  "url": `${$scope.apiURL}/upload_single_file`,
+                  "method": "POST",
+                  "timeout": 0,
+                  "headers": {
+                    "X-API-Key": "{{token}}"
+                  },
+                  "processData": false,
+                  "mimeType": "multipart/form-data",
+                  "contentType": false,
+                  "data": form
+                };
+                promesas.push($scope.guardarFacturaUnica(settings, e));
+              }
+            })
+
+            // all
+            Promise.all(promesas).then(response => {
+              // Cuando todas las promesas se resuelvan, imprimimos las respuestas
+
+              response.forEach(element => {
+                if (element != true && !JSON.parse(element).status) {
+                  console.log(JSON.parse(element))
+                  $scope.respuestaFacturas.push(JSON.parse(element))
+                }
+              });
+              setTimeout(() => { $scope.$apply(); }, 500);
+              setTimeout(() => {
+                if ($scope.respuestaFacturas.length > 0) {
+                  var facts = '';
+
+                  $scope.respuestaFacturas.forEach(x => {
+                    facts = facts + x.CODIGO_FACTURA + ', '
+                  });
+
+                  const text = "ocurrio un error al cargar las siguientes facturas: (" + facts.substring(0, facts.length - 2) + "), validar nuevamente";
+                  $scope.cargarRips();
+                  swal({
+                    title: "Mensaje",
+                    text,
+                    type: "info",
+                    showCancelButton: false,
+                  }).catch(swal.noop)
+                } else {
+                  $scope.cargarRips()
+                  $scope.Atras()
+                  const text = "Facturas cargadas Correctamente";
+                  swal({
+                    title: "Mensaje",
+                    text,
+                    type: "success",
+                    showCancelButton: false,
+                  }).catch(swal.noop)
+                  setTimeout(() => { $scope.$apply(); }, 500);
+                }
+              }, 1000);
+              // Aquí puedes imprimir cualquier mensaje que desees después de recibir todas las respuestas
+              console.log('Todas las peticiones completadas');
+            });
+
+          }
+        })
+    }
+
+    // "LGFM1194520, LGFM1194520, LGFM1194520, LGFM1194520, LGFM1194520, "
+
+
+    $scope.guardarFacturaUnica = function (settings, factura) {
+      const promise = new Promise(function (resolve) {
+        $.ajax(settings).done(function (response) {
+          // console.log(response);
+          if (JSON.parse(response).status == "success") {
+            //Guardar estado en BD
+            factura.medical_account = JSON.parse(response).medical_account
+
+            $http({
+              method: 'POST',
+              url: "php/cuentasmedicas/radicaciondigital.php",
+              data: {
+                function: "P_ACTUALIZA_ESTADO_VAL_UNICAS",
+                nit: $scope.Rol_Nit,
+                recibo: $scope.datosRips.codigoRecibo,
+                factura: JSON.stringify(factura),
+                cantidad: 1
+              }
+            }).then(function ({ data }) {
+              if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+              }
+              if (data.codigo == 0) {
+                resolve(true)
+              }
+              if (data.codigo == 1) {
+                resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+              }
+            })
+          } else {
+            resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+          }
+        }).fail(function (data) {
+          resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+        });
+      })
+      return promise
+    }
+
+
+    $scope.imprimir = function () {
+      console.log($scope.listaFacturas)
+    }
+
     $scope.getBase64 = function (file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -233,54 +634,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       });
     }
 
-    $scope.cargarFacturasDig = function () {
-      return new Promise((resolve) => {
-        if (!$scope.formSoporteDig.soporteB64) { resolve(''); return }
-        swal({
-          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
-          width: 200,
-          allowOutsideClick: false,
-          allowEscapeKey: false,
-          showConfirmButton: false,
-          animation: false
-        });
-        $http({
-          method: 'POST',
-          url: "php/planeacion/procesospoa.php",
-          data: {
-            function: "cargarFacturasDig",
 
-            // codigo: "SoporteProceso",
-            // codigo: $scope.hojaProcesos.formulario.idProcesoSeleccionado,
-            // base64: $scope.hojaProcesos.formulario.soporteB64
-          }
-        }).then(function ({ data }) {
-          if (data.toString().substr(0, 3) != '<br') {
-            resolve(data);
-          } else {
-            resolve(false);
-          }
-        })
-      });
-    }
-
-    $scope.validarFacturasDig = function () {
-      const text = `Total: ${$scope.formSoporteDig.cantidadFacturas}`
-      swal({
-        title: '¿Adjuntó el total de las facturas esperadas?',
-        text,
-        type: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Continuar',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result) {
-        }
-      })
-      // asdasd
-    }
 
 
 
@@ -295,6 +649,8 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
     }
 
     $scope.Atras = function () {
+      $scope.datosRips.soporteB64 = "";
+      document.querySelector('#fileFacturasZip').value = '';
       $scope.Vista -= 1;
       setTimeout(() => { $scope.$apply(); }, 500);
     }
@@ -329,6 +685,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
 
     $scope.openModal = function (modal) {
       $(`#${modal}`).modal('open');
+      setTimeout(() => { document.querySelector(`#${modal}`).style.top = 1 + '%'; }, 600);
     }
     $scope.closeModal = function () {
       $('.modal').modal('close');

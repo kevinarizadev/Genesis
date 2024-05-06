@@ -322,7 +322,7 @@ angular.module('GenesisApp')
 
         swal({
           title: '¿Desea revesar la NG?',
-          text: x.nombre,
+          // text: x.nombre,
           showCancelButton: true,
           confirmButtonText: "Confirmar",
           cancelButtonText: "Cancelar",

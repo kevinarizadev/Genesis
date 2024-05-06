@@ -224,7 +224,7 @@ angular.module('GenesisApp')
         $http({
           method: 'POST',
           url: "php/siau/CodigoUrgencia/Rcodigourgencia.php",
-          data: { function: 'obtenerafiliados', tipodocumento: $scope.tipoDoc, documento: $scope.documento }
+          data: { function: 'obtenerafiliados',nit:$scope.nitips, tipodocumento: $scope.tipoDoc, documento: $scope.documento }
         }).then(function (response) {
           if (response.data != "0") {
             $scope.Data = response.data;
@@ -236,7 +236,9 @@ angular.module('GenesisApp')
               $scope.cod = "";
               $('#modal1').modal('open');
               notification.getNotification('info', 'Codigo de urgencia!', 'Notificacion');
-            } else {
+            } else if(response.data.Codigo =='1'){
+                            swal('Mensaje', response.data.Nombre, 'info');
+            }else {
               $scope.calcularEdad($scope.Data.FechaNacimiento);
               $scope.inactive2 = true;
             }
@@ -356,8 +358,11 @@ angular.module('GenesisApp')
           // })
         }
         else {
-          var ruta=''
-          $scope.insertarUrgencia(ruta);
+          $scope.adjanexo2 = false;
+          notification.getNotification('warning', 'Debe Adjuntar un soporte', 'Notificacion');
+          return;
+          // var ruta=''
+          // $scope.insertarUrgencia(ruta);
         }
       }
       else {

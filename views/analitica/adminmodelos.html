@@ -157,6 +157,14 @@
                     ng-model="tablero.descripcion" required></textarea>
                   <label>Descripción</label>
                 </div>
+                <div class="col s12 no-padding label-new m-b">
+                  <select class="select-default-new input-out-new m-l" ng-model="tablero.publico" required>
+                    <option value="" disabled>SELECCIONAR</option>
+                    <option value="S">SI</option>
+                    <option value="N">NO</option>
+                  </select>
+                  <label>¿Publicó?</label>
+                </div>
               </div>
               <div class="col s12 m6 l6">
                 <div id="vistaprevia" style="padding: 20px;padding-top: 0;">
@@ -179,10 +187,12 @@
         <div class="row margin">
           <form ng-submit="Obtener_Funcionario();">
             <div class="col s3 no-padding label-new m-b">
-              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l" style="text-transform: uppercase;"
-                id="funcionario_buscar" autocomplete="off" ng-model="funcionario.buscar"
-                ng-keyup="FormatSoloTextoNumero('funcionario_buscar')" ng-change="Change_Func_Buscar()" maxlength="50" placeholder="{{List_funcs.length == 0 ? 'Buscar...' : 'Seleccione el funcionario'}}"
-                list="List_funcs" name="myBrowser">
+              <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                style="text-transform: uppercase;" id="funcionario_buscar" autocomplete="off"
+                ng-model="funcionario.buscar" ng-keyup="FormatSoloTextoNumero('funcionario_buscar')"
+                ng-change="Change_Func_Buscar()" maxlength="50"
+                placeholder="{{List_funcs.length == 0 ? 'Buscar...' : 'Seleccione el funcionario'}}" list="List_funcs"
+                name="myBrowser">
               <datalist id="List_funcs" open="open">
                 <option value="{{x.NOMBRE_FUNCIONARIO}}" ng-repeat="x in List_funcs">
               </datalist>
@@ -216,7 +226,8 @@
           </table>
         </div>
         <div class="row" ng-show="funcionario.cedula != ''">
-          <div class="col s5 no-padding label-new m-b m-l" style="width: 49%;overflow: auto;min-height: 40vh;display:block;">
+          <div class="col s5 no-padding label-new m-b m-l"
+            style="width: 49%;overflow: auto;min-height: 40vh;display:block;">
             <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
               <div class="text-al divcardcustom2">
                 <strong class="switch" style="font-weight:600">Tableros No Asignados
@@ -224,7 +235,8 @@
                 <div class="col s3 no-padding label-new right"
                   style="width: 40%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
                   <input class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text"
-                    style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="filter_tableros_funcionario_general">
+                    style="text-align:right;" autocomplete="off" placeholder="Buscar..."
+                    ng-model="filter_tableros_funcionario_general">
                 </div>
               </div>
             </div>
@@ -236,24 +248,30 @@
                   <th ng-show="Activar_Filtrar_Responsable" style="width:10%;">
                     <input class="margin border-none white input-text-new input-w-p input-out-new"
                       style="height: 1.2rem;" autocomplete="off" type="text" ng-model="filtro_tablero_total"
-                      placeholder="Buscar..."> 
+                      placeholder="Buscar...">
                   </th>-->
                   <th>Area</th>
-                  <th class="center">Tablero</th>
+                  <th>Tablero</th>
+                  <th>Tipo</th>
                   <th>-</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="cursor-pointer" ng-repeat="x in List_tableros_funcionario_general | filter: filter_tableros_funcionario_general"
+                <tr class="cursor-pointer"
+                  ng-repeat="x in List_tableros_funcionario_general | filter: filter_tableros_funcionario_general"
                   ng-click="Seleccionar_Tablero(x,$index)" title="Agregar" ng-show="!x.seleccionado">
                   <td>{{x.area}}</td>
                   <td>{{x.tablero}}</td>
+                  <td>
+                    <i ng-class="{'icon-lock blue-text': x.publico=='N', 'icon-lock-open green-text': x.publico=='S' }"></i>
+                  </td>
                   <td><i class="icon-list-add"></i></td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="col s5 no-padding label-new m-b m-l" style="width: 49%;overflow: auto;min-height: 40vh;display:block;">
+          <div class="col s5 no-padding label-new m-b m-l"
+            style="width: 49%;overflow: auto;min-height: 40vh;display:block;">
             <div class="Diag_3 foot4 divcardcustom default-linear-gradient">
               <div class="text-al divcardcustom2">
                 <strong class="switch" style="font-weight:600">Tableros Asignados
@@ -261,7 +279,8 @@
                 <div class="col s3 no-padding label-new right"
                   style="width: 40%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
                   <input class="margin border-none input-text-new input-w-p input-out-new w-100 m-l black-text"
-                    style="text-align:right;" autocomplete="off" placeholder="Buscar..." ng-model="filter_tableros_funcionario">
+                    style="text-align:right;" autocomplete="off" placeholder="Buscar..."
+                    ng-model="filter_tableros_funcionario">
                 </div>
               </div>
             </div>
@@ -269,15 +288,20 @@
               <thead class="default-color">
                 <tr>
                   <th>Area</th>
-                  <th class="center">Tablero</th>
+                  <th>Tablero</th>
+                  <th>Tipo</th>
                   <th>-</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="cursor-pointer" ng-repeat="x in List_tableros_funcionario | filter: filter_tableros_funcionario"
+                <tr class="cursor-pointer"
+                  ng-repeat="x in List_tableros_funcionario | filter: filter_tableros_funcionario"
                   ng-click="Quitar_Tablero(x,$index)">
                   <td>{{x.area}}</td>
                   <td>{{x.tablero}}</td>
+                  <td>
+                    <i ng-class="{'icon-lock blue-text': x.publico=='N', 'icon-lock-open green-text': x.publico=='S' }"></i>
+                  </td>
                   <td><i class="icon-trash"></i></td>
                 </tr>
               </tbody>

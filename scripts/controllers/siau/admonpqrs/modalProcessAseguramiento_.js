@@ -15,7 +15,6 @@ angular.module('GenesisApp')
         $scope.errorFile = false;
         pqrHttp.getInfoAseguramientoPQR($scope.dataPqr.CODIGO).then(function (response) {
             $scope.dpqr = response.data[0];
-            console.log($scope.dpqr);
         })
         pqrHttp.getGestionAseguramientoPQR($scope.dataPqr.CODIGO).then(function (response) {
             $timeout(function () {

@@ -668,7 +668,7 @@ angular.module('GenesisApp')
       if($scope.marcacionPQR_SN == 'S' || ($scope.modalCrearSeguimiento.servicio == 'N' && $scope.modalCrearSeguimiento.riesgo)){
         $scope.fechaSeg_dsb = true;
       }
-      
+
       if ($scope.modalCrearSeguimiento.servicio == 'N') {
         if ($scope.modalCrearSeguimiento.riesgo == 'RIESGO VITAL') {
           $scope.modalCrearSeguimiento.fechaSeg = new Date(SysDay.setHours(24))
@@ -1063,6 +1063,57 @@ angular.module('GenesisApp')
 
 
 
+            //
+          } else {
+            swal('¡Mensaje!', 'Fechas incorrectas', 'info').catch(swal.noop);
+          }
+        } else {
+          swal('¡Mensaje!', 'Las fechas no deben estar vacias', 'info').catch(swal.noop);
+        }
+      });
+    }
+
+    $scope.descargarExportadoPQRClasificadas = function () {
+      swal({
+        html: '<div class="row" style="margin: 0"> <h5 style="margin-top: 0"><b>PQR Clasificadas</b>  </h5></div><div class="row" style="margin: 0">    <div class="input-field col s6" style="margin: 0">        <label for="fechaIni_log" style="margin-top: -2vh;">Fecha Inicio</label>        <input type="date" id="fechaIni_log" style="margin: 0">    </div>    <div class="input-field col s6" style="margin: 0">        <label for="fechaFin_log" style="margin-top: -2vh;">Fecha Fin</label>        <input type="date" id="fechaFin_log" style="margin: 0">    </div></div>',
+        confirmButtonText: "Generar",
+      }).then(function (cod) {
+        const fechaIni_log = document.querySelector('#fechaIni_log').value;
+        const fechaFin_log = document.querySelector('#fechaFin_log').value;
+        if (fechaIni_log && fechaFin_log) {
+          if (new Date(fechaIni_log) <= new Date(fechaFin_log)) {
+            const fechaIni = fechaIni_log.split('-'), fechaFin = fechaFin_log.split('-');
+            const fecha_i = fechaIni[2] + '/' + fechaIni[1] + '/' + fechaIni[0], fecha_f = fechaFin[2] + '/' + fechaFin[1] + '/' + fechaFin[0];
+            console.log(fecha_i)
+            console.log(fecha_f)
+            //
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/siau/pqr/Rpqr.php",
+              data: { function: 'P_DESCARGA_MOTIVOS_RECLASIFICACION', fecha_i, fecha_f }
+            }).then(function ({ data }) {
+              if (data.length) {
+
+                var ws = XLSX.utils.json_to_sheet(data);
+                /* add to workbook */
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+                /* write workbook and force a download */
+                XLSX.writeFile(wb, "Exportado PQRDS Clasificadas.xlsx");
+                const text = `Registros encontrados ${data.length}`
+                swal('¡Mensaje!', text, 'success').catch(swal.noop);
+              } else {
+                swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+              }
+            })
             //
           } else {
             swal('¡Mensaje!', 'Fechas incorrectas', 'info').catch(swal.noop);

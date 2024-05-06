@@ -2339,3 +2339,91 @@ function P_REGISTRAR_MARCA_PQR()
 	}
 	oci_close($c);
 }
+
+
+function p_obtener_motivos_reclasificacion()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.p_obtener_motivos_reclasificacion(:V_RESULT); end;');
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':V_RESULT', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = [];
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
+}
+
+
+function P_LISTA_IPS_RECLASIFICACION()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_LISTA_IPS_RECLASIFICACION(:v_coincidencia,:V_RESULT); end;');
+	oci_bind_by_name($consulta, ':v_coincidencia', $request->ips);
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':V_RESULT', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = [];
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
+}
+
+function P_UI_MOTIVOS_RECLASIFICACION()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_UI_MOTIVOS_RECLASIFICACION(:v_json_in,:v_json_row); end;');
+	oci_bind_by_name($consulta, ':v_json_in', $request->json);
+	$clob = oci_new_descriptor($c, OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+	oci_execute($consulta, OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	} else {
+		echo 0;
+	}
+	oci_close($c);
+}
+
+function P_LISTA_MOTIVOS_RECLASIFICACION()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_LISTA_MOTIVOS_RECLASIFICACION(:v_numero,:V_RESULT); end;');
+	oci_bind_by_name($consulta, ':v_numero', $request->numero);
+	$cursor = oci_new_cursor($c);
+	oci_bind_by_name($consulta, ':V_RESULT', $cursor, -1, OCI_B_CURSOR);
+	oci_execute($consulta);
+	oci_execute($cursor, OCI_DEFAULT);
+	$datos = [];
+	oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+	oci_free_statement($consulta);
+	oci_free_statement($cursor);
+	echo json_encode($datos);
+}
+
+function P_DESCARGA_MOTIVOS_RECLASIFICACION()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_PQR.P_DESCARGA_MOTIVOS_RECLASIFICACION(:v_pinicio,:v_pfin,:v_presponse); end;');
+	oci_bind_by_name($consulta, ':v_pinicio', $request->fecha_i);
+	oci_bind_by_name($consulta, ':v_pfin', $request->fecha_f);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}

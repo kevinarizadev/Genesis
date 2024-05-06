@@ -81,7 +81,8 @@ angular.module('GenesisApp')
                                 tablero: e.TABC_NOMBRE,
                                 funcionario: $scope.funcionario.cedula,
                                 estado: e.TABC_ESTADO,
-                                seleccionado: false
+                                seleccionado: false,
+                                publico: e.TABC_PUBLICO
                             })
                         }
                     });
@@ -237,7 +238,7 @@ angular.module('GenesisApp')
                 e.seleccionado = false;
             })
             $scope.Cont_Tab_Asigs = $scope.List_tableros_funcionario_general.length;
-          
+
             $http({
                 method: 'POST',
                 url: "php/analitica/analitica.php",
@@ -252,7 +253,8 @@ angular.module('GenesisApp')
                             tablero: e.TABC_NOMBRE,
                             funcionario: $scope.funcionario.cedula,
                             estado: e.TABC_ESTADO,
-                            seleccionado: false
+                            seleccionado: false,
+                            publico: e.TABC_PUBLICO
                         })
                     })
                     setTimeout(function () { $scope.$apply(); }, 500);

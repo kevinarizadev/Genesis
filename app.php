@@ -1020,6 +1020,7 @@ if (!isset($_SESSION['nombre'])) {
 <!-- <script type="text/javascript" src="bower_components/instascan/instascan.min.js"></script> -->
 <!-- fin cdns proceso rips -->
 <script src="bower_components/materialize/bin/materialize.js"></script>
+<script src="js/zoomy.min.js"></script>
 <!--<script src="js/signature-agent.js"></script> -->
 
 <!-- endbuild -->

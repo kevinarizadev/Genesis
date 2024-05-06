@@ -20,7 +20,7 @@ angular.module('GenesisApp')
       $scope.filterVencidas = 'N';
       $scope.filterSuperSalud = 'T';
       $scope.validarPermisos();
-      
+
 
       // setTimeout(() => {
       //   $("#tiposolicitud").prop("selectedIndex", 3); const json = '{"Codigo":"D","Nombre":"DERECHO DE PETICION","Tipo":"P"}'; $scope.changeSolicitud(json);
@@ -32,8 +32,8 @@ angular.module('GenesisApp')
       // }, 3000);
 
       // $scope.selectedtipoSolicitud = 'C';
-      // // 
-      // setTimeout(() => { 
+      // //
+      // setTimeout(() => {
       //   $scope.pqrData.selectedmediosRecepcion = '17';
       //   // $scope.pqrData.selectedtipoSolicitud = 'A';
       //   $scope.pqrData.selectedtipoRadicacion = 'A';
@@ -45,6 +45,15 @@ angular.module('GenesisApp')
       //   $scope.searchAfiliado();
       //   $scope.data.inactiveOptionsAfiliado = false;
       // }, 5500);
+      setTimeout(() => {
+        if ($(window).width() < 1100) {
+          document.querySelector("#pqr").style.zoom = 0.7;
+        }
+        if ($(window).width() > 1100) {
+          document.querySelector("#pqr").style.zoom = 0.8;
+        }
+      }, 1500);
+
     });
 
 
@@ -91,7 +100,7 @@ angular.module('GenesisApp')
     $scope.tempremitentedit = { codigo: null, nombre: null, seleccion: null };
     $scope.tempareajs = { codigo: null, nombre: null, seleccion: null };
     $scope.tempareajsedit = { codigo: null, nombre: null, seleccion: null };
-    $scope.tabs = { tab: 'R' };
+    $scope.tabs = { tab: 'G' };
     $scope.filterPQRS = ''; //PQR-
     $scope.filterC = '';
     $scope.sedecorrespondencia = [{ Codigo: 'N', Nombre: 'NACIONAL' }, { Codigo: 'S', Nombre: 'SECCIONAL' }];
@@ -154,6 +163,16 @@ angular.module('GenesisApp')
       $scope.privilegios = response;
     })
 
+    $scope.permisosRadicacion = function(){
+      let cargo = sessionStorage.getItem("rolcod");
+      if (cargo == 11 || cargo == 44 || cargo == 60 || cargo == 94 || cargo == 58 || cargo == 24) {
+        $scope.permisoRadicar = true;
+      }else{
+        $scope.permisoRadicar = false;
+      }
+    }
+
+    $scope.permisosRadicacion();
 
     // pqrHttp.getSolicitud().then(function (response) {
     //   console.log(response)
@@ -173,7 +192,7 @@ angular.module('GenesisApp')
       //   { user: '52936596' }, //Claudia Lamprea
       //   { user: '1048211587' }, //Amilkar Urrego
       //   { user: '24138522' }, //Johanna.ariza
-      //   { user: '32777066' }, //Brenda Ruiz    
+      //   { user: '32777066' }, //Brenda Ruiz
       // ]
       $http({
         method: 'POST',
@@ -184,10 +203,10 @@ angular.module('GenesisApp')
               }
       }).then(function(response){
              $scope.permisosUsuario = response.data;
-             console.log($scope.permisosUsuario);            
+             console.log($scope.permisosUsuario);
       })
-      
-     
+
+
     }
 
 
@@ -203,11 +222,11 @@ angular.module('GenesisApp')
         Nombre: 'DERECHO DE PETICION',
         Tipo: 'P'
       },
-      {
-        Codigo: 'E',
-        Nombre: 'CORRESPONDENCIA',
-        Tipo: 'C'
-      },
+      // {
+      //   Codigo: 'E',
+      //   Nombre: 'CORRESPONDENCIA',
+      //   Tipo: 'C'
+      // },
       {
         Codigo: 'P',
         Nombre: 'PETICION',
@@ -228,7 +247,7 @@ angular.module('GenesisApp')
         Nombre: 'RECLAMO',
         Tipo: 'P'
       }
-      
+
     ]
 
 
@@ -1083,7 +1102,7 @@ angular.module('GenesisApp')
         Acudiente: {
           selectedDocumento: { "Codigo": "" }, documento: null, nombre: null, codmunicipio: null, municipio: null, direccion: null, telefono: null, email: null
         }
-      
+
       }
       $scope.prestadorinvolucrado = '';
     }//Fin
@@ -1534,7 +1553,7 @@ angular.module('GenesisApp')
     /*$scope.validateDias = function () {//Valida los dias habiles para respuesta del pqr
         pqrHttp.getvalidapqr_responsable(sessionStorage.getItem('cedula')).then(function (response) {
             console.log(response);
-    
+
             if (response.Nombre=='S') {
                 pqrHttp.getDiasEntes().then(function (response) {
                     $scope.dias = response;
@@ -1545,7 +1564,7 @@ angular.module('GenesisApp')
                 })
             }
         })
-    
+
         if ($scope.pqrData.selectedmediosRecepcion == '13') {
             if ($scope.pqrData.enteCodigo == '10') {
                 $timeout(function () {
@@ -1574,7 +1593,7 @@ angular.module('GenesisApp')
                 $scope.pqrData.selectedDias = "10";
                 $scope.disabledDias = true;
             }
-    
+
             if ($scope.pqrData.selectedtipoSolicitud == 'E') {
                 $scope.pqrData.selectedDias = "5";
             }
@@ -1582,9 +1601,9 @@ angular.module('GenesisApp')
         if (['D', 'C', 'F', 'Q'].includes($scope.pqrData.selectedtipoSolicitud)) {
             $scope.pqrData.selectedDias = "10";
         }
-    
-    
-    
+
+
+
     }//Fin*/
 
     $scope.validateDias = function () {//Valida los dias habiles para respuesta del pqr
@@ -1924,7 +1943,7 @@ angular.module('GenesisApp')
             setTimeout(() => {
               $scope.arrayPages = $filter('filter')($scope.pqrs, val);
               $scope.resultsP = $scope.arrayPages;
-              // $scope.filterAreas = '';            
+              // $scope.filterAreas = '';
             }, 800);
             setTimeout(() => { $scope.$apply(); }, 1200);
           } else {
@@ -1932,7 +1951,7 @@ angular.module('GenesisApp')
               $scope.arrayPages = $filter('filter')($scope.pqrs, val);
               $scope.resultsP = $scope.arrayPages;
               $scope.$apply();
-              // $scope.filterAreas = '';            
+              // $scope.filterAreas = '';
             }, 500);
           }
         }
@@ -4249,7 +4268,7 @@ angular.module('GenesisApp')
           }
         });
       }
-    } 
+    }
 
     $scope.agregarProductoServicio = function () {
       if ($scope.pqrServicios.codProducto == '') {
