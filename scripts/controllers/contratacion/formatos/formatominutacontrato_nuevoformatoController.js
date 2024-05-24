@@ -22,6 +22,7 @@ angular.module('GenesisApp', [])
         $scope.anio = $scope.SysDay.getFullYear()
         // if ($scope.Hoja == 'ANT') {
         //   $scope.Limpiar_Ant();
+        document.title = `Formato Minuta Contrato N°${$location.search().v_pnumero}`;
         $scope.Get_Data();
         // }
         console.log(1)
@@ -125,7 +126,7 @@ angular.module('GenesisApp', [])
         // console.log(inicia)
         // console.log(fechaNuevaEmpresa)
         $scope.mostrar_anexo22 = false;
-        var fechaNuevoAbril = new Date('2024/04/01');
+        var fechaNuevoAbril = new Date('2024/09/01');
         if (inicia >= fechaNuevoAbril) {
           $scope.mostrar_anexo22 = true;
         }

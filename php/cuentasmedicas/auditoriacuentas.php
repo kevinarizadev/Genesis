@@ -8,25 +8,51 @@ $function();
 
 function descargaAdjunto()
 {
-	require_once('../config/ftpcon.php');
-	global $request;
-	$file_size = ftp_size($con_id, $request->ruta);
-	if ($file_size != -1) {
-		$name = uniqid();
-		$ext = pathinfo($request->ruta, PATHINFO_EXTENSION);
-		$name = $name . '.' . $ext;
-		$local_file = '../../temp/' . $name;
-		$handle = fopen($local_file, 'w');
-		if (ftp_fget($con_id, $handle, $request->ruta, FTP_ASCII, 0)) {
-			echo $name;
-		} else {
-			echo "Error";
-		}
-		ftp_close($con_id);
-		fclose($handle);
-	} else {
-		echo "Error";
-	}
+  global $request;
+  $fileexists = false;
+
+  if (file_exists('ftp://genesis_ftp:Cajacopi2022!@192.168.50.36/' . $request->ruta) == TRUE) {
+    require_once('../config/sftp_con.php');
+    $fileexists = true;
+  }
+
+  if (file_exists('ftp://ftp_genesis:Senador2019!@192.168.50.10/' . $request->ruta) == TRUE && $fileexists == false) {
+    require_once('../config/ftpcon.php');
+    $fileexists = true;
+  }
+
+  if (file_exists('ftp://ftp:Cajacopi2022.@192.168.50.36/' . $request->ruta) == TRUE && $fileexists == false) {
+    require_once('../config/sftp_con_2.php');
+    $fileexists = true;
+  }
+  if (file_exists('ftp://l_ftp_genesis:Troja2020!@192.168.50.10/' . $request->ruta) == TRUE && $fileexists == false) {
+    require_once('../config/l_ftpcon.php');
+    $fileexists = true;
+  }
+
+  if($fileexists) {
+    $file_size = ftp_size($con_id, $request->ruta);
+    if ($file_size != -1) {
+      // $ruta = $request->ruta;
+      $name = explode("/", $request->ruta)[count(explode("/", $request->ruta))-1];//Encontrar el nombre y la posicion de la ultima carpeta que contenga / en la ruta
+      // $ext = pathinfo($request->ruta, PATHINFO_EXTENSION);
+      // $name = $name;
+      $local_file = '../../temp/' . $name;
+      $handle = fopen($local_file, 'w');
+      if (ftp_fget($con_id, $handle, $request->ruta, FTP_ASCII, 0)) {
+        echo $name;
+      } else {
+        echo "0 - Error Al descargar el archivo";
+      }
+      ftp_close($con_id);
+      fclose($handle);
+    } else {
+      echo "0 - Error Archivo no existe";
+    }
+  } else {
+    require('../sftp_cloud/DownloadFile.php');
+    echo( DownloadFile($request->ruta) );
+  }
 }
 
 function Obt_Cedula()

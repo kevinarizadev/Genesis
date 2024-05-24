@@ -144,10 +144,16 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
           swal("Mensaje", 'No existen facturas para mostrar', "warning").catch(swal.noop); return
         }
         if (data.length) {
+          var validadoSinId = 0;
+
           $scope.Vista = 1;
           $scope.listaFacturas = data;
           data.forEach(e => {
             $scope.datosRips.totalFacturas += parseFloat(e.VALOR_FACTURA);
+
+            if (e.OCR_ESTADO_FACTURA == 'V' && e.OCR_ID_FACTURA == null) {
+              validadoSinId++
+            }
 
             const estadoMap = {
               'E': 'espera',
@@ -164,6 +170,12 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
 
               $scope.contFacturasUnicaCargadas = 0;
               $scope.cargarFileFacturasUnica()
+            }
+            if (validadoSinId > 0) { //Validamos que no existan facturas en estado V y sin ID asignado
+              $scope.verFacturasEstadoApi()
+              setTimeout(() => {
+                $scope.verFacturasListar()
+              }, 2000);
             }
           }, 1500);
 
@@ -343,23 +355,37 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
           return;
         }
         $scope.listadoFacturasPDF = data.result;
+        $scope.similarities = []
         $scope.openModal('modalFacturas');
         swal.close();
       });
 
-
-
     }
 
     $scope.verFacturaIMG = function (x) {
+      $scope.similarities = []
       $scope.imgFactura = null;
-      // http://172.52.11.25:5000/api/get_document?document_id=6627da34e0ef8cff1ed66446
       const id = x.id ? x.id : x.document_id
-
       $scope.imgFactura = `${$scope.apiURL}/get_document?document_id=${id}`;
+      var myDiv = document.getElementById('parent'); myDiv.scrollTop = 0;
 
-      // $scope.imgFactura = `https://templates.invoicehome.com/modelo-factura-es-puro-750px.png`;
-
+      if (x.similarities) {
+        $scope.similarities = x.similarities;
+      }
+      // "similarities": [
+      //   {
+      //       "similarity": 100.0,
+      //       "word": "factura"
+      //   },
+      //   {
+      //       "height": 15,
+      //       "left": 122,
+      //       "similarity": 75.0,
+      //       "top": 399,
+      //       "width": 69,
+      //       "word": "factura"
+      //   },
+      console.log(x)
     }
 
     $scope.buscarPalabrasPDF = function () {
@@ -374,7 +400,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       // $scope.palabrasPDF
       // $scope.busquedaXPalabras = true;
       const palabrasPDF = $scope.palabrasPDF.split(",");
-
+      $scope.imgFactura = null
       $http({
         method: "POST",
         url: `${$scope.apiURL}/search_document`,
@@ -391,8 +417,10 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         }
 
         // $scope.busquedaXPalabras = true;
-
+        $scope.similarities = []
         $scope.listadoFacturasPDFPalabras = data.result;
+
+
 
 
         console.log(data)
@@ -443,10 +471,13 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
     $scope.cargarFileFacturasUnica = function () {
       $scope.contFacturasUnicaCargadas = 0;
       document.querySelectorAll('.fileFacturasUnica').forEach((filef, index) => filef.addEventListener('change', function (e) {
+        var files = e.target.files;
+        if ($scope.listaFacturas[index].soporteB64 && files) {
+          $scope.contFacturasUnicaCargadas--
+        }
         $scope.listaFacturas[index].soporteB64 = '';
 
         setTimeout(() => { $scope.$apply(); }, 500);
-        var files = e.target.files;
         if (files.length != 0) {
           for (let i = 0; i < files.length; i++) {
             const x = files[i].name.split('.');
@@ -464,9 +495,10 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
               swal('Advertencia', '¡El archivo seleccionado debe ser .PDF!', 'info');
             }
           }
-        } else {
-          $scope.contFacturasUnicaCargadas--
         }
+        // else {
+        //   $scope.contFacturasUnicaCargadas--
+        // }
 
       })
       )

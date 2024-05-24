@@ -15,6 +15,7 @@ angular.module('GenesisApp')
       // $scope.numero = '363915';
       // $scope.numero = '211516';//SUPER
       // setTimeout(() => { $scope.$apply(); }, 500);
+      $scope.SysDay = new Date();
       $scope.Rol_cargo = JSON.parse(sessionStorage.getItem("inicio_perfil")).cod_cargo;
       console.log($scope.Rol_cargo)
       $scope.validarPermisos();
@@ -665,7 +666,7 @@ angular.module('GenesisApp')
     $scope.ngChgServicioProgramado = function () {
       $scope.fechaSeg_dsb = false;
       let SysDay = new Date();
-      if($scope.marcacionPQR_SN == 'S' || ($scope.modalCrearSeguimiento.servicio == 'N' && $scope.modalCrearSeguimiento.riesgo)){
+      if ($scope.marcacionPQR_SN == 'S' || ($scope.modalCrearSeguimiento.servicio == 'N' && $scope.modalCrearSeguimiento.riesgo)) {
         $scope.fechaSeg_dsb = true;
       }
 
@@ -1636,7 +1637,7 @@ angular.module('GenesisApp')
 
                 $scope.Validar_TUACGS(result.pqr[0].CODIGO);
                 // if (result.pqr[0].COD_SUPERSALUD) {
-                  $scope.validarMarcacion(result.pqr[0].CODIGO);
+                $scope.validarMarcacion(result.pqr[0].CODIGO);
                 // }
               }
 
@@ -2264,8 +2265,129 @@ angular.module('GenesisApp')
 
     }
 
+    $scope.reabrirPQRModal = function (x) {
+      $scope.formReabrirPQRModal = {
+        numero: x.CODIGO,
+        fecha: null,
+        motivo: '',
+        observacion: '',
+        listadoMotivos: []
+      }
+      $scope.reabrirPQRModal_ListarMotivos()
+      $("#modalreabrirPQR").modal("open");
+      setTimeout(() => { $scope.$apply(); }, 500);
+    }
+    $scope.reabrirPQRModal_ListarMotivos = function () {
+      $scope.formReabrirPQRModal.listadoMotivos = []
 
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+          function: 'P_LISTA_MOTIVOS_REAPERTURA',
+        }
+      }).then(function ({ data }) {
+        $scope.formReabrirPQRModal.listadoMotivos = data;
+        setTimeout(() => { $scope.$apply(); }, 500);
+      });
 
+    }
+
+    $scope.reabrirPQR = function () {
+      if ($scope.formReabrirPQRModal.fecha == undefined || $scope.formReabrirPQRModal.motivo == '' || $scope.formReabrirPQRModal.observacion == '') {
+        swal('Mensaje', 'Diligencia todos los campos', 'info').catch(swal.noop);
+        return
+      }
+      swal({
+        title: "¿Desea guardar la información?",
+        type: "question",
+        showCancelButton: true,
+        allowOutsideClick: false,
+      }).catch(swal.noop)
+        .then((willDelete) => {
+          if (willDelete) {
+
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+
+            const datos = {
+              numero: $scope.formReabrirPQRModal.numero,
+              fecha: formatDate($scope.formReabrirPQRModal.fecha),
+              motivo: $scope.formReabrirPQRModal.motivo,
+              observacion: $scope.formReabrirPQRModal.observacion,
+              responsable: $scope.documentologueo
+            }
+
+            $http({
+              method: 'POST',
+              url: "php/siau/pqr/Rpqr.php",
+              data: {
+                function: 'P_REAPERTURA_PQR',
+                datos: JSON.stringify(datos)
+              }
+            }).then(function ({ data }) {
+              if (data && data.toString().substr(0, 3) != '<br') {
+                if (data.codigo == 0) {
+                  $scope.closeModal();
+                  swal('Mensaje', data.mensaje, 'success');
+                  $scope.filterOptions = 'PQR';
+                  setTimeout(() => {
+                    $scope.buscarPQR()
+                  }, 2500);
+                } else {
+                  swal('Mensaje', data.mensaje, 'info');
+                }
+              } else {
+                swal({
+                  title: "¡Ocurrio un error!",
+                  text: data,
+                  type: "warning"
+                }).catch(swal.noop);
+              }
+              console.log(data)
+
+            })
+          }
+        });
+    }
+
+    $scope.descargarExportadoReabiertas = function () {
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+        width: 200,
+        showConfirmButton: false,
+        animation: false
+      });
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+          function: "P_OBTENER_REABIERTAS_REGISTROS",
+        }
+      }).then(function ({ data }) {
+        if (data.toString().substr(0, 3) == '<br' || data == 0) {
+          swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+        }
+        if (data.length > 0) {
+
+          var ws = XLSX.utils.json_to_sheet(data);
+          /* add to workbook */
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+          /* write workbook and force a download */
+          XLSX.writeFile(wb, "Reporte Reabiertas PQR.xlsx");
+          const text = `Registros encontrados ${data.length}`
+          swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        }
+      })
+    }
 
 
 

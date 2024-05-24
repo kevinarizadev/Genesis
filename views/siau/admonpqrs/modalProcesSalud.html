@@ -172,12 +172,12 @@
                       ng-click="updateConfigTabs('Gestionar','A');sendG=false;">Anterior</a>
                     <a ng-show="dataPqr.ASIGNADO=='P'" class="waves-effect waves-light btn white-text success"
                       ng-click="updateConfigTabs('Respuesta','S');sendA=true;">Siguiente</a>
-                    <a ng-if="dataPqr.ASIGNADO=='S'" class="waves-effect waves-light btn white-text success"
+                    <a ng-if="dataPqr.ASIGNADO=='S' " class="waves-effect waves-light btn white-text success"
                       ng-click="updateConfigTabs('Second','S');">Finalizar</a>
                   </div>
                 </div>
               </li>
-              <li ng-show="dataPqr.CODRESP==responsable || privilegios[0].Codigo==7" class="StepProgress-item"
+              <li ng-show="(dataPqr.CODRESP==responsable || privilegios[0].Codigo==7) && dpqr.MARCA_REABIERTA != 'S'" class="StepProgress-item"
                 ng-class="{'current': configTimeLime.step3,'s':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
                 <strong class="noselectxtpqr">Respuesta Final</strong>
                 <div class="w-100" ng-init="sendA=false" ng-show="configTabs.tab=='R'">
@@ -271,7 +271,7 @@
                   </div>
                 </div>
               </li>
-              <li ng-show="dataPqr.CODRESP==responsable || privilegios[0].Codigo==7" class="StepProgress-item"
+              <li ng-show="dataPqr.CODRESP==responsable || privilegios[0].Codigo==7 && dpqr.MARCA_REABIERTA != 'S'" class="StepProgress-item"
                 ng-class="{'current': configTimeLime.step4, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
                 <strong class="noselectxtpqr">Soporte de Envio</strong>
                 <div class="w-100" ng-show="configTabs.tab=='S'">
@@ -493,6 +493,21 @@
               </li>
 
               <li class="StepProgress-item s"
+                ng-class="{'current': configTimeLime.step5, 's':dataPqr.CODRESP==responsable || privilegios[0].Codigo==7}">
+                <strong class="noselectxtpqr">Cierre</strong>
+                <div class="w-100" ng-show="configTabs.tab=='C'">
+                  <div class="s12 row">
+                    <div class="right-align">
+                      <a class="waves-effect waves-light btn white-text success"
+                      ng-click="updateConfigTabs('Adjuntar','A');sendG=false;">Anterior</a>
+                      <a class="waves-effect waves-light btn white-text success"
+                      ng-click="updateConfigTabs('Reabierta','S');">Finalizar</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li class="StepProgress-item s"
                 ng-class="{'current': configTimeLime.step1, 's': !perfilFunc && mostrarComentarioNuevoIps}"
                 ng-if="!perfilFunc">
                 <strong class="noselectxtpqr">Comentario</strong>
@@ -529,6 +544,7 @@
                       <strong>
                         <h6>{{item.nombre}}
                           <small>{{item.fecha}}</small>
+                          <small class="right" ng-if="item.reabierta">REABIERTA #{{item.reabierta}}</small>
                           <br>
                           <small ng-if="item.fase">FASE: {{item.fase}}</small>
                         </h6>
@@ -797,6 +813,16 @@
                     </td>
                     <th class="noselectxtpqr">Fecha Respuesta</th>
                     <td colspan="6">{{dpqr.FECHAENT}}</td>
+                  </tr>
+                  <tr ng-show="dpqr.MARCA_REABIERTA == 'S'">
+                    <th>Fecha Reabierta</th>
+                    <td>{{dpqr.FECHA_REABIERTA}}</td>
+                    <th>Motivo Reabierta</th>
+                    <td>{{dpqr.MOTIVO_REABIERTA}}</td>
+                  </tr>
+                  <tr ng-show="dpqr.MARCA_REABIERTA == 'S'">
+                    <th>Observación Reabierta</th>
+                    <td colspan="3">{{dpqr.OBSERVACION_REABIERTA}}</td>
                   </tr>
                 </tbody>
               </table>

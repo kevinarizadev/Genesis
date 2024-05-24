@@ -320,6 +320,8 @@ if (!isset($_SESSION['nombre'])) {
  <script src="scripts/controllers/cuentasmedicas/notificacionglosaController.js"></script>
  <script src="scripts/controllers/cuentasmedicas/conciliaciondeglosasController.js"></script>
  <script src="scripts/controllers/cuentasmedicas/conciliaciondeglosasipsController.js"></script>
+<script src="scripts/controllers/cuentasmedicas/adminfacturasdigitalesController.js"></script>
+
 <!-- -- contratacion  -- -->
 <script src="scripts/controllers/contratacion/gestionacascontratacion.js"></script>
 <script src="scripts/controllers/contratacion/modalgestionacascontratacion.js"></script>
@@ -621,6 +623,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/contratacion/contratacionprecontractualController.js"></script>
 <script src="scripts/controllers/pgp/gestiontipoproductopgpController.js"></script>
 
+<script src="scripts/controllers/contratacion/gestionsoportesipscontrController.js"></script>
 <script src="scripts/controllers/encuestas/encuestapoController.js"></script>
 <!-- controller ausentismo -->
 <script src="scripts/controllers/talentohumano/empleados/datosempleadoscontroller.js"></script>

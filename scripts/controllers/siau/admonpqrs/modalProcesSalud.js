@@ -92,7 +92,7 @@ angular.module('GenesisApp')
     }
     pqrHttp.getInfoAseguramientoPQR($scope.dataPqr.CODIGO).then(function (response) {
       $scope.dpqr = response.data[0];
-      console.log($scope.dpqr);
+      console.log("$scope.dpqr", $scope.dpqr);
 
     })
     pqrHttp.getNegacionPQR($scope.dataPqr.CODIGO).then(function (response) {
@@ -107,7 +107,7 @@ angular.module('GenesisApp')
 
     $scope.getProcesoSaludPQR();
 
-    pqrHttp.getGestionFaseActualSaludPQR($scope.dataPqr.CODIGO, $scope.configTabs.tab).then(function (res) {
+    pqrHttp.getGestionFaseActualSaludPQR($scope.dataPqr.CODIGO, $scope.configTabs.tab, $scope.dataPqr.REABIERTA).then(function (res) {
       // console.log(res.data);
       if (res.data) {
         $timeout(function () {
@@ -186,10 +186,17 @@ angular.module('GenesisApp')
               if (($scope.dataProcesSalud.adjComment == null || $scope.dataProcesSalud.adjComment == '')) {
                 $scope.rqAjComment = true;
               } else {
-                $scope.configTabs.tab = 'R';
-                $scope.configTimeLime.step2 = true;//Activa step2
-                $scope.configTimeLime.step3 = false;
-                $scope.configTimeLime.step4 = false;
+                // const fase = $scope.dpqr.MARCA_REABIERTA == 'S' ? 'S' : 'A';
+                if ($scope.dpqr.MARCA_REABIERTA == 'S') {
+                  $scope.configTabs.tab = 'C';
+                  $scope.configTimeLime.step2 = true;//Activa step2
+                  $scope.configTimeLime.step5 = true;
+                } else {
+                  $scope.configTabs.tab = 'R';
+                  $scope.configTimeLime.step2 = true;//Activa step2
+                  $scope.configTimeLime.step3 = false;
+                  $scope.configTimeLime.step4 = false;
+                }
                 $scope.rqAjComment = false;
                 $timeout(function () {
                   $scope.sendA == true ? $scope.saveSalud($scope.dataProcesSalud.adjComment, $scope.dataProcesSalud.adjuntarFile, $scope.dataProcesSalud.adjuntarExt, 'A') : null;
@@ -358,6 +365,15 @@ angular.module('GenesisApp')
             }
           }
           break;
+        case 'Reabierta':
+          if (($scope.dataProcesSalud.adjComment == null || $scope.dataProcesSalud.adjComment == '')) {
+            $scope.rqAjComment = true;
+          } else {
+            $timeout(function () {
+              $scope.saveSalud($scope.dataProcesSalud.adjComment, $scope.dataProcesSalud.adjuntarFile, $scope.dataProcesSalud.adjuntarExt, 'S');
+            });
+          }
+          break;
       }
     }
     $scope.getActiveTab = function (tab) {
@@ -482,6 +498,7 @@ angular.module('GenesisApp')
           'motivo_altocosto': $scope.dataProcesSalud.motivoAltoCosto,
           'motivo_patologia': $scope.dataProcesSalud.motivoPatologia,
           'ftp': '3',
+          'reabierta': $scope.dataPqr.REABIERTA,
           // 'json_auts': $scope.listadoAutsAfil.length == 0 ? [] : $scope.listadoAutsAfilSeleccionados,
           // 'json_auts_cant': $scope.listadoAutsAfil.length == 0 ? '0' : $scope.listadoAutsAfilSeleccionados.length
         });

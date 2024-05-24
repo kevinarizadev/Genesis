@@ -439,11 +439,11 @@ angular.module('GenesisApp')
         });
         return (request.then(handleSuccessPost, handleError));
       },
-      getGestionFaseActualSaludPQR: function (codpqr, pfase) {
+      getGestionFaseActualSaludPQR: function (codpqr, pfase, reabierta) {
         var request = $http({
           method: 'POST',
           url: "php/siau/pqr/Rpqr.php",
-          data: { function: 'obtenerFaseActual', pqr: codpqr, fase: pfase }
+          data: { function: 'obtenerFaseActual', pqr: codpqr, fase: pfase, reabierta }
         });
         return (request.then(handleSuccessPost, handleError));
       },
