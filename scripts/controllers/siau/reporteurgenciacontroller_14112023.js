@@ -43,6 +43,21 @@ angular.module('GenesisApp')
     $scope.filtro1 = "";
     $scope.inactive2 = true;
 
+    $scope.descarga = function () {
+      //Creamos un Elemento Temporal en forma de enlace
+      var tmpElemento = document.createElement('a');
+      // obtenemos la información desde el div que lo contiene en el html
+      // Obtenemos la información de la tabla
+      var data_type = 'data:application/vnd.ms-excel';
+      var tabla_div = document.getElementById('reporte');
+      var tabla_html = tabla_div.outerHTML.replace(/ /g, '%20');
+      tmpElemento.href = data_type + ', ' + tabla_html;
+      //Asignamos el nombre a nuestro EXCEL
+      tmpElemento.download = 'Reporte_urgencias.xls';
+      // Simulamos el click al elemento creado para descargarlo
+      tmpElemento.click();
+    }
+
     $scope.obtenerhistorico = function () {
       if (
         $scope.nitips != "" && $scope.nitips != null && $scope.nitips != undefined &&
@@ -60,17 +75,33 @@ angular.module('GenesisApp')
        });
         $http({
           method: 'POST',
-          url: "php/siau/reporteurgencia.php",
+          url: "php/siau/CodigoUrgencia/Ccodigourgenciaips.php",
           data: {
             function: 'obtener_reporte',
             nitips: $scope.nitips,
-            fechai1: $scope.fechai,
-            fechaf1: $scope.fechaf,
+            fechai: $scope.fechai,
+            fechaf: $scope.fechaf,
+            accion:'1'
           }
         }).then(function (response) {
           $scope.HistoricoUrgencia = response.data;
-          $scope.inactive1 = false;
-            swal.close();
+          if ($scope.HistoricoUrgencia["0"].ips) {
+            $scope.HistoricoUrgencia = response.data;
+            $scope.Nombre = $scope.HistoricoUrgencia["0"].ips;
+            $scope.total = $scope.HistoricoUrgencia.length;
+            if ($scope.total <= 10) {
+              $scope.quantity = $scope.total;
+            }
+            else {
+              $scope.quantity = 10;
+            }
+            $scope.inactive1 = false;
+          } else {
+            $scope.HistoricoUrgencia=null;
+            $scope.inactive1 = true;
+            swal('Informanción', 'Error En la Consulta. Favor digite los campos nuevamente', 'error');
+          }
+          swal.close();
         });
       } else {
         $scope.HistoricoUrgencia=null;
@@ -95,17 +126,29 @@ angular.module('GenesisApp')
        });
         $http({
           method: 'POST',
-          url: "php/siau/reporteurgencia.php",
+          url: "php/siau/CodigoUrgencia/Ccodigourgenciaips.php",
           data: {
-            function: 'obtener_reporte',
+            function: 'obtener_reporte1',
             nit: '',
             fechai1: $scope.fechai1,
             fechaf1: $scope.fechaf1,
+            accion:'2'
           }
         }).then(function (response) {
+          console.log(response);
             $scope.HistoricoUrgencia1 = response.data;
+            $scope.total1 = $scope.HistoricoUrgencia1.length;
+            if ($scope.total1 <= 10) {
+              $scope.quantity1 = $scope.total1;
+            }
+            
+            else {
+              $scope.quantity1 = 10;
+            }
             $scope.inactive2 = false;
+          
               swal.close();
+            
         });
       } else {
         $scope.HistoricoUrgencia1=null;
@@ -113,22 +156,21 @@ angular.module('GenesisApp')
         swal('Informanción', 'Error digitación de los campos, favor validar', 'error');
       }
     }
-    function formatDate(date) {
-      var dd = ('0' + date.getDate()).slice(-2);
-      var mm = ('0' + (date.getMonth() + 1)).slice(-2);
-      var yyyy = date.getFullYear();
-      var hh = date.getHours();
-      var mi = date.getMinutes();
-      return dd + '/' + mm + '/' + yyyy; //+' '+hh+':'+mi+':00';
-    }
-    $scope.descargarregistros = function (fechainicio,fechafin,nit) {
-      var nitenviar;
-      if(nit==1){
-        nitenviar="";
-      }else{
-        nitenviar=$scope.nitips;
-      }
-      window.open('php/siau/descargar_reporte_urgencia.php?nit='+nitenviar+'&fechainicio='+formatDate(fechainicio)+'&fechafin='+formatDate(fechafin));
+
+
+    $scope.descarga1 = function () {
+      //Creamos un Elemento Temporal en forma de enlace
+      var tmpElemento = document.createElement('a');
+      // obtenemos la información desde el div que lo contiene en el html
+      // Obtenemos la información de la tabla
+      var data_type = 'data:application/vnd.ms-excel';
+      var tabla_div = document.getElementById('reporte1');
+      var tabla_html = tabla_div.outerHTML.replace(/ /g, '%20');
+      tmpElemento.href = data_type + ', ' + tabla_html;
+      //Asignamos el nombre a nuestro EXCEL
+      tmpElemento.download = 'Reporte_urgencias.xls';
+      // Simulamos el click al elemento creado para descargarlo
+      tmpElemento.click();
     }
 
   }])

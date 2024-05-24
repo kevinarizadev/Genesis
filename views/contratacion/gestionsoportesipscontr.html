@@ -1,0 +1,271 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+
+    .content-container {
+      padding: 0 20px;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="Inicio()"></i>
+          Gestion Soportes
+        </h5>
+      </li>
+      <!-- <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1);" href class="active">Facturas<i class="icon-docs"></i></a>
+          </li>
+          <li class="tab col w-auto" ng-if="Hoja2.datos.EFAC_ADMIN == 'S'">
+            <a ng-click="SetTab(2)" href>Permisos Usuarios
+              <i class="icon-users"></i></a>
+          </li>
+        </ul>
+      </li> -->
+    </ul>
+  </div>
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <div class="row dashboard-wrapper content-container white">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de Soportes
+          ({{List1.listadoContratoss.length}})</strong>
+
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListado()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <div class="row">
+        <div class="col s12">
+          <table class="bordered table_center_align highlight border-color default-border"
+            style="width:100%;font-size:6px !important;border-width: medium;">
+            <thead class="default-border default-color">
+              <th>Contrato</th>
+              <th>Regimen</th>
+              <th>Concepto</th>
+              <th>Motivo</th>
+              <!-- <th>Asunto</th> -->
+              <!-- <th>Tipo Soporte</th> -->
+              <th>Estado del soporte</th>
+              <th>Fecha de recibido</th>
+              <th>Dias Restante</th>
+              <th>Soporte</th>
+            </thead>
+            <tbody>
+              <tr ng-repeat="x in List1.listadoContratoss"
+                class="c-pointer {{x.OSOV_NUMERO+'_'+x.OSON_RENGLON == itemSeleccionado ? 'focusElement' :''}}">
+                <td>{{x.OSOV_NUMERO}}</td>
+                <td>{{x.REGIMEN}}</td>
+                <td>{{x.CONCEPTO}}</td>
+                <td>{{x.MOTIVO}}</td>
+                <!-- <td>{{x.ASUNTO}}</td> -->
+                <!-- <td>{{x.TIPC_NOMBRE}}</td> -->
+                <td>
+                  <span class="status pendiente" ng-show="x.OSOV_ESTADO == 'A'">PENDIENTE</span>
+                  <span class="status gestionado" ng-show="x.OSOV_ESTADO == 'G'" title="En espera de aprobación">GESTIONADO</span>
+                  <span class="status completado" ng-show="x.OSOV_ESTADO == 'P'">LEGALIZADO</span>
+                </td>
+                <td>{{x.OSOF_FECHA_CARGUE_EPS}}</td>
+                <td>
+                  <span class="status pendiente" ng-show="x.OSOV_ESTADO == 'A'">{{x.OSOF_FECHA_MAX_CARGUE_IPS}}</span>
+                  <span ng-show="x.OSOV_ESTADO == 'G' || x.OSOV_ESTADO == 'P'">-</span>
+                </td>
+                <td>
+                  <i class="icon-eye-2 c-pointer" style="font-size: 1.7em;" title="Ver soportes"
+                    ng-click="seleccionarContrato(x,$index)"></i>
+                  <!-- <i class="icon-download-4 c-pointer" style="font-size: 1.7em;" title="Ver soporte"
+                    ng-show="x.OSOV_ESTADO == 'A' || x.OSOV_ESTADO == 'P'"
+                    ng-click="descargafile(x.OSOV_RUTA_SOPORTE)"></i> -->
+
+                  <i class="icon-comment-5 c-pointer" style="font-size: 1.5em;" title="Observacion EPS"
+                    ng-show="x.OSOV_OBSERVACION" ng-click="verObs(x.OSOV_OBSERVACION)"></i>
+                </td>
+                <td>{{x.OCR_FECHA_REGISTRO}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col s12 d-flex" ng-show="itemSeleccionado">
+          <div class="col s8 card no-padding" style="margin: auto;margin-top: 5vh;">
+            <div class="foot4 divcardcustom default-linear-gradient">
+              <div class="text-al divcardcustom2">
+                <strong class="switch" style="font-weight:600">Soportes Anexados al contrato
+                  ({{tiposAdjuntoEnv.length}})</strong>
+              </div>
+            </div>
+            <div class="col s12" style="max-height: 50vh;overflow-y: auto;">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Soporte</th>
+                    <th style="width: 40%;text-align: center;">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="x in tiposAdjuntoEnv | orderBy : filterAdjuntoEnv">
+                    <td>{{x.TIPC_NOMBRE}}</td>
+                    <td class="center">
+                      <button class="btn btnVerSoporte default-color white" ng-if="(x.TIPC_IPS_ENTREGA == 'N' || Hoja1.datos.OSOV_ESTADO == 'G') && Hoja1.datos.OSOV_ESTADO != 'P'"
+                        ng-click="descargafile(x.OSOV_RUTA_SOPORTE_IPS ? x.OSOV_RUTA_SOPORTE_IPS : x.OSOV_RUTA_SOPORTE_EPS)">
+                        Ver soporte <i class="icon-download-1 c-pointer" style="font-size: 1.7em;"
+                          title="Descargar"></i>
+                      </button>
+
+                      <button class="btn btnVerSoporte default-color white" ng-if="Hoja1.datos.OSOV_ESTADO == 'P'"
+                        ng-click="descargafile(x.OSOV_RUTA_SOPORTE_EPS ? x.OSOV_RUTA_SOPORTE_EPS : x.OSOV_RUTA_SOPORTE_IPS)">
+                        Ver soporte <i class="icon-download-1 c-pointer" style="font-size: 1.7em;"
+                          title="Descargar"></i>
+                      </button>
+
+                      <i class="icon-download c-pointer" style="font-size: 1.7em;"
+                        title="Descargar Enviado Anterior" ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A' && x.OSOV_RUTA_SOPORTE_IPS && Hoja1.datos.OSOV_OBSERVACION"
+                        ng-click="descargafile(x.OSOV_RUTA_SOPORTE_IPS)"></i>
+
+                      <i class="icon-download-1 c-pointer" style="font-size: 1.7em;"
+                        title="Descargar Para Firmar" ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A' && x.OSOV_RUTA_SOPORTE_EPS"
+                        ng-click="descargafile(x.OSOV_RUTA_SOPORTE_EPS)"></i>
+
+                      <div class="file-upload-wrapper file-field input-field m-l" data-text="Cargar Archivo"
+                        ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A'">
+                        <input type="file" id="fileSoportesUnico_{{x.OSOV_TIPO_SOPORTE}}" class="fileSoportesUnico"
+                           title="Cargar Soporte">
+                        <i class="icon-check-1 green-text right" style="font-size: 1.3vw;" ng-show="x.soporteB64"></i>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col s12 no-padding m-b center m-t" ng-show="Hoja1.datos.OSOV_ESTADO == 'A'">
+              <button class="btn btn-primary btnAgregar" type="button" ng-click="guardarAdjuntoEnviados()">
+                Enviar Soportes<i class="icon-docs-1"></i>
+              </button>
+            </div>
+            <!--  -->
+          </div>
+        </div>
+
+      </div>
+      <!-- //-// -->
+    </div>
+
+
+
+    <!--  -->
+
+    <!-- ///// -->
+    <!-- ///// -->
+
+
+    <style>
+      .pendiente {
+        background-color: #FFC107 !important;
+      }
+
+      .gestionado {
+        background-color: #8BC34A !important;
+      }
+
+      .completado {
+        background-color: #025e88 !important;
+      }
+
+
+
+      .btnVerSoporte {
+        height: 2rem;
+        cursor: pointer;
+      }
+
+
+      .file-upload-wrapper {
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+        border: 1px solid #8a88865e !important;
+        height: 2.14rem;
+        border-radius: 2px;
+        margin: 0;
+        width: -webkit-fill-available;
+      }
+
+      .file-upload-wrapper:after {
+        text-align: center !important;
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 10px 15px;
+        display: block;
+        width: 100%;
+        pointer-events: none;
+        z-index: 20;
+        line-height: 1;
+        color: #80868b;
+        border-radius: 5px 10px 10px 5px;
+        font-weight: 400;
+        height: 8vh;
+      }
+
+      .file-upload-wrapper:hover:before {
+        background: #3d8c63;
+      }
+
+      .file-upload-wrapper input {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 99;
+        height: 43px;
+        margin: 0;
+        padding: 0;
+        display: block;
+        cursor: pointer;
+        width: 100%;
+        height: 10vh;
+      }
+
+      .Valid_Campo {
+        border: 1px solid red !important;
+      }
+
+      .text-upper {
+        text-transform: uppercase !important;
+      }
+
+      .tabs {
+        height: 30px !important;
+      }
+
+      .tabs .tab {
+        line-height: 30px !important;
+        height: 30px !important;
+      }
+
+
+      .label-new>label {
+        display: table;
+      }
+
+      /* //////////////////////////////////////////////////////////////////////////////// */
+    </style>
+  </div>

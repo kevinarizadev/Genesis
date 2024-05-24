@@ -99,7 +99,7 @@ angular.module('GenesisApp', [])
 
             //   break;
             case 7: // MEDICAMENTO EVENTO
-              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACION DE SERVICIOS DE SALUD PARA EL SUMINISTRO DE MEDICAMENTOS MEDIANTE LA MODALIDAD DE CAPITACION SUSCRITO ENTRE ${razon} Y ${nombrePrestador}`;
+              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACION DE SERVICIOS DE SALUD PARA EL SUMINISTRO DE MEDICAMENTOS MEDIANTE LA MODALIDAD DE EVENTO SUSCRITO ENTRE ${razon} Y ${nombrePrestador}`;
               break;
             case 8: //EVENTO BOLSA
               $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO SUSCRITO ENTRE ${razon} Y ${nombrePrestador}`;
@@ -134,7 +134,7 @@ angular.module('GenesisApp', [])
 
             //   break;
             case 7: // MEDICAMENTO EVENTO
-              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE DISPENSACION DE MEDICAMENTOS, DISPOSITIVOS E INSUMOS DE CÁPITA. SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
+              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACION DE SERVICIOS DE SALUD PARA EL SUMINISTRO DE MEDICAMENTOS MEDIANTE LA MODALIDAD DE EVENTO SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
               break;
             case 8: //EVENTO BOLSA
               $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;

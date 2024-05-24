@@ -15,6 +15,7 @@ angular.module('GenesisApp')
       // $scope.numero = '363915';
       // $scope.numero = '211516';//SUPER
       // setTimeout(() => { $scope.$apply(); }, 500);
+      $scope.SysDay = new Date();
       $scope.Rol_cargo = JSON.parse(sessionStorage.getItem("inicio_perfil")).cod_cargo;
       console.log($scope.Rol_cargo)
       $scope.validarPermisos();
@@ -665,10 +666,10 @@ angular.module('GenesisApp')
     $scope.ngChgServicioProgramado = function () {
       $scope.fechaSeg_dsb = false;
       let SysDay = new Date();
-      if($scope.marcacionPQR_SN == 'S' || ($scope.modalCrearSeguimiento.servicio == 'N' && $scope.modalCrearSeguimiento.riesgo)){
+      if ($scope.marcacionPQR_SN == 'S' || ($scope.modalCrearSeguimiento.servicio == 'N' && $scope.modalCrearSeguimiento.riesgo)) {
         $scope.fechaSeg_dsb = true;
       }
-      
+
       if ($scope.modalCrearSeguimiento.servicio == 'N') {
         if ($scope.modalCrearSeguimiento.riesgo == 'RIESGO VITAL') {
           $scope.modalCrearSeguimiento.fechaSeg = new Date(SysDay.setHours(24))
@@ -1063,6 +1064,57 @@ angular.module('GenesisApp')
 
 
 
+            //
+          } else {
+            swal('¡Mensaje!', 'Fechas incorrectas', 'info').catch(swal.noop);
+          }
+        } else {
+          swal('¡Mensaje!', 'Las fechas no deben estar vacias', 'info').catch(swal.noop);
+        }
+      });
+    }
+
+    $scope.descargarExportadoPQRClasificadas = function () {
+      swal({
+        html: '<div class="row" style="margin: 0"> <h5 style="margin-top: 0"><b>PQR Clasificadas</b>  </h5></div><div class="row" style="margin: 0">    <div class="input-field col s6" style="margin: 0">        <label for="fechaIni_log" style="margin-top: -2vh;">Fecha Inicio</label>        <input type="date" id="fechaIni_log" style="margin: 0">    </div>    <div class="input-field col s6" style="margin: 0">        <label for="fechaFin_log" style="margin-top: -2vh;">Fecha Fin</label>        <input type="date" id="fechaFin_log" style="margin: 0">    </div></div>',
+        confirmButtonText: "Generar",
+      }).then(function (cod) {
+        const fechaIni_log = document.querySelector('#fechaIni_log').value;
+        const fechaFin_log = document.querySelector('#fechaFin_log').value;
+        if (fechaIni_log && fechaFin_log) {
+          if (new Date(fechaIni_log) <= new Date(fechaFin_log)) {
+            const fechaIni = fechaIni_log.split('-'), fechaFin = fechaFin_log.split('-');
+            const fecha_i = fechaIni[2] + '/' + fechaIni[1] + '/' + fechaIni[0], fecha_f = fechaFin[2] + '/' + fechaFin[1] + '/' + fechaFin[0];
+            console.log(fecha_i)
+            console.log(fecha_f)
+            //
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+            $http({
+              method: 'POST',
+              url: "php/siau/pqr/Rpqr.php",
+              data: { function: 'P_DESCARGA_MOTIVOS_RECLASIFICACION', fecha_i, fecha_f }
+            }).then(function ({ data }) {
+              if (data.length) {
+
+                var ws = XLSX.utils.json_to_sheet(data);
+                /* add to workbook */
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+                /* write workbook and force a download */
+                XLSX.writeFile(wb, "Exportado PQRDS Clasificadas.xlsx");
+                const text = `Registros encontrados ${data.length}`
+                swal('¡Mensaje!', text, 'success').catch(swal.noop);
+              } else {
+                swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+              }
+            })
             //
           } else {
             swal('¡Mensaje!', 'Fechas incorrectas', 'info').catch(swal.noop);
@@ -1585,7 +1637,7 @@ angular.module('GenesisApp')
 
                 $scope.Validar_TUACGS(result.pqr[0].CODIGO);
                 // if (result.pqr[0].COD_SUPERSALUD) {
-                  $scope.validarMarcacion(result.pqr[0].CODIGO);
+                $scope.validarMarcacion(result.pqr[0].CODIGO);
                 // }
               }
 
@@ -2213,8 +2265,129 @@ angular.module('GenesisApp')
 
     }
 
+    $scope.reabrirPQRModal = function (x) {
+      $scope.formReabrirPQRModal = {
+        numero: x.CODIGO,
+        fecha: null,
+        motivo: '',
+        observacion: '',
+        listadoMotivos: []
+      }
+      $scope.reabrirPQRModal_ListarMotivos()
+      $("#modalreabrirPQR").modal("open");
+      setTimeout(() => { $scope.$apply(); }, 500);
+    }
+    $scope.reabrirPQRModal_ListarMotivos = function () {
+      $scope.formReabrirPQRModal.listadoMotivos = []
 
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+          function: 'P_LISTA_MOTIVOS_REAPERTURA',
+        }
+      }).then(function ({ data }) {
+        $scope.formReabrirPQRModal.listadoMotivos = data;
+        setTimeout(() => { $scope.$apply(); }, 500);
+      });
 
+    }
+
+    $scope.reabrirPQR = function () {
+      if ($scope.formReabrirPQRModal.fecha == undefined || $scope.formReabrirPQRModal.motivo == '' || $scope.formReabrirPQRModal.observacion == '') {
+        swal('Mensaje', 'Diligencia todos los campos', 'info').catch(swal.noop);
+        return
+      }
+      swal({
+        title: "¿Desea guardar la información?",
+        type: "question",
+        showCancelButton: true,
+        allowOutsideClick: false,
+      }).catch(swal.noop)
+        .then((willDelete) => {
+          if (willDelete) {
+
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+
+            const datos = {
+              numero: $scope.formReabrirPQRModal.numero,
+              fecha: formatDate($scope.formReabrirPQRModal.fecha),
+              motivo: $scope.formReabrirPQRModal.motivo,
+              observacion: $scope.formReabrirPQRModal.observacion,
+              responsable: $scope.documentologueo
+            }
+
+            $http({
+              method: 'POST',
+              url: "php/siau/pqr/Rpqr.php",
+              data: {
+                function: 'P_REAPERTURA_PQR',
+                datos: JSON.stringify(datos)
+              }
+            }).then(function ({ data }) {
+              if (data && data.toString().substr(0, 3) != '<br') {
+                if (data.codigo == 0) {
+                  $scope.closeModal();
+                  swal('Mensaje', data.mensaje, 'success');
+                  $scope.filterOptions = 'PQR';
+                  setTimeout(() => {
+                    $scope.buscarPQR()
+                  }, 2500);
+                } else {
+                  swal('Mensaje', data.mensaje, 'info');
+                }
+              } else {
+                swal({
+                  title: "¡Ocurrio un error!",
+                  text: data,
+                  type: "warning"
+                }).catch(swal.noop);
+              }
+              console.log(data)
+
+            })
+          }
+        });
+    }
+
+    $scope.descargarExportadoReabiertas = function () {
+      swal({
+        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+        width: 200,
+        showConfirmButton: false,
+        animation: false
+      });
+      $http({
+        method: 'POST',
+        url: "php/siau/pqr/Rpqr.php",
+        data: {
+          function: "P_OBTENER_REABIERTAS_REGISTROS",
+        }
+      }).then(function ({ data }) {
+        if (data.toString().substr(0, 3) == '<br' || data == 0) {
+          swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+        }
+        if (data.length > 0) {
+
+          var ws = XLSX.utils.json_to_sheet(data);
+          /* add to workbook */
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+          /* write workbook and force a download */
+          XLSX.writeFile(wb, "Reporte Reabiertas PQR.xlsx");
+          const text = `Registros encontrados ${data.length}`
+          swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        }
+      })
+    }
 
 
 

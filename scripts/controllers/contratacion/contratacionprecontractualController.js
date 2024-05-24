@@ -16,6 +16,15 @@ angular.module('GenesisApp')
         $('#modal_new').modal();
         $('#modal_bitacora').modal();
         $('#modal_buscar_ips_para_agregar').modal();
+
+        $scope.Rol_Cedula = sessionStorage.getItem('cedula');
+        setTimeout(() => {
+          $scope.busqueda.numero = 10919;
+          $scope.busqueda.regimen = 'KS';
+          $scope.busqueda.estado = 'P';
+          $scope.buscar();
+        }, 4000);
+        $scope.Ajustar_Pantalla();
       })
       $scope.check_option = "";
       $scope.check_option2 = "";
@@ -1598,8 +1607,19 @@ angular.module('GenesisApp')
           allowOutsideClick: false
         });
         swal.showLoading();
-
-        const v_pdocumento = ($scope.infoContrato.cod_concepto == 'CA' || $scope.infoContrato.cod_concepto == 'PG') ? $scope.infoContrato.documento : ''
+        ////////////////////////////////////
+        $scope.checkAdjuntos = false;
+        $scope.checkAdjuntosGestion = false;
+        $("#file-upload-field-enviados").parent(".file-upload-wrapper").attr("data-text", `Subir Archivo`);
+        $scope.adjuntoEnv = {
+          soporteB64: '',
+          soporteExt: '',
+        }
+        $scope.obtenerTiposAdjuntos_Env();
+        $scope.obtenerListadoEnviados();
+        ////////////////////////////////////
+        const v_pdocumento = $scope.infoContrato.documento
+        //($scope.infoContrato.cod_concepto == 'CA' || $scope.infoContrato.cod_concepto == 'PG') ? $scope.infoContrato.documento : ''
         $http({
           method: 'POST',
           url: "php/contratacion/funccontratacion.php",
@@ -1610,7 +1630,16 @@ angular.module('GenesisApp')
           }
         }).then(function (response) {
           if (response.data.length > 0) {
-            $scope.tipoAdjunos = response.data;
+            var data = []
+            response.data.forEach(e => {
+              if (($scope.infoContrato.cod_concepto == 'CA' || $scope.infoContrato.cod_concepto == 'PG')) {
+                data.push(e)
+              } else if (!($scope.infoContrato.cod_concepto == 'CA' || $scope.infoContrato.cod_concepto == 'PG') && e.numero < 12) {
+                data.push(e)
+              }
+            });
+            $scope.tipoAdjunos = data;
+
           } else {
           }
         })
@@ -2896,9 +2925,6 @@ angular.module('GenesisApp')
         }
       }
 
-      /*$scope.Genera_Minuta = function (v_pnumero, v_pubicacion, v_pdocumento) {
-          $window.open('views/contratacion/formatos/formatominutacontrato.php?v_pnumero=' + v_pnumero + '&v_pubicacion=' + v_pubicacion + '&v_pdocumento=' + v_pdocumento);
-      }*/
       $scope.Genera_Minuta = function (v_pnumero, v_pubicacion, v_pdocumento, fecha_inicio, tipominuta = '5') {
         var v_fecha_inicio = new Date(fecha_inicio.split('/')[2] + '/' + fecha_inicio.split('/')[1] + '/' + fecha_inicio.split('/')[0]);
         var fechaNuevaMinutaPGP = new Date('2023/12/01');
@@ -2968,33 +2994,11 @@ angular.module('GenesisApp')
         $window.open('views/contratacion/formatos/anexo_soportes/anexo3.pdf');
       }
       $scope.generaAnexo4 = function (regional) {
-        if (regional == 'NACIONAL') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_NACIONAL.pdf');
-        }
-        if (regional == 'ATLANTICO') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_ATLANTICO.pdf');
-        }
-        if (regional == 'BOLIVAR') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_BOLIVAR.pdf');
-        }
-        if (regional == 'CESAR') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_CESAR.pdf');
-        }
-        if (regional == 'BOYACA') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_BOYACA.pdf');
-        }
         if (regional == 'LA GUAJIRA') {
           $window.open('views/contratacion/formatos/anexo_soportes/anexo4_GUAJIRA.pdf');
+          return
         }
-        if (regional == 'SUCRE') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_SUCRE.pdf');
-        }
-        if (regional == 'META') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_META.pdf');
-        }
-        if (regional == 'CORDOBA') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_CORDOBA.pdf');
-        }
+        $window.open(`views/contratacion/formatos/anexo_soportes/anexo4_${regional}.pdf`);
       }
       $scope.generaAnexo8 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo8.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
@@ -3028,10 +3032,682 @@ angular.module('GenesisApp')
         $window.open('views/contratacion/formatos/anexo17.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
+      $scope.generaAnexo22 = function (infoContrato, tipominuta = '5') {
+        $window.open('views/contratacion/formatos/anexo22.xlsx');
+      }
 
+
+      $scope.obtenerTiposAdjuntos_Env = function () {
+        $('.tabs').tabs();
+        $scope.Tabs_Adjuntos = 1;
+        setTimeout(() => {
+          $('#Tabs_Adjuntos_1').click();
+        }, 1000);
+
+        $scope.formAdjuntoEnv = {
+          tipc_numero: '',
+          tipc_nombre: '',
+          tipc_firmas: '',
+          tipc_ips_entrega: '',
+          tipc_eps_entrega: '',
+          soporteB64: '',
+          soporteExt: ''
+        };
+
+        if ($scope.tiposAdjuntoEnv) { return }
+        $scope.tiposAdjuntoEnv = [];
+
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: 'P_LISTA_TIPOS_ADJUNTOS',
+            minuta: $scope.json_contratos[$scope.indicador].minuta
+          }
+        }).then(function ({ data }) {
+          $scope.tiposAdjuntoEnv = data;
+          // console.table(data)
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
+
+      $scope.ngChgTiposAdjuntoEnv = function () {
+        const data = $scope.tiposAdjuntoEnv.find(e => e.TIPC_NUMERO == $scope.formAdjuntoEnv.tipc_numero)
+        $scope.formAdjuntoEnv.tipc_numero = data.TIPC_NUMERO;
+        // $scope.formAdjuntoEnv.tipc_nombre = data.TIPC_NOMBRE;
+        // $scope.formAdjuntoEnv.tipc_firmas = data.TIPC_FIRMAS;
+        // $scope.formAdjuntoEnv.tipc_ips_entrega = data.TIPC_IPS_ENTREGA;
+        // $scope.formAdjuntoEnv.tipc_eps_entrega = data.TIPC_EPS_ENTREGA;
+        setTimeout(() => { $scope.$apply(); }, 500);
+        console.log(data);
+      }
+
+
+
+
+      document.querySelector('#file-upload-field-enviados').addEventListener('change', function (e) {
+        setTimeout(() => { $scope.$apply(); }, 500);
+        var files = e.target.files;
+        $("#file-upload-field-enviados").parent(".file-upload-wrapper_2").attr("data-text", `Adjuntar Archivo`);
+        if (files.length != 0) {
+          for (let i = 0; i < files.length; i++) {
+            const x = files[i].name.split('.'), ext = x[x.length - 1].toUpperCase();
+            if (ext == 'PDF' || ext == 'DOCX' || ext == 'XLS' || ext == 'XLSX') {
+              if (files[i].size < 5485760 && files[i].size > 0) {
+                $scope.getBase64(files[i]).then(function (result) {
+                  $("#file-upload-field-enviados").parent(".file-upload-wrapper_2").attr("data-text", files[i].name);
+                  $scope.formAdjuntoEnv.soporteExt = ext.toLowerCase();
+                  $scope.formAdjuntoEnv.soporteB64 = result;
+                  setTimeout(function () { $scope.$apply(); }, 300);
+                });
+              } else {
+                document.querySelector('#file-upload-field-enviados').value = '';
+                swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (5MB)!', 'info');
+              }
+            } else {
+              document.querySelector('#file-upload-field-enviados').value = '';
+              swal('Advertencia', '¡Solo se admiten archivos (PDF, .DOCX, .XLS, .XLSX)!', 'info');
+            }
+          }
+        }
+      });
+
+      $scope.agregarSoporteLista = function () {
+        if (!$scope.formAdjuntoEnv.tipc_numero || !$scope.formAdjuntoEnv.soporteExt) {
+          swal('Advertencia', '¡Debe seleccionar y adjuntar un archivo!', 'info'); return;
+        }
+
+        const data = $scope.tiposAdjuntoEnv.find(e => e.TIPC_NUMERO == $scope.formAdjuntoEnv.tipc_numero)
+        data.soporteB64 = $scope.formAdjuntoEnv.soporteB64;
+        data.soporteExt = $scope.formAdjuntoEnv.soporteExt;
+        data.ruta = '';
+        $("#file-upload-field-enviados").parent(".file-upload-wrapper_2").attr("data-text", "Adjuntar Archivo");
+
+        $scope.formAdjuntoEnv.tipc_numero = '';
+
+        // $scope.formAdjuntoEnv.soporteExt = '';
+        // $scope.formAdjuntoEnv.soporteB64 = '';
+
+        // document.querySelector('#file-upload-field-enviados').value = '';
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.quitarSoporteLista = function (x) {
+        const data = $scope.tiposAdjuntoEnv.find(e => e.TIPC_NUMERO == x.TIPC_NUMERO)
+        data.soporteB64 = '';
+        data.soporteExt = '';
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
+      $scope.validarSoporteVacios = function () {
+        return new Promise((resolve) => {
+          var vacios = 0
+          $scope.tiposAdjuntoEnv.forEach(element => {
+            if ((element.TIPC_IPS_ENTREGA == 'N' || element.TIPC_EPS_ENTREGA == 'S') && !element.soporteB64) { vacios++ }
+          });
+          resolve(vacios);
+        });
+      }
+
+      $scope.guardarAdjuntoEnviados = function () {
+        $scope.validarSoporteVacios().then((validSoportes) => { // Validar campos vacios
+          if (!validSoportes) {
+            swal({
+              title: 'Confirmar',
+              text: '¿Seguro que desea cargar los soportes?',
+              type: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Confirmar'
+            }).then((result) => {
+              if (result) {
+
+                swal({
+                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+                  width: 200,
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  showConfirmButton: false,
+                  animation: false
+                });
+
+                var promesas = [];
+                $scope.tiposAdjuntoEnv.forEach((e, index) => {
+                  if (e.soporteB64) {
+                    promesas.push($scope.cargarSoporteEnv(index));
+                  }
+                })
+
+                Promise.all(promesas).then(response => {
+                  // Cuando todas las promesas se resuelvan, imprimimos las respuestas
+                  var errors = 0
+                  response.forEach(element => {
+                    if (element.substr(0, 1) != '/') {
+                      errors++;
+                    }
+                  });
+                  setTimeout(() => { $scope.$apply(); }, 500);
+                  if (errors == 0) {//GUARDA EN BD
+
+                    var data = []
+
+                    $scope.tiposAdjuntoEnv.forEach(e => {
+
+                      data.push({
+                        documento: $scope.infoContrato.documento,
+                        numero: $scope.infoContrato.numero,
+                        ubicacion: $scope.infoContrato.ubicacion_id,
+                        tercero: $scope.infoContrato.nit,
+
+                        tipo_soporte: e.TIPC_NUMERO,
+                        ruta_soporte: e.ruta,
+
+                        responsable: $scope.Rol_Cedula
+                      })
+                    });
+                    console.table(data);
+
+                    $http({
+                      method: 'POST',
+                      url: "php/contratacion/funccontratacion.php",
+                      data: {
+                        function: 'P_INSERTAR_SOPORTE_CONTRATO',
+                        datos: JSON.stringify(data),
+                        cantidad: data.length
+                      }
+                    }).then(function ({ data }) {
+                      if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                        swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                      }
+                      if (data.codigo == 0) {
+                        swal('¡Mensaje!', data.nombre, 'success').catch(swal.noop);
+                        $scope.obtenerListadoEnviados(1);
+                        setTimeout(() => { $scope.$apply(); }, 500);
+                      }
+                      if (data.codigo == 1) {
+                        swal("Mensaje", data.nombre, "warning").catch(swal.noop);
+                      }
+                    })
+                    // console.log($scope.tiposAdjuntoEnv);
+                  } else {
+                    swal("Error", 'Ocurrio un inconveniente al cargar los archivos, intentar nuevamente', "warning").catch(swal.noop); return
+                  }
+                  // Aquí puedes imprimir cualquier mensaje que desees después de recibir todas las respuestas
+                  console.log('Todas las peticiones completadas');
+                });
+                //////////////////////
+
+
+              }
+            })
+
+            // $scope.cargarSoporteAdjuntoEnv().then((resultSoporte) => {
+            //   if (!resultSoporte) { swal('Información', 'Soporte no cargado', 'info'); return }
+
+            //   const datos = {
+            //     documento: $scope.infoContrato.documento,
+            //     numero: $scope.infoContrato.numero,
+            //     ubicacion: $scope.infoContrato.ubicacion_id,
+            //     tercero: $scope.infoContrato.nit,
+            //     tipo_soporte: $scope.formAdjuntoEnv.tipoAdjunto,
+            //     ruta_soporte: resultSoporte,
+            //     responsable: $scope.Rol_Cedula
+            //   }
+
+            //   swal({
+            //     title: 'Cargando información...',
+            //     allowEscapeKey: false,
+            //     allowOutsideClick: false
+            //   });
+            //   swal.showLoading();
+            //   $http({
+            //     method: 'POST',
+            //     url: "php/contratacion/funccontratacion.php",
+            //     data: {
+            //       function: 'P_INSERTAR_SOPORTE_CONTRATO',
+            //       datos: JSON.stringify(datos)
+            //     }
+            //   }).then(function ({ data }) {
+            //     if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            //       swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+            //     }
+            //     if (data.codigo == 0) {
+            //       document.querySelector('#file-upload-field-enviados').value = '';
+            //       $scope.obtenerAdjuntos();
+            //       $("#file-upload-field-enviados").parent(".file-upload-wrapper").attr("data-text", `Subir Archivo`);
+
+            //       $scope.adjuntoEnv = {
+            //         soporteB64: '',
+            //         soporteExt: '',
+            //       }
+            //       setTimeout(() => { $scope.$apply(); }, 500);
+            //     }
+            //     if (data.codigo == 1) {
+            //       swal("Mensaje", data.nombre, "warning").catch(swal.noop);
+            //     }
+            //   })
+            // })
+
+          } else {
+            swal('Información', 'Cargue los soportes requeridos', 'info');
+          }
+        })
+      }
+
+      $scope.cargarSoporteEnv = function (index) {
+        return new Promise((resolve) => {
+          if (!$scope.tiposAdjuntoEnv[index].soporteB64) { resolve(''); return }
+          if ($scope.tiposAdjuntoEnv[index].ruta != '') { resolve('/'); return }
+
+          $http({
+            method: 'POST',
+            url: "php/contratacion/funccontratacion.php",
+            data: {
+              function: "cargarSoporteAdjuntoEnv",
+              carpeta: `${$scope.infoContrato.documento}_${$scope.infoContrato.numero}_${$scope.infoContrato.ubicacion_id}`,
+              name: `${$scope.tiposAdjuntoEnv[index].TIPC_NUMERO}`,
+              // name: `${$scope.tiposAdjuntoEnv[index].OSOV_TIPO_SOPORTE}`,
+              base64: $scope.tiposAdjuntoEnv[index].soporteB64,
+              ext: $scope.tiposAdjuntoEnv[index].soporteExt
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              $scope.tiposAdjuntoEnv[index].ruta = data;
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+
+
+
+      $scope.obtenerListadoEnviados = function () {
+        $scope.listadoAdjuntoEnv = [];
+
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: 'P_LISTA_SOPORTES_CONTRATOS_EPS',
+            nit: $scope.infoContrato.nit,
+            documento: $scope.infoContrato.documento,
+            numero: $scope.infoContrato.numero,
+            ubicacion: $scope.infoContrato.ubicacion_id
+          }
+        }).then(function ({ data }) {
+          $scope.listadoAdjuntoEnv = data;
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
+
+      $scope.seleccionarContrato = function (x) {
+        // $scope.itemSeleccionado = x.OSOV_NUMERO + '_' + x.OSON_RENGLON;
+        $scope.listadoAdjuntoEnv_datos = x;
+        $scope.listadoAdjuntoEnv_Detalle = []
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: 'P_LISTA_SOPORTES_CONTRATOS_DETALLE',
+            nit: x.OSON_TERCERO,
+            renglon: x.OSON_RENGLON
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.length > 0) {
+            $scope.listadoAdjuntoEnv_Detalle = data;
+
+
+            if (x.OSOV_ESTADO == 'G') {
+              setTimeout(() => {
+                $scope.cargarFileUnico();
+                setTimeout(() => { $scope.$apply(); }, 500);
+              }, 2500);
+            }
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        })
+      }
+
+      $scope.cargarSoporteAdjuntoEnv = function (ruta = null) {
+        return new Promise((resolve) => {
+          if (!$scope.adjuntoEnv.soporteB64) { resolve(''); return }
+          swal({
+            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Guardando Soporte...</p>',
+            width: 200,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            animation: false
+          });
+          $http({
+            method: 'POST',
+            url: "php/contratacion/funccontratacion.php",
+            data: {
+              function: "cargarSoporteAdjuntoEnv",
+              name: `Minuta_${$scope.infoContrato.numero}_${$scope.infoContrato.ubicacion_id}`,
+              base64: $scope.adjuntoEnv.soporteB64,
+              ext: $scope.adjuntoEnv.soporteExt,
+              ruta
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+      $scope.devolverAdjuntoEnviados = function () {
+        swal({
+          title: 'Observación de la devolución',
+          input: 'textarea',
+          inputPlaceholder: 'Escribe una observacion...',
+          showCancelButton: true,
+          allowOutsideClick: false,
+          inputAttributes: {
+            id: "textarea_swal",
+            onkeyup: "Format_cnt()"
+          },
+          // inputValue: $scope.Motivo_Anulacion_Devolucion
+        }).then(function (result) {
+          if (result && result !== '') {
+            const observacion = result;
+            // $scope.HojaGlosa.OBSERVACION = result;
+
+            swal({
+              title: 'Confirmar',
+              text: '¿Seguro que desea devolver los soportes al prestador?',
+              type: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Confirmar'
+            }).then((result) => {
+              if (result) {
+
+                swal({
+                  title: 'Cargando información...',
+                  allowEscapeKey: false,
+                  allowOutsideClick: false
+                });
+                swal.showLoading();
+
+                const datos = [
+                  {
+                    documento: $scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO,
+                    numero: $scope.listadoAdjuntoEnv_datos.OSOV_NUMERO,
+                    ubicacion: $scope.listadoAdjuntoEnv_datos.OSON_UBICACION,
+                    tercero: $scope.listadoAdjuntoEnv_datos.OSON_TERCERO,
+                    renglon: $scope.listadoAdjuntoEnv_datos.OSON_RENGLON,
+                    responsable: $scope.Rol_Cedula,
+                    observacion: observacion,
+                    opcion: 'D',
+                  }
+                ]
+
+                $http({
+                  method: 'POST',
+                  url: "php/contratacion/funccontratacion.php",
+                  data: {
+                    function: 'P_U_SOPORTE_CONTRATO',
+                    datos: JSON.stringify(datos),
+                    cantidad: 1
+                  }
+                }).then(function ({ data }) {
+                  if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                    swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                  }
+                  if (data.codigo == 0) {
+                    swal("Mensaje", data.nombre, "success").catch(swal.noop);
+                    $scope.listadoAdjuntoEnv_Detalle = []
+                    setTimeout(() => {
+                      $scope.obtenerListadoEnviados();
+                    }, 2500);
+                    setTimeout(() => { $scope.$apply(); }, 500);
+                  }
+                  if (data.codigo == 1) {
+                    swal("Mensaje", data.nombre, "warning").catch(swal.noop);
+                  }
+                })
+
+              }
+            })
+
+          } else {
+            swal("info", '¡La observacion no puede ir vacia!', "warning").catch(swal.noop); return
+          }
+        })
+      }
+      $scope.verObs = function (text) {
+        swal({
+          title: 'Observación de devolución',
+          input: 'textarea',
+          cancelButtonText: 'Cerrar',
+          // inputPlaceholder: 'Escribe un comentario...',
+          showCancelButton: true,
+          showConfirmButton: false,
+          inputValue: text
+        }).then(function (result) {
+          $(".confirm").attr('disabled', 'disabled');
+        }).catch(swal.noop);
+        document.querySelector('.swal2-textarea').setAttribute("readonly", true);
+        document.querySelector('.swal2-textarea').style.height = '300px';
+      }
+
+
+
+      $scope.cargarFileUnico = function () {
+        document.querySelectorAll('.fileSoportesUnico').forEach((filef) => filef.addEventListener('change', function (e) {
+          var files = e.target.files;
+          const id = e.target.id.split('_')[1];
+
+          var index = $scope.listadoAdjuntoEnv_Detalle.findIndex(x => x.OSOV_TIPO_SOPORTE == id);
+          $scope.listadoAdjuntoEnv_Detalle[index].soporteB64 = '';
+
+          setTimeout(() => { $scope.$apply(); }, 500);
+          if (files.length != 0) {
+            for (let i = 0; i < files.length; i++) {
+              const x = files[i].name.split('.'), ext = x[x.length - 1].toUpperCase();
+              if (ext == 'PDF' || ext == 'DOCX' || ext == 'XLS' || ext == 'XLSX') {
+                if (files[i].size < 5485760 && files[i].size > 0) {
+                  $scope.getBase64(files[i]).then(function (result) {
+                    $scope.listadoAdjuntoEnv_Detalle[index].soporteExt = ext.toLowerCase();
+                    $scope.listadoAdjuntoEnv_Detalle[index].soporteB64 = result;
+                    $scope.listadoAdjuntoEnv_Detalle[index].ruta = '';
+                    setTimeout(function () { $scope.$apply(); }, 300);
+                  });
+                  setTimeout(() => { $scope.$apply(); }, 500);
+                } else {
+                  e.target.value = '';
+                  swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (5MB)!', 'info');
+                }
+              } else {
+                e.target.value = '';
+                swal('Advertencia', '¡Solo se admiten archivos (PDF, .DOCX, .XLS, .XLSX)!', 'info');
+              }
+            }
+          }
+        })
+        )
+
+      }
+
+      $scope.validarSoporteVaciosAprob = function () {
+        return new Promise((resolve) => {
+          var vacios = 0
+          $scope.listadoAdjuntoEnv_Detalle.forEach(element => {
+            if (element.TIPC_FIRMAS == 'S' && !element.soporteB64) { vacios++ }
+          });
+          resolve(vacios);
+        });
+      }
+
+      $scope.guardarAdjuntoEnviadosAprob = function () {
+        $scope.validarSoporteVaciosAprob().then((validSoportes) => { // Validar campos vacios
+          if (!validSoportes) {
+            swal({
+              title: 'Confirmar',
+              text: '¿Seguro que desea guardar los soportes?',
+              type: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Confirmar'
+            }).then((result) => {
+              if (result) {
+
+                swal({
+                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+                  width: 200,
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  showConfirmButton: false,
+                  animation: false
+                });
+
+                var promesas = [];
+                $scope.listadoAdjuntoEnv_Detalle.forEach((e, index) => {
+                  if (e.soporteB64) {
+
+                    promesas.push($scope.cargarSoporte(index));
+                  }
+                })
+                Promise.all(promesas).then(response => {
+                  // Cuando todas las promesas se resuelvan, imprimimos las respuestas
+                  var errors = 0
+                  response.forEach(element => {
+                    if (element.substr(0, 1) != '/') {
+                      errors++;
+                    }
+                  });
+                  setTimeout(() => { $scope.$apply(); }, 500);
+                  if (errors == 0) {//GUARDA EN BD
+
+                    var data = []
+
+                    $scope.listadoAdjuntoEnv_Detalle.forEach(e => {
+                      if (e.soporteB64) {
+                        data.push({
+                          documento: $scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO,
+                          numero: $scope.listadoAdjuntoEnv_datos.OSOV_NUMERO,
+                          ubicacion: $scope.listadoAdjuntoEnv_datos.OSON_UBICACION,
+                          tercero: $scope.listadoAdjuntoEnv_datos.OSON_TERCERO,
+                          renglon: $scope.listadoAdjuntoEnv_datos.OSON_RENGLON,
+
+                          tipo_soporte: e.OSOV_TIPO_SOPORTE,
+                          ruta_soporte: e.ruta,
+
+                          opcion: 'E'
+                        })
+                      }
+                    });
+                    console.table(data);
+
+                    $http({
+                      method: 'POST',
+                      url: "php/contratacion/funccontratacion.php",
+                      data: {
+                        function: 'P_U_SOPORTE_CONTRATO',
+                        datos: JSON.stringify(data),
+                        cantidad: data.length
+                      }
+                    }).then(function ({ data }) {
+                      if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                        swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                      }
+                      if (data.codigo == 0) {
+                        swal('¡Mensaje!', data.nombre, 'success').catch(swal.noop);
+                        $scope.listadoAdjuntoEnv_Detalle = []
+                        setTimeout(() => {
+                          $scope.obtenerListadoEnviados();
+                        }, 2500);
+                        setTimeout(() => { $scope.$apply(); }, 500);
+                      }
+                      if (data.codigo == 1) {
+                        swal("Mensaje", data.nombre, "warning").catch(swal.noop);
+                      }
+                    })
+                    // console.log($scope.tiposAdjuntoEnv);
+                  } else {
+                    swal("Error", 'Ocurrio un inconveniente al cargar los archivos, intentar nuevamente', "warning").catch(swal.noop); return
+                  }
+                  // Aquí puedes imprimir cualquier mensaje que desees después de recibir todas las respuestas
+                  console.log('Todas las peticiones completadas');
+                });
+                //////////////////////
+              }
+            })
+
+
+          } else {
+            swal('Información', 'Cargue los soportes requeridos', 'info');
+          }
+        })
+
+
+
+      }
+
+      $scope.cargarSoporte = function (index) {
+        return new Promise((resolve) => {
+          if (!$scope.listadoAdjuntoEnv_Detalle[index].soporteB64) { resolve(''); return }
+          if ($scope.listadoAdjuntoEnv_Detalle[index].ruta != '') { resolve('/'); return }
+
+          $http({
+            method: 'POST',
+            url: "php/contratacion/funccontratacion.php",
+            data: {
+              function: "cargarSoporteAdjuntoEnv",
+              carpeta: `${$scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO}_${$scope.listadoAdjuntoEnv_datos.OSOV_NUMERO}_${$scope.listadoAdjuntoEnv_datos.OSON_UBICACION}`,
+              name: `${$scope.listadoAdjuntoEnv_Detalle[index].OSOV_TIPO_SOPORTE}`,
+              base64: $scope.listadoAdjuntoEnv_Detalle[index].soporteB64,
+              ext: $scope.listadoAdjuntoEnv_Detalle[index].soporteExt
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              $scope.listadoAdjuntoEnv_Detalle[index].ruta = data;
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+
+      $scope.SetTab_Adjuntos = function (x) {
+        $scope.Tabs_Adjuntos = x;
+      }
+
+      $scope.Ajustar_Pantalla = function () {
+        if ($(window).width() < 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.7;
+        }
+        if ($(window).width() > 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.8;
+        }
+      }
 
     }]).filter('capitalize', function () {
       return function (input) {
         return (angular.isString(input) && input.length > 0) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : input;
       }
     });
+function Format_cnt() {
+  const input = document.querySelectorAll('#textarea_swal')[5];
+  var valor = input.value;
+  valor = valor.replace(/[|!¡¿?°"#%{}*&''`´¨<>]/g, '');
+  valor = valor.replace(/(\r\n|\n|\r)/g, ' ');
+  input.value = valor;
+  // console.log(document.querySelectorAll('#log')[5].value);
+}

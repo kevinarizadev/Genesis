@@ -1,0 +1,532 @@
+<div class="white newdesing" id="pantalla">
+  <style>
+    .newdesing .content-container {
+      min-height: 0;
+    }
+
+    .content-container {
+      padding: 0 20px;
+    }
+  </style>
+  <div class="row section-header margin">
+    <ul class="left mailbox-custom-search list-inline w-100 d-flex justify-content-between align-items-center">
+      <li id="inicio">
+        <h5 class="cursor-pointer" style="font-size: 22px;line-height: 22px;opacity: .54;margin: 9px 0">
+          <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="Inicio()"></i>
+          Facturas Digitales
+        </h5>
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1);" href class="active">Facturas<i class="icon-docs"></i></a>
+          </li>
+          <li class="tab col w-auto" ng-if="Hoja2.datos.EFAC_ADMIN == 'S'">
+            <a ng-click="SetTab(2)" href>Permisos Usuarios
+              <i class="icon-users"></i></a>
+          </li>
+          <li class="tab col w-auto" ng-if="Hoja2.datos.EFAC_ADMIN == 'S'">
+            <a ng-click="SetTab(3)" href>Permisos IPS
+              <i class="icon-users"></i></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <button ng-click="Hoja_Limpiar()">asd</button> -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==1">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de Facturas
+          ({{List1.listadoFacturas.length}})</strong>
+
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoFacturas()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="switch" style="display: inline-flex;margin-left: 3vw">
+          <label>
+            <span ng-class="{'activo':!Hoja1.estado}" class="activo">Activas</span>
+            <input type="checkbox" ng-init="Hoja1.estado = false" ng-model="Hoja1.estado"
+              ng-change="obtenerListadoFacturas()" class="ng-valid ng-touched ng-dirty ng-valid-parse">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':Hoja1.estado}">Gestionadas</span>
+          </label>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="Hoja1.Filtro">
+        </div>
+      </div>
+    </div>
+
+
+    <!-- {
+      "PRESTADOR": "900073223-LOGIFARMA S.A.S.",
+      "OCR_ESTADO_FACTURA": "V",
+      "RECIBO": "147997",
+      "ID_FACTURA": "6633e0fc67a72a40ca510b3c",
+      "OCR_FECHA_REGISTRO": "06/05/2024",
+      "FACTURA": "LGFM1186729",
+      "RESPONSABLE_ASIGNADO": "1042454684-ARIZA NUNEZ KEVIN JAVIER",
+      "ESTADO_GESTION": "ACTIVA"
+  } -->
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>Prestador</th>
+          <th>Recibo</th>
+          <th>Factura</th>
+          <th>Valor</th>
+          <th>Fecha Registro</th>
+          <th>Estado Gestion</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in List1.listadoFacturas | filter:Hoja1.Filtro">
+            <td>{{x.PRESTADOR}}</td>
+            <td>{{x.RECIBO}}</td>
+            <td>{{x.FACTURA}}
+              <i class="icon-doc-text-inv c-pointer" title="Ver factura" ng-click="verFacturaPDF(x)"></i>
+            </td>
+            <td>$ {{FormatPesoNumero(x.VALOR_FACTURA)}}</td>
+            <td>{{x.OCR_FECHA_REGISTRO}}</td>
+            <td>
+              <span class="status {{x.ESTADO_GESTION == 'ACTIVA' ? 'orange' : 'green'}}">{{x.ESTADO_GESTION}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+  </div>
+
+
+  <!--  -->
+  <div id="modalFacturas" class="modal"
+    style="margin: 0 auto;max-height:99%;width: 100%;top:-100px !important;transition-duration: 0.3s;">
+    <div class="col s12 m12 l12 card margin" style="padding: 0;">
+      <!-- <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #fff;"
+      ng-click="closeModal()"></div> -->
+      <div class="card-content foot4" style="padding-bottom: 0px; padding-top: 12px;">
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="col s11">
+            <h5 class="white-text">Factura #{{datosFactura.CODIGO_FACTURA}}</h5>
+          </div>
+          <div class="col s1">
+            <h5 style="text-align: end;" ng-click="closeModal()"><i style="cursor:pointer;"
+                class="material-icons white-text">close</i></h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-action" style="max-height: 100vh;overflow-y: auto;margin-top: -5px;">
+        <div class="row" style="margin: auto;width: 100%;">
+          <!-- Visualizacion Soporte -->
+          <div class="col s12 m12 l2" style="position: relative;">
+            <ul class="collection" ng-if="!palabrasPDF"
+              style="background-color: #bcbcbc;height: calc(100vh - 150px);width: 100%;overflow: auto;margin-bottom: 0;">
+              <li class="collection-item avatar waves-effect w-100" style="padding-top: 15px; min-height: 60px;"
+                title="Ver {{x.template.name}}" ng-click="verFacturaIMG(x)" ng-repeat="x in listadoFacturasPDF">
+                <img src="assets/images/factura_elec.png" class="circle">
+                <span style="line-height: 2rem;"><strong>{{x.template.name}}</strong></span>
+              </li>
+            </ul>
+            <ul class="collection" ng-if="palabrasPDF"
+              style="background-color: #bcbcbc;height: calc(100vh - 150px);width: 100%;overflow: auto;margin-bottom: 0;">
+              <li class="collection-item avatar waves-effect w-100" style="padding-top: 15px; min-height: 60px;"
+                title="Ver {{x.doc_type}}" ng-click="verFacturaIMG(x)" ng-repeat="x in listadoFacturasPDFPalabras">
+                <img src="assets/images/factura_elec.png" class="circle">
+                <span style="line-height: 2rem;"><strong>{{x.doc_type}}</strong></span>
+              </li>
+            </ul>
+            <button class="btn w-100" ng-click="guardarGestionFactura()">Finalizar Gestion</button>
+          </div>
+          <!--Fin Visualizacion Soporte -->
+          <!-- Visualizacion Contenido -->
+          <div class="col s12 m12 l10 center-align" style="zoom: .8;">
+            <div>
+              <form ng-submit="buscarPalabrasPDF()">
+                <input type="text" class="margin border-none input-text-new" style="width: 30vw;" ng-model="palabrasPDF"
+                  placeholder="Buscar palabras en los documentos"
+                  title="También puede ingresar una lista de palabras separadas por coma" required>
+              </form>
+            </div>
+            <div id="parent"
+              style="overflow: auto;max-height: 90vh;background-color: lightgray;height: 90vh;position: relative;width: max-content;margin: auto;">
+              <img id="imgCanvas" src="{{imgFactura}}" style="margin: 2em 0em;">
+              <div id="highlight" ng-if="palabrasPDF && x.height"
+                style="position: absolute;border: 3px solid red; top: {{x.top+31}}px; left: {{x.left}}px; width: {{x.width}}px; height: {{x.height}}px"
+                ng-repeat="x in similarities"></div>
+            </div>
+          </div>
+          <!-- Visualizacion Contenido -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+
+
+  <!-- //////////////////////////////////TAB 2////////////////////////////////// -->
+  <!-- //////////////////////////////////TAB 2////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==2">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de usuarios con permisos en el módulo
+          ({{List2.listadoFuncionarios.length}})</strong>
+
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="agregarUsuario()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar Usuario</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoFuncs()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="Hoja2.Filtro">
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>#</th>
+          <!-- <th>Cédula</th> -->
+          <th>Funcionario</th>
+          <th>Estado</th>
+          <th>Admin</th>
+          <th>PBS</th>
+          <th>Menor Valor</th>
+          <th>Mayor Valor</th>
+          <th>Altocosto/Paquetes</th>
+          <th>Gestion Riesgos</th>
+          <th>Fact. Pendientes</th>
+          <th>Fact. Procesadas</th>
+          <th>Valor Pendiente</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in List2.listadoFuncionarios | filter:Hoja2.Filtro">
+            <td>{{x.EFAC_CEDULA}}</td>
+            <td>
+              {{x.TERC_NOMBRE}}
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="icon-circle {{x.EFAC_ESTADO == 'A' ? 'Con_pulse_A':'Con_pulse_X'}}"
+                  style="color: transparent;font-size: 9px;"
+                  ng-style="{ 'background-color': (x.EFAC_ESTADO == 'A') ? 'rgb(3, 197, 20) !important;': 'rgb(245, 75,75) !important'}"
+                  ng-click="modificarUsuario(x, 'EFAC_ESTADO', x.EFAC_ESTADO == 'A' ? 'I' : 'A')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_ESTADO == 'A' ?
+                  'Activo' : 'Inactivo'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_ADMIN == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'EFAC_ADMIN', x.EFAC_ADMIN == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_ADMIN == 'S' ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_PBS == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'EFAC_PBS', x.EFAC_PBS == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_PBS == 'S' ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_MENOR_VALOR == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'EFAC_MENOR_VALOR', x.EFAC_MENOR_VALOR == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_MENOR_VALOR == 'S'
+                  ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_MAYOR_VALOR == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'EFAC_MAYOR_VALOR', x.EFAC_MAYOR_VALOR == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_MAYOR_VALOR == 'S'
+                  ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_ALTOCOSTO_PAQUETES == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'EFAC_ALTOCOSTO_PAQUETES', x.EFAC_ALTOCOSTO_PAQUETES == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_ALTOCOSTO_PAQUETES
+                  == 'S' ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_GESTION_RIESGOS == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarUsuario(x, 'EFAC_GESTION_RIESGOS', x.EFAC_GESTION_RIESGOS == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_GESTION_RIESGOS ==
+                  'S' ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>{{x.EFAN_FACTURAS_PENDIENTES}}</td>
+            <td>{{x.EFAN_FACTURAS_PROCESADAS}}</td>
+            <td>$ {{FormatPesoNumero(x.EFAN_VALOR_PENDIENTES)}}</td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+  </div>
+  <!-- ///// -->
+  <!-- ///// -->
+  <!-- //////////////////////////////////TAB 2////////////////////////////////// -->
+  <!-- //////////////////////////////////TAB 2////////////////////////////////// -->
+  <!-- TABLA -->
+  <div class="row dashboard-wrapper content-container white" ng-show="Tabs==3">
+
+    <div class="foot4 divcardcustom default-linear-gradient">
+      <div class="text-al divcardcustom2">
+        <strong class="switch" style="font-weight:600">Listado de prestadores con permisos en el módulo
+          ({{List3.listadoIPS.length}})</strong>
+
+        <div class="tooltip" style="margin: 0px 5px 0px 5px;">
+          <i class="icon-user-plus cursor-pointer" ng-click="agregarIPS()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Agregar IPS</span>
+        </div>
+        <div class="tooltip">
+          <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoIPS()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="Hoja3.Filtro">
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>#</th>
+          <!-- <th>Cédula</th> -->
+          <th>IPS</th>
+          <th>Estado</th>
+          <th>Altocosto/Paquetes</th>
+          <th>Gestion Riesgos</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in List3.listadoIPS | filter:Hoja3.Filtro">
+            <td>{{x.EFAC_NIT}}</td>
+            <td>{{x.TERC_NOMBRE}}</td>
+            <td>
+              <div class="tooltip">
+                <i class="icon-circle {{x.EFAC_ESTADO == 'A' ? 'Con_pulse_A':'Con_pulse_X'}}"
+                  style="color: transparent;font-size: 9px;"
+                  ng-style="{ 'background-color': (x.EFAC_ESTADO == 'A') ? 'rgb(3, 197, 20) !important;': 'rgb(245, 75,75) !important'}"
+                  ng-click="modificarIPS(x, 'EFAC_ESTADO', x.EFAC_ESTADO == 'A' ? 'I' : 'A')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_ESTADO == 'A' ?
+                  'Activo' : 'Inactivo'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_ALTOCOSTO_PAQUETES == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarIPS(x, 'EFAC_ALTOCOSTO_PAQUETES', x.EFAC_ALTOCOSTO_PAQUETES == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_ALTOCOSTO_PAQUETES
+                  == 'S' ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+            <td>
+              <div class="tooltip">
+                <i class="{{x.EFAC_GESTION_RIESGOS == 'S' ? 'icon-ok-circle' : 'icon-cancel-circled2'}} default-color c-pointer"
+                  style="font-size: 16px;"
+                  ng-click="modificarIPS(x, 'EFAC_GESTION_RIESGOS', x.EFAC_GESTION_RIESGOS == 'S' ? 'N' : 'S')"></i>
+                <span class="tooltiptext"
+                  style="font-size: 12px;width: 70px;margin-left: -36px;margin-bottom: 4px;">{{x.EFAC_GESTION_RIESGOS ==
+                  'S' ?
+                  'Si' :
+                  'No'}}</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+  </div>
+
+  <style>
+    .switch label .lever.check-c:after {
+      background-color: #ff9100;
+    }
+
+
+    .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #009005;
+      left: 24px;
+    }
+
+    .switch label {
+      color: #cccccc;
+    }
+
+    .switch label>span.activo {
+      color: #ffffff !important;
+    }
+
+    table th,
+    table td {
+      text-align: center;
+    }
+
+
+    /* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    .Con_pulse_A {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_A 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_A {
+      0% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.7), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 15px rgba(3, 197, 20, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(3, 197, 20, 0.0), 0 0 0 0 rgba(3, 197, 20, 0);
+      }
+    }
+
+    .Con_pulse_X {
+      border-radius: 50%;
+      color: #FFF;
+      animation: animate-pulse_X 5s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes animate-pulse_X {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.7), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      40% {
+        box-shadow: 0 0 0 15px rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0.7);
+      }
+
+      80% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 15px rgba(245, 75, 75, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 75, 75, 0.0), 0 0 0 0 rgba(245, 75, 75, 0);
+      }
+    }
+
+    select:disabled {
+      color: black;
+    }
+
+    .default-linear-gradient {
+      border-radius: 0px !important;
+    }
+
+    .btn-floating .default-linear-gradient {
+      border-radius: 10px !important;
+    }
+
+    .Valid_Campo {
+      border: 1px solid red !important;
+    }
+
+    .text-upper {
+      text-transform: uppercase !important;
+    }
+
+    .tabs {
+      height: 30px !important;
+    }
+
+    .tabs .tab {
+      line-height: 30px !important;
+      height: 30px !important;
+    }
+
+
+    .label-new>label {
+      display: table;
+    }
+
+    #toast-container .toast {
+      border-radius: 10px !important;
+      font-weight: 600;
+      text-align: center !important;
+      word-break: keep-all;
+      padding: 10px 25px;
+      width: auto;
+      background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
+    }
+
+    #toast-container .success {
+      background: linear-gradient(to bottom left, #0fda00, #007217, #0fda00);
+    }
+
+
+    /* //////////////////////////////////////////////////////////////////////////////// */
+  </style>
+</div>

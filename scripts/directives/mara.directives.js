@@ -4957,6 +4957,34 @@
     };
   }
 
+  angular.module('GenesisApp').directive('facturasdigitales', facturasdigitales);
+  facturasdigitales.$inject = ['$rootScope', '$compile'];
+  function facturasdigitales($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/Cuentasmedicas/adminfacturasdigitales.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'adminfacturasdigitalesController'
+    };
+  }
+
+  angular.module('GenesisApp').directive('gestionsoportesipscontr', gestionsoportesipscontr);
+  gestionsoportesipscontr.$inject = ['$rootScope', '$compile'];
+  function gestionsoportesipscontr($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/contratacion/gestionsoportesipscontr.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'gestionsoportesipscontrController'
+    };
+  }
+
   alimento.$inject = ['$rootScope', '$compile'];
   function alimento($rootScope, $compile) {
     return {

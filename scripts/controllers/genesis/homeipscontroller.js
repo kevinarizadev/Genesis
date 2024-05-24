@@ -81,6 +81,52 @@ angular.module('GenesisApp').controller('inicioipsController', ['$scope', 'notif
     notification.getNotification('info', res.data, 'Notificación');
   })
 
+
+  $http({
+    method: 'POST',
+    url: "php/contratacion/funccontratacion.php",
+    data: {
+      function: 'P_VALIDA_PENDIENTE_SOPORTE',
+      nit: sessionStorage.getItem('nit')
+    }
+  }).then(function ({ data }) {
+    if (data.codigo == '0') {
+
+      swal({
+        title: 'Mensaje',
+        text: data.nombre,
+        type: 'info',
+        // showCancelButton: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Continuar'
+      }).then((result) => {
+        if (result) {
+        }
+      })
+      // notification.getNotification('info', data.nombre, 'Notificación');
+    }
+
+  })
+
+  // swal({
+  //   title: 'Mensaje',
+  //   text: 'Tienes documentos pendientes por firmar: 1',
+  //   type: 'info',
+  //   // showCancelButton: true,
+  //   allowOutsideClick: false,
+  //   allowEscapeKey: false,
+  //   confirmButtonColor: '#3085d6',
+  //   cancelButtonColor: '#d33',
+  //   confirmButtonText: 'Continuar'
+  // }).then((result) => {
+  //   if (result) {
+  //   }
+  // })
+
+
   // }
 
 }])

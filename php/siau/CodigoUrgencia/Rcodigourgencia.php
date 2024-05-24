@@ -78,11 +78,13 @@
 		require_once('../../config/dbcon_prod.php');
 		global $request;
 		$tipodocumento = $request->tipodocumento;
-		$documento 		 = $request->documento;
+		$documento= $request->documento;
+		$nit= $request->nit;
 
-		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.P_OBTENER_DATOS_BASICOS(:v_ptipodocumento,:v_pdocumento,:v_json_row); end;');
+		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.P_OBTENER_DATOS_BASICOS(:v_ptipodocumento,:v_pdocumento,:v_pnit,:v_json_row); end;');
 		oci_bind_by_name($consulta,':v_ptipodocumento',$tipodocumento);
 		oci_bind_by_name($consulta,':v_pdocumento',$documento);
+		oci_bind_by_name($consulta,':v_pnit',$nit);
 	  $clob = oci_new_descriptor($c,OCI_D_LOB);
 		oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
 		oci_execute($consulta,OCI_DEFAULT);

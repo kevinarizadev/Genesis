@@ -270,6 +270,14 @@
                       <button class="btn white-text" type="button" style="padding-right: 5px; padding-left: 5px;font-size: .7em;"
                         ng-click="descargarExportadoPQRAuts()">Exp. Autorizaciones</button>
                     </div>
+                    <div class="col">
+                      <button class="btn white-text" type="button" style="padding-right: 5px; padding-left: 5px;font-size: .7em;"
+                        ng-click="descargarExportadoPQRClasificadas()">Exp. Clasificadas</button>
+                    </div>
+                    <div class="col">
+                      <button class="btn white-text" type="button" style="padding-right: 5px; padding-left: 5px;font-size: .7em;"
+                        ng-click="descargarExportadoReabiertas()">Exp. Reabiertas</button>
+                    </div>
                   </div>
 
                   <div class="col s3 right">
@@ -576,8 +584,22 @@
                           <b>ESTADO</b>
                         </div>
                         <div class="text-center">
-                          <span class="status" style="background-color: {{pqr.ESTADO_CLASE}}">
+                          <div>
+                            <span class="status" style="background-color: {{pqr.ESTADO_CLASE}}">
                             <b>{{pqr.ESTADO =='' ? '-': pqr.ESTADO}}</b></span>
+                          </div>
+                          <div ng-if="pqr.REABIERTA == 'S'">
+                            <span class="status" style="background-color: red">
+                            <b>REABIERTA</b></span>
+                          </div>
+                          <div class="c-pointer text-bold"
+                            ng-if="pqr.ESTADO == 'PROCESADO' && tempfilterOptions == 'PQR'"
+                            title="Reabrir PQR"
+                            ng-click="reabrirPQRModal(pqr)">
+                            <i class="icon-ccw">REABRIR</i>
+                          </div>
+
+
                         </div>
                       </div>
                       <div class="col s4" style="font-size: 12px;padding-bottom: 10px;">
@@ -813,6 +835,7 @@
                                 <strong>
                                   <h6>{{item.nombre}}
                                     <small>{{item.fecha}}</small>
+                                    <small class="right" ng-if="item.reabierta">REABIERTA #{{item.reabierta}}</small>
                                     <br>
                                     <small ng-if="item.fase">FASE: {{item.fase}}</small>
                                   </h6>
@@ -1464,6 +1487,49 @@
       </div>
     </div>
 
+    <div id="modalreabrirPQR" class="modal" style="overflow: hidden;width: 70%;max-height: max-content;">
+      <div class="modal-content" style="padding: 0px !important;">
+        <div class="foot4 divcardcustom default-linear-gradient" style="border-radius: 0px;">
+          <div class="text-al divcardcustom2">
+            <strong class="switch" style="font-weight:600">Reabrir PQR</strong>
+            <i style="cursor:pointer;" ng-click="closeModal()"
+              class="material-icons white-text right">close</i>
+          </div>
+        </div>
+        <div class="row" style="overflow-y: auto;">
+          <div class="col s6">
+            <label><strong>Fecha Reapertura</strong></label>
+            <div class="form-group">
+              <input type="date" class="validate ng-pristine ng-valid ng-valid-max ng-touched"
+                ng-model="formReabrirPQRModal.fecha" max="{{SysDay | date:'yyyy-MM-dd'}}">
+            </div>
+          </div>
+
+          <div class="col s6">
+            <label><strong>Motivo</strong></label>
+            <select class="select-chosen-eps select  pt-select-pqr black-text"
+              ng-model="formReabrirPQRModal.motivo">
+              <option value="" disabed>SELECCIONAR</option>
+              <option value="{{x.PQRN_CODIGO}}" ng-repeat="x in formReabrirPQRModal.listadoMotivos">{{x.PQRV_NOMBRE}}</option>
+            </select>
+          </div>
+
+          <div class="col s12">
+            <label><strong>Observación</strong></label>
+              <textarea id="textareaSeg3" style="background-color: #f1f3f4;" placeholder="Escribe una Observación..."
+              maxlength="4000" text-description ng-model="formReabrirPQRModal.observacion"></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="center">
+            <button class="waves-effect waves-light btn-large white-text" type="button"
+              ng-click="reabrirPQR()">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <style>
 
     #textareaSeg {
@@ -1472,6 +1538,11 @@
       text-align: justify;
     }
     #textareaSeg2 {
+      resize: none;
+      height: 100px;
+      text-align: justify;
+    }
+    #textareaSeg3 {
       resize: none;
       height: 100px;
       text-align: justify;

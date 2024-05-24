@@ -1415,3 +1415,154 @@ function cambiarsupervisor()
 	}
 	oci_close($c);
 }
+
+
+
+
+function P_LISTA_TIPOS_ADJUNTOS(){
+  require_once('../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTR.P_LISTA_TIPOS_ADJUNTOS(:v_pminuta,:v_presponse); end;');
+  oci_bind_by_name($consulta,':v_pminuta',$request->minuta);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function P_LISTA_SOPORTES_CONTRATOS_EPS(){
+  require_once('../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTR.P_LISTA_SOPORTES_CONTRATOS_EPS(:v_pnit,:v_pdocumento,:v_pnumero,:v_pubicacion,:v_presponse); end;');
+  oci_bind_by_name($consulta,':v_pnit',$request->nit);
+  oci_bind_by_name($consulta,':v_pdocumento',$request->documento);
+  oci_bind_by_name($consulta,':v_pnumero',$request->numero);
+  oci_bind_by_name($consulta,':v_pubicacion',$request->ubicacion);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function P_LISTA_SOPORTES_CONTRATOS_IPS(){
+  require_once('../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTR.P_LISTA_SOPORTES_CONTRATOS_IPS(:v_pnit,:v_presponse); end;');
+  oci_bind_by_name($consulta,':v_pnit',$request->nit);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function P_LISTA_SOPORTES_CONTRATOS_DETALLE(){
+  require_once('../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTR.P_LISTA_SOPORTES_CONTRATOS_DETALLE(:v_pnit,:v_prenglon,:v_presponse); end;');
+  oci_bind_by_name($consulta,':v_pnit',$request->nit);
+  oci_bind_by_name($consulta,':v_prenglon',$request->renglon);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+
+
+function P_INSERTAR_SOPORTE_CONTRATO()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTR.P_INSERTAR_SOPORTE_CONTRATO(:v_json_in,:v_cantidad,:v_json_row); end;');
+  oci_bind_by_name($consulta, ':v_json_in', $request->datos);
+  oci_bind_by_name($consulta, ':v_cantidad', $request->cantidad);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}
+
+function cargarSoporteAdjuntoEnv()
+{
+  require('../sftp_cloud/UploadFile.php');
+  global $request;
+  $archivo = $request->base64;
+  $path = 'Contratacion/Soportes';
+  if(isset($request->ruta)){
+    $x_ruta = explode('/', $request->ruta);
+    $name = $x_ruta[count($x_ruta)-1];
+  }else{
+    $path = $path.'/'.$request->carpeta;
+    $hoy = date('dmY_His');
+    $name = $request->name .  '_' . $hoy .'.'.$request->ext;
+  }
+  list(, $archivo) = explode(';', $archivo); // Proceso para traer el Base64
+  list(, $archivo) = explode(',', $archivo); // Proceso para traer el Base64
+  $base64 = base64_decode($archivo); // Proceso para traer el Base64
+  file_put_contents('../../temp/' . $name, $base64); // El Base64 lo guardamos como archivo en la carpeta temp
+  $subio = UploadFile($path, $name);
+  echo $subio;
+}
+
+function P_U_SOPORTE_CONTRATO()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTR.P_U_SOPORTE_CONTRATO(:v_json_in,:v_cantidad,:v_json_row); end;');
+  oci_bind_by_name($consulta, ':v_json_in', $request->datos);
+  oci_bind_by_name($consulta, ':v_cantidad', $request->cantidad);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}
+
+function P_VALIDA_PENDIENTE_SOPORTE()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTR.P_VALIDA_PENDIENTE_SOPORTE(:v_nit,:v_json_row); end;');
+  oci_bind_by_name($consulta, ':v_nit', $request->nit);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  } else {
+    echo 0;
+  }
+  oci_close($c);
+}

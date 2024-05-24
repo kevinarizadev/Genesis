@@ -10,22 +10,11 @@ angular.module('GenesisApp')
         $('.tabs').tabs();
       }, 700);
       $scope.SysDay = new Date();
-
-      setTimeout(() => {
-        if ($(window).width() < 1100) {
-          document.querySelector("#modalpqr").style.zoom = 0.7;
-        }
-        if ($(window).width() > 1100) {
-          document.querySelector("#modalpqr").style.zoom = 0.8;
-        }
-      }, 1500);
     });
-
-    $scope.mostrarGestion = false;
 
     $scope.listIps = [];
     $scope.listMedicamentos = [];
-    $scope.configTabs = { tab: '' };
+    $scope.configTabs = { tab: 'G' };
     $scope.configTimeLime = {
       step1: false, step2: false, step3: false, step4: false
     }
@@ -57,26 +46,24 @@ angular.module('GenesisApp')
     $scope.ipsmedicamento = '';
     $scope.selectips = '';
     $scope.inactivepro = true;
-    console.log($scope.dataPqr)
     $scope.getProcesoSaludPQR = function () {
-      console.log('getProcesoSaludPQR')
       if ($scope.dataPqr) {
         pqrHttp.getProcesoSaludPQR($scope.dataPqr.CODIGO).then(function (res) {
           $scope.procesopqr = res.data;
-          // console.table(res.data);
+          console.table(res.data);
           $scope.mostrarComentarioNuevoIps = false;
           let cont = 0;
           res.data.forEach(e => {
             if (e.comentarioIPS == 'S') {
               cont++
-            } 0
+            }0
           });
-          if (cont > 1 && cont < 5) {
+          if (cont > 1 && cont < 5){
             $scope.mostrarComentarioNuevoIps = true;
           }
 
           $scope.opcionIps = {
-            comentarioNuevoIps: ''
+            comentarioNuevoIps : ''
           }
           setTimeout(() => { $scope.$apply(); }, 500);
           if ($scope.procesopqr.length > 0) {
@@ -92,7 +79,6 @@ angular.module('GenesisApp')
     }
     pqrHttp.getInfoAseguramientoPQR($scope.dataPqr.CODIGO).then(function (response) {
       $scope.dpqr = response.data[0];
-      console.log("$scope.dpqr", $scope.dpqr);
 
     })
     pqrHttp.getNegacionPQR($scope.dataPqr.CODIGO).then(function (response) {
@@ -107,7 +93,7 @@ angular.module('GenesisApp')
 
     $scope.getProcesoSaludPQR();
 
-    pqrHttp.getGestionFaseActualSaludPQR($scope.dataPqr.CODIGO, $scope.configTabs.tab, $scope.dataPqr.REABIERTA).then(function (res) {
+    pqrHttp.getGestionFaseActualSaludPQR($scope.dataPqr.CODIGO, $scope.configTabs.tab).then(function (res) {
       // console.log(res.data);
       if (res.data) {
         $timeout(function () {
@@ -186,17 +172,10 @@ angular.module('GenesisApp')
               if (($scope.dataProcesSalud.adjComment == null || $scope.dataProcesSalud.adjComment == '')) {
                 $scope.rqAjComment = true;
               } else {
-                // const fase = $scope.dpqr.MARCA_REABIERTA == 'S' ? 'S' : 'A';
-                if ($scope.dpqr.MARCA_REABIERTA == 'S') {
-                  $scope.configTabs.tab = 'C';
-                  $scope.configTimeLime.step2 = true;//Activa step2
-                  $scope.configTimeLime.step5 = true;
-                } else {
-                  $scope.configTabs.tab = 'R';
-                  $scope.configTimeLime.step2 = true;//Activa step2
-                  $scope.configTimeLime.step3 = false;
-                  $scope.configTimeLime.step4 = false;
-                }
+                $scope.configTabs.tab = 'R';
+                $scope.configTimeLime.step2 = true;//Activa step2
+                $scope.configTimeLime.step3 = false;
+                $scope.configTimeLime.step4 = false;
                 $scope.rqAjComment = false;
                 $timeout(function () {
                   $scope.sendA == true ? $scope.saveSalud($scope.dataProcesSalud.adjComment, $scope.dataProcesSalud.adjuntarFile, $scope.dataProcesSalud.adjuntarExt, 'A') : null;
@@ -365,15 +344,6 @@ angular.module('GenesisApp')
             }
           }
           break;
-        case 'Reabierta':
-          if (($scope.dataProcesSalud.adjComment == null || $scope.dataProcesSalud.adjComment == '')) {
-            $scope.rqAjComment = true;
-          } else {
-            $timeout(function () {
-              $scope.saveSalud($scope.dataProcesSalud.adjComment, $scope.dataProcesSalud.adjuntarFile, $scope.dataProcesSalud.adjuntarExt, 'S');
-            });
-          }
-          break;
       }
     }
     $scope.getActiveTab = function (tab) {
@@ -498,7 +468,6 @@ angular.module('GenesisApp')
           'motivo_altocosto': $scope.dataProcesSalud.motivoAltoCosto,
           'motivo_patologia': $scope.dataProcesSalud.motivoPatologia,
           'ftp': '3',
-          'reabierta': $scope.dataPqr.REABIERTA,
           // 'json_auts': $scope.listadoAutsAfil.length == 0 ? [] : $scope.listadoAutsAfilSeleccionados,
           // 'json_auts_cant': $scope.listadoAutsAfil.length == 0 ? '0' : $scope.listadoAutsAfilSeleccionados.length
         });
@@ -791,7 +760,7 @@ angular.module('GenesisApp')
         data: { function: 'p_lista_productos_pqr', pqr: $scope.dataPqr.CODIGO }
       }).then(function ({ data }) {
         $scope.listServiciosModal = data;
-
+        
         $scope.pqrServiciosModal.status = 0;
         if (x) {
           setTimeout(() => {
@@ -932,270 +901,6 @@ angular.module('GenesisApp')
       $scope.saveSalud($scope.opcionIps.comentarioNuevoIps, null, null, 'A')
     }
 
-    ///////////////////////
-    ///////////////////////
-
-    $scope.limpiarSubclasificacionPQR = function () {
-      $scope.formSubclasificacionPQR = {
-        status: 0,
-
-        motivo: '',
-        motivo_Oblig: '',
-        producto: '',
-        tipoContrato: '',
-        aut: '',
-        prestador: '',
-        procedente: ''
-      }
-      setTimeout(() => { $scope.$apply(); }, 500);
-    }
-    $scope.limpiarSubclasificacionPQR()
-    $scope.listSubclasificacionPQR = [];
-    $scope.listSubProductosPQR = [];
-    $scope.listSubPrestadorPQR = [];
-
-    $scope.listaMotivosReclasificacion = [];
-    $scope.obtenerlistSubclasificacionPQR = function () {
-
-      $http({
-        method: 'POST',
-        url: "php/siau/pqr/Rpqr.php",
-        data: {
-          function: "p_obtener_motivos_reclasificacion"
-        }
-      }).then(function ({ data }) {
-        if (data && data.toString().substr(0, 3) != '<br') {
-          $scope.listSubclasificacionPQR = data;
-        } else {
-          swal("Mensaje", data, "warning").catch(swal.noop);
-        }
-      })
-      setTimeout(() => { $scope.$apply(); }, 500);
-    }
-
-    $scope.obtenerlistSubclasificacionPQR();
-
-    $scope.obtenerProductoServicio = function () {
-
-      $scope.listSubProductosPQR = [];
-
-      if ($scope.formSubclasificacionPQR.producto == '') {
-        swal("Mensaje", 'Debe digitar un producto', "warning").catch(swal.noop);
-        return;
-      }
-
-      swal({
-        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
-        width: 200,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        animation: false
-      });
-      $http({
-        method: 'POST',
-        url: "php/siau/pqr/Rpqr.php",
-        data: {
-          function: "p_buscar_productos_cierre",
-          coinc: $scope.formSubclasificacionPQR.producto,
-          // regimen: $scope.pqrData.User.regimen,
-          edadDias: $scope.dpqr.EDAD_DIAS,
-          sexoCodigo: $scope.dpqr.SEXO
-        }
-      }).then(function ({ data }) {
-        if (data && data.toString().substr(0, 3) != '<br') {
-          if (data.length && data[0].CODIGO != '-1') {
-            swal.close();
-            $scope.listSubProductosPQR = data;
-            if (data.length == 1) {
-              $scope.formSubclasificacionPQR.producto = `${data[0].CODIGO}~${data[0].NOMBRE}`;
-              return
-            }
-          } else {
-            $scope.listSubProductosPQR = [];
-            swal("Mensaje", 'Sin datos para mostrar', "warning").catch(swal.noop);
-          }
-        } else {
-          swal("Mensaje", data, "warning").catch(swal.noop);
-        }
-      })
-      setTimeout(() => { $scope.$apply(); }, 500);
-    }
-
-    $scope.obtenerPrestador = function () {
-      if ($scope.formSubclasificacionPQR.prestador.length > 3) {
-        swal({
-          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
-          width: 200,
-          allowOutsideClick: false,
-          allowEscapeKey: false,
-          showConfirmButton: false,
-          animation: false
-        });
-        $http({
-          method: 'POST',
-          url: "php/siau/pqr/Rpqr.php",
-          data: {
-            function: "P_LISTA_IPS_RECLASIFICACION",
-            ips: $scope.formSubclasificacionPQR.prestador,
-          }
-        }).then(function ({ data }) {
-          if (data && data.toString().substr(0, 3) != '<br') {
-            swal.close();
-            $scope.listSubPrestadorPQR = data;
-            if (data.length == 1) {
-              $scope.formSubclasificacionPQR.prestador = `${data[0].CODIGO}~${data[0].NOMBRE}`;
-            }
-            if (data.length == 0) {
-              swal("Mensaje", 'Sin datos para mostrar', "warning").catch(swal.noop);
-            }
-            setTimeout(() => { $scope.$apply(); }, 500);
-          }
-
-        })
-      }
-    }
-
-
-    $scope.guardarMotivosReclasificacion = function () {
-      if (!$scope.formSubclasificacionPQR.motivo) {
-        swal("Mensaje", 'Debe seleccionar el motivo', "info").catch(swal.noop); return
-      }
-      const obligatorio = $scope.listSubclasificacionPQR[$scope.listSubclasificacionPQR.findIndex(e => e.CODIGO == $scope.formSubclasificacionPQR.motivo)].OBLIGATORIO;
-
-      if (obligatorio == 'S') {
-        if ($scope.formSubclasificacionPQR.producto == '' && $scope.formSubclasificacionPQR.autorizacion == '' || $scope.formSubclasificacionPQR.prestador == '' || $scope.formSubclasificacionPQR.procedente == '') {
-          swal("Mensaje", 'Debe diligenciar los campos', "info").catch(swal.noop);
-          return
-        }
-      }
-
-      const producto = $scope.formSubclasificacionPQR.producto.indexOf('~') ? $scope.formSubclasificacionPQR.producto.split('~')[0] : ''
-      const prestador = $scope.formSubclasificacionPQR.prestador.indexOf('~') ? $scope.formSubclasificacionPQR.prestador.split('~')[0] : ''
-
-
-      var data = [
-        {
-          accion: 'I',
-          numero: $scope.dataPqr.CODIGO,
-          motivo_reclasificacion: $scope.formSubclasificacionPQR.motivo,
-          producto: producto,
-          tipo_contrato: '',
-          autorizacion: $scope.formSubclasificacionPQR.aut,
-          prestador: prestador,
-          procedente: $scope.formSubclasificacionPQR.procedente,
-          responsable: $scope.responsable,
-        }
-      ]
-      swal({
-        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
-        width: 200,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        animation: false
-      });
-
-      $http({
-        method: 'POST',
-        url: "php/siau/pqr/Rpqr.php",
-        data: {
-          function: "P_UI_MOTIVOS_RECLASIFICACION",
-          json: JSON.stringify(data),
-        }
-      }).then(function ({ data }) {
-        console.log(data)
-        if (data && data.toString().substr(0, 3) != '<br') {
-          if (data.codigo == 0) {
-            swal("Mensaje", data.mensaje, "success").catch(swal.noop);
-            $scope.limpiarSubclasificacionPQR()
-            $scope.listarMotivosReclasificacion();
-            setTimeout(() => { $scope.$apply(); }, 500);
-          } else {
-            swal("Mensaje", data.mensaje, "warning").catch(swal.noop);
-          }
-        } else {
-          swal("Mensaje", data, "warning").catch(swal.noop);
-        }
-      })
-    }
-
-    $scope.listarMotivosReclasificacion = function () {
-      $scope.listaMotivosReclasificacion = []
-      $http({
-        method: 'POST',
-        url: "php/siau/pqr/Rpqr.php",
-        data: {
-          function: "P_LISTA_MOTIVOS_RECLASIFICACION",
-          numero: $scope.dataPqr.CODIGO
-        }
-      }).then(function ({ data }) {
-        if (data && data.toString().substr(0, 3) != '<br') {
-          swal.close();
-          $scope.listaMotivosReclasificacion = data;
-          setTimeout(() => { $scope.$apply(); }, 500);
-        }
-
-      })
-    }
-    $scope.listarMotivosReclasificacion()
-
-    $scope.quitarMotivosReclasificacion = function (index) {
-      const datos = $scope.listaMotivosReclasificacion[index];
-
-      var data = [
-        {
-          accion: 'X',
-          numero: $scope.dataPqr.CODIGO,
-          motivo_reclasificacion: datos.MOTIVO_RECLASIFICACION.split('-')[0],
-          producto: datos.PRODUCTO.split('-')[0],
-          responsable: $scope.responsable
-        }
-      ]
-      swal({
-        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
-        width: 200,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        animation: false
-      });
-
-      $http({
-        method: 'POST',
-        url: "php/siau/pqr/Rpqr.php",
-        data: {
-          function: "P_UI_MOTIVOS_RECLASIFICACION",
-          json: JSON.stringify(data),
-        }
-      }).then(function ({ data }) {
-        console.log(data)
-        if (data && data.toString().substr(0, 3) != '<br') {
-          if (data.codigo == 0) {
-            swal("Mensaje", data.mensaje, "success").catch(swal.noop);
-            $scope.listarMotivosReclasificacion();
-            setTimeout(() => { $scope.$apply(); }, 500);
-          } else {
-            swal("Mensaje", data.mensaje, "warning").catch(swal.noop);
-          }
-        } else {
-          swal("Mensaje", data, "warning").catch(swal.noop);
-        }
-      })
-    }
-
-    ///////////////////////
-    ///////////////////////
-
-    $scope.activarTabs = function () {
-      $scope.mostrarGestion = true;
-
-      if ($scope.configTabs.tab == 'G' && !$scope.listaMotivosReclasificacion.length) {
-        $scope.mostrarGestion = false;
-      }
-    }
-
-    $scope.activarTabs()
 
     $scope.$watch('showDataPQR', function () {
       if ($scope.showDataPQR == false) {

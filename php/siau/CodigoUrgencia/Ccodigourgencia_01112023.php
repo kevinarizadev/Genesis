@@ -19,10 +19,9 @@
 		$hijo							 = $request->hijo;
 		$ruta = $request->ruta;
 		$aprobacion = $request->aprobacion;
-		$motivorechazo = $request->motivorechazo;
 		$observacionnegacion = $request->observacionnegacion;
 
-		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.P_INSERTA_COD_URGENCIA(:v_pcoddiag1,:v_pcoddiag2,:v_pubicacion,:v_pdocsolicitante,:v_pnitips,:v_ptipodocpaciente,:v_pdocpaciente,:v_pobservacion,:v_pfechaingreso,:v_prol,:v_phijo,:v_pruta,:v_paccion,:v_pnegacion,:v_pmotivo_rechazo,:v_pinformacion); end;');
+		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.P_INSERTA_COD_URGENCIA(:v_pcoddiag1,:v_pcoddiag2,:v_pubicacion,:v_pdocsolicitante,:v_pnitips,:v_ptipodocpaciente,:v_pdocpaciente,:v_pobservacion,:v_pfechaingreso,:v_prol,:v_phijo,:v_pruta,:v_paccion,:v_pnegacion,:v_pinformacion); end;');
 		oci_bind_by_name($consulta,':v_pcoddiag1',$coddiag1);
 		oci_bind_by_name($consulta,':v_pcoddiag2',$coddiag2);
 		oci_bind_by_name($consulta,':v_pubicacion',$ubicacion);
@@ -37,7 +36,6 @@
 		oci_bind_by_name($consulta,':v_pruta',$ruta);
 		oci_bind_by_name($consulta,':v_paccion',$aprobacion);
 		oci_bind_by_name($consulta,':v_pnegacion',$observacionnegacion);
-		oci_bind_by_name($consulta,':v_pmotivo_rechazo',$motivorechazo);
 		$clob = oci_new_descriptor($c,OCI_D_LOB);
 		oci_bind_by_name($consulta, ':v_pinformacion', $clob,-1,OCI_B_CLOB);
 
@@ -57,20 +55,6 @@
 
 		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.P_OBTENER_IPS(:v_pips,:v_json_row); end;');
 		oci_bind_by_name($consulta,':v_pips',$ips);
-		$clob = oci_new_descriptor($c,OCI_D_LOB);
-		oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
-		oci_execute($consulta,OCI_DEFAULT);
-		if (isset($clob)) {
-			$json = $clob->read($clob->size());
-			echo $json;
-		}else{
-			echo 0;
-		}
-		oci_close($c);
-	}
-	function MotivosRechazos(){
-		require_once('../../config/dbcon_prod.php');
-		$consulta = oci_parse($c,'BEGIN PQ_GENESIS_CD.p_lista_motivos_rechazo(:v_json_row); end;');
 		$clob = oci_new_descriptor($c,OCI_D_LOB);
 		oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
 		oci_execute($consulta,OCI_DEFAULT);

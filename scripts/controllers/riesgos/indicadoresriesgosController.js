@@ -1043,7 +1043,7 @@ angular.module('GenesisApp')
                   },
                   {
                     name: 'Capacidad',
-                    color: 'rgba(255, 0, 0)',
+                    color: 'rgba(255, 0, 0, 0.3)',
                     dashStyle: 'ShortDash',
                     lineWidth: 3,
                     data: [[0, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))]],
@@ -1122,7 +1122,7 @@ angular.module('GenesisApp')
                   },
                   {
                     name: 'Capacidad',
-                    color: 'rgba(255, 0, 0)',
+                    color: 'rgba(255, 0, 0, 0.3)',
                     dashStyle: 'ShortDash',
                     lineWidth: 3,
                     data: [[0, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))], [dataSerie.length - 1, parseFloat($scope.modalGraficoVars.BINV_CAPACIDAD.toString().replace(',', '.'))]],
@@ -1491,12 +1491,13 @@ angular.module('GenesisApp')
 
       $scope.obtenerEstadoGestionIndicador = function (tipo = null) {
         const tipos = {
-          CAPACIDAD: "etiquetaRoja",
+          CAPACIDAD: "etiquetaRojaClara",
           TOLERANCIA: "etiquetaNaranja",
           APETITO: "etiquetaVerde",
-          MAXIMO: "etiquetaGris"
+          MAXIMO: "etiquetaRoja",
+          CAPACIDAD_S: "etiquetaRoja",
         }
-        return tipos[tipo] || "Ninguno";
+        return tipos[tipo] || "etiquetaGris";
       }
 
       $scope.obtenerMesNombre = function (tipo = null, longitud = 3) {
