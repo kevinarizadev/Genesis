@@ -3004,6 +3004,9 @@ angular.module('GenesisApp')
         $window.open('views/contratacion/formatos/anexo8.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
+      $scope.generaAnexo9 = function () {
+        $window.open('views/contratacion/formatos/anexo9.xlsx');
+      }
       $scope.generaAnexo11 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo11.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
@@ -3165,7 +3168,7 @@ angular.module('GenesisApp')
               if (result) {
 
                 swal({
-                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando soportes...</p>',
                   width: 200,
                   allowOutsideClick: false,
                   allowEscapeKey: false,
@@ -3567,7 +3570,7 @@ angular.module('GenesisApp')
               if (result) {
 
                 swal({
-                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando soportes...</p>',
                   width: 200,
                   allowOutsideClick: false,
                   allowEscapeKey: false,

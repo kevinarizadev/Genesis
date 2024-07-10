@@ -91,9 +91,18 @@
         <span>
           <i class="icon-arrows-ccw default-color cursor-pointer" title="Refrescar" ng-click="listarGlosasIPS()"></i>
           Listado de Glosas ({{Lista_Glosa.length}})
-          <i class="icon-search-2 default-color cursor-pointer" title="Encontrar Factura" ng-click="modalBuscarFacturaNg()"></i>
+          <i class="icon-search-2 default-color cursor-pointer" title="Encontrar Factura"
+            ng-click="modalBuscarFacturaNg()"></i>
         </span>
 
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!checkPBS}" class="activo">PBS</span>
+            <input type="checkbox" ng-init="checkPBS = false" ng-model="checkPBS" ng-change="ngCheckPBS()" class="ng-pristine ng-valid ng-touched">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':checkPBS}">NOPBS</span>
+          </label>
+        </div>
 
         <select class="select-default-new input-out-new m-l" style="box-shadow: none;width: 11%;" watch
           ng-model="filtroEstado" ng-change="filter()">
@@ -125,6 +134,7 @@
                 <th style="text-align:center;">IPS</th>
                 <th style="text-align:center;">FACTURA NG</th>
                 <th style="text-align:center;">CANTIDAD</th>
+                <th style="text-align:center;">PBS</th>
                 <th style="text-align:center;">TOTAL FACTURA</th>
                 <th style="text-align:center;">TOTAL GLOSA</th>
                 <!-- <th style="text-align:center;">VALOR RETENCION</th> -->
@@ -148,6 +158,10 @@
                 <td style="text-align:center;">{{X.NIT +'-'+ X.TERC_NOMBRE}}</td>
                 <td style="text-align:center;">{{X.DOC_NOT}}</td>
                 <td style="text-align:center;">{{X.CANTIDAD}}</td>
+                <td style="text-align:center;">
+                  <span class="status teal" ng-if="X.NOTC_CLASE == 'P'">SI</span>
+                  <span class="status green" ng-if="X.NOTC_CLASE == 'N'">NO</span>
+                </td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
                 <!-- <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->
@@ -205,7 +219,7 @@
               </tr>
 
               <tr ng-show="Lista_GlosaTemp.length == 0">
-                <th colspan="12" class="center">
+                <th colspan="13" class="center">
                   No hay Glosas para mostrar
                 </th>
               </tr>
@@ -233,7 +247,7 @@
         <span>
           Listado de Glosas Detalle ({{listadoGlosasDetalle.length}})
           <i class="icon-file-excel default-color cursor-pointer" title="Descargar Excel"
-              ng-click="generalExcel(listadoGlosasDetalle)"></i>
+            ng-click="generalExcel(listadoGlosasDetalle)"></i>
         </span>
         <input type="text" class="margin border-none input-text-new" style="width: 15vw;" ng-model="filtroDetalle"
           placeholder="Buscar en la tabla">
@@ -251,6 +265,7 @@
                 <th style="text-align:center;">NUMERO FD</th>
                 <!-- <th style="text-align:center;">NUMERO GLOSA</th> -->
                 <th style="text-align:center;">FACTURA</th>
+                <th style="text-align:center;">PBS</th>
                 <!-- <th style="text-align:center;">IPS</th> -->
                 <th style="text-align:center;">VALOR FACTURA</th>
                 <th style="text-align:center;">VALOR GLOSA</th>
@@ -270,6 +285,10 @@
                 <!-- <td style="text-align:center;">{{X.DOCUMENTO+'-'+X.NUMERO+'-'+X.UBICACION}}</td> -->
                 <td style="text-align:center;">{{X.DOCUMENTO_FD+'-'+X.NUMERO_FD+'-'+X.UBICACION_FD}}</td>
                 <td style="text-align:center;">{{X.FACTURA}}</td>
+                <td style="text-align:center;">
+                  <span class="status teal" ng-if="X.NOTC_CLASE == 'P'">SI</span>
+                  <span class="status green" ng-if="X.NOTC_CLASE == 'N'">NO</span>
+                </td>
                 <!-- <td style="text-align:center;">{{X.IPS+'-'+X.NIT}}</td> -->
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
@@ -301,7 +320,7 @@
 
               </tr>
               <tr ng-show="listadoGlosasDetalle.length == 0">
-                <th colspan="11" class="center">
+                <th colspan="12" class="center">
                   No hay notificaciones para mostrar
                 </th>
               </tr>
@@ -544,6 +563,7 @@
                 <th style="text-align:center;">IPS</th>
                 <th style="text-align:center;">FACTURA NG</th>
                 <th style="text-align:center;">CANTIDAD</th>
+                <th style="text-align:center;">PBS</th>
                 <th style="text-align:center;">TOTAL FACTURA</th>
                 <th style="text-align:center;">TOTAL GLOSA</th>
                 <!-- <th style="text-align:center;">VALOR RETENCION</th> -->
@@ -560,6 +580,10 @@
                 <td style="text-align:center;">{{X.NIT +'-'+ X.TERC_NOMBRE}}</td>
                 <td style="text-align:center;">{{X.DOC_NOT}}</td>
                 <td style="text-align:center;">{{X.CANTIDAD}}</td>
+                <td style="text-align:center;">
+                  <span class="status teal" ng-if="X.NOTC_CLASE == 'P'">SI</span>
+                  <span class="status green" ng-if="X.NOTC_CLASE == 'N'">NO</span>
+                </td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_FACTURA.toString().replace(',', '.'))}}</td>
                 <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}</td>
                 <!-- <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA_RET.toString().replace(',', '.'))}}</td> -->

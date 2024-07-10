@@ -62,6 +62,10 @@ angular.module('GenesisApp')
         $scope.filtro = '';
         $scope.Lista_Glosa = [];
         $scope.Lista_GlosaTemp = [];
+
+        $scope.Lista_Glosa_PBS = [];
+        $scope.Lista_Glosa_NOPBS = [];
+
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/conciliaciondeglosas.php",
@@ -73,7 +77,13 @@ angular.module('GenesisApp')
                 e.SELECCIONADO = false;
                 e.NOTC_STATUS1 = e.NOTC_STATUS1.trim()
                 e.ESTADO_TEXTO = $scope.obtenerEstado(e.NOTC_STATUS1.trim())
+                if (e.NOTC_CLASE == 'P') {
+                  $scope.Lista_Glosa_PBS.push(e)
+                } else {
+                  $scope.Lista_Glosa_NOPBS.push(e)
+                }
               })
+
 
               $scope.Lista_Glosa = data;
               // $scope.Lista_Glosa = datos;
@@ -94,6 +104,16 @@ angular.module('GenesisApp')
         })
         setTimeout(() => { $scope.$apply(); }, 500);
 
+      }
+
+      $scope.ngCheckPBS = function () {
+        if (!$scope.checkPBS) {
+          $scope.Lista_GlosaTemp = $scope.Lista_Glosa_PBS;
+        } else {
+          $scope.Lista_GlosaTemp = $scope.Lista_Glosa_NOPBS;
+        }
+        $scope.setPage(1);
+        setTimeout(() => { $scope.$apply(); }, 500);
       }
 
 

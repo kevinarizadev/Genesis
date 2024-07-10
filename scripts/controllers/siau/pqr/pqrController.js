@@ -2400,13 +2400,15 @@ angular.module('GenesisApp')
           'HORAS_CIERRE': element.HORAS_CIERRE ? element.HORAS_CIERRE : element.horas_cierre,
           'ORDEN_MEDICA': element.ORDEN_MEDICA ? element.ORDEN_MEDICA : element.orden_medica,
           'RECLAMO_ASEGURADOR': element.RECLAMO_ASEGURADOR ? element.RECLAMO_ASEGURADOR : element.reclamo_asegurador,
+
           // 'fecha_vencimiento_horas' : element.fecha_vencimiento_horas,
           'NIT_PRESTADOR' : element.nit_prestador,
           'FECHA_CREACION' : element.fecha_creacion,
           'FECHA_RADICACION': null,
           'AFEC_REGAFILIACION': '',
           // element.AFEC_REGAFILIACION == 'Contributivo' ? 'C' : 'S'
-          'RIESGO_VIDA': element.RIESGO_VIDA ? (element.RIESGO_VIDA == 'NO' ? 'N' : 'S') : (element.riesgo_vida == 'NO' ? 'N' : 'S')
+          'RIESGO_VIDA': element.RIESGO_VIDA ? (element.RIESGO_VIDA == 'NO' ? 'N' : 'S') : (element.riesgo_vida == 'NO' ? 'N' : 'S'),
+          'AFEC_COD_MPIO': element.AFEC_COD_MPIO ? element.AFEC_COD_MPIO : element.afec_cod_mpio
 
         })
         console.log($scope.jsonExport);
@@ -4508,6 +4510,7 @@ angular.module('GenesisApp')
       }).then(function (response) {
         if (response.data && response.data.toString().substr(0, 3) != '<br') {
           $scope.Tipos_Documentos = response.data;
+          // console.log(response.data)
         } else {
           swal({
             title: "¡Ocurrio un error!",

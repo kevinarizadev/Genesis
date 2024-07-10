@@ -233,8 +233,8 @@ angular.module('GenesisApp')
               url: "php/juridica/tutelas/admintutelas.php",
               data: {
                 function: 'p_ui_conceptos',
-
-                causa: result.toString().substr(0, 2),
+                
+                causa: result.toString().substr(0,2),
                 nombre: result,
                 estado: 'A',
                 accion: 'I' // UPDATE
@@ -298,7 +298,7 @@ angular.module('GenesisApp')
             nombre: $scope.Hoja2.nombreCausa,
             estado: $scope.Hoja2.estadoCausa,
             accion: 'U'
-
+            
           }
         }).then(function ({ data }) {
           if (data != undefined) {
@@ -495,6 +495,18 @@ angular.module('GenesisApp')
         if ($(window).width() > 1100) {
           document.querySelector("#pantalla").style.zoom = 0.8;
         }
+        // if ($(window).width() < 1100) {
+        //   document.querySelector("#pantalla").style.zoom = 0.7;
+        // }
+        // if ($(window).width() > 1100 && $(window).width() < 1300) {
+        //   document.querySelector("#pantalla").style.zoom = 0.7;
+        // }
+        // if ($(window).width() > 1300 && $(window).width() < 1500) {
+        //   document.querySelector("#pantalla").style.zoom = 0.8;
+        // }
+        // if ($(window).width() > 1500) {
+        //   document.querySelector("#pantalla").style.zoom = 0.9;
+        // }
       }
 
       $(window).on('resize', function () {

@@ -1,29 +1,57 @@
 <div id="modalpqr" style="width: 90%; margin: 0 auto;">
-    <div class="col s12 m6 l6 card">
-        <div class="ngdialog-close style-btn-close"></div>
-        <div class="card-content">
-            <h5 id="ngdialog1-aria-labelledby">Edición {{dataPqrExcel.CODIGOSUPER}}</h5>
+  <div class="col s12 m6 l6 card">
+    <div class="ngdialog-close style-btn-close"></div>
+    <div class="card-content">
+      <h5 id="ngdialog1-aria-labelledby">Edición {{dataPqrExcel.CODIGOSUPER}}</h5>
+    </div>
+    <div class="card-content clearfix no-padding" style="overflow: auto;max-height: 73vh;">
+      <div class="row margin">
+        <div class="col s12">
+          <blockquote id="datosRiegovida" class="display-flex noselectxtpqr">
+            <strong>CARGUE</strong>
+          </blockquote>
         </div>
-        <div class="card-content clearfix no-padding" style="overflow: auto;max-height: 73vh;">
-            <div class="row margin">
-                <div class="col s12">
-                    <blockquote id="datosRiegovida" class="display-flex noselectxtpqr">
-                        <strong>CARGUE</strong>
-                    </blockquote>
-                </div>
-                <div class="col s3 w-20 align-items">
-                    <div class="switch">
-                        <label>
-                            NO REPORTA
-                            <input type="checkbox" ng-init="check_reportar = true" ng-model="check_reportar"
-                                ng-change="filterAreas='';check_reportar==true ? pqrDataSuper.reporta='S':pqrDataSuper.reporta='N'">
-                            <span class="lever"></span>
-                            REPORTA
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <!-- <div class="row margin" ng-hide="dataPqrExcel.RIESGO=='N'">
+        <div class="col s3 w-20 align-items">
+          <div class="switch">
+            <label>
+              NO REPORTA
+              <input type="checkbox" ng-init="check_reportar = true" ng-model="check_reportar"
+                ng-change="filterAreas='';check_reportar==true ? pqrDataSuper.reporta='S':pqrDataSuper.reporta='N'">
+              <span class="lever"></span>
+              REPORTA
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row m-t" ng-show="pqrDataSuper.reporta=='S'">
+        <div>
+          <div class="col s3">
+            <label class="c-pointer noselectxtpqr" for="documento">Tipo de Documento</label>
+            <select class="select-chosen-eps select pt-select-pqr" id="documento" ng-model="pqrDataSuper.tipodocumento">
+              <option value="" disabled>SELECCIONAR</option>
+              <option ng-repeat="x in tiposdocumentos" value="{{x.CODIGO}}"
+                ng-selected="x.CODIGO == pqrDataSuper.tipodocumento">{{x.NOMBRE}}</option>
+            </select>
+          </div>
+
+          <div class="col s3">
+            <label for="x">Numero Documento</label>
+            <i class="icon-search c-pointer" ng-click="searchAfiliado();"></i>
+            <input type="text" class="text-upper" autocomplete="off" ng-model="pqrDataSuper.documento" ng-keyup="pqrDataSuper.nombre_afi=''">
+          </div>
+          <div class="col s4">
+            <label for="x">Nombre Afiliado</label>
+            <input type="text" class="text-upper" autocomplete="off" ng-model="pqrDataSuper.nombre_afi" readonly>
+          </div>
+          <div class="col s2">
+            <label for="x">Estado Afiliado</label>
+            <input type="text" class="text-upper" autocomplete="off" ng-model="pqrDataSuper.estado_afi" readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="row margin" ng-hide="dataPqrExcel.RIESGO=='N'">
                 <div id="riesgo">
                     <div class="col s12">
                         <blockquote id="datosRiegovida" class="display-flex noselectxtpqr">
@@ -106,127 +134,126 @@
                     </div>
                 </div>
             </div> -->
-            <!-- SERVICIOS -->
-            <div class="row margin" ng-show="dataPqrExcel.OBLIG_AUT == 'S'">
-                <div class="col s12">
-                    <blockquote class="display-flex noselectxtpqr">
-                        <div>
-                            <strong>SERVICIOS</strong>
-                        </div>
-                    </blockquote>
-                </div>
-                <!--  -->
-                <div class="col s12">
-                    <form ng-submit="obtenerProductoServicio();">
-                        <div class="col s8">
-                            <label for="buscarProducto">CUPS/CUMS <i class="icon-search c-pointer"
-                                    ng-click="obtenerProductoServicio();"></i></label>
-                            <input type="text" id="buscarProducto" class="text-upper" autocomplete="off"
-                                placeholder="Buscar Producto" ng-model="pqrServicios.buscarProducto"
-                                ng-change="changeBuscarProductoServicio()" name="myBrowser" list="pqrServiciosMasivo">
-                            <datalist id="pqrServiciosMasivo" open="open">
-                                <option value="{{x.NOMBRE}}" ng-repeat="x in pqrServicios.listProductos">
-                            </datalist>
-                        </div>
-                    </form>
-                    <!--  -->
-                    <!-- <form ng-submit="obtenerProductoServicio();" ng-show="pqrServicios.mostrarSubclase == 'S'"> -->
-                    <div class="col s4" ng-show="pqrServicios.mostrarSubclase == 'S'">
-                        
-                        <label for="buscarProductoSubclase">SUBCLASE</label>
-                        <input type="text" id="buscarProductoSubclase" class="text-upper" autocomplete="off"
-                            placeholder="Seleccionar Subclase" ng-model="pqrServicios.buscarProductoSubclase"
-                            ng-change="changeBuscarProductoServicio_Subclase()" name="myBrowser"
-                            list="pqrServiciosSubclaseMasivo">
-                        <datalist id="pqrServiciosSubclaseMasivo" open="open">
-                            <option value="{{x.nombre}}" ng-repeat="x in pqrServicios.listProductosSubclase">
-                        </datalist>
-                    </div>
-                    <!-- </form> -->
-                    <!--  -->
-                    <div class="col s2">
-                        <label class="c-pointer noselectxtpqr" for="pqrServicios_reqAut">Requiere Aut.</label>
-                        <select class="select-chosen-eps select pt-select-pqr" id="pqrServicios_reqAut" ng-model="pqrServicios.reqAut">
-                            <option value="N">NO</option>
-                            <option value="S">SI</option>
-                        </select>
-                    </div>
+      <!-- SERVICIOS -->
+      <div class="row margin" ng-show="dataPqrExcel.OBLIG_AUT == 'S'">
+        <div class="col s12">
+          <blockquote class="display-flex noselectxtpqr">
+            <div>
+              <strong>SERVICIOS</strong>
+            </div>
+          </blockquote>
+        </div>
+        <!--  -->
+        <div class="col s12">
+          <form ng-submit="obtenerProductoServicio();">
+            <div class="col s8">
+              <label for="buscarProducto">CUPS/CUMS <i class="icon-search c-pointer"
+                  ng-click="obtenerProductoServicio();"></i></label>
+              <input type="text" id="buscarProducto" class="text-upper" autocomplete="off" placeholder="Buscar Producto"
+                ng-model="pqrServicios.buscarProducto" ng-change="changeBuscarProductoServicio()" name="myBrowser"
+                list="pqrServiciosMasivo">
+              <datalist id="pqrServiciosMasivo" open="open">
+                <option value="{{x.NOMBRE}}" ng-repeat="x in pqrServicios.listProductos">
+              </datalist>
+            </div>
+          </form>
+          <!--  -->
+          <!-- <form ng-submit="obtenerProductoServicio();" ng-show="pqrServicios.mostrarSubclase == 'S'"> -->
+          <div class="col s4" ng-show="pqrServicios.mostrarSubclase == 'S'">
 
-                    <div class="col s2 m-t">
-                        <a class="waves-effect waves-light btn" ng-click="agregarProductoServicio();">
-                            <i class="icon-list-add c-pointer"></i>
-                        </a>
-                    </div>
+            <label for="buscarProductoSubclase">SUBCLASE</label>
+            <input type="text" id="buscarProductoSubclase" class="text-upper" autocomplete="off"
+              placeholder="Seleccionar Subclase" ng-model="pqrServicios.buscarProductoSubclase"
+              ng-change="changeBuscarProductoServicio_Subclase()" name="myBrowser" list="pqrServiciosSubclaseMasivo">
+            <datalist id="pqrServiciosSubclaseMasivo" open="open">
+              <option value="{{x.nombre}}" ng-repeat="x in pqrServicios.listProductosSubclase">
+            </datalist>
+          </div>
+          <!-- </form> -->
+          <!--  -->
+          <div class="col s2">
+            <label class="c-pointer noselectxtpqr" for="pqrServicios_reqAut">Requiere Aut.</label>
+            <select class="select-chosen-eps select pt-select-pqr" id="pqrServicios_reqAut"
+              ng-model="pqrServicios.reqAut">
+              <option value="N">NO</option>
+              <option value="S">SI</option>
+            </select>
+          </div>
 
-                </div>
-                <!--  -->
-                <div class="col s12 m-t m-b">
-                    <span class="default-color"><b>Servicios agregados ({{listServicios.length}})</b></span>
-                    <div class="overflow-table_2 text-center" ng-show="listServicios.length">
-                        <table class="striped table-bordered" style="position: relative;zoom: 0.8;">
-                            <thead class="noselectxtpqr">
-                                <tr>
-                                    <th class="text-center">CODIGO</th>
-                                    <th class="text-center">NOMBRE</th>
-                                    <th class="text-center">REQUIERE AUT</th>
-                                    <th class="text-center">-</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="x in listServicios">
-                                    <td class="text-center">{{x.COD_PRODUCTO}}</td>
-                                    <td class="text-center">{{x.NOM_PRODUCTO}}
-                                        <br>
-                                        <span>
-                                            <i><b>SUBCLASE:</b> {{x.COD_SUBCLASE == '' ? ('NO APLICA') : (x.COD_SUBCLASE
-                                                +' - '+
-                                                x.NOM_SUBCLASE)}}</i>
-                                        </span>
-                                    </td>
-                                    <td class="text-center">{{x.REQUIEREAUT == 'S' ? 'SI':'NO'}}</td>
-                                    <td class="text-center">
-                                        <i class="icon-trash c-pointer" ng-click="quitarProductoServicio($index);"></i>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <!-- <img ng-if="listpqrds.length == 0" src="images/undraw_No_data_re_kwbl.png" style="width:35vh;float:none;">
+          <div class="col s2 m-t">
+            <a class="waves-effect waves-light btn" ng-click="agregarProductoServicio();">
+              <i class="icon-list-add c-pointer"></i>
+            </a>
+          </div>
+
+        </div>
+        <!--  -->
+        <div class="col s12 m-t m-b">
+          <span class="default-color"><b>Servicios agregados ({{listServicios.length}})</b></span>
+          <div class="overflow-table_2 text-center" ng-show="listServicios.length">
+            <table class="striped table-bordered" style="position: relative;zoom: 0.8;">
+              <thead class="noselectxtpqr">
+                <tr>
+                  <th class="text-center">CODIGO</th>
+                  <th class="text-center">NOMBRE</th>
+                  <th class="text-center">REQUIERE AUT</th>
+                  <th class="text-center">-</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="x in listServicios">
+                  <td class="text-center">{{x.COD_PRODUCTO}}</td>
+                  <td class="text-center">{{x.NOM_PRODUCTO}}
+                    <br>
+                    <span>
+                      <i><b>SUBCLASE:</b> {{x.COD_SUBCLASE == '' ? ('NO APLICA') : (x.COD_SUBCLASE
+                        +' - '+
+                        x.NOM_SUBCLASE)}}</i>
+                    </span>
+                  </td>
+                  <td class="text-center">{{x.REQUIEREAUT == 'S' ? 'SI':'NO'}}</td>
+                  <td class="text-center">
+                    <i class="icon-trash c-pointer" ng-click="quitarProductoServicio($index);"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- <img ng-if="listpqrds.length == 0" src="images/undraw_No_data_re_kwbl.png" style="width:35vh;float:none;">
                 <p ng-if="listpqrds.length == 0"><b>No se encontraron registros para mostrar </b></p> -->
-                    </div>
+          </div>
 
-                </div>
-                <!--  -->
-                <!-- SERVICIOS -->
-            </div>
-            <div class="row margin">
-                <div class="col s12">
-                    <blockquote id="datosRiegovida" class="display-flex noselectxtpqr">
-                        <strong>SOPORTE DEL PQR</strong>
-                    </blockquote>
-                </div>
-                <div class="input-field col m10 s12 w-100">
-                    <div class="file-field input-field">
-                        <div class="btn">
-                            <i class="icon-file-pdf"></i>
-                            <input type="file" name="adjunto" id="pqrfile" select-files-super ng-model="fileArray">
-                        </div>
-                        <div class="file-path-wrapper">
-                            <input id="inputFilePlaceHolder" class="file-path" type="text"
-                                placeholder="Adjuntar archivo">
-                            <span ng-if="sformato"
-                                ng-class="{'red-text': pqrDataSuper.adjunto==null, 'green-text': pqrDataSuper.adjunto!=null }">{{sformato}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-        <div class="row" style="padding-bottom: 20px;">
-            <div class="float-none text-center">
-                <a class="waves-effect waves-light btn white-text red" ng-click="cancelarSuper();">LIMPIAR</a>
-                <a class="waves-effect waves-light btn white-text" ng-click="validateSave();">
-                    GUARDAR PQR
-                </a>
-            </div>
+        <!--  -->
+        <!-- SERVICIOS -->
+      </div>
+      <div class="row margin">
+        <div class="col s12">
+          <blockquote id="datosRiegovida" class="display-flex noselectxtpqr">
+            <strong>SOPORTE DEL PQR</strong>
+          </blockquote>
         </div>
+        <div class="input-field col m10 s12 w-100">
+          <div class="file-field input-field">
+            <div class="btn">
+              <i class="icon-file-pdf"></i>
+              <input type="file" name="adjunto" id="pqrfile" select-files-super ng-model="fileArray">
+            </div>
+            <div class="file-path-wrapper">
+              <input id="inputFilePlaceHolder" class="file-path" type="text" placeholder="Adjuntar archivo">
+              <span ng-if="sformato"
+                ng-class="{'red-text': pqrDataSuper.adjunto==null, 'green-text': pqrDataSuper.adjunto!=null }">{{sformato}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="row" style="padding-bottom: 20px;">
+      <div class="float-none text-center">
+        <a class="waves-effect waves-light btn white-text red" ng-click="cancelarSuper();">LIMPIAR</a>
+        <a class="waves-effect waves-light btn white-text" ng-click="validateSave();">
+          GUARDAR PQR
+        </a>
+      </div>
+    </div>
+  </div>
 </div>

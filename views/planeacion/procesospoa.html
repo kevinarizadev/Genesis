@@ -392,7 +392,7 @@
                 id="{{x.CODIGO}}"
                 ng-repeat="x in hojaIndicadores.listadoTablaTemp | inicio: hojaIndicadores.varsTabla.currentPage * hojaIndicadores.varsTabla.pageSize | limitTo: hojaIndicadores.varsTabla.pageSize">
                 <td class="left-align" ng-click="modalEditarIndicador(x)">
-                  {{replaceVar(x.CODIGO)}}
+                  {{replaceVar(x)}}
                   - <b>{{x.REGN_NOM_INDICADOR}}</b>
                 </td>
                 <td ng-click="modalEditarIndicador(x)">{{x.REGN_ANNO}}</td>
@@ -480,7 +480,7 @@
 
             <i class="icon-doc-new c-pointer" title="Crear nuevo indicador para el año siguiente"
               ng-show="hojaIndicadores.formulario.idIndicadorSeleccionado"
-              ng-click="generarIndicadorNuevo(modalDatosIndicador)"></i>
+              ng-click="generarIndicadorNuevo(modalDatosIndicador)" ng-if="validarPermisos(['AS','AM'])"></i>
 
           </span></h5>
       </div>
@@ -959,7 +959,7 @@
             </div>
           </div>
           <!--  -->
-          <div class="col s6 m-b" style="height: 40vh;"
+          <div class="col s12 m-b"
             ng-show="hojaIndicadores.formulario.semaforizacionEstado == 'S'">
             <div class="col s12 align-items" id="hojaIndicadores_graficoSemaforizacion">
             </div>
@@ -2204,6 +2204,10 @@
               <i class="icon-filter-1 cursor-pointer" ng-click="hojaPDMActivarFiltro()"></i>
               <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Filtrar</span>
             </div>
+            <div class="tooltip">
+              <i class="icon-download-1 cursor-pointer" ng-click="descargarInformeMultiplePDM()"></i>
+              <span class="tooltiptext" style="font-size: 12px;width: 70px;margin-left: -35px;">Informe Multiple</span>
+            </div>
             <div class="col s3 no-padding label-new right"
               style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;"
               ng-show="!hojaPDM.filtros.activo">
@@ -2238,7 +2242,8 @@
           <table class="tablaListado bordered highlight"
             style="width:100%;font-size:6px !important;color: black;border:3px solid;">
             <thead class="default-border default-color">
-              <th># Hallazgo</th>
+              <th>#</th>
+              <th>Hallazgo</th>
               <th>Auto PDM</th>
               <th>Año</th>
               <th>Nivel</th>
@@ -2257,10 +2262,12 @@
                 id="{{x.CODIGO}}"
                 ng-repeat="x in hojaPDM.listadoTablaTemp | inicio: hojaPDM.varsTabla.currentPage * hojaPDM.varsTabla.pageSize | limitTo: hojaPDM.varsTabla.pageSize">
                 <td ng-click="modalEditarPDM(x)">
-                  {{replaceVar(x.CODIGO)}}
+                  {{(x.CODIGO)}}
                   <!-- - <b>{{x.REGN_NOM_INDICADOR}}</b> -->
                 </td>
-                <td ng-click="modalEditarPDM(x)">{{x.REGC_AUTOPDM.split('-')[1]}}</td>
+                <td ng-click="modalEditarPDM(x)">{{x.REGC_HALLAZGO}}</td>
+                <td ng-click="modalEditarPDM(x)">{{x.REGC_DESCRIPCION}}</td>
+                <!-- <td ng-click="modalEditarPDM(x)">{{x.REGC_AUTOPDM.split('-')[1]}}</td> -->
                 <td ng-click="modalEditarPDM(x)">{{x.REGN_ANNO}}</td>
                 <td ng-click="modalEditarPDM(x)">{{x.REGC_NIVEL.split('-')[1]}}</td>
                 <td ng-click="modalEditarPDM(x)">{{x.REGC_TIPO_CALCULO.split('-')[1]}}</td>
@@ -2340,9 +2347,13 @@
                 {{x.codigo}}</option>
             </select>
 
-            <!-- <i class="icon-doc-new c-pointer" title="Crear nuevo indicador para el año siguiente"
-              ng-show="hojaPDM.formulario.idPDMSeleccionado"
-              ng-click="generarIndicadorNuevo(modalDatosIndicador)"></i> -->
+            <i class="icon-download c-pointer" title="Descargar Ficha Técnica"
+            ng-show="hojaPDM.formulario.idPDMSeleccionado"
+              ng-click="descargarFichaTecnicaPDM(hojaPDM.formulario)"></i>
+
+            <i class="icon-doc-new c-pointer" title="Duplicar indicador"
+            ng-show="hojaPDM.formulario.idPDMSeleccionado"
+            ng-click="generarIndicadorNuevoPDM(hojaPDM.formulario)" ng-if="validarPermisos(['AS','AM'])"></i>
 
           </span></h5>
       </div>
@@ -2639,7 +2650,7 @@
             </div>
           </div>
           <!--  -->
-          <div class="col s6 m-b" style="height: 40vh;" ng-show="hojaPDM.formulario.semaforizacionEstado == 'S'">
+          <div class="col s12 m-b" ng-show="hojaPDM.formulario.semaforizacionEstado == 'S'">
             <div class="col s12 align-items" id="hojaPDM_graficoSemaforizacion">
             </div>
           </div>
@@ -2650,6 +2661,15 @@
             <input class="btn white-text default-linear-gradient" type="submit"
               value="{{!hojaPDM.formulario.idPDMSeleccionado ? 'Guardar':'Actualizar'}} PDM" ng-click="guardarFormPDM()"
               ng-if="validarPermisos(['AS','AM'])">
+
+            <input class="btn white-text" type="submit"
+            style="background: linear-gradient(to left bottom, rgb(224, 66, 66), rgb(139, 0, 0), rgb(224, 66, 66));"
+              value="Eliminar PDM" ng-click="hojaIndicadoresEliminar_PDM(hojaPDM.formulario)"
+              ng-if="validarPermisos(['AS','AM'])">
+
+              <!-- <i class="icon-doc-new c-pointer" title="Duplicar indicador"
+            ng-show="hojaPDM.formulario.idPDMSeleccionado"
+            ng-click="generarIndicadorNuevoPDM(hojaPDM.formulario)" ng-if="validarPermisos(['AS','AM'])"></i> -->
           </div>
           <!-- </form> -->
 

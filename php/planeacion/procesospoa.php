@@ -1247,3 +1247,72 @@ function p_lista_autopdm()
   oci_free_statement($cursor);
   echo json_encode($datos);
 }
+
+function p_descarga_ficha_tecnica_pdm()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.P_DESCARGA_FICHA_TECNICA_PDM(:v_pcod_pdm,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_pcod_pdm', $request->cod_pdm);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+function p_genera_nuevo_PDM()
+{
+  global $request;
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_genera_nuevo_PDM(:v_pcod_pdm,:v_panno,:v_pgestion,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pcod_pdm', $request->cod_pdm);
+  oci_bind_by_name($consulta, ':v_panno', $request->anno);
+  oci_bind_by_name($consulta, ':v_pgestion', $request->gestion);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}
+
+function p_descarga_informe_multiple_pdm()
+{
+  require_once('../config/dbcon_prod.php');
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_descarga_informe_multiple_pdm(:v_presponse); end;');
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+
+function p_eliminar_indicador_pdm()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'BEGIN pq_genesis_planeacion_ci.p_eliminar_indicador_pdm(:v_pcod_pdm,:v_pobservacion,:v_presponsable,:v_pjson_row); end;');
+  oci_bind_by_name($consulta, ':v_pcod_pdm', $request->cod_pdm);
+  oci_bind_by_name($consulta, ':v_pobservacion', $request->observacion);
+  oci_bind_by_name($consulta, ':v_presponsable', $request->responsable);
+  $clob = oci_new_descriptor($c, OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_pjson_row', $clob, -1, OCI_B_CLOB);
+  oci_execute($consulta, OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }
+  oci_close($c);
+}

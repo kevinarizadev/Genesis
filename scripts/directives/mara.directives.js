@@ -5991,6 +5991,21 @@
     };
   }
 
+  angular.module('GenesisApp').directive('carguesripseps', carguesripseps);
+  carguesripseps.$inject = ['$rootScope', '$compile'];
+  function carguesripseps($rootScope, $compile) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'views/Cuentasmedicas/miscarguesrips_eps.html',
+      replace: true,
+      link: function (scope, element) {
+        $compile(element.contents())($rootScope);
+      },
+      controller: 'miscarguesrips_epsController'//,
+      //controllerAs:'pcctrl'
+    };
+  }
+
   mesaControl.$inject = ['$rootScope', '$compile'];
   function mesaControl($rootScope, $compile) {
     return {

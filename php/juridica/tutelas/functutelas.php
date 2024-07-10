@@ -10,8 +10,8 @@ function listaJuzgados()
 	global $request;
 	$keyword = '%' . $request->keyword . '%';
 	$consulta =  oci_parse($c, "SELECT j.juzn_codigo codigo, UPPER(j.juzc_nombre)nombre, j.juzn_ubicacion ubicacion,u.ubgc_nombre ubicacionnombre
-											FROM bjuz_juzgado j
-											INNER JOIN bubg_ubicacion_geografica u ON u.ubgn_codigo = j.juzn_ubicacion
+											FROM oasis.bjuz_juzgado j
+											INNER JOIN oasis.bubg_ubicacion_geografica u ON u.ubgn_codigo = j.juzn_ubicacion
 											WHERE (UPPER(juzn_codigo) LIKE UPPER(:keyword) OR UPPER(juzc_nombre) LIKE UPPER(:keyword) OR UPPER(juzn_ubicacion) LIKE UPPER(:keyword))
 											AND rownum <= 500");
 	oci_bind_by_name($consulta, ':keyword', $keyword);
@@ -277,8 +277,7 @@ function registraTutela()
 																	:v_pcohorte_gr,
 																	:v_pprestaciones_continuas,
 
-																	:v_pcausa_1,
-																	:v_pmotivo_1,
+																	:v_pnumero_radicacion,
 
 																	:v_json_row); end;');
 	oci_bind_by_name($consulta, ':v_pempresa', $empresa);
@@ -316,8 +315,7 @@ function registraTutela()
 	oci_bind_by_name($consulta, ':v_pcohorte_gr', $chkAtencionCohorte);
 	oci_bind_by_name($consulta, ':v_pprestaciones_continuas', $chkPrestacionesContinuas);
 
-	oci_bind_by_name($consulta, ':v_pcausa_1', $v_pcausa_1);
-	oci_bind_by_name($consulta, ':v_pmotivo_1', $v_pmotivo_1);
+	oci_bind_by_name($consulta, ':v_pnumero_radicacion', $dataRegistro->numero_radicacion);
 
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
@@ -335,6 +333,7 @@ function registraEtapa2()
 	$tratamientointegral = ($dataDetalle->tratamientointegral == true) ? 'S' : 'N';
 	$impugnado = ($dataDetalle->impugnado == true) ? 'S' : 'N';
 	$seguimiento = ($dataDetalle->seguimiento == true) ? 'S' : 'N';
+
 	$consulta = oci_parse($c, 'begin pq_genesis_tut.p_ins_tutela_etapa2(:v_pnumero,
 																								:v_pubicacion,
 																								:v_pfallo_tutela,
@@ -345,6 +344,7 @@ function registraEtapa2()
 																								:v_pfecha_fallo,
 																								:v_pplazo_fallo,
 																								:v_pfecha_plazo_fallo,
+																								:v_pdecicion_primera_instancia,
 																								:v_json_row); end;');
 	oci_bind_by_name($consulta, ':v_pnumero', $request->codigotutela);
 	//oci_bind_by_name($consulta,':v_pubicacion',$_SESSION['codmunicipio']);
@@ -356,6 +356,7 @@ function registraEtapa2()
 	oci_bind_by_name($consulta, ':v_pfecha_fallo', $dataDetalle->f_fallo);
 	oci_bind_by_name($consulta, ':v_pplazo_fallo', $dataDetalle->plazofallo);
 	oci_bind_by_name($consulta, ':v_pfecha_plazo_fallo', $dataDetalle->f_vencimientofallo);
+	oci_bind_by_name($consulta, ':v_pdecicion_primera_instancia', $dataDetalle->decicion_primera_instancia);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
 	oci_execute($consulta, OCI_DEFAULT);
@@ -405,7 +406,6 @@ function listaAdjuntosCargados()
 function listaAdjuntosCargadosNew()
 {
 	require_once('../../config/dbcon_prod.php');
-	// require_once('../../config/dbcon_produccion.php');
 	global $request;
 	$consulta = oci_parse($c, 'begin pq_genesis_tut.P_OBTENER_SOPORTES_TUTELA (:v_pnumero,
 																				:v_json_row); end;');
@@ -1378,3 +1378,56 @@ function P_INFORME_SERVICIOS()
 	oci_free_statement($cursor);
 	echo json_encode($datos);
 }
+
+function P_OBTENER_PROBLEMAS_CAUSAS_PRETENSION(){
+  require_once('../../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN pq_genesis_tut.P_OBTENER_PROBLEMAS_CAUSAS_PRETENSION(:v_json_in,:v_presponse); end;');
+  oci_bind_by_name($consulta,':v_json_in',$request->data);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+
+
+function P_UI_PROBLEMAS_CAUSAS_PRETENSION_TUTELA(){
+  require_once('../../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN pq_genesis_tut.P_UI_PROBLEMAS_CAUSAS_PRETENSION_TUTELA(:v_json_in,:v_cantidad,:v_json_row); end;');
+  oci_bind_by_name($consulta,':v_json_in',$request->datos);
+  oci_bind_by_name($consulta,':v_cantidad',$request->cantidad);
+	$clob = oci_new_descriptor($c, OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
+	oci_execute($consulta, OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	} else {
+		echo 0;
+	}
+	oci_close($c);
+}
+
+
+function P_OBTENER_PROBLEMAS_CAUSAS_PRETENSION_TUTELA(){
+  require_once('../../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN pq_genesis_tut.P_OBTENER_PROBLEMAS_CAUSAS_PRETENSION_TUTELA(:v_tutela,:v_presponse); end;');
+  oci_bind_by_name($consulta,':v_tutela',$request->tutela);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
+}
+

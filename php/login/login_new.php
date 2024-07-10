@@ -63,6 +63,7 @@ function autenticacion()
         //$_SESSION['isdirect_nomina'] = $Sesion->{'tiponomina'};
         $_SESSION['imagen'] = $Sesion->{'imagen'};
         $_SESSION['tipo_sidebar'] = "0";
+        $_SESSION['cambioclave'] = $data->CambioClave;
         //$_SESSION['ip_pub'] = obtener_ip();
       } else if (isset($Sesion) && $nit != "0") {
         // inicio como ips

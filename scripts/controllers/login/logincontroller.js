@@ -34,8 +34,8 @@ angular.module('GenesisApp', ['ngStorage', 'toastr', 'ngDialog', 'chieffancypant
         // $scope.nit = "802019914";
         // $scope.useripsaut = "72205929";
 
-        // $scope.nit = "900500653";
-        // $scope.useripsaut = "30838808";
+        // $scope.nitIps = "900500653";
+        // $scope.userIps = "30838808";
 
         // $scope.nitIps = "900465319";// OINSAMED
         // $scope.userIps = "777888999";

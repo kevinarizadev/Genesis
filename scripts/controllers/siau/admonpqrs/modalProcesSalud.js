@@ -1068,6 +1068,11 @@ angular.module('GenesisApp')
           swal("Mensaje", 'Debe diligenciar los campos', "info").catch(swal.noop);
           return
         }
+
+        if (!$scope.formSubclasificacionPQR.producto.includes("~") || !$scope.formSubclasificacionPQR.prestador.includes("~")) {
+          swal("Mensaje", 'Debe diligenciar los campos (Producto y Prestador)', "info").catch(swal.noop);
+          return
+        }
       }
 
       const producto = $scope.formSubclasificacionPQR.producto.indexOf('~') ? $scope.formSubclasificacionPQR.producto.split('~')[0] : ''

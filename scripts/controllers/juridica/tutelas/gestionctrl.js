@@ -86,8 +86,12 @@ angular.module('GenesisApp')
         $scope.hdeMedioRecepcionFImpugnacion = true;
         $scope.hdeMedioRecepcionRqPrevio = true;
         $scope.hdeMedioRecepcionRespuestaRq = true;
+        $scope.hdeMedioRecepcionSeguRqPrevio = true;
+        $scope.hdeMedioRecepcionSeguRespuestaRq = true;
         $scope.hdeMedioRecepcionAdmision = true;
         $scope.hdeMedioRecepcionRespuestaInc = true;
+        $scope.hdeMedioRecepcionAperturaPrueba = true;
+        $scope.hdeMedioRecepcionRespAperturaPrueba = true;
         $scope.hdeMedioRecepcionDecisionInc = true;
         $scope.hdeMedioRecepcionConsultaInc = true;
         $scope.hdeMedioRecepcionCierreInc = true;
@@ -104,7 +108,9 @@ angular.module('GenesisApp')
           tratamientointegral: false,
           impugnado: false,
           seguimiento: false,
-          falloimpugnacionfc: false
+          falloimpugnacionfc: false,
+          falloimpug_decision: '',
+          decicion_primera_instancia: ''
         }
         $scope.detallesetpdos = {
           fallotutelainstdos: false
@@ -226,8 +232,12 @@ angular.module('GenesisApp')
         $scope.registro.medioRecepcionFImpugnacion = false;
         $scope.registro.medioRecepcionRqPrevio = false;
         $scope.registro.medioRecepcionRespuestaRq = false;
+        $scope.registro.medioRecepcionSeguRqPrevio = false;
+        $scope.registro.medioRecepcionSeguRespuestaRq = false;
         $scope.registro.medioRecepcionAdmision = false;
         $scope.registro.medioRecepcionRespuestaInc = false;
+        $scope.registro.medioRecepcionAperturaPrueba = false;
+        $scope.registro.medioRecepcionRespAperturaPrueba = false;
         $scope.registro.medioRecepcionDecisionInc = false;
         $scope.registro.medioRecepcionConsultaInc = false;
         $scope.registro.medioRecepcionCierreInc = false;
@@ -240,6 +250,7 @@ angular.module('GenesisApp')
         $scope.registro_nul.medioRecepcionRespuestaRq = false;
         $scope.registro_nul.medioRecepcionAdmision = false;
         $scope.registro_nul.medioRecepcionRespuestaInc = false;
+
         $scope.registro_nul.medioRecepcionDecisionInc = false;
         $scope.registro_nul.medioRecepcionConsultaInc = false;
         $scope.registro_nul.medioRecepcionCierreInc = false;
@@ -275,9 +286,10 @@ angular.module('GenesisApp')
         $scope.listCausasTecnologia_Admision = [];
 
 
-        // $scope.listadoCausas = [];
-        // $scope.listadoCausasMotivos = [];
-
+        $scope.chkDecisionInci_CuantosDias = false;
+        $scope.registro.decisionInci_CuantosDias = '';
+        $scope.chkDecisionInci_ValorMulta = false;
+        $scope.registro.decisionInci_ValorMulta = '';
       }
       $scope.initVar();
 
@@ -297,6 +309,7 @@ angular.module('GenesisApp')
         columns: [
           { data: "numero" },
           { data: "radicado" },
+          { data: "etapa" },
           { data: "ubicacion" },
           { data: "accionante" },
           { data: "accionado" },
@@ -389,7 +402,7 @@ angular.module('GenesisApp')
         cfpLoadingBar.complete();
       }
       $scope.crear = function () {
-        document.getElementById('cons_juzgado').disabled = false;
+        // document.getElementById('cons_juzgado').disabled = false;
         document.getElementById('aniocons_juzgado').disabled = false;
         document.getElementById('tipoidafiliado').disabled = false;
         document.getElementById('diferenteepsAdmisionTut').disabled = false;
@@ -431,6 +444,8 @@ angular.module('GenesisApp')
 
         $scope.listadoPQRAfiliado = [];
         $scope.listadoPatologiasAfiliado = [];
+        $scope.listadoCausaProblemaPretension = [];
+
         setTimeout(() => { $scope.$apply(); }, 500);
         // CNVU - 23/01/2020
         setTimeout(function () {
@@ -506,7 +521,7 @@ angular.module('GenesisApp')
           if ($scope.registro.marca_eps_anterior != 'X') {
             $scope.dsbRegistro = false;
             $scope.hdeAdjuntarfile = true;
-            document.getElementById('cons_juzgado').disabled = true;
+            // document.getElementById('cons_juzgado').disabled = true;
             document.getElementById('aniocons_juzgado').disabled = true;
             document.getElementById('medioRecepcionAdmisionTut').disabled = true;
             document.getElementById('diferenteepsAdmisionTut').disabled = true;
@@ -530,15 +545,15 @@ angular.module('GenesisApp')
             // document.getElementById('diagnostico').disabled = true;
             // document.getElementById('motivo').disabled = true;
             if ($scope.registro.status > 2) {
-              if(document.getElementById('btnActualizaTutela') != null ) document.getElementById('btnActualizaTutela').disabled = false;
+              if (document.getElementById('btnActualizaTutela') != null) document.getElementById('btnActualizaTutela').disabled = false;
             } else {
-              if(document.getElementById('btnActualizaTutela') != null ) document.getElementById('btnActualizaTutela').disabled = true;
+              if (document.getElementById('btnActualizaTutela') != null) document.getElementById('btnActualizaTutela').disabled = true;
             }
 
           } else {
             $scope.dsbRegistro = false;
             $scope.hdeAdjuntarfile = false;
-            document.getElementById('cons_juzgado').disabled = false;
+            // document.getElementById('cons_juzgado').disabled = false;
             document.getElementById('aniocons_juzgado').disabled = false;
             document.getElementById('medioRecepcionAdmisionTut').disabled = false;
             document.getElementById('diferenteepsAdmisionTut').disabled = false;
@@ -561,7 +576,7 @@ angular.module('GenesisApp')
             // document.getElementById('causa').disabled = false;
             // document.getElementById('diagnostico').disabled = false;
             // document.getElementById('motivo').disabled = false;
-            if(document.getElementById('btnActualizaTutela') != null ) document.getElementById('btnActualizaTutela').disabled = false;
+            if (document.getElementById('btnActualizaTutela') != null) document.getElementById('btnActualizaTutela').disabled = false;
           }
         } else {
           // VALIDA MOSTRAR O NO INPUT ADMISION CNVU 14/01/2020
@@ -579,7 +594,7 @@ angular.module('GenesisApp')
       $scope.deshabilitarInfoTutela = function () {
         if ($scope.Rol_Permisos.EDITAR_ADMISION != 'S') {
           $scope.dsbRegistro = false;
-          document.getElementById('cons_juzgado').disabled = false;
+          // document.getElementById('cons_juzgado').disabled = false;
           document.getElementById('aniocons_juzgado').disabled = false;
           document.getElementById('medioRecepcionAdmisionTut').disabled = false;
 
@@ -621,7 +636,7 @@ angular.module('GenesisApp')
         $scope.registro.accionante = data.accionante;
         $scope.Limpiar_Inputs_Files();//Limpia todos los inputs type file
         $scope.labelotraepsAdmisionTut = false;//label que muestra si el afiliado es de otra eps
-
+        $scope.listadoCausaProblemaPretension = [];
         var Etapa = 0;
         if (data === undefined) {
           return;
@@ -686,7 +701,8 @@ angular.module('GenesisApp')
           // Listar Causas
           $scope.listarCausasTutela();
 
-
+          //Causa Problema Pretensiones
+          $scope.obtenerListadoProblemas_Tutela($scope.registro.codigotutela);
 
           $scope.registro.chkAtencionCohorte = response.data.chkAtencionCohorte == 'S' ? true : false;
           $scope.registro.chkPrestacionesContinuas = response.data.chkPrestacionesContinuas == 'S' ? true : false;
@@ -725,11 +741,21 @@ angular.module('GenesisApp')
             document.getElementById('medioRecepcionFallo').disabled = true;
             document.getElementById('tratamientointegral').disabled = true;
             document.getElementById('seguimiento').disabled = true;
+            document.getElementById('decicion_primera_instancia').disabled = true;
           } else {
             document.getElementById('checkfallotutela').disabled = false;
             document.getElementById('medioRecepcionFallo').disabled = false;
             document.getElementById('tratamientointegral').disabled = false;
             document.getElementById('seguimiento').disabled = false;
+            document.getElementById('decicion_primera_instancia').disabled = false;
+            if ($scope.registro.medidaprovisional) {//Si la tutela esta marcada como medida provisional, debe habilitar etapa de incidtentes
+              $scope.hdeIncidentes = false;
+              $scope.despl6 = true
+              $scope.selec_inci = $scope.registro.status_desacato;
+              $scope.tabselect = parseInt($scope.registro.status_desacato) + 1;
+              $scope.vertab(parseInt($scope.registro.status_desacato) + 1);
+              $scope.csstab(parseInt($scope.registro.status_desacato) + 1);
+            }
           }
 
           if ($scope.registro.status > 3) {
@@ -794,6 +820,8 @@ angular.module('GenesisApp')
           $scope.detalles.impugnado = $scope.registro.fallo.impugnado;
           $scope.detalles.observacion_fallo = $scope.registro.fallo.observacion_fallo;
           $scope.detalles.observacion_impugnado = $scope.registro.observacion_impugnado;
+          $scope.detalles.falloimpug_decision = $scope.registro.fallo.falloimpug_decision
+          $scope.detalles.decicion_primera_instancia = $scope.registro.fallo.decicion_primera_instancia
           $scope.hdefallo = !$scope.registro.fallo.impugnado;
 
           if ($scope.registro.status == "3") {
@@ -938,18 +966,7 @@ angular.module('GenesisApp')
       consultaHTTP.obtenerDocumento().then(function (response) {
         $scope.Documentos = response;
       })
-      $scope.buscarTutelas = function () {
-        $http({
-          method: 'POST',
-          url: "php/juridica/tutelas/functutelas.php",
-          data: {
-            function: 'buscaTutelas',
-            keywordtutelas: $scope.keywordtutelas
-          }
-        }).then(function (response) {
-          $scope.Tutelas = response.data;
-        });
-      }
+
       $scope.listaCausas = function () {
         $http({
           method: 'POST',
@@ -1600,9 +1617,9 @@ angular.module('GenesisApp')
         var res = (pad + n).slice(-pad.length);
         return res;
       }
-      $scope.validaCons = function () {
-        $scope.registro.consecutivo = paddy($scope.registro.consecutivo, 5);
-      }
+      // $scope.validaCons = function () {
+      //   $scope.registro.consecutivo = paddy($scope.registro.consecutivo, 5);
+      // }
 
       // FUNCION PARA MINIMIZAR CODIGO OMITIR ADMISION CNVU 14/01/2020
       $scope.omitirAdmisionTut = function (mensajeerror, codigotut) {
@@ -1691,7 +1708,7 @@ angular.module('GenesisApp')
                 path: 'Juridica/Tutelas',
                 type: $scope.registro.adjuntotutelaext,
                 file: $scope.registro.adjuntotutela,
-                db: 'GTUT01',
+                db: 'STT01',
                 typefile: '1',
                 ori: true
               }
@@ -1762,12 +1779,6 @@ angular.module('GenesisApp')
         // debugger
         $scope.btn.GuardaRegistro = true;
 
-        // excepto < 2018
-        // if ($scope.registro.anioconsecutivo >= 2018 && document.getElementById("admisiontutela").files.length == 0) {
-        // 	swal('Información', 'Adjunte la Admisión de Tutela', 'info'); return
-        // }
-
-
         if ($scope.registro.regionalTutela == undefined || $scope.registro.regionalTutela == "") {
           swal('Información', 'Seleccione la regional de la tutela', 'info').catch(swal.noop); $scope.btn.GuardaRegistro = false; return
         }
@@ -1783,18 +1794,15 @@ angular.module('GenesisApp')
         if ($scope.registro.chkAtencionCohorte && $scope.listadoPatologiasAfiliado.length && $scope.listadoPatologiasAfiliado.findIndex(e => e.SELECTED) == -1) {
           swal('Información', 'Seleccione al menos 1 patologia', 'info').catch(swal.noop); $scope.btn.GuardaRegistro = false; return
         }
+        if (!$scope.listadoCausaProblemaPretension.length) {
+          swal('Información', 'Problemas, Causas y Pretensiones', 'info').catch(swal.noop); $scope.btn.GuardaRegistro = false; return
+        }
 
 
         $scope.registro.juzgado = $scope.juzgado.codigo;
-        $scope.registro.consecutivojuzgado = $scope.registro.consecutivo + '-' + $scope.registro.anioconsecutivo;
-        // $scope.registro.diagnostico = $scope.diagnostico.codigo;
-        // if (($scope.hdeMotivo == false && ($scope.registro.motivo == "" || $scope.registro.motivo === undefined)) ||
-        // 	($scope.registro.juzgado === undefined || $scope.registro.juzgado == "") ||
-        // 	($scope.hdeDiagnostico == false && ($scope.registro.diagnostico == "" || $scope.registro.diagnostico === undefined))) {
-        // 	$scope.btn.GuardaRegistro = false;
-        // 	swal('Información', 'Complete toda la información para registrar la tutela', 'info');
-        // 	return;
-        // }
+        // $scope.registro.consecutivojuzgado = $scope.registro.consecutivo + '-' + $scope.registro.anioconsecutivo;
+        $scope.registro.consecutivojuzgado = $scope.registro.anioconsecutivo;
+
         $scope.registro.responsable_nac = $scope.cedulalog;
 
 
@@ -1818,7 +1826,7 @@ angular.module('GenesisApp')
             $scope.guardarCausas_Adm_NT($scope.registro.codigotutela);
             $scope.guardarCohortesTutela();
             $scope.guardarPQRDSTutela();
-
+            $scope.guardarTodosCausaProblemaPretension();
           }
         });
       }
@@ -1871,10 +1879,9 @@ angular.module('GenesisApp')
             $scope.registro.motivolbl = $scope.registro.motivo;
             $scope.registro.diagnostico = $scope.diagnostico.codigo;
             $scope.registro.juzgado = $scope.juzgado.codigo;
-            $scope.registro.consecutivojuzgado = $scope.registro.consecutivo + '-' + $scope.registro.anioconsecutivo;
+            // $scope.registro.consecutivojuzgado = $scope.registro.consecutivo + '-' + $scope.registro.anioconsecutivo;
+            $scope.registro.consecutivojuzgado = $scope.registro.anioconsecutivo;
             if (
-              // ($("#dteFechaRecepcion").val() == "" || $("#dteFechaRecepcion").val() === undefined) ||
-              // ($("#dteFechaVencimiento").val() == "" || $("#dteFechaVencimiento").val() === undefined) ||
               ($scope.registro.juzgado === undefined || $scope.registro.juzgado == "")) {
               swal('Información', 'Complete toda la información para registrar la tutela', 'info');
             } else {
@@ -2003,10 +2010,9 @@ angular.module('GenesisApp')
               $scope.registro.motivolbl = $scope.registro.motivo;
               $scope.registro.diagnostico = $scope.diagnostico.codigo;
               $scope.registro.juzgado = $scope.juzgado.codigo;
-              $scope.registro.consecutivojuzgado = $scope.registro.consecutivo + '-' + $scope.registro.anioconsecutivo;
+              // $scope.registro.consecutivojuzgado = $scope.registro.consecutivo + '-' + $scope.registro.anioconsecutivo;
+              $scope.registro.consecutivojuzgado = $scope.registro.anioconsecutivo;
               if (
-                // ($("#dteFechaRecepcion").val() == "" || $("#dteFechaRecepcion").val() === undefined) ||
-                // ($("#dteFechaVencimiento").val() == "" || $("#dteFechaVencimiento").val() === undefined) ||
                 ($scope.registro.juzgado === undefined || $scope.registro.juzgado == "")) {
                 swal('Información', 'Complete toda la información para registrar la tutela', 'info');
               } else {
@@ -2116,13 +2122,13 @@ angular.module('GenesisApp')
               method: 'POST',
               url: "php/upload_file/upload_juridica.php",
               data: {
-                db: 'RRT01',
+                db: 'STT01',
                 path: 'Juridica/Tutelas',
                 constutela: $scope.registro.codigotutela,
                 ubicacion: $scope.registro.ubicacion,
                 type: $scope.registro.chkRespuestaTutela ? $scope.archivorecibidotutelaext : '',
                 file: $scope.registro.chkRespuestaTutela ? $scope.archivorecibidotutela : '',
-                fecha_recepcion: $scope.registro.chkRespuestaTutela ? $("#dteFechaRecepcionRespuesta").val() : '',
+                fecha_recibido: $scope.registro.chkRespuestaTutela ? $("#dteFechaRecepcionRespuesta").val() : '',
                 typefile: '3',
                 ori: $scope.registro.chkRespuestaTutela ? true : false,
                 seDioRespuestaTutela: $scope.registro.chkRespuestaTutela ? 'S' : 'N',
@@ -2294,6 +2300,34 @@ angular.module('GenesisApp')
               $scope.hdeMedioRecepcionEstadoTutela = false;
             } else {
               $scope.hdeMedioRecepcionEstadoTutela = true;
+            }
+            break;
+          case "17":
+            if ($scope.registro.medioRecepcionSeguRqPrevio == true) {
+              $scope.hdeMedioRecepcionSeguRqPrevio = false;
+            } else {
+              $scope.hdeMedioRecepcionSeguRqPrevio = true;
+            }
+            break;
+          case "18":
+            if ($scope.registro.medioRecepcionSeguRespuestaRq == true) {
+              $scope.hdeMedioRecepcionSeguRespuestaRq = false;
+            } else {
+              $scope.hdeMedioRecepcionSeguRespuestaRq = true;
+            }
+            break;
+          case "19":
+            if ($scope.registro.medioRecepcionAperturaPrueba == true) {
+              $scope.hdeMedioRecepcionAperturaPrueba = false;
+            } else {
+              $scope.hdeMedioRecepcionAperturaPrueba = true;
+            }
+            break;
+          case "20":
+            if ($scope.registro.medioRecepcionRespAperturaPrueba == true) {
+              $scope.hdeMedioRecepcionRespAperturaPrueba = false;
+            } else {
+              $scope.hdeMedioRecepcionRespAperturaPrueba = true;
             }
             break;
           // default:
@@ -2929,14 +2963,15 @@ angular.module('GenesisApp')
                 method: 'POST',
                 url: "php/upload_file/upload_juridica.php",
                 data: {
-                  db: 'CM01',
+                  db: 'STT01',
                   path: 'Juridica/Tutelas',
                   constutela: $scope.registro.codigotutela,
                   ubicacion: $scope.registro.ubicacion,
                   type: $scope.archivocumplimensualext,
                   file: $scope.archivocumplimensual,
-                  fecha_fechasegmen: $("#FechaSegMen").val(),
+                  fecha_recibido: $("#FechaSegMen").val(),
                   typefile: '5',
+                  checkCumplimientoMensual: $scope.registro.checkCumplimientoMensual ? 'T' : 'P',
                   ori: true
                 }
               }).then(function (response) {
@@ -3001,13 +3036,15 @@ angular.module('GenesisApp')
                       $scope.despl6 = true;
                       $scope.selec_inci = 0;
                       $scope.tabselect = 1;
-                      $(paso1).addClass('active');
-                      $(paso2).removeClass('active');
-                      $(paso3).removeClass('active');
-                      $(paso4).removeClass('active');
-                      $(paso5).removeClass('active');
-                      $(paso6).removeClass('active');
-                      $(paso7).removeClass('active');
+                      $scope.vertab($scope.tabselect);
+                      $scope.csstab($scope.tabselect);
+                      // $(paso1).addClass('active');
+                      // $(paso2).removeClass('active');
+                      // $(paso3).removeClass('active');
+                      // $(paso4).removeClass('active');
+                      // $(paso5).removeClass('active');
+                      // $(paso6).removeClass('active');
+                      // $(paso7).removeClass('active');
                       setTimeout(function () { $scope.$apply(); }, 500);
                     } else {
                       swal('Error', response.data.observacion_err, 'warning')
@@ -3044,14 +3081,15 @@ angular.module('GenesisApp')
                 method: 'POST',
                 url: "php/upload_file/upload_juridica.php",
                 data: {
-                  db: 'FLI01',
+                  db: 'STT01',
                   path: 'Juridica/Tutelas',
                   constutela: $scope.registro.codigotutela,
                   ubicacion: $scope.registro.ubicacion,
                   type: $scope.archivofalloimpugext,
                   file: $scope.archivofalloimpug,
-                  fecha_fechafallimp: $("#FechaFallImp").val(),
+                  fecha_recibido: $("#FechaFallImp").val(),
                   falloimpugnacionfc: $scope.detalles.falloimpugnacionfc,
+                  decision: $scope.detalles.falloimpug_decision,
                   typefile: '6',
                   ori: true
                 }
@@ -3117,13 +3155,13 @@ angular.module('GenesisApp')
                 method: 'POST',
                 url: "php/upload_file/upload_juridica.php",
                 data: {
-                  db: 'RP01',
+                  db: 'STT01',
                   path: 'Juridica/Tutelas',
                   constutela: $scope.registro.codigotutela,
                   ubicacion: $scope.registro.ubicacion,
                   type: $scope.archivorequerimientopreext,
                   file: $scope.archivorequerimientopre,
-                  fecha_reqpre: $("#FechaReqPre").val(),
+                  fecha_recibido: $("#FechaReqPre").val(),
                   typefile: '7',
                   ori: true
                 }
@@ -3226,17 +3264,17 @@ angular.module('GenesisApp')
               method: 'POST',
               url: "php/upload_file/upload_juridica.php",
               data: {
-                db: 'RPR01',
+                db: 'STT01',
                 path: 'Juridica/Tutelas',
                 constutela: $scope.registro.codigotutela,
                 ubicacion: $scope.registro.ubicacion,
                 type: $scope.registro.chkRespuestaReqPrevio ? $scope.archivorequerimientopreresext : '',
                 file: $scope.registro.chkRespuestaReqPrevio ? $scope.archivorequerimientopreres : '',
-                fecha_reqpreres: $scope.registro.chkRespuestaReqPrevio ? $("#FechaReqPreRes").val() : '',
+                fecha_recibido: $scope.registro.chkRespuestaReqPrevio ? $("#FechaReqPreRes").val() : '',
                 typefile: '8',
                 ori: $scope.registro.chkRespuestaReqPrevio ? true : false,
-                sediorespuesta: $scope.registro.chkRespuestaReqPrevio ? 'S' : 'N',
-                motivo_no_sediorespuesta: !$scope.registro.chkRespuestaReqPrevio ? $scope.registro.chkRespuestaReqPrevio_Motivo : '',
+                seDioRespuestaTutela: $scope.registro.chkRespuestaReqPrevio ? 'S' : 'N',
+                seDioRespuestaTutela_Motivo: !$scope.registro.chkRespuestaReqPrevio ? $scope.registro.chkRespuestaReqPrevio_Motivo : '',
 
               }
             }).then(function (response) {
@@ -3313,6 +3351,172 @@ angular.module('GenesisApp')
         })
       }
 
+      $scope.registrasegundorequerimientopre = function () {
+        if ($("#FechaSeguReqPre").val() == "") {
+          swal('Información', 'Ingrese la fecha de radicación', 'info');
+        } else if ($scope.registro.medioRecepcionSeguRqPrevio == true && document.getElementById("medioRecepcionSeguRqPrevioAdjunto").files.length == 0) {
+          swal('Información', 'Adjunte el soporte de Medio de Recepción', 'info');
+        } else {
+          swal({
+            title: 'Confirmar',
+            text: "¿Desea guardar los campos del segundo requerimiento previo?",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Continuar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result) {
+              $scope.btn.GuardaRegistro = true;
+              $http({
+                method: 'POST',
+                url: "php/upload_file/upload_juridica.php",
+                data: {
+                  db: 'STT01',
+                  path: 'Juridica/Tutelas',
+                  constutela: $scope.registro.codigotutela,
+                  ubicacion: $scope.registro.ubicacion,
+                  type: $scope.archivosegurequerimientopreext,
+                  file: $scope.archivosegurequerimientopre,
+                  fecha_recibido: $("#FechaSeguReqPre").val(),
+                  typefile: '54',
+                  ori: true
+                }
+              }).then(function (response) {
+                if (response.data.codigo == "1") {
+                  // REGISTRA MEDIO RECEPCION RQ ADJUNTO CNVU 13/12/2019
+                  $http({
+                    method: 'POST',
+                    url: "php/upload_file/upload_juridica.php",
+                    data: {
+                      db: 'GMREC',
+                      path: 'Juridica/Tutelas',
+                      constutela: $scope.registro.codigotutela,
+                      ubicacion: $scope.registro.ubicacion,
+                      type: $scope.registro.medioRecepcionSeguRqPrevio == false ? "" : $scope.archivoSeguRqPrevioext,
+                      file: $scope.registro.medioRecepcionSeguRqPrevio == false ? "" : $scope.archivoSeguRqPrevio,
+                      fecha_reqpre: $("#FechaSeguReqPre").val(),
+                      typefile: '55',
+                      medio: ($scope.registro.medioRecepcionSeguRqPrevio == true) ? true : false,
+                      ori: ($scope.registro.medioRecepcionSeguRqPrevio == true) ? true : false
+                    }
+                  }).then(function (response) {
+                    $scope.btn.GuardaRegistro = false;
+                    if (response.data.codigo == "1") {
+                      swal('Completado', response.data.observacion_err, 'success');
+                      //
+                      $scope.archivosegurequepre = '';
+                      $("#FechaSeguReqPre").val('');
+                      // SET VALORES VACIOS RQ INC CNVU 13/12/2019
+                      $scope.registro.medioRecepcionRqPrevio = false;
+                      $scope.changeMedida("17");
+
+                      $scope.Medioarchivosegurequepre = '';
+                      //
+                      $scope.hdeIncidentes = false;
+                      $scope.despl6 = true;
+                      $scope.selec_inci = $scope.tabselect;
+                      $scope.tabselect = parseInt($scope.tabselect) + 1;
+                      $scope.vertab($scope.tabselect);
+                      $scope.csstab($scope.tabselect);
+                      //
+                      setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); }, 500);
+                    } else {
+                      swal('Error', response.data.observacion_err, 'warning')
+                    }
+                  });
+                } else {
+                  swal('Error', response.data.observacion_err, 'warning')
+                }
+              });
+            }
+          })
+        }
+      }
+
+      $scope.registrasegundorequerimientopreres = function () {
+        swal({
+          title: 'Confirmar',
+          text: "¿Desea guardar los campos de respuesta del segundo requerimiento previo?",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            $scope.btn.GuardaRegistro = true;
+            $http({
+              method: 'POST',
+              url: "php/upload_file/upload_juridica.php",
+              data: {
+                db: 'STT01',
+                path: 'Juridica/Tutelas',
+                constutela: $scope.registro.codigotutela,
+                ubicacion: $scope.registro.ubicacion,
+                type: $scope.registro.chkSeguRespuestaReqPrevio ? $scope.archivosegurequerimientopreresext : '',
+                file: $scope.registro.chkSeguRespuestaReqPrevio ? $scope.archivosegurequerimientopreres : '',
+                fecha_recibido: $scope.registro.chkSeguRespuestaReqPrevio ? $("#FechaSeguReqPreRes").val() : '',
+                typefile: '56',
+                ori: $scope.registro.chkSeguRespuestaReqPrevio ? true : false,
+                seDioRespuestaTutela: $scope.registro.chkSeguRespuestaReqPrevio ? 'S' : 'N',
+                seDioRespuestaTutela_Motivo: !$scope.registro.chkSeguRespuestaReqPrevio ? $scope.registro.chkSeguRespuestaReqPrevio_Motivo : '',
+
+              }
+            }).then(function (response) {
+              if (response.data.codigo == "1") {
+                // REGISTRA MEDIO RECEPCION RESPUESTA RQ ADJUNTO CNVU 13/12/2019
+                $http({
+                  method: 'POST',
+                  url: "php/upload_file/upload_juridica.php",
+                  data: {
+                    db: 'GMREC',
+                    path: 'Juridica/Tutelas',
+                    constutela: $scope.registro.codigotutela,
+                    ubicacion: $scope.registro.ubicacion,
+                    type: $scope.registro.medioRecepcionSeguRespuestaRq == false ? "" : $scope.archivoSeguRespuestaRqext,
+                    file: $scope.registro.medioRecepcionSeguRespuestaRq == false ? "" : $scope.archivoSeguRespuestaRq,
+                    fecha_reqpre: $("#FechaSeguReqPreRes").val(),
+                    typefile: '57',
+                    medio: $scope.registro.medioRecepcionSeguRespuestaRq ? true : false,
+                    ori: $scope.registro.chkSeguRespuestaReqPrevio && $scope.registro.medioRecepcionSeguRespuestaRq ? true : false
+                  }
+                }).then(function (response) {
+                  $scope.btn.GuardaRegistro = false;
+                  if (response.data.codigo == "1") {
+                    swal('Completado', response.data.observacion_err, 'success');
+                    //
+                    $scope.archivorequepreres = '';
+                    $("#FechaSeguReqPreRes").val('');
+                    // SET VALORES VACIOS RESPUESTA RQ INC CNVU 13/12/2019
+                    $scope.registro.medioRecepcionSeguRespuestaRq = false;
+                    $scope.changeMedida("18");
+                    // $scope.Medioarchivorequepreres = '';
+                    //
+                    $scope.hdeIncidentes = false;
+                    $scope.despl6 = true;
+                    //
+                    $scope.selec_inci = $scope.tabselect;
+                    $scope.tabselect = parseInt($scope.tabselect) + 1;
+                    $scope.vertab($scope.tabselect);
+                    $scope.csstab($scope.tabselect);
+                    //
+                    setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); $scope.$apply(); }, 500);
+                  } else {
+                    swal('Error', response.data.observacion_err, 'warning')
+                  }
+                });
+              } else {
+                swal('Error', response.data.observacion_err, 'warning')
+              }
+            });
+          }
+        })
+      }
+
+
       $scope.registraprocesoincidente = function () {
         if ($("#FechaReqPro").val() == "") {
           swal('Información', 'Ingrese la fecha de radicación', 'info');
@@ -3335,13 +3539,13 @@ angular.module('GenesisApp')
                 method: 'POST',
                 url: "php/upload_file/upload_juridica.php",
                 data: {
-                  db: 'PID01',
+                  db: 'STT01',
                   path: 'Juridica/Tutelas',
                   constutela: $scope.registro.codigotutela,
                   ubicacion: $scope.registro.ubicacion,
                   type: $scope.archivoprocesoincidentesext,
                   file: $scope.archivoprocesoincidentes,
-                  fecha_proincdes: $("#FechaReqPro").val(),
+                  fecha_recibido: $("#FechaReqPro").val(),
                   typefile: '9',
                   ori: true,
                   observacion_admision: $scope.registro.admisionInci_Observacion
@@ -3451,11 +3655,11 @@ angular.module('GenesisApp')
                 ubicacion: $scope.registro.ubicacion,
                 type: $scope.registro.chkRespuestaInci ? $scope.archivoprocesoincidentesresext : '',
                 file: $scope.registro.chkRespuestaInci ? $scope.archivoprocesoincidentesres : '',
-                fecha_proincdesres: $scope.registro.chkRespuestaInci ? $("#FechaReqProRes").val() : '',
+                fecha_recibido: $scope.registro.chkRespuestaInci ? $("#FechaReqProRes").val() : '',
                 typefile: '10',
                 ori: $scope.registro.chkRespuestaInci ? true : false,
-                sediorespuesta: $scope.registro.chkRespuestaInci ? 'S' : 'N',
-                motivo_no_sediorespuesta: !$scope.registro.chkRespuestaInci ? $scope.registro.chkRespuestaInci_Motivo : ''
+                seDioRespuestaTutela: $scope.registro.chkRespuestaInci ? 'S' : 'N',
+                seDioRespuestaTutela_Motivo: !$scope.registro.chkRespuestaInci ? $scope.registro.chkRespuestaInci_Motivo : ''
 
               }
             }).then(function (response) {
@@ -3531,112 +3735,342 @@ angular.module('GenesisApp')
           }
         })
       }
-
-      $scope.registrafalloincidente = function () {
-        if ($("#FechaFalInc").val() == "") {
+      //////////////////////////////////////////////////////////////////////////////////////////
+      // Apertura
+      $scope.registraaperturaprueba = function () {
+        if ($("#FechaAperturaPrueba").val() == "") {
           swal('Información', 'Ingrese la fecha de radicación', 'info');
-        } else if ($scope.registro.medioRecepcionDecisionInc == true && document.getElementById("medioRecepcionDecisionIncAdjunto").files.length == 0) {
+          return
+        }
+        if ($scope.registro.medioAperturaPrueba == true && document.getElementById("medioRecepcionApertPrueAdjunto").files.length == 0) {
           swal('Información', 'Adjunte el soporte de Medio de Recepción', 'info');
-        } else {
-          swal({
-            title: 'Confirmar',
-            text: "¿Desea guardar los campos de fallo de incidente de desacato?",
-            type: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Continuar',
-            cancelButtonText: 'Cancelar'
-          }).then((result) => {
-            if (result) {
-              $scope.btn.GuardaRegistro = true;
-              $http({
-                method: 'POST',
-                url: "php/upload_file/upload_juridica.php",
-                data: {
-                  db: 'PID03',
-                  path: 'Juridica/Tutelas',
-                  constutela: $scope.registro.codigotutela,
-                  ubicacion: $scope.registro.ubicacion,
-                  type: $scope.archivofalincdesext,
-                  file: $scope.archivofalincdes,
-                  fecha_fallincdes: $("#FechaFalInc").val(),
-                  typefile: '11',
-                  ori: true,
-                  sancionar_decision: $scope.registro.chkDecisionInci_Sancionar ? 'S' : 'N'
-                }
-              }).then(function (response) {
-                if (response.data.codigo == "1") {
-                  // REGISTRA MEDIO RECEPCION DECISION INC ADJUNTO CNVU 13/12/2019
-                  $http({
-                    method: 'POST',
-                    url: "php/upload_file/upload_juridica.php",
-                    data: {
-                      db: 'GMREC',
-                      path: 'Juridica/Tutelas',
-                      constutela: $scope.registro.codigotutela,
-                      ubicacion: $scope.registro.ubicacion,
-                      type: $scope.registro.medioRecepcionDecisionInc == false ? "" : $scope.archivoDecisionIncext,
-                      file: $scope.registro.medioRecepcionDecisionInc == false ? "" : $scope.archivoDecisionInc,
-                      fecha_reqpre: $("#FechaFalInc").val(),
-                      typefile: '37',
-                      medio: ($scope.registro.medioRecepcionDecisionInc == true) ? true : false,
-                      ori: ($scope.registro.medioRecepcionDecisionInc == true) ? true : false
-                    }
-                  }).then(function (response) {
-                    $scope.btn.GuardaRegistro = false;
-                    if (response.data.codigo == "1") {
-                      swal('Completado', response.data.observacion_err, 'success');
-                      //
-                      $scope.hdeVBrespuestatutela = true;
-                      $scope.hdeDetallesAccion = false;
-                      $scope.dsbDetalles = true;
-                      $scope.despl3 = false;
-                      $scope.hdeDetallesAccionSeg = true;
-                      $scope.dsbDetallesSegInst = true;
-                      /////
-                      $scope.hdeImpugnacion = false;
-                      $scope.dsbImpugnacion = true;
-                      $scope.despl4 = false;
+          return
+        }
 
-                      $scope.hdeCumplimiento = false;
-                      $scope.hdecumpli = false;// Cumplimiento Mensual
-                      //
-                      $scope.despl5 = true;
-                      if ($scope.registro.status = "5") {
-                        $scope.hdefallo = true;
-                      } else {
-                        $scope.hdefallo = false;
-                        // Activar boton ETAPA=6 de $scope.hdeAdjuntarFalloImpugnacion = false;
-                      }
-                      //
-                      $scope.archivofallincdes = '';
-                      $("#FechaFalInc").val('');
-                      // SET VALORES VACIOS DECISION INC CNVU 13/12/2019
-                      $scope.registro.medioRecepcionDecisionInc = false;
-                      $scope.changeMedida("12");
-                      // $("#dteMedioRecepcionDecisionInc").val('');
-                      $scope.Medioarchivofallincdes = '';
-                      //
-                      $scope.hdeIncidentes = false;
-                      $scope.despl6 = true;
-                      //
+        swal({
+          title: 'Confirmar',
+          text: "¿Desea guardar los campos de apertura de pruebas?",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            $scope.btn.GuardaRegistro = true;
+            $http({
+              method: 'POST',
+              url: "php/upload_file/upload_juridica.php",
+              data: {
+                db: 'STT01',
+                path: 'Juridica/Tutelas',
+                constutela: $scope.registro.codigotutela,
+                ubicacion: $scope.registro.ubicacion,
+                type: $scope.archivoapertpruext,
+                file: $scope.archivoapertpru,
+                fecha_recibido: $("#FechaAperturaPrueba").val(),
+                typefile: '58',
+                ori: true,
+                chkRespuestaApertura: $scope.registro.chkRespuestaApertura ? 'S' : 'N'
+              }
+            }).then(function (response) {
+              if (response.data.codigo == "1") {
+                // REGISTRA MEDIO RECEPCION DECISION INC ADJUNTO CNVU 13/12/2019
+                $http({
+                  method: 'POST',
+                  url: "php/upload_file/upload_juridica.php",
+                  data: {
+                    db: 'GMREC',
+                    path: 'Juridica/Tutelas',
+                    constutela: $scope.registro.codigotutela,
+                    ubicacion: $scope.registro.ubicacion,
+                    type: $scope.registro.medioAperturaPrueba == false ? "" : $scope.archivoMedioApertPruext,
+                    file: $scope.registro.medioAperturaPrueba == false ? "" : $scope.archivoMedioApertPru,
+                    fecha_reqpre: $("#FechaAperturaPrueba").val(),
+                    typefile: '59',
+                    medio: ($scope.registro.medioAperturaPrueba == true) ? true : false,
+                    ori: ($scope.registro.medioAperturaPrueba == true) ? true : false,
+                    chkRespuestaApertura: $scope.registro.chkRespuestaApertura ? 'S' : 'N'
+                  }
+                }).then(function (response) {
+                  $scope.btn.GuardaRegistro = false;
+                  if (response.data.codigo == "1") {
+                    swal('Completado', response.data.observacion_err, 'success');
+                    //
+                    $scope.archivoapertpru = '';
+                    $("#FechaAperturaPrueba").val('');
+                    //
+                    $scope.hdeIncidentes = false;
+                    $scope.despl6 = true;
+                    //
+                    if ($scope.registro.chkRespuestaApertura) {
                       $scope.selec_inci = $scope.tabselect;
                       $scope.tabselect = parseInt($scope.tabselect) + 1;
                       $scope.vertab($scope.tabselect);
                       $scope.csstab($scope.tabselect);
-                      //
-                      setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); }, 500);
                     } else {
-                      swal('Error', response.data.observacion_err, 'warning')
+                      $scope.selec_inci = $scope.tabselect;
+                      $scope.tabselect = parseInt($scope.tabselect) + 2;
+                      $scope.vertab($scope.tabselect);
+                      $scope.csstab($scope.tabselect);
                     }
-                  });
-                } else {
-                  swal('Error', response.data.observacion_err, 'warning')
-                }
-              });
+                    //
+                    setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); }, 500);
+                  } else {
+                    swal('Error', response.data.observacion_err, 'warning')
+                  }
+                });
+              } else {
+                swal('Error', response.data.observacion_err, 'warning')
+              }
+            });
+          }
+        })
+      }
+
+      // Apertura Respuesta
+      $scope.registrarespuestaaperturaprueba = function () {
+        if ($("#FechaRespAperturaPrueba").val() == "") {
+          swal('Información', 'Ingrese la fecha de radicación', 'info');
+          return
+        }
+        if ($scope.registro.medioAperturaPrueba == true && document.getElementById("medioRecepcionApertPrueAdjunto").files.length == 0) {
+          swal('Información', 'Adjunte el soporte de Medio de Recepción', 'info');
+          return
+        }
+
+        swal({
+          title: 'Confirmar',
+          text: "¿Desea guardar los campos de respuesta apertura de pruebas?",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            $scope.btn.GuardaRegistro = true;
+            $http({
+              method: 'POST',
+              url: "php/upload_file/upload_juridica.php",
+              data: {
+                db: 'STT01',
+                path: 'Juridica/Tutelas',
+                constutela: $scope.registro.codigotutela,
+                ubicacion: $scope.registro.ubicacion,
+                type: $scope.archivoresapertpruext,
+                file: $scope.archivorespapertpru,
+                fecha_recibido: $("#FechaRespAperturaPrueba").val(),
+                typefile: '60',
+                ori: true
+              }
+            }).then(function (response) {
+              if (response.data.codigo == "1") {
+                // REGISTRA MEDIO RECEPCION DECISION INC ADJUNTO CNVU 13/12/2019
+                $http({
+                  method: 'POST',
+                  url: "php/upload_file/upload_juridica.php",
+                  data: {
+                    db: 'GMREC',
+                    path: 'Juridica/Tutelas',
+                    constutela: $scope.registro.codigotutela,
+                    ubicacion: $scope.registro.ubicacion,
+                    type: $scope.registro.medioRecepcionRespAperturaPrueba == false ? "" : $scope.archivoMedioRespApertPruext,
+                    file: $scope.registro.medioRecepcionRespAperturaPrueba == false ? "" : $scope.archivoMedioRespApertPru,
+                    fecha_reqpre: $("#FechaRespAperturaPrueba").val(),
+                    typefile: '61',
+                    medio: ($scope.registro.medioRecepcionRespAperturaPrueba == true) ? true : false,
+                    ori: ($scope.registro.medioRecepcionRespAperturaPrueba == true) ? true : false
+                  }
+                }).then(function (response) {
+                  $scope.btn.GuardaRegistro = false;
+                  if (response.data.codigo == "1") {
+                    swal('Completado', response.data.observacion_err, 'success');
+                    //
+                    $scope.archivoapertpru = '';
+                    $("#FechaRespAperturaPrueba").val('');
+                    //
+                    $scope.hdeIncidentes = false;
+                    $scope.despl6 = true;
+                    //
+                    $scope.selec_inci = $scope.tabselect;
+                    $scope.tabselect = parseInt($scope.tabselect) + 1;
+                    $scope.vertab($scope.tabselect);
+                    $scope.csstab($scope.tabselect);
+                    //
+                    setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); }, 500);
+                  } else {
+                    swal('Error', response.data.observacion_err, 'warning')
+                  }
+                });
+              } else {
+                swal('Error', response.data.observacion_err, 'warning')
+              }
+            });
+          }
+        })
+      }
+
+
+
+
+      //////////////////////////////////////////////////////////////////////////////////////////
+
+      $scope.registradecisionincidente = function () {
+        if ($("#FechaFalInc").val() == "") {
+          swal('Información', 'Ingrese la fecha de radicación', 'info');
+          return
+        }
+        if ($scope.registro.medioRecepcionDecisionInc == true && document.getElementById("medioRecepcionDecisionIncAdjunto").files.length == 0) {
+          swal('Información', 'Adjunte el soporte de Medio de Recepción', 'info');
+          return
+        }
+
+        if ($scope.registro.chkDecisionInci_Sancionar && (!$scope.registro.decisionInci_CuantosDias && !$scope.registro.decisionInci_ValorMulta)) {
+          swal('Información', 'Debe diligenciar los dias de arresto o el valor de la multa', 'info');
+          return
+        }
+
+        const decisionInci_CuantosDias = $scope.chkDecisionInci_CuantosDias ? $scope.registro.decisionInci_CuantosDias : ''
+        const decisionInci_ValorMulta = $scope.chkDecisionInci_ValorMulta ? ($scope.registro.decisionInci_ValorMulta.toString().replace(/\./g, '')).replace(/\,/g, '.') : ''
+
+        swal({
+          title: 'Confirmar',
+          text: "¿Desea guardar los campos de fallo de incidente de desacato?",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result) {
+            $scope.btn.GuardaRegistro = true;
+            $http({
+              method: 'POST',
+              url: "php/upload_file/upload_juridica.php",
+              data: {
+                db: 'STT01',
+                path: 'Juridica/Tutelas',
+                constutela: $scope.registro.codigotutela,
+                ubicacion: $scope.registro.ubicacion,
+                type: $scope.archivofalincdesext,
+                file: $scope.archivofalincdes,
+                fecha_recibido: $("#FechaFalInc").val(),
+                typefile: '11',
+                ori: true,
+                sancionar_decision: $scope.registro.chkDecisionInci_Sancionar ? 'S' : 'N',
+                CuantosDias: decisionInci_CuantosDias,
+                ValorMulta: decisionInci_ValorMulta
+              }
+            }).then(function (response) {
+              if (response.data.codigo == "1") {
+                // REGISTRA MEDIO RECEPCION DECISION INC ADJUNTO CNVU 13/12/2019
+                $http({
+                  method: 'POST',
+                  url: "php/upload_file/upload_juridica.php",
+                  data: {
+                    db: 'GMREC',
+                    path: 'Juridica/Tutelas',
+                    constutela: $scope.registro.codigotutela,
+                    ubicacion: $scope.registro.ubicacion,
+                    type: $scope.registro.medioRecepcionDecisionInc == false ? "" : $scope.archivoDecisionIncext,
+                    file: $scope.registro.medioRecepcionDecisionInc == false ? "" : $scope.archivoDecisionInc,
+                    fecha_reqpre: $("#FechaFalInc").val(),
+                    typefile: '37',
+                    medio: ($scope.registro.medioRecepcionDecisionInc == true) ? true : false,
+                    ori: ($scope.registro.medioRecepcionDecisionInc == true) ? true : false
+                  }
+                }).then(function (response) {
+                  $scope.btn.GuardaRegistro = false;
+                  if (response.data.codigo == "1") {
+                    swal('Completado', response.data.observacion_err, 'success');
+                    //
+                    $scope.hdeVBrespuestatutela = true;
+                    $scope.hdeDetallesAccion = false;
+                    $scope.dsbDetalles = true;
+                    $scope.despl3 = false;
+                    $scope.hdeDetallesAccionSeg = true;
+                    $scope.dsbDetallesSegInst = true;
+                    /////
+                    $scope.hdeImpugnacion = false;
+                    $scope.dsbImpugnacion = true;
+                    $scope.despl4 = false;
+
+                    $scope.hdeCumplimiento = false;
+                    $scope.hdecumpli = false;// Cumplimiento Mensual
+                    //
+                    $scope.despl5 = true;
+                    if ($scope.registro.status = "5") {
+                      $scope.hdefallo = true;
+                    } else {
+                      $scope.hdefallo = false;
+                      // Activar boton ETAPA=6 de $scope.hdeAdjuntarFalloImpugnacion = false;
+                    }
+                    //
+                    $scope.archivofallincdes = '';
+                    $("#FechaFalInc").val('');
+                    // SET VALORES VACIOS DECISION INC CNVU 13/12/2019
+                    $scope.registro.medioRecepcionDecisionInc = false;
+                    $scope.changeMedida("12");
+                    // $("#dteMedioRecepcionDecisionInc").val('');
+                    $scope.Medioarchivofallincdes = '';
+                    //
+                    $scope.hdeIncidentes = false;
+                    $scope.despl6 = true;
+                    //
+                    $scope.selec_inci = $scope.tabselect;
+                    $scope.tabselect = parseInt($scope.tabselect) + 1;
+                    $scope.vertab($scope.tabselect);
+                    $scope.csstab($scope.tabselect);
+                    //
+                    setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); }, 500);
+                  } else {
+                    swal('Error', response.data.observacion_err, 'warning')
+                  }
+                });
+              } else {
+                swal('Error', response.data.observacion_err, 'warning')
+              }
+            });
+          }
+        })
+      }
+      $scope.FormatPeso = function (NID) {
+        const input = document.getElementById('' + NID + '');
+        var valor = input.value;
+        valor = valor.replace(/[^0-9,]/g, '');
+        var array = null;
+        var regex = new RegExp("\\,");
+        if (!regex.test(valor)) {
+          valor = valor.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1.');
+          valor = valor.split('').reverse().join('').replace(/^[\.]/, '');
+        } else {
+          array = valor.toString().split(',');
+          if (array.length > 2) {
+            input.value = 0;
+          } else {
+            array[0] = array[0].toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1.');
+            array[0] = array[0].split('').reverse().join('').replace(/^[\.]/, '');
+            if (array[1].length > 2) {
+              array[1] = array[1].substr(0, 2);
             }
-          })
+          }
+        }
+        if (!regex.test(valor)) {
+          input.value = valor;
+        } else {
+          if (valor == ',') {
+            input.value = 0;
+          } else {
+            if (valor.substr(0, 1) == ',') {
+              input.value = 0 + ',' + array[1];
+            } else {
+              input.value = array[0] + ',' + array[1];
+            }
+          }
         }
       }
 
@@ -3662,13 +4096,13 @@ angular.module('GenesisApp')
                 method: 'POST',
                 url: "php/upload_file/upload_juridica.php",
                 data: {
-                  db: 'PID04',
+                  db: 'STT01',
                   path: 'Juridica/Tutelas',
                   constutela: $scope.registro.codigotutela,
                   ubicacion: $scope.registro.ubicacion,
                   type: $scope.archivoconincdesext,
                   file: $scope.archivoconincdes,
-                  fecha_conincdes: $("#FechaConInc").val(),
+                  fecha_recibido: $("#FechaConInc").val(),
                   typefile: '12',
                   ori: true
                 }
@@ -3769,13 +4203,13 @@ angular.module('GenesisApp')
                 method: 'POST',
                 url: "php/upload_file/upload_juridica.php",
                 data: {
-                  db: 'PID05',
+                  db: 'STT01',
                   path: 'Juridica/Tutelas',
                   constutela: $scope.registro.codigotutela,
                   ubicacion: $scope.registro.ubicacion,
                   type: $scope.archivocieincdesext,
                   file: $scope.archivocieincdes,
-                  fecha_cieincdes: $("#FechaAutInc").val(),
+                  fecha_recibido: $("#FechaAutInc").val(),
                   typefile: '13',
                   ori: true
                 }
@@ -3867,19 +4301,13 @@ angular.module('GenesisApp')
         for (let i = 1; i <= value; i++) {
           $("#paso" + i).addClass('active');
         }
-        //for (var i = (parseInt($scope.selec_inci) + 1); i <= 7; i++) {
-        // $("#paso" + (parseInt(i) + 1)).css('cursor', 'pointer');
-        //}
-        // }
       }
       $scope.csstab = function (value) {
-        // $('.steps').css('cursor', 'not-allowed');
         $('.steps').removeClass('pulsate');
-        for (var i = value; i <= 7; i++) {
+        for (var i = value; i <= 11; i++) {
           if (i == value) {
             $("#paso" + i).addClass('pulsate');
           }
-          // $("#paso" + i).css('cursor', 'pointer');
         }
       }
 
@@ -4052,6 +4480,14 @@ angular.module('GenesisApp')
         $("#archivofechareqpreres")[0].value = "";
         $("#medioRecepcionRespuestaRqAdjunto")[0].value = "";
 
+        // Segundo Requerimiento Previo
+        $("#archivofechasegureqpre")[0].value = "";
+        $("#medioRecepcionSeguRqPrevioAdjunto")[0].value = "";
+
+        // Segundo Respuesta de Requerimiento Previo
+        // $("#archivofechasegureqpreres")[0].value = "";
+        // $("#medioRecepcionSeguRespuestaRqAdjunto")[0].value = "";
+
         // Admisión de Incidente de Desacato
         $("#archivofechreqpro")[0].value = "";
         $("#medioRecepcionAdmisionAdjunto")[0].value = "";
@@ -4059,6 +4495,14 @@ angular.module('GenesisApp')
         // Respuesta de Incidente de Desacato
         $("#archivofechreqprores")[0].value = "";
         $("#medioRecepcionRespuestaIncAdjunto")[0].value = "";
+
+        // Apertura de pruebas
+        $("#archivoapertpru")[0].value = "";
+        $("#medioRecepcionApertPrueAdjunto")[0].value = "";
+
+        // Respuesta apertura de pruebas
+        $("#archivorespapertpru")[0].value = "";
+        $("#medioRecepcionRespApertPrueAdjunto")[0].value = "";
 
         // Decisión de Incidente de Desacato
         $("#archivofalinc")[0].value = "";
@@ -4104,6 +4548,14 @@ angular.module('GenesisApp')
           $scope.hdeImpugnacion = true;
           $scope.hdeCumplimiento = true;
           $scope.hdeIncidentes = true;
+          if ($scope.registro.medidaprovisional) {//Si la tutela esta marcada como medida provisional, debe habilitar etapa de incidtentes
+            $scope.hdeIncidentes = false;
+            $scope.despl6 = true
+            $scope.selec_inci = $scope.registro.status_desacato;
+            $scope.tabselect = parseInt($scope.registro.status_desacato) + 1;
+            $scope.vertab(parseInt($scope.registro.status_desacato) + 1);
+            $scope.csstab(parseInt($scope.registro.status_desacato) + 1);
+          }
           //
           $scope.DesactivarBotonesAdjuntar();//Quitar botones
           // Activar boton ETAPA=2 de $scope.hdeAdjuntarFallo = false;
@@ -4122,6 +4574,11 @@ angular.module('GenesisApp')
           $scope.hdeImpugnacion = false;
           $scope.hdeCumplimiento = true;
           $scope.hdeIncidentes = true;
+          if ($scope.registro.medidaprovisional) {//Si la tutela esta marcada como medida provisional, debe habilitar etapa de incidtentes
+            $scope.hdeIncidentes = false;
+            $scope.despl6 = true
+          }
+          //
           //
           $scope.DesactivarBotonesAdjuntar();//Quitar botones
           $scope.archivodetalletut = '';
@@ -4189,9 +4646,11 @@ angular.module('GenesisApp')
 
           $scope.hdeCumplimiento = false;
           $scope.hdecumpli = false;// Cumplimiento Mensual
+          $scope.registro.checkCumplimientoMensual = false;
           //
           $scope.despl5 = true;
           $scope.DesactivarBotonesAdjuntar();
+          document.getElementById('checkimpugnado').disabled = true;
           if ($scope.detalles.impugnado == false) {
             $scope.hdefallo = true;
           } else {
@@ -4204,13 +4663,15 @@ angular.module('GenesisApp')
           $scope.despl6 = true;
           $scope.selec_inci = 0;
           $scope.tabselect = 1;
-          $(paso1).addClass('active');
-          $(paso2).removeClass('active');
-          $(paso3).removeClass('active');
-          $(paso4).removeClass('active');
-          $(paso5).removeClass('active');
-          $(paso6).removeClass('active');
-          $(paso7).removeClass('active');
+          $scope.vertab($scope.tabselect);
+          $scope.csstab($scope.tabselect);
+          // $(paso1).addClass('active');
+          // $(paso2).removeClass('active');
+          // $(paso3).removeClass('active');
+          // $(paso4).removeClass('active');
+          // $(paso5).removeClass('active');
+          // $(paso6).removeClass('active');
+          // $(paso7).removeClass('active');
           setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); $scope.$apply(); }, 500);
           setTimeout(function () { $scope.ActivarBotonesAdjuntar(6); }, 500);
         }
@@ -4235,6 +4696,7 @@ angular.module('GenesisApp')
           if ($scope.detalles.seguimiento == true) {
             $scope.hdeCumplimiento = false;
             $scope.hdecumpli = false;
+            $scope.registro.checkCumplimientoMensual = false;
             $scope.despl5 = true;
             $scope.hdefallo = true;
           }
@@ -4249,13 +4711,8 @@ angular.module('GenesisApp')
           $scope.despl6 = true;
           $scope.selec_inci = 0;
           $scope.tabselect = 1;
-          $(paso1).addClass('active');
-          $(paso2).removeClass('active');
-          $(paso3).removeClass('active');
-          $(paso4).removeClass('active');
-          $(paso5).removeClass('active');
-          $(paso6).removeClass('active');
-          $(paso7).removeClass('active');
+          $scope.vertab($scope.tabselect);
+          $scope.csstab($scope.tabselect);
         }
 
 
@@ -7142,7 +7599,7 @@ angular.module('GenesisApp')
 
           setTimeout(() => {
             $scope.guardarCausas_Adm_TS()
-           }, 1500);
+          }, 1500);
 
           setTimeout(() => { $scope.$apply(); }, 500);
         }
@@ -8202,6 +8659,258 @@ angular.module('GenesisApp')
         })
       }
 
+
+      //
+      $scope.obtenerListadoProblemas_Causas_Pretensiones = function (tipo, problema, causa) {
+
+        var data = {}
+        if (tipo == 'problemas') {
+          data = {}
+        }
+        if (tipo == 'causas') {
+          data = {
+            'problema': problema
+          }
+        }
+        if (tipo == 'pretensiones') {
+          data = {
+            'problema': problema,
+            'causa': causa
+          }
+        }
+
+        $http({
+          method: 'POST',
+          url: "php/juridica/tutelas/functutelas.php",
+          data: {
+            function: "P_OBTENER_PROBLEMAS_CAUSAS_PRETENSION",
+            data: JSON.stringify(data)
+          }
+        }).then(function ({ data }) {
+          swal.close();
+          if (data && data.toString().substr(0, 3) != '<br') {
+
+            if (tipo == 'problemas') {
+              $scope.listadoProblemas = data
+            }
+            if (tipo == 'causas') {
+              $scope.listadoCausasProblemas = data
+              $scope.registro.selectCausaProblema = '';
+            }
+            if (tipo == 'pretensiones') {
+              $scope.listadoPretension = data
+              $scope.registro.selectPretension = '';
+            }
+
+            setTimeout(() => { $scope.$apply(); }, 1000);
+          } else {
+            swal("Mensaje", data, "warning").catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.obtenerListadoProblemas_Causas_Pretensiones('problemas');
+
+
+      $scope.guardarCausaProblemaPretension = function () {
+        // guardarCausaProblemaPretension
+        setTimeout(() => { $scope.$apply(); }, 500);
+        if (!$scope.registro.selectProblema || !$scope.registro.selectCausaProblema || (!$scope.registro.selectPretension && $scope.listadoPretension.length > 0)) {
+          swal('¡Mensaje!', 'Diligencie los campos', 'info').catch(swal.noop);
+          return
+        }
+        var exist = false
+        $scope.listadoCausaProblemaPretension.forEach(e => {
+          if (e.PROBLEMA == $scope.registro.selectProblema && e.CAUSA == $scope.registro.selectCausaProblema && e.PRETENSION == $scope.registro.selectPretension) {
+            swal("Mensaje", 'Problema, Causa y Pretension repetido', "warning").catch(swal.noop);
+            exist = true
+          }
+        });
+
+
+        if (!$scope.registro.codigotutela && !exist) {
+          const selectProblema = $scope.listadoProblemas.filter(e => e.TUTN_CODIGO == $scope.registro.selectProblema)[0].TUTC_NOMBRE;
+          const selectCausaProblema = $scope.listadoCausasProblemas.filter(e => e.TUTN_CODIGO == $scope.registro.selectCausaProblema)[0].TUTC_NOMBRE;
+          const selectPretension = $scope.listadoPretension.length ? $scope.listadoPretension.filter(e => e.TUTN_CODIGO == $scope.registro.selectPretension)[0].TUTC_NOMBRE : '';
+
+          $scope.listadoCausaProblemaPretension.push({
+            "PROBLEMA": $scope.registro.selectProblema,
+            "PROBLEMA_NOMBRE": selectProblema,
+            "CAUSA": $scope.registro.selectCausaProblema,
+            "CAUSA_NOMBRE": selectCausaProblema,
+            "PRETENSION": $scope.registro.selectPretension,
+            "PRETENSION_NOMBRE": selectPretension,
+          });
+
+          $scope.registro.selectProblema = '';
+          $scope.registro.selectCausaProblema = '';
+          $scope.registro.selectPretension = '';
+
+          setTimeout(() => { $scope.$apply(); }, 500);
+        }
+        if ($scope.registro.codigotutela) {
+          const data = {
+            accion: 'I',
+            tutela: $scope.registro.codigotutela,
+            problema: $scope.registro.selectProblema,
+            causa: $scope.registro.selectCausaProblema,
+            pretension: $scope.registro.selectPretension,
+            responsable: $scope.cedulalog
+          }
+
+          swal({
+            title: 'Cargando'
+          });
+          swal.showLoading();
+          $http({
+            method: 'POST',
+            url: "php/juridica/tutelas/functutelas.php",
+            data: {
+              function: "P_UI_PROBLEMAS_CAUSAS_PRETENSION_TUTELA",
+              datos: JSON.stringify(data),
+              cantidad: 1
+            }
+          }).then(function ({ data }) {
+            swal.close();
+            if (data && data.toString().substr(0, 3) != '<br') {
+              if (data.Codigo == 0) {
+                swal('¡Mensaje!', data.Nombre, 'success').catch(swal.noop);
+                $scope.registro.selectProblema = '';
+
+                $scope.listadoCausasProblemas = []
+                $scope.listadoPretension = []
+                $scope.registro.selectCausaProblema = '';
+                $scope.registro.selectPretension = '';
+
+                $scope.obtenerListadoProblemas_Tutela($scope.registro.codigotutela);
+                setTimeout(() => { $scope.$apply(); }, 500);
+              } else {
+                swal('¡Mensaje!', data.Nombre, 'info').catch(swal.noop);
+              }
+            } else {
+              swal("Mensaje", data, "warning").catch(swal.noop);
+            }
+          })
+        }
+
+
+      }
+
+      $scope.quitarCausaProblemaPretension = function (x, index) {
+        if (!$scope.registro.codigotutela) {
+          $scope.listadoCausaProblemaPretension.splice(index, 1);
+          setTimeout(() => { $scope.$apply(); }, 500);
+          return
+        }
+
+        const data = {
+          accion: 'X',
+          tutela: $scope.registro.codigotutela,
+          problema: x.PROBLEMA,
+          causa: x.CAUSA,
+          pretension: x.PRETENSION,
+          responsable: $scope.cedulalog
+        }
+
+        swal({
+          title: 'Cargando'
+        });
+        swal.showLoading();
+        $http({
+          method: 'POST',
+          url: "php/juridica/tutelas/functutelas.php",
+          data: {
+            function: "P_UI_PROBLEMAS_CAUSAS_PRETENSION_TUTELA",
+            datos: JSON.stringify(data),
+            cantidad: 1
+          }
+        }).then(function ({ data }) {
+          swal.close();
+          if (data && data.toString().substr(0, 3) != '<br') {
+            if (data.Codigo == 0) {
+              swal('¡Mensaje!', data.Nombre, 'success').catch(swal.noop);
+              $scope.obtenerListadoProblemas_Tutela($scope.registro.codigotutela);
+              setTimeout(() => { $scope.$apply(); }, 500);
+
+            } else {
+              swal('¡Mensaje!', data.Nombre, 'info').catch(swal.noop);
+            }
+          } else {
+            swal("Mensaje", data, "warning").catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.guardarTodosCausaProblemaPretension = function () {
+        var datos = []
+        $scope.listadoCausaProblemaPretension.forEach(e => {
+          datos.push({
+            accion: 'I',
+            tutela: $scope.registro.codigotutela,
+            problema: e.PROBLEMA,
+            causa: e.CAUSA,
+            pretension: e.PRETENSION,
+            responsable: $scope.cedulalog
+          })
+        });
+
+        swal({
+          title: 'Cargando'
+        });
+        swal.showLoading();
+        $http({
+          method: 'POST',
+          url: "php/juridica/tutelas/functutelas.php",
+          data: {
+            function: "P_UI_PROBLEMAS_CAUSAS_PRETENSION_TUTELA",
+            datos: JSON.stringify(datos),
+            cantidad: datos.length
+          }
+        }).then(function ({ data }) {
+          swal.close();
+          if (data && data.toString().substr(0, 3) != '<br') {
+            if (data.Codigo == 0) {
+              // swal('¡Mensaje!', data.Nombre, 'success').catch(swal.noop);
+              $scope.registro.selectProblema = '';
+
+              $scope.listadoCausasProblemas = []
+              $scope.listadoPretension = []
+              $scope.registro.selectCausaProblema = '';
+              $scope.registro.selectPretension = '';
+
+              // $scope.obtenerListadoProblemas_Tutela($scope.registro.codigotutela);
+              setTimeout(() => { $scope.$apply(); }, 500);
+            } else {
+              swal('¡Mensaje!', data.Nombre, 'info').catch(swal.noop);
+            }
+          } else {
+            swal("Mensaje", data, "warning").catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.obtenerListadoProblemas_Tutela = function (tutela) {
+
+        $http({
+          method: 'POST',
+          url: "php/juridica/tutelas/functutelas.php",
+          data: {
+            function: "P_OBTENER_PROBLEMAS_CAUSAS_PRETENSION_TUTELA",
+            tutela
+          }
+        }).then(function ({ data }) {
+          swal.close();
+          if (data && data.toString().substr(0, 3) != '<br') {
+            $scope.listadoCausaProblemaPretension = data;
+            setTimeout(() => { $scope.$apply(); }, 500);
+          } else {
+            swal("Mensaje", data, "warning").catch(swal.noop);
+          }
+        })
+      }
+
+      $scope.obtenerListadoProblemas_Tutela($scope.registro.codigotutela);
+      //
 
       $scope.formatPeso2 = function (num) {
         if (!num) return

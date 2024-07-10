@@ -286,6 +286,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/cuentasmedicas/radicacionripscapitaController.js?v=7"></script>
 <script src="scripts/controllers/cuentasmedicas/administracionripsController.js"></script>
 <script src="scripts/controllers/cuentasmedicas/miscarguesripsController.js"></script>
+<script src="scripts/controllers/cuentasmedicas/miscarguesrips_epsController.js"></script>
 <script src="scripts/controllers/cuentasmedicas/radicaciondigitalController.js"></script>
 <script src="scripts/controllers/cuentasmedicas/radicarfacturasController.js"></script>
 <script src="scripts/controllers/cuentasmedicas/gestionradicadoscontroller.js"></script>
@@ -847,6 +848,7 @@ if (!isset($_SESSION['nombre'])) {
 <script src="scripts/controllers/consultaafiliados/declaracionsalud.js"></script>
 <script src="scripts/controllers/consultaafiliados/modalcertafiliacioncontroller.js"></script>
 <script src="scripts/controllers/consultaafiliados/modalcambiarcontrasenacontroller.js"></script>
+<script src="scripts/controllers/navegacion/cambioclaveepscontroller.js"></script>
 <!-- controller Financiera -->
 <script src="scripts/controllers/financiera/pagosipsController.js"></script>
 <script src="scripts/controllers/financiera/confirmacionController.js"></script>
