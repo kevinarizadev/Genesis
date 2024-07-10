@@ -12,7 +12,6 @@ angular.module('GenesisApp')
         $scope.SysDay = new Date();
         $scope.Hoja1Limpiar();
 
-        // $scope.obtenerListadoFacturas()
         $scope.obtenerListado();
 
         setTimeout(() => {
@@ -152,7 +151,7 @@ angular.module('GenesisApp')
               if (result) {
 
                 swal({
-                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
+                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando soportes...</p>',
                   width: 200,
                   allowOutsideClick: false,
                   allowEscapeKey: false,

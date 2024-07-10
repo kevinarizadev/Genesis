@@ -2482,3 +2482,65 @@ function P_OBTENER_REABIERTAS_REGISTROS()
 	oci_free_statement($cursor);
 	echo json_encode($datos);
 }
+
+
+function updatePQRSuperSalud() {
+	require_once('../../config/dbcon_prod.php');
+	// require_once('../../upload_file/subir_archivo.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQR_PRUEBA_EXCEL.P_ACTUALIZAR_PQR_EXCEL(:v_criterioobjetivo,:v_criteriosubjetivo,:v_critericomplementario,:v_sujetosproteccionespecial,:v_servicios,:v_medicamentos,
+  :v_pqrfile,:v_codigosuper,:v_presponsable,:v_preporta,:v_tipodocumento,:v_documento,:v_res); end;');
+	oci_bind_by_name($consulta,':v_criterioobjetivo',$request->criterioobjetivo);
+	oci_bind_by_name($consulta,':v_criteriosubjetivo',$request->criteriosubjetivo);
+	oci_bind_by_name($consulta,':v_critericomplementario',$request->critericomplementario);
+	oci_bind_by_name($consulta,':v_sujetosproteccionespecial',$request->sujetosproteccionespecial);
+	oci_bind_by_name($consulta,':v_servicios',$request->servicios);
+	oci_bind_by_name($consulta,':v_medicamentos',$request->medicamentos);
+	oci_bind_by_name($consulta,':v_pqrfile',$request->pqrfile);
+	oci_bind_by_name($consulta,':v_codigosuper',$request->codigosuper);
+	oci_bind_by_name($consulta,':v_presponsable',$_SESSION['cedula']);
+	oci_bind_by_name($consulta,':v_preporta',$request->reporta);
+	oci_bind_by_name($consulta,':v_tipodocumento',$request->tipodocumento);
+	oci_bind_by_name($consulta,':v_documento',$request->documento);
+	$clob = oci_new_descriptor($c,OCI_D_LOB);
+	oci_bind_by_name($consulta, ':v_res', $clob,-1,OCI_B_CLOB);
+	oci_execute($consulta,OCI_COMMIT_ON_SUCCESS);
+	$bd_response = $clob->read($clob->size());
+	$json_bd_response = json_decode($bd_response);
+	if ($json_bd_response->Codigo == 0) {
+		echo $bd_response;
+	}else{
+		if ($json_bd_response->codres== 1) {
+			$file = $request->adjunto;
+			$ext =$request->extension;
+			$subir = subirFTP3($file,$json_bd_response->Ruta,$json_bd_response->NombreArchivo,$ext);
+			if ($subir != 0) {
+				echo $bd_response;
+			}
+			echo $bd_response;
+		}else{
+			echo $bd_response;
+		}
+	}
+	oci_close($c);
+
+	}
+
+
+function obtenerafiliados(){
+  require_once('../../config/dbcon.php');
+  global $request;
+  $consulta = oci_parse($c,'BEGIN PQ_GENESIS_AUTPRO.P_OBTENER_DATOS_BASICOS(:v_ptipodocumento,:v_pdocumento,:v_json_row); end;');
+  oci_bind_by_name($consulta,':v_ptipodocumento',$request->tipodocumento);
+  oci_bind_by_name($consulta,':v_pdocumento',$request->documento);
+  $clob = oci_new_descriptor($c,OCI_D_LOB);
+  oci_bind_by_name($consulta, ':v_json_row', $clob,-1,OCI_B_CLOB);
+  oci_execute($consulta,OCI_DEFAULT);
+  if (isset($clob)) {
+    $json = $clob->read($clob->size());
+    echo $json;
+  }else{
+    echo 0;
+  }
+  oci_close($c);
+}

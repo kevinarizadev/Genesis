@@ -17,13 +17,6 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       $scope.apiURL = 'http://172.52.11.25:5000/api';
 
       $scope.cargarRips();
-      // swal({
-      //   title: "¡Notificación!",
-      //   html: `<span>Ahora es posible anular RIPS Validados utilizando la opción</span>
-      //          <i class="icon-trash cursor-pointer" style="font-size: 18px;"></i>`,
-      //   type: 'info',
-      //   confirmButtonText: "Ok",
-      // });
 
       setTimeout(() => { $scope.$apply(); }, 500);
       console.log(1)
@@ -151,7 +144,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
           data.forEach(e => {
             $scope.datosRips.totalFacturas += parseFloat(e.VALOR_FACTURA);
 
-            if (e.OCR_ESTADO_FACTURA == 'V' && e.OCR_ID_FACTURA == null) {
+            if ((e.OCR_ESTADO_FACTURA == 'V' && e.OCR_ID_FACTURA == null) || e.OCR_ESTADO_FACTURA == 'A') {
               validadoSinId++
             }
 
@@ -235,23 +228,6 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
           codigo_factura: e.CODIGO_FACTURA, tipo_afiliado: e.AFILIADO_TIPO_DOC, documento_afiliado: e.AFILIADO_NUMERO, codigo_autorizacion: e.AFILIADO_AUTORIZACION, valor_total: e.VALOR_FACTURA
         })
       });
-
-      // [
-      //   {
-      //     "CODIGO_RECIBO": "150533",
-      //     "CODIGO_PROCESO": "1132947",
-      //     "CODIGO_FACTURA": "LGFM1190011",
-      //     "VALOR_FACTURA": "63828",
-      //     "OCR_ID_FACTURA": "123",
-      //     "OCR_ESTADO_FACTURA": "V",
-      //     "OCR_ESTADO_FACTURA_NOMB": "VALIDADO",
-      //     "AFILIADO_TIPO_DOC": "TI",
-      //     "AFILIADO_NUMERO": "1081818326",
-      //     "AFILIADO_AUTORIZACION": "4700100911154",
-      //     "OCR_ERROR": null,
-      //     "OCR_FECHA_REGISTRO": "23/04/2024"
-      //   }
-      // ]
 
       swal({
         html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando facturas...</p>',
@@ -372,20 +348,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       if (x.similarities) {
         $scope.similarities = x.similarities;
       }
-      // "similarities": [
-      //   {
-      //       "similarity": 100.0,
-      //       "word": "factura"
-      //   },
-      //   {
-      //       "height": 15,
-      //       "left": 122,
-      //       "similarity": 75.0,
-      //       "top": 399,
-      //       "width": 69,
-      //       "word": "factura"
-      //   },
-      console.log(x)
+
     }
 
     $scope.buscarPalabrasPDF = function () {
@@ -419,8 +382,6 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         // $scope.busquedaXPalabras = true;
         $scope.similarities = []
         $scope.listadoFacturasPDFPalabras = data.result;
-
-
 
 
         console.log(data)

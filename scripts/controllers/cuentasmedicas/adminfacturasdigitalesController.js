@@ -18,7 +18,7 @@ angular.module('GenesisApp')
         $scope.hoja2Limpiar();
         $scope.hoja3Limpiar();
 
-        // $scope.obtenerListadoFacturas()
+        $scope.obtenerListadoFacturas()
         $scope.obtenerListadoFuncs();
         $scope.obtenerListadoIPS();
 
@@ -60,7 +60,7 @@ angular.module('GenesisApp')
           url: "php/cuentasmedicas/adminfacturasdigitales.php",
           data: {
             function: 'P_OBTENER_FACTURAS_DIGITALES',
-            cedula: $scope.Rol_Cedula,
+            // cedula: $scope.Rol_Cedula,
             estado: $scope.Hoja1.estado ? 'G' : 'A'
           }
         }).then(function ({ data }) {
@@ -203,6 +203,31 @@ angular.module('GenesisApp')
 
 
 
+      $scope.descargaExcel = function () {
+        var data = []
+
+        $scope.List1.listadoFacturas.forEach(e => {
+          data.push({
+            "PRESTADOR": e.PRESTADOR,
+            "RECIBO": e.RECIBO,
+            "FACTURA": e.FACTURA,
+            "VALOR_FACTURA": e.VALOR_FACTURA,
+            "RESPONSABLE_ASIGNADO": e.RESPONSABLE_ASIGNADO,
+            "FECHA_REGISTRO": e.OCR_FECHA_REGISTRO,
+            "ESTADO_GESTION": e.ESTADO_GESTION
+          })
+        });
+
+        var ws = XLSX.utils.json_to_sheet(data);
+        /* add to workbook */
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+        /* write workbook and force a download */
+        XLSX.writeFile(wb, "Reporte de Facturas.xlsx");
+        const text = `Registros encontrados ${data.length}`
+        swal('¡Mensaje!', text, 'success').catch(swal.noop);
+
+      }
 
 
 

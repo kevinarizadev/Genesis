@@ -41,9 +41,10 @@
 		}  else {
             $url = "";
 		}
+    $passwordCurrent = isset($dataRegistro->passwordCurrent) ? $dataRegistro->passwordCurrent : $_SESSION['acc'];
 		$consulta = oci_parse($c,'begin pq_genesis.p_actualiza_password(:v_pdocumento,:v_ppassword_anterior,:v_ppassword_nueva,:v_ppassword_verifica,:v_pimagen,:v_json_res); end;');
 		oci_bind_by_name($consulta,':v_pdocumento',$_SESSION['cedula']);
-        oci_bind_by_name($consulta,':v_ppassword_anterior',$dataRegistro->passwordCurrent);
+        oci_bind_by_name($consulta,':v_ppassword_anterior',$passwordCurrent);
         oci_bind_by_name($consulta,':v_ppassword_nueva',$dataRegistro->passwordNew);
 		oci_bind_by_name($consulta,':v_ppassword_verifica',$dataRegistro->passwordVerify);
 		oci_bind_by_name($consulta,':v_pimagen',$url);

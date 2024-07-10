@@ -13,7 +13,7 @@ angular.module('GenesisApp')
         $scope.Rol_Cedula = sessionStorage.getItem('cedula');
         $('.tabs').tabs();
         $('.modal').modal();
-        $scope.Tabs = 1;
+        $scope.Tabs = 0;
         $scope.SysDay = new Date();
 
         $scope.cargarPermisosUsuario();
@@ -505,7 +505,7 @@ angular.module('GenesisApp')
           listadoTablaTemp: [],
           varsTabla: {
             currentPage: 0,
-            pageSize: 10,
+            pageSize: 20,
             valmaxpag: 10,
             pages: []
           },
@@ -809,6 +809,8 @@ angular.module('GenesisApp')
         console.log(x);
         $scope.modalDatosIndicador = x;
 
+        $scope.itemSeleccionado = x.CODIGO;
+
         $scope.hojaIndicadoresActivarCamposDesactivados()
         $scope.hojaIndicadores.formulario.idIndicadorSeleccionado = x.REGN_COD_INDICADOR;
 
@@ -832,7 +834,7 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores.formulario.metaVigencia = x.REGN_META_VIGENCIA.replace(',', '.');
         $scope.hojaIndicadores.formulario.tipoVigencia = x.REGC_TIPO_VIGENCIA.split('-')[0];
         $scope.hojaIndicadores.formulario.tipoVigenciaDsb = true;
-        if ($scope.validarPermisos(['AS','AM'])) {
+        if ($scope.validarPermisos(['AS', 'AM'])) {
           $scope.hojaIndicadores.formulario.nombreDsb = false
           $scope.hojaIndicadores.formulario.tipoVigenciaDsb = false
         }
@@ -1401,7 +1403,13 @@ angular.module('GenesisApp')
       $scope.filtrarPeriodoAcumulado = function (periodo) {
         // console.log($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo)[0].GESN_ACUMULADO)
         const dato = parseFloat((($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))[0].GESN_ACUMULADO.toString()).replace(',', '.'));
-        return dato == 0 ? null : dato
+
+        //console.log($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))
+        const observacion = ($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))[0].GESC_OBSERVACION;
+        if (observacion === null) {
+          return null
+        }
+        return dato == 0 ? 0 : dato
       }
       $scope.filtrarPeriodoMetaVigencia = function (periodo) {
         // console.log($scope.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo)[0].GESN_ACUMULADO)
@@ -1593,8 +1601,9 @@ angular.module('GenesisApp')
 
           $scope.modalDatosCorrespVarsPeriodo.resultado = parseFloat(
             1 -
-            (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) / parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador) * parseFloat($scope.modalDatosCorrespVarsPeriodo.constante))
-          ).toFixed(2)
+            (parseFloat($scope.modalDatosCorrespVarsPeriodo.numerador) /
+              (parseFloat($scope.modalDatosCorrespVarsPeriodo.denominador) * parseFloat($scope.modalDatosCorrespVarsPeriodo.constante)))
+          )
         }
         if ($scope.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0] == 'TL') {
           if ($scope.modalDatosCorrespVarsPeriodo.constante == '') return
@@ -2699,11 +2708,18 @@ angular.module('GenesisApp')
         });
 
         if ($scope.modalCompromisosVars.gestionTerminada == 'N' && !$scope.validarPermisos(['IN'])) {
+          angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar_Gest input'), function (i) {
+            i.removeAttribute("readonly");
+          });
           angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar_Gest textarea'), function (i) {
             i.removeAttribute("readonly");
           });
           angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar_Gest select'), function (i) {
             i.removeAttribute("disabled");
+          });
+
+          angular.forEach(document.querySelectorAll('.formIndicCompromisos_Desactivar input'), function (i) {
+            i.removeAttribute("readonly");
           });
         }
 
@@ -3885,6 +3901,7 @@ angular.module('GenesisApp')
         console.log(x);
         // $scope.modalDatosIndicador = x;
 
+        $scope.itemSeleccionado_PDM = x.CODIGO;
         $scope.hojaPDMActivarCamposDesactivados()
         $scope.hojaPDM.formulario.idPDMSeleccionado = x.CODIGO;
 
@@ -4311,7 +4328,12 @@ angular.module('GenesisApp')
 
       $scope.filtrarPeriodoAcumulado_PDM = function (periodo) {
         const dato = parseFloat((($scope.hojaPDM.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))[0].GESN_RESULTADO.toString()).replace(',', '.'));
-        return dato == 0 ? null : dato
+
+        const observacion = ($scope.hojaPDM.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))[0].GESC_OBSERVACION;
+        if (observacion === null) {
+          return null
+        }
+        return dato == 0 ? 0 : dato
       }
       $scope.filtrarPeriodoMetaVigencia_PDM = function (periodo) {
         const dato = parseFloat((($scope.hojaPDM.modalGraficoVars.listado.filter(e => parseInt(e.GESN_PERIODO) == periodo))[0].GESN_META.toString()).replace(',', '.'));
@@ -4669,10 +4691,10 @@ angular.module('GenesisApp')
         $scope.modalDatosCorrespValidarForm_PDM().then(res => {
           if (!res) { swal("¡Importante!", "Diligencia los campos requeridos (*)", "warning").catch(swal.noop); return }
 
-          if (['PO', 'RA', 'TA', 'VA', 'DI', 'AJ', 'DE'].includes($scope.hojaPDM.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0])
-            && $scope.hojaPDM.modalDatosCorrespVarsPeriodo.denominador == '0') {
-            swal("Error", 'Operación incorrecta', "warning").catch(swal.noop); return
-          }
+          // if (['PO', 'RA', 'TA', 'VA', 'DI', 'AJ', 'DE'].includes($scope.hojaPDM.modalDatosCorrespVars.REGC_TIPO_CALCULO.split('-')[0])
+          //   && $scope.hojaPDM.modalDatosCorrespVarsPeriodo.denominador == '0') {
+          //   swal("Error", 'Operación incorrecta', "warning").catch(swal.noop); return
+          // }
 
           const text = $scope.hojaPDM.modalDatosCorrespVarsPeriodo.accion == 'I' ? '¿Desea registrar el periodo?' : '¿Desea actualizar el periodo?';
           swal({
@@ -5626,6 +5648,11 @@ angular.module('GenesisApp')
         setTimeout(() => { $scope.$apply(); }, 500);
       }
 
+      $scope.descargarFichaTecnicaPDM = function (x) {
+        window.open('views/planeacion/formatos/formatoFichaTecnicaPDM.php?cod_pdm=' + x.idPDMSeleccionado
+          , '_blank', "width=1080,height=1100");
+      }
+
       ////////////// PDM ////////////////
       ////////////// PDM ////////////////
       ////////////// PDM ////////////////
@@ -5783,6 +5810,229 @@ angular.module('GenesisApp')
         setTimeout(() => { $scope.$apply(); }, 500);
       }
 
+      $scope.generarIndicadorNuevoPDM = function (x) {
+        var options = {
+          2023: 2023, 2024: 2024, 2025: 2025,
+        };
+
+        swal({
+          title: 'Seleccione el año',
+          input: 'select',
+          inputOptions: options,
+          inputPlaceholder: 'Seleccionar',
+          showCancelButton: true,
+          allowOutsideClick: false,
+          width: 'auto',
+          inputValidator: function (value) {
+            return new Promise(function (resolve, reject) {
+              if (value !== '') {
+                resolve();
+              } else {
+                swal.close();
+              }
+            })
+          }
+        }).then(function (result_cod) {
+          if (result_cod) {
+
+            options = {
+              S: 'Si', N: 'No'
+            };
+
+            swal({
+              title: '¿Desea copiar la gestión al nuevo hallazgo?',
+              input: 'select',
+              inputOptions: options,
+              inputPlaceholder: 'Seleccionar',
+              showCancelButton: true,
+              allowOutsideClick: false,
+              width: 'auto',
+              inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                  if (value !== '') {
+                    resolve();
+                  } else {
+                    swal.close();
+                  }
+                })
+              }
+            }).then(function (gestion) {
+              if (gestion) {
+
+                const text = '¿Desea crear el hallazgo?';
+                swal({
+                  title: 'Confirmar',
+                  text,
+                  type: 'question',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Continuar',
+                  cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                  if (result) {
+                    swal({
+                      html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                      width: 200,
+                      allowOutsideClick: false,
+                      allowEscapeKey: false,
+                      showConfirmButton: false,
+                      animation: false
+                    });
+                    $http({
+                      method: 'POST',
+                      url: "php/planeacion/procesospoa.php",
+                      data: {
+                        function: "p_genera_nuevo_PDM",
+                        cod_pdm: x.idPDMSeleccionado,
+                        anno: result_cod,
+                        gestion
+                      }
+                    }).then(function ({ data }) {
+                      if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                        swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                      }
+                      if (data.Codigo == 0) {
+                        swal("Mensaje", data.Nombre, "success").catch(swal.noop);
+                        $scope.hojaPDMListar(1);
+                        $scope.closeModal()
+                        // data.Cons
+                        swal({
+                          title: data.Nombre,
+                          text: "¿Desea ver el Hallazgo nuevo?",
+                          type: "success",
+                          showCancelButton: true,
+                          confirmButtonText: "Si",
+                          cancelButtonText: "No",
+                          allowOutsideClick: false
+
+                        }).then(function (result) {
+                          if (result) {
+                            $scope.modalEditarPDM(($scope.hojaPDM.listadoTabla.filter(e => e.CODIGO == data.Cons))[0])
+                            setTimeout(() => { $scope.$apply(); }, 500);
+                          }
+                        }).catch(swal.noop);
+
+                        // $scope.modalEditarPDM($scope.hojaPDM.listadoTabla.filter(e => e.CODIGO == x.idPDMSeleccionado))
+
+
+                      }
+                      if (data.Codigo == 1) {
+                        swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                      }
+                    })
+                  }
+                })
+                /////
+              }
+            })
+          }
+        })
+      }
+
+      $scope.descargarInformeMultiplePDM = function () {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/planeacion/procesospoa.php",
+          data: { function: 'p_descarga_informe_multiple_pdm' }
+        }).then(function ({ data }) {
+          if (data.length) {
+            var ws = XLSX.utils.json_to_sheet(data);
+            /* add to workbook */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            /* write workbook and force a download */
+            XLSX.writeFile(wb, "Exportado Multiple Hallazgos.xlsx");
+            const text = `Registros encontrados ${data.length}`
+            swal('¡Mensaje!', text, 'success').catch(swal.noop);
+          } else {
+            swal('¡Mensaje!', 'Sin datos a mostrar', 'info').catch(swal.noop);
+          }
+        })
+      }
+
+
+      $scope.hojaIndicadoresEliminar_PDM = function (x) {
+
+        console.log(x.idPDMSeleccionado)
+        swal({
+          title: 'Observación',
+          input: 'textarea',
+          inputPlaceholder: 'Escribe un comentario...',
+          showCancelButton: true,
+          allowOutsideClick: false,
+          // inputValue: $scope.Vista1.Obs,
+          width: '500px',
+          inputValidator: function (value) {
+            return new Promise(function (resolve, reject) {
+              if (value !== '') {
+                resolve();
+              } else {
+                swal({
+                  title: "Mensaje",
+                  text: "¡Debe una observación!",
+                  type: "warning",
+                }).catch(swal.noop);
+              }
+            })
+          }
+        }).then(function (observacion) {
+          //
+          if (observacion)
+            swal({
+              title: '¿Desea eliminar el Hallazgo?',
+              text: '',
+              type: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Continuar',
+              cancelButtonText: 'Cancelar'
+            }).then((result) => {
+              if (result) {
+                swal({
+                  html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                  width: 200,
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  showConfirmButton: false,
+                  animation: false
+                });
+                $http({
+                  method: 'POST',
+                  url: "php/planeacion/procesospoa.php",
+                  data: {
+                    function: 'p_eliminar_indicador_pdm',
+
+                    cod_pdm: x.idPDMSeleccionado,
+                    observacion,
+                    responsable: $scope.Rol_Cedula
+                  }
+                }).then(function ({ data }) {
+                  if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                    swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                  }
+                  if (data.Codigo == 0) {
+                    swal("Mensaje", "Hallazgo eliminado!", "success").catch(swal.noop);
+                    $scope.closeModal()
+                    $scope.hojaPDMListar(1);
+                    setTimeout(() => { $scope.$apply(); }, 500);
+                  }
+                  if (data.Codigo == 1) {
+                    swal("Mensaje", data.Nombre, "warning").catch(swal.noop);
+                  }
+                });
+              }
+            });
+        }).catch(swal.noop);
+      }
+
 
       /////// INDICADORES ///////
       $scope.obtenerEstadoIndicadores = function (tipo = null) {
@@ -5823,7 +6073,7 @@ angular.module('GenesisApp')
       $scope.initPaginacion = function (hoja, info) {
         $scope[hoja].listadoTablaTemp = info;
         $scope[hoja].varsTabla.currentPage = 0;
-        $scope[hoja].varsTabla.pageSize = 10;
+        $scope[hoja].varsTabla.pageSize = 20;
         $scope[hoja].varsTabla.valmaxpag = 10;
         $scope[hoja].varsTabla.pages = [];
         $scope.configPages(hoja);
@@ -5969,8 +6219,9 @@ angular.module('GenesisApp')
         });
       }
 
-      $scope.replaceVar = function (text) {
-        return text.replace(/\_/g, '.')
+      $scope.replaceVar = function (x) {
+        x.CODIGO_2 = x.CODIGO.replace(/\_/g, '.')
+        return x.CODIGO.replace(/\_/g, '.')
       }
 
       $scope.Ajustar_Pantalla = function () {

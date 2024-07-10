@@ -17,7 +17,7 @@
         </h5>
       </li>
       <li>
-        <ul>
+        <!-- <ul>
           <li>
             <div class="col s12" style="display: flex;">
               <i class="icon-download-alt iconsTitle c-pointer" ng-click="descargarInforme()"
@@ -30,21 +30,20 @@
                 title="Cambiar responsables" ng-if="tipoRol == 'N'"></i>
             </div>
           </li>
+        </ul> -->
+
+      </li>
+      <li>
+        <ul class="tabs transparent" style="overflow:hidden;">
+          <li class="tab col w-auto">
+            <a ng-click="setTab(1)" id="Sol" href class="active">Gestion</a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="setTab(2);" id="Nueva" href>Consulta</a>
+          </li>
         </ul>
       </li>
-      <!-- <li>
-        <button class="btn" ng-click="tipoRol='A'">AR</button>
-        <button class="btn" ng-click="tipoRol='R'">REG</button>
-        <button class="btn" ng-click="tipoRol='N'">NAC</button>
-      </li> -->
-      <!-- <li ng-if="tipoRol == 'A' || tipoRol == 'R' ">
-        <span class="etiquetaNaranja cursor-pointer" title="Filtrar">{{'100 PROXIMO A VENCER'}}</span>
-        <span class="etiquetaRoja cursor-pointer" title="Filtrar">{{'100 VENCIDO'}}</span>
-      </li>
-      <li ng-if="tipoRol == 'N'">
-        <span class="etiquetaVerde cursor-pointer" title="Filtrar">{{'100 COMPLETADO'}}</span>
-        <span class="etiquetaNaranja cursor-pointer" title="Filtrar">{{'100 PENDIENTE'}}</span>
-      </li> -->
+
     </ul>
   </div>
 
@@ -52,17 +51,23 @@
   <!-- //////////////////////////////////TAB 1////////////////////////////////// -->
   <div class="row dashboard-wrapper content-container white">
     <!-- TABLA -->
+    <!-- TABLA -->
     <div class="col s12 m12 l12" style="justify-content: center;">
       <div class="card-action" id="card-action"
         style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;"
-        ng-show="Form.Status == 0">
+        ng-show="tabs == 1 && Form.Status == 0">
         <!-- ELEGIR -->
+        <div class="col s12">
+          <button class="btn" ng-click="cambiarfunc('A','40381101')">area</button>
+          <button class="btn" ng-click="cambiarfunc('R','1043846210')">regional</button>
+          <button class="btn" ng-click="cambiarfunc('N','1042454684')">nacional</button>
+          <h6>TIPO: {{tipoRol}}</h6>
+        </div>
         <div class="col s12">
           <div class="col s1 no-padding label-new m-b left">
             <select class="select-default-new input-out-new" style="box-shadow: none;" ng-model="Form.Mostrar"
               ng-change="initPaginacion2(Form.Mostrar)">
-              <option value="10" selected>10</option>
-              <option value="20">20</option>
+              <option value="20" selected>20</option>
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
@@ -72,17 +77,33 @@
                 title="Actualizar Tabla" ng-click="obtenerListadoTutelas(1)"></i>
             </div>
           </div>
+
           <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;">
             <input class="margin border-none white input-text-new input-w-p input-out-new w-100 " type="text"
               placeholder="Buscar" ng-model="Form.Filtro" ng-change="filter(Form.Filtro);">
           </div>
+
+          <div class="col s2 no-padding label-new m-b right" style="margin-right: .5rem !important;">
+            <select class="select-default-new input-out-new m-l" style="box-shadow: none;" watch
+              ng-model="Form.filtroEstado" ng-change="filter(Form.filtroEstado)">
+              <option value="">TODOS</option>
+              <option value="EN PROCESO">EN PROCESO</option>
+              <option value="PROXIMO A VENCER">PROXIMO A VENCER</option>
+              <option value="VENCIDO">VENCIDO</option>
+              <option value="PROCESADO">PROCESADO</option>
+              <option value="GESTIONADO">GESTIONADO</option>
+            </select>
+          </div>
+
+
         </div>
 
         <div style="width:100%;">
           <table class="tablaListado bordered" style="width:100%;font-size:6px !important;">
             <thead class="default-linear-gradient">
               <th>Cod. Tutela</th>
-              <th>Renglon</th>
+              <th>Etapa</th>
+              <!-- <th>Renglon</th> -->
               <th>Rad. Tutela</th>
               <th>Regional</th>
               <th>Accionante</th>
@@ -94,24 +115,21 @@
               <tr style="cursor:pointer;"
                 ng-repeat="x in listDatosTemp | inicio: currentPage * pageSize | limitTo: pageSize | orderBy:propertyName:reverse"
                 ng-click="editarTutela(x)">
-                <td>{{x.numero}}</td>
-                <td>{{x.renglon}}</td>
-                <td>{{x.radicacion}}</td>
-                <td>{{x.ubicacion}}</td>
-                <td>{{x.afic_nombre != null ? x.afic_nombre : x.datos_accionante}}</td>
-                <td>{{x.area}}
-                  <i class="icon-user-4" style="font-size: 1rem;" title="{{x.func_responsable}}"></i>
+                <td>{{x.numero_tutela}}</td>
+                <td>{{x.etapa}}</td>
+                <!-- <td>{{x.renglon}}</td> -->
+                <td>{{x.numero_radicacion}}</td>
+                <td>{{x.regional}}</td>
+                <td>{{x.afiliado_nombre != null ? x.afiliado_nombre : x.datos_accionante}}</td>
+                <td>{{x.area_responsable}}
+                  <i class="icon-user-4" style="font-size: 1rem;" title="{{x.funcionario_responsable}}"></i>
                 </td>
                 <td>{{x.fecha_vencimiento}}</td>
                 <td>
-                  <span class="{{obtenerEstiloEstado(x,'Estilo')}}">{{obtenerEstiloEstado(x,'Estado')}}</span>
+                  <span class="{{x.color_actual}}">{{x.estado_actual}}</span>
                 </td>
 
-                <!-- <td>{{x.CODIGO_TUT}}</td>
-                <td>{{x.RADICADO_TUT}}</td>
-                <td>{{x.REGIONAL}}</td>
-                <td>{{x.ACCIONANTE}}</td>
-                <td><span class="etiquetaNaranja">{{x.ESTADO}}</span></td> -->
+
               </tr>
               <tr ng-show="listDatosTemp.length==0">
                 <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron resultados.</td>
@@ -141,24 +159,92 @@
 
         <!-- //-// -->
       </div>
+      <!-- TABLA CONSULTA -->
+      <div class="card-action" id="card-action"
+        style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;"
+        ng-show="tabs == 2 && Form.Status == 0">
+        <!-- ELEGIR -->
+        <div class="col s12">
+          <div class="col s1 no-padding label-new m-b left margin">
+            <div style="line-height: 2;">
+              <i class="icon-arrows-cw-2 default-color cursor-pointer" style="margin-left: 4px;"
+                title="Actualizar Tabla" ng-click="obtenerListadoTutelasConsulta(1)"></i>
+            </div>
+          </div>
+          <div class="col s3 no-padding label-new m-b right" style="margin-right: .5rem !important;margin-top: 0;">
+            <input class="margin border-none white input-text-new input-w-p input-out-new w-100 " type="text"
+              placeholder="Buscar" ng-model="filtroConsulta">
+          </div>
+        </div>
+        <div style="width:100%;overflow: auto;max-height: 70vh;">
+          <table class="tablaListado bordered" style="width:100%;font-size:6px !important;">
+            <thead class="default-linear-gradient">
+              <th>Cod. Tutela</th>
+              <th>Etapa</th>
+              <!-- <th>Renglon</th> -->
+              <th>Rad. Tutela</th>
+              <th>Regional</th>
+              <th>Accionante</th>
+              <th>Area Responsable</th>
+              <th>Fecha Vencimiento Resp.</th>
+              <th>Estado</th>
+            </thead>
+            <tbody>
+              <tr style="cursor:pointer;"
+                ng-repeat="x in listadoTutelasConsulta | filter: filtroConsulta"
+                ng-click="editarTutela(x)">
+                <td>{{x.numero_tutela}}</td>
+                <td>{{x.etapa}}</td>
+                <!-- <td>{{x.renglon}}</td> -->
+                <td>{{x.numero_radicacion}}</td>
+                <td>{{x.regional}}</td>
+                <td>{{x.afiliado_nombre != null ? x.afiliado_nombre : x.datos_accionante}}</td>
+                <td>{{x.area_responsable}}
+                  <i class="icon-user-4" style="font-size: 1rem;" title="{{x.funcionario_responsable}}"></i>
+                </td>
+                <td>{{x.fecha_vencimiento}}</td>
+                <td>
+                  <span class="{{x.color_actual}}">{{x.estado_actual}}</span>
+                </td>
+              </tr>
+              <tr ng-show="listadoTutelasConsulta.length==0">
+                <td class="center-align" colspan="9" style="font-weight: bolder;">No se encontraron resultados.</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+        </div>
+        <div class="row margin">
+          <!-- <div class="col s6"><label for="normal">Total de tutelas filtrados:
+              {{listDatosTemp.length}}</label></div> -->
+          <div class="col s12 right-align"><label for="normal">Total de tutelas encontrados:
+              {{listadoTutelasConsulta.length}}</label></div>
+        </div>
+
+        <!-- //-// -->
+      </div>
+      <!-- TABLA CONSULTA -->
       <!-- FORM -->
-      <div class="col s12 m12 l12" style="justify-content: center;" ng-show="Form.Status == 1">
+      <div class="col s12 m12 l12" ng-show="Form.Status == 1">
         <div class="row" id="Form1">
           <div class="col s12 m12 l12">
             <blockquote class="blockquote_titulo default-linear-gradient">
               Tutela: {{Form.codTutela}}
-              <span style="margin-left: 2em;">Renglon: {{Form.renglon}}</span>
-              <span style="margin-left: 2em;">Radicado: {{Form.radTutela}}</span>
+              <span style="margin-left: 2em;">Renglon: {{Form.codRenglon}}</span>
+              <!-- <span style="margin-left: 2em;">Radicado: {{Form.radTutela}}</span> -->
+              <span style="margin-left: 2em;">Etapa: {{Form.etapaActual}}</span>
               <!-- <i class="icon-doc-text-inv-1 cursor-pointer" title="Ver Histórico" ng-click="verHistoricoTutela()"></i> -->
 
-              <span class="right">Estado: {{Form.estado}}</span>
+              <span class="right">Estado Tutela: {{Form.estado}}</span>
               <span class="right" style="margin-right: 2em;">Regional: {{Form.regional}}</span>
             </blockquote>
           </div>
           <div class="col s12 m12 l12">
             <div class="col s3 no-padding label-new m-b">
               <label>Tipo Doc</label>
-              <select class="select-default-new input-out-new m-l" ng-model="Form.tipoDocAccionante" disabled>
+              <select class="select-default-new input-out-new m-l" ng-model="Form.tipoDocAccionante"
+                id="tipoDocAccionante" disabled>
                 <option value="" disabled>SELECCIONAR</option>
                 <option value="{{x.CODIGO}}" ng-selected="x.CODIGO == Form.tipoDocAccionante"
                   ng-repeat="x in Tipos_Documentos">{{x.NOMBRE}}</option>
@@ -188,6 +274,8 @@
               <label for="Form_sgtoContinuo">Seguimiento Continuo</label>
             </div>
           </div>
+
+
 
           <!-- SERVICIOS  -->
           <div class="col s12 m12 l12 m-t">
@@ -327,306 +415,169 @@
           </div>
 
 
-          <!-- ANEXOS -->
-          <div class="col s12 m12 l12 m-t" style="display: flex;align-items: center;justify-content: center;">
-            <button class="btnSoportes white-text default-linear-gradient m-r" type="button" title="Ver Soporte"
-              ng-style="{'cursor': !Form.soporteAdmision ? 'not-allowed': ''}"
-              ng-click="verSoporteModal(Form.soporteAdmision, 'Admision')" ng-disabled="!Form.soporteAdmision">Soporte
-              Admisión</button>
-            <button class="btnSoportes white-text default-linear-gradient m-l m-r" type="button" title="Ver Soporte"
-              ng-style="{'cursor': !Form.soporteFallo ? 'not-allowed': ''}"
-              ng-click="verSoporteModal(Form.soporteFallo, 'Fallo')" ng-disabled="!Form.soporteFallo">Soporte
-              Fallo</button>
-            <button class="btnSoportes white-text default-linear-gradient m-l" type="button" title="Ver Soporte"
-              ng-style="{'cursor': !Form.soporteFalloImp ? 'not-allowed': ''}"
-              ng-click="verSoporteModal(Form.soporteFalloImp, 'Fallo Impugnación')"
-              ng-disabled="!Form.soporteFalloImp">Soporte
-              Fallo
-              Impugnación</button>
-          </div>
 
           <!--  -->
           <div class="row margin">
             <div class="col s12 m12 l12 m-t m-b">
               <!-- Form.gestionaArea == true -->
-              <div class="col s12 m12 l12 default-border no-padding"
-                ng-show="Form.codRenglon || (Form.gestionaArea == true && Form.listadoGestiones.length)">
+              <div class="col s12 m12 l12 default-border no-padding">
                 <blockquote class="default-linear-gradient m-l m-r" style="font-size: .9em; margin: 11px 0px;">
-                  Gestionar Area:
-                  <div class="switch m-r right white-text" style="line-height: 1.3;">
-                    <label class="white-text">
-                      <span style="font-size: 1rem;">Pendiente</span>
-                      <input type="checkbox" ng-model="Form.checkArea">
-                      <span class="lever check-c"></span>
-                      <span style="font-size: 1rem;">Gestionada</span>
-                    </label>
-                  </div>
+                  Gestionar Solicitud:
                 </blockquote>
 
-                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 5.5rem;"
-                  ng-show="!Form.checkArea && Form.comentarioJuridicoRegArea">
-                  <textarea class="white input-text-new input-out-new w-100 margin m-l m-r m-b" maxlength="1000"
-                    style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
-                    text-description text-upper ng-model="Form.comentarioJuridicoRegArea" disabled></textarea>
-                  <label>Observación Juridica (<span class="red-text">*</span>)</label>
+                <!-- SOLICITUD -->
+                <div class="col s12 m12 l12">
+
+                  <div class="col s4 no-padding label-new m-b">
+                    <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                      autocomplete="off" ng-model="Form.juridicoSolicitudResponsable" maxlength="100" readonly>
+                    <label>Juridico Solicitante</label>
+                  </div>
+
+                  <div class="col s3 no-padding label-new m-b">
+                    <input type="text" class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                      ng-model="Form.fechaSolicitudRegistro" readonly>
+                    <label>Fecha Solicitud</label>
+                  </div>
+
+                  <div class="col s3 no-padding label-new m-b">
+                    <input type="text" class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                      ng-model="Form.fecha_vencimiento" readonly>
+                    <label>Fecha Vencimiento</label>
+                  </div>
+                  <div class="col s2 no-padding label-new m-b">
+                    <input type="text"
+                      class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l {{Form.colorActual}}"
+                      ng-model="Form.estadoActual" readonly>
+                    <label>Estado</label>
+                  </div>
+
+                  <div class="col s12 no-padding label-new m-b" style="margin-bottom: 7.5rem;">
+                    <textarea class="white input-text-new input-out-new w-100 margin m-l m-r m-b" maxlength="1000"
+                      style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
+                      text-description text-upper ng-model="Form.observacionSolicitudJuridica" disabled></textarea>
+                    <label>Observación Juridica (<span class="red-text">*</span>)</label>
+                  </div>
                 </div>
+                <!--  -->
 
 
-                <div class="col s12 no-padding label-new m-b m-t" style="margin-bottom: 4.5rem;"
-                  ng-show="!Form.checkArea && Form.comentarioJuridicoRegArea">
-                  <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
-                    style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
-                    text-description text-upper ng-model="Form.observacionArea"></textarea>
-                  <label>Observación (<span class="red-text">*</span>)</label>
+                <div class="col s12 m12 l12">
+
+                  <div class="col s4 no-padding label-new m-b">
+                    <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l m-b"
+                      autocomplete="off" ng-model="Form.funcionarioResponsable" maxlength="100" readonly>
+                    <label>Funcionario Responsable</label>
+                  </div>
+
+                  <div class="col s12 no-padding label-new m-b m-t" style="margin-top: 2rem;margin-bottom: 5.5rem;">
+                    <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
+                      style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
+                      text-description text-upper ng-model="Form.observacionGestion"
+                      ng-disabled="!gestiona_Area"></textarea>
+                    <label>Observación Regional (<span class="red-text">*</span>)</label>
+                  </div>
+
+
+                  <div class="col s4 no-padding m-t" ng-show="gestiona_Area">
+                    <div class="file-upload-wrapper file-field input-field m-l" id="file-upload-wrapper"
+                      data-text="{{Form.soporte_B64 ? 'Archivo Seleccionado' : 'Cargar Archivo'}}">
+                      <input type="file" id="FormFile" name="FormFile">
+                      <i class="icon-check-1 green-text right" style="font-size: 1.3vw;" ng-show="Form.soporte_B64"></i>
+                    </div>
+                  </div>
+
                 </div>
-                <label class="right m-r"
-                  ng-show="!Form.checkArea && Form.comentarioJuridicoRegArea">{{Form.observacionArea.length}}/1000</label>
-                <div class="col s4 no-padding m-t" ng-show="!Form.checkArea && Form.comentarioJuridicoRegArea">
-                  <div class="file-upload-wrapper file-field input-field m-l" id="file-upload-wrapper"
-                    data-text="{{Form.soporte_B64 ? 'Archivo Seleccionado' : 'Cargar Archivo'}}">
-                    <input type="file" id="FormFile" name="FormFile">
-                    <i class="icon-check-1 green-text right" style="font-size: 1.3vw;" ng-show="Form.soporte_B64"></i>
+
+                <div class="col s12 m12 l12" ng-show="Form.estadoGestion == 'G' || Form.estadoGestion == 'P'">
+
+                  <div class="col s4 no-padding label-new m-b">
+                    <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                      autocomplete="off" ng-model="Form.responsableGestion" maxlength="100" readonly>
+                    <label>Responsable de Gestionar</label>
+                  </div>
+
+                  <div class="col s3 no-padding label-new m-b">
+                    <input type="text" class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                      ng-model="Form.fechaGestion" readonly>
+                    <label>Fecha Respuesta Regional</label>
+                  </div>
+
+                  <div class="col s2 no-padding label-new m-b">
+                    <button class="btnSoportes white-text default-linear-gradient m-l m-r" type="button"
+                      title="Ver Soporte" ng-style="{'cursor': !Form.adjuntoGestion ? 'not-allowed': ''}"
+                      ng-click="verSoporteModal(Form.adjuntoGestion, 'Adjunto')"
+                      ng-disabled="!Form.adjuntoGestion">Soporte de Gestión</button>
+                  </div>
+
+
+                </div>
+
+                <div class="col s12 m12 l12" ng-show="Form.estadoGestion == 'P'">
+                  <div class="col s3 no-padding label-new m-b">
+                    <input type="text" class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                      ng-model="Form.fechaGestionNacional" readonly>
+                    <label>Fecha de Aprobación</label>
                   </div>
                 </div>
 
-                <div class="col s12 no-padding m-b" style="max-height: 40vh;overflow-y: auto;"
-                  ng-show="Form.checkArea || (Form.gestionaArea == true && Form.listadoGestiones.length)">
-                  <table class="tablaListado highlight" style="width:100%;color: black;">
-                    <thead>
-                      <th>#</th>
-                      <th>Fecha Registro</th>
-                      <th>Area</th>
-                      <th>Responsable Area </th>
-                      <th>Estado</th>
-                      <th>Juridica Responsable</th>
-                      <th>Observacion Area</th>
-                      <th>-</th>
-                    </thead>
-                    <tbody id="idpro">
-                      <tr ng-repeat="x in Form.listadoGestiones">
-                        <td>{{$index + 1}}</td>
-                        <td>{{x.fecha_registro}}</td>
-                        <td>{{x.nombre_responsable}}</td>
-                        <td>{{x.nom_responsable_area}}</td>
-                        <!-- <td>
-                          <span
-                            class="{{x.estado == 'A' ? 'etiquetaNaranja' : (x.estado == 'G' ? 'etiquetaMorado' : 'etiquetaVerde')}}">{{x.nom_estado}}</span>
-                        </td> -->
-                        <td>
-                          <span class="{{obtenerEstiloEstado(x,'Estilo')}}">{{obtenerEstiloEstado(x,'Estado')}}</span>
-                        </td>
-                        <td>{{x.nom_responsable1_juridico}}</td>
-                        <td>{{x.observacion_gestion}}</td>
-                        <td>
-                          <i class="icon-file-pdf default-color cursor-pointer red-text m-r" style="font-size: 1.5em;"
-                            title="Ver Soporte" ng-click="verSoporteModal(x.adjunto,'Adjunto')"></i>
-                          <i class="icon-docs-1 default-color cursor-pointer" title="Ver Comentarios"
-                            style="font-size: 1.5em;position: relative;"
-                            ng-click="verComentariosTutela(x.numero,x.ubicacion,x.renglon)">
-                            <span
-                              class="default-background white-text cantidadComentarios">{{x.cantidad_comentarios}}</span>
-                          </i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
 
 
                 <!--  -->
                 <div class="col s12 m12 l12 center m-b">
                   <input class="btn white-text default-linear-gradient" type="submit" value="Guardar"
-                    ng-click="guardarGestionArea();"
-                    ng-if="!Form.checkArea && Form.Status == 1 && Form.comentarioJuridicoRegArea && Form.codRenglon != 'X'">
+                    ng-click="guardarGestionArea(Form.codTutela, Form.codRegional, Form.codRenglon);"
+                    ng-if="Form.Status == 1 && gestiona_Area">
+                  <input class="btn white-text btnGradientGreen" type="submit" value="Transferir"
+                    ng-click="modalTransferirGestionArea();" ng-if="Form.Status == 1 && gestiona_Area">
+
+
+                  <!--  -->
+                  <!--  -->
+                  <!--  -->
+                  <input class="btn white-text btnGradientGreen" type="submit" value="Aprobar Gestión"
+                    ng-click="guardarGestionRegional('A', Form.codTutela, Form.codRegional, Form.codRenglon)"
+                    ng-if="Form.Status == 1 && gestiona_Regional">
+
+                  <input class="btn white-text btnGradientRed" type="submit" value="Rechazar Gestión"
+                    ng-click="guardarGestionRegional('X', Form.codTutela, Form.codRegional, Form.codRenglon)"
+                    ng-if="Form.Status == 1 && gestiona_Regional">
+
+
+
+
+                </div>
+
+                <div class="col s12 m12 l12 center m-b m-t">
+                  <i class="icon-docs-1 default-color cursor-pointer" title="Ver Comentarios"
+                    style="font-size: 1.5em;position: relative;"
+                    ng-click="verComentariosTutela(Form.codTutela, Form.codRegional, Form.codRenglon)"
+                    ng-if="Form.cantidadComentarios > 0">
+                    <span class="default-background white-text cantidadComentarios">{{Form.cantidadComentarios}}</span>
+                  </i>
+
+                  <i class="icon-doc-new default-color cursor-pointer" title="Nuevo Comentario"
+                    style="font-size: 1.5em;"
+                    ng-click="agregarNuevoComentario(Form.codTutela, Form.codRegional, Form.codRenglon)"
+                    ng-if="tipoRol == 'N'"></i>
+
+
+                  <i class="icon-list-numbered-1 default-color cursor-pointer" title="Ver Transferencias"
+                    style="font-size: 1.5em;position: relative;"
+                    ng-click="verHistoricoTransferencias(Form.codTutela, Form.codRegional, Form.codRenglon)">
+                  </i>
+
+
+                </div>
+                <div class="col s12 m12 l12 center m-b m-t">
                   <input class="btn white-text red btnGradientRed" type="submit" value="Cerrar" ng-click="atras();">
                 </div>
 
-              </div>
 
-
-              <!-- Form.gestionaRegional == true -->
-              <div class="col s12 m12 l12 default-border no-padding"
-                ng-show="Form.gestionaRegional == true || (Form.gestionaNacional == true && Form.listadoGestionesPendientes.length)">
-                <blockquote class="default-linear-gradient m-l m-r" style="font-size: .9em; margin: 11px 0px;">
-                  Gestionar Regional:
-
-                  <div class="switch m-r right white-text" style="line-height: 1.3;">
-                    <label class="white-text">
-                      <span style="font-size: 1rem;">Pendiente</span>
-                      <input type="checkbox" ng-model="Form.checkRegional">
-                      <span class="lever check-c"></span>
-                      <span style="font-size: 1rem;">Gestionada</span>
-                    </label>
-                  </div>
-
-                </blockquote>
-                <div class="col s12 no-padding m-b" style="max-height: 40vh;overflow-y: auto;"
-                  ng-show="!Form.checkRegional">
-                  <table class="tablaListado highlight" style="width:100%;color: black;">
-                    <thead>
-                      <th>#</th>
-                      <th>Fecha</th>
-                      <th>Area</th>
-                      <th>Area Responsable</th>
-                      <th>Observacion</th>
-                      <th>-</th>
-                    </thead>
-                    <tbody id="idpro">
-                      <tr ng-repeat="x in Form.listadoGestionesPendientes">
-                        <td>{{$index + 1}}</td>
-                        <td>{{x.fecha_registro}}</td>
-                        <td>{{x.nombre_responsable}}</td>
-                        <td>{{x.nom_responsable_area}}</td>
-                        <!-- <td>{{x.estado}}</td> -->
-                        <!-- <td>{{x.nom_responsable1_juridico}}</td> -->
-                        <td>{{x.observacion_gestion}}</td>
-                        <td>
-                          <i class="icon-file-pdf default-color cursor-pointer red-text m-r" style="font-size: 1.5em;"
-                            title="Ver Soporte" ng-click="verSoporteModal(x.adjunto,'Adjunto')"></i>
-                          <i class="icon-thumbs-up default-color cursor-pointer m-r" style="font-size: 1.5em;"
-                            title="Aprobar Gestión"
-                            ng-click="guardarGestionRegional('A', x.numero, x.ubicacion, x.renglon)"></i>
-                          <i class="icon-thumbs-down default-color cursor-pointer red-text m-r"
-                            style="font-size: 1.5em;" title="Rechazar Gestión"
-                            ng-click="guardarGestionRegional('X',x.numero, x.ubicacion, x.renglon)"></i>
-                          <i class="icon-docs-1 default-color cursor-pointer" title="Ver Comentarios"
-                            style="font-size: 1.5em;position: relative;"
-                            ng-click="verComentariosTutela(x.numero,x.ubicacion,x.renglon)">
-                            <span
-                              class="default-background white-text cantidadComentarios">{{x.cantidad_comentarios}}</span>
-                          </i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="col s12 no-padding m-b" style="max-height: 40vh;overflow-y: auto;"
-                  ng-show="Form.checkRegional">
-                  <table class="tablaListado highlight" style="width:100%;color: black;">
-                    <thead>
-                      <th>#</th>
-                      <th>Fecha</th>
-                      <th>Area</th>
-                      <th>Area Responsable</th>
-                      <th>Estado</th>
-                      <th>Juridica Responsable</th>
-                      <th>Observacion</th>
-                      <th>-</th>
-                    </thead>
-                    <tbody id="idpro">
-                      <tr ng-repeat="x in Form.listadoGestiones">
-                        <td>{{$index + 1}}</td>
-                        <td>{{x.fecha_registro}}</td>
-                        <td>{{x.nombre_responsable}}</td>
-                        <td>{{x.nom_responsable_area}}</td>
-                        <!-- <td>{{x.nom_estado}}</td> -->
-                        <td>
-                          <span class="{{obtenerEstiloEstado(x,'Estilo')}}">{{obtenerEstiloEstado(x,'Estado')}}</span>
-                        </td>
-                        <td>{{x.nom_responsable1_juridico}}</td>
-                        <td>{{x.observacion_gestion}}</td>
-                        <td>
-                          <i class="icon-file-pdf default-color cursor-pointer red-text m-r" style="font-size: 1.5em;"
-                            title="Ver Soporte" ng-click="verSoporteModal(x.adjunto,'Adjunto')"></i>
-                          <i class="icon-docs-1 default-color cursor-pointer" title="Ver Comentarios"
-                            style="font-size: 1.5em;position: relative;"
-                            ng-click="verComentariosTutela(x.numero,x.ubicacion,x.renglon)">
-                            <span
-                              class="default-background white-text cantidadComentarios">{{x.cantidad_comentarios}}</span>
-                          </i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div class="col s12 m12 l12 center m-t m-b">
-                  <input class="btn white-text red btnGradientRed" type="submit" value="Cerrar" ng-click="atras();">
-                </div>
-
-              </div>
-
-              <!-- Form.gestionaNacional == true -->
-              <div class="col s12 m12 l12 default-border no-padding"
-                ng-show="Form.gestionaNacional == true && Form.listadoGestionesPendientes.length == 0">
-                <div class="col s12">
-                  <blockquote class="default-linear-gradient"
-                    style="font-size: .9em; margin: 11px 0px;margin-right: .3rem;">Gestión Realizada
-                    ({{Form.listadoGestiones.length}})
-                  </blockquote>
-                  <table class="tablaListado highlight" style="width:100%;color: black;">
-                    <thead>
-                      <th>#</th>
-                      <th>Fecha</th>
-                      <th>Area</th>
-                      <th>Area Responsable</th>
-                      <th>Estado</th>
-                      <th>Juridica Responsable</th>
-                      <th>-</th>
-                    </thead>
-                    <tbody id="idpro">
-                      <tr ng-repeat="x in Form.listadoGestiones">
-                        <td>{{$index + 1}}</td>
-                        <td>{{x.fecha_registro}}</td>
-                        <td>{{x.nombre_responsable}}</td>
-                        <td>{{x.nom_responsable_area}}</td>
-                        <!-- <td>{{x.nom_estado}}</td> -->
-                        <td>
-                          <span class="{{obtenerEstiloEstado(x,'Estilo')}}">{{obtenerEstiloEstado(x,'Estado')}}</span>
-                        </td>
-                        <td>{{x.nom_responsable1_juridico}}</td>
-                        <td>
-
-                          <i class="icon-comment-2 default-color cursor-pointer m-r" style="font-size: 1.5em;"
-                            title="Ver Comentario Regional" ng-click="verObservacion('Comentario Regional', x.observacion_juridica)"></i>
-                          <i class="icon-comment-5 default-color cursor-pointer m-r" style="font-size: 1.5em;"
-                            title="Ver Comentario Gestion" ng-click="verObservacion('Comentario Gestion', x.observacion_gestion)"></i>
-
-
-                          <i class="icon-file-pdf default-color cursor-pointer red-text m-r" style="font-size: 1.5em;"
-                            title="Ver Soporte" ng-click="verSoporteModal(x.adjunto,'Adjunto')"></i>
-                          <i class="icon-doc-new default-color cursor-pointer" title="Nuevo Comentario"
-                            style="font-size: 1.5em;"
-                            ng-click="agregarNuevoComentario(x.numero,x.ubicacion,x.renglon)"></i>
-                          <i class="icon-docs-1 default-color cursor-pointer" title="Ver Comentarios"
-                            style="font-size: 1.5em;position: relative;"
-                            ng-click="verComentariosTutela(x.numero,x.ubicacion,x.renglon)">
-                            <span
-                              class="default-background white-text cantidadComentarios">{{x.cantidad_comentarios}}</span>
-                          </i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-
-                <!-- <blockquote class="default-linear-gradient m-l m-r" style="font-size: .9em; margin: 11px 0px;">
-                  Gestionar Nacional:
-                </blockquote>
-                <div class="col s12 no-padding label-new m-b" style="margin-bottom: 4.5rem;">
-                  <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
-                    style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
-                    placeholder="¿Desea agregar un comentario?" text-description text-upper
-                    ng-model="Form.comentarioNacional"></textarea>
-                  <label>Comentario (<span class="red-text">*</span>)</label>
-                </div>
-                <label class="right m-r">{{Form.comentarioNacional.toString().length}}/1000</label> -->
-                <div class="col s12 m12 l12 center m-t m-b">
-                  <!-- <input class="btn white-text default-linear-gradient" type="submit" value="Guardar"
-                    ng-click="guardarGestionNacional();" ng-if="Form.comentarioNacional"> -->
-                  <input class="btn white-text red btnGradientRed" type="submit" value="Cerrar" ng-click="atras();">
-                </div>
               </div>
 
             </div>
 
-            <!-- Aprobar/Rechazar Juridico Regional -->
-            <!-- <div class="col s12 m12 l12 center m-t m-b">
-              <input class="btn white-text default-linear-gradient" type="submit" value="Aprobar"
-                ng-click="actualizarOficina();">
-              <input class="btn white-text red btnGradientRed" type="submit" value="Rechazar" ng-click="atras();">
-            </div> -->
           </div>
         </div>
         <!-- FORM -->
@@ -636,30 +587,51 @@
       <!-- /////////// MODALS /////////// -->
 
       <!-- /////////////////////////////////////////MODAL SOPORTE///////////////////////////////////////// -->
+      <div class="fabs" style="margin: 3px 50px;" ng-show="Form.Status == 1">
+        <a ng-click="verModalAdjuntos()" target="" class="fab cyan" tooltip="Adjuntos"><i
+            class="sec zmdi zmdi-file zmdi-hc-fw animated"></i></a>
+      </div>
+
       <div id="Modal_Soportes" class="modal"
-        style="margin: 0 auto;max-height:99%;width: 75%;top:-100px !important;transition-duration: 0.3s;">
-        <div class="col s12 m12 l12 card margin no-padding">
+        style="margin: 0 auto;max-height:99%;width: 95%;top:-100px !important;transition-duration: 0.3s;">
+        <div class="card margin">
           <div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #fff;"
             ng-click="closeModal()"></div>
           <div class="card-content default-linear-gradient border-radius-none white-text">
-            <h5><span style="font-weight: 700;">Soporte {{Form.soporteModalTipo}}</span>
+            <h5><span style="font-weight: 700;">Soportes De la Tutela</span> <span
+                ng-show="Form.soporteModalNombre!=''">-</span> {{Form.soporteModalNombre}}
             </h5>
           </div>
-          <div class="card-action no-padding">
-            <div class="row margin" style="overflow:hidden; width: 100%;">
-              <div class="col s12 m12 l12 no-padding" style="height: 70vh;" ng-show="Form.soporteModal==''">
-                <div class="" style="width: 10; margin: auto;">
-                  <div class="loading">
-                    <div class="default-background"></div>
-                    <div class="default-background"></div>
-                    <div class="default-background"></div>
-                  </div>
-                  <p style="font-weight: bold;text-align: center;">Cargando...</p>
-                </div>
+          <div class="card-action" style="padding-left: 0px; padding-right: 0px;padding-bottom: 0;">
+            <div class="row allMails bg-white white" style="margin-bottom: 0px;">
+              <div class="col s12 m3 l3 mailsParts tabInbox_3_1">
+
+                <ul class="collection" id="collection">
+                  <li class="collection-item avatar waves-effect" style="padding-top: 15px;min-height: 60px;"
+                    title="{{x.NOMBRE}}" ng-click="verSoporte(x)" ng-repeat="x in Form.ListSoportes.TUTELA"
+                    ng-show="x.RUTA!=null && x.RUTA!=''">
+                    <img src="assets/images/acta.svg" alt="john" class="circle">
+                    <span class="title avtitle"><strong>{{x.NOMBRE}}</strong></span>
+                    <i class="right pulse2" style="font-size: 20px;"></i>
+                  </li>
+                  <li class="collection-item avatar waves-effect" style="padding-top: 15px;min-height: 60px;"
+                    title="{{x.NOMBRE}}" ng-click="verSoporte(x)" ng-repeat="x in Form.ListSoportes.INCIDENTES"
+                    ng-show="x.RUTA!=null && x.RUTA!=''">
+                    <img src="assets/images/acta.svg" alt="john" class="circle">
+                    <span class="title avtitle"><strong>{{x.NOMBRE}}</strong></span>
+                    <i class="right pulse2" style="font-size: 20px;"></i>
+                  </li>
+                </ul>
+
               </div>
-              <div class="col s12 m12 l12 no-padding" style="height: 70vh;" ng-show="Form.soporteModal!=''">
-                <iframe style="width: 100%;height: 100%;" ng-if="Form.soporteModal!=''" type="application/pdf"
-                  ng-src="{{Form.soporteModal}}" src="{{Form.soporteModal}}">
+              <div class="col s12 m9 l9 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+                style="height: 80vh;" ng-show="Form.soporteModalUrl==''">
+                <i class="icon-file-pdf" style="margin: auto;font-size: 5em;"></i>
+              </div>
+              <div class="col s12 m9 l9 messageBox first_3_2 valign-wrapper Clase_AjustarHeigth_Modal_Soporte"
+                style="height: 95vh;overflow: auto;" ng-show="Form.soporteModalUrl!=''">
+                <iframe style="width: 100%;height: 100%;" ng-if="Form.soporteModalUrl!=''" type="application/pdf"
+                  ng-src="{{Form.soporteModalUrl}}" src="{{Form.soporteModalUrl}}">
                 </iframe>
               </div>
             </div>
@@ -675,7 +647,19 @@
             ng-click="closeModal()">
           </div>
           <div class="card-content default-linear-gradient border-radius-none white-text">
-            <h5><span class="margin" style="font-size: 1.64rem;">Comentarios ({{Form.listadoComentarios.length}})</span>
+            <h5><span class="margin" style="font-size: 1.64rem;">Comentarios
+                ({{Form.listadoComentarios.length}})</span>
+
+
+              <div class="switch" style="display: inline-flex;margin-left: 3vw">
+                <label>
+                  <span ng-class="{'activo':!Form.modalComentarios_Check}" class="activo">Comentarios</span>
+                  <input type="checkbox" ng-init="Form.modalComentarios_Check = false"
+                    ng-model="Form.modalComentarios_Check">
+                  <span class="lever check-c"></span>
+                  <span ng-class="{'activo':Form.modalComentarios_Check}">Historico Rechazos</span>
+                </label>
+              </div>
             </h5>
           </div>
           <div class="card-action" id="card-action"
@@ -684,30 +668,39 @@
             <!-- //-// -->
             <div class="col s12" ng-if="Form.listadoComentarios.length != 0">
               <div style="max-height:70vh;overflow:auto;border: 2px solid;" class="default-color">
-                <!-- <blockquote class="default-linear-gradient"
-                  style="font-size: .9em; margin: 11px 0px;margin-right: .3rem;">Comentarios
-                  ({{Form.listadoComentarios.length}})
-                </blockquote> -->
-                <table class="tablaListado highlight" style="width:100%;color: black;">
+                <table class="tablaListado highlight" style="width:100%;color: black;"
+                  ng-if="!Form.modalComentarios_Check">
                   <thead>
                     <th>#</th>
                     <th>Fecha</th>
                     <th>Responsable</th>
                     <th>Comentario</th>
-                    <th>Observacion Rechazo</th>
                   </thead>
                   <tbody id="idpro">
-                    <tr ng-repeat="x in Form.listadoComentarios">
+                    <tr ng-repeat="x in Form.listadoComentarios" ng-if="!x.observacion_nacional">
                       <td>{{$index + 1}}</td>
                       <td>{{x.FECHA}}</td>
                       <td>{{x.RESPONSABLE}}</td>
                       <td style="max-width: 28vw;">{{x.OBSERVACION}}</td>
-
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="tablaListado highlight" style="width:100%;color: black;"
+                  ng-if="Form.modalComentarios_Check">
+                  <thead>
+                    <th>#</th>
+                    <th>Fecha</th>
+                    <th>Responsable</th>
+                    <th>Observacion Rechazo</th>
+                  </thead>
+                  <tbody id="idpro">
+                    <tr ng-repeat="x in Form.listadoComentarios" ng-if="x.observacion_nacional">
+                      <td>{{$index + 1}}</td>
+                      <td>{{x.FECHA}}</td>
+                      <td>{{x.RESPONSABLE}}</td>
                       <td>{{x.observacion_nacional}} <i class="icon-file-pdf default-color cursor-pointer red-text m-r"
                           style="font-size: 1.5em;" title="Ver Soporte" ng-if="x.observacion_nacional"
                           ng-click="verSoporteModal(x.ADJUNTO,'Adjunto')"></i></td>
-
-
                     </tr>
                   </tbody>
                 </table>
@@ -755,39 +748,110 @@
         </div>
       </div>
       <!-- /////////// -->
+      <div id="modal_Transferir" class="modal" style="margin: 0 auto;max-height: 100%;width: 40%;top:0%;">
+        <div class="col s12 m12 l12 card margin no-padding">
+          <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+            ng-click="closeModal()">
+          </div>
+          <div class="card-content default-linear-gradient border-radius-none white-text">
+            <h5><span class="margin" style="font-size: 1.64rem;">Transferir Gestión
+              </span>
+            </h5>
+          </div>
+          <div class="card-action" id="card-action"
+            style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+            <!-- ELEGIR -->
+            <!-- //-// -->
+            <div class="col s12 m12 l12">
+
+              <form ng-submit="modalTransferirBuscarFuncs()">
+                <div class="col s12 no-padding label-new m-b">
+                  <input class="margin border-none white input-text-new input-w-p input-out-new w-100 m-l"
+                    autocomplete="off" ng-model="Form.transferirResponsable" list="transferirResponsableListado"
+                    text-upper required>
+                  <datalist id="transferirResponsableListado" open="open">
+                    <option value="{{x.Cedula +' - '+ x.Nombre}}" ng-repeat="x in Form.transferirResponsableListado">
+                  </datalist>
+                  <label class="m-l">Responsable Nuevo
+                    <i class="icon-search c-pointer" ng-click="modalTransferirBuscarFuncs()"></i>
+                  </label>
+                </div>
+              </form>
+
+
+              <div class="col s12 no-padding label-new m-b m-t" style="margin-top: 2rem;margin-bottom: 5.5rem;">
+                <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="1000"
+                  style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
+                  text-description text-upper ng-model="Form.transferirObservacion"
+                  ng-disabled="!gestiona_Area"></textarea>
+                <label>Observación</label>
+              </div>
+            </div>
+
+            <div class="col s12 m12 l12 center m-b">
+              <input class="btn white-text default-linear-gradient" type="submit" value="Guardar"
+                ng-click="transferirGestionArea();">
+            </div>
+            <!-- //-// -->
+          </div>
+        </div>
+      </div>
+      <!-- /////////// -->.
+      <!-- /////////////////////////////////////////MODAL COMENTARIOS///////////////////////////////////////// -->
+      <div id="modal_Transferencias" class="modal" style="margin: 0 auto;max-height: 100%;width: 70%;top:0%;">
+        <div class="col s12 m12 l12 card margin no-padding">
+          <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+            ng-click="closeModal()">
+          </div>
+          <div class="card-content default-linear-gradient border-radius-none white-text">
+            <h5><span class="margin" style="font-size: 1.64rem;">Transferencias
+                ({{Form.listadoTransferencias.length}})</span></h5>
+          </div>
+          <div class="card-action" id="card-action"
+            style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+            <!-- ELEGIR -->
+            <!-- //-// -->
+            <div class="col s12" ng-if="Form.listadoTransferencias.length != 0">
+              <div style="max-height:70vh;overflow:auto;border: 2px solid;" class="default-color">
+                <table class="tablaListado highlight" style="width:100%;color: black;">
+                  <thead>
+                    <th>Fecha</th>
+                    <th>Responsable</th>
+                    <th>Observacion</th>
+                  </thead>
+                  <tbody id="idpro">
+                    <tr ng-repeat="x in Form.listadoTransferencias">
+                      <td>{{x.fecha}}</td>
+                      <td>{{x.responsable_anterior}} <i class="icon-right-2"></i> {{x.responsable_nuevo}}</td>
+                      <td>{{x.observacion}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- //-// -->
+          </div>
+        </div>
+      </div>
+
+
+      <!-- /////////// -->
     </div>
     <!-- ///// -->
 
 
     <style>
-      .switch label .lever {
-        background-color: #1a2e63;
-        width: 60px;
-        height: 10px;
-      }
-
-      .switch label .lever:after {
-        left: 4px;
-        top: 0px;
-        background-color: #fff !important;
-      }
-
-      .switch label .lever.check-c {
-        background-color: #b0c6ff !important;
-        top: -1px;
+      .switch label .lever.check-c:after {
+        background-color: #009005;
       }
 
       .switch label input[type=checkbox]:checked+.lever:after {
-        left: 35px;
+        background-color: #ff9100;
+        left: 24px;
       }
 
-      .switch label .lever:after {
-        height: 10px;
-      }
-
-      /* // */
-      .lever.check-c:hover span.lever.check-c:after {
-        width: 100px !important;
+      .switch label>span.activo {
+        color: #f0f0f0 !important;
       }
 
 
@@ -811,37 +875,41 @@
         background: linear-gradient(to bottom left, #e04242, #8b0000, #e04242);
       }
 
+      .btnGradientGreen {
+        background: linear-gradient(to bottom left, #42e084, #008b15, #42e084);
+      }
+
       .btnSoportes:hover {
         font-weight: 600;
       }
 
       .etiquetaRoja {
         padding: 5px;
-        background-color: red;
+        background-color: red !important;
         color: white;
       }
 
       .etiquetaVerde {
         padding: 5px;
-        background-color: green;
+        background-color: green !important;
         color: white;
       }
 
       .etiquetaNaranja {
         padding: 5px;
-        background-color: orange;
+        background-color: orange !important;
         color: white;
       }
 
       .etiquetaAzul {
         padding: 5px;
-        background-color: blue;
+        background-color: blue !important;
         color: white;
       }
 
       .etiquetaMorado {
         padding: 5px;
-        background-color: purple;
+        background-color: purple !important;
         color: white;
       }
 
@@ -860,7 +928,7 @@
 
       #Form1 {
         border: 1px solid;
-        max-height: 84vh;
+        max-height: 90vh;
         overflow-y: auto;
       }
 

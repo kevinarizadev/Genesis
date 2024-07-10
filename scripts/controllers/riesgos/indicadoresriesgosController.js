@@ -395,6 +395,7 @@ angular.module('GenesisApp')
                 descripcionDenominador: e.REGN_DESCRIPCION_DENOMINADOR,
                 descripcionConstante: e.REGN_DESCRIPCION_CONSTANTE,
                 tipoCalculo: e.REGC_TIPO_CALCULO,
+                tipoOrden: e.REGC_TIPO_ORDEN,
               }
             )
           })
@@ -488,7 +489,9 @@ angular.module('GenesisApp')
 
       $scope.hojaIndicadores_chgIndicadorPlaneacion = function () {
         $scope.hojaIndicadores_activarCamposIndicadores()
-        const indicador = $scope.hojaIndicadores.listadoIndicadoresPlaneacion.filter(e => e.codigo == $scope.hojaIndicadores.formulario.indicadorPlaneacion)
+
+        const indicador = $scope.hojaIndicadores.listadoIndicadoresPlaneacion.filter(e => e.codigo + ' - ' + e.nombre == $scope.hojaIndicadores.formulario.indicadorPlaneacion)
+
         if (indicador != '' && indicador != -1 && $scope.hojaIndicadores.formulario.idIndicadorSeleccionado == '') {
           $scope.hojaIndicadores.formulario.nombre = indicador[0].nombre
           $scope.hojaIndicadores.formulario.frecuencia = indicador[0].frecuencia
@@ -497,7 +500,11 @@ angular.module('GenesisApp')
           $scope.hojaIndicadores.formulario.descripcionDenominador = indicador[0].descripcionDenominador
           $scope.hojaIndicadores.formulario.descripcionConstante = indicador[0].descripcionConstante
           $scope.hojaIndicadores.formulario.tipoCalculo = indicador[0].tipoCalculo
+          $scope.hojaIndicadores.formulario.tipoOrden = indicador[0].tipoOrden == 'A' ? 'D' : 'A'
           $scope.hojaIndicadores_desactivarCamposIndicadores()
+        }
+        if (indicador != '' && indicador != -1 && $scope.hojaIndicadores.formulario.idIndicadorSeleccionado != '') {
+          $scope.hojaIndicadores.formulario.nombre = indicador[0].nombre
         }
       }
 
@@ -542,7 +549,14 @@ angular.module('GenesisApp')
           setTimeout(() => { $scope.$apply(); }, 500);
           // debugger
         }, 1500);
-        $scope.hojaIndicadores.formulario.indicadorPlaneacion = x.BINV_COD_INDICADOR_PLANEACION;
+
+        if (x.BINV_COD_INDICADOR_PLANEACION) {
+          const indicador = $scope.hojaIndicadores.listadoIndicadoresPlaneacion.filter(e => e.codigo == x.BINV_COD_INDICADOR_PLANEACION)
+          $scope.hojaIndicadores.formulario.indicadorPlaneacion = indicador[0].codigo + ' - ' + indicador[0].nombre;
+        } else {
+          $scope.hojaIndicadores.formulario.indicadorPlaneacion = ''
+        }
+        // $scope.hojaIndicadores.formulario.indicadorPlaneacion = x.BINV_COD_INDICADOR_PLANEACION;
 
         $scope.hojaIndicadores.formulario.nombre = x.BINV_NOM_INDICADOR;
         // $scope.hojaIndicadores.formulario.estado = 'A';
@@ -737,13 +751,20 @@ angular.module('GenesisApp')
         $scope.hojaIndicadores_validarForm().then(res => {
           if (!res) { swal("¡Importante!", "Diligencia los campos requeridos (*)", "warning").catch(swal.noop); return }
           //
+          let indicadorPlaneacion = ''
+          if ($scope.hojaIndicadores.formulario.indicadorPlaneacion !== undefined) {
+            indicadorPlaneacion = $scope.hojaIndicadores.formulario.indicadorPlaneacion.toString().includes('_') ? $scope.hojaIndicadores.formulario.indicadorPlaneacion.split('-')[0].trim() : '';
+          }
+
+
+
           const dato = [{
 
             pconsecutivo: $scope.hojaIndicadores.formulario.idIndicadorSeleccionado,
 
             pproceso: $scope.hojaIndicadores.formulario.proceso,
             priesgoMaterializados: $scope.hojaIndicadores.formulario.riesgoMaterializados,
-            pindicadorPlaneacion: $scope.hojaIndicadores.formulario.indicadorPlaneacion,
+            pindicadorPlaneacion: indicadorPlaneacion,
 
             panio: $scope.hojaIndicadores.formulario.anio,
 

@@ -32,6 +32,8 @@ angular.module('GenesisApp')
         $scope.listadoNotificaciones = [];
         $scope.listadoNotificacionesTemp = [];
         $scope.filtroNotificaciones = '';
+        $scope.listadoNotificaciones_PBS = [];
+        $scope.listadoNotificaciones_NOPBS = [];
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/consultagesnotglosa.php",
@@ -41,8 +43,17 @@ angular.module('GenesisApp')
             swal("Mensaje", 'No existen glosas para mostrar', "warning").catch(swal.noop); return
           }
           if (data.length) {
+            data.forEach(element => {
+              if (element.NOTC_CLASE == 'P') {
+                $scope.listadoNotificaciones_PBS.push(element)
+              } else {
+                $scope.listadoNotificaciones_NOPBS.push(element)
+              }
+            });
+
             $scope.listadoNotificaciones = data;
             $scope.listadoNotificacionesTemp = data;
+
 
             $scope.currentPage = 0;
             $scope.pageSize = 10;
@@ -56,6 +67,16 @@ angular.module('GenesisApp')
             swal.close();
           }
         })
+      }
+
+      $scope.ngCheckPBS = function () {
+        if (!$scope.checkPBS) {
+          $scope.listadoNotificacionesTemp = $scope.listadoNotificaciones_PBS;
+        } else {
+          $scope.listadoNotificacionesTemp = $scope.listadoNotificaciones_NOPBS;
+        }
+        $scope.setPage(1);
+        setTimeout(() => { $scope.$apply(); }, 500);
       }
 
       $scope.verNotificacionesDetalle = function (row, msg) {

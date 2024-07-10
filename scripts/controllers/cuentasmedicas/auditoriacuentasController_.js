@@ -22,8 +22,8 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
     $scope.Vista1 = {
       Nit_Prestador: '',
       Num_Sol: '',
-      // Nit_Prestador: '901129333',
-      // Num_Sol: '48305',
+      Nit_Prestador: '901129333',
+      Num_Sol: '48305',
       // Nit_Prestador: '900532504',
       // Num_Sol: '120116',
       // Nit_Prestador: '900632220',
@@ -501,11 +501,10 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
         CUOTA_MODERADORA: (X.VALOR_CUOTA_MODERADORA == '') ? '0' : $scope.FormatPesoNumero(X.VALOR_CUOTA_MODERADORA.replace(',', '.')),
         ERROR_FACTURA: '',
         ERROR_GLOSA: '',
-        FECHA_PRESTACION: FECHA_PSS,
+        FECHA_PRESTACION: FECHA_PSS
         // RECOBRO: (X.RECOBRO_CAPITA == 'S') ? true : false,
         // VALOR_RECOBRO: (X.VALOR_RECOBRO == null) ? '0' : $scope.FormatPesoNumero(X.VALOR_RECOBRO),
         // MOTIVO_RECOBRO: (X.MOTIVO_RECOBRO != null) ? X.MOTIVO_RECOBRO : '',
-        ID_FACTURA_OCR: X.ID_FACTURA_OCR
       };
       /////
       var xFECHA_RADICADO = X.FECHA_RADICADO.toString().split('/');
@@ -1343,11 +1342,9 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
     angular.forEach(document.querySelectorAll('.Hoja_Glosa_Class .red-text'), function (i) { // Limpia campos en rojo antes de buscar
       i.classList.remove('red-text');
     });
-    setTimeout(() => { $scope.$apply(); },)
     if ($scope.HojaGlosa.PRODUCTO == undefined || $scope.HojaGlosa.PRODUCTO == null || $scope.HojaGlosa.PRODUCTO == '' || $scope.HojaGlosa.PRODUCTO == 'x') {
       Campos_Empty = true; document.querySelector('#Glosa_Producto_Label').classList.add('red-text');
     }
-    $scope.HojaGlosa.VALOR_GLOSA = document.querySelector('#HojaGlosa_VALOR_GLOSA').value;
     if ($scope.HojaGlosa.VALOR_GLOSA == undefined || $scope.HojaGlosa.VALOR_GLOSA == null || $scope.HojaGlosa.VALOR_GLOSA == '' || $scope.HojaGlosa.VALOR_GLOSA == '0') {
       Campos_Empty = true; document.querySelector('#Glosa_Valor_Label').classList.add('red-text');
     }
@@ -1632,15 +1629,10 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
       $scope.Consulta_Financiera();
     }
 
-    // if (x == 8) { //Busqueda OCR
-    //   $scope.Vistas_Informativa = 8;
-    //   $scope.Vistas_Informativa_Titulo = 'Busqueda OCR  N° Factura: ' + $scope.HojaGest.FACTURA + ' IPS: ' + $scope.HojaGest.IPS;
-    //   $scope.Consulta_Financiera();
-    // }
     if (x == 8) { //Busqueda OCR
       $scope.Vistas_Informativa = 8;
-      $scope.Vistas_Informativa_Titulo = 'Busqueda OCR';
-      $scope.verFacturaPDF();
+      $scope.Vistas_Informativa_Titulo = 'Busqueda OCR  N° Factura: ' + $scope.HojaGest.FACTURA + ' IPS: ' + $scope.HojaGest.IPS;
+      $scope.Consulta_Financiera();
     }
   }
   $scope.Reversar_Anular_Factura = function (Accion) {
@@ -2301,154 +2293,6 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
     //     $scope.Btn_Gestionar_Glosa = true;
     // }
   }
-
-  $scope.verModalFacturasOCR = function () {
-    $scope.modalOCR = {
-      estado: false,
-      filtro: '',
-      listadoFacturas: [],
-      ID_FACTURA: '',
-      RECIBO: '',
-    }
-    $('#modal_Listado_FacturasOCR').modal('open');
-    $timeout(function () { document.querySelector('#modal_Listado_FacturasOCR').style.top = 1 + '%'; }, 600);
-    $scope.obtenerListadoFacturasOCR()
-  }
-
-  $scope.obtenerListadoFacturasOCR = function (x) {
-    // Recibe x para no mostrar swalLoading
-    if (!x)
-      swal({
-        html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
-        width: 200,
-        showConfirmButton: false,
-        animation: false
-      });
-    $scope.modalOCR.listadoFacturas = [];
-
-    // if (!x) swal.close();
-    $http({
-      method: 'POST',
-      url: "php/cuentasmedicas/adminfacturasdigitales.php",
-      data: {
-        function: 'P_OBTENER_FACTURAS_DIGITALES',
-        cedula: $scope.Rol_Cedula,
-        estado: $scope.modalOCR.estado ? 'G' : 'A'
-      }
-    }).then(function ({ data }) {
-      if (!x) swal.close();
-      if (data.toString().substr(0, 3) == '<br' || data == 0) {
-        swal("Error", 'Sin datos', "warning").catch(swal.noop); return
-      }
-      $scope.modalOCR.listadoFacturas = data;
-      console.log(data);
-      setTimeout(() => { $scope.$apply(); }, 500);
-    });
-  }
-
-  $scope.buscarFacturaOCR = function (x) {
-    $scope.Vista1.Nit_Prestador = x.PRESTADOR.split('-')[0];
-    $scope.Vista1.Num_Sol = x.FACTURA.toString().replace(/[^0-9]+/g, "");
-    $scope.Vista1.Tipo = 'F';
-
-
-    // $scope.modalOCR.ID_FACTURA = x.ID_FACTURA;
-    // $scope.modalOCR.RECIBO = x.RECIBO;
-
-
-    $scope.apiURL = 'http://172.52.11.25:5000/api';
-    $scope.closeModal()
-    setTimeout(() => {
-      $scope.Vista1_Buscar()
-    }, 1000);
-  }
-
-  $scope.verFacturaPDF = function (x) {
-    $scope.imgFactura = null;
-    $scope.palabrasPDF = '';
-
-    if (!$scope.HojaGest.ID_FACTURA_OCR) {
-      swal("Mensaje", "No existen documentos", "warning").catch(swal.noop);
-      return
-    }
-
-    swal({
-      html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando factura...</p>',
-      width: 200,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      showConfirmButton: false,
-      animation: false
-    });
-
-    $http({
-      method: "POST",
-      url: `${$scope.apiURL}/get_documents`,
-      data: {
-        "medical_account_id": $scope.HojaGest.ID_FACTURA_OCR,
-        "rip_id": $scope.HojaGest.RECIBO,
-        "partner_id": $scope.Vista1.Nit_Prestador
-      }
-    }).then(function ({ data }) {
-      if (data.status != 'success') {
-        swal("Mensaje", "No existen documentos", "warning").catch(swal.noop);
-        return;
-      }
-      $scope.listadoFacturasPDF = data.result;
-      swal.close();
-    });
-
-  }
-
-  $scope.verFacturaIMG = function (x) {
-    $scope.imgFactura = null;
-    const id = x.id ? x.id : x.document_id
-    $scope.imgFactura = `${$scope.apiURL}/get_document?document_id=${id}`;
-
-    var myDiv = document.getElementById('parent'); myDiv.scrollTop = 0;
-    if (x.similarities) {
-      $scope.similarities = x.similarities;
-    }
-  }
-
-  $scope.buscarPalabrasPDF = function () {
-    swal({
-      html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando factura...</p>',
-      width: 200,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      showConfirmButton: false,
-      animation: false
-    });
-    // $scope.palabrasPDF
-    // $scope.busquedaXPalabras = true;
-    const palabrasPDF = $scope.palabrasPDF.split(",");
-    $scope.imgFactura = null
-    $http({
-      method: "POST",
-      url: `${$scope.apiURL}/search_document`,
-      data: {
-        "medical_account_id": $scope.HojaGest.ID_FACTURA_OCR,
-        "rip_id": $scope.HojaGest.RECIBO,
-        "partner_id": $scope.Vista1.Nit_Prestador,
-        "words": palabrasPDF
-      }
-    }).then(function ({ data }) {
-      if (data.status != 'success') {
-        swal("Mensaje", "No existen documentos con estas palabras", "warning").catch(swal.noop);
-        return;
-      }
-      $scope.similarities = []
-      $scope.listadoFacturasPDFPalabras = data.result;
-
-      console.log(data)
-      swal.close();
-    }).catch(function (error) {
-      swal("Mensaje", "No existen documentos con estas palabras", "warning").catch(swal.noop);
-    });
-  }
-
-
   //////////////////////////////////////////////////////////////////////////////////////
   // MODALS/////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////

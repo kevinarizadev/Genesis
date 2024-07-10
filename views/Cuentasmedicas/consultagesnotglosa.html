@@ -36,6 +36,15 @@
           Listado de Notificaciones ({{listadoNotificaciones.length}})
         </div>
 
+        <div class="switch">
+          <label>
+            <span ng-class="{'activo':!checkPBS}" class="activo">PBS</span>
+            <input type="checkbox" ng-init="checkPBS = false" ng-model="checkPBS" ng-change="ngCheckPBS()" class="ng-pristine ng-valid ng-touched">
+            <span class="lever check-c"></span>
+            <span ng-class="{'activo':checkPBS}">NOPBS</span>
+          </label>
+        </div>
+
         <input type="text" class="margin border-none input-text-new" style="width: 20vw;"
           ng-model="filtroNotificaciones" placeholder="Buscar en la tabla" ng-change="filter(filtroNotificaciones)">
       </div>
@@ -51,6 +60,7 @@
               <th style="text-align:center;">VALOR GLOSA</th>
               <!-- <th style="text-align:center;">FECHA DE CONTESTACION DE GLOSA</th> -->
               <th style="text-align:center;">CANTIDAD</th>
+              <th style="text-align:center;">PBS</th>
               <th style="text-align:center;">ESTADO</th>
               <th style="text-align:center;" colspan="2">ACCION</th>
             </tr>
@@ -67,6 +77,10 @@
               <td style="text-align:center;">${{FormatPesoNumero(X.TOTAL_GLOSA.toString().replace(',', '.'))}}
                 <!-- <td style="text-align:center;">{{X.FECHA_CONTESTACION}}</td> -->
               <td style="text-align:center;">{{X.CANTIDAD}}</td>
+              <td style="text-align:center;">
+                <span class="status teal" ng-if="X.NOTC_CLASE == 'P'">SI</span>
+                <span class="status green" ng-if="X.NOTC_CLASE == 'N'">NO</span>
+              </td>
               <td style="text-align:center;">
                 <span
                   class="status {{(X.NOTC_ESTADO1.toString().trim()).replace('0','PE')}}">{{obtenerNombreEstado(X.NOTC_ESTADO1.toString().trim())}}</span>
@@ -105,7 +119,7 @@
 
             </tr>
             <tr ng-show="listadoNotificaciones.length == 0">
-              <th colspan="9" class="center">
+              <th colspan="10" class="center">
                 No hay notificaciones para mostrar
               </th>
             </tr>
@@ -155,6 +169,7 @@
               <th style="text-align:center;">FECHA NOTIFICACION</th>
               <th style="text-align:center;">NUMERO GLOSA</th>
               <th style="text-align:center;">FACTURA</th>
+              <th style="text-align:center;">PBS</th>
               <th style="text-align:center;">VALOR FACTURA</th>
               <th style="text-align:center;">VALOR GLOSA</th>
               <th style="text-align:center;">VALOR ACEPTADO IPS</th>
@@ -171,6 +186,10 @@
               <td style="text-align:center;">{{X.FECHA_NOTIFICACION}}</td>
               <td style="text-align:center;">{{X.DOC_FD+'-'+X.NUM_FD+'-'+X.UBI_FD}}</td>
               <td style="text-align:center;">{{X.FACC_FACTURA}}</td>
+              <td style="text-align:center;">
+                <span class="status teal" ng-if="X.NOTC_CLASE == 'P'">SI</span>
+                <span class="status green" ng-if="X.NOTC_CLASE == 'N'">NO</span>
+              </td>
               <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_FACTURA.toString().replace(',', '.'))}}</td>
               <td style="text-align:center;">${{FormatPesoNumero(X.VALOR_GLOSA.toString().replace(',', '.'))}}
               <td style="text-align:center;">${{FormatPesoNumero(X.NTDV_VALOR_GI_IPS.toString().replace(',', '.'))}}
@@ -192,7 +211,7 @@
               </td>
             </tr>
             <tr ng-show="listadoNotificacionesDetalle.length == 0">
-              <th colspan="12">
+              <th colspan="13">
                 <center>No hay notificaciones para mostrar</center>
               </th>
             </tr>

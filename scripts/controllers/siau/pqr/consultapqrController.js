@@ -2337,6 +2337,7 @@ angular.module('GenesisApp')
                   $scope.closeModal();
                   swal('Mensaje', data.mensaje, 'success');
                   $scope.filterOptions = 'PQR';
+                  $scope.numero = $scope.formReabrirPQRModal.numero;
                   setTimeout(() => {
                     $scope.buscarPQR()
                   }, 2500);
