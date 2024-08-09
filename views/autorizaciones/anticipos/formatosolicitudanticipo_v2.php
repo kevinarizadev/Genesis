@@ -68,7 +68,7 @@
     <tr style="font-weight:600;">
       <td colspan="6" style="text-align: center;padding:1% 0%;">
         PROCEDIMIENTO DE ANTICIPOS PARA PRESTADORES DE SERVICIOS DE SALUD</td>
-      <td colspan="2">Fecha: Noviembre 2024</td>
+      <td colspan="2">Fecha: Enero 2024</td>
     </tr>
     <tr style="font-weight:600;">
       <td colspan="1" style="background-color:#deeaf6;">

@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html ng-app="GenesisApp">
 
 <head>
@@ -189,7 +190,7 @@
     }
 
     .div_firmas_2 {
-      margin-top: 7vh;
+      margin-top: 10vh;
       /* position: fixed; */
       /* position: absolute; */
       /* width: 97%; */
@@ -225,7 +226,8 @@
   <script src="../../../../bower_components/sweetalert/js/sweetalert2.min.js"></script>
   <script src="../../../../bower_components/angular/angular.js"></script>
   <script src="../../../../bower_components/jquery/dist/jquery.js"></script>
-  <script src="../../../../scripts/controllers/contratacion/formatos/formatominutacontrato_nuevoformatoController.js"></script>
+  <script
+    src="../../../../scripts/controllers/contratacion/formatos/formatominutacontrato_nuevoformatoController.js"></script>
 </head>
 
 <body ng-controller="formatominutacontrato_nuevoformatoController">
@@ -272,15 +274,18 @@
                 <div style="display: inline-flex;">
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_1">Subsidiado:</label>
-                    <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''" onclick="return false;">
+                    <input type="checkbox" id="regimen_1" name="regimen_1" ng-checked="DATA.SUBSIDIADO != ''"
+                      onclick="return false;">
                   </div>
                   <!-- <div style="margin: 0px 3vw;">
                     <label for="regimen_2">Contributivo:</label>
-                    <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''" onclick="return false;">
+                    <input type="checkbox" id="regimen_2" name="regimen_2" ng-checked="DATA.CONTRIBUTIVO != ''"
+                      onclick="return false;">
                   </div> -->
                   <div style="margin: 0px 3vw;">
                     <label for="regimen_3">Contributivo Movilidad:</label>
-                    <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''" onclick="return false;">
+                    <input type="checkbox" id="regimen_3" name="regimen_3" ng-checked="DATA.MOVILIDAD != ''"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -359,7 +364,8 @@
 
 
             <tr ng-show="DATA.union_temporal != null">
-              <td colspan="1" rowspan="{{DATA.union_temporal.length + 1}}" ng-show="DATA.union_temporal != null" class="text-center">
+              <td colspan="1" rowspan="{{DATA.union_temporal.length + 1}}" ng-show="DATA.union_temporal != null"
+                class="text-center">
                 CONFORMACION UNION TEMPORAL:
               </td>
               <!-- <td colspan="5" class="text-center text-size8">{{DATA.union_temporal.length}}</td> -->
@@ -409,11 +415,13 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="tipo_1" class="text-bold7">Prestador de Servicios en Salud (PSS)</label>
-                    <input type="checkbox" id="tipo_1" name="tipo_1" ng-checked="DATA.PRESTADOR_SALUD != ''" onclick="return false;">
+                    <input type="checkbox" id="tipo_1" name="tipo_1" ng-checked="DATA.PRESTADOR_SALUD != ''"
+                      onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="tipo_2" class="text-bold7">Proveedor de Tecnologias en Salud (PTS)</label>
-                    <input type="checkbox" id="tipo_2" name="tipo_2" ng-checked="DATA.PRESTADOR_TECNOLOGIAS != ''" onclick="return false;">
+                    <input type="checkbox" id="tipo_2" name="tipo_2" ng-checked="DATA.PRESTADOR_TECNOLOGIAS != ''"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -426,11 +434,13 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_1">INSTITUCIÓN PRESTADORA DE SERVICIOS (IPS)</label>
-                    <input type="checkbox" id="clase_1" name="clase_1" ng-checked="DATA.IPS != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_1" name="clase_1" ng-checked="DATA.IPS != ''"
+                      onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_2">IPS INDÍGENA (IPSI)</label>
-                    <input type="checkbox" id="clase_2" name="clase_2" ng-checked="DATA.IPSI != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_2" name="clase_2" ng-checked="DATA.IPSI != ''"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -440,11 +450,13 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_3">TRANSPORTE ESPECIAL DE PACIENTES (PSS)</label>
-                    <input type="checkbox" id="clase_3" name="clase_3" ng-checked="DATA.PSS != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_3" name="clase_3" ng-checked="DATA.PSS != ''"
+                      onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_4">PROFESIÓNAL INDEPENDIENTE (PI)</label>
-                    <input type="checkbox" id="clase_4" name="clase_4" ng-checked="DATA.PI != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_4" name="clase_4" ng-checked="DATA.PI != ''"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -454,11 +466,13 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_5">GESTOR FARMACÉUTICO (GF)</label>
-                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_5" name="clase_5" ng-checked="DATA.GF != ''"
+                      onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_6">OPERADOR LOGÍSTICO DE TECNOLOGÍAS EN SALUD (OLTS)</label>
-                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="DATA.OLTS != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_6" name="clase_6" ng-checked="DATA.OLTS != ''"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -468,11 +482,13 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_7">ORGANIZACIÓN NO GUBERNAMENTAL (ONG)</label>
-                    <input type="checkbox" id="clase_7" name="clase_7" ng-checked="DATA.ONG != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_7" name="clase_7" ng-checked="DATA.ONG != ''"
+                      onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_8">UNIVERSIDAD (UN)</label>
-                    <input type="checkbox" id="clase_8" name="clase_8" ng-checked="DATA.UN != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_8" name="clase_8" ng-checked="DATA.UN != ''"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -482,11 +498,13 @@
                 <div style="display: inline-flex;width: 100%;">
                   <div style="width: 45%;">
                     <label for="clase_9">OBJETO SOCIAL DIFERENTE (OS)</label>
-                    <input type="checkbox" id="clase_9" name="clase_9" ng-checked="DATA.OS != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_9" name="clase_9" ng-checked="DATA.OS != ''"
+                      onclick="return false;">
                   </div>
                   <div style="width: 55%;">
                     <label for="clase_10">OTROS (OT)</label>
-                    <input type="checkbox" id="clase_10" name="clase_10" ng-checked="DATA.UN != ''" onclick="return false;">
+                    <input type="checkbox" id="clase_10" name="clase_10" ng-checked="DATA.UN != ''"
+                      onclick="return false;">
                   </div>
                   <!-- <div style="width: 100%;">
                     <label for="clase_9">OTROS (OT)</label>
@@ -503,15 +521,18 @@
                 <div style="display: inline-flex;">
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_1">Privada:</label>
-                    <input type="checkbox" id="naturaleza_1" name="naturaleza_1" ng-checked="DATA.NATURALEZA == 'PRIVADA'" onclick="return false;">
+                    <input type="checkbox" id="naturaleza_1" name="naturaleza_1"
+                      ng-checked="DATA.NATURALEZA == 'PRIVADA'" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_2">Pública:</label>
-                    <input type="checkbox" id="naturaleza_2" name="naturaleza_2" ng-checked="DATA.NATURALEZA == 'PUBLICA'" onclick="return false;">
+                    <input type="checkbox" id="naturaleza_2" name="naturaleza_2"
+                      ng-checked="DATA.NATURALEZA == 'PUBLICA'" onclick="return false;">
                   </div>
                   <div style="margin: 0px 3vw;">
                     <label for="naturaleza_3">Mixta:</label>
-                    <input type="checkbox" id="naturaleza_3" name="naturaleza_3" ng-checked="DATA.NATURALEZA == 'MIXTA'" onclick="return false;">
+                    <input type="checkbox" id="naturaleza_3" name="naturaleza_3" ng-checked="DATA.NATURALEZA == 'MIXTA'"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -561,6 +582,16 @@
                       </div>
                     </li>
                   </ul>
+                  <ul style="margin: 0;list-style-type: none;">
+                    <li>
+                      <label for="tipo_capita_4">TRANSPORTE ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_4" name="tipo_capita_4" onclick="return false;">
+                    </li>
+                    <li>
+                      <label for="tipo_capita_5">TRANSPORTE NO ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_5" name="tipo_capita_5" onclick="return false;">
+                    </li>
+                  </ul>
                 </div>
               </td>
             </tr>
@@ -587,7 +618,8 @@
                   </div>
                   <div style="width: 55%;">
                     <label for="modalidad_6">PAGO POR EVENTO</label>
-                    <input type="checkbox" id="modalidad_6" name="modalidad_6" ng-checked="true" onclick="return false;">
+                    <input type="checkbox" id="modalidad_6" name="modalidad_6" ng-checked="true"
+                      onclick="return false;">
                   </div>
                 </div>
               </td>
@@ -793,35 +825,35 @@
               como víctimas de violencia, población en condición de desplazamiento forzado, reinsertados, minorías
               étnicas, personas con discapacidad, embarazadas, personas de la tercera edad y demás que establezca la
               Ley. 14. Facilitar la información sobre notificación, clasificación, intervención y estudio de casos en
-              los eventos de vigilancia epidemiológica. 15. Entregar copia de los archivos en medio magnético
-              a través de los mecanismos que la ERP establezca, para los reportes de los indicadores mensuales y
-              trimestrales de oportunidad y satisfacción de los usuarios, teniendo en cuenta la estructura exigida en la
-              Circular Única de la Superintendencia Nacional de Salud. 16. Notificar los casos de los pacientes de
-              grupos especiales: Renales, VIH, Cáncer, Tuberculosis, Hemofilia y otras coagulopatías, Artritis,
-              Enfermedades Huérfanas, Hipertensión Arterial, Gestantes y Diabetes Mellitus,TRasplantesy Hepatitis C, con
-              información y soportes clínicos concernientes a su diagnóstico y atneción que es requerida para el reporte
-              de la cuenta de Alto Costo ; para ello, la IPS deberá diligenciar el archivo de reporte de información de
-              la cuenta de alto costo el cual debe ser entregado mensualmente dentro de los primros cinco (5) días mes
-              vencido, cargado en la herramienta SISCAC o en la que se determine para tal fin según la normatividad
-              vigente. 17. Diseñar e implementar el modelo de gestión del servicio farmacéutico, según lo establecen las
-              normas vigentes. 18. Implementar los diferentes comités reglamentados por la normatividad vigente, que le
-              apliquen. 19. Implementar el Sistema de Información y Atención al Usuario para suministrar información,
-              orientación y atención a los afiliados. 20. Derivar a los afiliados a los programas de promoción y
-              prevención e inducir su demanda de servicios de estos programas y dar especial énfasis a la atención de
-              pacientes sospechosos de eventos de interés en salud pública. 21. Contar en urgencias con el kit de
-              atención a usuarios víctimas de violencia o agresión sexual, incluyendo especialmente anticoncepción de
-              emergencia. 22. Informar a la ERP sobre cualquier novedad en los datos del afiliado, tales como teléfonos,
-              correos electrónicos, dirección, nacimiento o fallecimiento de usuarios que se produzca bajo su atención,
-              enviando copia del certificado de defunción dentro de las veinticuatro (24) horas siguientes al hecho. La
-              información de fallecidos deberá ser suministrada a la dirección médica de la ERP, utilizando los formatos
-              establecidos en la normatividad vigente. 23. Cumplir con las condiciones sanitarias y el plan de gestión
-              de residuos hospitalarios PGHIRS, régimen de habilitación, nombramiento de revisor Fiscal (o demostrar que
-              no está obligado), pago de la Tasa de Contribución a la Superintendencia Nacional de Salud, mantener
-              vigente el Registro Mercantil y demás obligaciones propias. 24. Garantizar la afiliación de sus
-              trabajadores a la Seguridad Social y cumplir con los pagos que de ella se deriven, así como de los aportes
-              parafiscales. 25. Garantizar los servicios para la rehabilitación física y mental de los niños, niñas y
-              adolescentes víctimas de violencia física o sexual y todas las formas de maltrato, que esté certificadas
-              por la autoridad competente, garantizando la atención integral para cada caso, hasta que se certifique
+              los eventos de vigilancia epidemiológica. 15. Entregar copia de los archivos en medio magnético a través
+              de los mecanismos que la ERP establezca, para los reportes de los indicadores mensuales y trimestrales de
+              oportunidad y satisfacción de los usuarios, teniendo en cuenta la estructura exigida en la Circular Única
+              de la Superintendencia Nacional de Salud. 16. Notificar los casos de los pacientes de grupos especiales:
+              Renales, VIH, Cáncer, Tuberculosis, Hemofilia y otras coagulopatías, Artritis, Enfermedades Huérfanas,
+              Hipertensión Arterial, Gestantes y Diabetes Mellitus,Trasplante y Hepatitis C, con información y soportes
+              clínicos concernientes a su diagnóstico y atención que es requerida para el reporte de la cuenta de Alto
+              Costo ; para ello, la IPS deberá diligenciar el archivo de reporte de información de la cuenta de alto
+              costo el cual debe ser entregado mensualmente dentro de los primeros cinco (5) días mes vencido, cargado
+              en la herramienta SISCAC o en la que se determine para tal fin según la normatividad vigente. 17. Diseñar
+              e implementar el modelo de gestión del servicio farmacéutico, según lo establecen las normas vigentes. 18.
+              Implementar los diferentes comités reglamentados por la normatividad vigente, que le apliquen. 19.
+              Implementar el Sistema de Información y Atención al Usuario para suministrar información, orientación y
+              atención a los afiliados. 20. Derivar a los afiliados a los programas de promoción y prevención e inducir
+              su demanda de servicios de estos programas y dar especial énfasis a la atención de pacientes sospechosos
+              de eventos de interés en salud pública. 21. Contar en urgencias con el kit de atención a usuarios víctimas
+              de violencia o agresión sexual, incluyendo especialmente anticoncepción de emergencia. 22. Informar a la
+              ERP sobre cualquier novedad en los datos del afiliado, tales como teléfonos, correos electrónicos,
+              dirección, nacimiento o fallecimiento de usuarios que se produzca bajo su atención, enviando copia del
+              certificado de defunción dentro de las veinticuatro (24) horas siguientes al hecho. La información de
+              fallecidos deberá ser suministrada a la dirección médica de la ERP, utilizando los formatos establecidos
+              en la normatividad vigente. 23. Cumplir con las condiciones sanitarias y el plan de gestión de residuos
+              hospitalarios PGHIRS, régimen de habilitación, nombramiento de revisor Fiscal (o demostrar que no está
+              obligado), pago de la Tasa de Contribución a la Superintendencia Nacional de Salud, mantener vigente el
+              Registro Mercantil y demás obligaciones propias. 24. Garantizar la afiliación de sus trabajadores a la
+              Seguridad Social y cumplir con los pagos que de ella se deriven, así como de los aportes parafiscales. 25.
+              Garantizar los servicios para la rehabilitación física y mental de los niños, niñas y adolescentes
+              víctimas de violencia física o sexual y todas las formas de maltrato, que esté certificadas por la
+              autoridad competente, garantizando la atención integral para cada caso, hasta que se certifique
               medicamente la recuperación de las victimas según en el marco normativo vigente descrito en el Anexo 1.
               26. Cumplir con lo establecido en el numeral 1.4 de la circular 026 de 2020 del ministerio de salud y
               Protección Social establece que “se debe aplicar, según corresponda, las guías de práctica clínica, la
@@ -868,9 +900,9 @@
               Protección Social, contando con la certificación expedida por la entidad competente y garantizando la
               prestación del servicio con todos los componentes de la estrategia. 38. Dar cumplimiento a las actividades
               descritas en la resolución 3280 de 2018 o la norma que modifique, Buscar las gestantes inasistentes al
-              control prenatal e investigar las causas de la inasistencia y reportar de manera mensual a la
-              EAPB, cumplimiento de lo dispuesto en la Estrategia para la eliminación de la trasmisión materno infantil
-              del VIH, SIFILIS, HEPATITIS B y ENFERMEDAD DE CHAGAS (ETMI PLUS),adoptar y adaptar la estrategia de
+              control prenatal e investigar las causas de la inasistencia y reportar de manera mensual a la EAPB,
+              cumplimiento de lo dispuesto en la Estrategia para la eliminación de la trasmisión materno infantil del
+              VIH, SIFILIS, HEPATITIS B y ENFERMEDAD DE CHAGAS (ETMI PLUS),adoptar y adaptar la estrategia de
               información y comunicación en salud para la promoción y cuidado de la salud materna neonatal y la
               reducción de la mortalidad materna. 39. El PSS deberá cumplir con el reporte inmediato a la EAPB de los
               resultados de citologías, mamografía, PSA y otros resultados de laboratorios o estudios alteradas que
@@ -893,17 +925,17 @@
               en cualquier tiempo por parte de los entes de Inspección, Vigilancia y Control, por el no reporte de la
               información dentro de la vigencia del contrato. 45. El PSS se obliga al cumplimiento de lo establecido en
               el Decreto 1427 de 2022, en el que se reglamentan las prestaciones económicas del Sistema General de
-              Seguridad Social en Salud –SGSSS-, respecto a las condiciones de la expedición de las licencias de
+              Seguridad Social en Salud -SGSSS-, respecto a las condiciones de la expedición de las licencias de
               maternidad, licencias de paternidad y certificados de incapacidad, realizando el reporte a la ERP que
               deberá contener las variables mínimas establecidas en dicho Decreto, con la periodicidad definida por la
               ERP. 46. El PSS reportará el primer día hábil de cada semana, un archivo detallado en formato Excel con
               las incapacidades o licencias que hayan sido expedidas a cotizantes de la ERP, en la semana inmediatamente
-              anterior al correo nacional.arm1@cajacopieps.com, con el asunto Reporte de Incapacidades y Licencias –
-              Corte DD/MM/AAAA, en cumplimiento de la Ley Antitrámite 019 del 2012 de 2016 y Decreto 1333 del 2018 donde
-              se reglamenta el procedimiento de revisiones periódicas de las incapacidades por enfermedad general de
-              origen común por parte de las EPS, el momento de calificación definitiva, y las situaciones de abuso del
-              derecho que generen la suspensión del pago de las incapacidades. 47. El PSS se obliga a las demás
-              obligaciones derivadas del presente contrato y del contenido de la normatividad vigente.</div>
+              anterior al correo nacional.arm1@cajacopieps.com, con el asunto Reporte de Incapacidades y Licencias -
+              Corte DD/MM/AAAA, en cumplimiento de la Ley Anti trámite 019 del 2012 y Decreto 1333 del 2018 donde se
+              reglamenta el procedimiento de revisiones periódicas de las incapacidades por enfermedad general de origen
+              común por parte de las EPS, el momento de calificación definitiva, y las situaciones de abuso del derecho
+              que generen la suspensión del pago de las incapacidades. 47. El PSS se obliga a las demás obligaciones
+              derivadas del presente contrato y del contenido de la normatividad vigente.</div>
 
             <div class="minuta_clausula">Cláusula 3. Obligaciones de la ERP.</div>
             <div class="minuta_texto">Las ERP se obliga a: 1. Garantizar el acceso oportuno a la información de la
@@ -941,7 +973,8 @@
             <div class="minuta_texto">El plazo de duración y vigencia del presente acuerdo de voluntades es el que se
               describe en la portada del presente contrato. En el evento que ninguna de las partes comunique a la otra
               su voluntad con una antelación no inferior a 30 días calendario, de darlo por terminado o no renovarlo, se
-              entenderá prorrogado automáticamente por el término inicialmente pactado. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO:</span> La habilitación del servicio prestado debe mantenerse
+              entenderá prorrogado automáticamente por el término inicialmente pactado. <span
+                class="minuta_paragrafo">PARÁGRAFO PRIMERO:</span> La habilitación del servicio prestado debe mantenerse
               durante la suscripción, ejecución y hasta la expiración del presente acuerdo de voluntades y de sus
               prórrogas. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO:</span> En caso de prórrogas o renovaciones
               automáticas de los acuerdos de voluntades, antes del inicio del periodo de prórroga o renovación, se
@@ -988,6 +1021,10 @@
               tecnologías de información para transferencia de datos clínicos de los pacientes y las herramientas de
               comunicación que permitan la trazabilidad de la información y evidencien la diligencia y oportunidad en la
               gestión, de conformidad con los estándares descritos en el (Anexo 9) del presente acuerdo de voluntades.
+              El PSS/PTS deberá disponer de espacio para publicación o colocación de carteleras en las sedes de atención
+              y en las salas de espera de consulta externa y de urgencias en las que se dispondrán la información
+              relativa a la red integral e integrada de salud del distrito, municipio, departamento o área geográfica
+              para la gestión en salud en los términos del Anexo Técnico 2 de la resolución 2335 de 2023.
             </div>
 
             <div class="minuta_clausula">Cláusula 11. Modalidad de pago.</div>
@@ -997,28 +1034,13 @@
               57; Ley 1231 de 2008; Ley 2024 de 2020; Decreto 1733 de 2020; Decreto 441 de 2022, y demás normas que
               modifiquen, adicionen o sustituyan. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> El pago se
               realizará mediante transferencia electrónica al número de cuenta donde el PSS sea titular y que haya sido
-              reportada por el PSS dentro de los anexos contractuales. <span class="minuta_paragrafo">PARÁGRAFO
-                SEGUNDO.</span> PAGO BAJO EL ESQUEMA DE BOLSA DE SERVICIOS. Las partes acuerdan establecer el pago de
-              los servicios de salud de forma anticipada bajo el esquema de bolsa de servicios y tecnologías en salud.
-              El valor de la bolsa se define entre las partes de manera anticipada teniendo en cuenta el histórico de
-              facturación de los servicios a contratar al PSS por parte de la ERP. La ERP realizará el pago del 100% del
-              valor pactado y descrito en la portada el primer mes de ejecución del contrato y los meses subsiguientes
-              de acuerdo con la ejecución o consumo de la bolsa reportada por parte del PSS a corte el día 24 de cada
-              mes. La ERP realizará la programación de los pagos dentro de los últimos diez (10) días de cada mes, a la
-              Administradora de los Recursos del Sistema General de Seguridad Social en Salud (ADRES) de acuerdo con la
-              ejecución y el valor total de la bolsa pactado. La bolsa de servicios y tecnologías se recargará los
-              primeros 5 días hábiles de cada mes con el giro directo a través de la Administradora de los Recursos del
-              Sistema General de Seguridad Social en Salud (ADRES) de acuerdo con el porcentaje de ejecución o consumo
-              total de la bolsa pactado entre las partes. Si el PSS reporta un consumo mayor o igual al ochenta por
-              ciento (80%) a corte 24 de cada mes la ERP pagará el 100% del valor pactado y en caso de que la ejecución
-              sea menor al ochenta por ciento (80%) será programado el pago del porcentaje reportado de ejecución a
-              corte 24 de cada mes. Las partes definen mantener el valor de la bolsa acordado durante la vigencia del
-              contrato. El valor pactado podrá ser ajustado por las partes mediante otrosí de acuerdo con el seguimiento
-              a la ejecución en un periodo de seis (6) meses.</div>
+              reportada por el PSS dentro de los anexos contractuales.</div>
 
             <div class="minuta_clausula">Cláusula 12. Tarifas.</div>
             <div class="minuta_texto">Las tarifas de los servicios son las pactadas en el anexo tarifario suscrito entre
-              las partes. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> Las tarifas detalladas en los anexos
+              las partes. Lo no pactado se reconocerá bajo la figura de homologación mediante validación de códigos
+              principales y alternos descritos en el anexo 14 o 15 según corresponda y de acuerdo con los valores allí
+              pactados. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> Las tarifas detalladas en los anexos
               tarifarios podrán ser modificadas durante la vigencia contractual a través de un Otrosí al contrato,
               suscrito por los representantes legales de las partes. <span class="minuta_paragrafo">PARÁGRAFO
                 SEGUNDO.</span> Si dentro de la vigencia contractual se solicitan servicios o tecnologías no pactados en
@@ -1030,7 +1052,8 @@
               ser superior al valor especificado en las circulares de regulación de precios o en la nota técnica de
               presupuestos máximos expedidas por el Ministerio de Salud y Protección Social.</div>
 
-            <div class="minuta_clausula">Cláusula 13. Listado de GPC y Protocolos de Atención.</div>
+            <div class="minuta_clausula">Cláusula 13. Recaudo de pagos compartidos - Copagos, Cuotas Moderadoras y de
+              Recuperación.</div>
             <div class="minuta_texto">Los servicios están sujetos al régimen de pagos compartidos o copagos y cuotas
               moderadoras y para su aplicación se debe tener en cuenta lo establecido en el Decreto 1652 de 2022 y demás
               normas que lo modifiquen, adicionen o sustituyan. EL PSS realizará el recaudo del copago, cuotas
@@ -1038,15 +1061,18 @@
               en la misma y en los RIPS de la factura. Será obligación especial del PSS, llevar un registro del recaudo
               de dichos copagos y cuotas moderadoras en los tiempos definidos por las normas legales con el fin de
               soportar los procesos de auditoría que haya lugar. El PSS está obligado a registrar en el aplicativo
-              Génesis las cuotas moderadoras y copagos realmente cobrados y adjuntar el soporte correspondiente. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> En el evento y ante la imposibilidad de pago por
+              Génesis las cuotas moderadoras y copagos realmente cobrados y adjuntar el soporte correspondiente. <span
+                class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> En el evento y ante la imposibilidad de pago por
               parte del afiliado, evento en el cual corresponderá a esta reconocer y pagar dicha suma y adelantar el
               cobro al usuario. El PSS reportará a la ERP dicha situación mediante el aplicativo Genesis. El formato de
               no recaudo debe adjuntarse a la factura y sus soportes. Este formato de notificación deberá ir firmado por
               el afiliado y por el funcionario encargado del PSS, con los datos mínimos de identificación y de contacto
               actualizados, como constancia, y en señal del conocimiento previamente informado, sobre la aplicación de
-              las cuotas moderadoras y/o copagos a que está sujeto por los servicios prestados. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO.</span> El PSS en todos los casos que el afiliado manifieste
+              las cuotas moderadoras y/o copagos a que está sujeto por los servicios prestados. <span
+                class="minuta_paragrafo">PARÁGRAFO SEGUNDO.</span> El PSS en todos los casos que el afiliado manifieste
               la imposibilidad de pago, propondrá la suscripción de acuerdo de pago a los afiliados. Sólo podrá
-              considerarse como parte del pago a estas cuando exista un recaudo efectivo de su valor. <span class="minuta_paragrafo">PARÁGRAFO TERCERO.</span> El PSS deberá abstenerse de cobrar a los afiliados
+              considerarse como parte del pago a estas cuando exista un recaudo efectivo de su valor. <span
+                class="minuta_paragrafo">PARÁGRAFO TERCERO.</span> El PSS deberá abstenerse de cobrar a los afiliados
               copagos, cuotas moderadoras y de recuperación, de conformidad con las exclusiones establecidas en el
               Acuerdo 260 de 2004 y el Decreto 1562 de 2022 y demás normas que lo modifiquen, adicionen o sustituyan.
             </div>
@@ -1082,9 +1108,15 @@
             <div class="minuta_clausula">Cláusula 16. Autorización de servicios.</div>
             <div class="minuta_texto">Para los servicios pactados bajo la modalidad de evento, el PSS solicitará
               autorización del servicio según los tiempos y mecanismos descritos en el marco normativo vigente, mediante
-              los canales de contacto descritos en el Anexo 17. La ERP expedirá la autorización a través de un canal
-              informático transaccional y notificará al PSS/PTS y usuario dentro de los tiempos establecidos por el
-              marco normativo vigente. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. VIGENCIA DE LAS
+              los canales de contacto descritos en el Anexo 17, en los casos contemplados los contratos por modalidad de
+              programa de riesgo no necesitarán autorización de conformidad a lo establecido en el decreto 441 de 2022
+              en su artículo 2.5.3.4.7.4. La ERP expedirá la autorización a través de un canal informático transaccional
+              y notificará al PSS/PTS y usuario dentro de los tiempos establecidos por el marco normativo vigente. Se
+              exceptúa los casos de autorizaciones para atención de urgencia sin egreso hospitalario y oxígeno
+              domiciliario y los dispositivos relacionados con la atención para personas con condiciones crónicas en los
+              términos establecidos en la resolución 2335 de 2023. En todo caso el PSS/PTS contratado bajo la modalidad
+              de evento deberá garantizar el cumplimiento de lo establecido en el artículo 6.1. y 6.2 de la resolución
+              2335 de 2023 <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. VIGENCIA DE LAS
                 AUTORIZACIONES.</span> La duración de las autorizaciones expedidas para estos será de 90 días luego de
               su expedición. En caso de no haber sido prestado el servicio en ese término, el PSS deberá justificar a la
               ERP los motivos por los que el servicio no se prestó durante la vigencia de esta, y la ERP definirá la
@@ -1100,20 +1132,30 @@
               vigente descrito en el Anexo 1. Tampoco se requerirá de autorización previa para la prestación y provisión
               de los servicios y tecnologías de salud a los afiliados pertenecientes a la etnia Wayuu habitante de
               municipios del departamento de La Guajira, en las siguientes situaciones: 1 Cuando se trate de eventos y
-              condiciones en salud señalados en el artículo 2.5.3.4.7.4 del Decreto 780 de 2016 y lo dispuesto en los articulos 4 y 5 de la resolución 2811 de 2022 o la norma que lo
-              modifique o sustituya. 2. Para la atención de urgencias y los servicios y tecnologías en salud posteriores
-              a la atención en urgencias sin egreso hospitalario. 3. Para la atención integral de la desnutrición aguda
-              moderada y severa en niños menores de 5 años, según lo establecido en la resolución 2350 de 2020, que
-              incluye: identificación de casos de desnutrición aguda moderada y severa, remisión de casos de atención
-              hospitalaria o ambulatoria, tratamiento con fórmula terapéutica, seguimiento y monitoreo a los casos
-              identificados. 4. Cuando se trate de atenciones en salud de madres gestantes, incluidas las complicaciones
-              durante el embarazo. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. NOTIFICACIÓN DE PRESTACIÓN.</span>
+              condiciones en salud señalados en el artículo 2.5.3.4.7.4 del Decreto 780 de 2016 y lo dispuesto en los
+              artículos 4 y 5 de la resolución 2811 de 2022 o la norma que lo modifique o sustituya. 2. Para la atención
+              de urgencias y los servicios y tecnologías en salud posteriores a la atención en urgencias sin egreso
+              hospitalario. 3. Para la atención integral de la desnutrición aguda moderada y severa en niños menores de
+              5 años, según lo establecido en la resolución 2350 de 2020, que incluye: identificación de casos de
+              desnutrición aguda moderada y severa, remisión de casos de atención hospitalaria o ambulatoria,
+              tratamiento con fórmula terapéutica, seguimiento y monitoreo a los casos identificados. 4. Cuando se trate
+              de atenciones en salud de madres gestantes, incluidas las complicaciones durante el embarazo. <span
+                class="minuta_paragrafo">PARÁGRAFO TERCERO. NOTIFICACIÓN DE PRESTACIÓN.</span>
               La prestación efectiva del servicio, entrega del medicamento o insumo, prestado por evento se deberá
               realizar previa validación del número de autorización emitido por la ERP en su portal transaccional
               dispuesto para tal fin, y registrar la fecha real de prestación del servicio una vez finalizada la
               atención, o en un periodo no mayor a tres días posteriores a la entrega total de la fórmula según cantidad
               autorizada, so pena de dar traslado de las sanciones pecuniarias impuestas a la ERP por incumplimiento a
-              lo dispuesto en la Resolución 497 de 2021 dentro de las obligaciones de la ERP.</div>
+              lo dispuesto en la Resolución 497 de 2021 dentro de las obligaciones de la ERP. En caso de no hacer uso de
+              la autorización emitida y de no cargue o registro de la prestación efectiva en los términos establecidos
+              en el presente contrato se anulará la autorización posterior a los tres (3) meses de vencimiento de la
+              misma. <span class="minuta_paragrafo">PARÁGRAFO CUARTO. ACCIONES ADMINISTRATIVAS DEL PROCESO DE
+                AUTORIZACIONES. </span>
+              La ERP definirá los mecanismos de seguimiento para la facilidad y mejora del proceso de autorizaciones
+              mediante seguimientos e implementaciones de estrategias socializadas al PSS/PTS. Las partes dispondrán de
+              canales transaccionales para la transferencia de datos las veinticuatro (24) horas del día, los siete (7)
+              días de la semana, todos los días del año de acuerdo con lo establecido en la resolución 2335 de 2023.
+            </div>
 
             <div class="minuta_clausula">Cláusula 17. Supervisión del contrato.</div>
             <div class="minuta_texto">La ERP ejercerá la supervisión sobre la ejecución de los servicios objeto del
@@ -1121,92 +1163,99 @@
               contrato. La ERP, se reserva el derecho de realizar las visitas de monitoreo y la supervisión que estime
               convenientes. De igual forma, con la finalidad de asegurar que la prestación por parte del PSS se realice
               en condiciones óptimas de calidad, La ERP podrá inspeccionar, verificar el servicio e igualmente hacer
-              sugerencias por escrito para que EL PSS corrija las deficiencias en la prestación del servicio. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. DECLARACIONES DEL SUPERVISOR. </span>Con su visto bueno y en
-              calidad de responsable técnico del contrato, el supervisor declara que: 1. La IPS se encuentra inscrita en
-              el Registro Especial de Prestadores de Servicios de Salud -REPS- y dicho registro está vigente. 2. La IPS
-              cumple con los requisitos legales que en materia de habilitación para la prestación de servicios de salud
-              establece la Resolución 3100 de 2019 o aquella norma vigente que la modifique, adicione o sustituya, y
-              garantiza la prestación de la totalidad de los servicios contratados. 3. La IPS cuenta con sedes
-              habilitadas en los municipios descritos en el Anexo 7, para garantizar la prestación de los servicios
-              objeto del contrato a sus afiliados en las condiciones de cobertura que exige la ley a las aseguradoras
-              del SGSSS. 4. Las sedes en las cuales se prestarán los servicios de salud objeto del contrato cuentan con
-              la evaluación realizada de conformidad con lo establecido en los procedimientos internos de la ERP y se
-              encuentran vigentes al momento de la firma del acuerdo de voluntades. 5. Considerando el cumplimiento de
-              los requisitos técnicos y legales específicamente respecto de la habilitación para la prestación de
-              servicios de salud, gestionó ante el órgano competente de la ERP la aprobación de la presente
-              contratación. 6. El acuerdo de servicios, el contrato y sus anexos, corresponden a lo negociado y
-              autorizado por la ERP, y por lo tanto da visto bueno a la suscripción del presente documento. 7. Se
-              realizarán las validaciones pertinentes definidas en la normatividad vigente que apliquen al objeto del
-              contrato definido entre las partes, según el Anexo 10 (Formato de supervisión del contrato) definido por
-              la ERP. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. RESPONSABILIDADES DEL SUPERVISOR.</span> Las
-              responsabilidades del supervisor del contrato son las siguientes: 1. Gestionar de manera oportuna ante los
-              órganos correspondientes de la ERP la aprobación de las modificaciones al presente contrato cuando a ello
-              hubiere lugar. 2. Vigilar la correcta ejecución de lo pactado, realizando el seguimiento técnico,
-              administrativo y financiero correspondiente. 3. En caso de darse cualquier situación que pueda llegar a
-              modificar las condiciones pactadas, o de presentarse incumplimiento de las obligaciones a cargo del PSS
-              que pongan en riesgo el cumplimiento del contrato, adelantar las acciones de mitigación que correspondan
-              para evitar que se cause un perjuicio a la organización, gestionando si fuere necesario, y de conformidad
-              con el Manual de planeación, conformación, contratación y evaluación de la red de prestadores de servicios
-              de salud, la terminación del contrato. 4. Suministrar la información para liquidar el contrato dentro de
-              los 4 meses siguientes a su terminación y gestionar la suscripción del acta respectiva. 5. En general, dar
-              cumplimiento a las disposiciones del Manual de planeación, conformación, contratación y evaluación de la
-              red de prestadores de servicios de salud.</div>
+              sugerencias por escrito para que EL PSS corrija las deficiencias en la prestación del servicio. La
+              supervisión podrá ser realizada por parte de la ERP periódicamente conforme a lo establecido en el
+              procedimiento interno de la ERP. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. DECLARACIONES DEL
+                SUPERVISOR. </span>Con su visto bueno y en calidad de responsable técnico del contrato, el supervisor
+              declara que: 1. La IPS se encuentra inscrita en el Registro Especial de Prestadores de Servicios de Salud
+              -REPS- y dicho registro está vigente. 2. La IPS cumple con los requisitos legales que en materia de
+              habilitación para la prestación de servicios de salud establece la Resolución 3100 de 2019 o aquella norma
+              vigente que la modifique, adicione o sustituya, y garantiza la prestación de la totalidad de los servicios
+              contratados. 3. La IPS cuenta con sedes habilitadas en los municipios descritos en el Anexo 7, para
+              garantizar la prestación de los servicios objeto del contrato a sus afiliados en las condiciones de
+              cobertura que exige la ley a las aseguradoras del SGSSS. 4. Las sedes en las cuales se prestarán los
+              servicios de salud objeto del contrato cuentan con la evaluación realizada de conformidad con lo
+              establecido en los procedimientos internos de la ERP y se encuentran vigentes al momento de la firma del
+              acuerdo de voluntades. 5. Considerando el cumplimiento de los requisitos técnicos y legales
+              específicamente respecto de la habilitación para la prestación de servicios de salud, gestionó ante el
+              órgano competente de la ERP la aprobación de la presente contratación. 6. El acuerdo de servicios, el
+              contrato y sus anexos, corresponden a lo negociado y autorizado por la ERP, y por lo tanto da visto bueno
+              a la suscripción del presente documento. 7. Se realizarán las validaciones pertinentes definidas en la
+              normatividad vigente que apliquen al objeto del contrato definido entre las partes, según el Anexo 10
+              (Formato de supervisión del contrato) definido por la ERP. <span class="minuta_paragrafo">PARÁGRAFO
+                SEGUNDO. RESPONSABILIDADES DEL SUPERVISOR.</span> Las responsabilidades del supervisor del contrato son
+              las siguientes: 1. Gestionar de manera oportuna ante los órganos correspondientes de la ERP la aprobación
+              de las modificaciones al presente contrato cuando a ello hubiere lugar. 2. Vigilar la correcta ejecución
+              de lo pactado, realizando el seguimiento técnico, administrativo y financiero correspondiente. 3. En caso
+              de darse cualquier situación que pueda llegar a modificar las condiciones pactadas, o de presentarse
+              incumplimiento de las obligaciones a cargo del PSS que pongan en riesgo el cumplimiento del contrato,
+              adelantar las acciones de mitigación que correspondan para evitar que se cause un perjuicio a la
+              organización, gestionando si fuere necesario, y de conformidad con el Manual de planeación, conformación,
+              contratación y evaluación de la red de prestadores de servicios de salud, la terminación del contrato. 4.
+              Suministrar la información para liquidar el contrato dentro de los 4 meses siguientes a su terminación y
+              gestionar la suscripción del acta respectiva. 5. En general, dar cumplimiento a las disposiciones del
+              Manual de planeación, conformación, contratación y evaluación de la red de prestadores de servicios de
+              salud.</div>
 
             <div class="minuta_clausula">Cláusula 18. Coordinación de referencia y contrarreferencia.</div>
-            <div class="minuta_texto">El PSS aplicará el Manual de Referencia y Contrarreferencia suministrado por la
-              ERP de conformidad con los prestadores descritos en el Anexo 16 y utilizando los contactos descritos en el
-              Anexo 17.</div>
+            <div class="minuta_texto">El PSS/PTS aplicará el Manual de Referencia y Contrarreferencia suministrado por
+              la ERP de conformidad con los prestadores descritos en el Anexo 16 y utilizando los contactos descritos en
+              el Anexo 17. En todo caso, este proceso deberá ajustarse a lo descrito en el artículo 11 de la resolución
+              2335 de 2023 o de aquellas que la modifiquen, adicionen o sustituyan. <span
+                class="minuta_paragrafo">PARÁGRAFO: ACCIONES ADMINISTRATIVAS DEL PROCESO DE REFERENCIA Y
+                CONTRARREFERENCIA: </span>La ERP definirá los mecanismos de seguimiento para la facilidad y mejora del
+              proceso de referencia y contrarreferencia mediante seguimientos e implementaciones de estrategias
+              socializadas al PSS/PTS. Las partes dispondrán de canales transaccionales para la transferencia de datos
+              las veinticuatro (24) horas del día, los siete (7) días de la semana, todos los días del año de acuerdo
+              con lo establecido en la resolución 2335 de 2023. </div>
 
             <div class="minuta_clausula">Cláusula 19. Indicadores de evaluación de la ejecución.</div>
             <div class="minuta_texto">El PSS se obliga en cumplimiento del presente contrato a la atención de todo lo
               dispuesto en el Sistema Obligatorio de Garantía de la Calidad de SGSSS, contenido en el Decreto 1011 de
-              2006, la Ley 1438 de 2011, Resolución 256 de 2016 de la Superintendencia Nacional de Salud, así como
-              aquellas que la modifiquen, adicionen o sustituyan. Durante la vigencia del contrato, la ERP verificará
-              que la prestación de servicios de salud objeto del presente contrato, se cumpla por parte del PSS, bajo
-              las condiciones de accesibilidad, oportunidad, seguridad, pertinencia y continuidad establecidas en la
-              normatividad aplicable en la materia. Para efectos de evaluar el cumplimiento del presente acuerdo de
-              voluntades, el PSS se obliga a reportar a la ERP los indicadores de calidad, de gestión y de resultados
-              descritos en el Anexo 9 y en el marco normativo vigente descrito en el Anexo 1. <span class="minuta_paragrafo">PARÁGRAFO. ACTUALIZACIÓN DE INDICADORES E IMPREVISTOS.</span> En caso de
-              eventos imprevisibles, fuerza mayor o caso fortuito, que afecten la prestación o provisión de servicios y
-              tecnologías en salud y el cumplimiento de los indicadores pactados, estos deberán ser ajustados de acuerdo
-              con las nuevas condiciones mediante la celebración de un otrosí. Sin perjuicio de lo anterior, cualquier
-              evento imprevisto que surja en el desarrollo del presente contrato y que amerite la revisión de sus
-              condiciones se someterá a las normas de imprevisión del Código Civil y del Código del Comercio.</div>
+              2006, la Ley 1438 de 2011, Resolución 256 de 2016 de la Superintendencia Nacional de Salud, Resolución
+              2335 de 2023 así como aquellas que la modifiquen, adicionen o sustituyan. Durante la vigencia del
+              contrato, la ERP verificará que la prestación de servicios de salud objeto del presente contrato, se
+              cumpla por parte del PSS, bajo las condiciones de accesibilidad, oportunidad, seguridad, pertinencia y
+              continuidad establecidas en la normatividad aplicable en la materia. Para efectos de evaluar el
+              cumplimiento del presente acuerdo de voluntades, el PSS se obliga a reportar a la ERP los indicadores de
+              calidad, de gestión y de resultados descritos en el Anexo 9 y en el marco normativo vigente descrito en el
+              Anexo 1. <span class="minuta_paragrafo">PARÁGRAFO. ACTUALIZACIÓN DE INDICADORES E IMPREVISTOS.</span> En
+              caso de eventos imprevisibles, fuerza mayor o caso fortuito, que afecten la prestación o provisión de
+              servicios y tecnologías en salud y el cumplimiento de los indicadores pactados, estos deberán ser
+              ajustados de acuerdo con las nuevas condiciones mediante la celebración de un otrosí. Sin perjuicio de lo
+              anterior, cualquier evento imprevisto que surja en el desarrollo del presente contrato y que amerite la
+              revisión de sus condiciones se someterá a las normas de imprevisión del Código Civil y del Código del
+              Comercio.</div>
 
             <div class="minuta_clausula">Cláusula 20. Proceso periódico de evaluación.</div>
             <div class="minuta_texto">El contrato se evaluará de conformidad con el Modelo de Auditoría descrito en el
-              Anexo 10 y de conformidad
-              con las cláusulas 17 a 20 del presente acuerdo de voluntades. <span class="minuta_paragrafo">PARÁGRAFO
-                PRIMERO. MODELO DE AUDITORÍA DE
-                CALIDAD.</span> El modelo de auditoría contempla los aspectos administrativos, financieros,
-              técnico-científicos y
-              de calidad del servicio que hacen parte del Sistema Obligatorio de Garantía de Calidad en Salud -SOGCS. La
-              auditoría de la calidad de la atención de los servicios deberá desarrollarse de acuerdo con el Programa de
-              Auditoría para el Mejoramiento de la Calidad -PAMEC- de cada uno de los agentes, de conformidad con lo
-              establecido en el Capítulo 4 "Auditoría para el mejoramiento de la calidad de la atención de salud" del
-              Título 1 de la Parte 5 del Libro 2 de Decreto 780 de 2016 o según la norma que los modifique, adicione o
-              sustituya Y Manual de Auditoría de Calidad de la ERP.
-              <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. MODELO DE AUDITORÍA DE CUENTAS MÉDICAS.</span> La
-              auditoría de las cuentas médicas se
-              realizará con base en los soportes definidos en el marco normativo vigente, con sujeción a los estándares
-              establecidos en el Manual Único de Devoluciones, Glosas y Respuestas expedido por el Ministerio de Salud y
-              Protección Social, conforme a los términos señalados en el trámite de glosas establecido en el mismo y de
-              acuerdo con la información reportada y validada en el Registro Individual de Prestaciones de Salud.
-              <span class="minuta_paragrafo">PARÁGRAFO TERCERO. PROCEDIMIENTO AUDITORÍA HOSPITALARIA.</span> La
-              auditoría hospitalaria se realizará con base
-              en lo descrito en el Procedimiento de Auditoría Hospitalaria de la ERP el cual se encuentra ajustado al
-              marco normativo que regula la relación contractual. El PSS garantizará el acceso del equipo auditor
-              extramural de la ERP a los pacientes que se encuentren bajo atención hospitalaria en cualquiera de las
-              sedes del PSS y en todos los niveles de atención. <span class="minuta_paragrafo">PARÁGRAFO CUARTO. ACCESO
-                A LA HISTORIA CLÍNICA.</span> Para los
-              efectos previstos en esta cláusula, el PSS deberá garantizar a la ERP el acceso a la historia clínica del
-              usuario a través de medios electrónicos o digitales, con el fin de facilitar los procesos de auditoría y
-              seguimiento. La ERP deberá cumplir con las condiciones de seguridad adoptadas por el prestador o proveedor
-              para la guarda y custodia de los datos personales y datos sensibles contenidos en esta. El tratamiento de
-              los datos personales, en especial de los datos sensibles, se realizará con sujeción a lo dispuesto en la
-              Ley Estatutaria de salud y en el marco normativo vigente en materia de protección de datos confidenciales
-              y sensibles.
-            </div>
+              Anexo 10 y de conformidad con las cláusulas 17 a 20 del presente acuerdo de voluntades. <span
+                class="minuta_paragrafo">PARÁGRAFO PRIMERO. MODELO DE AUDITORÍA DE CALIDAD.</span> El modelo de
+              auditoría contempla los aspectos administrativos, financieros, técnico-científicos y de calidad del
+              servicio que hacen parte del Sistema Obligatorio de Garantía de Calidad en Salud -SOGCS. La auditoría de
+              la calidad de la atención de los servicios deberá desarrollarse de acuerdo con el Programa de Auditoría
+              para el Mejoramiento de la Calidad -PAMEC- de cada uno de los agentes, de conformidad con lo establecido
+              en el Capítulo 4 "Auditoría para el mejoramiento de la calidad de la atención de salud" del Título 1 de la
+              Parte 5 del Libro 2 de Decreto 780 de 2016 o según la norma que los modifique, adicione o sustituya Y
+              Manual de Auditoría de Calidad de la ERP.</div>
+            <div class="minuta_texto"><span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. MODELO DE AUDITORÍA DE CUENTAS
+                MÉDICAS.</span> La auditoría de las cuentas médicas se realizará con base en los soportes definidos en
+              el marco normativo vigente, con sujeción a los estándares establecidos en el Manual Único de Devoluciones,
+              Glosas y Respuestas expedido por el Ministerio de Salud y Protección Social, conforme a los términos
+              señalados en el trámite de glosas establecido en el mismo y de acuerdo con la información reportada y
+              validada en el Registro Individual de Prestaciones de Salud. <span class="minuta_paragrafo">PARÁGRAFO
+                TERCERO. PROCEDIMIENTO AUDITORÍA HOSPITALARIA.</span> La auditoría hospitalaria se realizará con base en
+              lo descrito en el Procedimiento de Auditoría Hospitalaria de la ERP el cual se encuentra ajustado al marco
+              normativo que regula la relación contractual. El PSS garantizará el acceso del equipo auditor extramural
+              de la ERP a los pacientes que se encuentren bajo atención hospitalaria en cualquiera de las sedes del PSS
+              y en todos los niveles de atención. <span class="minuta_paragrafo">PARÁGRAFO CUARTO. ACCESO A LA HISTORIA
+                CLÍNICA.</span> Para los efectos previstos en esta cláusula, el PSS deberá garantizar a la ERP el acceso
+              a la historia clínica del usuario a través de medios electrónicos o digitales, con el fin de facilitar los
+              procesos de auditoría y seguimiento. La ERP deberá cumplir con las condiciones de seguridad adoptadas por
+              el prestador o proveedor para la guarda y custodia de los datos personales y datos sensibles contenidos en
+              esta. El tratamiento de los datos personales, en especial de los datos sensibles, se realizará con
+              sujeción a lo dispuesto en la Ley Estatutaria de salud y en el marco normativo vigente en materia de
+              protección de datos confidenciales y sensibles.</div>
 
             <div class="minuta_clausula">Cláusula 21. Reportes obligatorios.</div>
             <div class="minuta_texto">El PSS reportará a la ERP dentro de los primero cinco (5) días HÁBILES de cada mes
@@ -1218,9 +1267,10 @@
               formato del INVIMA. 5. Todos los reportes obligatorios del SIVIGILA según las pautas, formatos, manuales
               de vigilancia epidemiológica vigentes del Instituto. 6. La información de las actividades de protección
               específica y detección temprana (PEDT) en la estructura, formato y periodicidad que determinada por el
-              Ministerio de Salud y Protección Social, dentro de los 20 primeros días de cada mes. <span class="minuta_paragrafo">PARÁGRAFO.</span> Para los PSS de gestión del riesgo se trasladarán los
+              Ministerio de Salud y Protección Social, dentro de los 20 primeros días de cada mes. <span
+                class="minuta_paragrafo">PARÁGRAFO.</span> Para los PSS de gestión del riesgo se trasladarán los
               descuentos aplicados a la ERP por la Cuenta de Alto Costo - CAC por no cumplimiento de los indicadores de
-              gestión.</div>
+              gestión estableciendo entre las partes el riesgo compartido según cada cohorte.</div>
 
             <div class="minuta_clausula">Cláusula 22. Mecanismos y plazos para la entrega y actualización de la
               información de los afiliados.</div>
@@ -1241,29 +1291,46 @@
             <div class="minuta_texto">EL PSS radicará antes a la ERP la Factura Electrónica de Venta (FEV) dentro de los
               plazos y condiciones establecidos en la ley y reglamentos vigentes, utilizando el canal transaccional
               descrito en el Anexo 17 del presente contrato. La FEV deberá contener los RIPS y soportes completos
-              exigidos por el marco normativo vigente descrito en el Anexo 1, so pena de devolución. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. FACTURACIÓN INDIVIDUAL POR USUARIO.</span> La facturación se
+              exigidos por el marco normativo vigente descrito en el Anexo 1, so pena de devolución. <span
+                class="minuta_paragrafo">PARÁGRAFO PRIMERO. FACTURACIÓN INDIVIDUAL POR USUARIO.</span> La facturación se
               debe presentar de manera discriminada por cada usuario e ítem con el valor unitario según las tarifas
               definidas en la nota técnica. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. CIRCULARES SOBRE REPORTES
                 DE INFORMACIÓN.</span> Para todos los efectos hace parte integral de este contrato las circulares
               expedidas por la ERP, mediante las cuales se imparten indicaciones respecto a los soportes requeridos para
-              la presentación de facturas de tecnologías en salud no cubiertas en el Plan de Beneficios en Salud. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. REPORTE DE RIPS.</span> PSS reportará a la ERP como
+              la presentación de facturas de tecnologías en salud no cubiertas en el Plan de Beneficios en Salud. <span
+                class="minuta_paragrafo">PARÁGRAFO TERCERO. REPORTE DE RIPS.</span> PSS reportará a la ERP como
               requisito obligatorio para la radicación de la factura, los Registros Individuales de Prestación de
               Servicios de Salud RIPS utilizando: 1. La clasificación única de procedimientos CUPS, 2. La codificación
               única que determine el Ministerio de La Protección Social para los insumos y dispositivos médicos, a los
               cuales el INVIMA haya otorgado registro sanitario. 3. Todos los medicamentos deberán ser reportados en
               códigos CUMS (expediente + consecutivo) según base de datos Invima vigente. Adicionalmente, los RIPS deben
-              corresponder con los códigos y valores de los servicios, medicamentos e insumos definidos en la Nota
-              Técnica. <span class="minuta_paragrafo">PARÁGRAFO CUARTO. FACTURACIÓN DEL ÚLTIMO MES DEL CONTRATO.</span>
+              corresponder con los códigos y valores de los servicios, medicamentos e insumos definidos en la resolución
+              1036 de 2022, Resolución 1557 de 2023 y aquellas que las adicionen, modifiquen o sustituyan. <span
+                class="minuta_paragrafo">PARÁGRAFO CUARTO. FACTURACIÓN DEL ÚLTIMO MES DEL CONTRATO.</span>
               EL PSS deberá presentar las facturas por la prestación de servicios dentro de la misma vigencia del
-              contrato y las atenciones del último mes, a más tardar al mes siguiente.</div>
+              contrato y las atenciones del último mes, a más tardar al mes siguiente.
+              <span class="minuta_paragrafo">PARÁGRAFO QUINTO: ACCIONES ADMINISTRATIVAS DEL PROCESO DE FACTURACIÓN:
+              </span>La ERP definirá los mecanismos de seguimiento para la facilidad y mejora del proceso de facturación
+              y glosas mediante seguimientos e implementaciones de estrategias socializadas al PSS/PTS. Las partes
+              dispondrán de canales transaccionales para la transferencia de datos las veinticuatro (24) horas del día,
+              los siete (7) días de la semana, todos los días del año de acuerdo con lo establecido en la resolución
+              2335 de 2023.
+              <span class="minuta_paragrafo">PARÁGRAFO SEXTO: TÉRMINOS PARA RADICACION DE FACTURAS: </span>Las cuentas
+              de cobro, facturas o reclamaciones ante la ERP, se deberán presentar a más tardar dentro de los seis (6)
+              meses siguientes a la fecha de la prestación de los servicios o de la ocurrencia del hecho generador de
+              las mismas. Vencido este término no habrá lugar al reconocimiento de intereses, ni otras sanciones
+              pecuniarias conforme a lo dispuesto en el Art. 7 del Decreto Ley 1281 de 2002. De la misma manera, se
+              advierte que todas las facturas, cuentas de cobro y/o reclamaciones presentadas por parte del PSS/PTS ante
+              la ERP por fuera de los términos aquí señalados, no se les dará prelación en su trámite, teniendo en
+              cuenta que lo que se debe garantizar es el flujo actual de los recursos del SGSSS y no obligaciones por
+              prestación de servicios de salud contraídas y/o reconocidas con más de 6 meses de la prestación efectiva
+              de los mismos.
+            </div>
 
             <div class="minuta_clausula">Cláusula 24. Plazos de pago.</div>
             <div class="minuta_texto">Los plazos de pago son los establecidos en la Ley 1122 de 2007, artículo 13,
               literal d; Ley 1438 de 2011, artículo 56 y 57; Ley 1231 de 2008; Ley 2024 de 2020; Decreto 1733 de 2020;
-              Decreto 441 de 2022, y demás normas que modifiquen, adicionen o sustituyan. <span class="minuta_paragrafo">PARÁGRAFO. </span>para los contratos
-              bajo el esquema de bolsa de servicios y tecnologías en salud, el pago se realizará de manera anticipada a
-              través de la ADRES según lo descrito en la cláusula 11 parágrafo segundo del presente acuerdo de
-              voluntades.</div>
+              Decreto 441 de 2022, y demás normas que modifiquen, adicionen o sustituyan.</div>
 
             <div class="minuta_clausula">Cláusula 25. Mecanismos de solución de conflicto.</div>
             <div class="minuta_texto">Cuando surjan discrepancias como consecuencia de la suscripción, ejecución,
@@ -1298,10 +1365,15 @@
               voluntades con la simple comunicación expedida por la ERP. 16. Por vencimiento del plazo pactado. 17. Por
               la no entrega de informes requeridos por la ERP para el cumplimiento de sus funciones como aseguradora
               dentro del SGSSS, o la entrega inoportuna o incompleta de estos por parte del PSS. 18. Por el uso indebido
-              de las bases de datos de la ERP por parte del PSS. 19. La ERP podrá dar por terminado unilateralmente el
-              contrato sin que esto de lugar a indemnización, cuando el PSS no diere cumplimiento a las disposiciones
-              legales relacionadas con la prevención y control al lavado de activos, el financiamiento del terrorismo y
-              la financiación de la proliferación de armas de destrucción masiva nacionales o internacionales que les
+              de las bases de datos de la ERP por parte del PSS así como por la ausencia de notificación y/o gestión de
+              incidentes y/o eventos de seguridad que se llegaren a presentar sobre las bases de datos de los pacientes,
+              usuarios y afiliados a la ERP, provenientes de ataques cibernéticos o provenientes de malas prácticas de
+              seguridad al interior de la PSS. En estos casos la ERP podrá dar por terminado el contrato en forma
+              unilateral en consideración a los graves riesgos que supone la violación de datos personales en Colombia a
+              la luz del artículo 169 F del Código Penal. 19. La ERP podrá dar por terminado unilateralmente el contrato
+              sin que esto de lugar a indemnización, cuando el PSS no diere cumplimiento a las disposiciones legales
+              relacionadas con la prevención y control al lavado de activos, el financiamiento del terrorismo y la
+              financiación de la proliferación de armas de destrucción de masivas nacionales o internacionales que le
               sean aplicables. 20. Cuando el PSS figure en las listas de la OFAC y/o en las listas nacionales e
               internacionales relacionadas con actividades ilícitas, estando la ERP facultado para efectuar las
               verificaciones que considere pertinentes en bases de datos públicos o privadas (de orden nacional o
@@ -1318,8 +1390,10 @@
               efectuado transacciones u operaciones destinadas a dichas actividades o a favor de personas relacionadas
               con las mismas. 24. Cuando se presenten inconsistencias, discrepancias o falsedades en la documentación e
               información aportada por el PSS para la celebración y ejecución del contrato y que conlleve a dudas
-              fundadas sobre la legalidad de las operaciones del PSS. 25. Por decisión unilateral de la ERP, con previo
-              aviso de treinta (30) días calendario, sin que haya lugar a indemnización alguna. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. REQUERIMIENTO PARA TERMINACIÓN DEL CONTRATO.</span> La ERP a
+              fundadas sobre la legalidad de las operaciones del PSS. 25. Por decisión unilateral de cualquiera las
+              partes, con previo aviso de treinta (30) días calendario por parte de la ERP y de Noventa (90) días
+              calendario por parte del PSS/PTS, sin que haya lugar a indemnización alguna. <span
+                class="minuta_paragrafo">PARÁGRAFO PRIMERO. REQUERIMIENTO PARA TERMINACIÓN DEL CONTRATO.</span> La ERP a
               través del supervisor de este contrato, requerirá por escrito al PSS precisándole el incumplimiento de una
               o varias de las obligaciones pactadas, exigiéndole que en un plazo no mayor a cinco (5) días hábiles
               contados a partir del recibo de la comunicación, presente las explicaciones correspondientes o según el
@@ -1327,12 +1401,12 @@
               plazo el PSS no responde, o sus explicaciones no son satisfactorias para la ERP, o no realiza las
               actividades correctivas solicitadas, la ERP quedará en libertad de terminar unilateralmente el contrato, y
               en este caso lo anunciará al PSS mediante comunicación escrita con una antelación no menor a 30 días
-              calendario respecto de la fecha de terminación deseada.<span class="minuta_paragrafo">PARÁGRAFO SEGUNDO.
+              calendario respecto de la fecha de terminación deseada. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO.
                 CESACIÓN EN LA PRESTACIÓN DE SERVICIOS.</span> EL PSS en ninguna circunstancia podrá suspender, retirar
               servicios de salud objeto del presente contrato o cesar la prestación de estos, conducta que se
               considerará como incumplimiento grave en las obligaciones del PSS. Para que la suspensión, retiro o
               cesación de los servicios se entienda válida y no constituya incumplimiento alguno, debe ser notificada
-              mediante escrito y dentro de los treinta (30) días anteriores a la fecha de suspensión, cesación o retiro
+              mediante escrito y dentro de los sesenta (60) días anteriores a la fecha de suspensión, cesación o retiro
               del servicio, en donde deberá justificar el motivo de la suspensión, debiendo esta solicitud ser aceptada
               por la ERP para que pueda realizarse por parte del PSS. De lo contrario, éste deberá continuar prestando
               los servicios contratados.<span class="minuta_paragrafo">PARÁGRAFO TERCERO.</span> Cualquiera sea la causa
@@ -1351,17 +1425,26 @@
               meses siguientes a la terminación del contrato. Si ninguna de las partes muestra su interés efectivo por
               liquidar el contrato, y no realiza ni una comunicación física o electrónica durante los doce (12) meses
               siguientes a la terminación del contrato, se entiende que ambas partes aceptan estar a paz y salvo por
-              todo concepto y condonar toda deuda existente entre ellas.</div>
+              todo concepto y condonar toda deuda existente entre ellas.
+              <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. MERITO EJECUTIVO DE LAS ACTAS DE LIQUIDACIÓN DEL
+                CONTRATO. </span>Una vez constituidas comunicadas, suscritas y en firme las actas de liquidación tanto
+              bilateral como unilateral del presente contrato los valores que resulten de dicha liquidación a favor
+              tanto de PSS-PTS como de la ERP, prestaran merito ejecutivo a partir del día siguiente en que sea
+              comunicada los valores plenamente liquidados contenido en las respectivas actas.
+            </div>
 
             <div class="minuta_clausula">Cláusula 28. Incentivos pactados.</div>
-            <div class="minuta_texto">Las partes pactarán en el acta de Iniciación del Contrato el reconocimiento de
+            <div class="minuta_texto">Las partes pactarán en el acta de Inicio del Contrato el reconocimiento de
               incentivos de tipo económico o no económico por la mejoría, logro y mantenimiento de resultados de los
-              indicadores pactados, eligiendo un mecanismo que estimule la prestación y provisión de servicios y
-              tecnologías basado en valor, de acuerdo con el objeto del acuerdo de voluntades.</div>
+              indicadores pactados, establecidos en el Anexo 22, eligiendo un mecanismo que estimule la prestación y
+              provisión de servicios y tecnologías basado en valor, de acuerdo con el objeto del acuerdo de voluntades.
+            </div>
 
             <div class="minuta_clausula">Cláusula 29. Canales de relacionamiento.</div>
             <div class="minuta_texto">Los canales de relacionamiento entre las partes son los establecidos en el Anexo
-              17</div>
+              17. La ERP podrá disponer la información aquí descrita dentro de los espacios físicos y carteleras de las
+              sedes de atención del PSS/PTS como parte de las estrategias de mejoramiento para la calidad y resultados
+              en la atención a la población afiliada.</div>
 
             <div class="minuta_clausula">Cláusula 30. Cesión.</div>
             <div class="minuta_texto">El PSS no podrá ceder total o parcialmente el presente contrato sin la
@@ -1383,18 +1466,18 @@
               contratación y evaluación de la red de Prestadores de Servicios de Salud.</div>
 
             <div class="minuta_clausula">Cláusula 32. Cláusula penal pecuniaria.</div>
-            <div class="minuta_texto">A) COMPENSATORIA: El incumplimiento parcial o total de las obligaciones derivadas
-              de este contrato por el PSS, genera el derecho para Ia ERP a exigir el pago de una suma equivalente al 10%
-              del valor estimado del contrato. <span class="minuta_paragrafo">PARÁGRAFO
-                PRIMERO.</span> El PSS autoriza a la ERP para que el valor de la CLÁUSULA PENAL a que se refiere esta
-              cláusula sea descontado del saldo pendiente de pago a su favor en virtud del presente acuerdo de
-              voluntades o por cualquier relación comercial entre las partes. Si no lo hubiese, podrá cobrarse por la
-              vía ejecutiva, renunciando el PSS con la suscripción del presente contrato a requerimientos judiciales o
-              extrajudiciales, de manera que este documento y la liquidación de los perjuicios constituye título
-              ejecutivo para el cumplimiento de la sanción pecuniaria, para lo cual este acuerdo de voluntades prestará
-              mérito ejecutivo. Asimismo, en el evento en que se causen intereses de mora por cualquier concepto, la
-              tasa de interés aplicable será la máxima legal comercial certificada por la Superintendencia Financiera, o
-              quien haga sus veces, a la fecha de la causación de estos. <span class="minuta_paragrafo">PARÁGRAFO
+            <div class="minuta_texto">El incumplimiento de al menos una (1) de las obligaciones derivadas de este
+              contrato por parte el PSS, genera el derecho para Ia ERP a exigir el pago de una suma equivalente hasta
+              del 10% del valor estimado del contrato. <span class="minuta_paragrafo">PARÁGRAFO
+                PRIMERO.</span> El PSS autoriza a la ERP para que el valor de la sanción a que se refiere esta cláusula
+              sea descontado del saldo pendiente de pago a su favor en virtud del presente acuerdo de voluntades o por
+              cualquier relación comercial entre las partes. Si no lo hubiese, podrá cobrarse por la vía ejecutiva,
+              renunciando el PSS con la suscripción del presente contrato a requerimientos judiciales o extrajudiciales,
+              de manera que este documento y la liquidación de los perjuicios constituye título ejecutivo para el
+              cumplimiento de la sanción pecuniaria que deberá ser declarada por autoridad judicial competente.
+              Asimismo, en el evento en que se causen intereses de mora por cualquier concepto, la tasa de interés
+              aplicable será la máxima legal comercial certificada por la Superintendencia Financiera, o quien haga sus
+              veces, a la fecha de la causación de estos. <span class="minuta_paragrafo">PARÁGRAFO
                 SEGUNDO.</span> La ERP podrá cobrar la pena establecida en la presente cláusula, y a su vez exigir el
               cumplimiento del acuerdo de voluntades, por tanto, el pago de la pena no extingue el cumplimiento de las
               obligaciones pactadas. </div>
@@ -1437,52 +1520,59 @@
               siempre y cuando dichos pagos estén permitidos por las Leyes aplicables.
             </div>
 
-            <div class="minuta_clausula">Cláusula 34. Autorización del tratamiento de datos personales.</div>
-            <div class="minuta_texto">La ERP como responsable del tratamiento de los datos personales objeto del
-              presente contrato, autoriza al PSS en calidad de encargado del tratamiento de datos personales, para
-              realizar el tratamiento de la información personal contenida en la(s) base(s) de datos a las que se tenga
-              acceso en desarrollo del acuerdo de voluntades respecto de las cuales la ERP declara contar con la
-              autorización previa, libre, informada, expresa e inequívoca de sus titulares, garantizando el suministro
-              de la información de forma veraz, completa, exacta, actualizada, comprobable y comprensible para las
-              finalidades propias de la presente contratación. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span>
+            <div class="minuta_clausula">Cláusula 34. Protección de datos personales.</div>
+            <div class="minuta_texto">Las partes reconocen que cada una de ellas ostenta la calidad de responsable del
+              tratamiento de los datos de los pacientes, usuarios y afiliados de la ERP, datos que cada una de ellas
+              recolecta en desarrollo de su objeto social y para el cumplimiento de las obligaciones que le son propias
+              de acuerdo con su naturaleza jurídica. Por tanto cada una de ellas al realizar el tratamiento de la
+              información personal contenida en la(s) base(s) de datos a las que se tenga acceso en desarrollo del
+              presente acuerdo de voluntades, tanto la ERP como la PSS declaran contar con la autorización previa,
+              libre, informada, expresa e inequívoca de los titulares, autorización otorgada a cada un a de ellas acorde
+              con los tratamientos y finalidades que a cada una compete. Por parte de la ERP se declara que las bases de
+              datos de sus afiliados y/o usuarios y/o pacientes se han conformado de acuerdo con la información que
+              éstos otorgan a la ERP y por ende se espera que la información sea veraz, completa, exacta, actualizada,
+              comprobable y comprensible para las finalidades propias de la presente contratación, sin perjuicio de la
+              obligación que tiene la PSS de actualizar los datos de los usuarios cuando se soliciten la prestación de
+              un servicio de salud en concreto. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span>
               El PSS se compromete a tratar los datos personales que reciba con ocasión de la relación contractual que
-              tiene con la compañía única y exclusivamente para las finalidades necesarias para desarrollar el objeto
-              del presente acuerdo de voluntades, respetando el derecho a la vida privada y a la intimidad de los
-              titulares de los datos personales de quienes hará tratamiento, a implementar las medidas de seguridad
-              necesarias, a cumplir con todas las obligaciones del artículo 18 de la ley 1581 de 2012 y a no divulgar
-              los datos personales ni la información que sea suministrada a lo largo de la relación con la compañía. En
-              caso de que se presente un incidente de seguridad con los datos personales deberá reportarlo de inmediato
-              a la ERP. Al momento de la terminación del acuerdo de voluntades, el PSS deberá devolver o destruir la
-              información de las bases de datos personales de acuerdo con las indicaciones de la ERP. <span class="minuta_paragrafo">PARÁGRAFO SEGUNDO. HABEAS DATA.</span> En cumplimiento de lo dispuesto en el
-              marco normativo vigente en lo correspondiente a la protección de datos personales, las partes declaran que
-              son conocedoras y aceptan que en caso que en desarrollo del objeto de este contrato las partes lleguen a
-              realizar tratamiento de datos personales o sensibles en los términos de la normatividad, se obligan a
-              respetar, mantener absoluta reserva y confidencialidad y de cualquier manera garantizar la seguridad y
-              privacidad de la información y/o datos personales sensibles que le sean transmitidos o que de cualquier
-              forma o medio llegue a conocer y/o que sean por éste recolectados, almacenados, usados, objeto de
-              circulación o en general de cualquier operación o conjunto de operaciones, bajo los términos y/o
-              condiciones que indique tanto la normatividad vigente como la Política para el Tratamiento de la
-              Información y/o datos personales que haya sido adoptada por cada una de las partes. Así mismo, se obligan
-              a contar con los medios técnicos, humanos y administrativos que sean necesarios para otorgar
-              confidencialidad y seguridad a los datos evitando su adulteración, pérdida, consulta, uso o acceso no
-              autorizado o fraudulento y garantizando que la información es veraz, completa, exacta, actualizada,
-              comprobable y comprensible. Así entonces, queda expresamente prohibido disponer, usar, difundir y/o
-              transmitir de cualquier modo la información y/o datos sensibles o personales a los que tenga acceso en
-              desarrollo del presente contrato, ya que dicha información debe ser recolectada, conservada y usada única
-              y exclusivamente para el desarrollo de este y bajo la confidencialidad y seguridad antes anotada. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. MECANISMO DE ENTREGA Y ACTUALIZACIÓN DE INFORMACIÓN.</span>
+              tiene con la ERP única y exclusivamente para las finalidades necesarias para desarrollar el objeto del
+              presente acuerdo de voluntades, respetando el derecho a la vida privada y a la intimidad de los titulares
+              de los datos personales de quienes hará tratamiento, a implementar las medidas de seguridad necesarias, a
+              cumplir con todas las obligaciones del régimen legal vigente en Colombia en materia de Protección de Datos
+              personales, lo que incluye mantener absoluta confidencialidad sobre los datos y no divulgar los datos
+              personales ni la información que sea suministrada a lo largo del cumplimiento y ejecución del presente
+              acuerdo de prestación de servicios. En caso de que se presente un incidente de seguridad con los datos
+              personales deberá reportarlo de inmediato a la ERP. Al momento de la terminación del acuerdo de
+              voluntades, el PSS deberá devolver o destruir la información de las bases de datos personales de acuerdo
+              con las indicaciones de la ERP y proceder a gestionar jurídica y técnicamente el incidente para evaluar
+              los riesgos que este representa para los derechos de los titulares. <span
+                class="minuta_paragrafo">PARÁGRAFO SEGUNDO. DATOS PERSONALES DE LOS COLABORADORES DE LAS PARTES QUE
+                INTERVINEN EN LA EJECUCION DE ESTE CONTRATO.</span> Las partes entienden que para la debida
+              ejecución de este contrato y cumplimiento de las obligaciones que surgen para cada una de ellas es
+              necesario que se traten los datos personales de los colaboradores y personas físicas que intervienen con
+              tal propósito, lo que constituye un interés legítimo como fuente de legitimación del tratamiento de datos
+              de estas personas. Por tanto, las partes manifiestan que este tratamiento y la finalidad del mismo ha sido
+              informado a sus colaboradores quienes han consentido en el tratamiento de sus datos como parte de la
+              ejecución de sus funciones. En consecuencia, cada parte recibe los datos de los colaboradores de la otra
+              parte que sean estrictamente necesarios para el fin antes expuesto y se obligan a no darle un uso para una
+              finalidad distinta a la de que ejecución de este contrato. En el Anexo 18 de este acuerdo se precisan
+              obligaciones especiales de la PSS en esta materia. <span class="minuta_paragrafo">PARÁGRAFO TERCERO.
+                MECANISMO DE ENTREGA Y ACTUALIZACIÓN DE INFORMACIÓN.</span>
               EL PSS deberá reportar e informar mensualmente a la ERP las novedades en la actualización de los datos de
               identificación, dirección, contacto, etc, de los usuarios que identifique, mediante el mecanismo que las
-              partes adopten para la entrega y actualización de información. LAS PARTES pactan que recibirán
-              notificaciones en los correos electrónicos reportados en el presente acuerdo de voluntades.</div>
+              partes adopten para la entrega y actualización de información, en cumplimiento del principio de calidad
+              del dato que a ambas obliga. LAS PARTES pactan que recibirán notificaciones en los correos electrónicos
+              reportados en el presente acuerdo de voluntades.</div>
 
             <div class="minuta_clausula">Cláusula 35. Pólizas del contrato.</div>
-            <div class="minuta_texto">El PSS mantendrá vigente una Póliza de responsabilidad civil, contractual y
-              extracontractual médica para amparo a terceros por servicios derivados de la atención en salud, por un
-              valor asegurado que corresponda al 10% del presente contrato y que ampare el tiempo de ejecución de este,
-              quedando obligada a responder con recursos propios por la diferencia que pueda existir entre el valor
-              asegurado y el valor de las eventuales indemnizaciones derivadas del daño ocurrido. El PSS hará entrega de
-              la póliza a la ERP dentro de los tres (3) días siguientes a la suscripción del contrato. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> La aprobación de la póliza aportada será remitida por
-              parte de la ERP al PSS en los 5 días hábiles siguientes.<span class="minuta_paragrafo">PARÁGRAFO
+            <div class="minuta_texto">El PSS mantendrá vigente una Póliza de responsabilidad civil, contractual y extracontractual para
+              amparo a terceros por servicios derivados de la atención en salud, por un valor asegurado que corresponda
+              al 10% del presente contrato y que ampare el tiempo de ejecución de este, quedando obligada a responder
+              con recursos propios por la diferencia que pueda existir entre el valor asegurado y el valor de las
+              eventuales indemnizaciones derivadas del daño ocurrido. El PSS hará entrega de la póliza a la ERP dentro
+              de los tres (3) días siguientes a la suscripción del contrato. <span
+                class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> La aprobación de la póliza aportada será remitida por
+              parte de la ERP al PSS en los 5 días hábiles siguientes. <span class="minuta_paragrafo">PARÁGRAFO
                 SEGUNDO.</span> El PSS responderá por todos los daños patrimoniales y extrapatrimoniales que sean
               causados a los usuarios a su cargo en el nivel asistencial, así como también por toda reclamación
               administrativa y judicial que contra esta se llegare a presentar de forma directa o indirecta con ocasión
@@ -1490,7 +1580,8 @@
               servicios contratados, en todo caso, mantendrá indemne a la ERP, de cualquier reclamación proveniente de
               terceros que tenga como causa las actuaciones del PSS o del personal designado para el cumplimiento del
               Contrato. En el evento, de acciones jurídicas legales contra la ERP, se entenderá que el proceso no se
-              puede desarrollar sin la presencia procesal del PSS. <span class="minuta_paragrafo">PARÁGRAFO TERCERO. LLAMAMIENTO EN
+              puede desarrollar sin la presencia procesal del PSS. <span class="minuta_paragrafo">PARÁGRAFO TERCERO.
+                LLAMAMIENTO EN
                 GARANTÍA.</span> Salvo la responsabilidad inherente a cada parte con relación a las obligaciones
               contraídas en el presente contrato. La ERP no asumirá ninguna responsabilidad civil o penal derivada de la
               deficiencia o inadecuada prestación de los servicios objeto del contrato por parte de EL PSS, o del
@@ -1498,13 +1589,14 @@
               responsabilidades o indemnizaciones derivadas de tales eventos, llamará en garantía a EL PSS y, si es
               condenado repetirá contra EL PSS para el reembolso de las sumas que por tal motivo haya tenido que
               cancelar.</div>
+          </div>
 
-            <div class="minuta_clausula">Cláusula 36. No relación laboral.</div>
-            <div class="minuta_texto">Este contrato no constituye vínculo de trabajo entre la ERP y el PSS ni el
-              personal que el contrate para el desarrollo del acuerdo de voluntades. En consecuencia, la ERP sólo
-              responderá por los emolumentos pactados en el mismo. Son de su exclusiva responsabilidad los salarios,
-              prestaciones o cualquier otro pago similar que se cause o deba hacerse a las personas que emplee PSS para
-              el cumplimiento de sus obligaciones. </div>
+          <div class="minuta_clausula">Cláusula 36. No relación laboral.</div>
+          <div class="minuta_texto">Este contrato no constituye vínculo de trabajo entre la ERP y el PSS ni el
+            personal que el contrate para el desarrollo del acuerdo de voluntades. En consecuencia, la ERP sólo
+            responderá por los emolumentos pactados en el mismo. Son de su exclusiva responsabilidad los salarios,
+            prestaciones o cualquier otro pago similar que se cause o deba hacerse a las personas que emplee PSS para
+            el cumplimiento de sus obligaciones.
 
             <div class="minuta_clausula">Cláusula 37. Prohibiciones.</div>
             <div class="minuta_texto">Las modificaciones y las adiciones del presente contrato podrán elaborarse como
@@ -1528,7 +1620,8 @@
             <div class="minuta_texto">Las partes afirman bajo la gravedad del juramento que se entiende prestado con la
               suscripción de este contrato que no se encuentran incursos en Conflictos de tipo financieros, Conflictos
               que revelen favoritismo o nepotismo y Conflicto de Roles o funciones, que puedan contaminar la
-              suscripción, ejecución, terminación y liquidación del presente acuerdo de voluntades. <span class="minuta_paragrafo">PARÁGRAFO PRIMERO. INHABILIDADES E INCOMPATIBILIDADES.</span> Las partes
+              suscripción, ejecución, terminación y liquidación del presente acuerdo de voluntades. <span
+                class="minuta_paragrafo">PARÁGRAFO PRIMERO. INHABILIDADES E INCOMPATIBILIDADES.</span> Las partes
               afirman bajo la gravedad del juramento que se entiende prestando con la firma del presente contrato que no
               se hallan incursos en ninguna de las causales de inhabilidades e incompatibilidades descritas en el marco
               legal vigente. La violación a la norma jurídica citada es causal de terminación unilateral del presente
@@ -1538,7 +1631,7 @@
               del presente contrato y lo establecido en el objeto contractual. En caso de que el valor de presente
               contrato supere los topes presupuestales autorizados, deberá presentar los documentos o información
               adicional ante la ERP, que los habilite para obligarse con el valor contratado. la ERP</div>
-
+            <span class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span>
 
             <div class="minuta_clausula">Cláusula 40. Causales de suspensión</div>
             <div class="minuta_texto">Además de las causales de terminación previstas por la ley, el presente contrato
@@ -1590,13 +1683,17 @@
                   <td>Anexo 2. Glosario de términos</td>
                   <td class="text-center">SI</td>
                   <td>Anexo 12. Relación de GPC y protocolos de atención</td>
-                  <td class="text-center">SI</td>
+                  <td class="text-center">
+                    {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                 </tr>
                 <tr>
                   <td>Anexo 3. Modelo de atención de Cajacopi EPS</td>
                   <td class="text-center">SI</td>
-                  <td>Anexo 13. Link de Redes Integrales de Atención en Salud</td>
-                  <td class="text-center">SI</td>
+                  <td>Anexo 13. Enlace de Redes Integrales de Atención en Salud</td>
+                  <td class="text-center">
+                    {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                 </tr>
                 <tr>
                   <td>Anexo 4. Caracterización de la población afiliada</td>
@@ -1618,25 +1715,33 @@
                 </tr>
                 <tr>
                   <td>Anexo 7. Relación de sedes de atención y servicios</td>
-                  <td class="text-center">SI</td>
+                  <td class="text-center">
+                    {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                   <td>Anexo 17. Canales transaccionales y de contacto</td>
                   <td class="text-center">SI</td>
                 </tr>
                 <tr>
                   <td>Anexo 8. Capacidad instalada disponible</td>
-                  <td class="text-center">SI</td>
+                  <td class="text-center">
+                    {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                   <td>Anexo 18. Acuerdo de confidencialidad</td>
                   <td class="text-center">SI</td>
                 </tr>
                 <tr>
                   <td>Anexo 9. Indicadores de operación del acuerdo de voluntades</td>
-                  <td class="text-center">SI</td>
+                  <td class="text-center">
+                    {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                   <td>Anexo 19. Estimación poblacional para el contrato</td>
                   <td class="text-center">NO</td>
                 </tr>
                 <tr>
                   <td>Anexo 10. Formato de supervisión de los contratos</td>
-                  <td class="text-center">SI</td>
+                  <td class="text-center">
+                    {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
+                  </td>
                   <td>Anexo 20. Población objeto del contrato</td>
                   <td class="text-center">SI</td>
                 </tr>
@@ -1662,7 +1767,12 @@
               el descrito en la portada del presente contrato.</div>
 
             <div class="minuta_clausula">Cláusula 45. Perfeccionamiento del contrato.</div>
-            <div class="minuta_texto">El presente Contrato se considerará perfeccionado en el instante en que sea suscrito por las partes contratantes. Con el fin de agilizar y simplificar este procedimiento, se determina que el contrato también alcanzará su pleno perfeccionamiento y validez cuando los representantes legales de las personas jurídicas involucradas introduzcan una firma manuscrita, la cual puede ser una firma escaneada. Se establece de manera expresa que estas firmas electrónicas poseerán la misma fuerza legal y efectos jurídicos que una firma manuscrita tradicional."</div>
+            <div class="minuta_texto">El presente Contrato se considerará perfeccionado en el instante en que sea
+              suscrito por las partes contratantes. Con el fin de agilizar y simplificar este procedimiento, se
+              determina que el contrato también alcanzará su pleno perfeccionamiento y validez cuando los representantes
+              legales de las personas jurídicas involucradas introduzcan una firma manuscrita, la cual puede ser una
+              firma escaneada. Se establece de manera expresa que estas firmas electrónicas poseerán la misma fuerza
+              legal y efectos jurídicos que una firma manuscrita tradicional."</div>
 
             <div class="minuta_clausula">Cláusula 46. Efecto</div>
             <div class="minuta_texto">El presente acuerdo de voluntades deja sin efecto cualquier otro acuerdo de
@@ -1747,6 +1857,7 @@
       </tr>
     </tbody>
   </table>
+
   <!--  -->
   <!-- ANEXOS EPS NUEVA -->
   <table class="report-container" style="page-break-before:always">

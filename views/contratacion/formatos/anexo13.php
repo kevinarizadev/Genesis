@@ -211,9 +211,9 @@
             <div class="minuta_texto_1 mb">
 
             </div>
-            <div class="minuta_titulo mb">Anexo 13. Relación de RIAS asociadas al contrato</div>
+            <div class="minuta_titulo mb">Anexo 13. Enlace de RIAS asociadas al contrato</div>
 
-            <a href="https://cajacopieps-my.sharepoint.com/personal/maria_meza_cajacopieps_onmicrosoft_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fmaria_meza_cajacopieps_onmicrosoft_com%2FDocuments%2FRIAS%20REDES%20INTEGRALES%20DE%20ATENCION%20EN%20SALUD&ga=1"
+            <a href="https://cajacopieps-my.sharepoint.com/:f:/g/personal/maria_meza_cajacopieps_onmicrosoft_com/EsyLwaci8qJBhvR_OLwvTQ4BufaASExie7GACq0-gNEEkw?e=Pfacy7"
               target="_blank" rel="noopener noreferrer">RIAS REDES INTEGRALES DE ATENCION EN SALUD</a>
 
             <!-- tabla_estilo -->

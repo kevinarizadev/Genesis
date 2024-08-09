@@ -11,16 +11,18 @@ angular.module('GenesisApp')
         $scope.apiURL = 'http://172.52.11.25:5000/api';
 
         $scope.Rol_Cedula = sessionStorage.getItem('cedula');
-        $('.tabs').tabs();
-        $scope.Tabs = 1;
+        $scope.Tabs = 2;
+        // $('.tabs').tabs();
         $scope.SysDay = new Date();
         $scope.hoja1Limpiar();
         $scope.hoja2Limpiar();
         $scope.hoja3Limpiar();
 
-        $scope.obtenerListadoFacturas()
         $scope.obtenerListadoFuncs();
+        // $scope.obtenerListadoFacturas()
         $scope.obtenerListadoIPS();
+
+        // $scope.Hoja1.vista = 1;
 
         $('.modal').modal();
         setTimeout(() => {
@@ -33,7 +35,9 @@ angular.module('GenesisApp')
       }
       $scope.hoja1Limpiar = function () {
         $scope.Hoja1 = {
-          Filtro: '',
+          Filtro0: '',
+          Filtro1: '',
+          vista: 0,
           estado: false
         };
         $scope.List1 = {};
@@ -53,14 +57,15 @@ angular.module('GenesisApp')
             animation: false
           });
         $scope.List1.listadoFacturas = [];
+        $scope.Hoja1.vista = 0;
 
         // if (!x) swal.close();
         $http({
           method: 'POST',
           url: "php/cuentasmedicas/adminfacturasdigitales.php",
           data: {
-            function: 'P_OBTENER_FACTURAS_DIGITALES',
-            // cedula: $scope.Rol_Cedula,
+            function: 'P_OBTENER_ADMIN_FACTURAS_DIGITALES',
+            ips: '',
             estado: $scope.Hoja1.estado ? 'G' : 'A'
           }
         }).then(function ({ data }) {
@@ -72,6 +77,54 @@ angular.module('GenesisApp')
           console.log(data);
           setTimeout(() => { $scope.$apply(); }, 500);
         });
+      }
+
+      $scope.obtenerListadoFacturas_Detalle = function (x) {
+        // Recibe x para no mostrar swalLoading
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          showConfirmButton: false,
+          animation: false
+        });
+
+        $scope.List1.listadoFacturas_Detalle = [];
+        $scope.Hoja1.vista = 1;
+        // if (!x) swal.close();
+        $http({
+          method: 'POST',
+          url: "php/cuentasmedicas/adminfacturasdigitales.php",
+          data: {
+            function: 'P_OBTENER_ADMIN_FACTURAS_DIGITALES',
+            ips: x.PRESTADOR.split('-')[0],
+            estado: $scope.Hoja1.estado ? 'G' : 'A'
+          }
+        }).then(function ({ data }) {
+          swal.close();
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          $scope.List1.listadoFacturas_Detalle = data;
+          console.log(data);
+          setTimeout(() => { $scope.$apply(); }, 500);
+        });
+      }
+
+      $scope.getColor = function (x) {
+        if (x.DIAS_REST >= 12) {
+          return 'green'
+        }
+        if (x.DIAS_REST >= 6 & x.DIAS_REST <= 11) {
+          return 'orange'
+        }
+        if (x.DIAS_REST <= 5) {
+          return 'red'
+        }
+      }
+
+      $scope.Hoja1_atras = function () {
+        $scope.Hoja1.vista = 0;
+        setTimeout(() => { $scope.$apply(); }, 500);
       }
 
       $scope.verFacturaPDF = function (x) {
@@ -518,6 +571,9 @@ angular.module('GenesisApp')
 
       $scope.SetTab = function (x) {
         $scope.Tabs = x;
+        if (x == 1 && $scope.List1.listadoFacturas == undefined) {
+          $scope.obtenerListadoFacturas()
+        }
       }
 
       $scope.Ajustar_Pantalla = function () {

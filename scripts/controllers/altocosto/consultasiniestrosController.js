@@ -591,7 +591,7 @@ angular.module('GenesisApp')
             return new Promise(function (resolve) {
               resolve(
                 {
-                  soporte: $('#SporteProce').val(),
+                  soporte: $('#SoporteProces').val(),
                 }
               )
             })

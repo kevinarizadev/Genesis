@@ -77,7 +77,9 @@
                 <!-- <td>{{x.TIPC_NOMBRE}}</td> -->
                 <td>
                   <span class="status pendiente" ng-show="x.OSOV_ESTADO == 'A'">PENDIENTE</span>
-                  <span class="status gestionado" ng-show="x.OSOV_ESTADO == 'G'" title="En espera de aprobación">GESTIONADO</span>
+                  <span class="status devuelto" ng-show="x.OSOV_ESTADO == 'D'">DEVUELTO</span>
+                  <span class="status gestionado" ng-show="x.OSOV_ESTADO == 'G'"
+                    title="En espera de aprobación">GESTIONADO</span>
                   <span class="status completado" ng-show="x.OSOV_ESTADO == 'P'">LEGALIZADO</span>
                 </td>
                 <td>{{x.OSOF_FECHA_CARGUE_EPS}}</td>
@@ -92,8 +94,8 @@
                     ng-show="x.OSOV_ESTADO == 'A' || x.OSOV_ESTADO == 'P'"
                     ng-click="descargafile(x.OSOV_RUTA_SOPORTE)"></i> -->
 
-                  <i class="icon-comment-5 c-pointer" style="font-size: 1.5em;" title="Observacion EPS"
-                    ng-show="x.OSOV_OBSERVACION" ng-click="verObs(x.OSOV_OBSERVACION)"></i>
+                  <!-- <i class="icon-comment-5 c-pointer" style="font-size: 1.5em;" title="Observacion EPS"
+                    ng-show="x.OSOV_OBSERVACION" ng-click="verObs(x.OSOV_OBSERVACION)"></i> -->
                 </td>
                 <td>{{x.OCR_FECHA_REGISTRO}}</td>
               </tr>
@@ -106,11 +108,25 @@
             <div class="foot4 divcardcustom default-linear-gradient">
               <div class="text-al divcardcustom2">
                 <strong class="switch" style="font-weight:600">Soportes Anexados al contrato
-                  ({{tiposAdjuntoEnv.length}})</strong>
+                  ({{tiposAdjuntoEnv.length}})
+                  <i class="icon-docs-1 c-pointer" title="Ver devoluciones/respuestas" ng-click="modalRespuestas()"></i>
+                </strong>
               </div>
             </div>
-            <div class="col s12" style="max-height: 50vh;overflow-y: auto;">
-              <table class="table table-bordered table-striped">
+            <div class="col s12 m-t" style="max-height: 60vh;overflow-y: auto;">
+              <div class="col s12 no-padding label-new m-b m-t" style="margin-top: 2rem;margin-bottom: 5.5rem;"
+                ng-show="Hoja1.datos.DEVOLUCION_OBSERVACION != null && Hoja1.datos.DEVOLUCION_TIPO == 'E' && Hoja1.datos.OSOV_ESTADO != 'P'">
+                <textarea class="white input-text-new input-out-new w-100 margin m-l m-r"
+                  style="height: 100px;text-transform:uppercase;text-align: justify;"
+                  ng-model="Hoja1.datos.DEVOLUCION_OBSERVACION" readonly></textarea>
+                <label>Observación devolución <i class="icon-download c-pointer" title="Descargar Soporte"
+                    ng-show="Hoja1.datos.DEVOLUCION_SOPORTE"
+                    ng-click="descargafile(Hoja1.datos.DEVOLUCION_SOPORTE)"></i>
+                </label>
+              </div>
+
+
+              <table class="table table-bordered table-striped m-t">
                 <thead>
                   <tr>
                     <th>Soporte</th>
@@ -121,7 +137,8 @@
                   <tr ng-repeat="x in tiposAdjuntoEnv | orderBy : filterAdjuntoEnv">
                     <td>{{x.TIPC_NOMBRE}}</td>
                     <td class="center">
-                      <button class="btn btnVerSoporte default-color white" ng-if="(x.TIPC_IPS_ENTREGA == 'N' || Hoja1.datos.OSOV_ESTADO == 'G') && Hoja1.datos.OSOV_ESTADO != 'P'"
+                      <button class="btn btnVerSoporte default-color white"
+                        ng-if="(x.TIPC_IPS_ENTREGA == 'N' || Hoja1.datos.OSOV_ESTADO == 'G') && Hoja1.datos.OSOV_ESTADO != 'P'"
                         ng-click="descargafile(x.OSOV_RUTA_SOPORTE_IPS ? x.OSOV_RUTA_SOPORTE_IPS : x.OSOV_RUTA_SOPORTE_EPS)">
                         Ver soporte <i class="icon-download-1 c-pointer" style="font-size: 1.7em;"
                           title="Descargar"></i>
@@ -133,18 +150,18 @@
                           title="Descargar"></i>
                       </button>
 
-                      <i class="icon-download c-pointer" style="font-size: 1.7em;"
-                        title="Descargar Enviado Anterior" ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A' && x.OSOV_RUTA_SOPORTE_IPS && Hoja1.datos.OSOV_OBSERVACION"
+                      <i class="icon-download c-pointer" style="font-size: 1.7em;" title="Descargar Enviado Anterior"
+                        ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A' && x.OSOV_RUTA_SOPORTE_IPS && Hoja1.datos.OSOV_OBSERVACION"
                         ng-click="descargafile(x.OSOV_RUTA_SOPORTE_IPS)"></i>
 
-                      <i class="icon-download-1 c-pointer" style="font-size: 1.7em;"
-                        title="Descargar Para Firmar" ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A' && x.OSOV_RUTA_SOPORTE_EPS"
+                      <i class="icon-download-1 c-pointer" style="font-size: 1.7em;" title="Descargar Para Firmar"
+                        ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A' && x.OSOV_RUTA_SOPORTE_EPS"
                         ng-click="descargafile(x.OSOV_RUTA_SOPORTE_EPS)"></i>
 
                       <div class="file-upload-wrapper file-field input-field m-l" data-text="Cargar Archivo"
                         ng-show="x.TIPC_IPS_ENTREGA == 'S' && Hoja1.datos.OSOV_ESTADO == 'A'">
                         <input type="file" id="fileSoportesUnico_{{x.OSOV_TIPO_SOPORTE}}" class="fileSoportesUnico"
-                           title="Cargar Soporte">
+                          title="Cargar Soporte" accept=".pdf">
                         <i class="icon-check-1 green-text right" style="font-size: 1.3vw;" ng-show="x.soporteB64"></i>
                       </div>
                     </td>
@@ -153,15 +170,59 @@
               </table>
             </div>
             <div class="col s12 no-padding m-b center m-t" ng-show="Hoja1.datos.OSOV_ESTADO == 'A'">
-              <button class="btn btn-primary btnAgregar" type="button" ng-click="guardarAdjuntoEnviados()">
+              <a class="btn m-t modal-action red" ng-click="devolverAdjuntos()">Devolver</a>
+              <a class="btn m-t modal-action" ng-click="guardarAdjuntoEnviados()">Enviar Soportes</a>
+              <!-- <button class="btn btn-primary btnAgregar" type="button" ng-click="guardarAdjuntoEnviados()">
                 Enviar Soportes<i class="icon-docs-1"></i>
-              </button>
+              </button> -->
             </div>
             <!--  -->
           </div>
         </div>
 
       </div>
+      <!-- //-// -->
+
+      <div id="modal_Respuestas" class="modal" style="margin: 0 auto;max-height: 100%;width: 70%;top:0%;">
+        <div class="col s12 m12 l12 card margin no-padding">
+          <div class="ngdialog-close" style="font-size: 50px;position: absolute;z-index: 106;right: 0.5em;color: white;"
+            ng-click="closeModal()">
+          </div>
+          <div class="card-content default-linear-gradient border-radius-none white-text">
+            <h5><span class="margin" style="font-size: 1.64rem;">Gestiónes
+                ({{listadoRespuestas.length}})</span></h5>
+          </div>
+          <div class="card-action" id="card-action"
+            style="overflow: auto;display: inline-block;width: 100%;height: 100%;padding-bottom: 0;">
+            <!-- ELEGIR -->
+            <!-- //-// -->
+            <div class="col s12" ng-if="listadoRespuestas.length != 0">
+              <div style="max-height:70vh;overflow:auto;border: 2px solid;" class="default-color">
+                <table class="tablaListado highlight" style="width:100%;color: black;">
+                  <thead>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Observacion</th>
+                    <th>-</th>
+                  </thead>
+                  <tbody id="idpro">
+                    <tr ng-repeat="x in listadoRespuestas">
+                      <td>{{x.OSOF_FECHA_REGISTRO}}</td>
+                      <td>{{x.OSOV_TIPO}}</td>
+                      <td>{{x.OSOV_OBSERVACION}}</td>
+                      <td><i class="icon-download c-pointer" title="Descargar Soporte" ng-show="x.OSOV_RUTA_SOPORTE"
+                          ng-click="descargafile(x.OSOV_RUTA_SOPORTE)"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- //-// -->
+          </div>
+        </div>
+      </div>
+
+
       <!-- //-// -->
     </div>
 
@@ -176,6 +237,10 @@
     <style>
       .pendiente {
         background-color: #FFC107 !important;
+      }
+
+      .devuelto {
+        background-color: #ff2407 !important;
       }
 
       .gestionado {

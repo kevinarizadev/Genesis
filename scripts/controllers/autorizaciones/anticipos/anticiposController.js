@@ -664,6 +664,7 @@ angular.module('GenesisApp')
           Cotizacion3: '',
           Cotizacion3_RUT: '',
           Cotizacion4: '',
+          Soporte_PrestacionEfectiva: '',
         };
 
         for (var i = 0; i < document.querySelectorAll('.HojaAnt_Archivos').length; i++) {
@@ -2886,6 +2887,7 @@ angular.module('GenesisApp')
           $scope.HojaPer = null;
           $scope.H1Limpiar_Campos_Req('HojaAnt');
           $scope.HojaAnt_Botones_Pagaduria = false;
+          $scope.HojaAnt_Botones_Prestacion_Efectiva = false;
           $scope.Check_Advertencia = [];
           angular.forEach(document.querySelectorAll('.HojaAnt_Pert_Des .red-text'), function (i) {
             i.classList.remove('red-text');
@@ -3128,6 +3130,10 @@ angular.module('GenesisApp')
                     CopiaPagaduria_URL: null,
                     CopiaPagaduria_B64: '',
                     FechaPagoPagaduria: null,
+                    FechaPrestacionEfectiva: null,
+                    FechaPrestacionEfectiva_TEXTO: response.data[0].FechaPrestacionEfectiva,
+                    Soporte_PrestacionEfectiva_URL: null,
+                    Soporte_PrestacionEfectiva_B64: '',
 
                     CopiaHistoria_RUTA: response.data[0].CopiaHistoria_RUTA,
                     CopiaCedula_RUTA: response.data[0].CopiaCedula_RUTA,
@@ -3142,6 +3148,7 @@ angular.module('GenesisApp')
                     Cotizacion3_RUTA: response.data[0].Cotizacion3_RUTA,
                     Cotizacion3_RUT_RUTA: response.data[0].Cotizacion3_RUT_RUTA,
                     Cotizacion4_RUTA: response.data[0].Cotizacion4_RUTA,
+                    Soporte_PrestacionEfectiva_RUTA: response.data[0].Soporte_PrestacionEfectiva_RUTA,
                   },
                   Cotizacion_1:
                   {
@@ -3369,6 +3376,12 @@ angular.module('GenesisApp')
                     RUTA: response.data[0].CopiaPagaduria_RUTA,
                     URL: null,
                     POS: 13
+                  },
+                  {
+                    NOMBRE: 'Soporte de Prestación Efectiva',
+                    RUTA: response.data[0].Soporte_PrestacionEfectiva_RUTA,
+                    URL: null,
+                    POS: 13
                   }
                 ];
                 //
@@ -3508,6 +3521,10 @@ angular.module('GenesisApp')
                 // }
                 //console.log($scope.Ajuste_Mayo_D_S)
 
+                if (response.data[0].Status == 11 && $scope.Rol_Cargo == 286) {
+                  $scope.HojaAnt_Botones_Prestacion_Efectiva = true;
+                }
+
               } else {
                 swal({
                   title: '¡Ocurrio un error!',
@@ -3573,7 +3590,6 @@ angular.module('GenesisApp')
         if (X == 10 && $scope.Rol_Cargo == 6) {
           $scope.HojaAnt_Botones_Pagaduria = true;
         }
-
 
       }
 
@@ -5169,6 +5185,113 @@ angular.module('GenesisApp')
       }
 
 
+      $scope.Antes_H1Aprobar_Anticipo_PrestacionEfectiva = function () {
+        document.querySelector('#HojaAnt_FechaPrestacionEfectiva_Label').classList.remove('red-text');
+        document.querySelector('#HojaAnt_Soporte_PrestacionEfectiva_Label').classList.remove('red-text');
+
+        if (!$scope.HojaAnt.Soportes.FechaPrestacionEfectiva) { document.querySelector('#HojaAnt_FechaPrestacionEfectiva_Label').classList.add('red-text'); return false }
+        if (!$scope.HojaAnt.Soportes.Soporte_PrestacionEfectiva_B64) { document.querySelector('#HojaAnt_Soporte_PrestacionEfectiva_Label').classList.add('red-text'); return false }
+
+        swal({
+          title: "¿Está seguro que desea guardar la fecha y soportes este anticipo?",
+          type: "question",
+          showCancelButton: true,
+          allowOutsideClick: false
+        }).catch(swal.noop)
+          .then((willDelete) => {
+            if (willDelete) {
+              //
+              swal({ title: 'Cargando...', allowOutsideClick: false });
+              swal.showLoading();
+              //
+              var Subir_Soportes = [
+                $scope.Cargar_Soporte_FTPAnt('Soportes', 'Soporte_PrestacionEfectiva_B64', 'Soporte_PrestacionEfectiva', 'Soporte_PrestacionEfectiva_RUTA', ''),
+              ];
+              $q.all(Subir_Soportes).then(function (resultado2) {
+                var Archivos_Error = false;
+                for (var x = 0; x < resultado2.length; x++) {
+                  if ((resultado2[x] != null && resultado2[x].substr(0, 3) == '<br') || resultado2[x].substr(0, 1) == '0') {
+                    Archivos_Error = true;
+                    swal({
+                      title: '¡Error al subir un archivo!',
+                      text: 'Nota: Si el error persiste, por favor actualizar la página (CONTROL + F5).',
+                      type: 'warning'
+                    }).catch(swal.noop);
+                  }
+                }
+                if (Archivos_Error == false) {
+                  $scope.H1Aprobar_Anticipo_PrestacionEfectiva();
+                }
+              });
+            } else {
+            }
+          });
+      }
+
+      $scope.H1Aprobar_Anticipo_PrestacionEfectiva = function () {
+        var xdata = {
+          Afi_TipoDoc: $scope.HojaAnt.Afiliado.TipoDoc,
+          Afi_NumeroDoc: $scope.HojaAnt.Afiliado.NumeroDoc,
+          Ant_Ubicacion: $scope.HojaAnt.Info.Ubicacion_Cod,
+          Ant_Status: $scope.HojaAnt.Info.Status,
+          Func_Rol_Cedula: $scope.Rol_Cedula,
+          Soporte_Prestador: $scope.HojaAnt.Soportes.Soporte_PrestacionEfectiva_RUTA,
+          Fecha_Prestacion: $scope.formatDate($scope.HojaAnt.Soportes.FechaPrestacionEfectiva)
+        }
+        swal({ title: 'Cargando...', allowOutsideClick: false });
+        swal.showLoading();
+        $http({
+          method: 'POST',
+          url: "php/autorizaciones/anticipos/anticipos.php",
+          data: {
+            function: 'P_APROBAR_ANTICIPO_PRESTACION_EFECTIVA',
+            Numero: $scope.HojaAnt.Info.Consecutivo.toString(),
+            xdata: JSON.stringify(xdata)
+          }
+        }).then(function (response) {
+          if (response.data.codigo != undefined) {
+            if (response.data.codigo == 1) {
+              swal({
+                title: "Mensaje",
+                text: response.data.mensaje,
+                type: "warning",
+              }).catch(swal.noop);
+            } else {
+              $timeout(function () {
+                $scope.HojaAnticipo = false;
+              }, 1000);
+              $timeout(function () {
+                $scope.Listar_Solicitudes();
+              }, 1500);
+              $scope.Ver_Anticipo_DeNuevo = {
+                CONSECUTIVO: response.data.CONSECUTIVO,
+                TIPO_DOC_AFI: response.data.TIPO_DOC_AFI,
+                DOC_AFI: response.data.DOC_AFI
+              };
+              swal({
+                title: response.data.mensaje,
+                text: "¿Desea ver el anticipo?",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonText: "Si",
+                cancelButtonText: "No",
+                allowOutsideClick: false
+              }).then(function (result) {
+                if (result) {
+                  $scope.Cargar_Anticipo($scope.Ver_Anticipo_DeNuevo);
+                  $scope.SetTab(1);
+                  $timeout(
+                    function () {
+                      $("#Sol").click();
+                    }, 500
+                  );
+                }
+              }).catch(swal.noop);
+            }
+          }
+        })
+      }
+
       $scope.desvincularAuts = function () {
 
         if ($scope.HojaAnt.Servicio.Array.some((element) => element.ESTADO_AUT == 'PROCESADA')) {
@@ -5593,8 +5716,10 @@ angular.module('GenesisApp')
               const fecha = ($scope.HojaAnt.Info.Fecha_Solicitud.substr(0, 10)).split('/')
               const xfecha = new Date(`${fecha[2]}/${fecha[1]}/${fecha[0]}`);
               const fechaNew = new Date("2023/11/1")
-
-              if (xfecha >= fechaNew) {
+              const fechaNew_v3 = new Date("2023/07/22")
+              if (xfecha >= fechaNew_v3) {
+                $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo_v3.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
+              } else if (xfecha >= fechaNew) {
                 $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo_v2.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
               } else {
                 $window.open('views/autorizaciones/anticipos/formatosolicitudanticipo.php?numero=' + Consecutivo + '&tipo=' + TipoDoc + '&doc=' + NumeroDoc, '_blank', "width=1080,height=1100");
@@ -5898,6 +6023,11 @@ angular.module('GenesisApp')
                             document.querySelector('#Iframe_Pag').style.width = (document.querySelector('#AdjustSop_Pag').offsetWidth - 6) + 'px';
                             $scope.$apply();
                           }, 200);
+                        } else if (SCOPE == 'Soporte_PrestacionEfectiva_URL') {
+                          $timeout(function () {
+                            document.querySelector('#Iframe_Prest_Efec').style.width = (document.querySelector('#AdjustSop_Prest_Efec').offsetWidth - 6) + 'px';
+                            $scope.$apply();
+                          }, 200);
                         } else {
                           $timeout(function () {
                             angular.forEach(document.querySelectorAll('.Iframe'), function (i) {
@@ -6129,6 +6259,9 @@ angular.module('GenesisApp')
         if (n.toString() == '11') {
           return "Asistente Nacional De Autorizaciones"
         }
+        if (n.toString() == '12') {
+          return "Prestacion Efectiva"
+        }
       }
 
       $scope.HojaAnt_Estado_Sol = function (n) {
@@ -6168,7 +6301,7 @@ angular.module('GenesisApp')
 
         if (estado == 'P') {
           $('.steps').removeClass('active');
-          for (let i = 1; i <= 10; i++) {
+          for (let i = 1; i <= 11; i++) {
             $("#paso" + i).addClass('active');
           }
         } else {
@@ -7182,4 +7315,3 @@ angular.module('GenesisApp')
       }
     }
   });
-// #region fin

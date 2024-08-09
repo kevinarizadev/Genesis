@@ -12,6 +12,7 @@ if (!isset($_SESSION['nombre'])) {
     <meta http-equiv="Last-Modified" content="0">
     <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
     <meta http-equiv="Pragma" content="no-cache">
+    <meta name="google" content="notranslate">
     <!-- Hotjar Tracking Code for https://cajacopieps.com/genesis/ -->
     <script>
       (function(h,o,t,j,a,r){

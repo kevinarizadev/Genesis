@@ -7,8 +7,10 @@ angular.module('GenesisApp')
         console.log($(window).width());
         document.querySelector("#content").style.backgroundColor = "white";
         $scope.Ajustar_Pantalla();
+        $('.modal').modal();
 
         $scope.Rol_Nit = sessionStorage.getItem('nit');
+        $scope.Rol_Cedula = sessionStorage.getItem('cedula');
         $scope.SysDay = new Date();
         $scope.Hoja1Limpiar();
 
@@ -49,7 +51,7 @@ angular.module('GenesisApp')
         });
       }
 
-      $scope.seleccionarContrato = function (x, index) {
+      $scope.seleccionarContrato = function (x) {
         $scope.itemSeleccionado = x.OSOV_NUMERO + '_' + x.OSON_RENGLON;
         $scope.Hoja1.datos = x;
         $scope.tiposAdjuntoEnv = []
@@ -191,7 +193,8 @@ angular.module('GenesisApp')
                         tipo_soporte: e.OSOV_TIPO_SOPORTE,
                         ruta_soporte: e.ruta ? e.ruta : e.OSOV_RUTA_SOPORTE_EPS,
 
-                        opcion: 'I'
+                        opcion: 'A',
+                        tipo: 'I'
                       })
                     });
                     console.table(data);
@@ -234,8 +237,6 @@ angular.module('GenesisApp')
           }
         })
 
-
-
       }
 
       $scope.cargarSoporte = function (index) {
@@ -265,6 +266,188 @@ angular.module('GenesisApp')
       }
 
 
+
+
+
+      $scope.devolverAdjuntos = function () {
+        $scope.soporteDevolucion = {
+          observacion: '',
+          soporteExt: '',
+          soporteB64: ''
+        }
+        swal({
+          title: 'Devolución de soportes',
+          html: `
+          <div class="col s12 no-padding label-new m-b m-t" style="margin-top: 2rem;margin-bottom: 5.5rem;">
+            <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="4000"
+              style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
+              placeholder="Observación" id="observacionDevolucion"></textarea>
+          </div>
+          <div class="col s12 m12 l12 m-b" style="margin-bottom: 1.5rem;">
+            <div class="col s6 no-padding label-new m-b" id="AdjustSop">
+              <div class="file-field input-field gray-input m-l input-file-radiu input-file-radius-opcional"
+                style="margin: 0;width: -webkit-fill-available;">
+                <div class="right">
+                  <span class="black-text"><i class="icon-folder-open-1 default-color"
+                    style="line-height: 2rem;"></i></span>
+                    <input type="file" id="SoporteProces" ng-change="loadFile()">
+                </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path Soport" type="text" placeholder="Adjunte un archivo (PDF)"
+                    readonly style="border-radius: 0;height: 2rem;border-bottom: 0;"
+                    ng-change="loadFile()">
+                </div>
+              </div>
+            </div>
+          </div>
+                `,
+
+          width: '500px',
+          showCancelButton: true,
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
+
+          preConfirm: function () {
+            return new Promise(function (resolve) {
+              resolve(
+                {
+                  observacion: $('#observacionDevolucion').val(),
+                  soporte: $('#SoporteProces').val(),
+                }
+              )
+            })
+          }
+        }).then(function (result) {
+          if (!result.observacion) {
+            swal("info", '¡La observacion no puede ir vacia!', "warning").catch(swal.noop); return
+          }
+          console.log(result)
+          $scope.soporteDevolucion.observacion = result.observacion
+          $scope.soporteDevolucion.soporte = document.querySelector('#SoporteProces')
+          //
+          swal({
+            title: 'Confirmar',
+            text: '¿Seguro que desea devolver los soportes?',
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar'
+          }).then((result) => {
+            if (result) {
+              swal({
+                html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                width: 200,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                animation: false
+              });
+              $scope.loadFileDevolucion()
+            }
+          })
+          //
+        })
+      }
+
+      $scope.loadFileDevolucion = function () {
+        $scope.soporteDevolucion.soporteB64 = '';
+        var fileInput = $scope.soporteDevolucion.soporte;
+
+        if (fileInput.files.length == 0) {
+          $scope.subirFTPDevolucion();
+          return;
+        }
+        var x = fileInput.files[0].name.split('.'), ext = x[x.length - 1].toUpperCase();
+
+        if (fileInput.files[0].size < 10485760 && fileInput.files[0].size > 0) {
+          if (ext == 'PDF') {
+            $scope.getBase64(fileInput.files[0]).then(function (result) {
+              $scope.soporteDevolucion.soporteB64 = result;
+              $scope.soporteDevolucion.soporteExt = ext.toLowerCase();
+              //
+              $scope.subirFTPDevolucion();
+              //
+            });
+          } else {
+            swal('Advertencia', '¡El archivo seleccionado deber ser formato PDF!', 'info');
+            $scope.soporteDevolucion.soporteB64 = '';
+          }
+        } else {
+          swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (10MB)!', 'info');
+          $scope.soporteDevolucion.soporteB64 = '';
+        }
+      }
+
+      $scope.subirFTPDevolucion = function () {
+        if ($scope.soporteDevolucion.soporteB64 == '') {
+          $scope.guardarDevolucion('');
+        }
+
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: "cargarSoporteAdjuntoEnv",
+            carpeta: `${$scope.Hoja1.datos.OSOC_DOCUMENTO}_${$scope.Hoja1.datos.OSOV_NUMERO}_${$scope.Hoja1.datos.OSON_UBICACION}`,
+            name: 'Devolucion_IPS',
+            base64: $scope.soporteDevolucion.soporteB64,
+            ext: $scope.soporteDevolucion.soporteExt
+          }
+        }).then(function ({ data }) {
+          if (data.substr(0, 1) != '0') {
+            $scope.guardarDevolucion(data);
+          } else {
+            swal('Advertencia', '¡Ocurrio un error, Intente nuevamente!', 'info');
+          }
+        });
+      }
+
+      $scope.guardarDevolucion = function (ruta) {
+
+        const datos = [
+          {
+            documento: $scope.Hoja1.datos.OSOC_DOCUMENTO,
+            numero: $scope.Hoja1.datos.OSOV_NUMERO,
+            ubicacion: $scope.Hoja1.datos.OSON_UBICACION,
+            tercero: $scope.Hoja1.datos.OSON_TERCERO,
+            renglon: $scope.Hoja1.datos.OSON_RENGLON,
+
+            ruta_soporte: ruta,
+
+            observacion: $scope.soporteDevolucion.observacion,
+            responsable: $scope.Rol_Cedula,
+            opcion: 'D',
+            tipo: 'I'
+          }
+        ]
+
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: 'P_U_SOPORTE_CONTRATO',
+            datos: JSON.stringify(datos),
+            cantidad: 1
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.codigo == 0) {
+            swal("Mensaje", data.nombre, "success").catch(swal.noop);
+            setTimeout(() => {
+              $scope.obtenerListado(1);
+            }, 2500);
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+          if (data.codigo == 1) {
+            swal("Mensaje", data.nombre, "warning").catch(swal.noop);
+          }
+        })
+      }
+
+
       $scope.verObs = function (text) {
         swal({
           title: 'Observación de devolución',
@@ -281,7 +464,49 @@ angular.module('GenesisApp')
         document.querySelector('.swal2-textarea').style.height = '300px';
       }
 
+      $scope.modalRespuestas = function () {
+        $scope.listadoRespuestas = []
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: 'P_LISTA_DEVOLUCIONES_RESPUESTAS',
+            nit: $scope.Rol_Nit,
+            renglon: $scope.Hoja1.datos.OSON_RENGLON
+          }
+        }).then(function ({ data }) {
+          swal.close()
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.length > 0) {
+            $scope.openModal('modal_Respuestas');
+            $scope.listadoRespuestas = data;
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+        })
+
+        setTimeout(() => { $scope.$apply(); }, 500);
+      }
+
       $scope.descargafile = function (ruta) {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
+
         $http({
           method: 'POST',
           url: "php/juridica/tutelas/functutelas.php",
@@ -290,7 +515,7 @@ angular.module('GenesisApp')
             ruta: ruta
           }
         }).then(function (response) {
-          //window.open("https://www.cajacopieps.com/genesis/temp/"+response.data);
+          swal.close()
           window.open("temp/" + response.data);
         });
       }
@@ -326,6 +551,13 @@ angular.module('GenesisApp')
         } else {
           return "0"
         }
+      }
+      $scope.openModal = function (modal) {
+        $(`#${modal}`).modal('open');
+        setTimeout(() => { document.querySelector(`#${modal}`).style.top = 1 + '%'; }, 600);
+      }
+      $scope.closeModal = function () {
+        $(".modal").modal("close");
       }
 
       $scope.Ajustar_Pantalla = function () {

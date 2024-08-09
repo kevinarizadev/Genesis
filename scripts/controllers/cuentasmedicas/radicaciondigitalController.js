@@ -68,7 +68,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
     }
     $scope.verFacturas = function (x) {
 
-      const fecha_proceso = new Date((x.FECHA_PROCESO.split('/')[2]).concat("/", x.FECHA_PROCESO.split('/')[1], "/", x.FECHA_PROCESO.split('/')[0]));
+      const fecha_fin = new Date((x.FECHA_FIN.split('/')[2]).concat("/", x.FECHA_FIN.split('/')[1], "/", x.FECHA_FIN.split('/')[0]));
       $scope.datosRips = {
         nit: x.NIT,
         codigoProceso: x.CODIGO_PROCESO,
@@ -82,27 +82,28 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         totalFacturas: 0,
         regimen: x.REGIMEN,
         tipoContrato: x.TIPO_CONTRATO,
-        fechaProceso: fecha_proceso,
+        fechaFin: fecha_fin,
         rutaRips: x.RUTA_RIPS,
 
         soporteB64: '',
         archivo: '',
+        cantidadArchivos: 0
 
 
       };
 
 
-      if ($scope.datosRips.estadoFacturas == 'X' || $scope.datosRips.estadoFacturas == 'A') {
+      if ($scope.datosRips.estadoFacturas == 'X') {
         $scope.verFacturasEstadoApi()
       }
 
       setTimeout(() => {
-        $scope.verFacturasListar()
+        $scope.verFacturasListar(x)
       }, 1000);
 
     }
 
-    $scope.verFacturasListar = function () {
+    $scope.verFacturasListar = function (rep) {
       $scope.listaFacturas = [];
       $scope.filtroFacturas = '';
       $scope.Vista = 1; // quitar
@@ -160,11 +161,11 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
 
           setTimeout(() => {
             if ($scope.contadoresFacturas.error > 0) {
-
+              $scope.datosRips.estadoFacturas = 'X';
               $scope.contFacturasUnicaCargadas = 0;
               $scope.cargarFileFacturasUnica()
             }
-            if (validadoSinId > 0) { //Validamos que no existan facturas en estado V y sin ID asignado
+            if ($scope.datosRips.estadoFacturas != 'X' && rep && (validadoSinId > 0 || $scope.contadoresFacturas.error > 0)) { //Validamos que no existan facturas en estado V y sin ID asignado
               $scope.verFacturasEstadoApi()
               setTimeout(() => {
                 $scope.verFacturasListar()
@@ -203,7 +204,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
             data: data.result
           }).then(function ({ data }) {
             if (data.estado != $scope.datosRips.estadoFacturas) {
-
+              $scope.cargarRips()
             }
           })
 
@@ -222,11 +223,12 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
     $scope.cargarFacturasTotal = function () {
 
       var facturas = []
-
+      debugger
       $scope.listaFacturas.forEach(e => {
-        facturas.push({
-          codigo_factura: e.CODIGO_FACTURA, tipo_afiliado: e.AFILIADO_TIPO_DOC, documento_afiliado: e.AFILIADO_NUMERO, codigo_autorizacion: e.AFILIADO_AUTORIZACION, valor_total: e.VALOR_FACTURA
-        })
+        if (e.OCR_ESTADO_FACTURA == null || e.OCR_ESTADO_FACTURA == 'X')
+          facturas.push({
+            codigo_factura: e.CODIGO_FACTURA, tipo_afiliado: e.AFILIADO_TIPO_DOC, documento_afiliado: e.AFILIADO_NUMERO, codigo_autorizacion: e.AFILIADO_AUTORIZACION, valor_total: e.VALOR_FACTURA
+          })
       });
 
       swal({
@@ -238,9 +240,13 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         animation: false
       });
 
-
       var form = new FormData();
-      form.append("file", document.querySelector('#fileFacturasZip').files[0]);
+      // form.append("file", document.querySelector('#fileFacturasZip').files[0]);
+      // form.append("file", document.querySelector('#fileFacturasZip').files);
+      var files = document.querySelector('#fileFacturasZip').files;
+      for (let i = 0; i < files.length; i++) {
+        form.append('file', files[i]);
+      }
       form.append("rips", $scope.datosRips.codigoRecibo);
       form.append("partner_id", $scope.Rol_Nit);
       form.append("rips_data", JSON.stringify(facturas));
@@ -405,11 +411,13 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       $scope.datosRips.soporteB64 = "";
       setTimeout(() => { $scope.$apply(); }, 500);
       var files = e.target.files;
+      $scope.datosRips.cantidadArchivos = 0;
       if (files.length != 0) {
+        $scope.datosRips.cantidadArchivos = files.length;
         for (let i = 0; i < files.length; i++) {
           const x = files[i].name.split('.');
           if (x[x.length - 1].toUpperCase() == 'ZIP') {
-            if (files[i].size < 55485760 && files[i].size > 0) {
+            if (files[i].size < 100485760 && files[i].size > 0) {
               $scope.datosRips.soporteB64 = files[i].name;
               // $scope.getBase64(files[i]).then(function (result) {
               //   $scope.datosRips.soporteExt = x[x.length - 1].toLowerCase();
@@ -418,10 +426,12 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
               //   setTimeout(function () { $scope.$apply(); }, 300);
               // });
             } else {
+              $scope.datosRips.cantidadArchivos = 0;
               document.querySelector('#fileFacturasZip').value = '';
               swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (55MB)!', 'info');
             }
           } else {
+            $scope.datosRips.cantidadArchivos = 0;
             document.querySelector('#fileFacturasZip').value = '';
             swal('Advertencia', '¡El archivo seleccionado debe ser .ZIP!', 'info');
           }
@@ -442,18 +452,18 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
         if (files.length != 0) {
           for (let i = 0; i < files.length; i++) {
             const x = files[i].name.split('.');
-            if (x[x.length - 1].toUpperCase() == 'PDF') {
-              if (files[i].size < 10485760 && files[i].size > 0) {
+            if (x[x.length - 1].toUpperCase() == 'ZIP') {
+              if (files[i].size < 50485760 && files[i].size > 0) {
                 $scope.listaFacturas[index].soporteB64 = files[i].name;
                 $scope.contFacturasUnicaCargadas++
                 setTimeout(() => { $scope.$apply(); }, 500);
               } else {
                 e.target.value = '';
-                swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (10MB)!', 'info');
+                swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (50MB)!', 'info');
               }
             } else {
               e.target.value = '';
-              swal('Advertencia', '¡El archivo seleccionado debe ser .PDF!', 'info');
+              swal('Advertencia', '¡El archivo seleccionado debe ser .ZIP!', 'info');
             }
           }
         }
@@ -500,15 +510,21 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
             $scope.listaFacturas.forEach((e, index) => {
               if (e.soporteB64) {
 
-                const medical_account = e.OCR_ID_FACTURA == null ? '' : e.OCR_ID_FACTURA
+                console.log(e);
+
+
+                const facturas = [{
+                  codigo_factura: e.CODIGO_FACTURA, tipo_afiliado: e.AFILIADO_TIPO_DOC, documento_afiliado: e.AFILIADO_NUMERO, codigo_autorizacion: e.AFILIADO_AUTORIZACION, valor_total: e.VALOR_FACTURA
+                }]
+
                 var form = new FormData();
                 form.append("file", document.querySelectorAll('.fileFacturasUnica')[index].files[0]);
                 form.append("rips", $scope.datosRips.codigoRecibo);
                 form.append("partner_id", $scope.Rol_Nit);
-                form.append("medical_account", medical_account);
+                form.append("rips_data", JSON.stringify(facturas));
 
                 var settings = {
-                  "url": `${$scope.apiURL}/upload_single_file`,
+                  "url": `${$scope.apiURL}/upload_rips_files_zip`,
                   "method": "POST",
                   "timeout": 0,
                   "headers": {
@@ -519,7 +535,7 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
                   "contentType": false,
                   "data": form
                 };
-                promesas.push($scope.guardarFacturaUnica(settings, e));
+                promesas.push($scope.guardarFacturaUnica(settings, facturas));
               }
             })
 
@@ -580,16 +596,15 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
           // console.log(response);
           if (JSON.parse(response).status == "success") {
             //Guardar estado en BD
-            factura.medical_account = JSON.parse(response).medical_account
 
             $http({
               method: 'POST',
               url: "php/cuentasmedicas/radicaciondigital.php",
               data: {
-                function: "P_ACTUALIZA_ESTADO_VAL_UNICAS",
+                function: "P_ACTUALIZA_ESTADO_VAL",
                 nit: $scope.Rol_Nit,
                 recibo: $scope.datosRips.codigoRecibo,
-                factura: JSON.stringify(factura),
+                facturas: JSON.stringify(factura),
                 cantidad: 1
               }
             }).then(function ({ data }) {
@@ -612,6 +627,44 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       })
       return promise
     }
+    // $scope.guardarFacturaUnica = function (settings, factura) {
+    //   const promise = new Promise(function (resolve) {
+    //     $.ajax(settings).done(function (response) {
+    //       // console.log(response);
+    //       if (JSON.parse(response).status == "success") {
+    //         //Guardar estado en BD
+    //         factura.medical_account = JSON.parse(response).medical_account
+
+    //         $http({
+    //           method: 'POST',
+    //           url: "php/cuentasmedicas/radicaciondigital.php",
+    //           data: {
+    //             function: "P_ACTUALIZA_ESTADO_VAL_UNICAS",
+    //             nit: $scope.Rol_Nit,
+    //             recibo: $scope.datosRips.codigoRecibo,
+    //             factura: JSON.stringify(factura),
+    //             cantidad: 1
+    //           }
+    //         }).then(function ({ data }) {
+    //           if (data.toString().substr(0, 3) == '<br' || data == 0) {
+    //             resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+    //           }
+    //           if (data.codigo == 0) {
+    //             resolve(true)
+    //           }
+    //           if (data.codigo == 1) {
+    //             resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+    //           }
+    //         })
+    //       } else {
+    //         resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+    //       }
+    //     }).fail(function (data) {
+    //       resolve(`{"status":false,"CODIGO_FACTURA":"${factura.CODIGO_FACTURA}"}`)
+    //     });
+    //   })
+    //   return promise
+    // }
 
 
     $scope.imprimir = function () {
@@ -627,9 +680,28 @@ angular.module('GenesisApp').controller('radicaciondigitalController', ['$scope'
       });
     }
 
-
-
-
+    $scope.getNameFactura = function (factura) {
+      const facturas = {
+        FAC: "Factura de venta en salud",
+        HEV: "Resumen de atención u hoja de evolución",
+        EPI: "Epicrisis",
+        PDX: "Resultado de los procedimientos de apoyó diagnóstico",
+        DQX: "Descripción quirúrgica",
+        RAN: "Registro de anestesia",
+        CRC: "Comprobante de recibido del usuario",
+        TAP: "Traslado asistencial de pacientes",
+        TNA: "Transporte no asistencial ambulatorio de la persona",
+        FAT: "Factura de venta por el aseguradora SOAT, la ADRES o la entidad que haga sus veces",
+        FMO: "Factura de venta del material de osteosíntesis expedida por el proveedor",
+        OPF: "Orden o prescripción facultativa",
+        LPD: "Lista de precios",
+        HAU: "Hoja de atención de urgencia",
+        HAO: "Hoja de atención odontológica",
+        HAM: "Hoja de administración de medicamentos",
+        PDE: "Evidencia del envio del trámite respectivo"
+      }
+      return facturas[factura] || 'Otros documentos'
+    }
 
     $scope.getColorEstado = function (estado) {
       const dato = {

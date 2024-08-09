@@ -495,6 +495,14 @@
                   Decreto 441 de 2022
                 </td>
               </tr>
+              <tr>
+                <td>
+                  Se establecen los procedimientos y aspectos técnicos para la ejecución, seguimiento y ajuste a los acuerdos de voluntades y se dictan otras disposiciones
+                </td>
+                <td>
+                  Resolución 2335 de 2023
+                </td>
+              </tr>
 
 
 

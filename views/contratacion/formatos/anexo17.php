@@ -213,11 +213,11 @@
             </div>
             <div class="minuta_titulo mb">Anexo 17. Canales transaccionales y de contacto</div>
 
-            <div class="minuta_titulo">CONTACTO DEL ÁREA DE SERVICIOS DE SALUD</div>
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div>
+            <div class="minuta_anexo_subtitulo ml_1 mb">CONTACTOS DE LA ERP</div>
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE SERVICIOS DE SALUD</div>
 
             <!-- tabla_estilo -->
-            <table class="table_con w100">
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -225,18 +225,20 @@
                 <td class="tabla_estilo w10">TELÉFONO</td>
               </tr>
               <tr>
-                <td>DIDIER ESTHER NAVAS ALTAHONA</td>
+                <td>INGRID LILIANA LESSER INSIGNARES</td>
                 <td>SUBGERENTE
                   NACIONAL DE SALUD</td>
-                <td>didier.navas@cajacopieps.com</td>
-                <td>3185930
-                  Ext 206</td>
+                <td>ingrid.lesser@cajacopieps.com</td>
+                <td>3185930</td>
               </tr>
             </table>
 
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div>
+            <!-- <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div> -->
 
-            <table class="table_con w100">
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE SIAU</div>
+            <!-- <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div> -->
+
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -244,61 +246,19 @@
                 <td class="tabla_estilo w10">TELÉFONO</td>
               </tr>
               <tr>
-                <td>
-                  <br>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>INGRID LILIANA LESSER INSIGNARES</td>
+                <td>SUBGERENTE
+                  NACIONAL DE SALUD</td>
+                <td>ingrid.lesser@cajacopieps.com</td>
+                <td>3185930</td>
               </tr>
             </table>
 
-            <div class="minuta_titulo">CONTACTO DEL ÁREA DE SIAU</div>
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div>
 
-            <table class="table_con w100">
-              <tr>
-                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
-                <td class="tabla_estilo w20">CARGO</td>
-                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
-                <td class="tabla_estilo w10">TELÉFONO</td>
-              </tr>
-              <tr>
-                <td>CARLOS ALBERTO ROMERO ARIZA</td>
-                <td>SUBGERENTE NACIONAL DE ATENCIÓN AL USUARIO</td>
-                <td>carlos.romero@cajacopieps.com</td>
-                <td>3245047335</td>
-              </tr>
-              <tr>
-                <td>CLAUDIA MILENA LAMPREA TRIANA</td>
-                <td>COORDINADOR NACIONAL DE INFORMACIÓN A USUARIOS Y
-                  PARTICIPACIÓN SOCIAL</td>
-                <td>claudia.lamprea@cajacopieps.com</td>
-                <td>3164250914</td>
-              </tr>
-            </table>
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE ADMINISTRATIVA</div>
+            <!-- <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div> -->
 
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div>
-
-            <table class="table_con w100">
-              <tr>
-                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
-                <td class="tabla_estilo w20">CARGO</td>
-                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
-                <td class="tabla_estilo w10">TELÉFONO</td>
-              </tr>
-              <tr>
-                <td><br></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </table>
-
-            <div class="minuta_titulo">CONTACTO DEL ÁREA DE ADMINISTRATIVA</div>
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div>
-
-            <table class="table_con w100">
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -313,25 +273,10 @@
               </tr>
             </table>
 
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div>
-            <table class="table_con w100">
-              <tr>
-                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
-                <td class="tabla_estilo w20">CARGO</td>
-                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
-                <td class="tabla_estilo w10">TELÉFONO</td>
-              </tr>
-              <tr>
-                <td><br></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </table>
 
-            <div class="minuta_titulo">CONTACTO DEL ÁREA FINANCIERA</div>
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div>
-            <table class="table_con w100">
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA FINANCIERA</div>
+            <!-- <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div> -->
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -347,25 +292,11 @@
               </tr>
             </table>
 
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div>
-            <table class="table_con w100">
-              <tr>
-                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
-                <td class="tabla_estilo w20">CARGO</td>
-                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
-                <td class="tabla_estilo w10">TELÉFONO</td>
-              </tr>
-              <tr>
-                <td><br></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </table>
 
-            <div class="minuta_titulo">CONTACTO DEL ÁREA DE CALIDAD</div>
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div>
-            <table class="table_con w100">
+
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE CALIDAD</div>
+            <!-- <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div> -->
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -380,25 +311,11 @@
               </tr>
             </table>
 
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div>
-            <table class="table_con w100">
-              <tr>
-                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
-                <td class="tabla_estilo w20">CARGO</td>
-                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
-                <td class="tabla_estilo w10">TELÉFONO</td>
-              </tr>
-              <tr>
-                <td><br></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </table>
 
-            <div class="minuta_titulo">CONTACTO DEL ÁREA DE AUDITORÍA</div>
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div>
-            <table class="table_con w100">
+
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE AUDITORÍA</div>
+            <!-- <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div> -->
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -414,8 +331,30 @@
               </tr>
             </table>
 
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div>
-            <table class="table_con w100">
+
+
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE AUDITORÍA</div>
+            <!-- <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div> -->
+            <table class="table_con w100 mb">
+              <tr>
+                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
+                <td class="tabla_estilo w20">CARGO</td>
+                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
+                <td class="tabla_estilo w10">TELÉFONO</td>
+              </tr>
+              <tr>
+                <td>JOHANNA PAOLA ARIZA FABIAN</td>
+                <td>ESPECIALISTA	NACIONAL	DE AUTORIZACIONES</td>
+                <td>autorizaciones8@cajacopieps.co</td>
+                <td>3176460974</td>
+              </tr>
+            </table>
+
+
+            <br>
+            <div class="minuta_anexo_subtitulo ml_1 mb">CONTACTOS DE LA PSS</div>
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE SERVICIOS DE SALUD</div>
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -430,9 +369,8 @@
               </tr>
             </table>
 
-            <div class="minuta_titulo">CONTACTO DEL ÁREA DE AUDITORÍA</div>
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA ERP</div>
-            <table class="table_con w100">
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE SIAU</div>
+            <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
                 <td class="tabla_estilo w20">CARGO</td>
@@ -440,15 +378,78 @@
                 <td class="tabla_estilo w10">TELÉFONO</td>
               </tr>
               <tr>
-                <td>BERENA BALLESTEROS CABRALES</td>
-                <td>COORDINADOR
-                  NACIONAL DE AUTORIZACIONES</td>
-                <td>berena.ballesteros@cajacopieps.com</td>
-                <td>3185161566</td>
+                <td><br></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
             </table>
 
-            <div class="minuta_anexo_subtitulo ml_1">CONTACTOS DE LA PSS</div>
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE ADMINISTRATIVA</div>
+            <table class="table_con w100 mb">
+              <tr>
+                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
+                <td class="tabla_estilo w20">CARGO</td>
+                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
+                <td class="tabla_estilo w10">TELÉFONO</td>
+              </tr>
+              <tr>
+                <td><br></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA FINANCIERA</div>
+            <table class="table_con w100 mb">
+              <tr>
+                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
+                <td class="tabla_estilo w20">CARGO</td>
+                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
+                <td class="tabla_estilo w10">TELÉFONO</td>
+              </tr>
+              <tr>
+                <td><br></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA FINANCIERA</div>
+            <table class="table_con w100 mb">
+              <tr>
+                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
+                <td class="tabla_estilo w20">CARGO</td>
+                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
+                <td class="tabla_estilo w10">TELÉFONO</td>
+              </tr>
+              <tr>
+                <td><br></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE CALIDAD</div>
+            <table class="table_con w100 mb">
+              <tr>
+                <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
+                <td class="tabla_estilo w20">CARGO</td>
+                <td class="tabla_estilo w20">CORREO ELECTRÓNICO</td>
+                <td class="tabla_estilo w10">TELÉFONO</td>
+              </tr>
+              <tr>
+                <td><br></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+            <div class="minuta_titulo mb">CONTACTO DEL ÁREA DE AUTORIZACIONES</div>
             <table class="table_con w100 mb">
               <tr>
                 <td class="tabla_estilo w50">NOMBRES Y APELLIDOS:</td>
@@ -491,7 +492,7 @@
             </p>
 
             <p>
-              La solicitud se debe hacer adjuntando el anexo # 2 y dentro de las 24 horas de la urgencia.
+            La solicitud se debe hacer adjuntando el en Anexo Técnico N° 2 y dentro de las 24 horas de a urgencia.
             </p>
 
             <p>
@@ -538,6 +539,10 @@
               <li>referencia5@cajacopieps.co - Departamento Bogotá, Boyacá y resto del País.</li>
               <li>referencia6@cajacopieps.co - Departamento Bolívar y Sucre.</li>
             </ul>
+
+            <p>
+              La parte CONTRATANTE podrá disponer la información aquí descrita dentro de los espacios físicos y carteleras de las sedes de atención del PSS/PTS, con los que contamos para la recepción y radicación de solicitudes, peticiones, quejas y reclamos.
+            </p>
 
             <!--  -->
             <!--  -->

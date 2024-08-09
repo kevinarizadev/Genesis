@@ -6,6 +6,23 @@
 	$function();
 
 
+  function P_OBTENER_ADMIN_FACTURAS_DIGITALES(){
+    require_once('../config/dbcon.php');
+    global $request;
+    $consulta = oci_parse($c,'BEGIN PQ_GENESIS_RIPS_GA.P_OBTENER_ADMIN_FACTURAS_DIGITALES(:v_pestado,:v_pdetalle,:v_result); end;');
+    oci_bind_by_name($consulta,':v_pestado',$request->estado);
+    oci_bind_by_name($consulta,':v_pdetalle',$request->ips);
+    $cursor = oci_new_cursor($c);
+    oci_bind_by_name($consulta, ':v_result', $cursor, -1, OCI_B_CURSOR);
+    oci_execute($consulta);
+    oci_execute($cursor, OCI_DEFAULT);
+    $datos = [];
+    oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+    oci_free_statement($consulta);
+    oci_free_statement($cursor);
+    echo json_encode($datos);
+  }
+
 	function P_OBTENER_FACTURAS_DIGITALES(){
     require_once('../config/dbcon.php');
     global $request;

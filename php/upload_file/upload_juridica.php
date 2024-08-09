@@ -52,6 +52,7 @@ function STT01($ruta)
   $ValorMulta = isset($request->ValorMulta) ? $request->ValorMulta : null;
 
   $RespuestaApertura = isset($request->chkRespuestaApertura) ? $request->chkRespuestaApertura : null;
+  $consulta_decis_sancion = isset($request->decision_decisioninc) ? $request->decision_decisioninc : null;
 
   $v_json_vars = '{
     "v_fallo_impugnacion":"'.$falloimpugnacionfc.'",
@@ -62,7 +63,8 @@ function STT01($ruta)
     "v_marcaCumplimientoMensual":"'.$marcaCumplimientoMensual.'",
     "v_cuantos_dias":"'.$CuantosDias.'",
     "v_valor_multa":"'.$ValorMulta.'",
-    "v_respuesta_apertura":"'.$RespuestaApertura.'"
+    "v_respuesta_apertura":"'.$RespuestaApertura.'",
+    "v_consulta_decis_sancion":"'.$consulta_decis_sancion.'"
   }';
 
   // echo $v_json_vars;
@@ -218,7 +220,7 @@ function ET01($ruta)
 	require_once('../config/dbcon.php');
 	global $request;
 
-	$mediofisico = null;
+  $mediofisico = null;
 
 	$consulta = oci_parse($c, 'begin pq_genesis_tut.p_ins_tutela_archivo_estado(:v_pnumero,
 																				:v_pubicacion,
@@ -229,6 +231,7 @@ function ET01($ruta)
 																				:v_parchivo,
 																				:v_presponsable,
 																				:v_pfisico,
+																				:v_ptipo_solicitud,
 																				:v_json_row); end;');
 	oci_bind_by_name($consulta, ':v_pnumero', $request->constutela);
 	oci_bind_by_name($consulta, ':v_pubicacion', $request->ubicacion);
@@ -240,6 +243,7 @@ function ET01($ruta)
 	oci_bind_by_name($consulta, ':v_parchivo', $ruta);
 	oci_bind_by_name($consulta, ':v_presponsable', $_SESSION['cedula']);
 	oci_bind_by_name($consulta, ':v_pfisico', $mediofisico);
+	oci_bind_by_name($consulta, ':v_ptipo_solicitud', $request->tipoSolicitud_Tutela);
 	$clob = oci_new_descriptor($c, OCI_D_LOB);
 	oci_bind_by_name($consulta, ':v_json_row', $clob, -1, OCI_B_CLOB);
 	$ex = oci_execute($consulta, OCI_DEFAULT);
