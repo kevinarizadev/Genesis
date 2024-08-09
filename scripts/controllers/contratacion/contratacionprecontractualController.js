@@ -24,7 +24,13 @@ angular.module('GenesisApp')
           $scope.busqueda.estado = 'P';
           $scope.buscar();
         }, 4000);
-        $scope.Ajustar_Pantalla();
+        // $scope.Ajustar_Pantalla();
+        if ($(window).width() < 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.7;
+        }
+        if ($(window).width() > 1100) {
+          document.querySelector("#pantalla").style.zoom = 0.8;
+        }
       })
       $scope.check_option = "";
       $scope.check_option2 = "";
@@ -494,6 +500,14 @@ angular.module('GenesisApp')
         });
       }
       $scope.descargafile = function (ruta) {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        });
         $http({
           method: 'POST',
           url: "php/juridica/tutelas/functutelas.php",
@@ -502,7 +516,7 @@ angular.module('GenesisApp')
             ruta: ruta
           }
         }).then(function (response) {
-          //window.open("https://www.cajacopieps.com/genesis/temp/"+response.data);
+          swal.close()
           window.open("temp/" + response.data);
         });
       }
@@ -1030,7 +1044,7 @@ angular.module('GenesisApp')
               $scope.seleccion_opcion_tarifa(0);
             } else {
               $scope.json_tarifa = response.data;
-              console.log($scope.json_tarifa);
+              // console.log($scope.json_tarifa);
             }
 
           }
@@ -2982,6 +2996,35 @@ angular.module('GenesisApp')
         })
       }
 
+      $scope.generaMinutaContrato = function (infoContrato, tipominuta = '5') {
+        switch (parseInt(tipominuta)) {
+          case 1:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_evento_recuperacion.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+          case 2:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_PYM.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+          case 3:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_medicamento_capita.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+          case 5:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+          case 7:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_medicamento_evento.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+          case 8:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_evento_bolsa.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+          case 9:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_pgp_general_nueva.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+          default:
+            $window.open('views/contratacion/formatos/minutas_sin_firmas/formatominutacontrato_nuevo_evento.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento);
+            break;
+        }
+      }
+
       $scope.generaAnexo1 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo1.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
@@ -2993,19 +3036,33 @@ angular.module('GenesisApp')
       $scope.generaAnexo3 = function () {
         $window.open('views/contratacion/formatos/anexo_soportes/anexo3.pdf');
       }
-      $scope.generaAnexo4 = function (regional) {
-        if (regional == 'LA GUAJIRA') {
-          $window.open('views/contratacion/formatos/anexo_soportes/anexo4_GUAJIRA.pdf');
-          return
+      $scope.generaAnexo4 = function (infoContrato) {
+        var v_fecha_inicio = new Date(infoContrato.inicia.split('/')[2] + '/' + infoContrato.inicia.split('/')[1] + '/' + infoContrato.inicia.split('/')[0]);
+        var fechaNuevoFeb = new Date('2024/02/01');
+
+        if (v_fecha_inicio >= fechaNuevoFeb) {
+          if (infoContrato.ubicacion == 'LA GUAJIRA') {
+            $window.open('views/contratacion/formatos/anexo4/01022024/anexo4_GUAJIRA.pdf');
+            return
+          }
+          $window.open(`views/contratacion/formatos/anexo4/01022024/anexo4_${infoContrato.ubicacion}.pdf`);
+        } else {
+          if (infoContrato.ubicacion == 'LA GUAJIRA') {
+            $window.open('views/contratacion/formatos/anexo4/viejos/anexo4_GUAJIRA.pdf');
+            return
+          }
+          $window.open(`views/contratacion/formatos/anexo4/viejos/anexo4_${infoContrato.ubicacion}.pdf`);
         }
-        $window.open(`views/contratacion/formatos/anexo_soportes/anexo4_${regional}.pdf`);
+
       }
       $scope.generaAnexo8 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo8.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
-      $scope.generaAnexo9 = function () {
-        $window.open('views/contratacion/formatos/anexo9.xlsx');
+      $scope.generaAnexo9 = function (infoContrato, tipominuta = '5') {
+        // $window.open('views/contratacion/formatos/anexo9.xlsx');
+        $window.open('views/contratacion/formatos/anexo9.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
+          '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
       $scope.generaAnexo11 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo11.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
@@ -3033,6 +3090,10 @@ angular.module('GenesisApp')
 
       $scope.generaAnexo17 = function (infoContrato, tipominuta = '5') {
         $window.open('views/contratacion/formatos/anexo17.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
+          '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
+      }
+      $scope.generaAnexo18 = function (infoContrato, tipominuta = '5') {
+        $window.open('views/contratacion/formatos/anexo18.php?v_pnumero=' + infoContrato.numero + '&v_pubicacion=' + infoContrato.ubicacion_id + '&v_pdocumento=' + infoContrato.documento +
           '&v_pfecha_inicio=' + infoContrato.inicia + '&v_ptipominuta=' + tipominuta);
       }
       $scope.generaAnexo22 = function (infoContrato, tipominuta = '5') {
@@ -3065,7 +3126,6 @@ angular.module('GenesisApp')
           url: "php/contratacion/funccontratacion.php",
           data: {
             function: 'P_LISTA_TIPOS_ADJUNTOS',
-            minuta: $scope.json_contratos[$scope.indicador].minuta
           }
         }).then(function ({ data }) {
           $scope.tiposAdjuntoEnv = data;
@@ -3087,33 +3147,34 @@ angular.module('GenesisApp')
 
 
 
-
-      document.querySelector('#file-upload-field-enviados').addEventListener('change', function (e) {
-        setTimeout(() => { $scope.$apply(); }, 500);
-        var files = e.target.files;
-        $("#file-upload-field-enviados").parent(".file-upload-wrapper_2").attr("data-text", `Adjuntar Archivo`);
-        if (files.length != 0) {
-          for (let i = 0; i < files.length; i++) {
-            const x = files[i].name.split('.'), ext = x[x.length - 1].toUpperCase();
-            if (ext == 'PDF' || ext == 'DOCX' || ext == 'XLS' || ext == 'XLSX') {
-              if (files[i].size < 5485760 && files[i].size > 0) {
-                $scope.getBase64(files[i]).then(function (result) {
-                  $("#file-upload-field-enviados").parent(".file-upload-wrapper_2").attr("data-text", files[i].name);
-                  $scope.formAdjuntoEnv.soporteExt = ext.toLowerCase();
-                  $scope.formAdjuntoEnv.soporteB64 = result;
-                  setTimeout(function () { $scope.$apply(); }, 300);
-                });
+      if (document.querySelector('#file-upload-field-enviados')) {
+        document.querySelector('#file-upload-field-enviados').addEventListener('change', function (e) {
+          setTimeout(() => { $scope.$apply(); }, 500);
+          var files = e.target.files;
+          $("#file-upload-field-enviados").parent(".file-upload-wrapper_2").attr("data-text", `Adjuntar Archivo`);
+          if (files.length != 0) {
+            for (let i = 0; i < files.length; i++) {
+              const x = files[i].name.split('.'), ext = x[x.length - 1].toUpperCase();
+              if (ext == 'PDF' || ext == 'DOCX' || ext == 'XLS' || ext == 'XLSX') {
+                if (files[i].size < 5485760 && files[i].size > 0) {
+                  $scope.getBase64(files[i]).then(function (result) {
+                    $("#file-upload-field-enviados").parent(".file-upload-wrapper_2").attr("data-text", files[i].name);
+                    $scope.formAdjuntoEnv.soporteExt = ext.toLowerCase();
+                    $scope.formAdjuntoEnv.soporteB64 = result;
+                    setTimeout(function () { $scope.$apply(); }, 300);
+                  });
+                } else {
+                  document.querySelector('#file-upload-field-enviados').value = '';
+                  swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (5MB)!', 'info');
+                }
               } else {
                 document.querySelector('#file-upload-field-enviados').value = '';
-                swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (5MB)!', 'info');
+                swal('Advertencia', '¡Solo se admiten archivos (PDF, .DOCX, .XLS, .XLSX)!', 'info');
               }
-            } else {
-              document.querySelector('#file-upload-field-enviados').value = '';
-              swal('Advertencia', '¡Solo se admiten archivos (PDF, .DOCX, .XLS, .XLSX)!', 'info');
             }
           }
-        }
-      });
+        });
+      }
 
       $scope.agregarSoporteLista = function () {
         if (!$scope.formAdjuntoEnv.tipc_numero || !$scope.formAdjuntoEnv.soporteExt) {
@@ -3147,7 +3208,7 @@ angular.module('GenesisApp')
         return new Promise((resolve) => {
           var vacios = 0
           $scope.tiposAdjuntoEnv.forEach(element => {
-            if ((element.TIPC_IPS_ENTREGA == 'N' || element.TIPC_EPS_ENTREGA == 'S') && !element.soporteB64) { vacios++ }
+            if ((element.TIPC_OBLIGATORIO == 'S' && element.TIPC_EPS_ENTREGA == 'S') && !element.soporteB64) { vacios++ }
           });
           resolve(vacios);
         });
@@ -3198,17 +3259,18 @@ angular.module('GenesisApp')
 
                     $scope.tiposAdjuntoEnv.forEach(e => {
 
-                      data.push({
-                        documento: $scope.infoContrato.documento,
-                        numero: $scope.infoContrato.numero,
-                        ubicacion: $scope.infoContrato.ubicacion_id,
-                        tercero: $scope.infoContrato.nit,
+                      if (e.soporteB64 || e.TIPC_IPS_ENTREGA == 'S')
+                        data.push({
+                          documento: $scope.infoContrato.documento,
+                          numero: $scope.infoContrato.numero,
+                          ubicacion: $scope.infoContrato.ubicacion_id,
+                          tercero: $scope.infoContrato.nit,
 
-                        tipo_soporte: e.TIPC_NUMERO,
-                        ruta_soporte: e.ruta,
+                          tipo_soporte: e.TIPC_NUMERO,
+                          ruta_soporte: e.ruta,
 
-                        responsable: $scope.Rol_Cedula
-                      })
+                          responsable: $scope.Rol_Cedula
+                        })
                     });
                     console.table(data);
 
@@ -3245,53 +3307,6 @@ angular.module('GenesisApp')
 
               }
             })
-
-            // $scope.cargarSoporteAdjuntoEnv().then((resultSoporte) => {
-            //   if (!resultSoporte) { swal('Información', 'Soporte no cargado', 'info'); return }
-
-            //   const datos = {
-            //     documento: $scope.infoContrato.documento,
-            //     numero: $scope.infoContrato.numero,
-            //     ubicacion: $scope.infoContrato.ubicacion_id,
-            //     tercero: $scope.infoContrato.nit,
-            //     tipo_soporte: $scope.formAdjuntoEnv.tipoAdjunto,
-            //     ruta_soporte: resultSoporte,
-            //     responsable: $scope.Rol_Cedula
-            //   }
-
-            //   swal({
-            //     title: 'Cargando información...',
-            //     allowEscapeKey: false,
-            //     allowOutsideClick: false
-            //   });
-            //   swal.showLoading();
-            //   $http({
-            //     method: 'POST',
-            //     url: "php/contratacion/funccontratacion.php",
-            //     data: {
-            //       function: 'P_INSERTAR_SOPORTE_CONTRATO',
-            //       datos: JSON.stringify(datos)
-            //     }
-            //   }).then(function ({ data }) {
-            //     if (data.toString().substr(0, 3) == '<br' || data == 0) {
-            //       swal("Error", 'Sin datos', "warning").catch(swal.noop); return
-            //     }
-            //     if (data.codigo == 0) {
-            //       document.querySelector('#file-upload-field-enviados').value = '';
-            //       $scope.obtenerAdjuntos();
-            //       $("#file-upload-field-enviados").parent(".file-upload-wrapper").attr("data-text", `Subir Archivo`);
-
-            //       $scope.adjuntoEnv = {
-            //         soporteB64: '',
-            //         soporteExt: '',
-            //       }
-            //       setTimeout(() => { $scope.$apply(); }, 500);
-            //     }
-            //     if (data.codigo == 1) {
-            //       swal("Mensaje", data.nombre, "warning").catch(swal.noop);
-            //     }
-            //   })
-            // })
 
           } else {
             swal('Información', 'Cargue los soportes requeridos', 'info');
@@ -3331,7 +3346,7 @@ angular.module('GenesisApp')
 
       $scope.obtenerListadoEnviados = function () {
         $scope.listadoAdjuntoEnv = [];
-
+        $scope.listadoAdjuntoEnv_Detalle = []
         $http({
           method: 'POST',
           url: "php/contratacion/funccontratacion.php",
@@ -3351,6 +3366,12 @@ angular.module('GenesisApp')
       $scope.seleccionarContrato = function (x) {
         // $scope.itemSeleccionado = x.OSOV_NUMERO + '_' + x.OSON_RENGLON;
         $scope.listadoAdjuntoEnv_datos = x;
+        $scope.formDevuelto = {
+          soporteExt: '',
+          soporteB64: '',
+          observacion: ''
+        }
+        $scope.soporteDevolucion = {}
         $scope.listadoAdjuntoEnv_Detalle = []
         $http({
           method: 'POST',
@@ -3368,7 +3389,7 @@ angular.module('GenesisApp')
             $scope.listadoAdjuntoEnv_Detalle = data;
 
 
-            if (x.OSOV_ESTADO == 'G') {
+            if (x.OSOV_ESTADO == 'D' || x.OSOV_ESTADO == 'G') {
               setTimeout(() => {
                 $scope.cargarFileUnico();
                 setTimeout(() => { $scope.$apply(); }, 500);
@@ -3379,118 +3400,275 @@ angular.module('GenesisApp')
         })
       }
 
-      $scope.cargarSoporteAdjuntoEnv = function (ruta = null) {
-        return new Promise((resolve) => {
-          if (!$scope.adjuntoEnv.soporteB64) { resolve(''); return }
+      $scope.devolverAdjuntoEnviados = function () {
+        $scope.soporteDevolucion = {
+          observacion: '',
+          soporteExt: '',
+          soporteB64: ''
+        }
+        swal({
+          title: 'Devolución de soportes',
+          html: `
+          <div class="col s12 no-padding label-new m-b m-t" style="margin-top: 2rem;margin-bottom: 5.5rem;">
+            <textarea class="white input-text-new input-out-new w-100 margin m-l m-r" maxlength="4000"
+              style="height: 100px;text-transform:uppercase;text-align: justify;" autocomplete="off"
+              placeholder="Observación" id="observacionDevolucion"></textarea>
+          </div>
+          <div class="col s12 m12 l12 m-b" style="margin-bottom: 1.5rem;">
+            <div class="col s6 no-padding label-new m-b" id="AdjustSop">
+              <div class="file-field input-field gray-input m-l input-file-radiu input-file-radius-opcional"
+                style="margin: 0;width: -webkit-fill-available;">
+                <div class="right">
+                  <span class="black-text"><i class="icon-folder-open-1 default-color"
+                    style="line-height: 2rem;"></i></span>
+                    <input type="file" id="SoporteProces" ng-change="loadFile()">
+                </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path Soport" type="text" placeholder="Adjunte un archivo (PDF)"
+                    readonly style="border-radius: 0;height: 2rem;border-bottom: 0;"
+                    ng-change="loadFile()">
+                </div>
+              </div>
+            </div>
+          </div>
+                `,
+
+          width: '500px',
+          showCancelButton: true,
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
+
+          preConfirm: function () {
+            return new Promise(function (resolve) {
+              resolve(
+                {
+                  observacion: $('#observacionDevolucion').val(),
+                  soporte: $('#SoporteProces').val(),
+                }
+              )
+            })
+          }
+        }).then(function (result) {
+          if (!result.observacion) {
+            swal("info", '¡La observacion no puede ir vacia!', "warning").catch(swal.noop); return
+          }
+          console.log(result)
+          $scope.soporteDevolucion.observacion = result.observacion
+          $scope.soporteDevolucion.soporte = document.querySelector('#SoporteProces')
+
+          //
           swal({
-            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Guardando Soporte...</p>',
-            width: 200,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            animation: false
-          });
-          $http({
-            method: 'POST',
-            url: "php/contratacion/funccontratacion.php",
-            data: {
-              function: "cargarSoporteAdjuntoEnv",
-              name: `Minuta_${$scope.infoContrato.numero}_${$scope.infoContrato.ubicacion_id}`,
-              base64: $scope.adjuntoEnv.soporteB64,
-              ext: $scope.adjuntoEnv.soporteExt,
-              ruta
-            }
-          }).then(function ({ data }) {
-            if (data.toString().substr(0, 3) != '<br') {
-              resolve(data);
-            } else {
-              resolve(false);
+            title: 'Confirmar',
+            text: '¿Seguro que desea devolver los soportes al prestador?',
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar'
+          }).then((result) => {
+            if (result) {
+              swal({
+                html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando...</p>',
+                width: 200,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                animation: false
+              });
+
+              $scope.loadFileDevolucion()
             }
           })
+          //
+        })
+      }
+
+      $scope.loadFileDevolucion = function () {
+        $scope.soporteDevolucion.soporteB64 = '';
+        // var fileInput = document.querySelector('#SoporteProces');
+        var fileInput = $scope.soporteDevolucion.soporte;
+
+        if (fileInput.files.length == 0) {
+          $scope.subirFTPDevolucion();
+          return;
+        }
+        var x = fileInput.files[0].name.split('.'), ext = x[x.length - 1].toUpperCase();
+
+        if (fileInput.files[0].size < 10485760 && fileInput.files[0].size > 0) {
+          if (ext == 'PDF') {
+            $scope.getBase64(fileInput.files[0]).then(function (result) {
+              $scope.soporteDevolucion.soporteB64 = result;
+              $scope.soporteDevolucion.soporteExt = ext.toLowerCase();
+              $scope.subirFTPDevolucion();
+            });
+          } else {
+            swal('Advertencia', '¡El archivo seleccionado deber ser formato PDF!', 'info');
+            $scope.soporteDevolucion.soporteB64 = '';
+          }
+        } else {
+          swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (10MB)!', 'info');
+          $scope.soporteDevolucion.soporteB64 = '';
+        }
+      }
+
+      $scope.subirFTPDevolucion = function () {
+        if ($scope.soporteDevolucion.soporteB64 == '') {
+          $scope.guardarDevolucion('');
+          return
+        }
+
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: "cargarSoporteAdjuntoEnv",
+            carpeta: `${$scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO}_${$scope.listadoAdjuntoEnv_datos.OSOV_NUMERO}_${$scope.listadoAdjuntoEnv_datos.OSON_UBICACION}`,
+            name: 'Devolucion_EPS',
+            base64: $scope.soporteDevolucion.soporteB64,
+            ext: $scope.soporteDevolucion.soporteExt
+          }
+        }).then(function ({ data }) {
+          if (data.substr(0, 1) != '0') {
+            $scope.guardarDevolucion(data);
+          } else {
+            swal('Advertencia', '¡Ocurrio un error, Intente nuevamente!', 'info');
+          }
         });
       }
 
-      $scope.devolverAdjuntoEnviados = function () {
-        swal({
-          title: 'Observación de la devolución',
-          input: 'textarea',
-          inputPlaceholder: 'Escribe una observacion...',
-          showCancelButton: true,
-          allowOutsideClick: false,
-          inputAttributes: {
-            id: "textarea_swal",
-            onkeyup: "Format_cnt()"
-          },
-          // inputValue: $scope.Motivo_Anulacion_Devolucion
-        }).then(function (result) {
-          if (result && result !== '') {
-            const observacion = result;
-            // $scope.HojaGlosa.OBSERVACION = result;
+      $scope.guardarDevolucion = function (ruta) {
 
-            swal({
-              title: 'Confirmar',
-              text: '¿Seguro que desea devolver los soportes al prestador?',
-              type: 'question',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Confirmar'
-            }).then((result) => {
-              if (result) {
+        const datos = [
+          {
+            documento: $scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO,
+            numero: $scope.listadoAdjuntoEnv_datos.OSOV_NUMERO,
+            ubicacion: $scope.listadoAdjuntoEnv_datos.OSON_UBICACION,
+            tercero: $scope.listadoAdjuntoEnv_datos.OSON_TERCERO,
+            renglon: $scope.listadoAdjuntoEnv_datos.OSON_RENGLON,
 
-                swal({
-                  title: 'Cargando información...',
-                  allowEscapeKey: false,
-                  allowOutsideClick: false
-                });
-                swal.showLoading();
+            ruta_soporte: ruta,
 
-                const datos = [
-                  {
-                    documento: $scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO,
-                    numero: $scope.listadoAdjuntoEnv_datos.OSOV_NUMERO,
-                    ubicacion: $scope.listadoAdjuntoEnv_datos.OSON_UBICACION,
-                    tercero: $scope.listadoAdjuntoEnv_datos.OSON_TERCERO,
-                    renglon: $scope.listadoAdjuntoEnv_datos.OSON_RENGLON,
-                    responsable: $scope.Rol_Cedula,
-                    observacion: observacion,
-                    opcion: 'D',
-                  }
-                ]
+            observacion: $scope.soporteDevolucion.observacion,
+            responsable: $scope.Rol_Cedula,
+            opcion: 'D',
+            tipo: 'E'
+          }
+        ]
 
-                $http({
-                  method: 'POST',
-                  url: "php/contratacion/funccontratacion.php",
-                  data: {
-                    function: 'P_U_SOPORTE_CONTRATO',
-                    datos: JSON.stringify(datos),
-                    cantidad: 1
-                  }
-                }).then(function ({ data }) {
-                  if (data.toString().substr(0, 3) == '<br' || data == 0) {
-                    swal("Error", 'Sin datos', "warning").catch(swal.noop); return
-                  }
-                  if (data.codigo == 0) {
-                    swal("Mensaje", data.nombre, "success").catch(swal.noop);
-                    $scope.listadoAdjuntoEnv_Detalle = []
-                    setTimeout(() => {
-                      $scope.obtenerListadoEnviados();
-                    }, 2500);
-                    setTimeout(() => { $scope.$apply(); }, 500);
-                  }
-                  if (data.codigo == 1) {
-                    swal("Mensaje", data.nombre, "warning").catch(swal.noop);
-                  }
-                })
-
-              }
-            })
-
-          } else {
-            swal("info", '¡La observacion no puede ir vacia!', "warning").catch(swal.noop); return
+        $http({
+          method: 'POST',
+          url: "php/contratacion/funccontratacion.php",
+          data: {
+            function: 'P_U_SOPORTE_CONTRATO',
+            datos: JSON.stringify(datos),
+            cantidad: 1
+          }
+        }).then(function ({ data }) {
+          if (data.toString().substr(0, 3) == '<br' || data == 0) {
+            swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+          }
+          if (data.codigo == 0) {
+            swal("Mensaje", data.nombre, "success").catch(swal.noop);
+            $scope.listadoAdjuntoEnv_Detalle = []
+            setTimeout(() => {
+              $scope.obtenerListadoEnviados();
+            }, 2500);
+            setTimeout(() => { $scope.$apply(); }, 500);
+          }
+          if (data.codigo == 1) {
+            swal("Mensaje", data.nombre, "warning").catch(swal.noop);
           }
         })
       }
+
+
+
+      // $scope.devolverAdjuntoEnviados = function () {
+      //   swal({
+      //     title: 'Observación de la devolución',
+      //     input: 'textarea',
+      //     inputPlaceholder: 'Escribe una observacion...',
+      //     showCancelButton: true,
+      //     allowOutsideClick: false,
+      //     inputAttributes: {
+      //       id: "textarea_swal",
+      //       onkeyup: "Format_cnt()"
+      //     },
+      //     // inputValue: $scope.Motivo_Anulacion_Devolucion
+      //   }).then(function (result) {
+      //     if (result && result !== '') {
+      //       const observacion = result;
+      //       // $scope.HojaGlosa.OBSERVACION = result;
+
+      //       swal({
+      //         title: 'Confirmar',
+      //         text: '¿Seguro que desea devolver los soportes al prestador?',
+      //         type: 'question',
+      //         showCancelButton: true,
+      //         confirmButtonColor: '#3085d6',
+      //         cancelButtonColor: '#d33',
+      //         confirmButtonText: 'Confirmar'
+      //       }).then((result) => {
+      //         if (result) {
+
+      //           swal({
+      //             title: 'Cargando información...',
+      //             allowEscapeKey: false,
+      //             allowOutsideClick: false
+      //           });
+      //           swal.showLoading();
+
+      //           const datos = [
+      //             {
+      //               documento: $scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO,
+      //               numero: $scope.listadoAdjuntoEnv_datos.OSOV_NUMERO,
+      //               ubicacion: $scope.listadoAdjuntoEnv_datos.OSON_UBICACION,
+      //               tercero: $scope.listadoAdjuntoEnv_datos.OSON_TERCERO,
+      //               renglon: $scope.listadoAdjuntoEnv_datos.OSON_RENGLON,
+      //               responsable: $scope.Rol_Cedula,
+      //               observacion: observacion,
+      //               opcion: 'D',
+      //             }
+      //           ]
+
+      //           $http({
+      //             method: 'POST',
+      //             url: "php/contratacion/funccontratacion.php",
+      //             data: {
+      //               function: 'P_U_SOPORTE_CONTRATO',
+      //               datos: JSON.stringify(datos),
+      //               cantidad: 1
+      //             }
+      //           }).then(function ({ data }) {
+      //             if (data.toString().substr(0, 3) == '<br' || data == 0) {
+      //               swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+      //             }
+      //             if (data.codigo == 0) {
+      //               swal("Mensaje", data.nombre, "success").catch(swal.noop);
+      //               $scope.listadoAdjuntoEnv_Detalle = []
+      //               setTimeout(() => {
+      //                 $scope.obtenerListadoEnviados();
+      //               }, 2500);
+      //               setTimeout(() => { $scope.$apply(); }, 500);
+      //             }
+      //             if (data.codigo == 1) {
+      //               swal("Mensaje", data.nombre, "warning").catch(swal.noop);
+      //             }
+      //           })
+
+      //         }
+      //       })
+
+      //     } else {
+      //       swal("info", '¡La observacion no puede ir vacia!', "warning").catch(swal.noop); return
+      //     }
+      //   })
+      // }
+
+
+
+
+
       $scope.verObs = function (text) {
         swal({
           title: 'Observación de devolución',
@@ -3527,6 +3705,7 @@ angular.module('GenesisApp')
                     $scope.listadoAdjuntoEnv_Detalle[index].soporteExt = ext.toLowerCase();
                     $scope.listadoAdjuntoEnv_Detalle[index].soporteB64 = result;
                     $scope.listadoAdjuntoEnv_Detalle[index].ruta = '';
+                    console.log($scope.listadoAdjuntoEnv_Detalle[index])
                     setTimeout(function () { $scope.$apply(); }, 300);
                   });
                   setTimeout(() => { $scope.$apply(); }, 500);
@@ -3581,7 +3760,6 @@ angular.module('GenesisApp')
                 var promesas = [];
                 $scope.listadoAdjuntoEnv_Detalle.forEach((e, index) => {
                   if (e.soporteB64) {
-
                     promesas.push($scope.cargarSoporte(index));
                   }
                 })
@@ -3610,7 +3788,8 @@ angular.module('GenesisApp')
                           tipo_soporte: e.OSOV_TIPO_SOPORTE,
                           ruta_soporte: e.ruta,
 
-                          opcion: 'E'
+                          opcion: 'A',
+                          tipo: 'E'
                         })
                       }
                     });
@@ -3673,6 +3852,197 @@ angular.module('GenesisApp')
               function: "cargarSoporteAdjuntoEnv",
               carpeta: `${$scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO}_${$scope.listadoAdjuntoEnv_datos.OSOV_NUMERO}_${$scope.listadoAdjuntoEnv_datos.OSON_UBICACION}`,
               name: `${$scope.listadoAdjuntoEnv_Detalle[index].OSOV_TIPO_SOPORTE}`,
+              base64: $scope.listadoAdjuntoEnv_Detalle[index].soporteB64,
+              ext: $scope.listadoAdjuntoEnv_Detalle[index].soporteExt
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              $scope.listadoAdjuntoEnv_Detalle[index].ruta = data;
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+
+      if (document.querySelector('#file-upload-field-devuelto')) {
+
+        document.querySelector('#file-upload-field-devuelto').addEventListener('change', function (e) {
+          setTimeout(() => { $scope.$apply(); }, 500);
+          var files = e.target.files;
+          $("#file-upload-field-devuelto").parent(".file-upload-wrapper_2").attr("data-text", `Adjuntar Archivo`);
+          if (files.length == 0) {
+            $scope.formDevuelto.soporteExt = null;
+            $scope.formDevuelto.soporteB64 = null;
+            return
+          }
+          for (let i = 0; i < files.length; i++) {
+            const x = files[i].name.split('.'), ext = x[x.length - 1].toUpperCase();
+            if (ext == 'PDF' || ext == 'DOCX' || ext == 'XLS' || ext == 'XLSX' || ext == 'ZIP') {
+              if (files[i].size < 5485760 && files[i].size > 0) {
+                $scope.getBase64(files[i]).then(function (result) {
+                  $("#file-upload-field-devuelto").parent(".file-upload-wrapper_2").attr("data-text", files[i].name);
+                  $scope.formDevuelto.soporteExt = ext.toLowerCase();
+                  $scope.formDevuelto.soporteB64 = result;
+                  setTimeout(function () { $scope.$apply(); }, 300);
+                });
+              } else {
+                document.querySelector('#file-upload-field-devuelto').value = '';
+                swal('Advertencia', '¡El archivo seleccionado excede el peso máximo posible (5MB)!', 'info');
+              }
+            } else {
+              document.querySelector('#file-upload-field-devuelto').value = '';
+              swal('Advertencia', '¡Solo se admiten archivos (PDF, .DOCX, .XLS, .XLSX, .ZIP)!', 'info');
+            }
+          }
+        });
+      }
+
+      $scope.guardarAdjuntosDevueltos = function () {
+        if (!$scope.formDevuelto.observacion || $scope.formDevuelto.observacion.length < 5) {
+          swal('Información', 'Debe ingresar una observación', 'info');
+          return
+        }
+
+        swal({
+          title: 'Confirmar',
+          text: '¿Desea actualizar los soportes y enviar de nuevo al prestador?',
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Confirmar'
+        }).then((result) => {
+          if (result) {
+
+            swal({
+              html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando soportes...</p>',
+              width: 200,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              animation: false
+            });
+
+            $scope.cargarSoporteDevuelto().then(soporte_resp => {
+              console.log(soporte_resp)
+
+              if ($scope.formDevuelto.soporteExt && !soporte_resp) {
+                swal("Error", 'Ocurrio un inconveniente al cargar los archivos, intentar nuevamente', "warning").catch(swal.noop); return
+              }
+
+              var promesas = [];
+              $scope.listadoAdjuntoEnv_Detalle.forEach((e, index) => {
+                if (e.soporteB64) {
+                  promesas.push($scope.actualizarSoporte(index));
+                }
+              })
+              Promise.all(promesas).then(response => {
+                // Cuando todas las promesas se resuelvan, imprimimos las respuestas
+                var errors = 0
+                response.forEach(element => {
+                  if (element.substr(0, 1) != '/') {
+                    errors++;
+                  }
+                });
+                setTimeout(() => { $scope.$apply(); }, 500);
+                if (errors == 0) {//GUARDA EN BD
+
+                  var data = []
+                  data.push({
+                    documento: $scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO,
+                    numero: $scope.listadoAdjuntoEnv_datos.OSOV_NUMERO,
+                    ubicacion: $scope.listadoAdjuntoEnv_datos.OSON_UBICACION,
+                    tercero: $scope.listadoAdjuntoEnv_datos.OSON_TERCERO,
+                    renglon: $scope.listadoAdjuntoEnv_datos.OSON_RENGLON,
+
+                    observacion: $scope.formDevuelto.observacion,
+                    ruta_soporte: soporte_resp ? soporte_resp : '',
+                    responsable: $scope.Rol_Cedula,
+
+                    tipo: 'E',
+                    opcion: 'E'
+                  })
+                  console.table(data);
+
+                  $http({
+                    method: 'POST',
+                    url: "php/contratacion/funccontratacion.php",
+                    data: {
+                      function: 'P_U_SOPORTE_CONTRATO',
+                      datos: JSON.stringify(data),
+                      cantidad: data.length
+                    }
+                  }).then(function ({ data }) {
+                    if (data.toString().substr(0, 3) == '<br' || data == 0) {
+                      swal("Error", 'Sin datos', "warning").catch(swal.noop); return
+                    }
+                    if (data.codigo == 0) {
+                      swal('¡Mensaje!', data.nombre, 'success').catch(swal.noop);
+                      $scope.listadoAdjuntoEnv_Detalle = []
+                      setTimeout(() => {
+                        $scope.obtenerListadoEnviados();
+                      }, 2500);
+                      setTimeout(() => { $scope.$apply(); }, 500);
+                    }
+                    if (data.codigo == 1) {
+                      swal("Mensaje", data.nombre, "warning").catch(swal.noop);
+                    }
+                  })
+                  // console.log($scope.tiposAdjuntoEnv);
+                } else {
+                  swal("Error", 'Ocurrio un inconveniente al cargar los archivos, intentar nuevamente', "warning").catch(swal.noop); return
+                }
+                // Aquí puedes imprimir cualquier mensaje que desees después de recibir todas las respuestas
+                console.log('Todas las peticiones completadas');
+              });
+
+              //////////////////////
+            })
+            //////////////////////
+          }
+        })
+
+      }
+
+      $scope.cargarSoporteDevuelto = function () {
+        return new Promise((resolve) => {
+          if (!$scope.formDevuelto.soporteExt) {
+            resolve(false);
+            return;
+          }
+          $http({
+            method: 'POST',
+            url: "php/contratacion/funccontratacion.php",
+            data: {
+              function: "cargarSoporteAdjuntoEnv",
+              carpeta: `${$scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO}_${$scope.listadoAdjuntoEnv_datos.OSOV_NUMERO}_${$scope.listadoAdjuntoEnv_datos.OSON_UBICACION}`,
+              name: 'Respuesta_EPS',
+              base64: $scope.formDevuelto.soporteB64,
+              ext: $scope.formDevuelto.soporteExt
+
+            }
+          }).then(function ({ data }) {
+            if (data.toString().substr(0, 3) != '<br') {
+              resolve(data);
+            } else {
+              resolve(false);
+            }
+          })
+        });
+      }
+
+      $scope.actualizarSoporte = function (index) {
+        return new Promise((resolve) => {
+          $http({
+            method: 'POST',
+            url: "php/contratacion/funccontratacion.php",
+            data: {
+              function: "cargarSoporteAdjuntoEnv",
+              carpeta: `${$scope.listadoAdjuntoEnv_datos.OSOC_DOCUMENTO}_${$scope.listadoAdjuntoEnv_datos.OSOV_NUMERO}_${$scope.listadoAdjuntoEnv_datos.OSON_UBICACION}`,
+              ruta: `${$scope.listadoAdjuntoEnv_Detalle[index].OSOV_RUTA_SOPORTE_EPS}`,
               base64: $scope.listadoAdjuntoEnv_Detalle[index].soporteB64,
               ext: $scope.listadoAdjuntoEnv_Detalle[index].soporteExt
             }

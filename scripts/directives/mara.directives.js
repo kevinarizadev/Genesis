@@ -4957,9 +4957,9 @@
     };
   }
 
-  angular.module('GenesisApp').directive('facturasdigitales', facturasdigitales);
-  facturasdigitales.$inject = ['$rootScope', '$compile'];
-  function facturasdigitales($rootScope, $compile) {
+  angular.module('GenesisApp').directive('adminfacturasdigitales', adminfacturasdigitales);
+  adminfacturasdigitales.$inject = ['$rootScope', '$compile'];
+  function adminfacturasdigitales($rootScope, $compile) {
     return {
       restrict: 'EA',
       templateUrl: 'views/Cuentasmedicas/adminfacturasdigitales.html',

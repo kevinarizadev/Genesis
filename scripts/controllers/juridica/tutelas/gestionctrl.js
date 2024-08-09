@@ -462,7 +462,8 @@ angular.module('GenesisApp')
         setTimeout(() => {
           $('#tab_1').click();
         }, 500);
-        $scope.listaNulidades();
+        // $scope.listaNulidades();
+        $scope.obtenerListadoProblemas_Causas_Pretensiones('pretension');
       }
 
       $scope.RegistroDone = function () {
@@ -4104,7 +4105,8 @@ angular.module('GenesisApp')
                   file: $scope.archivoconincdes,
                   fecha_recibido: $("#FechaConInc").val(),
                   typefile: '12',
-                  ori: true
+                  ori: true,
+                  decision_decisioninc: $scope.detalles.decision_decisioninc
                 }
               }).then(function (response) {
                 if (response.data.codigo == "1") {
@@ -4129,30 +4131,10 @@ angular.module('GenesisApp')
                     if (response.data.codigo == "1") {
                       swal('Completado', response.data.observacion_err, 'success');
                       //
-                      $scope.hdeVBrespuestatutela = true;
-                      $scope.hdeDetallesAccion = false;
-                      $scope.dsbDetalles = true;
-                      $scope.despl3 = false;
-                      $scope.hdeDetallesAccionSeg = true;
-                      $scope.dsbDetallesSegInst = true;
-                      /////
-                      $scope.hdeImpugnacion = false;
-                      $scope.dsbImpugnacion = true;
-                      $scope.despl4 = false;
-
-                      $scope.hdeCumplimiento = false;
-                      $scope.hdecumpli = false;// Cumplimiento Mensual
                       //
-                      $scope.despl5 = true;
-                      if ($scope.registro.status = "5") {
-                        $scope.hdefallo = true;
-                      } else {
-                        $scope.hdefallo = false;
-                        // Activar boton ETAPA=6 de $scope.hdeAdjuntarFalloImpugnacion = false;
-                      }
                       //
-                      $scope.archivoconincdes = '';
-                      $("#FechaConInc").val('');
+                      // $scope.archivoconincdes = '';
+                      // $("#FechaConInc").val('');
                       // SET VALORES VACIOS CONSULTA INC CNVU 13/12/2019
                       $scope.registro.medioRecepcionConsultaInc = false;
                       $scope.changeMedida("13");
@@ -4162,10 +4144,31 @@ angular.module('GenesisApp')
                       $scope.hdeIncidentes = false;
                       $scope.despl6 = true;
                       //
-                      $scope.selec_inci = $scope.tabselect;
-                      $scope.tabselect = parseInt($scope.tabselect) + 1;
-                      $scope.vertab($scope.tabselect);
-                      $scope.csstab($scope.tabselect);
+                      if ($scope.detalles.decision_decisioninc == '3') {
+                        // debugger
+                        $("#FechaAutInc").val($("#FechaConInc").val())
+
+                        $scope.detalles.archivofechaautinc = $scope.detalles.archivofechaconinc
+                        $scope.detalles.archivocieincdess = $scope.detalles.archivoconincdess
+                        $scope.archivocieincdes = $scope.archivoconincdes
+                        $scope.archivocieincdesext = $scope.archivoconincdesext
+                      }
+                      if ($scope.detalles.decision_decisioninc == '1') {
+                        $scope.selec_inci = 0;
+                        $scope.tabselect = 1;
+                        $scope.vertab($scope.tabselect);
+                        $scope.csstab($scope.tabselect);
+                        $scope.registro.desacato = parseInt($scope.registro.desacato) + 1;
+                      } else {
+                        $scope.selec_inci = $scope.tabselect;
+                        $scope.tabselect = parseInt($scope.tabselect) + 1;
+                        $scope.vertab($scope.tabselect);
+                        $scope.csstab($scope.tabselect);
+                      }
+
+
+
+
                       //
                       setTimeout(function () { $(document).scrollTop($('#panelListado6').height() + 1000); }, 500);
                     } else {
@@ -5086,6 +5089,7 @@ angular.module('GenesisApp')
       $scope.abrirModal = function (modal) {
         if (modal == 1) {
           $('#modalEstadoTutela').modal('open');
+          $scope.registro.tipoSolicitud_Tutela = false;
           $scope.registro.estadoTutelaModal = false;
           $scope.observacionEstadoTutela = '';
           setTimeout(() => { $scope.$apply(); }, 500);
@@ -5158,12 +5162,14 @@ angular.module('GenesisApp')
                   type: $scope.archivoEstadoTutelaExt,
                   file: $scope.archivoEstadoTutela,
                   observacion: $scope.registro.descripcionEstadoTutela,
-                  // estado: $scope.registro.estadoTutelaModal == true ? 'A' : 'I',
+
                   estado: 'I',
-                  fecha_estadotutela: today,//$("#FechaEstadoTutela").val(),
-                  typefile: '40',
-                  // typefile: $scope.registro.estadoTutelaModal == true ? '48' : '40',
-                  ori: true
+                  fecha_estadotutela: today,
+                  //$("#FechaEstadoTutela").val(),
+                  typefile: !$scope.registro.tipoSolicitud_Tutela ? '40' : '62',
+
+                  ori: true,
+                  tipoSolicitud_Tutela: !$scope.registro.tipoSolicitud_Tutela ? 'A' : 'D'
                 }
               }).then(function (response) {
                 if (response.data.codigo == "1") {
@@ -5179,7 +5185,7 @@ angular.module('GenesisApp')
                       type: $scope.registro.medioRecepcionEstadoTutela == false ? "" : $scope.archivoMedioEstadoTutelaExt,
                       file: $scope.registro.medioRecepcionEstadoTutela == false ? "" : $scope.archivoMedioEstadoTutela,
                       fecha_reqpre: $("#FechaEstadoTutela").val(),
-                      typefile: '41',
+                      typefile: !$scope.registro.tipoSolicitud_Tutela ? '41' : '63',
                       // typefile: $scope.registro.estadoTutelaModal == true ? '49' : '41',
                       medio: ($scope.registro.medioRecepcionEstadoTutela == true) ? true : false,
                       ori: ($scope.registro.medioRecepcionEstadoTutela == true) ? true : false
@@ -8562,7 +8568,7 @@ angular.module('GenesisApp')
             function: "p_ui_archiva_tutela",
             numero: $scope.registro.codigotutela,
             ubicacion: $scope.registro.ubicacion,
-            tipo: '40',
+            tipo: $scope.registro.pendiente_solicitud_tipo.split('-')[0] == 'A' ? '40' : '62',
             observacion: $scope.observacionEstadoTutela,
             estado: $scope.registro.estadoTutelaModal ? 'A' : 'I',
             responsable: $scope.cedulalog,
@@ -8573,6 +8579,7 @@ angular.module('GenesisApp')
             if (data.Codigo == 0) {
               swal("Mensaje", data.Nombre, "success").catch(swal.noop);
               $scope.cerrarModal("1");
+              lisTutelas.ajax.reload();
               if ($scope.registro.estadoTutelaModal) {
                 $scope.registro.pendiente_archivar = 'A';
                 setTimeout(() => { $scope.$apply(); }, 500);
@@ -8661,20 +8668,20 @@ angular.module('GenesisApp')
 
 
       //
-      $scope.obtenerListadoProblemas_Causas_Pretensiones = function (tipo, problema, causa) {
+      $scope.obtenerListadoProblemas_Causas_Pretensiones = function (tipo, pretension, causa) {
 
         var data = {}
-        if (tipo == 'problemas') {
+        if (tipo == 'pretension') {
           data = {}
         }
         if (tipo == 'causas') {
           data = {
-            'problema': problema
+            'pretension': pretension
           }
         }
-        if (tipo == 'pretensiones') {
+        if (tipo == 'problemas') {
           data = {
-            'problema': problema,
+            'pretension': pretension,
             'causa': causa
           }
         }
@@ -8690,16 +8697,16 @@ angular.module('GenesisApp')
           swal.close();
           if (data && data.toString().substr(0, 3) != '<br') {
 
-            if (tipo == 'problemas') {
-              $scope.listadoProblemas = data
+            if (tipo == 'pretension') {
+              $scope.listadoPretension = data
             }
             if (tipo == 'causas') {
               $scope.listadoCausasProblemas = data
               $scope.registro.selectCausaProblema = '';
             }
-            if (tipo == 'pretensiones') {
-              $scope.listadoPretension = data
-              $scope.registro.selectPretension = '';
+            if (tipo == 'problemas') {
+              $scope.listadoProblemas = data
+              $scope.registro.selectProblema = '';
             }
 
             setTimeout(() => { $scope.$apply(); }, 1000);
@@ -8709,13 +8716,13 @@ angular.module('GenesisApp')
         })
       }
 
-      $scope.obtenerListadoProblemas_Causas_Pretensiones('problemas');
+      $scope.obtenerListadoProblemas_Causas_Pretensiones('pretension');
 
 
       $scope.guardarCausaProblemaPretension = function () {
         // guardarCausaProblemaPretension
         setTimeout(() => { $scope.$apply(); }, 500);
-        if (!$scope.registro.selectProblema || !$scope.registro.selectCausaProblema || (!$scope.registro.selectPretension && $scope.listadoPretension.length > 0)) {
+        if (!$scope.registro.selectProblema || !$scope.registro.selectCausaProblema || !$scope.registro.selectPretension) {
           swal('¡Mensaje!', 'Diligencie los campos', 'info').catch(swal.noop);
           return
         }

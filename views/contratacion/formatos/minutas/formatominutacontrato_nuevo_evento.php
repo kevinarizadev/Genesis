@@ -582,6 +582,16 @@
                       </div>
                     </li>
                   </ul>
+                  <ul style="margin: 0;list-style-type: none;">
+                    <li>
+                      <label for="tipo_capita_4">TRANSPORTE ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_4" name="tipo_capita_4" onclick="return false;">
+                    </li>
+                    <li>
+                      <label for="tipo_capita_5">TRANSPORTE NO ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_5" name="tipo_capita_5" onclick="return false;">
+                    </li>
+                  </ul>
                 </div>
               </td>
             </tr>
@@ -1555,14 +1565,12 @@
               reportados en el presente acuerdo de voluntades.</div>
 
             <div class="minuta_clausula">Cláusula 35. Pólizas del contrato.</div>
-            <div class="minuta_texto">El PSS mantendrá vigente una Póliza de responsabilidad civil, contractual y
-              extracontractual médica para amparo a terceros por servicios derivados de la atención en salud, por un
-              valor asegurado que corresponda al 10% del presente contrato y que ampare los siniestros ocurridos durante
-              el tiempo de ejecución de este y que puedan ser conocidos por parte de la ERP posterior a la ejecución del
-              contrato hasta por tres (3) años después de finalizada la vigencia contractual, quedando obligada a
-              responder con recursos propios por la diferencia que pueda existir entre el valor asegurado y el valor de
-              las eventuales indemnizaciones derivadas del daño ocurrido. El PSS hará entrega de la póliza a la ERP
-              dentro de los tres (3) días siguientes a la suscripción del contrato. <span
+            <div class="minuta_texto">El PSS mantendrá vigente una Póliza de responsabilidad civil, contractual y extracontractual para
+              amparo a terceros por servicios derivados de la atención en salud, por un valor asegurado que corresponda
+              al 10% del presente contrato y que ampare el tiempo de ejecución de este, quedando obligada a responder
+              con recursos propios por la diferencia que pueda existir entre el valor asegurado y el valor de las
+              eventuales indemnizaciones derivadas del daño ocurrido. El PSS hará entrega de la póliza a la ERP dentro
+              de los tres (3) días siguientes a la suscripción del contrato. <span
                 class="minuta_paragrafo">PARÁGRAFO PRIMERO.</span> La aprobación de la póliza aportada será remitida por
               parte de la ERP al PSS en los 5 días hábiles siguientes. <span class="minuta_paragrafo">PARÁGRAFO
                 SEGUNDO.</span> El PSS responderá por todos los daños patrimoniales y extrapatrimoniales que sean
@@ -1682,7 +1690,7 @@
                 <tr>
                   <td>Anexo 3. Modelo de atención de Cajacopi EPS</td>
                   <td class="text-center">SI</td>
-                  <td>Anexo 13. Link de Redes Integrales de Atención en Salud</td>
+                  <td>Anexo 13. Enlace de Redes Integrales de Atención en Salud</td>
                   <td class="text-center">
                     {{ DATA.NOMBRE_ASUNTO.split('-')[0].trim() == 'AL' ? 'NO': 'SI'}}
                   </td>
@@ -1859,8 +1867,7 @@
           <div class="header-info text-left d-flex">
             <img style="width: 8em;" src="../../../../assets/images/logo_cajacopieps.png" alt="cajacopi">
             <div class="text-bold7">
-              ANEXO N° 18 CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE
-              PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO
+            ANEXO N° 18 CONTRATO {{DATA.DOC_CONTRATO}}-{{DATA.NUMERO_CONTRATO}}-{{DATA.INICIA.split('/')[2]}} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO
               SUSCRITO ENTRE {{DATA.RAZON_SOCIAL}} Y {{DATA.RAZON_SOCIAL_IPS}}</div>
           </div>
         </th>

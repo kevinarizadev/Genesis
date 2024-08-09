@@ -130,27 +130,27 @@
 											</div> -->
 
 											<div style="position: absolute;right: 5vw;"
-												ng-if="Rol_Permisos.GESTIONAR_TUTELA == 'S' && registro.pendiente_archivar == 'N'">
+												ng-if="Rol_Permisos.GESTIONAR_TUTELA == 'S' && registro.pendiente_solicitud == 'N'">
 												<div class="tooltip">
 													<a class="btn-floating btn waves-effect waves-light red"
 														ng-click="abrirModal('1')">
 														<i class="material-icons dp48">markunread_mailbox</i>
 													</a>
-													<span class="tooltiptext" style="font-size: 15px;">Solicitar
-														Archivar Tutela</span>
+													<span class="tooltiptext" style="font-size: 15px;">Solicitud
+														Tutela</span>
 												</div>
 											</div>
 
 											<!-- Rol_Permisos.REFERENTE_NACIONAL && registro.pendiente_archivar == 'P' -->
 											<div style="position: absolute;right: 5vw;"
-												ng-if="Rol_Permisos.REFERENTE_NACIONAL == 'S' && registro.pendiente_archivar == 'P'">
+												ng-if="Rol_Permisos.REFERENTE_NACIONAL == 'S' && registro.pendiente_solicitud == 'P'">
 												<div class="tooltip">
 													<a class="btn-floating btn waves-effect waves-light red"
 														ng-click="abrirModal('1')">
 														<i class="material-icons dp48">mode_edit</i>
 													</a>
 													<span class="tooltiptext" style="font-size: 15px;">Revisar Solicitud
-														de Archivar</span>
+														de Tutela</span>
 												</div>
 											</div>
 
@@ -921,36 +921,38 @@
 
                       <!-- CAUSAS PROBLEMAS PRETENSION -->
                       <div class="col l12 m12 s12 m-b"  ng-show="Rol_Permisos.GESTIONAR_TUTELA == 'S'">
-												<blockquote>Problemas, Causas y Pretensiones</blockquote>
-												<div class="input-field col l3 m12 s12">
-													<label class="labelper">Problemas</label>
+												<blockquote>Pretensiones, Causas y Problemas</blockquote>
+                        <div class="input-field col l3 m12 s12">
+													<label class="labelper">Pretensiones</label>
 													<select class="select-chosen-eps"
-														ng-model="registro.selectProblema"
-														ng-change="obtenerListadoProblemas_Causas_Pretensiones('causas', registro.selectProblema)">
+														ng-model="registro.selectPretension"
+                            ng-change="obtenerListadoProblemas_Causas_Pretensiones('causas', registro.selectPretension)">
 														<option value="">SELECCIONAR</option>
-														<option value="{{x.TUTN_CODIGO}}" ng-repeat="x in listadoProblemas">
-															{{x.TUTC_NOMBRE}}</option>
+														<option value="{{x.TUTN_CODIGO}}" ng-repeat="x in listadoPretension">
+															{{x.TUTN_CODIGO+'. '+ x.TUTC_NOMBRE}}</option>
 													</select>
 												</div>
 												<div class="input-field col l3 m12 s12">
 													<label class="labelper">Causas</label>
 													<select class="select-chosen-eps"
 														ng-model="registro.selectCausaProblema"
-														ng-change="obtenerListadoProblemas_Causas_Pretensiones('pretensiones', registro.selectProblema, registro.selectCausaProblema)">
+														ng-change="obtenerListadoProblemas_Causas_Pretensiones('problemas', registro.selectPretension, registro.selectCausaProblema)">
 														<option value="">SELECCIONAR</option>
 														<option value="{{x.TUTN_CODIGO}}" ng-repeat="x in listadoCausasProblemas">
-															{{x.TUTC_NOMBRE}}</option>
+															{{x.TUTN_CODIGO+'. '+ x.TUTC_NOMBRE}}</option>
 													</select>
 												</div>
-												<div class="input-field col l3 m12 s12">
-													<label class="labelper">Pretensiones</label>
+                        <div class="input-field col l3 m12 s12">
+													<label class="labelper">Problemas</label>
 													<select class="select-chosen-eps"
-														ng-model="registro.selectPretension">
+														ng-model="registro.selectProblema"
+														>
 														<option value="">SELECCIONAR</option>
-														<option value="{{x.TUTN_CODIGO}}" ng-repeat="x in listadoPretension">
-															{{x.TUTC_NOMBRE}}</option>
+														<option value="{{x.TUTN_CODIGO}}" ng-repeat="x in listadoProblemas">
+															{{x.TUTN_CODIGO +'. '+ x.TUTC_NOMBRE}}</option>
 													</select>
 												</div>
+
 												<div class="input-field col l2 m12 s12">
 													<button class="btn btn-primary" type="button"
 														ng-disabled="!registro.selectProblema || !registro.selectCausaProblema"
@@ -969,9 +971,9 @@
                           <thead>
                             <tr>
                               <th>#</th>
+                              <th>Pretension</th>
                               <th>Causa</th>
                               <th>Problema</th>
-                              <th>Pretension</th>
                               <th>-</th>
                             </tr>
                           </thead>
@@ -979,9 +981,9 @@
                             <tr ng-repeat="x in listadoCausaProblemaPretension">
 
                               <td>{{$index + 1}}</td>
-                              <td>{{x.PROBLEMA_NOMBRE}}</td>
-                              <td>{{x.CAUSA_NOMBRE}}</td>
                               <td>{{x.PRETENSION_NOMBRE}}</td>
+                              <td>{{x.CAUSA_NOMBRE}}</td>
+                              <td>{{x.PROBLEMA_NOMBRE}}</td>
                               <td>
                                 <i class="icon-trash c-pointer" title="Eliminar" ng-click="quitarCausaProblemaPretension(x, $index);" ng-if="Rol_Permisos.GESTIONAR_TUTELA == 'S'"></i>
                               </td>
@@ -1330,7 +1332,7 @@
 									<div class="card-content">
 										<h5 style="display: flex;">Detalles de Acción de Tutela (Fallo de Tutela)
 											<a href="" ng-click="despl3=!despl3"
-												class="zmdi {{despl3 ? 'zmdi-chevron-down' : 'zmdi-chevron-up'}}"
+												class="zmdi {{despl3 ? 'zmdi-chevron-up' : 'zmdi-chevron-down'}}"
 												title="{{despl3 ? '' : 'Desplegar información'}}" style="padding-left: 5px"></a>
 
 										</h5>
@@ -3612,12 +3614,22 @@
 														</div>
 														<div class="file-path-wrapper">
 															<input class="file-path validate" type="text"
-																placeholder="Adjuntar archivo" id="archivoconincdes"
-																ng-model="archivoconincdes"
-																ng-change="loadFile('archivoconincdes','archivoconincdesext', 'archivofechaconinc', 'archivoconincdes')">
+																placeholder="Adjuntar archivo" id="archivoconincdess"
+																ng-model="archivoconincdess"
+																ng-change="loadFile('archivoconincdes','archivoconincdesext', 'archivofechaconinc', 'archivoconincdess')">
 														</div>
 													</div>
 												</div>
+                        <div class="input-field col l3 m12 s12">
+                          <label class="labelper">Decisión de Sanción</label>
+                          <select class="select-chosen-eps"
+                            ng-model="detalles.decision_decisioninc" required>
+                            <option value="" disabled>SELECCIONAR</option>
+                            <option value="1">CONFIRMA</option>
+                            <option value="2">REVOCA</option>
+                            <option value="3">MODIFICA</option>
+                          </select>
+                        </div>
 												<!-- FRONTEND RECEPCION INCIDENTES CONSULTA CNVU 12/12/2019-->
 												<div class="col l12 m12 s12" style="margin-bottom: 17px;">
 													<div class="input-field col l2 m12 s12"
@@ -3690,9 +3702,9 @@
 														</div>
 														<div class="file-path-wrapper">
 															<input class="file-path validate" type="text"
-																placeholder="Adjuntar archivo" id="archivocieincdes"
-																ng-model="archivocieincdes"
-																ng-change="loadFile('archivocieincdes','archivocieincdesext', 'archivofechaautinc', 'archivocieincdes')">
+																placeholder="Adjuntar archivo" id="archivocieincdess"
+																ng-model="archivocieincdess"
+																ng-change="loadFile('archivocieincdes','archivocieincdesext', 'archivofechaautinc', 'archivocieincdess')">
 														</div>
 													</div>
 												</div>
@@ -5234,10 +5246,9 @@
 				<div class="ngdialog-close" style="float: right; font-size: 50px; padding-right: 20px;color: #FFF;"
 					ng-click="cerrarModal('1')"></div>
 				<div class="card-content default-background">
-					<h5 style="margin-bottom:6px;font-weight:600;color:white;padding-left:30px">Solicitud de Archivar
-						Tutela</h5>
+					<h5 style="margin-bottom:6px;font-weight:600;color:white;padding-left:30px">Solicitud de Tutela</h5>
 				</div>
-				<div class="row" ng-show="registro.pendiente_archivar == 'N'">
+				<div class="row" ng-show="registro.pendiente_solicitud == 'N'">
 					<div class="col s12 m12 l12">
 						<!-- <div class="col s11 m11 l11 switch" style="margin-top: 20px;">
 							<label for="estadoTutela" class="labelper mb-10">Estado de Tutela:</label>
@@ -5246,7 +5257,17 @@
 									ng-model="registro.estadoTutelaModal"><span class="lever"></span>Activo
 							</label>
 						</div> -->
-						<div class="col s11 m11 l11" style="margin-top: 20px;">
+            <div class="input-field col l4 m4 s4" style="margin-bottom: 40px;">
+              <div class="switch">
+                <label for="tipoSolicitud_Tutela" class="labelper">Tipo Solicitud</label>
+                <label>
+                  Archivar<input id="tipoSolicitud_Tutela" type="checkbox"
+                    ng-model="registro.tipoSolicitud_Tutela"
+                    ><span class="lever"></span>Desistir
+                </label>
+              </div>
+            </div>
+						<div class="col s12 m12 l12" style="margin-top: 20px;">
 							<div class="form-group shadow-textarea">
 								<!--<label style=" margin-top: -20px;">Descripción caracteres: {{count}}</label>-->
 								<textarea class="form-control z-depth-1" id="exampleFormControlTextarea6" rows="3"
@@ -5288,7 +5309,9 @@
 								</div>
 							</div>
 							<div class="input-field col l7 m7 s7" style="margin-top: 0px;"
-								ng-hide="hdeMedioRecepcionEstadoTutela">
+								ng-show="registro.medioRecepcionEstadoTutela">
+							<!-- <div class="input-field col l7 m7 s7" style="margin-top: 0px;"
+								ng-hide="hdeMedioRecepcionEstadoTutela"> -->
 								<div class="file-field input-field">
 									<div class="btn">
 										<span class="white-text">Archivo</span>
@@ -5313,35 +5336,40 @@
 					</div>
 				</div>
 				<!--  -->
-				<div class="row" ng-show="registro.pendiente_archivar == 'P'">
+				<div class="row" ng-show="registro.pendiente_solicitud == 'P'">
 					<div class="col s12 m12 l12" style="margin-top: 4vh;">
-						<div class="input-field col l4 m4 s4">
+            <div class="input-field col l2 m2 s2">
+							<label class="labelper">Tipo Solicitud</label>
+							<input style="width: 100%;" type="text" ng-model="registro.pendiente_solicitud_tipo"
+								readonly>
+						</div>
+						<div class="input-field col l3 m3 s3">
 							<label class="labelper">Fecha de solicitud</label>
-							<input style="width: 100%;" type="text" ng-model="registro.pendiente_archivar_fechacargue"
-								disabled>
+							<input style="width: 100%;" type="text" ng-model="registro.pendiente_solicitud_fechacargue"
+								readonly>
 						</div>
 						<div class="input-field col l4 m4 s4">
 							<label class="labelper">Funcionario que solicita</label>
-							<input style="width: 100%;" type="text" ng-model="registro.pendiente_archivar_responsable"
-								disabled>
+							<input style="width: 100%;" type="text" ng-model="registro.pendiente_solicitud_responsable"
+								readonly>
 						</div>
 						<div class="input-field col l2 m2 s2">
 							<button class="btnSoportes white-text default-linear-gradient c-pointer m-l m-r"
 								type="button" title="Ver Soporte"
-								ng-click="descargafile(registro.pendiente_archivar_adjunto)">Ver Soporte</button>
+								ng-click="descargafile(registro.pendiente_solicitud_adjunto)">Ver Soporte</button>
 						</div>
 						<div class="col s12 m12 l12" style="margin-top: 20px;">
 							<div class="form-group shadow-textarea">
 								<label style=" margin-top: -20px;">Observación</label>
 								<textarea class="form-control z-depth-1" rows="3"
-									ng-model="registro.pendiente_archivar_observacion" cols="50"
+									ng-model="registro.pendiente_solicitud_observacion" cols="50"
 									style="margin: 0px;height: 134px; text-transform: uppercase;" disabled></textarea>
 							</div>
 						</div>
 					</div>
 					<form ng-submit="gestionarEstadoTutela()">
 						<div class="col s12 m12 l12">
-							<div class="col s2 m2 l2 switch" style="margin-top: 20px;">
+							<div class="col s4 m4 l4 switch" style="margin-top: 20px;">
 								<label for="estadoTutela" class="labelper mb-10">Gestionar Estado de la Tutela:</label>
 								<label>
 									Rechazar<input id="estadoTutela" type="checkbox"

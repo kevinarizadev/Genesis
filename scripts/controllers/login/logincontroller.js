@@ -43,11 +43,11 @@ angular.module('GenesisApp', ['ngStorage', 'toastr', 'ngDialog', 'chieffancypant
         // $scope.nitIps = "901139193"; // MIRED
         // $scope.userIps = "1069481333";
 
-        // $scope.nitIps = "900073223"; // LOGIFARMA
-        // $scope.userIps = "22564800";
+        $scope.nitIps = "900073223"; // LOGIFARMA
+        $scope.userIps = "22564800";
 
-        $scope.nitIps = "812000527"; // CLINICA SAHAGUN
-        $scope.userIps = "78762044";
+        // $scope.nitIps = "812000527"; // CLINICA SAHAGUN
+        // $scope.userIps = "78762044";
 
         $scope.passIps = "Cajacopi2024.";
 

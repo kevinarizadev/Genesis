@@ -586,6 +586,16 @@
                       </div>
                     </li>
                   </ul>
+                  <ul style="margin: 0;list-style-type: none;">
+                    <li>
+                      <label for="tipo_capita_4">TRANSPORTE ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_4" name="tipo_capita_4" onclick="return false;">
+                    </li>
+                    <li>
+                      <label for="tipo_capita_5">TRANSPORTE NO ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_5" name="tipo_capita_5" onclick="return false;">
+                    </li>
+                  </ul>
                 </div>
               </td>
             </tr>
@@ -1699,7 +1709,7 @@
                 <tr>
                   <td>Anexo 3. Modelo de atención de Cajacopi EPS</td>
                   <td class="text-center">SI</td>
-                  <td>Anexo 13. Link de Redes Integrales de Atención en Salud</td>
+                  <td>Anexo 13. Enlace de Redes Integrales de Atención en Salud</td>
                   <td class="text-center">NO</td>
                 </tr>
                 <tr>
@@ -1860,7 +1870,7 @@
     </tbody>
   </table>
 
-  <!--  -->
+    <!--  -->
   <!-- ANEXOS EPS NUEVA -->
   <table class="report-container" style="page-break-before:always">
     <thead class="report-header">

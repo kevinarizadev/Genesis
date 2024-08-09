@@ -561,6 +561,16 @@
                       </div>
                     </li>
                   </ul>
+                  <ul style="margin: 0;list-style-type: none;">
+                    <li>
+                      <label for="tipo_capita_4">TRANSPORTE ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_4" name="tipo_capita_4" onclick="return false;">
+                    </li>
+                    <li>
+                      <label for="tipo_capita_5">TRANSPORTE NO ASISTENCIAL</label>
+                      <input type="checkbox" id="tipo_capita_5" name="tipo_capita_5" onclick="return false;">
+                    </li>
+                  </ul>
                 </div>
               </td>
             </tr>
@@ -1526,7 +1536,7 @@
 
             <div class="minuta_clausula">Cláusula 33. Pólizas del contrato.</div>
             <div class="minuta_texto">
-              El PSS mantendrá vigente una Póliza de responsabilidad civil, contractual y extracontractual médica para
+            El PSS mantendrá vigente una Póliza de responsabilidad civil, contractual y extracontractual para
               amparo a terceros por servicios derivados de la atención en salud, por un valor asegurado que corresponda
               al 10% del presente contrato y que ampare el tiempo de ejecución de este, quedando obligada a responder
               con recursos propios por la diferencia que pueda existir entre el valor asegurado y el valor de las
@@ -1786,7 +1796,7 @@
                 <tr>
                   <td>Anexo 3. Modelo de atención de Cajacopi EPS</td>
                   <td class="text-center">SI</td>
-                  <td>Anexo 13. Link de Redes Integrales de Atención en Salud</td>
+                  <td>Anexo 13. Enlace de Redes Integrales de Atención en Salud</td>
                   <td class="text-center">SI</td>
                 </tr>
                 <tr>
@@ -1939,7 +1949,7 @@
     </tbody>
   </table>
 
-  <!--  -->
+    <!--  -->
   <!-- ANEXOS EPS NUEVA -->
   <table class="report-container" style="page-break-before:always">
     <thead class="report-header">

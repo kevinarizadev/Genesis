@@ -588,7 +588,7 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
       $timeout(function () {
         document.querySelector('#Hoja_Modal').classList.remove('Ani_Down');
       }, 1000);
-      $scope.validarSoporteOnbase();
+      // $scope.validarSoporteOnbase();
     }, 500);
   }
   $scope.Num_Esta = function (Val, Acc) {
@@ -2448,6 +2448,40 @@ angular.module('GenesisApp').controller('auditoriacuentasController', ['$scope',
     });
   }
 
+  $scope.getNameFactura = function (factura) {
+    const facturas = {
+      FAC: "Factura de venta en salud",
+      HEV: "Resumen de atención u hoja de evolución",
+      EPI: "Epicrisis",
+      PDX: "Resultado de los procedimientos de apoyó diagnóstico",
+      DQX: "Descripción quirúrgica",
+      RAN: "Registro de anestesia",
+      CRC: "Comprobante de recibido del usuario",
+      TAP: "Traslado asistencial de pacientes",
+      TNA: "Transporte no asistencial ambulatorio de la persona",
+      FAT: "Factura de venta por el aseguradora SOAT, la ADRES o la entidad que haga sus veces",
+      FMO: "Factura de venta del material de osteosíntesis expedida por el proveedor",
+      OPF: "Orden o prescripción facultativa",
+      LPD: "Lista de precios",
+      HAU: "Hoja de atención de urgencia",
+      HAO: "Hoja de atención odontológica",
+      HAM: "Hoja de administración de medicamentos",
+      PDE: "Evidencia del envio del trámite respectivo"
+    }
+    return facturas[factura] || 'Otros documentos'
+  }
+
+  $scope.getColor = function (x) {
+    if (x.DIAS_REST >= 12){
+      return 'green'
+    }
+    if (x.DIAS_REST >= 6 & x.DIAS_REST <=11){
+      return 'orange'
+    }
+    if (x.DIAS_REST <= 5){
+      return 'red'
+    }
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////
   // MODALS/////////////////////////////////////////////////////////////////////////////

@@ -18,12 +18,12 @@
       </li>
       <li>
         <ul class="tabs transparent" style="overflow:hidden;">
-          <li class="tab col w-auto">
-            <a ng-click="SetTab(1);" href class="active">Facturas<i class="icon-docs"></i></a>
-          </li>
           <li class="tab col w-auto" ng-if="Hoja2.datos.EFAC_ADMIN == 'S'">
-            <a ng-click="SetTab(2)" href>Permisos Usuarios
+            <a ng-click="SetTab(2)" href class="active">Permisos Usuarios
               <i class="icon-users"></i></a>
+          </li>
+          <li class="tab col w-auto">
+            <a ng-click="SetTab(1);" href>Facturas<i class="icon-docs"></i></a>
           </li>
           <li class="tab col w-auto" ng-if="Hoja2.datos.EFAC_ADMIN == 'S'">
             <a ng-click="SetTab(3)" href>Permisos IPS
@@ -41,14 +41,16 @@
 
     <div class="foot4 divcardcustom default-linear-gradient">
       <div class="text-al divcardcustom2">
-        <strong class="switch" style="font-weight:600">Listado de Facturas
+        <strong class="switch" style="font-weight:600" ng-show="Hoja1.vista == 0">Listado de IPS
           ({{List1.listadoFacturas.length}})</strong>
+        <strong class="switch" style="font-weight:600" ng-show="Hoja1.vista == 1">Listado de Facturas
+          ({{List1.listadoFacturas_Detalle.length}})</strong>
 
         <div class="tooltip">
           <i class="icon-cw-circle cursor-pointer" ng-click="obtenerListadoFacturas()"></i>
           <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Actualizar</span>
         </div>
-        <div class="tooltip">
+        <div class="tooltip" ng-show="Hoja1.vista == 1">
           <i class="icon-download cursor-pointer" ng-click="descargaExcel()"></i>
           <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Descargar</span>
         </div>
@@ -61,27 +63,49 @@
             <span ng-class="{'activo':Hoja1.estado}">Gestionadas</span>
           </label>
         </div>
+
         <div class="col s3 no-padding label-new right"
-          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;">
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;" ng-show="Hoja1.vista == 0">
           <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
-            autocomplete="off" placeholder="Buscar..." ng-model="Hoja1.Filtro">
+            autocomplete="off" placeholder="Buscar..." ng-model="Hoja1.Filtro0">
+        </div>
+        <div class="col s3 no-padding label-new right"
+          style="width: 25%;display: inline-flex;margin-right: -5px;margin-top: -2px;" ng-show="Hoja1.vista == 1">
+          <input class="margin border-none input-text-new black-text white w-100 m-l" style="text-align:right;"
+            autocomplete="off" placeholder="Buscar..." ng-model="Hoja1.Filtro1">
+        </div>
+        <div class="tooltip right" ng-show="Hoja1.vista == 1">
+          <i class="icon-left-big cursor-pointer" ng-click="Hoja1_atras()"></i>
+          <span class="tooltiptext" style="font-size: 12px;width: 60px;margin-left: -30px;">Atras</span>
         </div>
       </div>
     </div>
-
-
-    <!-- {
-      "PRESTADOR": "900073223-LOGIFARMA S.A.S.",
-      "OCR_ESTADO_FACTURA": "V",
-      "RECIBO": "147997",
-      "ID_FACTURA": "6633e0fc67a72a40ca510b3c",
-      "OCR_FECHA_REGISTRO": "06/05/2024",
-      "FACTURA": "LGFM1186729",
-      "RESPONSABLE_ASIGNADO": "1042454684-ARIZA NUNEZ KEVIN JAVIER",
-      "ESTADO_GESTION": "ACTIVA"
-  } -->
     <!-- ELEGIR -->
-    <div style="max-height: 90vh;overflow-y: auto;">
+    <div style="max-height: 90vh;overflow-y: auto;" ng-if="Hoja1.vista == 0">
+      <table class="bordered table_center_align highlight border-color default-border"
+        style="width:100%;font-size:6px !important;border-width: medium;">
+        <thead class="default-border default-color">
+          <th>Prestador</th>
+          <th>Valor Total</th>
+          <th>Facturas</th>
+          <th>-</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="x in List1.listadoFacturas | filter:Hoja1.Filtro">
+            <td>{{x.PRESTADOR}}</td>
+            <td>$ {{FormatPesoNumero(x.VALOR_TOTAL)}}</td>
+            <td>{{x.CANTIDAD}}</td>
+            <td>
+              <i class="icon-eye c-pointer" title="Ver detalle" ng-click="obtenerListadoFacturas_Detalle(x)"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- //-// -->
+
+    <!-- ELEGIR -->
+    <div style="max-height: 90vh;overflow-y: auto;" ng-if="Hoja1.vista == 1">
       <table class="bordered table_center_align highlight border-color default-border"
         style="width:100%;font-size:6px !important;border-width: medium;">
         <thead class="default-border default-color">
@@ -90,11 +114,11 @@
           <th>Factura</th>
           <th>Valor</th>
           <th>Responsable</th>
-          <th>Fecha Registro</th>
-          <th>Estado Gestion</th>
+          <th>Dias Restantes</th>
+          <!-- <th>Estado Gestion</th> -->
         </thead>
         <tbody>
-          <tr ng-repeat="x in List1.listadoFacturas | filter:Hoja1.Filtro">
+          <tr ng-repeat="x in List1.listadoFacturas_Detalle | filter:Hoja1.Filtro1">
             <td>{{x.PRESTADOR}}</td>
             <td>{{x.RECIBO}}</td>
             <td>{{x.FACTURA}}
@@ -102,9 +126,9 @@
             </td>
             <td>$ {{FormatPesoNumero(x.VALOR_FACTURA)}}</td>
             <td>{{x.RESPONSABLE_ASIGNADO}}</td>
-            <td>{{x.OCR_FECHA_REGISTRO}}</td>
             <td>
-              <span class="status {{x.ESTADO_GESTION == 'ACTIVA' ? 'orange' : 'green'}}">{{x.ESTADO_GESTION}}</span>
+              <span class="c-pointer status {{getColor(x)}}">
+                <b>{{x.DIAS_REST}}</b></span>
             </td>
           </tr>
         </tbody>

@@ -1422,8 +1422,7 @@ function cambiarsupervisor()
 function P_LISTA_TIPOS_ADJUNTOS(){
   require_once('../config/dbcon.php');
   global $request;
-  $consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTR.P_LISTA_TIPOS_ADJUNTOS(:v_pminuta,:v_presponse); end;');
-  oci_bind_by_name($consulta,':v_pminuta',$request->minuta);
+  $consulta = oci_parse($c,'BEGIN PQ_GENESIS_CONTR.P_LISTA_TIPOS_ADJUNTOS(:v_presponse); end;');
   $cursor = oci_new_cursor($c);
   oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
   oci_execute($consulta);
@@ -1514,11 +1513,11 @@ function cargarSoporteAdjuntoEnv()
   global $request;
   $archivo = $request->base64;
   $path = 'Contratacion/Soportes';
+  $path = $path.'/'.$request->carpeta;
   if(isset($request->ruta)){
     $x_ruta = explode('/', $request->ruta);
     $name = $x_ruta[count($x_ruta)-1];
   }else{
-    $path = $path.'/'.$request->carpeta;
     $hoy = date('dmY_His');
     $name = $request->name .  '_' . $hoy .'.'.$request->ext;
   }
@@ -1565,4 +1564,23 @@ function P_VALIDA_PENDIENTE_SOPORTE()
     echo 0;
   }
   oci_close($c);
+}
+
+
+function P_LISTA_DEVOLUCIONES_RESPUESTAS()
+{
+  require_once('../config/dbcon_prod.php');
+  global $request;
+  $consulta = oci_parse($c, 'BEGIN PQ_GENESIS_CONTR.P_LISTA_DEVOLUCIONES_RESPUESTAS(:v_nit,:v_renglon,:v_presponse); end;');
+  oci_bind_by_name($consulta, ':v_nit', $request->nit);
+  oci_bind_by_name($consulta, ':v_renglon', $request->renglon);
+  $cursor = oci_new_cursor($c);
+  oci_bind_by_name($consulta, ':v_presponse', $cursor, -1, OCI_B_CURSOR);
+  oci_execute($consulta);
+  oci_execute($cursor, OCI_DEFAULT);
+  $datos = [];
+  oci_fetch_all($cursor, $datos, 0, -1, OCI_FETCHSTATEMENT_BY_ROW | OCI_ASSOC);
+  oci_free_statement($consulta);
+  oci_free_statement($cursor);
+  echo json_encode($datos);
 }

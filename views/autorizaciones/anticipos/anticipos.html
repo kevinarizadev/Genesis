@@ -298,35 +298,38 @@
       </div>
       <div class='steps-container'>
         <div class='steps' id="paso1">
-          <span>Asistente Regional</span>
+          <span>1. Asistente Regional</span>
         </div>
         <div class='steps' id="paso2">
-          <span>Auditor Regional</span>
+          <span>2. Auditor Regional</span>
         </div>
         <div class='steps' id="paso3">
-          <span>Gerente Regional</span>
+          <span>3. Gerente Regional</span>
         </div>
         <div class='steps' id="paso4">
-          <span>Asistente Nacional</span>
+          <span>4. Asistente Nacional</span>
         </div>
-        <!-- <div class='steps' id="paso5">
-          <span>Especialista Nacional</span>
-        </div> -->
-        <div class='steps' id="paso6">
+        <div class='steps' id="paso5">
+          <span>5. Especialista Nacional</span>
+        </div>
+        <div class='steps' id="paso6" style="display: none;">
           <span>Coordinador Nacional</span>
         </div>
-        <div class='steps' id="paso7">
+        <div class='steps' id="paso7" style="display: none;">
           <span>Subdirector de Salud</span>
         </div>
         <br>
         <div class='steps' id="paso8">
-          <span>Subgerente General</span>
+          <span>6. Subgerente General</span>
         </div>
         <div class='steps' id="paso9">
-          <span>Asistente Nacional Pag.</span>
+          <span>7. Asistente Nacional Pag.</span>
         </div>
         <div class='steps' id="paso10" style="margin-top: 2px;">
-          <span>Asistente Nacional</span>
+          <span>8. Asistente Nacional</span>
+        </div>
+        <div class='steps' id="paso11">
+          <span>9. Prestación Efectiva</span>
         </div>
         <!-- <div class='steps' id="paso8">
           <span>Director de Salud</span>
@@ -1640,6 +1643,53 @@
           Procesar
         </button>
       </div>
+      <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+      <!-- Soporte Prestacion Efectiva Cargo 286 -->
+      <div class="col s3 no-padding label-new m-b" ng-show="HojaAnt_Botones_Prestacion_Efectiva || HojaAnt.Info.Status >= 11">
+        <input type="date" class="margin border-none input-date-new w-100 m-l"
+          ng-model="HojaAnt.Soportes.FechaPrestacionEfectiva" max="{{SysDay | date:'yyyy-MM-dd'}}" ng-show="HojaAnt.Info.Status == 11">
+        <input type="text" class="margin border-none input-date-new w-100 m-l" ng-show="HojaAnt.Info.Status == 12"
+          ng-model="HojaAnt.Soportes.FechaPrestacionEfectiva_TEXTO" readonly>
+        <label id="HojaAnt_FechaPrestacionEfectiva_Label">Fecha de Prestación Efectiva</label>
+      </div>
+      <!-- // -->
+      <div class="col s4 no-padding label-new m-b" id="AdjustSop_Prest_Efec"
+        ng-show="HojaAnt_Botones_Prestacion_Efectiva && HojaAnt.Info.Status == 11">
+        <label class="m-l" style="width: max-content;" id="HojaAnt_Soporte_PrestacionEfectiva_Label">Soporte de Prestación Efectiva</label>
+        <div class="file-field input-field gray-input m-l input-file-radiu"
+          style="margin: 0;width: -webkit-fill-available;"
+          ng-class="(HojaAnt.Soportes.Soporte_PrestacionEfectiva_URL==null)? '' : 'input-file-radius-cargado';">
+          <div class="right">
+            <span class="black-text">
+              <i class="icon-folder-open-1 default-color" style="line-height: 2rem;"></i>
+            </span>
+            <input type="file" id="HojaAnt_Soporte_PrestacionEfectiva" accept=".pdf">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path HojaAnt_Archivos" type="text" placeholder="Adjunte un archivo (pdf)"
+              style="border-radius: 0;height: 2rem;border-bottom: 0;" id="Sop_LabAnt_Soporte_PrestacionEfectiva"
+              ng-model="Sop_LabAnt.Soporte_PrestacionEfectiva"
+              ng-change="loadFileAnt('Soportes', 'Soporte_PrestacionEfectiva_URL', 'Soporte_PrestacionEfectiva_B64', 'HojaAnt_Soporte_PrestacionEfectiva', 'Sop_LabAnt_Soporte_PrestacionEfectiva')">
+          </div>
+        </div>
+        <div class="VistaFile gray-input input-file-radiu" style="position: relative;display: inline-block;"
+          ng-if="HojaAnt.Soportes.Soporte_PrestacionEfectiva_URL!=null"
+          ng-class="(HojaAnt.Soportes.Soporte_PrestacionEfectiva_URL==null)? 'xx' : 'input-file-radius-cargado2';">
+          <i class="icon-eye default-color" style="cursor: pointer;font-size: 18px;"
+            ng-click="openInNewTab(HojaAnt.Soportes.Soporte_PrestacionEfectiva_URL)"></i>
+          <iframe id="Iframe_Prest_Efec" class="Iframe" ng-src="{{HojaAnt.Soportes.Soporte_PrestacionEfectiva_URL}}"></iframe>
+        </div>
+      </div>
+
+      <div class="col s12 m12 l12 center m-b" ng-if="HojaAnt_Botones_Prestacion_Efectiva">
+        <button id="buton" class="btn"
+          style="border-radius: 20px;background-color:rgb(71, 71, 165)!important; margin-right: 2em;"
+          ng-click="Antes_H1Aprobar_Anticipo_PrestacionEfectiva()">
+          Procesar
+        </button>
+      </div>
+      <!-- Soporte Prestacion Efectiva Cargo 286 -->
+      <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     </div>
   </div>
@@ -4466,9 +4516,9 @@
       z-index: 1;
     }
 
-    .steps span:before {
+    /* .steps span:before {
       content: counter(steps) ". ";
-    }
+    } */
 
     .steps.active span {
       /* font-weight: bold; */

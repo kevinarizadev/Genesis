@@ -611,25 +611,25 @@ angular.module('GenesisApp')
       }
       /* //////////////////////////////CARGAR AMBOS DATATABLES//////////////////////////////// */
       $scope.inicio = function () {
-        if ($scope.actualizar == false) {
-          swal({
-            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando.</p>',
-            width: 200,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            animation: false
-          }).catch(swal.noop);
-        } else {
-          swal({
-            html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando.</p>',
-            width: 200,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            animation: false
-          }).catch(swal.noop);
-        }
+        // if ($scope.actualizar == false) {
+        swal({
+          html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando.</p>',
+          width: 200,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          animation: false
+        }).catch(swal.noop);
+        // } else {
+        //   swal({
+        //     html: '<div class="loading"><div class="default-background"></div><div class="default-background"></div><div class="default-background"></div></div><p style="font-weight: bold;">Cargando.</p>',
+        //     width: 200,
+        //     allowOutsideClick: false,
+        //     allowEscapeKey: false,
+        //     showConfirmButton: false,
+        //     animation: false
+        //   }).catch(swal.noop);
+        // }
         if ($scope.actualizar == true) {
           $http({
             method: 'POST',

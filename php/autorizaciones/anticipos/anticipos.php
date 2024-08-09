@@ -120,7 +120,7 @@ function List_Anticipos()
 	global $request;
 	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_ANTICIPOS_AUT.P_LISTAR_ANTICIPOS(:V_PUBICACION,:V_RESULT); end;');
 	oci_bind_by_name($consulta, ':V_PUBICACION', $request->Ubicacion);
-	
+
 	$cursor = oci_new_cursor($c);
 	oci_bind_by_name($consulta, ':V_RESULT', $cursor, -1, OCI_B_CURSOR);
 	oci_execute($consulta);
@@ -712,7 +712,24 @@ function H1Aprobar_Anticipo_Pagaduria()
 	oci_close($c);
 }
 
-
+function P_APROBAR_ANTICIPO_PRESTACION_EFECTIVA()
+{
+	require_once('../../config/dbcon_prod.php');
+	global $request;
+	$consulta = oci_parse($c, 'BEGIN PQ_GENESIS_ANTICIPOS_AUT.P_APROBAR_ANTICIPO_PRESTACION_EFECTIVA(:VP_NUMERO,:VP_JSON_ANT,:V_JSON_ROW); end;');
+	oci_bind_by_name($consulta, ':VP_NUMERO', $request->Numero);
+	oci_bind_by_name($consulta, ':VP_JSON_ANT', $request->xdata);
+	$clob = oci_new_descriptor($c, OCI_D_LOB);
+	oci_bind_by_name($consulta, ':V_JSON_ROW', $clob, -1, OCI_B_CLOB);
+	oci_execute($consulta, OCI_DEFAULT);
+	if (isset($clob)) {
+		$json = $clob->read($clob->size());
+		echo $json;
+	} else {
+		echo 0;
+	}
+	oci_close($c);
+}
 
 function Obtener_Usuarios()
 {

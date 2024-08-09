@@ -24,6 +24,7 @@ angular.module('GenesisApp', [])
       // Anexo 12
       // Anexo 13
       // Anexo 17
+      // Anexo 18
 
       ////////////////////////////////////////////////
 
@@ -42,7 +43,7 @@ angular.module('GenesisApp', [])
             if (data[0] != undefined) {
               setTimeout(() => { $scope.$apply(); }, 500);
               setTimeout(() => { $scope.$apply(); }, 1500);
-
+              $scope.DATA = data[0];
               $scope.imprimir(data[0].RAZON_SOCIAL_IPS)
               setTimeout(() => { window.print() }, 2000);
 
@@ -106,7 +107,7 @@ angular.module('GenesisApp', [])
               break;
             case 9: //PGP
 
-              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE PRESUPUESTO GLOBAL PROSPECTIVO SUSCRITO ENTRE ${razon} Y ${nombrePrestador}`;
+              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE PAGO GLOBAL PROSPECTIVO SUSCRITO ENTRE ${razon} Y ${nombrePrestador}`;
               break;
 
             default: //EVENTO
@@ -119,7 +120,7 @@ angular.module('GenesisApp', [])
               $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE RECUPERACION SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
               break;
             case 2: //PYP
-              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE PYM SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
+              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE PROMOCION Y MANTENIMIENTO SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
               break;
             case 3: // MEDICAMENTO CAPITA
               $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE DISPENSACION DE MEDICAMENTOS, DISPOSITIVOS E INSUMOS DE CÁPITA SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
@@ -140,7 +141,7 @@ angular.module('GenesisApp', [])
               $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACIÓN DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE EVENTO SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
               break;
             case 9: //PGP
-              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE PRESUPUESTO GLOBAL PROSPECTIVO SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
+              $scope.tituloMinuta = `CONTRATO ${documento}-${numero}-${ubicacion} DE PRESTACION DE SERVICIOS DE SALUD MEDIANTE LA MODALIDAD DE PAGO GLOBAL PROSPECTIVO SUSCRITO ENTRE CAJACOPI EPS SAS Y ${nombrePrestador}`;
               break;
 
             default: //EVENTO
@@ -149,6 +150,17 @@ angular.module('GenesisApp', [])
           }
         }
 
+        console.log($scope.tituloMinuta);
+        // $http({
+        //   method: 'POST',
+        //   url: "../../../views/contratacion/formatos/guarda_titulo_anexo.php",
+        //   data: {
+        //     function: 'guarda_session',
+        //     titulo_anexo: $scope.tituloMinuta
+        //   }
+        // }).then(function ({ data }) {
+
+        // });
 
         setTimeout(() => { $scope.$apply(); }, 500);
       }
